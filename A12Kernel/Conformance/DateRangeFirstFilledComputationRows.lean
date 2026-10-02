@@ -1,8 +1,8 @@
-import A12Kernel.Elaboration.AddressedDateRangeFirstFilledFormalInput
+import A12Kernel.Elaboration.DateRangeFirstFilledComputation
 
 /-! # Exact-address repeatable DateRange `FirstFilledValue` locks -/
 
-namespace A12Kernel.Conformance.AddressedDateRangeFirstFilledComputation
+namespace A12Kernel.Conformance.DateRangeFirstFilledComputationRows
 
 open A12Kernel
 
@@ -43,29 +43,29 @@ private def siblingStar (field : String) : SurfaceStarFieldPath := {
 }
 
 private def operation? :
-    Option (CheckedAddressedDateRangeFirstFilledComputation model) :=
-  (checkAddressedDateRangeFirstFilledComputation model
+    Option (CheckedDateRangeFirstFilledComputation model) :=
+  (checkDateRangeFirstFilledComputation model
     ["Projects", "Tasks"] target.id (siblingStar source.name)).toOption
 
 private def elabError? (checked : Except
-    AddressedDateRangeFirstFilledComputationElabError
-    (CheckedAddressedDateRangeFirstFilledComputation model)) :=
+    DateRangeFirstFilledComputationElabError
+    (CheckedDateRangeFirstFilledComputation model)) :=
   match checked with
   | .error cause => some cause
   | .ok _ => none
 
-/- The checked boundary accepts component-equivalent DateRange spellings, refuses a different component set, and requires a repeatable target. -/
+/- A repeatable target accepts component-equivalent DateRange spellings over a sibling star and refuses a different component set. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
 example : operation?.isSome = true ∧
-    (checkAddressedDateRangeFirstFilledComputation model
+    (checkDateRangeFirstFilledComputation model
       ["Projects", "Tasks"] target.id
       (siblingStar dottedSource.name)).toOption.isSome = true ∧
-    elabError? (checkAddressedDateRangeFirstFilledComputation model
+    elabError? (checkDateRangeFirstFilledComputation model
       ["Projects", "Tasks"] target.id
       (siblingStar monthSource.name)) =
-        some (.sourceProfileNotComparable target.path monthSource.path) ∧
-    elabError? (checkAddressedDateRangeFirstFilledComputation model
+        some (.shape (.sourceCarrier monthSource.path)) ∧
+    elabError? (checkDateRangeFirstFilledComputation model
       ["Summary"] fixedTarget.id (siblingStar source.name)) =
-        some (.targetNotRepeatable fixedTarget.path) := by
+        some (.shape (.site (.source (.resolve (.aboveRoot 1))))) := by
   native_decide
 
 private def prepared :
@@ -267,4 +267,4 @@ example : resultApplicationSummary? = some {
   } := by
   native_decide
 
-end A12Kernel.Conformance.AddressedDateRangeFirstFilledComputation
+end A12Kernel.Conformance.DateRangeFirstFilledComputationRows

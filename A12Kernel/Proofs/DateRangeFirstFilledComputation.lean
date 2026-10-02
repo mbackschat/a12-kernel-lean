@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.DateRangeFirstFilledComputation
-import A12Kernel.Elaboration.AddressedDateRangeFirstFilledComputation
+import A12Kernel.Proofs.ComputationFormalInput
 import A12Kernel.Semantics.TemporalApplication
 
 /-! # Bounded DateRange `FirstFilledValue` computation laws -/
@@ -29,19 +29,6 @@ theorem evalDateRangeFirstFilledCells_present_head
     evalDateRangeFirstFilledCells (addressed :: remaining) = .value range := by
   simp [evalDateRangeFirstFilledCells, selected]
 
-/-- Direct-star result construction retains the operation-owned target and delegates every public projection to the established DateRange outcome classifier. -/
-theorem dateRangeFirstFilled_executeResult_projects
-    (operation : CheckedDateRangeFirstFilledComputation model)
-    (input : CheckedDocument model)
-    (residualMessages : List ResidualMessage)
-    (outcome : DateRangeTargetOutcome)
-    (evaluated : operation.execute input = .ok outcome) :
-    operation.executeResult input residualMessages =
-      .ok (DateRangeComputationRunView.fromOutcomes input residualMessages
-        [(operation.targetDeclaration.id, outcome)]) := by
-  rw [CheckedDateRangeFirstFilledComputation.executeResult, evaluated]
-  rfl
-
 /-- Direct-list result construction retains the checked list's target and delegates every public projection to the established DateRange outcome classifier. -/
 theorem dateRangeFirstFilledDirect_executeResult_projects
     (operation : CheckedDateRangeFirstFilledDirectComputation model)
@@ -55,50 +42,89 @@ theorem dateRangeFirstFilledDirect_executeResult_projects
   rw [CheckedDateRangeFirstFilledDirectComputation.executeResult, evaluated]
   rfl
 
-/-- Caller-view addressed result construction retains the checked operation and classifies every executed outcome under its exact target address against immutable source target state. -/
-theorem addressedDateRangeFirstFilled_executeResultWithRead_projects
-    (operation : CheckedAddressedDateRangeFirstFilledComputation model)
+/-- Caller-view starred result construction retains the checked operation and classifies every executed outcome under its exact target address against immutable source target state. -/
+theorem checkedDateRangeFirstFilled_executeResultWithRead_projects
+    (operation : CheckedDateRangeFirstFilledComputation model)
     (input : CheckedDocument model) (messages : List ResidualMessage)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (outcomes : List AddressedDateRangeFirstFilledComputationOutcome)
-    (view : AddressedDateRangeFirstFilledComputationRunView model ResidualMessage)
+    (outcomes : List DateRangeFirstFilledComputationOutcome)
+    (view : DateRangeFirstFilledComputationRunView model ResidualMessage)
     (executed : operation.executeWithRead input read = .ok outcomes)
     (produced : operation.executeResultWithRead input read messages = .ok view) :
     view.operation = operation ∧
       view.dateRange = DateRangeComputationRunView.fromOutcomesAt
         input.sourceDateRangeTargetStateAt messages
         (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
-  rw [CheckedAddressedDateRangeFirstFilledComputation.executeResultWithRead,
+  rw [CheckedDateRangeFirstFilledComputation.executeResultWithRead,
     executed] at produced
   simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq] at produced
   subst view
   exact ⟨rfl, rfl⟩
 
-/-- Immutable addressed result construction is the base-read specialization of the caller-view projection. -/
-theorem addressedDateRangeFirstFilled_executeResult_projects
-    (operation : CheckedAddressedDateRangeFirstFilledComputation model)
+/-- Immutable starred result construction is the base-read specialization of the caller-view projection. -/
+theorem checkedDateRangeFirstFilled_executeResult_projects
+    (operation : CheckedDateRangeFirstFilledComputation model)
     (input : CheckedDocument model) (messages : List ResidualMessage)
-    (outcomes : List AddressedDateRangeFirstFilledComputationOutcome)
-    (view : AddressedDateRangeFirstFilledComputationRunView model ResidualMessage)
+    (outcomes : List DateRangeFirstFilledComputationOutcome)
+    (view : DateRangeFirstFilledComputationRunView model ResidualMessage)
     (executed : operation.execute input = .ok outcomes)
     (produced : operation.executeResult input messages = .ok view) :
     view.operation = operation ∧
       view.dateRange = DateRangeComputationRunView.fromOutcomesAt
         input.sourceDateRangeTargetStateAt messages
         (outcomes.map fun entry => (entry.targetField, entry.outcome)) := by
-  apply addressedDateRangeFirstFilled_executeResultWithRead_projects
+  apply checkedDateRangeFirstFilled_executeResultWithRead_projects
     operation input messages input.read outcomes view
-  · simpa [CheckedAddressedDateRangeFirstFilledComputation.execute] using executed
-  · simpa [CheckedAddressedDateRangeFirstFilledComputation.executeResult] using
+  · simpa [CheckedDateRangeFirstFilledComputation.execute] using executed
+  · simpa [CheckedDateRangeFirstFilledComputation.executeResult] using
       produced
 
-/-- Addressed application is exactly the common DateRange fold over the separately supplied document's exact cell-state projection. -/
-theorem addressedDateRangeFirstFilledRun_applyToChecked_delegates
-    (view : AddressedDateRangeFirstFilledComputationRunView model ResidualMessage)
+/-- Starred application is exactly the common DateRange fold over the separately supplied document's exact cell-state projection. -/
+theorem dateRangeFirstFilledRun_applyToChecked_delegates
+    (view : DateRangeFirstFilledComputationRunView model ResidualMessage)
     (destination : CheckedDocument model) :
     view.applyToChecked destination =
       view.dateRange.applyTo destination.sourceDateRangeTargetStateAt := by
   rfl
+
+/-- Successful whole-call composition scans through the selected prepared read and projects its eager inventory unchanged into the DateRange result. -/
+theorem checkedDateRangeFirstFilled_executeResultWithFormalInputs_exact
+    (operation : CheckedDateRangeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (outcomes : List DateRangeFirstFilledComputationOutcome)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeWithRead input
+      prepared.preliminary.readComputation = .ok outcomes) :
+    (operation.executeResultWithFormalInputs input).map
+      (fun view => view.dateRange.formalErrorsInOperands) =
+        .ok prepared.formalErrorsInOperands := by
+  rw [CheckedDateRangeFirstFilledComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation]
+  rw [CheckedDateRangeFirstFilledComputation.executeResultWithRead,
+    executed]
+  rfl
+
+/-- A post-preparation starred execution failure retains the exact eager inventory beside the unchanged existing fault. -/
+theorem checkedDateRangeFirstFilled_executeResultWithFormalInputs_failure_exact
+    (operation : CheckedDateRangeFirstFilledComputation model)
+    (input : CheckedDocument model)
+    (plan : CheckedComputationFormalInputPlan model)
+    (prepared : ComputationFormalInputPreparation model)
+    (fault : DateRangeFirstFilledComputationFault)
+    (planned : operation.formalInputPlan = .ok plan)
+    (preparation : plan.prepare input = .ok prepared)
+    (executed : operation.executeResultWithRead input
+      prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands = .error fault) :
+    operation.executeResultWithFormalInputs input =
+      .error (.execution prepared.formalErrorsInOperands fault) := by
+  rw [CheckedDateRangeFirstFilledComputation.executeResultWithFormalInputs,
+    planned]
+  simp only [Except.mapError, bind, Except.bind, preparation, executed]
 
 /-- Exhausting the checked direct source list keeps the no-value identity. -/
 theorem scanDirectDateRangeFirstFilled_nil :

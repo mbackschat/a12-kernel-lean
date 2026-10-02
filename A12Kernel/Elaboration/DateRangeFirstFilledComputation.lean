@@ -3,90 +3,55 @@ import A12Kernel.Elaboration.DateRangeTargetPresentation
 import A12Kernel.Elaboration.DateRangeBound
 import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Elaboration.TemporalErroredComputationApplication
+import A12Kernel.Elaboration.ComputationFormalInput
 import A12Kernel.Semantics.TemporalTarget
 
-/-! # Bounded DateRange `FirstFilledValue` computations -/
+/-! # Bounded DateRange `FirstFilledValue` computations
+
+A starred source runs over the shared temporal site at a fixed or a repeatable target. A direct list
+of plain fields at a fixed target is its own carrier, which owns the list's measured profile classes.
+-/
 
 namespace A12Kernel
 
 inductive DateRangeFirstFilledComputationElabError where
-  | shape (cause : TemporalFirstFilledShapeElabError)
+  | shape (cause : TemporalFirstFilledSiteElabError)
+  | targetNotDateRange (path : List String)
   deriving Repr, DecidableEq
 
-/-- One fixed DateRange target and one direct single-level starred source sharing one admitted declaration profile. -/
-inductive CheckedDateRangeFirstFilledComputation (model : FlatModel) where
-  | isoSlash
-      (shape : CheckedTemporalFirstFilledShape model .dateRangeIsoSlash)
-  | dayMonthYearDash
-      (shape : CheckedTemporalFirstFilledShape model .dateRangeDayMonthYearDash)
-  | yearFragment
-      (shape : CheckedTemporalFirstFilledShape model .dateRangeYearFragment)
-  | yearMonthFragment
-      (shape : CheckedTemporalFirstFilledShape model .dateRangeYearMonthFragment)
-  | monthFragment
-      (shape : CheckedTemporalFirstFilledShape model .dateRangeMonthFragment)
-  | monthDayFragment
-      (shape : CheckedTemporalFirstFilledShape model .dateRangeMonthDayFragment)
-  | monthConcatenated
-      (shape :
-        CheckedTemporalFirstFilledShape model .dateRangeMonthConcatenated)
-  | dayMonthDotted
-      (shape :
-        CheckedTemporalFirstFilledShape model .dateRangeDayMonthDotted)
+/-- The input format a DateRange carrier names; a scalar temporal carrier names none. -/
+def TemporalFirstFilledStarCarrier.dateRangeFormat? :
+    TemporalFirstFilledStarCarrier → Option DateRangeInputFormat
+  | .dateRangeIsoSlash => some (.exact .isoSlash)
+  | .dateRangeDayMonthYearDash => some (.exact .dayMonthYearDash)
+  | .dateRangeYearFragment => some .yearFragment
+  | .dateRangeYearMonthFragment => some .yearMonthFragment
+  | .dateRangeMonthFragment => some .yearlessMonth
+  | .dateRangeMonthDayFragment => some .yearlessMonthDay
+  | .dateRangeMonthConcatenated => some .yearlessMonthConcatenated
+  | .dateRangeDayMonthDotted => some .yearlessDayMonthDotted
+  | _ => none
 
-/-- Offer one admitted declaration profile for the authored target. A target-carrier mismatch means "not this profile", so the caller may offer the next one; every other refusal is reached before the carrier comparison and is therefore shared by all profiles. -/
-private def offerDateRangeFirstFilledCarrier (model : FlatModel)
-    (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceStarFieldPath)
-    (carrier : TemporalFirstFilledStarCarrier)
-    (wrap : CheckedTemporalFirstFilledShape model carrier →
-      CheckedDateRangeFirstFilledComputation model) :
-    Except TemporalFirstFilledShapeElabError
-      (Option (CheckedDateRangeFirstFilledComputation model)) :=
-  match checkTemporalFirstFilledShape model declaringGroup targetField
-      (.star authored) carrier with
-  | .ok shape => pure (some (wrap shape))
-  | .error (.targetCarrier _) => pure none
-  | .error cause => throw cause
+/-- One DateRange target, fixed or repeatable, and one starred source whose declared profile exposes
+the target's component set; the target's own format renders the selected range. -/
+structure CheckedDateRangeFirstFilledComputation (model : FlatModel) where
+  private mk ::
+  shape : CheckedTemporalFirstFilledSite model
+  format : DateRangeInputFormat
+  formatOwned : shape.carrier.dateRangeFormat? = some format
 
-/-- Take the first offered profile that owns the target, preserving authored offer order. -/
-private def firstOfferedDateRangeFirstFilled {model : FlatModel} :
-    List (Unit → Except TemporalFirstFilledShapeElabError
-      (Option (CheckedDateRangeFirstFilledComputation model))) →
-    Except TemporalFirstFilledShapeElabError
-      (Option (CheckedDateRangeFirstFilledComputation model))
-  | [] => pure none
-  | offer :: rest => do
-      match ← offer () with
-      | some checked => pure (some checked)
-      | none => firstOfferedDateRangeFirstFilled rest
-
-/-- Check one of the admitted matching DateRange declaration profiles over one direct single-level star.
-A direct list over a DateRange profile is the direct-list carrier's below. -/
+/-- Check one starred DateRange source at a fixed or a repeatable target. A direct list over a
+DateRange profile is the direct-list carrier's below. -/
 def checkDateRangeFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :
     Except DateRangeFirstFilledComputationElabError
       (CheckedDateRangeFirstFilledComputation model) := do
-  let offer := offerDateRangeFirstFilledCarrier model declaringGroup targetField authored
-  let offered ← firstOfferedDateRangeFirstFilled [
-      fun _ => offer .dateRangeIsoSlash .isoSlash,
-      fun _ => offer .dateRangeDayMonthYearDash .dayMonthYearDash,
-      fun _ => offer .dateRangeYearFragment .yearFragment,
-      fun _ => offer .dateRangeYearMonthFragment .yearMonthFragment,
-      fun _ => offer .dateRangeMonthFragment .monthFragment,
-      fun _ => offer .dateRangeMonthDayFragment .monthDayFragment,
-      fun _ => offer .dateRangeMonthConcatenated .monthConcatenated,
-      fun _ => offer .dateRangeDayMonthDotted .dayMonthDotted
-    ] |>.mapError .shape
-  match offered with
-  | some checked => pure checked
-  | none =>
-      -- Every profile reached the carrier comparison, so the target resolves here; the
-      -- repeated lookup only names the target that owns no admitted profile.
-      let target ← model.lookupUniqueId targetField
-        |>.mapError fun cause => .shape (.target cause)
-      throw (.shape (.targetCarrier target.path))
+  let shape ← (checkTemporalFirstFilledSite model declaringGroup targetField (.star authored)).mapError
+    .shape
+  match formatOwned : shape.carrier.dateRangeFormat? with
+  | some format => pure { shape, format, formatOwned }
+  | none => throw (.targetNotDateRange shape.site.target.path)
 
 /-- Static refusal while checking the bounded direct-field-list DateRange source. -/
 inductive DateRangeFirstFilledDirectComputationElabError where
@@ -298,62 +263,127 @@ def evalDateRangeFirstFilledCells :
       | result => result
 
 inductive DateRangeFirstFilledComputationFault where
-  | source (cause : CheckedStarDocumentError)
+  | site (cause : FirstFilledSiteFault)
   | directSource (cause : DirectDateRangeFault)
   | unresolvedEndpoint (range : DateRangeValue)
   deriving Repr, DecidableEq
 
+/-- One instance's DateRange selection retained under its exact target address. -/
+structure DateRangeFirstFilledComputationOutcome where
+  targetField : CellAddr
+  outcome : DateRangeTargetOutcome
+  deriving Repr, DecidableEq
+
+/-- One checked starred DateRange result backed by the common DateRange channels over exact cell
+addresses. -/
+structure DateRangeFirstFilledComputationRunView (model : FlatModel) (ResidualMessage : Type) where
+  private mk ::
+  operation : CheckedDateRangeFirstFilledComputation model
+  dateRange : DateRangeComputationRunView ResidualMessage CellAddr
+
 namespace CheckedDateRangeFirstFilledComputation
 
-/-- Recover the exact fixed target certificate from every admitted direct-star carrier. -/
-def targetDeclaration :
-    CheckedDateRangeFirstFilledComputation model → FlatFieldDecl
-  | .isoSlash shape => shape.target
-  | .dayMonthYearDash shape => shape.target
-  | .yearFragment shape => shape.target
-  | .yearMonthFragment shape => shape.target
-  | .monthFragment shape => shape.target
-  | .monthDayFragment shape => shape.target
-  | .monthConcatenated shape => shape.target
-  | .dayMonthDotted shape => shape.target
+def targetField (operation : CheckedDateRangeFirstFilledComputation model) : FieldId :=
+  operation.shape.site.targetField
 
-/-- Execute one checked carrier through the single document and render its exact or yearless cell through the retained target policy. -/
-private def executeWith
-    (shape : CheckedTemporalFirstFilledShape model carrier)
-    (format : DateRangeInputFormat)
-    (input : CheckedDocument model) :
-    Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome := do
-  let resolved ← shape.source.resolve input
-    |>.mapError .source
-  format.evaluateComputationResult
-      (evalDateRangeFirstFilledCells resolved.cells)
-    |>.mapError fun
-      | .unresolvedEndpoint value => .unresolvedEndpoint value
+def target (operation : CheckedDateRangeFirstFilledComputation model) : FlatFieldDecl :=
+  operation.shape.site.target
 
-/-- Execute through the single checked document and the target policy retained during assembly. -/
+def referencesField (operation : CheckedDateRangeFirstFilledComputation model) : FieldId → Bool :=
+  operation.shape.site.referencesField
+
+theorem excludesTarget (operation : CheckedDateRangeFirstFilledComputation model) :
+    operation.referencesField operation.targetField = false :=
+  operation.shape.excludesTarget
+
+/-- Scan the source at one target instance's environment, then render the selected exact or
+yearless cell through the target's format. -/
+def evaluateAt (operation : CheckedDateRangeFirstFilledComputation model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (target : CellAddr) (environment : Env) :
+    Except DateRangeFirstFilledComputationFault DateRangeFirstFilledComputationOutcome := do
+  let resolved ← (operation.shape.site.source.resolveAt input read environment).mapError
+    (.site ∘ .source)
+  let outcome ← (operation.format.evaluateComputationResult
+      (evalDateRangeFirstFilledCells resolved.cells)).mapError fun
+    | .unresolvedEndpoint value => .unresolvedEndpoint value
+  pure { targetField := target, outcome }
+
+/-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
+scope with a clear at each over-limit row. -/
+def executeWithRead (operation : CheckedDateRangeFirstFilledComputation model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except DateRangeFirstFilledComputationFault (List DateRangeFirstFilledComputationOutcome) :=
+  operation.shape.site.instances input (.site ∘ .targetRows) (.site ∘ .targetEnvironment)
+    (fun target _ => pure { targetField := target, outcome := .noValue })
+    (operation.evaluateAt input read)
+
 def execute (operation : CheckedDateRangeFirstFilledComputation model)
     (input : CheckedDocument model) :
-    Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome :=
-  match operation with
-  | .isoSlash shape => executeWith shape (.exact .isoSlash) input
-  | .dayMonthYearDash shape => executeWith shape (.exact .dayMonthYearDash) input
-  | .yearFragment shape => executeWith shape .yearFragment input
-  | .yearMonthFragment shape => executeWith shape .yearMonthFragment input
-  | .monthFragment shape => executeWith shape .yearlessMonth input
-  | .monthDayFragment shape => executeWith shape .yearlessMonthDay input
-  | .monthConcatenated shape =>
-      executeWith shape .yearlessMonthConcatenated input
-  | .dayMonthDotted shape => executeWith shape .yearlessDayMonthDotted input
+    Except DateRangeFirstFilledComputationFault (List DateRangeFirstFilledComputationOutcome) :=
+  operation.executeWithRead input input.read
 
-/-- Execute and classify the one checked direct-star outcome against the same immutable source document. Residual messages remain already-classified opaque input. -/
-def executeResult (operation : CheckedDateRangeFirstFilledComputation model)
-    (input : CheckedDocument model)
+/-- Classify caller-view outcomes against immutable source target state through the shared DateRange
+result owner. -/
+def executeResultWithRead (operation : CheckedDateRangeFirstFilledComputation model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (residualMessages : List ResidualMessage) :
     Except DateRangeFirstFilledComputationFault
-      (DateRangeComputationRunView ResidualMessage) := do
-  let outcome ← operation.execute input
-  pure (DateRangeComputationRunView.fromOutcomes input residualMessages
-    [(operation.targetDeclaration.id, outcome)])
+      (DateRangeFirstFilledComputationRunView model ResidualMessage) := do
+  let outcomes ← operation.executeWithRead input read
+  pure { operation
+         dateRange := DateRangeComputationRunView.fromOutcomesAt input.sourceDateRangeTargetStateAt
+           residualMessages (outcomes.map fun entry => (entry.targetField, entry.outcome)) }
+
+def executeResult (operation : CheckedDateRangeFirstFilledComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except DateRangeFirstFilledComputationFault
+      (DateRangeFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
+
+end CheckedDateRangeFirstFilledComputation
+
+namespace DateRangeFirstFilledComputationRunView
+
+/-- Apply retained source-relative actions to exact DateRange cell-state projections from a separate
+checked document of the same model. -/
+def applyToChecked (view : DateRangeFirstFilledComputationRunView model ResidualMessage)
+    (destination : CheckedDocument model) :
+    Except (DateRangeComputationRunView.DateRangeComputationRunApplicationError CellAddr)
+      (DateRangeComputationDestination CellAddr) :=
+  view.dateRange.applyTo destination.sourceDateRangeTargetStateAt
+
+end DateRangeFirstFilledComputationRunView
+
+/-- Failure while composing selected formal-input preparation with starred DateRange
+`FirstFilledValue`. -/
+inductive DateRangeFirstFilledCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : DateRangeFirstFilledComputationFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedDateRangeFirstFilledComputation
+
+/-- Bind every source declaration and the computed target to the shared eager inventory. -/
+def formalInputPlan (operation : CheckedDateRangeFirstFilledComputation model) :
+    Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model
+    (operation.shape.site.source.declarations.map (·.id)) [operation.targetField]
+
+/-- Prepare the selected sources once, retain every eager finding, and run lazily through the
+prepared read. -/
+def executeResultWithFormalInputs (operation : CheckedDateRangeFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    Except DateRangeFirstFilledCheckedResultFault
+      (DateRangeFirstFilledComputationRunView model ComputationFormalInputFinding) := do
+  let plan ← operation.formalInputPlan |>.mapError .formalInput
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  match operation.executeResultWithRead input prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands with
+  | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok result => .ok result
 
 end CheckedDateRangeFirstFilledComputation
 

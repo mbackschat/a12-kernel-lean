@@ -293,4 +293,20 @@ example :
         (computation ["Form", "Rows", "Tasks"] "Target" "FirstFilledValue(../Choices*/Choice)")).toOption.isSome].all id := by
   native_decide
 
+private def rangeModel : FlatModel :=
+  let range (id : FieldId) (groupPath : GroupPath) (name : String) (scope : List RepeatableLevel) :
+      FlatFieldDecl :=
+    { id, groupPath, name, policy := { kind := .dateRange }, repeatableScope := scope
+      dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } }
+  { fields := [range 1 ["Form"] "Fixed" [], range 2 ["Form", "Rows"] "Window" [10]]
+    repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
+
+/- A DateRange `FirstFilledValue` over a star lowers onto the one starred carrier at a fixed target. -/
+example :
+    (lowerComputation rangeModel .english
+      { group := ["Form"], name := "C", targetRelPath := "../Fixed", commonPrecondition := none
+        alternatives := [{ precondition := none, operation := "FirstFilledValue(Rows*/Window)" }]
+        errorCodesToSuppress := [] }).toOption.isSome := by
+  native_decide
+
 end A12Kernel.Dm.LowerLocks

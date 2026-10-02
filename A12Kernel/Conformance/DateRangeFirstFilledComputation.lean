@@ -169,7 +169,10 @@ private def executionFor? (candidate : FlatModel)
     Option (Except DateRangeFirstFilledComputationFault DateRangeTargetOutcome) := do
   let operation ← checkedFor? candidate targetDeclaration.id sourceDeclaration.name
   let input ← inputFor? candidate sourceDeclaration sourceInputs
-  pure (operation.execute input)
+  match operation.execute input with
+  | .ok [entry] => pure (.ok entry.outcome)
+  | .ok _ => none
+  | .error fault => pure (.error fault)
 
 private def execution? := executionFor? model target source
 
@@ -201,11 +204,13 @@ private def unrelatedStored : StoredDateRange :=
 private def runView? (targetStored : String) (targetRaw : RawCell)
     (sourceInputs : List SourceInput)
     (residualMessages : List FormalCause := []) :
-    Option (DateRangeComputationRunView FormalCause) := do
+    Option (DateRangeComputationRunView FormalCause CellAddr) := do
   let operation ← checked? target.id "Window"
   let input ← inputWithTargetFor? model target source
     targetStored targetRaw sourceInputs
-  operation.executeResult input residualMessages |>.toOption
+  (·.dateRange) <$> (operation.executeResult input residualMessages |>.toOption)
+
+private def root (field : FieldId) : CellAddr := { field, path := [] }
 
 private def unrelatedCell : ClassifiedCellInput := {
   address := { field := dottedTarget.id, path := [] }
@@ -247,11 +252,11 @@ example : (do
       raw := .parsed (.dateRange selectedRange)
     }]
     let destination ← destinationFor? true
-    let applied ← view.applyToChecked destination |>.toOption
+    let applied ← view.applyTo destination.sourceDateRangeTargetStateAt |>.toOption
     pure (view.withoutErrors, view.withChanges,
-      applied target.id, applied dottedTarget.id)) =
-    some ([{ targetField := target.id, value := selectedStored }],
-      [{ targetField := target.id, value := selectedStored }],
+      applied (root target.id), applied (root dottedTarget.id))) =
+    some ([{ targetField := root target.id, value := selectedStored }],
+      [{ targetField := root target.id, value := selectedStored }],
       .presentValue selectedStored, .presentValue unrelatedStored) := by
   native_decide
 
@@ -264,9 +269,9 @@ example : (do
         raw := .parsed (.dateRange selectedRange)
       }]
     let destination ← destinationFor? true
-    let applied ← view.applyToChecked destination |>.toOption
-    pure (view.withoutErrors, view.withChanges, applied target.id)) =
-    some ([{ targetField := target.id, value := selectedStored }], [],
+    let applied ← view.applyTo destination.sourceDateRangeTargetStateAt |>.toOption
+    pure (view.withoutErrors, view.withChanges, applied (root target.id))) =
+    some ([{ targetField := root target.id, value := selectedStored }], [],
       .presentValue seedStored) := by
   native_decide
 
@@ -275,10 +280,10 @@ example :
     (do
       let view ← runView? seedStored.text (.parsed (.dateRange seedRange)) []
       let destination ← destinationFor? false
-      let applied ← view.applyToChecked destination |>.toOption
+      let applied ← view.applyTo destination.sourceDateRangeTargetStateAt |>.toOption
       pure (view.cleared, view.noErrorOccurred,
-        applied target.id, applied dottedTarget.id)) =
-      some ([target.id], true, .presentEmpty,
+        applied (root target.id), applied (root dottedTarget.id))) =
+      some ([root target.id], true, .presentEmpty,
         .presentValue unrelatedStored) ∧
     (do
       let view ← runView? seedStored.text (.parsed (.dateRange seedRange)) [{
@@ -287,10 +292,10 @@ example :
         raw := .rejected .dateRangeSeparator
       }]
       let destination ← destinationFor? false
-      let applied ← view.applyToChecked destination |>.toOption
+      let applied ← view.applyTo destination.sourceDateRangeTargetStateAt |>.toOption
       pure (view.cleared, view.noErrorOccurred,
-        applied target.id, applied dottedTarget.id)) =
-      some ([target.id], true, .presentEmpty,
+        applied (root target.id), applied (root dottedTarget.id))) =
+      some ([root target.id], true, .presentEmpty,
         .presentValue unrelatedStored) := by
   native_decide
 

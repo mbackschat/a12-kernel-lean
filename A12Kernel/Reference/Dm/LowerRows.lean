@@ -126,8 +126,8 @@ private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : Fla
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofFullDateFirstFilled?
         (← elaborated "FirstFilledValue" (checkFullDateFirstFilledComputation model group target.id (.star star))))
   | .dateRange => do
-      stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedDateRangeFirstFilled?
-        (← elaborated "FirstFilledValue" (checkAddressedDateRangeFirstFilledComputation model group target.id star)))
+      stepOf "FirstFilledValue" (CheckedRowComputationStep.ofDateRangeFirstFilled?
+        (← elaborated "FirstFilledValue" (checkDateRangeFirstFilledComputation model group target.id star)))
   | _ => refuse "FirstFilledValue" "row target kind"
 
 /-- The row step one unguarded operation into a repeatable target names. -/

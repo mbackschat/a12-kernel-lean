@@ -435,6 +435,21 @@ def ofDateFragmentFirstFilled (operation : CheckedDateFragmentFirstFilledComputa
     let cell ← DocumentComputationReadBack.dateFragment model operation.targetField outcome
     pure (.dateFragment outcome, cell)
 
+/-- A fixed-target DateRange `FirstFilledValue` over a star, at its single instance, read back through
+the target's own declared range policy. -/
+def ofDateRangeFirstFilled (operation : CheckedDateRangeFirstFilledComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.targetField
+  family := .dateRange
+  referencesField := operation.referencesField
+  excludesTarget := operation.excludesTarget
+  run _ _ document := do
+    let entry ← (operation.evaluateAt document document.read
+      { field := operation.targetField, path := [] } []).mapError .dateRangeFirstFilled
+    let policy ← operation.target.toDateRangeDeclarationPolicy?.getDM (throw .targetNotReadable)
+    let cell ← DocumentComputationReadBack.dateRange model policy entry.outcome
+    pure (.dateRange entry.outcome, cell)
+
 /-- A fixed-target DateRange `FirstFilledValue` over a direct field list. -/
 def ofDateRangeFirstFilledDirect (operation : CheckedDateRangeFirstFilledDirectComputation model) :
     CheckedDocumentComputationStep model where

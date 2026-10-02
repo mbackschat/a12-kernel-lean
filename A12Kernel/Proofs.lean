@@ -4,7 +4,6 @@ import A12Kernel.Proofs.AddressedDateFromDateTime
 import A12Kernel.Proofs.AddressedDateFromDateTimeFormalInput
 import A12Kernel.Proofs.AddressedDateRangeBoundPart
 import A12Kernel.Proofs.AddressedDateRangeBoundPartFormalInput
-import A12Kernel.Proofs.AddressedDateRangeFirstFilledFormalInput
 import A12Kernel.Proofs.AddressedDateTimeDayShiftComputation
 import A12Kernel.Proofs.AddressedDateTimeSubdayShiftComputation
 import A12Kernel.Proofs.AddressedEnumerationCascade

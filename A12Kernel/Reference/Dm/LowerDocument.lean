@@ -84,7 +84,9 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
           let operation ←
             check (checkDateRangeFirstFilledDirectComputation model group target.id list)
           pure (.ofDateRangeFirstFilledDirect operation)
-      | .star _ => refuse "FirstFilledValue" "starred DateRange"
+      | .star star =>
+          let operation ← check (checkDateRangeFirstFilledComputation model group target.id star)
+          pure (.ofDateRangeFirstFilled operation)
   | .string =>
       let operation ← check (checkStringFirstFilledComputation model group target.id
         (← lowerEntitySource model group arguments))
