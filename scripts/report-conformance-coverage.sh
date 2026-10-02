@@ -493,7 +493,7 @@ Each instance, one rule or computation on one document row, lands in one tier:
 - **match**: the same outcome. A rule that fires on neither side matches too.
 - **tier 1**: a different outcome.
 - **tier 2**: Lean cannot represent the rule, computation, model or document. The construct column names the construct no carrier admitted, or the carrier whose elaborator refused it.
-- **unattributed**: a computation reading, by name, the target of a refused computation, so neither its agreement nor its divergence is attributable to it.
+- **unattributed**: a computation reading, by name, the target of a refused computation, directly or through other computations, so neither its agreement nor its divergence is attributable to it.
 - **fault**: Lean admitted the rule or plan but failed running it.
 - **absent**: no comparable Kernel observation: none retained, an unreadable artifact or model file, or engines that disagree. These are counted as rows below.
 

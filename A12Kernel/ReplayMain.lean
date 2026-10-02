@@ -15,7 +15,8 @@ row replays every rule and prints one tab-separated line per rule:
 `request  row  rule  code  tier  construct  detail`
 
 where `tier` is `match`, `tier1` (Lean fires a different message set), `unattributed` (a computation
-divergence beside a refused computation, which may have fed it), `tier2` (Lean cannot represent the
+reading a refused computation's target, directly or through other computations, whose outcome is
+therefore not attributable to it, agreeing or not), `tier2` (Lean cannot represent the
 rule, the computation, the model or the document), `fault` (Lean admitted the rule or plan but
 failed running it), or `absent` (no comparable Kernel observation: none retained, an unreadable
 artifact or model file, or engines that disagree). A row whose document or model cannot be read
@@ -124,8 +125,15 @@ private def replayComputations (line : String → String → String → String �
   let admitted := attempts.filterMap fun (computation, attempt) =>
     attempt.toOption.map fun (target, lowered) => (computation, target, lowered)
   if admitted.isEmpty then return
+  let reads (names : List String) (computation : DmComputation) :=
+    (computationTexts computation).any fun text => (namesRead language text).any names.contains
+  -- Feeding is transitive: a computation reading a fed one's target reads a value the refused
+  -- computation upstream decided, so the closure over reads is taken, one round per computation.
   let refusedTargets := attempts.filterMap fun (computation, attempt) =>
     if attempt.toOption.isNone then some (targetName computation) else none
+  let fedTargets := (List.range model.computations.length).foldl (init := refusedTargets) fun fed _ =>
+    fed ++ (model.computations.filter fun computation =>
+      !fed.contains (targetName computation) && reads fed computation).map targetName
   match runComputations world prepared checked (admitted.map (·.2.2)) with
   | .error refusal =>
       -- A plan Lean certified and then failed to run is a fault; an uncertified plan is a refusal.
@@ -137,12 +145,11 @@ private def replayComputations (line : String → String → String → String �
         let path := "/".intercalate target.path
         let lean := sorted (outcomes.filter (unindexed ·.pointer == path))
         let expected := sorted (kernel.filter (unindexed ·.pointer == path))
-        -- A computation reading a refused computation's target may read a stored value the Kernel
-        -- would have recomputed, so neither its agreement nor its divergence is attributable to it.
-        -- The test is by name and so over-approximates the reads.
-        let fed := (computationTexts computation).any fun text =>
-          (namesRead language text).any refusedTargets.contains
-        if fed then
+        -- A computation reading a refused computation's target, directly or through another
+        -- computation, may read a stored value the Kernel would have recomputed, so neither its
+        -- agreement nor its divergence is attributable to it. The test is by name and so
+        -- over-approximates the reads.
+        if reads fedTargets computation then
           line computation.name "compute" "unattributed" s!"Fed\tlean={lean} kernel={expected}"
         else if lean == expected then line computation.name "compute" "match" ""
         else line computation.name "compute" "tier1" s!"Divergence\tlean={lean} kernel={expected}"
