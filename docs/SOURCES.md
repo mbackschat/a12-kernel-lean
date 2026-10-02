@@ -971,6 +971,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A temporal field's value family is its declared format's, not its declared kind's](sources/computation-placement-and-constant-probes.md#src-temporal-value-family-is-the-formats-not-the-kinds)
 <a id="src-cross-kind-temporal-reads"></a>
 - [A cross-kind temporal field compares and extracts by its format's family, measured locally 2026-10-02](sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads)
+<a id="src-cross-kind-computation-reads"></a>
+- [A computation reads a cross-kind temporal field by its format's family too, extracting, constructing a Date and selecting an indexed DateRange endpoint, measured locally 2026-10-02](sources/temporal-runtime-fold-probes.md#src-cross-kind-computation-reads)
 <a id="src-temporal-operand-family-is-the-formats-not-the-kinds"></a>
 - [A temporal operand's admitted family is its declared format's too, extractors and completed-period differences alike, with a Base Year completing the year the format omits](sources/computation-placement-and-constant-probes.md#src-temporal-operand-family-is-the-formats-not-the-kinds)
 <a id="src-temporal-difference-gates-read-the-format"></a>

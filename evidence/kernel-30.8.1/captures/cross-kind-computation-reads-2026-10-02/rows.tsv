@@ -1,0 +1,25 @@
+# run	row	field	outcome	value
+xc	hit	Kind_DM/NDH	value	10
+xc	hit	Kind_DM/NDY	value	2024
+xc	hit	Kind_DM/NSH	value	10
+xc	hit	Kind_DM/NSY	value	2024
+xc	hit	Kind_DM/NTH	value	10
+xc	hit	Kind_DM/NTY	value	2024
+xc	miss	Kind_DM/NDH	value	11
+xc	miss	Kind_DM/NDY	value	2023
+xc	miss	Kind_DM/NSH	value	11
+xc	miss	Kind_DM/NSY	value	2023
+xc	miss	Kind_DM/NTH	value	11
+xc	miss	Kind_DM/NTY	value	2023
+xk	hit	Kind_DM/KD	value	2024-03-04
+xk	hit	Kind_DM/KS	value	2024-03-04
+xk	hit	Kind_DM/KT	value	2024-03-04
+xk	miss	Kind_DM/KD	value	2023-03-04
+xk	miss	Kind_DM/KS	value	2023-03-04
+xk	miss	Kind_DM/KT	value	2023-03-04
+ix	ix-hit	Ix/Span	value	2024-01-02/2024-02-29
+ix	ix-hit	Ix/Span2	value	2024-01-03/2024-02-29
+ix	ix-hit	Ix/Span3	value	2024-01-01/2024-03-03
+ix	ix-malformed	Ix/Span	cleared	
+ix	ix-malformed	Ix/Span2	cleared	
+ix	ix-malformed	Ix/Span3	cleared	

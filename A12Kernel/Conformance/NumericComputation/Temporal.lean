@@ -176,4 +176,41 @@ example : resultOf (divide (literal 6) (literal 3)) = some (.value 2) := by
   native_decide
 
 
+/-- The cross-kind carriers of the [cross-kind grid](../../../docs/sources/temporal-runtime-fold-probes.md#src-cross-kind-computation-reads):
+    a clock declared DATE and DATE_TIME, and a date declared TIME and DATE_TIME. -/
+private def crossKindModel : FlatModel :=
+  { model with
+    fields := model.fields ++ [
+      temporalDeclaration 30 "DateAsClock" .date timeComponents,
+      temporalDeclaration 31 "StampAsClock" .dateTime timeComponents,
+      temporalDeclaration 32 "TimeAsDate" .time TemporalComponents.fullDate,
+      temporalDeclaration 33 "StampAsDate" .dateTime TemporalComponents.fullDate] }
+
+private def crossKindContext (hour : Nat) (year : Int) : ScalarComputationContext where
+  read field :=
+    let clock : RawCell :=
+      match TimeOfDay.ofHms? hour 30 0 with
+      | some value => .parsed (.temporal (.time { epochMillis := 0 } value))
+      | none => .empty
+    if field == 30 then checkedTemporal .date timeComponents clock
+    else if field == 31 then checkedTemporal .dateTime timeComponents clock
+    else if field == 32 then checkedTemporal .time TemporalComponents.fullDate (.parsed (dateValue year 3 4))
+    else if field == 33 then checkedTemporal .dateTime TemporalComponents.fullDate (.parsed (dateValue year 3 4))
+    else checkedNumber .empty
+
+/- A computation extracts a cross-kind carrier's component by its format's family, as the Kernel
+computes `10` and `2024` on the grid's `hit` row and `11` and `2023` on its `miss` row
+([checkpoint](../../../docs/sources/temporal-runtime-fold-probes.md#src-cross-kind-computation-reads)).
+A declared-kind test would refuse all four reads. -/
+example :
+    [10, 11].map (fun hour =>
+      ["DateAsClock", "StampAsClock"].map fun name =>
+        checkedResultOfIn crossKindModel (surfaceTimeFieldPart name .hour) (crossKindContext hour 2024)) =
+      [[some (.value 10), some (.value 10)], [some (.value 11), some (.value 11)]] ∧
+    [2024, 2023].map (fun year =>
+      ["TimeAsDate", "StampAsDate"].map fun name =>
+        checkedResultOfIn crossKindModel (surfaceDateFieldPart name .year) (crossKindContext 10 year)) =
+      [[some (.value 2024), some (.value 2024)], [some (.value 2023), some (.value 2023)]] := by
+  native_decide
+
 end A12Kernel.Conformance.NumericComputation.Temporal

@@ -1,0 +1,11 @@
+field s /Ix/Span
+op ctl DateRange(/Ix/Items/DStart For "a", /Ix/Items/DFinish For "b")
+op tst DateRange(/Ix/Items/TStart For "a", /Ix/Items/DFinish For "b")
+op sst DateRange(/Ix/Items/SStart For "a", /Ix/Items/DFinish For "b")
+op tfin DateRange(/Ix/Items/DStart For "a", /Ix/Items/TStart For "b")
+op dclk DateRange(/Ix/Items/DClock For "a", /Ix/Items/DFinish For "b")
+comp ixctl s ctl
+comp ixtst s tst
+comp ixsst s sst
+comp ixtfin s tfin
+comp ixdclk s dclk

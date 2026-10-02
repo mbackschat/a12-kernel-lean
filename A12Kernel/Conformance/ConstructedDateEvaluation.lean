@@ -75,6 +75,8 @@ private def extractorDateModel : FlatModel :=
     fields := base.fields ++ [
       temporalField 10 .dateTime TemporalComponents.now,
       temporalField 11 .date TemporalComponents.fullDate,
+      temporalField 12 .time TemporalComponents.fullDate,
+      temporalField 13 .dateTime TemporalComponents.fullDate,
       stringComponentField 20 2,
       stringComponentField 21 4,
       formattedTemporalField 30 .date yearOnlyComponents "yyyy",
@@ -303,6 +305,22 @@ example :
         temporalCell 10 "bad-day" (.rejected .malformed),
         temporalCell 11 "bad-year" (.rejected .declaredConstraint)] =
           some (.unavailable .malformed) := by
+  native_decide
+
+/- An extractor reads a cross-kind carrier by its format's family: a date declared TIME or DATE_TIME
+   constructs the same Date its DATE-declared control does, as the Kernel computes `2024-03-04` and
+   `2023-03-04` for all three
+   ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-cross-kind-computation-reads)). -/
+example :
+    let construct (field : FieldId) : SurfaceConstructedDateComponents := {
+      day := .extractor .day field
+      month := .extractor .month field
+      year := .complete (.extractor .year field) }
+    [2024, 2023].map (fun year => [12, 13, 11].map fun field =>
+      evaluateExtractorSources? (construct field)
+        [temporalCell field s!"{year}-03-04" (.parsed (.temporal (dateValue year 3 4)))]) =
+      [2024, 2023].map fun year =>
+        List.replicate 3 (some (.resolved (.real { year, month := 3, day := 4 }))) := by
   native_decide
 
 /- Base-Year extractors reuse the configured January-1 Date source at every matching

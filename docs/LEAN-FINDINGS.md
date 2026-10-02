@@ -2622,7 +2622,7 @@ Related: [[LF200]] on checks that run before a syntax fault, [[LF201]] on modell
 
 ## LF203 — a "defensive" check that tests a different property from its owner's admission is a second rule, not a re-check
 
-> Date: 2026-10-02. Sections: §5. Basis: the cold review of `a5c93ddb..e99eddf6` and the [cross-kind checkpoint](sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads), four Kernel runs on both strategies.
+> Date: 2026-10-02. Sections: §5. Basis: the cold reviews of `a5c93ddb..e99eddf6` and `e99eddf6..a9833d23`, and the [validation](sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads) and [computation](sources/temporal-runtime-fold-probes.md#src-cross-kind-computation-reads) cross-kind checkpoints, seven Kernel runs on both strategies.
 
 Four flat temporal resolvers guarded their read with `value.kind == field.kind` and called the guard defensive, since the formal check had already admitted the cell. But the formal check admits a value by its format's family, and the guard tested the declared kind, a different property. On every carrier where the two disagree, a DATE-declared clock or a TIME-declared date, the guard fired on admitted input and answered UNKNOWN where the Kernel fires. [`LF70`](LEAN-FINDINGS.md)'s question is whether a re-check is dead. Before that comes whether it re-checks the owner's fact at all; one that restates a neighbouring property is live on exactly the inputs that tell the two apart. A newly written resolver copied the guard and its docstring, so the defect spread by reuse rather than by design.
 
@@ -2630,4 +2630,6 @@ Lean treatment: the resolvers share `FlatTemporalField.holdsValue`, the format-f
 
 **Name the owner a defensive check re-checks, and use that owner's predicate rather than restating it.** Where none is named, the check is a semantic rule and needs a witness at the boundary where the two properties disagree.
 
-Limit: flat nonrepeatable validation reads; component-omitting cross-kind formats are not measured.
+**Sweep the comparison, not the reported locus.** The fix covered the four resolvers the review named, and the next review found the same `value.kind != field.kind` guard in a computation's component read and a constructed Date's extractor; a grep for the declared-kind comparison then found a third site, an indexed DateRange endpoint's static kind conjunct, which the Kernel refutes too ([checkpoint](sources/temporal-runtime-fold-probes.md#src-cross-kind-computation-reads)). A finding about a predicate is a claim about every place that predicate is written, so its fix starts from a search for the predicate's spelling, and each hit is either converted or kept with its reason stated beside it.
+
+Limit: flat nonrepeatable reads and one String-indexed endpoint level; component-omitting cross-kind formats are not measured.

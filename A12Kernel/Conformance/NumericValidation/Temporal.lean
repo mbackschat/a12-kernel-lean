@@ -54,11 +54,19 @@ private def stampAsDateField : FlatFieldDecl := {
   name := "StampAsDate"
   policy := { kind := .temporal .dateTime TemporalComponents.fullDate } }
 
+/-- A DATE_TIME-declared carrier whose format is a bare clock, the clock-side partner of
+    `StampAsDate`. -/
+private def stampAsClockField : FlatFieldDecl := {
+  id := 34
+  groupPath := ["Order"]
+  name := "StampAsClock"
+  policy := { kind := .temporal .dateTime timeComponents } }
+
 private def crossCarrierModel : FlatModel :=
   { dateCarrierModel with
     fields :=
       dateAsClockField :: timeAsDateField :: dateAsStampField ::
-        timeAsStampField :: stampAsDateField :: dateCarrierModel.fields }
+        timeAsStampField :: stampAsDateField :: stampAsClockField :: dateCarrierModel.fields }
 
 private def temporalPartDiagnostic? (surface : SurfaceNumericComparison)
     (sourceModel : FlatModel := model) : Option KernelStaticDiagnostic :=
@@ -307,22 +315,25 @@ example : errorOf
 
 
 /- A cross-kind carrier holds its format's value, and extraction reads that value whatever the declared
-kind: `HoursFromTime` of a DATE-declared clock and `YearFromDate` of a TIME-declared date fire on the
-matching row of the [cross-kind grid](../../../docs/sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads)
-and not on the other. A declared-kind test would leave both unknown. -/
+kind: `HoursFromTime` of a DATE- or DATE_TIME-declared clock and `YearFromDate` of a TIME- or
+DATE_TIME-declared date fire on the matching row of the
+[cross-kind grid](../../../docs/sources/temporal-runtime-fold-probes.md#src-cross-kind-temporal-reads)
+and not on the other. A declared-kind test would leave all four unknown. -/
 example :
     let clock (hour : Nat) : RawCell :=
       match TimeOfDay.ofHms? hour 30 0 with
       | some value => .parsed (.temporal (.time { epochMillis := 0 } value))
       | none => .empty
-    verdictOf (comparison .equal (timeFieldPart "DateAsClock" .hour) 10)
-        (temporalRaw 25 (clock 10)) true crossCarrierModel = some (.fired .value) ∧
-      verdictOf (comparison .equal (timeFieldPart "DateAsClock" .hour) 10)
-        (temporalRaw 25 (clock 11)) true crossCarrierModel = some .notFired ∧
-      verdictOf (comparison .equal (dateFieldPart "TimeAsDate" .year) 2024)
-        (temporalRaw 26 (.parsed (dateValue 2024 3 4))) true crossCarrierModel = some (.fired .value) ∧
-      verdictOf (comparison .equal (dateFieldPart "TimeAsDate" .year) 2024)
-        (temporalRaw 26 (.parsed (dateValue 2023 3 4))) true crossCarrierModel = some .notFired := by
+    [(25, "DateAsClock"), (34, "StampAsClock")].map (fun (id, name) =>
+      [10, 11].map fun hour =>
+        verdictOf (comparison .equal (timeFieldPart name .hour) 10)
+          (temporalRaw id (clock hour)) true crossCarrierModel) =
+      List.replicate 2 [some (.fired .value), some .notFired] ∧
+    [(26, "TimeAsDate"), (29, "StampAsDate")].map (fun (id, name) =>
+      [2024, 2023].map fun year =>
+        verdictOf (comparison .equal (dateFieldPart name .year) 2024)
+          (temporalRaw id (.parsed (dateValue year 3 4))) true crossCarrierModel) =
+      List.replicate 2 [some (.fired .value), some .notFired] := by
   native_decide
 
 end A12Kernel.Conformance.NumericValidation.Temporal

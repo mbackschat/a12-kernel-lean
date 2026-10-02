@@ -47,14 +47,16 @@ def readNumeric (context : ScalarComputationContext) (declaration : FlatFieldDec
       | .value _ => throw (.fieldKindMismatch field.id)
       | .unknown cause | .poison cause => pure (.poison cause)
 
-/-- Read either direct temporal component family through one computation-phase empty/value/poison and kind-checking boundary. -/
+/-- Read either direct temporal component family through one computation-phase empty/value/poison
+boundary. A value is held by its format's family, not its declared kind, as every flat temporal read
+tests it ([`FlatTemporalField.holdsValue`](../../Semantics/FlatValidation.lean)). -/
 def readTemporalNumeric (context : ScalarComputationContext)
     (field : FlatTemporalField) (project : TemporalValue → Option Rat) :
     Except NumericComputationFault NumericComputationResult :=
   match observeCell .computation (context.read field.id) with
   | .empty => pure (.value 0)
   | .value (.temporal value) =>
-      if value.kind != field.kind then
+      if !field.holdsValue value then
         throw (.fieldKindMismatch field.id)
       else
         match project value with

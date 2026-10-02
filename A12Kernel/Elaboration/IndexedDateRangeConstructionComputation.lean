@@ -81,8 +81,9 @@ private def elaborateIndexedDateRangeEndpoint (model : FlatModel)
   let target ← match declaration.toTemporalField? with
     | some target => pure target
     | none => throw (.targetNotDate field)
-  if target.kind != .date then
-    throw (.targetNotDate field)
+  -- The full Date components decide, not the declared kind: a TIME- or DATE_TIME-declared field
+  -- carrying a Date format is an admitted endpoint
+  -- ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-cross-kind-computation-reads)).
   if target.components != TemporalComponents.fullDate then
     throw (.unsupportedComponents field target.components)
   let policy ← match declaration.toTemporalTargetPolicy? with

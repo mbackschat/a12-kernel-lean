@@ -126,7 +126,9 @@ end CheckedConstructedDateYearField
 
 namespace CheckedConstructedDateExtractorField
 
-/-- Preserve empty and formal state while projecting the certified calendar component from a Date or DateTime payload. -/
+/-- Preserve empty and formal state while projecting the certified calendar component from a Date or
+DateTime payload. The payload is held by its format's family, not the declared kind, as every flat
+temporal read tests it ([`FlatTemporalField.holdsValue`](../Semantics/FlatValidation.lean)). -/
 def classify (checked : CheckedConstructedDateExtractorField model)
     (observation : CellObservation Value) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
@@ -134,7 +136,7 @@ def classify (checked : CheckedConstructedDateExtractorField model)
   | .empty => pure .empty
   | .unknown cause | .poison cause => pure (.unavailable cause)
   | .value (.temporal value) =>
-      if value.kind != checked.source.kind then
+      if !checked.source.holdsValue value then
         throw (.payloadKind checked.source.id)
       else
         match value.dateParts? with

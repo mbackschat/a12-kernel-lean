@@ -26,6 +26,13 @@ private def dateField (id : FieldId) (name : String) : FlatFieldDecl := {
 
 private def start := dateField 2 "PromiseStart"
 private def finish := dateField 3 "PromiseFinish"
+
+/-- Endpoints carrying the Date format under another declared kind. -/
+private def crossKindStart (id : FieldId) (name : String) (kind : TemporalKind) : FlatFieldDecl :=
+  { dateField id name with policy := { kind := .temporal kind TemporalComponents.fullDate } }
+
+private def timeStart := crossKindStart 8 "TimeStart" .time
+private def stampStart := crossKindStart 9 "StampStart" .dateTime
 private def target : FlatFieldDecl := {
   id := 4
   groupPath := ["Order"]
@@ -57,7 +64,7 @@ private def items : RepeatableGroupDecl := {
 
 private def model : FlatModel := {
   fields := [index, start, finish, target, startSelector, finishSelector,
-    unrelatedTarget]
+    unrelatedTarget, timeStart, stampStart]
   repeatableGroups := [items]
   timeZoneId := "UTC"
 }
@@ -266,6 +273,23 @@ example : (execute? "sku1" "sku2" (data false false)).map (fun result =>
   some (.literal "sku1", some { field := start.id, path := [1] },
     .literal "sku2", some { field := finish.id, path := [2] },
     .accepted expected) := by
+  native_decide
+
+/- A start endpoint carrying the Date format under a TIME or DATE_TIME declaration is admitted and
+read as a Date, as the Kernel admits and computes both beside its refused clock-format control
+([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-cross-kind-computation-reads)). -/
+example :
+    let crossKind := { data false false with
+      cells := (data false false).cells ++ [timeStart, stampStart].flatMap fun field => [
+        cell field.id 1 "2024-01-01" (.parsed (.temporal (.date (dateValue 2024 1 1)))),
+        cell field.id 2 "2024-02-01" (.parsed (.temporal (.date (dateValue 2024 2 1))))] }
+    [timeStart, stampStart].map (fun field => do
+      let operation ← (elaborateIndexedDateRangeConstructionComputation model ["Order"] target.id
+        field.id "sku1" finish.id "sku2").toOption
+      let preliminary ← preliminary? crossKind
+      let result ← (operation.execute preliminary).toOption
+      pure result.outcome) =
+      [some (.accepted expected), some (.accepted expected)] := by
   native_decide
 
 /- Reversing only the keys reverses the selected endpoint rows rather than falling back to physical order. -/

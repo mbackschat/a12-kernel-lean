@@ -412,13 +412,13 @@ theorem numericComputation_baseYearDatePart_evaluates
 theorem readTemporalNumeric_value
     (context : ScalarComputationContext) (field : FlatTemporalField)
     (project : TemporalValue → Option Rat) (value : TemporalValue) (amount : Rat)
-    (kind : value.kind = field.kind)
+    (family : field.components.family? = some value.kind)
     (projected : project value = some amount)
     (observed : observeCell .computation (context.read field.id) =
       .value (.temporal value)) :
     context.readTemporalNumeric field project = .ok (.value amount) := by
-  simp [ScalarComputationContext.readTemporalNumeric,
-    observed, kind, projected] <;> rfl
+  simp [ScalarComputationContext.readTemporalNumeric, FlatTemporalField.holdsValue,
+    observed, family, projected] <;> rfl
 
 /-- A supported date-difference source uses the same phase reads and maps its exact numeric/fault provenance once into computation outcome space. -/
 theorem readDateDifference_evaluated

@@ -1,0 +1,50 @@
+{
+ "model": "XC_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "hit",
+   "documentInline": {
+    "Kind_DM": {
+     "Reference": "x",
+     "DClock": "10:30:00",
+     "SClock": "10:30:00",
+     "TClock": "10:30:00",
+     "TDate": "2024-03-04",
+     "SDate": "2024-03-04",
+     "DDate": "2024-03-04",
+     "NDH": "99",
+     "NSH": "99",
+     "NTH": "99",
+     "NTY": "99",
+     "NSY": "99",
+     "NDY": "99"
+    }
+   }
+  },
+  {
+   "name": "miss",
+   "documentInline": {
+    "Kind_DM": {
+     "Reference": "x",
+     "DClock": "11:30:00",
+     "SClock": "11:30:00",
+     "TClock": "11:30:00",
+     "TDate": "2023-03-04",
+     "SDate": "2023-03-04",
+     "DDate": "2023-03-04",
+     "NDH": "99",
+     "NSH": "99",
+     "NTH": "99",
+     "NTY": "99",
+     "NSY": "99",
+     "NDY": "99"
+    }
+   }
+  }
+ ]
+}
