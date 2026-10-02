@@ -37,8 +37,7 @@ private def field (id : FieldId) (name : String) (kind : FieldKind)
 private def boolean (id : FieldId) (name : String) := field id name .boolean
 
 private def fragment (id : FieldId) (name : String) :=
-  field id name (.temporal .date TemporalComponents.fullDate)
-    (some { format := "yyyy-MM", partialMode := .yearOptional })
+  field id name (.temporal .date (TemporalComponents.ofFormat "yyyy-MM")) (some { format := "yyyy-MM" })
 
 private def clock (id : FieldId) (name : String) :=
   field id name (.temporal .time TemporalComponents.time) (some { format := "HH:mm:ss" })

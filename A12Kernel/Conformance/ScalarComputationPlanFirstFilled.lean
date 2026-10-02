@@ -55,8 +55,8 @@ private def Kind.declaration (kind : Kind) (slot : Nat) (name : String) : FlatFi
   else match kind with
     | .boolean => base
     | .fragment => { base with
-        policy := { kind := .temporal .date TemporalComponents.fullDate }
-        temporalTargetPolicy := some { format := "yyyy-MM", partialMode := .yearOptional } }
+        policy := { kind := .temporal .date (TemporalComponents.ofFormat "yyyy-MM") }
+        temporalTargetPolicy := some { format := "yyyy-MM" } }
     | .time => { base with
         policy := { kind := .temporal .time TemporalComponents.time }
         temporalTargetPolicy := some { format := "HH:mm:ss" } }
@@ -145,8 +145,8 @@ private def classified (declaration : FlatFieldDecl) (text : String) : RawCell :
   let fallback : RawCell := .rejected .dateFormat
   match declaration.policy.kind with
   | .boolean => classifyStoredBooleanText text
-  | .temporal .date _ =>
-      if declaration.toTemporalTargetPolicy?.map (·.partialMode) == some .yearOptional then
+  | .temporal .date components =>
+      if components != TemporalComponents.fullDate then
         fragmentRaw declaration text
       else match certifyFullDateInputField declaration with
         | .ok checked => (checked.classifyStoredForModel model.timeZoneId text).toOption.getD fallback
@@ -273,8 +273,8 @@ authored first, in a model with or without a Base Year: the yearless root of the
 private def monthModel (baseYear : Option Int) : FlatModel :=
   let month (id : FieldId) (name : String) : FlatFieldDecl :=
     { id, groupPath := ["Pm"], name
-      policy := { kind := .temporal .date TemporalComponents.fullDate }
-      temporalTargetPolicy := some { format := "MM", partialMode := .yearOptional } }
+      policy := { kind := .temporal .date (TemporalComponents.ofFormat "MM") }
+      temporalTargetPolicy := some { format := "MM" } }
   { fields := [month 0 "MA", month 1 "M1", month 2 "M2",
       { id := 3, groupPath := ["Pm"], name := "KMA", policy := { kind := .number { scale := 0, signed := true } } }]
     timeZoneId := "Europe/Berlin"

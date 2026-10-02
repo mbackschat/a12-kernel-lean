@@ -61,7 +61,13 @@ def TemporalFirstFilledStarCarrier.isDateFragment :
     allowlisted as a `(format, separator)` **pair** rather than as a bare format string, so its
     profile genuinely cannot be read off a format alone. Date profiles with optional pre-1900
     checking remain outside until checked temporal input represents that declaration-owned source
-    check. -/
+    check.
+
+    A DateFragment is a component-omitting Date: its declared components are the ones its format
+    names, at full precision, as the reader decodes a `DateFragmentType` and as the Kernel reads it
+    ([checkpoint](../../docs/sources/temporal-and-message-probes.md#src-partial-date-presence)). A
+    Date at a partial precision is a partially known full-format Date, never a fragment, so it stays
+    outside. -/
 def FlatFieldDecl.temporalFirstFilledStarCarrier?
     (declaration : FlatFieldDecl) : Option TemporalFirstFilledStarCarrier :=
   match declaration.policy.kind, declaration.toTemporalTargetPolicy?,
@@ -71,29 +77,18 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
         if policy.format == "HH:mm:ss" then some .timeHms else none
       else if components == TemporalComponents.now then
         if policy.format == "yyyy-MM-dd'T'HH:mm:ss" then some .dateTimeIso else none
-      else if components != TemporalComponents.fullDate ||
-          policy.youngerThan1900Check then
+      else if policy.partialMode != .full || policy.youngerThan1900Check then
         none
-      else if policy.partialMode == .yearOptional then
-        if policy.format == "MM" then
-          some .monthFragment
-        else if policy.format == "yyyy" then
-          some .yearFragment
-        else if policy.format == "yyyy-MM" then
-          some .yearMonthFragment
-        else if policy.format == "MM-dd" then
-          some .monthDayFragment
-        else
-          none
-      else if policy.partialMode == .full then
-        if policy.format == "yyyy-MM-dd" then
-          some .fullDateIso
-        else if policy.format == "dd.MM.yyyy" then
-          some .fullDateDotted
-        else
-          none
       else
-        none
+        let carrier? : Option TemporalFirstFilledStarCarrier := match policy.format with
+          | "MM" => some .monthFragment
+          | "yyyy" => some .yearFragment
+          | "yyyy-MM" => some .yearMonthFragment
+          | "MM-dd" => some .monthDayFragment
+          | "yyyy-MM-dd" => some .fullDateIso
+          | "dd.MM.yyyy" => some .fullDateDotted
+          | _ => none
+        if components == TemporalComponents.ofFormat policy.format then carrier? else none
   | .dateRange, _, some policy =>
       match DateRangeInputFormat.ofPolicy? policy with
       | some (.exact .isoSlash) => some .dateRangeIsoSlash

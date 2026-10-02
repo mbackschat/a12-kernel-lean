@@ -31,6 +31,16 @@ def TemporalComponents.today : TemporalComponents := TemporalComponents.fullDate
 
 def TemporalComponents.baseYear : TemporalComponents := TemporalComponents.fullDate
 
+/-- The components a format pattern exposes, read off its unquoted pattern letters. This is a
+declaration's component set: the Kernel admits and reads a temporal value by its format, never by
+its declared kind. -/
+def TemporalComponents.ofFormat (format : String) : TemporalComponents :=
+  let letters := (format.splitOn "'").zipIdx.filterMap fun (part, index) =>
+    if index % 2 == 0 then some part else none
+  let has (letter : Char) := letters.any (·.contains letter)
+  { year := has 'y', month := has 'M', day := has 'd'
+    hour := has 'H', minute := has 'm', second := has 's' }
+
 /-- Which suffix of an otherwise complete Date may be unknown in stored form. The cases are ordered by increasing permitted uncertainty, but no Boolean collapse is sound: month-optional also permits an unknown day, and year-optional permits all three omissions. -/
 inductive TemporalPartialMode where
   | full

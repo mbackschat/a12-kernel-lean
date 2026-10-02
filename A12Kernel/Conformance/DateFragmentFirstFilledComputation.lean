@@ -13,11 +13,8 @@ private def fragmentField (id : FieldId) (groups : GroupPath) (name : String)
   id
   groupPath := groups
   name
-  policy := { kind := .temporal .date TemporalComponents.fullDate }
-  temporalTargetPolicy := some {
-    format
-    partialMode := .yearOptional
-  }
+  policy := { kind := .temporal .date (TemporalComponents.ofFormat format) }
+  temporalTargetPolicy := some { format }
   repeatableScope := scope
 }
 
@@ -26,8 +23,8 @@ private def source := fragmentField 2 ["Review", "Rows"] "Month" [10]
 private def yearSource :=
   fragmentField 3 ["Review", "Rows"] "Year" [10] "yyyy"
 private def fullDate : FlatFieldDecl := {
-  fragmentField 4 ["Review", "Rows"] "Date" [10] with
-    temporalTargetPolicy := some { format := "MM" }
+  fragmentField 4 ["Review", "Rows"] "Date" [10] "yyyy-MM-dd" with
+    policy := { kind := .temporal .date TemporalComponents.fullDate }
 }
 private def time : FlatFieldDecl := {
   id := 5
@@ -44,10 +41,9 @@ private def nestedSource :=
 private def yearTarget := fragmentField 8 ["Review"] "FirstYear" [] "yyyy"
 private def otherGroupTarget := fragmentField 9 ["Other"] "OtherMonth"
 private def checkedSource : FlatFieldDecl := {
-  fragmentField 10 ["Review", "Rows"] "CheckedMonth" [10] with
+  fragmentField 10 ["Review", "Rows"] "CheckedYearMonth" [10] "yyyy-MM" with
     temporalTargetPolicy := some {
-      format := "MM"
-      partialMode := .yearOptional
+      format := "yyyy-MM"
       youngerThan1900Check := true
     }
 }
@@ -290,7 +286,7 @@ example :
         true ∧
       (checked? target.id (star "Date")).isNone = true ∧
       (checked? target.id (star "Clock")).isNone = true ∧
-      (checked? target.id (star "CheckedMonth")).isNone = true ∧
+      (checked? yearMonthTarget.id (star "CheckedYearMonth")).isNone = true ∧
       (checkedAt? ["Review", "Rows"] target.id (star "Month")).isSome = true ∧
       (checkedAt? [] target.id (star "Month")).isNone = true ∧
       (checkedAt? ["Review", "Rows"] repeatedTarget.id

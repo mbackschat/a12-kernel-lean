@@ -10,11 +10,8 @@ private def fragmentField (id : FieldId) (name : String)
     (groupPath : GroupPath) (scope : List RepeatableLevel)
     (format : String := "MM") : FlatFieldDecl := {
   id, name, groupPath, repeatableScope := scope
-  policy := { kind := .temporal .date TemporalComponents.fullDate }
-  temporalTargetPolicy := some {
-    format
-    partialMode := .yearOptional
-  }
+  policy := { kind := .temporal .date (TemporalComponents.ofFormat format) }
+  temporalTargetPolicy := some { format }
 }
 
 private def source := fragmentField 1 "Month"

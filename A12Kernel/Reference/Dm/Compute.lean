@@ -156,7 +156,7 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
       pure (target, .string (← elaborated "StringComputation" (certifyStringComputationTable alternatives common)))
   | kind =>
       if !row then
-        if let .ok lowered := document then return lowered
+        return ← document
       else if let (none, [none], [operation]) := (common, guards, operations) then
         match lowerRowStep model computation.group target operation with
         | .ok step => return (target, .rows step)

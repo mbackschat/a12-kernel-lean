@@ -57,14 +57,6 @@ structure DmModel where
   refusals : List (List String × String)
   deriving Repr
 
-/-- The temporal components a format pattern exposes, read off its unquoted pattern letters. -/
-def formatComponents (format : String) : TemporalComponents :=
-  let letters := (format.splitOn "'").zipIdx.filterMap fun (part, index) =>
-    if index % 2 == 0 then some part else none
-  let has (letter : Char) := letters.any (·.contains letter)
-  { year := has 'y', month := has 'M', day := has 'd'
-    hour := has 'H', minute := has 'm', second := has 's' }
-
 private def str? (json : Json) (key : String) : Option String :=
   (json.getObjValAs? String key).toOption
 
@@ -150,7 +142,7 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
         | "DateTimeType" => .dateTime
         | _ => .date
       pure { base with
-        policy := { kind := .temporal kind (formatComponents format) }
+        policy := { kind := .temporal kind (TemporalComponents.ofFormat format) }
         temporalTargetPolicy := some {
           format, partialMode := ← partialMode? (str? body "datePrecision")
           youngerThan1900Check := (bool? body "youngerThan1900Check").getD false } }
