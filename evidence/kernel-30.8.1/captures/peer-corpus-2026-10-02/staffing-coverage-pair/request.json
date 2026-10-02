@@ -1,0 +1,89 @@
+{
+  "model": "staffing-coverage-pair.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "parallel-iteration-all-matched-clean",
+      "documentInline": {
+        "Staffing": {
+          "PlanName": "Q3",
+          "Demand": [
+            {
+              "Department": "Sales",
+              "Headcount": 5
+            },
+            {
+              "Department": "Eng",
+              "Headcount": 3
+            }
+          ],
+          "Supply": [
+            {
+              "Department": "Sales",
+              "Headcount": 2
+            },
+            {
+              "Department": "Eng",
+              "Headcount": 4
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "parallel-iteration-invalid-index-suppresses",
+      "documentInline": {
+        "Staffing": {
+          "PlanName": "Q3",
+          "Demand": [
+            {
+              "Department": "Sales",
+              "Headcount": 5
+            }
+          ],
+          "Supply": [
+            {
+              "Department": "Ops",
+              "Headcount": 2
+            },
+            {
+              "Headcount": 4
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "parallel-iteration-unmatched-sides-fire",
+      "documentInline": {
+        "Staffing": {
+          "PlanName": "Q3",
+          "Demand": [
+            {
+              "Department": "Sales",
+              "Headcount": 5
+            },
+            {
+              "Department": "Eng",
+              "Headcount": 3
+            }
+          ],
+          "Supply": [
+            {
+              "Department": "Sales",
+              "Headcount": 5
+            },
+            {
+              "Department": "Ops",
+              "Headcount": 2
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

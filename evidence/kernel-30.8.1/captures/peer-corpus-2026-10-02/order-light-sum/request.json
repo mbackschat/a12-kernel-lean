@@ -1,0 +1,58 @@
+{
+  "model": "order-light-sum.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "having-sum-excluded-rows-clean",
+      "documentInline": {
+        "Order": {
+          "Items": [
+            {
+              "Count": 2,
+              "Sku": "A",
+              "UnitWeight": 1.0
+            },
+            {
+              "Count": 10,
+              "Sku": "B",
+              "UnitWeight": 2.0
+            },
+            {
+              "Count": 2,
+              "Sku": "C",
+              "UnitWeight": 1.0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "having-sum-keeps-only-matching-rows",
+      "documentInline": {
+        "Order": {
+          "Items": [
+            {
+              "Count": 3,
+              "Sku": "A",
+              "UnitWeight": 1.0
+            },
+            {
+              "Count": 10,
+              "Sku": "B",
+              "UnitWeight": 2.0
+            },
+            {
+              "Count": 4,
+              "Sku": "C",
+              "UnitWeight": 1.0
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "model": "order-code-length-ge.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "str-empty-length-ge-value",
+      "documentInline": {
+        "Order": {
+          "CustomerName": "Acme",
+          "ProductCode": null
+        }
+      }
+    }
+  ]
+}

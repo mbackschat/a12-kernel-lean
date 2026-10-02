@@ -1,0 +1,19 @@
+{
+  "model": "order-stock-ne-one.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "num-unsigned-empty-ne-1-omission",
+      "documentInline": {
+        "Order": {
+          "CustomerName": "Acme",
+          "StockOnHand": null
+        }
+      }
+    }
+  ]
+}

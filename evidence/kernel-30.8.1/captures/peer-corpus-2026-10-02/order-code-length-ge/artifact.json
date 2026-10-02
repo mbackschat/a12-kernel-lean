@@ -1,0 +1,66 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "order-code-length-ge.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "str-empty-length-ge-value",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "CODE_LEN_GE",
+              "field" : "Order/ProductCode",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "Order/ProductCode"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "CODE_LEN_GE",
+              "field" : "Order/ProductCode",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "Order/ProductCode"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

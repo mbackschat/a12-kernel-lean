@@ -1,0 +1,24 @@
+{
+  "model": "calc-cascade.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "compute-cascade-seed",
+      "documentInline": {
+        "Calc": {
+          "B0": 23,
+          "B1": 10,
+          "C0": null,
+          "C1": null,
+          "C2": null,
+          "C3": null,
+          "C4": null
+        }
+      }
+    }
+  ]
+}

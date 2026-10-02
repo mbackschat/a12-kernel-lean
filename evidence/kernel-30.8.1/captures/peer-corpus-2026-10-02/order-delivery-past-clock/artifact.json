@@ -1,0 +1,67 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "order-delivery-past.json",
+    "locale" : "en_US",
+    "clock" : "2026-07-06T12:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "order-delivery-date-in-past",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DELIVERY_PAST",
+              "field" : "Order/DeliveryDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "Order/DeliveryDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DELIVERY_PAST",
+              "field" : "Order/DeliveryDate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "Order/DeliveryDate"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

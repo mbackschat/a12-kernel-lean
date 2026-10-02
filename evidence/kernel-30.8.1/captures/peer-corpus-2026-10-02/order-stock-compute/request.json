@@ -1,0 +1,27 @@
+{
+  "model": "order-stock-compute.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "order-stock-per-row",
+      "documentInline": {
+        "Order": {
+          "Items": [
+            {
+              "Count": 2,
+              "Sku": "A"
+            },
+            {
+              "Count": 3,
+              "Sku": "B"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

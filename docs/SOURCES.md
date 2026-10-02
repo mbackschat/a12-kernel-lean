@@ -1209,6 +1209,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Over ten separating documents no predicate fires together with its complement](sources/evaluation-and-application-routes.md#src-negation-pair-grid)
 <a id="src-negated-corpus"></a>
 - [Every retained corpus rule negated by De Morgan over the complement table never fires together with its original](sources/evaluation-and-application-routes.md#src-negated-corpus)
+<a id="src-peer-corpus-replay"></a>
+- [The peer's 33 kernel-verified corpus cases replay with 19 matches, no divergence and 18 instances Lean cannot represent](sources/evaluation-and-application-routes.md#src-peer-corpus-replay)
 <a id="src-negation-pair-supplement"></a>
 - [`Valid`/`Invalid` complement only over a `Date(...)` construction, and German spellings fire as English ones](sources/evaluation-and-application-routes.md#src-negation-pair-supplement)
 <a id="src-field-fill-mixed-list"></a>

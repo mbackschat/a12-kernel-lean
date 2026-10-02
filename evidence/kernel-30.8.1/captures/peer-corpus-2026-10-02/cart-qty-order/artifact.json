@@ -1,0 +1,96 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "cart-qty-order.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "current-repetition-ordered-rows-clean",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "current-repetition-predecessor-max-fires",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "QTY_ORDER",
+              "field" : "Cart/Lines[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Cart[1]/Lines[0]/Qty",
+                "Cart/Lines[2]/Qty"
+              ],
+              "fillToFix" : [
+                "/Cart[1]/Lines[0]/Qty",
+                "Cart/Lines[2]/Qty"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "QTY_ORDER",
+              "field" : "Cart/Lines[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Cart[1]/Lines[0]/Qty",
+                "Cart/Lines[2]/Qty"
+              ],
+              "fillToFix" : [
+                "/Cart[1]/Lines[0]/Qty",
+                "Cart/Lines[2]/Qty"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

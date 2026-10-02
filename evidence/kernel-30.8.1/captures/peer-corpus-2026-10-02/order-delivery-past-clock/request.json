@@ -1,0 +1,19 @@
+{
+  "model": "order-delivery-past.json",
+  "locale": "en_US",
+  "clock": "2026-07-06T12:00:00Z",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "order-delivery-date-in-past",
+      "documentInline": {
+        "Order": {
+          "DeliveryDate": "2020-01-01"
+        }
+      }
+    }
+  ]
+}

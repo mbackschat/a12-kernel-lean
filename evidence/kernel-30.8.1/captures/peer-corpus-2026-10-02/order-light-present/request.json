@@ -1,0 +1,24 @@
+{
+  "model": "order-light-present.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "having-quantifier-fired-omission",
+      "documentInline": {
+        "Order": {
+          "Items": [
+            {
+              "Count": 5,
+              "Sku": "A",
+              "UnitWeight": 1.0
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

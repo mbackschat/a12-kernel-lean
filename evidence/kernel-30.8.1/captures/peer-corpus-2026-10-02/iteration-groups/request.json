@@ -1,0 +1,91 @@
+{
+  "model": "iteration-groups.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "model-validation-seed",
+      "documentInline": {
+        "M": {
+          "G1": [
+            {
+              "Key1": "K0",
+              "N1": 86,
+              "G2": [
+                {
+                  "Key2": "K1",
+                  "N2": null,
+                  "G3": [
+                    {
+                      "Key3": null,
+                      "N3": 66
+                    },
+                    {
+                      "Key3": "K1",
+                      "N3": 63
+                    }
+                  ]
+                },
+                {
+                  "Key2": "K2",
+                  "N2": null
+                }
+              ]
+            },
+            {
+              "Key1": null,
+              "N1": 45,
+              "G2": [
+                {
+                  "Key2": "K1",
+                  "N2": 42,
+                  "G3": [
+                    {
+                      "Key3": null,
+                      "N3": null
+                    }
+                  ]
+                },
+                {
+                  "Key2": null,
+                  "N2": 4,
+                  "G3": [
+                    {
+                      "Key3": "K0",
+                      "N3": 41
+                    },
+                    {
+                      "Key3": "K2",
+                      "N3": 66
+                    },
+                    {
+                      "Key3": "K2",
+                      "N3": 82
+                    }
+                  ]
+                },
+                {
+                  "Key2": "K2",
+                  "N2": null,
+                  "G3": [
+                    {
+                      "Key3": "K1",
+                      "N3": 64
+                    },
+                    {
+                      "Key3": "K0",
+                      "N3": 66
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

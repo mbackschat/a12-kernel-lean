@@ -1,0 +1,31 @@
+{
+  "model": "order-self-match-count.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "filter-self-match-fires-every-row",
+      "documentInline": {
+        "Order": {
+          "Items": [
+            {
+              "Count": 5,
+              "Sku": "A"
+            },
+            {
+              "Count": 6,
+              "Sku": "B"
+            },
+            {
+              "Count": 9,
+              "Sku": "C"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

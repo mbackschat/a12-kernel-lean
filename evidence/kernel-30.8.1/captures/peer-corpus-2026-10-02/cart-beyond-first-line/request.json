@@ -1,0 +1,44 @@
+{
+  "model": "cart-beyond-first-line.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "current-repetition-fires-beyond-first-row",
+      "documentInline": {
+        "Cart": {
+          "Lines": [
+            {
+              "ItemId": "K1",
+              "Qty": 5
+            },
+            {
+              "ItemId": "K2",
+              "Qty": 5
+            },
+            {
+              "ItemId": "K3",
+              "Qty": 5
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "current-repetition-single-row-clean",
+      "documentInline": {
+        "Cart": {
+          "Lines": [
+            {
+              "ItemId": "K1",
+              "Qty": 5
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

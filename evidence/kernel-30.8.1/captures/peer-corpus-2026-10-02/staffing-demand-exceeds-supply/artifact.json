@@ -1,0 +1,110 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "staffing-demand-exceeds-supply.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "parallel-iteration-empty-side-reads-zero",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "OVER_DEMAND",
+              "field" : "Staffing/Demand/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "OVER_DEMAND",
+              "field" : "Staffing/Demand[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Headcount",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Headcount"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Headcount",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Headcount"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "OVER_DEMAND",
+              "field" : "Staffing/Demand/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "OVER_DEMAND",
+              "field" : "Staffing/Demand[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Headcount",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Headcount"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Headcount",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Headcount"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

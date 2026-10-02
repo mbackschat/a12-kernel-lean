@@ -1,0 +1,134 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "order-self-match-count.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "filter-self-match-fires-every-row",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "SELF_MATCH",
+              "field" : "Order/Items/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items/Count"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items/Count"
+              ]
+            },
+            {
+              "code" : "SELF_MATCH",
+              "field" : "Order/Items[2]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items[2]/Count"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items[2]/Count"
+              ]
+            },
+            {
+              "code" : "SELF_MATCH",
+              "field" : "Order/Items[3]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items[3]/Count"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items[3]/Count"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "SELF_MATCH",
+              "field" : "Order/Items/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items/Count"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items/Count"
+              ]
+            },
+            {
+              "code" : "SELF_MATCH",
+              "field" : "Order/Items[2]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items[2]/Count"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items[2]/Count"
+              ]
+            },
+            {
+              "code" : "SELF_MATCH",
+              "field" : "Order/Items[3]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items[3]/Count"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items[3]/Count"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "order-duplicate-count.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "filter-correlated-all-distinct-clean",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "filter-correlated-duplicates-fire",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DUP_COUNT",
+              "field" : "Order/Items/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items/Count"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items/Count"
+              ]
+            },
+            {
+              "code" : "DUP_COUNT",
+              "field" : "Order/Items[2]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items[2]/Count"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items[2]/Count"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DUP_COUNT",
+              "field" : "Order/Items/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items/Count"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items/Count"
+              ]
+            },
+            {
+              "code" : "DUP_COUNT",
+              "field" : "Order/Items[2]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "x",
+              "referenced" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items[2]/Count"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Items[0]/Count",
+                "Order/Items[2]/Count"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "filter-single-row-self-excluded-clean",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

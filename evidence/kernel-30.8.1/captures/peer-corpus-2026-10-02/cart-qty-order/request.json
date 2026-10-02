@@ -1,0 +1,52 @@
+{
+  "model": "cart-qty-order.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "current-repetition-ordered-rows-clean",
+      "documentInline": {
+        "Cart": {
+          "Lines": [
+            {
+              "ItemId": "K1",
+              "Qty": 3
+            },
+            {
+              "ItemId": "K2",
+              "Qty": 4
+            },
+            {
+              "ItemId": "K3",
+              "Qty": 5
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "current-repetition-predecessor-max-fires",
+      "documentInline": {
+        "Cart": {
+          "Lines": [
+            {
+              "ItemId": "K1",
+              "Qty": 5
+            },
+            {
+              "ItemId": "K2",
+              "Qty": 3
+            },
+            {
+              "ItemId": "K3",
+              "Qty": 9
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

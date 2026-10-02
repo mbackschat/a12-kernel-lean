@@ -1,0 +1,36 @@
+{
+  "model": "order-qty-ne-neg-one.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "num-signed-empty-ne-neg1-omission",
+      "documentInline": {
+        "Order": {
+          "CustomerName": "Acme",
+          "Quantity": null
+        }
+      }
+    },
+    {
+      "name": "num-signed-filled-zero-ne-neg1-value",
+      "documentInline": {
+        "Order": {
+          "CustomerName": "Acme",
+          "Quantity": 0
+        }
+      }
+    },
+    {
+      "name": "num-signed-ne-neg1-empty-row-clean",
+      "documentInline": {
+        "Order": {
+          "Quantity": null
+        }
+      }
+    }
+  ]
+}

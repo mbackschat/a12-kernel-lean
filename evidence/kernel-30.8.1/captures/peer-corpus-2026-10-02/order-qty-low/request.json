@@ -1,0 +1,26 @@
+{
+  "model": "order-qty-low.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "order-qty-below-threshold",
+      "documentInline": {
+        "Order": {
+          "Quantity": 5
+        }
+      }
+    },
+    {
+      "name": "order-qty-within-threshold",
+      "documentInline": {
+        "Order": {
+          "Quantity": 20
+        }
+      }
+    }
+  ]
+}

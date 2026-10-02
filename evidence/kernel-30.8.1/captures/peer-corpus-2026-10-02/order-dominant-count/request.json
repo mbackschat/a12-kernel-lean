@@ -1,0 +1,31 @@
+{
+  "model": "order-dominant-count.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "filter-dominant-row-fires",
+      "documentInline": {
+        "Order": {
+          "Items": [
+            {
+              "Count": 3,
+              "Sku": "A"
+            },
+            {
+              "Count": 9,
+              "Sku": "B"
+            },
+            {
+              "Count": 2,
+              "Sku": "C"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

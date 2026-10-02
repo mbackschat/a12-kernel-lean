@@ -1,0 +1,65 @@
+{
+  "model": "order-duplicate-count.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "filter-correlated-all-distinct-clean",
+      "documentInline": {
+        "Order": {
+          "Items": [
+            {
+              "Count": 5,
+              "Sku": "A"
+            },
+            {
+              "Count": 6,
+              "Sku": "B"
+            },
+            {
+              "Count": 9,
+              "Sku": "C"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "filter-correlated-duplicates-fire",
+      "documentInline": {
+        "Order": {
+          "Items": [
+            {
+              "Count": 5,
+              "Sku": "A"
+            },
+            {
+              "Count": 5,
+              "Sku": "B"
+            },
+            {
+              "Count": 9,
+              "Sku": "C"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "filter-single-row-self-excluded-clean",
+      "documentInline": {
+        "Order": {
+          "Items": [
+            {
+              "Count": 5,
+              "Sku": "A"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
