@@ -325,6 +325,19 @@ Dependency order, join, poison, empty-substitution, and fill-guard probes for au
 - `limit`: one row level with one nested level, `en_US`; the filters are `$`-correlated orderings only.
 - `sync`: confirms [`spec/09`](../../spec/09-computations.md) §5's row binding on these atoms, and opens no entry.
 
+<a id="src-row-groups"></a>
+#### At a row target a group operand inside the row is that row's instance, a deeper row reads its ancestor's, and a Number scan or count over it clears on its malformed member only, measured locally 2026-10-02
+
+- `revision`: one `model check` and one `:adapter:kernelProbe` run with `observe: ["validateFull", "compute"]` over four documents, in the pinned measurement checkout at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, `source.state` `CLEAN`, `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, the check `KERNEL_CONFIRMED` valid and the run `enginesAgree: true` on every row, the checkout clean before and after. The artifact `22f6c10ae5caa9e6677ebba03c037b3c45bce80766b8c84c55c5524f885abc3a` is not retained.
+- `question`: the [row-atom grid](#src-row-atoms) measured group operands only through `Sum` and a count at the group's own level. Do a value count and `FirstFilledValue` over a group inside the row read that row's instance, and does a count read from a deeper row read its ancestor's?
+- `model`: `Rgo_DM`, a root `Rg` over a repeatable `Rows` (max 3) holding fixed `TB` (String `T1`, `T2`), `BB` (Boolean `B1`, `B2`), `NB` (Number `N1`, `N2`), `Box` and `Pad`, and a repeatable `Sub` (max 2) of `IV` and a target `SX`, beside a fixed root `TR` (String `R1`, `R2`). `Rows` targets `NumberOfValueInFields("a" In TB)`, `NumberOfValueInFields(True In BB)`, `NumberOfValueInFields(5 In NB)`, `FirstFilledValue(NB)` and `NumberOfValueInFields("r" In /Rg/TR)`; `SX = NumberOfFilledGroups(/Rg/Rows/Box, /Rg/Rows/Pad)`.
+- `claim`: each `Rows` target reads its own row's fixed group, and the root `TR` count is the same at every row. `SX` counts its enclosing `Rows` row's `Box` and `Pad`, `2` at both `Sub` rows of a row holding both and `1` under a row holding `Pad` alone.
+- `claim`: a malformed `N1` clears that row's `NB` scan and count, and a malformed `B1` its Boolean count, the other rows computing. An over-limit `Rows` or `Sub` row clears its own targets only, and an empty group scans and counts to `0`.
+- `retained`: in the [grid directory](../../evidence/kernel-30.8.1/captures/row-groups-2026-10-02/), `Rgo_DM.json` `c79b22ff8809831a4f8292d1af0eba43196ba63d76fef98f95e8f4c3c5e5107e`, `request.json` `9950cfb893879947528fe83211d34860cc8520fae3fcc730b4068c1eae31d2c5`, and `rows.tsv` `8b65639d8fe2efff2fafca23c09e8947e433d5288e0c9f1d2fb123102a5e85f0`, codes only.
+- `local-consequence`: the Number `FirstFilledValue` reads a group operand on the row route through the shared group walk, and with the Number count and `SX` answers exactly on all four documents. The token and Boolean group counts have no Number-atom surface in Lean, so their rows are unlocked.
+- `limit`: each group has one instance per row, so the scan's order across rows of one group is not exercised; `en_US`.
+- `sync`: confirms [`spec/09`](../../spec/09-computations.md) §5's row binding on group operands, and opens no entry.
+
 <a id="src-first-filled-capacity"></a>
 #### A typed or filtered `FirstFilledValue` star leaves an over-limit row out on the computation arm, so a scan finding only that row is exhausted rather than poisoned, measured locally 2026-10-02
 

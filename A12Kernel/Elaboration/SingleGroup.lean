@@ -211,8 +211,9 @@ def repeatableDescendantShape? (reference : ResolvedGroupReference) (model : Fla
 
 /-- A nonrepeatable group below a repeatable level, which a count at a row target reads as the
     instance the computing row binds, as the Kernel counts a row's own fixed groups at the group's own
-    level ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-atoms)). A target
-    at a deeper row reads its ancestor row's instance by the same reading, which is unmeasured. -/
+    level ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-atoms)), and a
+    target at a deeper row reads its ancestor row's instance
+    ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-groups)). -/
 def boundInstanceOperand (reference : ResolvedGroupReference) (model : FlatModel) : Bool :=
   model.hasGroupPath reference.path &&
     !(model.repeatableScopeForGroupPath reference.path).isEmpty &&

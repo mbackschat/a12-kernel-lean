@@ -304,6 +304,7 @@ import A12Kernel.Conformance.RepeatableNumberPlanRowBoundary
 import A12Kernel.Conformance.RepeatableNumberPlanRowTables
 import A12Kernel.Conformance.RepeatableNumberPlanRowAggregates
 import A12Kernel.Conformance.RepeatableNumberPlanRowAtoms
+import A12Kernel.Conformance.RepeatableNumberPlanRowGroups
 import A12Kernel.Conformance.RepeatableNumberPlanRowStarScans
 import A12Kernel.Conformance.RepeatableNumberNestedAggregateCascade
 import A12Kernel.Conformance.RepetitionNotUnique

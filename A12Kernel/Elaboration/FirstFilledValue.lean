@@ -215,7 +215,14 @@ private def scanComputationFirstFilledNumberOperand
           resolved.environments resolved.domain.hasOpenTail state with
       | .inl next => pure (.inl next)
       | .inr result => pure (.inr result.asNumber)
-  | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
+  | .group slot => do
+      -- The group's cells in the shared walk's declaration-major index order; a group within the
+      -- computing row has one instance, the order the row-group grid measures
+      -- ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-groups)).
+      let side ← slot.resolvedSideIn .computation document outer starRead
+      match scanFirstFilledItems id side.cells (state.enterOperand side) with
+      | .inl next => pure (.inl next)
+      | .inr result => pure (.inr result.asNumber)
 
 private def scanComputationFirstFilledNumberOperands
     (document : Document) (outer : Env) (direct : FlatContext)

@@ -1,0 +1,95 @@
+# row	field	outcome	value
+o01-clean	Rg/Rows/BV	value	1
+o01-clean	Rg/Rows/FF	value	5
+o01-clean	Rg/Rows/NV	value	1
+o01-clean	Rg/Rows/Sub/SX	value	2
+o01-clean	Rg/Rows/Sub[2]/SX	value	2
+o01-clean	Rg/Rows/TR	value	1
+o01-clean	Rg/Rows/TV	value	2
+o01-clean	Rg/Rows[2]/BV	value	1
+o01-clean	Rg/Rows[2]/FF	value	5
+o01-clean	Rg/Rows[2]/NV	value	1
+o01-clean	Rg/Rows[2]/Sub/SX	value	1
+o01-clean	Rg/Rows[2]/TR	value	1
+o01-clean	Rg/Rows[2]/TV	value	1
+o01-clean	Rg/Rows[3]/BV	value	0
+o01-clean	Rg/Rows[3]/FF	value	0
+o01-clean	Rg/Rows[3]/NV	value	0
+o01-clean	Rg/Rows[3]/TR	value	1
+o01-clean	Rg/Rows[3]/TV	value	0
+o02-malformed	Rg/Rows/BV	cleared	
+o02-malformed	Rg/Rows/FF	cleared	
+o02-malformed	Rg/Rows/NV	cleared	
+o02-malformed	Rg/Rows/Sub/SX	value	2
+o02-malformed	Rg/Rows/Sub[2]/SX	value	2
+o02-malformed	Rg/Rows/TR	value	1
+o02-malformed	Rg/Rows/TV	value	2
+o02-malformed	Rg/Rows[2]/BV	value	1
+o02-malformed	Rg/Rows[2]/FF	value	5
+o02-malformed	Rg/Rows[2]/NV	value	1
+o02-malformed	Rg/Rows[2]/Sub/SX	value	1
+o02-malformed	Rg/Rows[2]/TR	value	1
+o02-malformed	Rg/Rows[2]/TV	value	1
+o02-malformed	Rg/Rows[3]/BV	value	0
+o02-malformed	Rg/Rows[3]/FF	value	0
+o02-malformed	Rg/Rows[3]/NV	value	0
+o02-malformed	Rg/Rows[3]/TR	value	1
+o02-malformed	Rg/Rows[3]/TV	value	0
+o02-malformed	Rg/Rows/BB/B1	operand-error	feldJaNeinFalsch
+o02-malformed	Rg/Rows/NB/N1	operand-error	zahlHatUngueltigeZeichen
+o03-over-limit	Rg/Rows/BV	value	1
+o03-over-limit	Rg/Rows/FF	value	5
+o03-over-limit	Rg/Rows/NV	value	1
+o03-over-limit	Rg/Rows/Sub/SX	value	2
+o03-over-limit	Rg/Rows/Sub[2]/SX	value	2
+o03-over-limit	Rg/Rows/Sub[3]/SX	cleared	
+o03-over-limit	Rg/Rows/TR	value	1
+o03-over-limit	Rg/Rows/TV	value	2
+o03-over-limit	Rg/Rows[2]/BV	value	1
+o03-over-limit	Rg/Rows[2]/FF	value	5
+o03-over-limit	Rg/Rows[2]/NV	value	1
+o03-over-limit	Rg/Rows[2]/Sub/SX	value	1
+o03-over-limit	Rg/Rows[2]/TR	value	1
+o03-over-limit	Rg/Rows[2]/TV	value	1
+o03-over-limit	Rg/Rows[3]/BV	value	0
+o03-over-limit	Rg/Rows[3]/FF	value	0
+o03-over-limit	Rg/Rows[3]/NV	value	0
+o03-over-limit	Rg/Rows[3]/TR	value	1
+o03-over-limit	Rg/Rows[3]/TV	value	0
+o03-over-limit	Rg/Rows[4]/BV	cleared	
+o03-over-limit	Rg/Rows[4]/FF	cleared	
+o03-over-limit	Rg/Rows[4]/NV	cleared	
+o03-over-limit	Rg/Rows[4]/Sub/SX	cleared	
+o03-over-limit	Rg/Rows[4]/TR	cleared	
+o03-over-limit	Rg/Rows[4]/TV	cleared	
+o03-over-limit	Rg/Rows/Sub[3]/IV	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows[4]/BB	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows[4]/BB/B1	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows[4]/Box	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows[4]/Box/BX	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows[4]/NB	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows[4]/NB/N1	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows[4]/Pad	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows[4]/Pad/PX	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows[4]/Sub	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows[4]/Sub/IV	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows[4]/TB	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows[4]/TB/T1	operand-error	zuGrosseKontextnummer
+o03-over-limit	Rg/Rows/Sub[3]	operand-error	zuGrosseZeile
+o03-over-limit	Rg/Rows[4]	operand-error	zuGrosseZeile
+o04-empty	Rg/Rows/BV	value	0
+o04-empty	Rg/Rows/FF	value	0
+o04-empty	Rg/Rows/NV	value	0
+o04-empty	Rg/Rows/Sub/SX	value	0
+o04-empty	Rg/Rows/TR	value	0
+o04-empty	Rg/Rows/TV	value	0
+o04-empty	Rg/Rows[2]/BV	value	0
+o04-empty	Rg/Rows[2]/FF	value	6
+o04-empty	Rg/Rows[2]/NV	value	0
+o04-empty	Rg/Rows[2]/TR	value	0
+o04-empty	Rg/Rows[2]/TV	value	0
+o04-empty	Rg/Rows[3]/BV	value	0
+o04-empty	Rg/Rows[3]/FF	value	0
+o04-empty	Rg/Rows[3]/NV	value	0
+o04-empty	Rg/Rows[3]/TR	value	0
+o04-empty	Rg/Rows[3]/TV	value	0

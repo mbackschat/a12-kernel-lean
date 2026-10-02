@@ -1510,6 +1510,8 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [At a row target a Number aggregate's star binds the row only above its first starred level and its `$` filter operand reads the row, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-row-star-aggregates)
 <a id="src-row-star-scans"></a>
 - [At a row target the scans, value counts, product sum and starred group count bind the row, and on the computation arm each leaves an over-limit row out, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-row-star-scans)
+<a id="src-row-groups"></a>
+- [At a row target a group operand inside the row is that row's instance and a deeper row reads its ancestor's, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-row-groups)
 <a id="src-row-atoms"></a>
 - [At a row target the remaining atoms each read from the computing row, three of them refused by Lean, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-row-atoms)
 <a id="src-first-filled-capacity"></a>
