@@ -470,31 +470,6 @@ def readCheckedNumericComputationAtom
 
 end NumericComputationEvaluationContext
 
-namespace NumericComputationResult
-
-/-- Combine two already-reached arithmetic operands through the shared poison/domain/value table. -/
-def evalBinary (op : NumericScaleBinaryOp) :
-    NumericComputationResult → NumericComputationResult → NumericComputationResult
-  | left, right =>
-      NumericComputationResult.combineReached
-        (fun leftValue rightValue => ofArithmetic (op.evalValues leftValue rightValue))
-        left right
-
-/-- Evaluate an ordered pair once. A left poison prevents the right computation from being reached; a value or domain failure reaches it and delegates the final result to the supplied semantic combiner. -/
-def evalOrdered {Fault : Type}
-    (left : Except Fault NumericComputationResult)
-    (right : Unit → Except Fault NumericComputationResult)
-    (combine : NumericComputationResult → NumericComputationResult →
-      NumericComputationResult) :
-    Except Fault NumericComputationResult := do
-  let leftResult ← left
-  match leftResult with
-  | .poison cause => pure (.poison cause)
-  | .value _ | .domainFailure =>
-      pure (combine leftResult (← right ()))
-
-end NumericComputationResult
-
 def FlatFieldDecl.numericComputationFault?
     (declaration : FlatFieldDecl) : Option NumericComputationFault :=
   if declaration.toNumberField?.isSome then
@@ -607,31 +582,6 @@ def computationFaultWith?
 def computationFault? (expression : LoweredNumericExpr FlatFieldDecl) :
     Option NumericComputationFault :=
   expression.computationFaultWith? FlatFieldDecl.numericComputationFault?
-
-/-- Evaluate the admitted computation fragment left-to-right. A reached poison aborts the remaining expression; arithmetic domain failure remains a value-level result and propagates through later arithmetic, including runtime-invalid power. -/
-def evalComputation {Fault : Type}
-    (read : Atom → Except Fault NumericComputationResult) :
-    LoweredNumericExpr Atom →
-      Except Fault NumericComputationResult
-  | .atom sourceAtom => read sourceAtom
-  | .literal amount => pure (.value amount)
-  | .binary op left right =>
-      NumericComputationResult.evalOrdered
-        (left.evalComputation read) (fun _ => right.evalComputation read)
-        (NumericComputationResult.evalBinary op)
-  | .power base exponent =>
-      NumericComputationResult.evalOrdered
-        (base.evalComputation read) (fun _ => exponent.evalComputation read)
-        NumericComputationResult.evalPower
-  | .abs body => do
-      pure ((← body.evalComputation read).absolute)
-  | .extremum op left right =>
-      NumericComputationResult.evalOrdered
-        (left.evalComputation read) (fun _ => right.evalComputation read)
-        op.selectComputationResult
-  | .extremumCall _ _ body => body.evalComputation read
-  | .round mode places body => do
-      pure ((← body.evalComputation read).round mode places)
 
 end LoweredNumericExpr
 

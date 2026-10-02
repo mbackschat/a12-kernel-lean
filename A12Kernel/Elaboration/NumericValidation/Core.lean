@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.NumericExpression
 import A12Kernel.Elaboration.DateRangeBoundComponent
 import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Elaboration.FirstFilledValue
@@ -74,14 +75,6 @@ structure SurfaceNumericComparison where
   op : NumericValidationOp
   left : AuthoredNumericExpr SurfaceNumericAtom
   right : AuthoredNumericExpr SurfaceNumericAtom
-  suppressExactScaleWarning : Bool := false
-  deriving Repr, DecidableEq
-
-/-- Resolved runtime representation parameterized only at the checked numeric-source boundary. -/
-structure NumericComparisonOf (Atom : Type) where
-  op : NumericValidationOp
-  left : AuthoredNumericExpr Atom
-  right : AuthoredNumericExpr Atom
   suppressExactScaleWarning : Bool := false
   deriving Repr, DecidableEq
 
@@ -440,25 +433,6 @@ def NumericValidationAtom.admitted
         !groups.any ResolvedGroupReference.isRoot &&
         (ResolvedGroupReferences.firstOverlap? groups).isNone &&
         ResolvedGroupReferences.wellFormedBool groups model rowGroup
-
-/-- Tolerance deliberately bypasses the ordinary exact-comparison scale gate. -/
-def NumericValidationOp.acceptsScales (op : NumericValidationOp)
-    (left right : NumericScaleSummary) : Bool :=
-  match op with
-  | .ordinary comparison => comparison.acceptsScales left right
-  | .tolerance _ => true
-
-/-- The one legal parser warning suppression bypasses only the exact-comparison scale gate. Every other authoring check remains independent. -/
-def NumericValidationOp.acceptsScalesWithSuppression
-    (op : NumericValidationOp) (suppressExactScaleWarning : Bool)
-    (left right : NumericScaleSummary) : Bool :=
-  match op with
-  | .ordinary .equal | .ordinary .notEqual =>
-      exactNumericScaleComparisonAllowedWithSuppression
-        suppressExactScaleWarning left right
-  | .ordinary .less | .ordinary .lessEqual
-  | .ordinary .greater | .ordinary .greaterEqual
-  | .tolerance _ => true
 
 def NumericComparison.wellFormedInBool
     (comparison : NumericComparison)

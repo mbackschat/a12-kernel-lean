@@ -412,114 +412,6 @@ def AddressedValidationEvaluationContext.directRelevant
     (context : AddressedValidationEvaluationContext model) : FlatRelevance :=
   OrderedNumericValidationAtom.addressedDirectRelevant context
 
-def combineNumericValidationOutcomes
-    (combine : NumericArithmeticOutcome → NumericArithmeticOutcome →
-      NumericArithmeticOutcome)
-    (left right : Except Error NumericArithmeticOutcome) :
-    Except Error NumericArithmeticOutcome :=
-  match left, right with
-  | .error cause, _ => .error cause
-  | _, .error cause => .error cause
-  | .ok leftOutcome, .ok rightOutcome => .ok (combine leftOutcome rightOutcome)
-
-def evalPlainBinary (op : NumericScaleBinaryOp)
-    (left right : Except Error NumericArithmeticOutcome) :
-    Except Error NumericArithmeticOutcome :=
-  combineNumericValidationOutcomes
-    (fun leftOutcome rightOutcome =>
-      match op with
-        | .add => NumericArithmeticOutcome.eval .add leftOutcome rightOutcome
-        | .subtract => NumericArithmeticOutcome.eval .subtract leftOutcome rightOutcome
-        | .multiply => NumericArithmeticOutcome.eval .multiply leftOutcome rightOutcome
-        | .divide => NumericArithmeticOutcome.divide leftOutcome rightOutcome)
-    left right
-
-/-- Whether a lowered tree lies in the consumer's binary-arithmetic runtime subset. -/
-def LoweredNumericExpr.isPlainArithmetic : LoweredNumericExpr Atom → Bool
-  | .atom _ | .literal _ => true
-  | .binary _ left right => left.isPlainArithmetic && right.isPlainArithmetic
-  | .power base exponent =>
-      base.isPlainArithmetic && exponent.isPlainArithmetic
-  | .abs _ | .extremum _ _ _ | .extremumCall _ _ _ | .round _ _ _ => false
-
-/-- Runtime-shape mirror of one authored extremum call, including its independent per-call constant budget. -/
-def LoweredNumericExpr.extremumCallConstantUse?
-    (expected : NumericExtremumOp) :
-    LoweredNumericExpr Atom → Option Bool
-  | .extremumCall actual constantUse _ =>
-      if actual != expected then none else constantUse
-  | _ => none
-
-/-- Read the source-derived admission certificate retained across lowering. -/
-def LoweredNumericExpr.isExtremumCall : LoweredNumericExpr Atom → Bool
-  | .extremumCall _ constantUse _ => constantUse.isSome
-  | _ => false
-
-/-- Runtime-capable numeric-operation shape after grouping erasure. -/
-def LoweredNumericExpr.isNumericOperation : LoweredNumericExpr Atom → Bool
-  | .atom _ | .literal _ => true
-  | .binary _ left right | .power left right =>
-      left.isNumericOperation && right.isNumericOperation
-  | .abs body | .round _ _ body => body.isNumericOperation
-  | expression@(.extremumCall _ _ _) => expression.isExtremumCall
-  | .extremum _ _ _ => false
-
-def LoweredNumericExpr.isAdmittedValidation (expression : LoweredNumericExpr Atom) :
-    Bool :=
-  expression.isNumericOperation
-
-/-- Preserve the first formal cause across exact extremum selection of two reached validation outcomes. -/
-def NumericExtremumOp.selectValidationOutcome (op : NumericExtremumOp) :
-    Except Error NumericArithmeticOutcome →
-      Except Error NumericArithmeticOutcome →
-        Except Error NumericArithmeticOutcome
-  | left, right =>
-      combineNumericValidationOutcomes op.selectOutcome left right
-
-def LoweredNumericExpr.evalNumericOperationTree
-    (read : Atom → Except Error NumericArithmeticOutcome) :
-    LoweredNumericExpr Atom → Except Error NumericArithmeticOutcome
-  | .atom sourceAtom => read sourceAtom
-  | .literal amount => .ok (.value amount .fixed)
-  | .binary op left right =>
-      evalPlainBinary op
-        (left.evalNumericOperationTree read)
-        (right.evalNumericOperationTree read)
-  | .power base exponent =>
-      combineNumericValidationOutcomes NumericArithmeticOutcome.power
-        (base.evalNumericOperationTree read)
-        (exponent.evalNumericOperationTree read)
-  | .abs body =>
-      match body.evalNumericOperationTree read with
-      | .ok outcome => .ok outcome.absolute
-      | .error cause => .error cause
-  | .extremum op left right =>
-      op.selectValidationOutcome
-        (left.evalNumericOperationTree read)
-        (right.evalNumericOperationTree read)
-  | .extremumCall _ _ body => body.evalNumericOperationTree read
-  | .round mode places body =>
-      match body.evalNumericOperationTree read with
-      | .ok outcome => .ok (outcome.round mode places)
-      | .error cause => .error cause
-
-/-- Evaluate one complete numeric operation after checking its lowered admission certificate. -/
-def LoweredNumericExpr.evalNumericOperation?
-    (read : Atom → Except Error NumericArithmeticOutcome)
-    (expression : LoweredNumericExpr Atom) :
-      Option (Except Error NumericArithmeticOutcome) :=
-  if expression.isNumericOperation then
-    some (expression.evalNumericOperationTree read)
-  else
-    none
-
-/-- Evaluate exactly the checked runtime fragment. Value functions compose recursively with arithmetic while formal invalidity and arithmetic domain failure remain distinct. -/
-def LoweredNumericExpr.evalAdmittedValidation?
-    (read : Atom → Except Error NumericArithmeticOutcome)
-    (expression : LoweredNumericExpr Atom) :
-      Option (Except Error NumericArithmeticOutcome) :=
-  expression.evalNumericOperation? read
-
 /-- Evaluate a checked standalone operation through the shared one-pass lowering and arithmetic engine. The caller selects the already-checked atom observation policy. -/
 def CheckedNumericValidationExpression.evalWith
     (checked : CheckedNumericValidationExpression model)
@@ -563,20 +455,6 @@ def CheckedNumericValidationExpression.evalAddressedDirectNumbersAt
     | .field source => context.resolveDirectNumberAt phase source
     | _ => pure (.error .groupState)
   pure (resolved.lowerForEvaluation.evalNumericOperationTree id)
-
-/-- Evaluate a raw core through one supplied numeric-source resolver. The unknown fallback fails closed for a forged unsupported operand and is unreachable through every checked specialization. -/
-def NumericComparisonOf.evalWith
-    (comparison : NumericComparisonOf Atom)
-    (resolve :
-      Atom →
-        Except NumericValidationUnavailable NumericArithmeticOutcome) : Verdict :=
-  match
-      comparison.left.lowerForEvaluation.evalAdmittedValidation?
-        resolve,
-      comparison.right.lowerForEvaluation.evalAdmittedValidation?
-        resolve with
-  | some left, some right => comparison.op.evalArithmeticWith left right
-  | _, _ => .unknown
 
 /-- Compatibility wrapper for the established ordinary numeric comparison. -/
 def NumericComparison.evalWith
