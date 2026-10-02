@@ -23,6 +23,21 @@ example :
       some 1 := by
   native_decide
 
+/- Each counted step lands as `AddDays` does, its re-fit judged against the expected date: a source
+within the offset delta of midnight counts `1` across the autumn transition and `2` across the spring
+one, where judging the raw landing's own date counts `2` and `1`. Kernel values at a12-dmkits
+`ed58c513` ([inbound](../../docs/SOURCES.md#inbound-2026-10-02-day-landing)). -/
+example :
+    EuropeBerlinLegacyProfile.differenceInDays?
+        (dateTime 2024 10 26 0 30 0 (by native_decide))
+        (dateTime 2024 10 28 0 0 0 (by native_decide)) =
+      some 1 ∧
+    EuropeBerlinLegacyProfile.differenceInDays?
+        (dateTime 2024 3 29 23 30 0 (by native_decide))
+        (dateTime 2024 3 31 23 45 0 (by native_decide)) =
+      some 2 := by
+  native_decide
+
 /- A fresh local label in the spring gap is rejected. -/
 example :
     EuropeBerlinLegacyProfile.resolveLocal?

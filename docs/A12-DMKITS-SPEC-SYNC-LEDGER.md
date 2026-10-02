@@ -35,10 +35,23 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-02-06"></a>
+### `SPEC-2026-10-02-06` — a count lifts the content gate from either side of `==` and `!=` and only from the small side of an ordering, on all three counts
+
+- `status`: pending
+- `origin`: locally originated. Your [rule-bucket rows](SOURCES.md#inbound-2026-10-02-rule-buckets) defeated this project's "anywhere in either operation" account; this grid measures the arms they leave open.
+- `clause`: [`03`](../spec/03-empty-and-required.md) §2, the row gate's empty-eligible family.
+- `delta`: over a blank root, with `C = NumberOfFilledGroups(G1, G2) + [W]`, `0 == C`, `C != 1` and `1 != C` fire OMISSION, while `0 <= C`, `C > -1` and `-1 < C` stay silent, as `C >= 0` does; `NumberOfDifferentValues(A, W) < 1` fires and `>= 0` stays silent, as `NumberOfFilledFields` does.
+- `basis`: this project's [checkpoint](SOURCES.md#src-rule-bucket-empty-gate) at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, model, request and artifact retained beside it.
+- `surfaces`: a reader that admits a count from either side of every comparison, or from the left of every comparison, or admits only filled-field and filled-group counts.
+- `acceptance`: confirm these rows, or supply a blank-root carrier on which a count on the small side stays silent or one on the large side fires.
+- `limit`: fixed operands; the tolerance comparisons and the root-group count are unmeasured.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-02-05"></a>
 ### `SPEC-2026-10-02-05` — a comparison reading a filled-group count is evaluated on an instance without content, where one of field reads alone is not
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `3bab32bccfb30681d7c86f44c4e40b4d82a6765a` ([inbound](SOURCES.md#inbound-2026-10-02-dispositions)). `RuleBucketGateDiffTest` confirms the five rules on the three rows and adds that a rule naming a second root or with an error field in an uniterated repeatable root is evaluated without content too ([inbound](SOURCES.md#inbound-2026-10-02-rule-buckets)).
 - `origin`: locally originated. This project's population replay found Lean suppressing a group-count rule the Kernel fired on a blank document, and the follow-up measurement separated the two accounts.
 - `clause`: [`03`](../spec/03-empty-and-required.md) §2, the row gate's empty-eligible family.
 - `delta`: under full validation `NumberOfFilledGroups(G1, G2) < 2`, `== 0` and `NumberOfFilledGroups(G1, G2) + [W] < 2` fire `OMISSION_ERROR` over a root of `null` cells and over an empty root object, the last reading the empty `W` as `0`, while `[W] < 5` stays silent there and fires once `W` holds `1`.
@@ -51,7 +64,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-02-04"></a>
 ### `SPEC-2026-10-02-04` — an admitted partially known Date is filled on both arms, satisfies requiredness, is group and root content and is compared by its stored text, and only a too-deep omission leaves presence unknown
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `b88dc54ff62cc38c72e0d04d7de213fe1a93ca25` ([inbound](SOURCES.md#inbound-2026-10-02-dispositions)). `PartialDatePresenceDiffTest` reproduces the presence, requiredness, content and uniqueness rows, extended at `ed58c513` and with the selecting readers at `a7ed04ad` ([inbound](SOURCES.md#inbound-2026-10-02-partial-date-readers)).
 - `origin`: locally originated. Lean had placed a partially known value as a stored text beside no value, which its presence readers took as empty; the measurement that found the divergence is new on both sides.
 - `clause`: [`05`](../spec/05-dates-and-time.md) §6, a new paragraph before the formal-cause one.
 - `delta`: `FieldFilled` holds and `FieldNotFilled` does not for a partially known value such as `2024-06-00` at `DAY_OPTIONAL` or `0000-00-00` at `YEAR_OPTIONAL`, on both arms, and `NumberOfFilledFields` counts it beside a filled component-omitting Date and DateFragment; `2024-00-00` at `DAY_OPTIONAL` is the date error and leaves both tests unknown.
@@ -65,7 +78,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-02-03"></a>
 ### `SPEC-2026-10-02-03` — the division check is a walk from each operator and power through value functions, cut at the first brace, addition or power; a call is never itself checked, and a lone unsortable leader is refused
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `d3cb6f74f66a18c7be36e5c2e1dbdc87e89006b4` ([inbound](SOURCES.md#inbound-2026-10-02-dispositions)). `DivisionWalkAgreementTest`, 59 rows, reproduces both discriminators and the unsortable leader; the walk's visiting order is unmeasured.
 - `origin`: locally originated. Your [`kf45`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf45) leaves the region through an operation-valued wrapper as unclosed evidence, and [`kf457`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf457) measures the extrema's leader only beside a follower; this entry measures both. Lean itself had first exempted a root call and summed a nested call's operands, then briefly taken the largest operand's count, which an enclosing operator refutes.
 - `clause`: [`04`](../spec/04-numbers-and-decimals.md), the operation-wrapper boundary paragraph, its gate-order note, and the operand-list `Min`/`Max` and plain-arithmetic checklist items; [`06`](../spec/06-strings-and-enumerations.md), the dispatch clause's pre-emption sentence, now per node.
 - `delta`: the division check runs at every operator and power, at no call, wrapper or brace, and walks its node's subtree through value-function operands until the first brace, addition or subtraction, or power. So `Max([N] / [N2], [N2] / [N])` passes at the root while `[N] + Max(…)` is refused, `[N] / Max({[N2]}, [N2] / [N])` passes while `[N] / Max([N2] / [N], {[N2]})` is refused, and `[N] + [N] + Max(…)` passes. A node asks typing with the exponent's scale, then the walk, then the nesting rule. A lone String, Boolean, Confirm, Enumeration or DateRange leader draws `MVK_NOT_SORTABLE`.
@@ -78,7 +91,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-02-02"></a>
 ### `SPEC-2026-10-02-02` — the `index(...)` message terminal's value suffix is `Wert` under a German condition language, chosen by that language and not by the message locale
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `cd37d3ccb6df7e7094cdc1b7d77f970f50199de9` ([inbound](SOURCES.md#inbound-2026-10-02-dispositions)). `MessageIndexSuffixLanguageAgreementTest`, 15 rows, crosses both condition languages with both message locales.
 - `origin`: locally originated. Your [`kf275`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf275) lists the German arm as unmeasured; this entry measures it.
 - `clause`: [`11`](../spec/11-messages-and-custom.md), the `index(...)` bullet's locale sentences.
 - `delta`: on a `de_DE` condition language, `$index(Key).Wert$` is admitted and `$index(Key).value$` draws `MVK_UNEXPECTED_TOKEN` under an `en_US` and a `de_DE` message alike, and `$Index(Key).Wert$` draws it under an `en_US` message; on an `en_US` condition language a `de_DE` message admits `.value` and refuses `.Wert`. The clause states that the condition language alone picks the suffix across those two message locales only. It previously read the German spelling off the Kernel's terminal tables.
@@ -91,7 +104,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-02-01"></a>
 ### `SPEC-2026-10-02-01` — a computed DateTime crosses a computation join as its rendering, not as its instant
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `b88dc54ff62cc38c72e0d04d7de213fe1a93ca25` ([inbound](SOURCES.md#inbound-2026-10-02-dispositions)). `ComputedDateTimeJoinDiffTest` reproduces the join documents on both strategies; whether a later read re-parses the text or normalizes the instant stays unseparated. Its day-shift rows at `ed58c513` sharpen [`spec/05`](../spec/05-dates-and-time.md)'s day landing ([inbound](SOURCES.md#inbound-2026-10-02-day-landing)).
 - `origin`: locally originated. Your [`kf459`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf459) holds that a computed field's stored value is invisible inside a cascade; this entry adds what a later computation reads of a computed DateTime.
 - `clause`: [`05`](../spec/05-dates-and-time.md) §5, the chained-instant bullet.
 - `delta`: in `Europe/Berlin`, `DTB = AddHours(DTA, 2)` over `DTA = AddDays(DT0, [N1])` with `DT0` `2024-10-27T00:30:00` and `N1` `0` renders `DTB` `2024-10-27T02:30:00`, and `H = DifferenceInHours(DT0, DTB)` is `3`, not `2`. With `DT0` `2024-10-26T02:30:00` and `N1` `1`, `DTA` renders `2024-10-27T02:30:00` and `DTB` `2024-10-27T04:30:00`, not `03:30:00`. A later computation therefore reads a computed DateTime at the instant its rendering denotes under the overlap rule, while a chained shift inside one operation keeps its exact instant.
@@ -104,7 +117,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-01-07"></a>
 ### `SPEC-2026-10-01-07` — a computation's read of its own target is asked after the authoring and scale gates on every expression shape, and the other gates one alternative at a time
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `d3cb6f74f66a18c7be36e5c2e1dbdc87e89006b4` ([inbound](SOURCES.md#inbound-2026-10-02-dispositions)). `ComputationGateOrderAgreementTest` reproduces all 144 rows of the three verdict tables, suppression rows included.
 - `origin`: locally originated. Your [`kf181`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf181) holds the order over `+`, `-` and `*` in both positions; this entry extends it to the shapes it does not carry and places the division-count gate ahead of both.
 - `clause`: [`09`](../spec/09-computations.md) §1, the scale bullet's order sentences, the stages bullet's alternatives sentences, and the self-reference checklist item.
 - `delta`: a bare copy `[T]`, `Abs([T])`, `Max([T], [B])`, `[T] ^ 2`, `RoundAccounting([T] / 2, 0)`, `{[T] * 2}` and `[T] + [T]` draw `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD`, the last twice; `Max([T], [F])`, `Abs([T]) * [F]`, `Abs([T] * [F])`, `[T] / 2`, `[T] / [B]`, `Abs([T] / 2)`, `{[T] / 2} * {3 / 4}` and `{[T] * [F]}` draw `MVK_INVALID_COMPARE_DEC_PLACES` over a scale-0 `T` beside a scale-2 `F`; `[T] / [B] / [C]`, plain or rounded, draws `MVK_TOO_MANY_DIV_FOR_CALC` and `[T] ^ 2 ^ 2` `MVK_TOO_MANY_POW_FOR_CALC`; `Sum(T, B)`, `FirstFilledValue(T, B)` and a group count over `T`'s group draw the target-read class. Across alternatives, `[T] * 2` in one beside `[B] * 1.5` or `[B] / [C] / [D]` in the other draws that other class in either order, and `[T]` before `[Nope]` draws `MVK_INVALID_ENTITY`. The name stage is no computation-wide stage: `[F]` before `[Nope]` draws `MVK_INVALID_COMPARE_DEC_PLACES` and `[Nope]` before `[F]` `MVK_INVALID_ENTITY`, a division count, a nested power or a text operand's kind class in the first alternative answers ahead of a name in the second, and `FieldFilled(Nope)` answers in its own alternative's place, ahead of an unconditional alternative in either order. An unconditional `[T]` beside a preconditioned `[B]` draws `MVK_ERROR_EMPTY_PRECONDITION` alone in either order, `[B]` unconditional beside a preconditioned `[T]` draws both in authored order, two unconditional alternatives draw the class once at the first one's place, and a sole unconditional `[T]` draws the target-read class.
@@ -117,7 +130,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-01-06"></a>
 ### `SPEC-2026-10-01-06` — a message parameter is refused at its parser's first event, and the name position reads the whole entity before any check
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `cd37d3ccb6df7e7094cdc1b7d77f970f50199de9` ([inbound](SOURCES.md#inbound-2026-10-02-dispositions)). `MessageParameterDecoderAgreementTest` reproduces all 99 grid rows; the peer confirms the order of verdicts, not that it comes from one parser per parameter.
 - `origin`: locally originated. Your [`kf343`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf343) holds the per-parameter report and [`kf413`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf413) the spaced arrow; [`kf198`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf198) holds `$For$`, `$BaseYear+$` and a suffix after an admitted key as syntax faults. This entry adds the order between checks and faults, which none of them carries.
 - `clause`: [`11`](../spec/11-messages-and-custom.md), the three bullets before the keyed field's prerequisite gates.
 - `delta`: a check runs where its rule ends and a fault where the parser meets it, a lexer fault when its token is fetched; an entity spec opening on a name or a separator is read whole before any lookup, and the name position reads on to the token after it, so `$Nope x$` and `$Nope.Vordruckzeile x$` draw `MVK_UNEXPECTED_TOKEN` and `$Nope/$` and `$Score For Nope/$` `MVK_INCOMPLETE_INPUT` where `$Nope For$` draws `INVALID_ENTITY`, while a parent walk looks each name up as it is consumed, `$Score For ../Nope/$` drawing `INVALID_ENTITY` and `$#../Nope/$` `INVALID_GROUP`; a turning point is compared by its first word; a category name is one token, `$Grade->Nope x$` drawing `INVALID_CATEGORY` and `$Grade->Nope For$` `MVK_INCOMPLETE_INPUT`; `$BaseYear x$` without a Base Year draws `NO_BASE_YEAR`; a bare walk is an entity, `$..$` drawing `INVALID_FIELD`. On a condition reading no key every keyed name-position parameter draws `MVK_INDEX_FOR_ERROR_TEXT_INVALID`, and a keyed group `INVALID_GROUP` after its lookup and its key's events, whose unresolved names draw `INVALID_GROUP` ahead of the nesting; `$#RootGroup For "k"$` reads as a name.
@@ -130,7 +143,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-01-05"></a>
 ### `SPEC-2026-10-01-05` — `BaseYear` meets the comparison walk's arms as a Number, and its range endpoints as a date
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `d3cb6f74f66a18c7be36e5c2e1dbdc87e89006b4` ([inbound](SOURCES.md#inbound-2026-10-02-dispositions)). `BaseYearComparisonClassAgreementTest`, 64 rows, reproduces both discriminators and adds the endpoints' classes opposite a Boolean, a Confirm and a scale-2 Number; the endpoints opposite a DateTime stay unmeasured.
 - `origin`: locally originated. Your [`kf86`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf86) holds `BaseYear`'s values against Number and Date fields and [`kf434`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf434) its undeclared class; this entry adds its refusal classes against the other kinds, which neither carries.
 - `clause`: [`05`](../spec/05-dates-and-time.md), the new `BaseYear` bullet after the constant-typing one.
 - `delta`: under `==` and in either position, on every kind below, `[Note] == BaseYear` draws `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING`, a DATE_RANGE `MVK_INVALID_COMPARE_TO_DATE_RANGE`, a Time or DateTime `MVK_INVALID_COMPARE_TO_DATE`, a Boolean `MVK_INVALID_COMPARE_TO_YESNO`, a Confirm `MVK_INVALID_COMPARE_TO_YES`, a scale-2 Number `MVK_INVALID_COMPARE_DEC_PLACES` and an Enumeration, labelled or not, the text class; a Date and a scale-0 Number are admitted. `StartOfDateRange(BaseYear)` and `EndOfDateRange(BaseYear)` draw `MVK_INVALID_COMPARE_TO_DATE` opposite a String, a Number, a DATE_RANGE, a Time or an Enumeration, the end endpoint measured on the left too. The typed-use rule itself is §7's and your `kf86`'s, not this entry's.
@@ -143,7 +156,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-01-04"></a>
 ### `SPEC-2026-10-01-04` — a filtered Number star answers from its in-capacity rows on both arms
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `b88dc54ff62cc38c72e0d04d7de213fe1a93ca25` ([inbound](SOURCES.md#inbound-2026-10-02-dispositions)). `FilteredStarComputeArmDiffTest` gives the four sums on both arms over three documents, dynamic Groovy, static Java and the peer's interpreter agreeing.
 - `origin`: locally originated for the computation arm and the two value-reading filters. The validation arm under the reflexive filter is your own row at `989f33bae` ([`kf230`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf230), answering `SPEC-2026-09-02-04`) and is cited here, not re-requested; this project's spec/07 sentence had not caught up with it.
 - `clause`: [`07`](../spec/07-repetition-and-iteration.md), the capacity bullet's filtered-star sentences.
 - `delta`: over `5, 5, 5, 7` at `max 3`, `Sum` of a star filtered by a reflexive position comparison, by `V > 6` and by `V < 6` answers `15`, `0` and `15` under both full validation and `compute`, exactly as over `5, 5, 5`, and `17`, `7` and `10` over `7, 5, 5, 5`. The over-limit row is never kept and does not make the filter unknown, and no computed value is cleared.
@@ -156,7 +169,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-01-03"></a>
 ### `SPEC-2026-10-01-03` — the name position's relative and bare refusals carry their own classes, a name that resolves to a group is refused as no read field, and each form that carries a name refuses a group on its own class
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `cd37d3ccb6df7e7094cdc1b7d77f970f50199de9` ([inbound](SOURCES.md#inbound-2026-10-02-dispositions)). The peer reproduced the name position's classes with `MessageNamePositionAgreementTest`, 45 rows, adding that a relative form line naming its own declaring group draws `INVALID_ENTITY`.
 - `origin`: locally originated; it extends this project's root-gate rows, which read absolute paths only, onto bare and relative names, and adds a group named in the name position. The short-name row reproduces your `$Book$` row at `98525518a` and asks nothing of you.
 - `clause`: [`11` Part A](../spec/11-messages-and-custom.md), the root-gate bullet's last sentences, the form-pointer bullet's gate sentence and the semantic-index bullet's nesting sentence.
 - `delta`: from a root rule reading `Store/X`, `$Nope$` draws `INVALID_ENTITY` and `$Store$` draws `INVALID_FIELD` while `$Store/X$` is admitted. From `/Probe/Store`, `$../../X$` draws `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS` and `$..Wrong/X$` and `$Nope/X$` `INVALID_ENTITY`. On a group, `$Store.value$` and `$Store->Cat$` keep `INVALID_FIELD`, a form pointer `$Store.Vordruckzeile$` draws `INVALID_FIELD_IN_PARAMETER` where spec/11 had `INVALID_ENTITY`, and the keyed `$Store For "k"$` and `$Top For Store$` draw `MVK_INDEX_FOR_ERROR_TEXT_INVALID`. An ambiguous first segment draws `ERROR_TEXT_FIELDNAME_NOT_UNIQUE` with more path after it, a model with short names off still answers a message name by its short name, admitting a read `$Z$` while its condition refuses `FieldFilled(Z)`, and `$/Probe$` and `$/Nope$` resolve as entity specs, drawing `INVALID_FIELD` and `INVALID_ROOT_GROUP`. A keyed entity key draws `ILLEGAL_SEMANTIC_INDEX` only after every name resolves, any unresolvable name answering `INVALID_ENTITY` first — extending your [`kf412`](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf412), which holds the nesting class before membership — and a literal followed by a key, where the index gate refuses, draws `MVK_INDEX_FOR_ERROR_TEXT_INVALID`.
@@ -169,7 +182,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-01-02"></a>
 ### `SPEC-2026-10-01-02` — a parent walk of two or more up-steps before a token that continues no name counts one step more, a turning point is compared by its first word, and an ordinary dotted continuation joins its name segment
 
-- `status`: pending
+- `status`: accepted at a12-dmkits `cd37d3ccb6df7e7094cdc1b7d77f970f50199de9` ([inbound](SOURCES.md#inbound-2026-10-02-dispositions)). The peer reproduced every delta class on its own Library carrier with `MessageGroupWalkAgreementTest`, 38 rows, and added that `$#../../%$` draws the lexer class.
 - `origin`: locally originated; it extends your `kf214` parent rows at `2af2d0f03`, which reach the root exactly or past it, onto a walk that the extra step leaves inside the root and onto a run ending the text, and your dotted rows at `98525518a`, which read a reserved suffix after `Loans.`, onto ordinary dotted words, a dotted turning point and a keyword-and-name word continued by a dot.
 - `clause`: [`11` Part A](../spec/11-messages-and-custom.md), the absolute-argument bullet's parent-walk and dotted-name sentences.
 - `delta`: two or more up-steps whose last separator is followed by a token that continues no name count one step more than written, and a single up-step does not. From two levels below the root `$#../../$` and `$#../..//$` draw `ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS` while `$#../../Nope$` draws `INVALID_GROUP` and `$#../../Store$` is admitted; from three levels below `$#../../$` draws `MVK_EXPECTED_TOKEN_NOT_FOUND` and `$#../../RuleGroup$` `MVK_UNEXPECTED_TOKEN`; from one level below `$#../$` draws `MVK_INCOMPLETE_INPUT`. From two levels below `$#../../-x$` and `$#../../($` draw the above-root class while `$#../../123$` draws `INVALID_GROUP` and `$#../../'Store'$` is admitted. A turning point is compared by its first word: from `/Probe/Store` `$#..Probe.x$` is admitted and `$#..Wrong.x$` draws `INVALID_ENTITY`.

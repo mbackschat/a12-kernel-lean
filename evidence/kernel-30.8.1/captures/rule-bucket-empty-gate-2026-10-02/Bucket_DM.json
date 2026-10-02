@@ -1,0 +1,519 @@
+{
+ "header": {
+  "id": "Bucket_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Bucket_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Probe",
+     "name": "Probe",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Probe/W",
+        "name": "W",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/A",
+        "name": "A",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/B",
+        "name": "B",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/G1",
+        "name": "G1",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/G1/X",
+           "name": "X",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/G2",
+        "name": "G2",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/G2/Y",
+           "name": "Y",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/LT_L",
+        "name": "LT_L",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "LT_L",
+         "errorCondition": "NumberOfFilledGroups(G1, G2) + [W] < 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "LT_L"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/GT_R",
+        "name": "GT_R",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "GT_R",
+         "errorCondition": "2 > NumberOfFilledGroups(G1, G2) + [W]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "GT_R"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/GE_L",
+        "name": "GE_L",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "GE_L",
+         "errorCondition": "NumberOfFilledGroups(G1, G2) + [W] >= 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "GE_L"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/LE_R",
+        "name": "LE_R",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "LE_R",
+         "errorCondition": "0 <= NumberOfFilledGroups(G1, G2) + [W]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "LE_R"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/GT_L",
+        "name": "GT_L",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "GT_L",
+         "errorCondition": "NumberOfFilledGroups(G1, G2) + [W] > -1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "GT_L"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/LT_R",
+        "name": "LT_R",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "LT_R",
+         "errorCondition": "-1 < NumberOfFilledGroups(G1, G2) + [W]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "LT_R"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/EQ_L",
+        "name": "EQ_L",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "EQ_L",
+         "errorCondition": "NumberOfFilledGroups(G1, G2) + [W] == 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "EQ_L"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/EQ_R",
+        "name": "EQ_R",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "EQ_R",
+         "errorCondition": "0 == NumberOfFilledGroups(G1, G2) + [W]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "EQ_R"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/NE_L",
+        "name": "NE_L",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "NE_L",
+         "errorCondition": "NumberOfFilledGroups(G1, G2) + [W] != 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "NE_L"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/NE_R",
+        "name": "NE_R",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "NE_R",
+         "errorCondition": "1 != NumberOfFilledGroups(G1, G2) + [W]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "NE_R"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/FF_LT",
+        "name": "FF_LT",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "FF_LT",
+         "errorCondition": "NumberOfFilledFields(A, W) < 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "FF_LT"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/FF_GE",
+        "name": "FF_GE",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "FF_GE",
+         "errorCondition": "NumberOfFilledFields(A, W) >= 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "FF_GE"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/DV_LT",
+        "name": "DV_LT",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "DV_LT",
+         "errorCondition": "NumberOfDifferentValues(A, W) < 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "DV_LT"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/DV_GE",
+        "name": "DV_GE",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "DV_GE",
+         "errorCondition": "NumberOfDifferentValues(A, W) >= 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "DV_GE"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ABS_LT",
+        "name": "ABS_LT",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "ABS_LT",
+         "errorCondition": "Abs(NumberOfFilledGroups(G1, G2) + [W]) < 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ABS_LT"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ADD_LT",
+        "name": "ADD_LT",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "ADD_LT",
+         "errorCondition": "NumberOfFilledGroups(G1, G2) + [W] + 1 < 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ADD_LT"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ADD_GE",
+        "name": "ADD_GE",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "ADD_GE",
+         "errorCondition": "NumberOfFilledGroups(G1, G2) + [W] + 1 >= 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ADD_GE"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/OR_GE",
+        "name": "OR_GE",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "OR_GE",
+         "errorCondition": "NumberOfFilledGroups(G1, G2) >= 0 Or [W] < 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "OR_GE"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/PLAIN",
+        "name": "PLAIN",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "PLAIN",
+         "errorCondition": "[W] < 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "PLAIN"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ROOT2",
+        "name": "ROOT2",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "ROOT2",
+         "errorCondition": "[/Other/O] + [W] < 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ROOT2"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Other",
+     "name": "Other",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Other/O",
+        "name": "O",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Rep",
+     "name": "Rep",
+     "Group": {
+      "repeatability": 3,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Rep/P",
+        "name": "P",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rep/REPSUM",
+        "name": "REPSUM",
+        "Rule": {
+         "errorEntityRelPath": "../P",
+         "errorCode": "REPSUM",
+         "errorCondition": "Sum(/Rep*/P) < 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "REPSUM"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

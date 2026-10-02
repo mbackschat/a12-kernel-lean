@@ -196,6 +196,37 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 <a id="inbound-2026-09-06a"></a>
 - Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged
 
+### Inbound 2026-10-02 handback
+
+<a id="inbound-2026-10-02-provenance"></a>
+#### Reviewed 2026-10-02 handback — every pending entry from `SPEC-2026-10-01-02` to `SPEC-2026-10-02-05` holds on the peer's own carriers, a day landing's re-fit is judged against the expected date, a partially known Date is selected as its earliest day, and two more rule shapes are evaluated without content
+
+The letter is the peer's `-2026-10-02`, delivered by its session and frozen at SHA-256 `01501b22aa9b3783e42298cfb64a344dd45712289074470da742c8e736322594`; it replaces the `-2026-10-01a` letter. Its rows are the peer's adapter tests at six a12-dmkits commits, each read here and holding the test file it names: `cd37d3ccb6df7e7094cdc1b7d77f970f50199de9` (message parameters), `d3cb6f74f66a18c7be36e5c2e1dbdc87e89006b4` (static operand gates), `b88dc54ff62cc38c72e0d04d7de213fe1a93ca25` (runtime), `3bab32bccfb30681d7c86f44c4e40b4d82a6765a` (rule buckets), `a7ed04ad35925cd2fe459965db7e9c0fafce5100` (partial-Date selection) and `ed58c5139655fe34e3d4a3305ed34a3180f10829` (day-step rows). Static rows are the Kernel's consistency check; runtime rows are dynamic Groovy, static Java and the peer's interpreter agreeing on one document. Its §12 states mechanisms its rows do not separate and is recorded as no claim.
+
+<a id="inbound-2026-10-02-dispositions"></a>
+**Claim.** Its §1 to §11 confirm the delta rows of all eleven pending entries, each on the commit its ledger entry names, and the entries are accepted on them. Beyond those rows, their additions are recorded on the entries themselves.
+
+<a id="inbound-2026-10-02-day-landing"></a>
+**Claim.** Its §7 (`ComputedDateTimeJoinDiffTest` at `b88dc54f`, `DayStepLandingDiffTest` at `ed58c513`) separates two readings of the day landing's re-fit. `AddDays(2024-10-27T00:30, 1)` gives `2024-10-28T00:30` and the peer's own `AddDays(2024-03-30T23:30, 1)` gives `2024-03-31T23:30` on both strategies, where keeping a re-fit only when it preserves the raw landing's own date gives `2024-10-27T23:30` and `2024-04-01T00:30`. `DifferenceInDays(2024-10-26T00:30, 2024-10-28T00:00)` is `1` and `(2024-03-29T23:30, 2024-03-31T23:45)` is `2`, against `2` and `1` on that reading; the peer reports the JDK's `GregorianCalendar` agreeing.
+
+**Classification.** Inbound from committed, reviewed revisions; [`spec/05`](../spec/05-dates-and-time.md) §5's landing bullet now names the expected date and these rows.
+
+**Lean.** Already this account: the re-fit is compared with the expected date, and the four values are locked in [`BerlinLegacyCalendarArithmetic`](../A12Kernel/Conformance/BerlinLegacyCalendarArithmetic.lean) and [`DateTimeDayDifference`](../A12Kernel/Conformance/DateTimeDayDifference.lean). Its Date-source rows are not locked.
+
+<a id="inbound-2026-10-02-partial-date-readers"></a>
+**Claim.** Its §10 (`FirstFilledValuePartialDateDiffTest` at `a7ed04ad`) has `FirstFilledValue` select a partially known Date as its earliest day, `2024-06-00` as `2024-06-01` and `2024-00-00` as `2024-01-01`, directly, starred, over a group and keyed, while `0000-00-00` and a malformed value leave the selection unknown and end the walk. A copy of the selection into a full Date takes the first day, and a malformed or unknown-year value clears it. `PartialDatePresenceDiffTest` at `ed58c513` adds stored-text uniqueness at `MONTH_OPTIONAL` and `YEAR_OPTIONAL` and down a starred column.
+
+**Classification.** Inbound; [`spec/05`](../spec/05-dates-and-time.md)'s partial-Date paragraph takes the selection.
+
+**Lean.** Not yet compared on these rows.
+
+<a id="inbound-2026-10-02-rule-buckets"></a>
+**Claim.** Its §11 (`RuleBucketGateDiffTest` at `3bab32bc`) narrows which comparisons are evaluated on an instance without content: `2 > NumberOfFilledGroups(…)`, `Abs(NumberOfFilledGroups(…)) < 2`, `NumberOfFilledFields(…) < 1` and `NumberOfDifferentValues(…) < 1` fire over the three blank documents, while `NumberOfFilledGroups(…) > 5 Or [W] < 5` stays silent. A rule naming a second root fires there too, and a rule on a repeatable root whose error field it does not iterate fires once, at the root's first row.
+
+**Classification.** Inbound and narrowing: [`spec/03`](../spec/03-empty-and-required.md) §2's "anywhere in either operation" no longer holds. This project's [rule-bucket grid](sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate) measures the remaining arms before the clause is restated.
+
+**Lean.** Diverged on the large-side row and did not count `NumberOfDifferentValues`, and its once plan gated a repeatable-root rule on the root's content; all three are corrected with that grid.
+
 ### Inbound 2026-10-01a handback
 
 <a id="inbound-2026-10-01a-provenance"></a>
@@ -1246,6 +1277,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The count needs every operand field covered, where the presence predicates read what they can see](sources/group-list-and-capacity-probes.md#src-partial-coverage-group-operands)
 <a id="src-group-count-empty-gate"></a>
 - [A comparison reading a filled-group count fires on an instance without content, where one of field reads alone does not, measured locally 2026-10-02](sources/group-list-and-capacity-probes.md#src-group-count-empty-gate)
+<a id="src-rule-bucket-empty-gate"></a>
+- [A count lifts the content gate only from a comparison's small side, a count of different values does too, and a once rule on a repeatable root runs with no gate, measured locally 2026-10-02](sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate)
 <a id="src-starred-group-quantifier-capacity"></a>
 - [The threshold quantifiers read the in-capacity extent, and an instantiated row is filled](sources/group-list-and-capacity-probes.md#src-starred-group-quantifier-capacity)
 <a id="src-count-placement-overlap-list-grid"></a>

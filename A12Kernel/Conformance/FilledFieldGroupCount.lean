@@ -159,6 +159,17 @@ example :
       (some true, some false, some true) := by
   native_decide
 
+/- Only a count on the comparison's small side lifts the gate: `NumberOfFilledFields(…) >= 0` stays
+silent over a blank root where `< 1` fires, on the
+[rule-bucket grid](../../docs/sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate). -/
+example :
+    [NumericComparisonOp.less, .lessEqual, .greater, .greaterEqual, .equal, .notEqual].map (fun op =>
+      (elaborateFilledFieldCountComparison starredModel ["Order"] starredOperandSurface op 2).toOption.bind
+        fun comparison => (CheckedValidationCondition.fromOrderedNumeric comparison).toOption.map
+          (·.core.canFireOnEmpty)) =
+      [some true, some true, some false, some false, some true, some true] := by
+  native_decide
+
 private def nestedModel : FlatModel :=
   { fields := [
       { id := 20, groupPath := ["Probe", "Flat"], name := "FlatA",

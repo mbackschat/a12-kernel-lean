@@ -60,6 +60,23 @@ example :
         { epochMillis := -1693708200000 }) := by
   native_decide
 
+/- The re-fit is judged against the expected date, the source's date plus the amount, not the raw
+landing's own date: within the offset delta of midnight the raw landing falls on another day, so the
+reading that keeps the raw landing's date gives `2024-10-27T23:30` and `2024-04-01T00:30` here. The
+Kernel gives these two results on both strategies at a12-dmkits `ed58c513` ([inbound](../../docs/SOURCES.md#inbound-2026-10-02-day-landing)). -/
+example :
+    berlinDayLanding?
+        (dateTime 2024 10 27 0 30 0 (by native_decide)) 1 =
+      some (
+        dateTime 2024 10 28 0 30 0 (by native_decide),
+        { epochMillis := 1730071800000 }) ∧
+    berlinDayLanding?
+        (dateTime 2024 3 30 23 30 0 (by native_decide)) 1 =
+      some (
+        dateTime 2024 3 31 23 30 0 (by native_decide),
+        { epochMillis := 1711920600000 }) := by
+  native_decide
+
 /- Year mutation uses sign-independent compute-time resolution at both an overlap and a gap. -/
 example :
     (do

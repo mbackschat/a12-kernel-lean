@@ -411,26 +411,36 @@ def ResolvedGroupListOperands.evalAddressedTally
 
 namespace ValidationConditionLeaf
 
-/-- Whether a numeric comparison reads a filled-group count anywhere in its operations. -/
-private def countsFilledGroups (comparison : NumericComparisonOf Atom) (isCount : Atom → Bool) : Bool :=
-  comparison.left.anyAtom isCount || comparison.right.anyAtom isCount
+/-- Whether a count stands on the comparison's small side, the operand its error condition needs to
+be small: the left of `<` and `<=`, the right of `>` and `>=`, either side of `==` and `!=`. The
+count may sit anywhere inside that operation, beneath arithmetic or a function. The tolerance
+comparisons take either side by the Kernel's source and are unmeasured. -/
+private def countsOnSmallSide (comparison : NumericComparisonOf Atom) (isCount : Atom → Bool) : Bool :=
+  let left := comparison.left.anyAtom isCount
+  let right := comparison.right.anyAtom isCount
+  match comparison.op with
+  | .ordinary .less | .ordinary .lessEqual => left
+  | .ordinary .greater | .ordinary .greaterEqual => right
+  | .ordinary .equal | .ordinary .notEqual | .tolerance _ => left || right
+
+/-- The counts the empty-instance gate looks for: `NumberOfFilledFields`, `NumberOfFilledGroups` and
+`NumberOfDifferentValues`. -/
+private def NumericValidationAtom.isEmptyGateCount : NumericValidationAtom → Bool
+  | .filledGroupCount _ | .aggregate .distinctCount _ => true
+  | _ => false
 
 /-- Whether the leaf is evaluated on an instance without admitted content under full validation.
-A comparison reading a filled-group count is, whatever else it reads: the Kernel fires
-`NumberOfFilledGroups(G1, G2) < 2`, `== 0` and `NumberOfFilledGroups(G1, G2) + [W] < 2` over a blank
-root, the last reading the empty `W` as `0`, while `[W] < 5` stays silent there
-([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-empty-gate)).
-A group's filled-field count is too: `NumberOfFilledFields(Flat) < n` fires on the empty documents
-of the [nested-capacity](../../../docs/sources/group-list-and-capacity-probes.md#src-filled-field-count-nested-capacity)
-and [deep-capacity](../../../docs/sources/group-list-and-capacity-probes.md#src-filled-field-count-deep-capacity)
-captures, read through the population replay on 2026-10-02. -/
+A comparison is when a count stands on its small side, whatever else it reads, and not when the
+count stands only on the large side: over a blank root the Kernel fires `NumberOfFilledGroups(G1,
+G2) + [W] < 2`, `2 > …`, `== 0`, `!= 1`, `Abs(…) < 2`, `NumberOfFilledFields(A, W) < 1` and
+`NumberOfDifferentValues(A, W) < 1`, reading the empty `W` as `0`, and leaves `… >= 0`, `0 <= …`
+and `[W] < 5` silent ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate)). -/
 def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .flat condition => condition.canFireOnEmpty
-  | .numeric _ comparison => countsFilledGroups comparison fun
-      | .filledGroupCount _ => true
-      | _ => false
-  | .orderedNumeric _ comparison => countsFilledGroups comparison fun
-      | .ordinary (.filledGroupCount _) | .filledGroupCountMixed _ | .filledFieldCount _ => true
+  | .numeric _ comparison => countsOnSmallSide comparison NumericValidationAtom.isEmptyGateCount
+  | .orderedNumeric _ comparison => countsOnSmallSide comparison fun
+      | .ordinary atom => NumericValidationAtom.isEmptyGateCount atom
+      | .filledGroupCountMixed _ | .filledFieldCount _ | .aggregate .distinctCount _ => true
       | _ => false
   | .groupPresence operator _ => operator.canFireOnEmpty
   | .groupList operator _ => operator.canFireOnEmpty

@@ -279,6 +279,21 @@
 - `bytes`: [`group-count-empty-gate-2026-10-02/`](../../evidence/kernel-30.8.1/captures/group-count-empty-gate-2026-10-02/); SHA-256 model `db02d4ec52421d58419696ac9afb5456177d9db3640500c84a45e6754d36de48`, request `e134930a4dd88e850a8cafb57bdf2fea8a560d5c44c54cdd73a5dcfb55026a05`, artifact `ebef52748ce7221fdcbb1a8e718557a10d59dd5ae7cf171ed1dcab08ea9d0706`. The population replay reads it unchanged.
 - `sync`: outbound [`SPEC-2026-10-02-05`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-02-05).
 
+<a id="src-rule-bucket-empty-gate"></a>
+#### A count lifts the content gate only from a comparison's small side, a count of different values does too, and a once rule on a repeatable root runs with no gate, measured locally 2026-10-02
+
+- `revision`: one `:adapter:kernelProbe` request at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8` in the pinned measurement checkout, `producer.source.state: CLEAN` and `git status --short` empty before and after. `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `validateFull`, `enginesAgree: true` on all five rows.
+- `question`: the [peer's rule buckets](../SOURCES.md#inbound-2026-10-02-rule-buckets) defeated this project's account that a count anywhere in a comparison lifts the gate. Which side and which comparisons do, and does the once plan's root gate hold on a repeatable root?
+- `model`: `Bucket_DM`, root `Probe` with Numbers `W`, `A`, `B` and fixed groups `G1`, `G2` with one Number each, a second root `Other` with Number `O`, and a repeatable root `Rep` (max 3) with Number `P`. Every `Probe` rule reports on `W` and reads it, mostly as `C = NumberOfFilledGroups(G1, G2) + [W]`, so its error field is referenced without a negative leaf.
+- `rules`: `C < 2`, `2 > C`, `C >= 0`, `0 <= C`, `C > -1`, `-1 < C`, `C == 0`, `0 == C`, `C != 1`, `1 != C`, `Abs(C) < 2`, `C + 1 < 2`, `C + 1 >= 0`, `NumberOfFilledFields(A, W)` and `NumberOfDifferentValues(A, W)` each `< 1` and `>= 0`, `NumberOfFilledGroups(G1, G2) >= 0 Or [W] < 5`, `[W] < 5`, `[/Other/O] + [W] < 5`, and on `Rep` `Sum(/Rep*/P) < 5` reporting on `P`.
+- `documents`: `blank` `{}`, `probe-empty` `{"Probe":{}}`, `probe-null` with `W` null, the content control `probe-content` with `W=1`, and `rep-two` with two `Rep` rows and no `Probe`.
+- `claim`: **on the four documents without `Probe` content, a rule fires exactly when a count stands on its small side**: the left of `<`, the right of `>`, either side of `==` and `!=`, beneath `Abs` or `+` alike, for all three counts. `C >= 0`, `0 <= C`, `C > -1`, `-1 < C`, `C + 1 >= 0`, both `>= 0` counts, the `Or` and `[W] < 5` stay silent there, and each of them fires VALUE on `probe-content`.
+- `claim`: `[/Other/O] + [W] < 5` fires OMISSION on every document, and `Sum(/Rep*/P) < 5` fires once at `Rep/P` on every document, `blank` included.
+- `local-consequence`: Lean admitted a count anywhere in either operation and did not count `NumberOfDifferentValues`, so eight rules diverged on four rows each; the once plan applied its root gate to the `Rep` rule, which diverged on the four documents without `Rep` rows. Both are corrected, and the population replay matches every row it represents. Lean refuses the second-root read.
+- `limit`: fixed operands and one repeatable root. A tolerance comparison and the root-group count are not measured.
+- `bytes`: [`rule-bucket-empty-gate-2026-10-02/`](../../evidence/kernel-30.8.1/captures/rule-bucket-empty-gate-2026-10-02/); SHA-256 model `d30f13b90fcb2b0d283e1127be7ae54d87f59b7cc30003d0f81aa7910f4ee13b`, request `4fb46b4111590819c2251f8109c31231e7d659c08423adaf8eef707746b0b871`, artifact `df426f9dc8a7ba7aa6c3bd13998d008e46651eb1652d7e962a9baf56b22b6b14`.
+- `sync`: the side rows beyond the peer's are outbound as [`SPEC-2026-10-02-06`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-02-06).
+
 <a id="src-starred-group-quantifier-capacity"></a>
 #### Starred group counts and threshold quantifiers use instantiated in-capacity rows, measured locally 2026-08-31 and settled inbound 2026-09-01
 

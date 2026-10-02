@@ -505,7 +505,7 @@ def evalOrdinaryRepeatableFull
         result.row == environment
     rule.evalOrdinaryRepeatableAt checked environment result?
 
-/-- Execute the distinct no-per-row-reference rule shape exactly once. Every repeatable error level is pinned to row 1, but target addressing is derived from the checked declaration and never read or inserted as document topology. Full validation retains the root admitted-content gate before addressed condition reads. -/
+/-- Execute the distinct no-per-row-reference rule shape exactly once. Every repeatable error level is pinned to row 1, but target addressing is derived from the checked declaration and never read or inserted as document topology. Full validation retains the root admitted-content gate before addressed condition reads unless the error field lies in a repeatable root group. -/
 def evalOrdinaryOnceFull
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model) :
@@ -514,9 +514,17 @@ def evalOrdinaryOnceFull
   if !rule.condition.core.supportsOrdinaryIteration then
     throw .unsupportedCondition
   let environment ← rule.onceEnvironment
+  -- A once rule whose error field lies in a repeatable root group runs with no content gate: the
+  -- Kernel fires `Sum(/Rep*/P) < 5` declared on a `max 3` root once, at its first row, over a blank
+  -- document ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate)).
+  -- Under a nonrepeatable root the gate stays.
+  let repeatableRoot := match rule.errorDeclaration.groupPath with
+    | root :: _ => !(model.repeatableScopeForGroupPath [root]).isEmpty
+    | [] => false
   let hasContent ←
     (rule.ordinaryOnceRootHasContent checked environment)
       |>.mapError .addressing
+  let hasContent := hasContent || repeatableRoot
   let errorPath ←
     (environment.pathForScope rule.errorDeclaration.repeatableScope)
       |>.mapError (fun cause =>
