@@ -333,8 +333,10 @@ inductive Value where
   /-- A partially known Date such as `2024-06-00`, carried by its stored spelling: it denotes an
   interval of dates and has no point value, so its declaration's partial-Date classifier owns its
   meaning and `ValueAsDate` is what selects an endpoint. It is a value all the same, which is what a
-  presence test, a fill count and a requiredness check read (measured,
-  [checkpoint](../docs/sources/temporal-and-message-probes.md#src-partial-date-presence)). -/
+  presence test and a fill count read (measured,
+  [checkpoint](../docs/sources/temporal-and-message-probes.md#src-partial-date-presence)), and what
+  requiredness, group content and `FieldValuesNotUnique` read, the last by its stored text (measured,
+  [checkpoint](../docs/sources/temporal-and-message-probes.md#src-partial-date-readers)). -/
   | partialDate (stored : String)
   deriving Repr, DecidableEq
 

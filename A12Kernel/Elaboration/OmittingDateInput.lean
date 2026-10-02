@@ -185,6 +185,17 @@ inductive OmittingDateStoredValue where
   | yearless (value : MonthDayValue)
   deriving Repr, DecidableEq
 
+/-- The earliest concrete date an admitted value denotes, which is how the Kernel completes a date
+fragment wherever it needs one: an omitted day is the 1st, an omitted month January, and a yearless value
+takes `year`, the caller's choice of Base Year. A year-bearing value with its year omitted completes to
+none. -/
+def OmittingDateStoredValue.earliestCivil? (year : Int) : OmittingDateStoredValue → Option CivilDate
+  | .yearBearing (.full date) => some date.civil
+  | .yearBearing (.omittedDay date) => some date.first.civil
+  | .yearBearing (.omittedMonth date) => some date.first.civil
+  | .yearBearing .omittedYear => none
+  | .yearless value => CivilDate.ofParts? { year, month := value.month, day := value.day }
+
 /-- One classified component-omitting Date cell. -/
 inductive OmittingDateInputCell where
   | presentEmpty

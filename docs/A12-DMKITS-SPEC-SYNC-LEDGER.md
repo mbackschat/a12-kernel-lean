@@ -36,16 +36,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 ## Current queue
 
 <a id="spec-2026-10-02-04"></a>
-### `SPEC-2026-10-02-04` — an admitted partially known Date is filled on both arms, and only a too-deep omission leaves presence unknown
+### `SPEC-2026-10-02-04` — an admitted partially known Date is filled on both arms, satisfies requiredness, is group and root content and is compared by its stored text, and only a too-deep omission leaves presence unknown
 
 - `status`: pending
 - `origin`: locally originated. Lean had placed a partially known value as a stored text beside no value, which its presence readers took as empty; the measurement that found the divergence is new on both sides.
 - `clause`: [`05`](../spec/05-dates-and-time.md) §6, a new paragraph before the formal-cause one.
 - `delta`: `FieldFilled` holds and `FieldNotFilled` does not for a partially known value such as `2024-06-00` at `DAY_OPTIONAL` or `0000-00-00` at `YEAR_OPTIONAL`, on both arms, and `NumberOfFilledFields` counts it beside a filled component-omitting Date and DateFragment; `2024-00-00` at `DAY_OPTIONAL` is the date error and leaves both tests unknown.
-- `basis`: this project's [presence checkpoint](SOURCES.md#src-partial-date-presence) at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, model and projection retained beside it.
+- `delta-readers`: the same value raises no `mandatoryField` on a required field, makes `GroupFilled` hold for a group holding only it and admits a once rule whose root holds only it, and `FieldValuesNotUnique` compares its stored text, so `2024-06-00` beside a fully known `2024-06-01` is unique.
+- `basis`: this project's [presence checkpoint](SOURCES.md#src-partial-date-presence) and [reader checkpoint](SOURCES.md#src-partial-date-readers) at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, Kernel `30.8.1`, models and projections retained beside them.
 - `surfaces`: any peer reader that decides presence from a decoded point value, which a partially known Date does not have.
-- `acceptance`: confirm `FieldFilled(PD)` fires for `2024-06-00` at `DAY_OPTIONAL` and `NumberOfFilledFields` over that field and a filled `yyyy-MM` Date counts `2`; or supply a carrier on which a partially known value reads as empty.
-- `limit`: `yyyy-MM-dd` at two precisions, direct fields; `MONTH_OPTIONAL`, the dotted spelling, requiredness and a group's filled state are unmeasured.
+- `acceptance`: confirm `FieldFilled(PD)` fires for `2024-06-00` at `DAY_OPTIONAL`, `NumberOfFilledFields(PD, PY, FY, GF)` counts `4` on the presence grid's first row, and `FieldValuesNotUnique` does not fire for `2024-06-00` beside `2024-06-01`; or supply a carrier on which a partially known value reads as empty.
+- `limit`: `yyyy-MM-dd` at two precisions, direct fields; `MONTH_OPTIONAL` and the dotted spelling are unmeasured, and the readers are measured at `DAY_OPTIONAL` only.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-10-02-03"></a>

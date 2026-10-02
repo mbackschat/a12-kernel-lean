@@ -282,7 +282,7 @@ private def addressedCell (source : CheckedStarFieldPath model)
     Except CheckedStarDocumentError CheckedAddressedCell :=
   checked.addressedCell environment source.declaration.id
 
-/-- Resolve topology against the immutable checked document and observe each concrete leaf once through a caller-supplied exact-address view. Exact environment, address, and physical stored payload remain owned by the immutable document. -/
+/-- Resolve topology against the immutable checked document and observe each concrete leaf once through a caller-supplied exact-address view. Exact environment and address remain owned by the immutable document; each leaf's stored text is its placement's, so a value an earlier plan step overlaid reads with its own rendering. -/
 def resolveCheckedFieldWithRead (source : CheckedStarFieldPath model)
     (checked : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)

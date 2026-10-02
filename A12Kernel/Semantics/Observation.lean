@@ -128,6 +128,8 @@ def FieldKind.accepts : FieldKind → Value → Bool
   | .enumeration, .enum _ => true
   | .temporal _ components, .temporal actual =>
       components.family? == some actual.kind
+  -- Kind-level only: which date declarations may hold the arm, and for which text, is the
+  -- precision-partial classifier's question, which `checkDocument` asks at placement.
   | .temporal _ components, .partialDate _ => components.family? == some .date
   | .dateRange, .dateRange _ => true
   | _, _ => false

@@ -3,7 +3,8 @@ import A12Kernel.Elaboration.CheckedDocument
 /-! # Placed-temporal-cell coherence locks
 
 `CheckedDocument.temporallyCoherent` reports whether every placed Date or DateTime cell agrees with the
-value its own classifier derives from its stored text. It is a property a consumer asks for, never a
+value its own classifier derives from its stored text, a precision-partial and a component-omitting Date
+included. It is a property a consumer asks for, never a
 construction gate, and these cases fix both halves of that boundary: what it detects, and what it
 deliberately does not.
 
@@ -30,8 +31,8 @@ private def momentField : FlatFieldDecl := {
   temporalTargetPolicy := some {
     format := "yyyy-MM-dd'T'HH:mm:ss", partialMode := .full } }
 
-/-- A partial Date: admitted by the model, outside every input classifier's ownership. -/
-private def fragmentField : FlatFieldDecl := {
+/-- A precision-partial Date, owned by the partial-Date classifier. -/
+private def partialField : FlatFieldDecl := {
   id := 3
   groupPath := ["Policy"]
   name := "KnownMonth"
@@ -54,6 +55,14 @@ private def uncertifiedField : FlatFieldDecl := {
   policy := { kind := .temporal .date TemporalComponents.fullDate }
   temporalTargetPolicy := some { format := "HH:mm:ss", partialMode := .full } }
 
+/-- A `yyyy-MM` date fragment, owned by the component-omitting classifier. -/
+private def fragmentField : FlatFieldDecl := {
+  id := 7
+  groupPath := ["Policy"]
+  name := "CardExpiry"
+  policy := { kind := .temporal .date TemporalComponents.fullDate }
+  temporalTargetPolicy := some { format := "yyyy-MM", partialMode := .yearOptional } }
+
 /-- A TIME declaration carrying a complete-date format. The Kernel's parser follows that format and
 the declared kind supplies no fallback, so this cell stores a Date and the complete-Date classifier
 owns it (`SPEC-2026-09-06-09`). -/
@@ -65,8 +74,8 @@ private def dateDeclaredClockField : FlatFieldDecl := {
   temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .full } }
 
 private def model : FlatModel := {
-  fields := [dateField, momentField, fragmentField, clockField, uncertifiedField,
-    dateDeclaredClockField]
+  fields := [dateField, momentField, partialField, clockField, uncertifiedField,
+    dateDeclaredClockField, fragmentField]
   timeZoneId := "Europe/Berlin" }
 
 private def prepared :
@@ -154,12 +163,23 @@ example :
       (momentWithMillis "2024-06-15T14:30:00" 7200000)] = some false := by
   native_decide
 
-/- **The declared coverage limit, asserted rather than assumed.** A partial Date, a Time, and a Date
-whose declared format no classifier certifies are all reported coherent no matter what value they carry,
-because none of them has an owner able to derive one. A consumer reading `true` must not conclude that
-these three kinds were checked. -/
+/- **A precision-partial and a component-omitting Date are owned.** A partially known text holds the
+`partialDate` arm carrying it, and a temporal value beside it is incoherent even at the interval's first
+day; a fully known text holds its date. A fragment holds the earliest date its text denotes, so an
+invented date beside `2024-06` is incoherent. -/
 example :
-    coherent? [cell 3 "2024-06" (canonicalDate "1999-01-01")] = some true ∧
+    coherent? [cell 3 "2024-06-00" (.parsed (.partialDate "2024-06-00"))] = some true ∧
+    coherent? [cell 3 "2024-06-00" (canonicalDate "2024-06-01")] = some false ∧
+    coherent? [cell 3 "2024-06-15" (canonicalDate "2024-06-15")] = some true ∧
+    coherent? [cell 3 "2024-06-15" (canonicalDate "2024-06-16")] = some false ∧
+    coherent? [cell 7 "2024-06" (canonicalDate "2024-06-01")] = some true ∧
+    coherent? [cell 7 "2024-06" (canonicalDate "1999-12-31")] = some false := by
+  native_decide
+
+/- **The declared coverage limit, asserted rather than assumed.** A Time and a Date whose declared
+format no classifier certifies are reported coherent no matter what value they carry, because neither
+has an owner able to derive one. A consumer reading `true` must not conclude that these were checked. -/
+example :
     coherent? [cell 4 "14:30:00" (canonicalDate "1999-01-01")] = some true ∧
     coherent? [cell 5 "nonsense" (canonicalDate "1999-01-01")] = some true := by
   native_decide

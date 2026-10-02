@@ -25,7 +25,7 @@ namespace A12Kernel.Conformance.ScalarComputationPlanFirstFilled
 
 open A12Kernel
 
-/-- The six joined kinds, in the grid's order. -/
+/-- The seven joined kinds, in the grid's order. -/
 private inductive Kind where
   | boolean | fragment | time | dateTime | date | dateRange | enumeration
   deriving DecidableEq
@@ -125,18 +125,21 @@ private def plan : CheckedScalarComputationPlan model :=
   (certifyScalarComputationPlan ((Kind.all.mapM Kind.steps?).get (by native_decide)).flatten).toOption.get
     (by native_decide)
 
-/-- A `yyyy-MM` fragment cell: the month's first day at local midnight, or the format rejection. -/
-private def fragmentRaw (declaration : FlatFieldDecl) (text : String) : RawCell :=
+/-- A fragment cell: the earliest date its stored text denotes at local midnight, or the format
+rejection. -/
+private def fragmentCell (model : FlatModel) (declaration : FlatFieldDecl) (text : String) : RawCell :=
   match certifyOmittingDateInputField declaration, ModelZone.ConcreteProfile.ofId? model.timeZoneId with
   | .ok checked, some profile =>
       match checked.classifyStoredForModel model.baseYear text with
-      | .admitted (.yearBearing (.omittedDay date)) =>
-          match profile.resolveStoredDate? date.first.civil with
-          | some value => .parsed (.temporal (.date value))
+      | .admitted value =>
+          match (value.earliestCivil? model.baseYearOrDefault).bind profile.resolveStoredDate? with
+          | some date => .parsed (.temporal (.date date))
           | none => .rejected .dateFormat
       | .rejected cause => .rejected cause
-      | _ => .rejected .dateFormat
+      | .presentEmpty => .presentEmpty
   | _, _ => .rejected .dateFormat
+
+private def fragmentRaw := fragmentCell model
 
 private def classified (declaration : FlatFieldDecl) (text : String) : RawCell :=
   let fallback : RawCell := .rejected .dateFormat
@@ -252,30 +255,66 @@ example :
     values? (fun _ => [none, none, none]) = some (Kind.all.map fun _ => ["-", "-", "-", "1"]) := by
   native_decide
 
-/-- An `MM` fragment target alone, in a model with or without a Base Year. -/
+/- A completed `yyyy-MM` target is read back as its month's first day, which is what the Kernel's
+comparison of a computed fragment with a full Date observes
+([checkpoint](../../docs/sources/temporal-and-message-probes.md#src-partial-date-readers), row `o1`). -/
+example :
+    (match DocumentComputationReadBack.dateFragment model (Kind.fragment.id 3)
+        (.accepted ⟨"2026-05", by decide⟩) with
+      | .ok cell => match cell.parsed with
+          | some (.temporal (.date value)) => value.parts == { year := 2026, month := 5, day := 1 }
+          | _ => false
+      | .error _ => false) = true := by
+  native_decide
+
+/-- Two `MM` sources, `MA = FirstFilledValue(M1, M2)` and `KMA = 1` under `FieldFilled(MA)`, the reader
+authored first, in a model with or without a Base Year: the yearless root of the
+[reader grid](../../docs/sources/temporal-and-message-probes.md#src-partial-date-readers). -/
 private def monthModel (baseYear : Option Int) : FlatModel :=
-  { fields := [{
-      id := 0
-      groupPath := ["Fj"]
-      name := "GM"
+  let month (id : FieldId) (name : String) : FlatFieldDecl :=
+    { id, groupPath := ["Pm"], name
       policy := { kind := .temporal .date TemporalComponents.fullDate }
-      temporalTargetPolicy := some { format := "MM", partialMode := .yearOptional } }]
+      temporalTargetPolicy := some { format := "MM", partialMode := .yearOptional } }
+  { fields := [month 0 "MA", month 1 "M1", month 2 "M2",
+      { id := 3, groupPath := ["Pm"], name := "KMA", policy := { kind := .number { scale := 0, signed := true } } }]
     timeZoneId := "Europe/Berlin"
     baseYear := baseYear }
 
-/- A completed yearless fragment is read back as its month's first day in the Base Year, and with no
-Base Year, which leaves the completion unmeasured, it fails closed as unreadable. -/
+/-- `MA` and `KMA` over one document, or the read-back of a completed `MA` where it fails. -/
+private def monthValues? (baseYear : Option Int) (m1 m2 : Option String) : Option (List String) := do
+  let model := monthModel baseYear
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let guard ← (elaborateNumericTargetComputationTable model ["Pm"] 3
+    [(some (.fieldFilled 0), one)]).toOption
+  let firstFilled ← (checkDateFragmentFirstFilledComputation model ["Pm"] 0
+    (.list (entities "M1" "M2"))).toOption
+  let plan ← (certifyScalarComputationPlan
+    [.number guard, .document (.ofDateFragmentFirstFilled firstFilled)]).toOption
+  let cells := ([(1, m1), (2, m2), (0, some "01")].filterMap fun (id, text) =>
+    text.map fun text => (id, text)).filterMap fun (id, text) =>
+      (model.fields.find? (·.id == id)).map fun declaration =>
+        ({ address := { field := id, path := [] }, stored := text
+           raw := fragmentCell model declaration text } : ClassifiedCellInput)
+  let input ← (checkDocument prepared "en_US" { instantiatedRows := [], cells }).toOption
+  let outcomes ← (plan.execute world prepared.patterns input).toOption
+  let found ← outcomes.mapM valueOf?
+  [0, 3].mapM fun target => (found.find? (·.1 == target)).map (·.2)
+
+/- Rows `o1` and `o2`: with no Base Year the Kernel computes a yearless fragment target and its guard
+reads it filled, so the completed target is read back rather than refused; its year is
+`baseYearOrDefault`, which no measured reader observes. A declared Base Year supplies the year. -/
 example :
-    (match DocumentComputationReadBack.dateFragment (monthModel (some 2011)) 0
-        (.accepted ⟨"03", by decide⟩) with
-      | .ok cell => match cell.parsed with
-          | some (.temporal (.date value)) => value.parts == { year := 2011, month := 3, day := 1 }
-          | _ => false
-      | .error _ => false) &&
+    monthValues? none (some "03") none = some ["03", "1"] ∧
+    monthValues? none none (some "04") = some ["04", "1"] ∧
     (match DocumentComputationReadBack.dateFragment (monthModel none) 0
+        (.accepted ⟨"03", by decide⟩), DocumentComputationReadBack.dateFragment (monthModel (some 2011)) 0
         (.accepted ⟨"03", by decide⟩) with
-      | .error .targetNotReadable => true
-      | _ => false) = true := by
+      | .ok defaulted, .ok given => match defaulted.parsed, given.parsed with
+          | some (.temporal (.date absent)), some (.temporal (.date declared)) =>
+              absent.parts == { year := 2000, month := 3, day := 1 } &&
+                declared.parts == { year := 2011, month := 3, day := 1 }
+          | _, _ => false
+      | _, _ => false) = true := by
   native_decide
 
 end A12Kernel.Conformance.ScalarComputationPlanFirstFilled

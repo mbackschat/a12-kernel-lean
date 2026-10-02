@@ -501,7 +501,7 @@ These stable names help when a query crosses numbered clauses. Their capability 
 #### Temporal group uniqueness
 
 - `state`: implemented for checked-document full validation.
-- `boundary`: temporal uniqueness retains one recursively complete group expansion with one exact declared format, resolves every declaration at every instantiated descendant row below the operand's own bound depth, and compares the resulting combined stream by exact stored text. A partially known operand, placed as a value with its spelling, enters that stream as present; its runtime uniqueness is unmeasured.
+- `boundary`: temporal uniqueness retains one recursively complete group expansion with one exact declared format, resolves every declaration at every instantiated descendant row below the operand's own bound depth, and compares the resulting combined stream by exact stored text. A partially known operand, placed as a value with its spelling, enters that stream as present and compares by that spelling, so `2024-06-00` beside a fully known `2024-06-01` is unique, measured ([checkpoint](../sources/temporal-and-message-probes.md#src-partial-date-readers)).
 - `owner`: [`TemporalValuesNotUnique.lean`](../../A12Kernel/Elaboration/TemporalValuesNotUnique.lean).
 - `case`: [temporal group cases](../../A12Kernel/Conformance/TemporalEntityGroupOperand.lean).
 - `proof`: [`checkedTemporalUniquenessGroup_expansion_complete`](../../A12Kernel/Proofs/ValuesNotUnique.lean) and [`checkedTemporalUniquenessGroup_resolveValidationCore`](../../A12Kernel/Proofs/ValuesNotUnique.lean).

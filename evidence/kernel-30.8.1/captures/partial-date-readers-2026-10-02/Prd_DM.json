@@ -1,0 +1,507 @@
+{
+ "header": {
+  "id": "Prd_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Prd_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Pu",
+     "name": "Pu",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Pu/U1",
+        "name": "U1",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd",
+           "datePrecision": "DAY_OPTIONAL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pu/U2",
+        "name": "U2",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd",
+           "datePrecision": "DAY_OPTIONAL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pu/Q",
+        "name": "Q",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd",
+           "datePrecision": "DAY_OPTIONAL"
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pu/QS",
+        "name": "QS",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pu/GE",
+        "name": "GE",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pu/F1",
+        "name": "F1",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pu/F2",
+        "name": "F2",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pu/FA",
+        "name": "FA",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pu/FX",
+        "name": "FX",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pu/KFA",
+        "name": "KFA",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Pu/Sg",
+        "name": "Sg",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Pu/Sg/SG",
+           "name": "SG",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd",
+              "datePrecision": "DAY_OPTIONAL"
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Pu/RU",
+        "name": "RU",
+        "Rule": {
+         "errorEntityRelPath": "../U1",
+         "errorCode": "RU",
+         "errorCondition": "FieldValuesNotUnique(U1, U2)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "RU"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Pu/RG",
+        "name": "RG",
+        "Rule": {
+         "errorEntityRelPath": "../GE",
+         "errorCode": "RG",
+         "errorCondition": "GroupFilled(Sg) And FieldFilled(GE)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "RG"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pu/KFAComp",
+        "name": "KFAComp",
+        "Computation": {
+         "computedFieldRelPath": "../KFA",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "[FA] == [FX]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pu/FAComp",
+        "name": "FAComp",
+        "Computation": {
+         "computedFieldRelPath": "../FA",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(F1, F2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Pm",
+     "name": "Pm",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Pm/M1",
+        "name": "M1",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pm/M2",
+        "name": "M2",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pm/MA",
+        "name": "MA",
+        "Field": {
+         "fieldType": {
+          "type": "DateFragmentType",
+          "DateFragmentType": {
+           "formatOfFragment": "MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pm/KMA",
+        "name": "KMA",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pm/KMAComp",
+        "name": "KMAComp",
+        "Computation": {
+         "computedFieldRelPath": "../KMA",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "FieldFilled(MA)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Pm/MAComp",
+        "name": "MAComp",
+        "Computation": {
+         "computedFieldRelPath": "../MA",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(M1, M2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "c"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Po",
+     "name": "Po",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Po/PO",
+        "name": "PO",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd",
+           "datePrecision": "DAY_OPTIONAL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Po/PX",
+        "name": "PX",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Po/RO",
+        "name": "RO",
+        "Rule": {
+         "errorEntityRelPath": "../PX",
+         "errorCode": "RO",
+         "errorCondition": "FieldNotFilled(PX)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "RO"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Ro",
+     "name": "Ro",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Ro/RP",
+        "name": "RP",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd",
+           "datePrecision": "DAY_OPTIONAL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Ro/RB",
+        "name": "RB",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Ro/Rs",
+        "name": "Rs",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Ro/Rs/RA",
+           "name": "RA",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Ro/RR",
+        "name": "RR",
+        "Rule": {
+         "errorEntityRelPath": "../Rs/RA",
+         "errorCode": "RR",
+         "errorCondition": "MinValue(Rs*/RA) < 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "RR"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

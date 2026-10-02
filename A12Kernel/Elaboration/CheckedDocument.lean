@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Elaboration.DateRangeInput
 import A12Kernel.Elaboration.PartialDateInput
+import A12Kernel.Elaboration.OmittingDateInput
 import A12Kernel.Elaboration.DateTimeInput
 import A12Kernel.Semantics.NumericInput
 import A12Kernel.Semantics.ScalarText
@@ -264,18 +265,23 @@ private def ClassifiedCellInput.canonicalScalarCoherent
   | .boolean => input.raw == classifyStoredBooleanText input.stored
   | .confirm => input.raw == classifyStoredConfirmText input.stored
   | .temporal _ _ =>
-      -- A Date cell holds a temporal value or, on a partial-precision declaration, the partially
-      -- known value its own classifier admits for exactly the stored text. A text value and a
-      -- stored text placed with no value are refused, so a partially known value has one encoding.
-      match input.raw with
-      | .parsed (.temporal _) => true
-      | .parsed (.partialDate text) =>
-          text == input.stored &&
-            match certifyPartialDateInputField declaration with
-            | .ok checked => checked.admitsPartiallyKnownText text
-            | .error _ => false
-      | .parsed _ => false
-      | .empty | .presentEmpty | .rejected _ => true
+      -- The partially known arm is admitted only on a precision-partial declaration whose own
+      -- classifier admits exactly the stored text as partially known. On that declaration a text
+      -- value and a partially known text placed with no value are refused too, the two encodings the
+      -- arm replaced. Whether a temporal value or a rejection agrees with its text stays the
+      -- `temporallyCoherent` property's question, as on every other temporal declaration.
+      match certifyPartialDateInputField declaration with
+      | .error _ =>
+          match input.raw with
+          | .parsed (.partialDate _) => false
+          | _ => true
+      | .ok checked =>
+          match input.raw with
+          | .parsed (.temporal _) => true
+          | .parsed (.partialDate text) => text == input.stored && checked.admitsPartiallyKnownText text
+          | .parsed _ => false
+          | .presentEmpty => !checked.admitsPartiallyKnownText input.stored
+          | .empty | .rejected _ => true
   | .dateRange =>
       match declaration.toDateRangeDeclarationPolicy? with
       | none => true
@@ -566,6 +572,35 @@ def stringComputationContext (checked : CheckedDocument model) :
         | _ => checked.flatContext.read field
     | .error _ => malformedCheckedCell
 
+/-- Whether a cell on a precision-partial declaration holds what that declaration's classifier makes of
+its stored text: a partially known text is the `partialDate` arm carrying it, and a fully known one that
+date. -/
+private def partialDateCellAgrees (owner : CheckedPartialDateInputField) (stored : String)
+    (actual : RawCell) : Bool :=
+  match owner.classifyStored stored, actual with
+  | .presentEmpty, .presentEmpty => true
+  | .rejected expected, .rejected found => expected == found
+  | .admitted value, .parsed (.partialDate text) =>
+      text == stored && match value.value with
+        | .full _ => false
+        | .omittedDay _ | .omittedMonth _ | .omittedYear => true
+  | .admitted value, .parsed (.temporal (.date found)) =>
+      match value.value with
+      | .full date => date.civil.parts == found.parts
+      | .omittedDay _ | .omittedMonth _ | .omittedYear => false
+  | _, _ => false
+
+/-- Whether a cell on a component-omitting declaration holds the earliest date its stored text denotes,
+its year from `FlatModel.baseYearOrDefault` where the format names none. -/
+private def omittingDateCellAgrees (model : FlatModel) (owner : CheckedOmittingDateInputField)
+    (stored : String) (actual : RawCell) : Bool :=
+  match owner.classifyStoredForModel model.baseYear stored, actual with
+  | .presentEmpty, .presentEmpty => true
+  | .rejected expected, .rejected found => expected == found
+  | .admitted value, .parsed (.temporal (.date found)) =>
+      (value.earliestCivil? model.baseYearOrDefault).any (·.parts == found.parts)
+  | _, _ => false
+
 /-- Whether every placed temporal cell whose declaration a classifier owns agrees with the value that
 classifier derives from that cell's **own** stored text.
 
@@ -578,17 +613,17 @@ case that pins which account that clause states needs two cells whose text and d
 `SPEC-2026-08-05-03` records whether a real model can store such a pair as its open residual. Making the
 text a function of the value would delete the clause's own subject from the representation.
 
-The second is coverage, and it is bounded by the declared **component set** rather than the declared
-kind. Only a complete-Date and a complete-DateTime declaration have an owning input classifier, and the
-Kernel's parser follows the declared format with no fallback to the kind
-(`SPEC-2026-09-06-09`) — so a TIME field
-declared `yyyy-MM-dd` stores a Date and is checked here, while a clock or **partial**-precision
-declaration has no derivable `Value` form and can never be. A gate covering half a family is one no
-consumer could rely on, whereas a property may honestly report on the half it knows.
+The second is coverage, and it is bounded by the declared format rather than the declared kind, because
+the Kernel's parser follows the declared format with no fallback to the kind (`SPEC-2026-09-06-09`). Four
+declaration families have an owning classifier: a complete Date, a complete DateTime, a precision-partial
+Date, whose partially known text is the `partialDate` arm and whose fully known text is that date, and a
+component-omitting Date or date fragment, whose value is the earliest date its text denotes. A clock
+declaration has none, and a gate covering part of a family is one no consumer could rely on, whereas a
+property may honestly report on the part it knows.
 
-`true` therefore means: no cell on a complete-Date or complete-DateTime declaration contradicts its
-stored text. It does not certify the declarations listed above, and it is not a claim that the kernel
-would produce this document. -/
+`true` therefore means: no cell on one of those four declaration families contradicts its stored text.
+It does not certify a clock declaration, and it is not a claim that the kernel would produce this
+document. -/
 def temporallyCoherent (checked : CheckedDocument model) : Bool :=
   checked.source.cells.all fun input =>
     match model.lookupUniqueId input.address.field with
@@ -596,6 +631,10 @@ def temporallyCoherent (checked : CheckedDocument model) : Bool :=
     | .ok declaration =>
         match declaration.policy.kind with
         | .temporal _ components =>
+            match certifyPartialDateInputField declaration, certifyOmittingDateInputField declaration with
+            | .ok owner, _ => partialDateCellAgrees owner input.stored input.raw
+            | .error _, .ok owner => omittingDateCellAgrees model owner input.stored input.raw
+            | .error _, .error _ =>
             if components == TemporalComponents.fullDate then
               match certifyFullDateInputField declaration with
               | .error _ => true

@@ -207,10 +207,14 @@ def boolean : BooleanComputationOutcome → CheckedCell
   | .poison _ => poison
   | .value value => checkAdmittedRawCell (classifyStoredBooleanText (toString value))
 
-/-- A completed DateFragment target, read as its earliest date: the Kernel decodes a component-omitting
-value so, its year from the Base Year where the format names none
-([`kf176`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf176)). A yearless fragment in a model
-declaring no Base Year has no measured completion and fails closed as unreadable. -/
+/-- A completed DateFragment target, read as the earliest date it denotes, which is how the Kernel
+completes a fragment at runtime: missing month and day become `01` and a missing year the Base Year,
+measured by comparison against a full Date (the DateFragment runtime-completion supplement in
+[`kf93`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf93)), and a computed `yyyy-MM` target compares
+equal to its month's first day
+([checkpoint](../../docs/sources/temporal-and-message-probes.md#src-partial-date-readers)). A yearless
+fragment in a model declaring no Base Year is computed by the Kernel and completes to
+`FlatModel.baseYearOrDefault`, a year no measured reader observes. -/
 def dateFragment (model : FlatModel) (target : FieldId) :
     StringTargetOutcome → Except DocumentComputationStepFault CheckedCell
   | .noValue => pure empty
@@ -223,12 +227,7 @@ def dateFragment (model : FlatModel) (target : FieldId) :
         (throw .targetNotReadable)
       let earliest : Option CivilDate :=
         match field.classifyStoredForModel model.baseYear stored.text with
-        | .admitted (.yearBearing (.full date)) => some date.civil
-        | .admitted (.yearBearing (.omittedDay date)) => some date.first.civil
-        | .admitted (.yearBearing (.omittedMonth date)) => some date.first.civil
-        | .admitted (.yearBearing .omittedYear) => none
-        | .admitted (.yearless value) => model.baseYear.bind fun year =>
-            CivilDate.ofParts? { year, month := value.month, day := value.day }
+        | .admitted value => value.earliestCivil? model.baseYearOrDefault
         | .presentEmpty | .rejected _ => none
       let date ← earliest.getDM (throw .targetNotReadable)
       let value ← (profile.resolveStoredDate? date).getDM (throw .targetNotReadable)
