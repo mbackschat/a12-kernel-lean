@@ -136,9 +136,20 @@ inductive ComputationAlternativeSelection (Operation : Type) where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
+/-- One alternative's guard with an optional whole-computation precondition joined on. A present
+common guard is the left operand so clean false and poison decide before the alternative-specific
+guard. -/
+def ComputationCondition.withCommon (commonPrecondition own : Option ComputationCondition) :
+    Option ComputationCondition :=
+  match commonPrecondition, own with
+  | none, own => own
+  | some common, none => some common
+  | some common, some own => some (.and common own)
+
 namespace ComputationAlternative
 
-/-- Expand an optional whole-computation precondition into the existing guarded alternative core. A present common guard is the left operand so clean false and poison decide before the alternative-specific guard. -/
+/-- Expand an optional whole-computation precondition into the existing guarded alternative core,
+joining it onto every alternative's guard by `ComputationCondition.withCommon`. -/
 def expandCommonPrecondition
     (commonPrecondition : Option ComputationCondition)
     (alternatives : List (ComputationAlternative Operation)) :
@@ -147,9 +158,7 @@ def expandCommonPrecondition
   | none => alternatives
   | some common =>
       alternatives.map fun alternative => {
-        precondition := some <| match alternative.precondition with
-          | none => common
-          | some precondition => .and common precondition
+        precondition := ComputationCondition.withCommon (some common) alternative.precondition
         operation := alternative.operation }
 
 /-- Select the first alternative directly when unguarded or when its guard holds. Clean guarded non-matches continue, while poison aborts without examining the remaining alternatives. -/

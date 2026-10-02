@@ -444,7 +444,7 @@ theorem guardedGeneratedComputation_firstHolds_selects
   simp [GuardedGeneratedComputationAlternatives.selectFirst,
     GuardedGeneratedComputationAlternatives.declaredAlternatives,
     GeneratedComputationAlternative.toComputationAlternative,
-    ComputationAlternative.expandCommonPrecondition,
+    ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
     ComputationAlternative.selectFirst, holds]
 
 /-- A holding common precondition preserves the ordinary first-holding-row selection for the checked guarded fragment. -/
@@ -459,7 +459,7 @@ theorem guardedGeneratedComputation_holdingCommon_firstHolds_selects
   simp [GuardedGeneratedComputationAlternatives.selectFirst,
     GuardedGeneratedComputationAlternatives.declaredAlternatives,
     GeneratedComputationAlternative.toComputationAlternative,
-    ComputationAlternative.expandCommonPrecondition,
+    ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
     ComputationAlternative.selectFirst, ComputationCondition.eval_and,
     commonHolds, firstHolds]
 
@@ -471,7 +471,7 @@ theorem singleGeneratedComputation_unconditional_selects
     SingleGeneratedComputationAlternative.selectFirst alternative none context =
       .selected alternative.operation := by
   simp [SingleGeneratedComputationAlternative.selectFirst, unconditional,
-    ComputationAlternative.expandCommonPrecondition,
+    ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
     ComputationAlternative.selectFirst]
 
 /-- A holding common precondition is the sole runtime guard for an otherwise-unconditional singleton. -/
@@ -484,7 +484,7 @@ theorem singleGeneratedComputation_holdingCommon_selects
       (some common) context =
       .selected alternative.operation := by
   simp [SingleGeneratedComputationAlternative.selectFirst, unconditional,
-    ComputationAlternative.expandCommonPrecondition,
+    ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
     ComputationAlternative.selectFirst, commonHolds]
 
 /-- The minimum two-branch table is a left-to-right disjunction below the target-filled gate; no first-match decision occurs in this desugaring. -/

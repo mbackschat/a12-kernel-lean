@@ -26,7 +26,6 @@ repeatable target of a kind other than Number, run once per instantiated target 
 
 namespace A12Kernel
 
-
 /-- One plan step with its family retained. A Number table runs at its fixed target or at every row
 of its target's scope, by its own reading scope. -/
 inductive MixedComputationStep (model : FlatModel) (compilePattern : StringPatternCompiler) where

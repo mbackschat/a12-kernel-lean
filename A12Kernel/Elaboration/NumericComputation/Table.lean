@@ -161,11 +161,7 @@ private def elaborateNumericTargetComputationTableWith (model : FlatModel) (decl
     (suppressExactScaleWarning : Bool) (targetScope : ComputationTargetScope)
     (commonPrecondition : Option ComputationCondition) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
-  let join (own : Option ComputationCondition) : Option ComputationCondition :=
-    match commonPrecondition, own with
-    | none, own => own
-    | some common, none => some common
-    | some common, some own => some (.and common own)
+  let join := ComputationCondition.withCommon commonPrecondition
   let elaborated := alternatives.zipIdx.map fun ((guard, expression), index) =>
     (index + 1, guard,
       elaborateCompleteNumericTargetComputationOperation model declaringGroup target expression

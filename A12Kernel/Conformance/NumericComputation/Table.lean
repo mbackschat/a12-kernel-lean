@@ -384,11 +384,13 @@ example :
     let g := some (ComputationCondition.fieldFilled laterId)
     let ownTarget := ComputationCondition.fieldFilled targetId
     let other := ComputationCondition.fieldFilled sourceId
+    let selfRead := surfaceField ["Root"] "Target"
     [commonClass other [(none, source), (none, later)], commonClass ownTarget [(none, source), (none, later)],
+      commonClass ownTarget [(none, selfRead), (none, later)],
       commonClass ownTarget [(g, source), (none, later)], commonClass ownTarget [(none, source), (g, later)],
       commonClass ownTarget [(g, source)], commonClass ownTarget [(none, source)],
       commonClass other [(none, source)]] =
-      ["MVK_ERROR_EMPTY_PRECONDITION", "MVK_ERROR_EMPTY_PRECONDITION",
+      ["MVK_ERROR_EMPTY_PRECONDITION", "MVK_ERROR_EMPTY_PRECONDITION", "MVK_ERROR_EMPTY_PRECONDITION",
         "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD", "MVK_ERROR_EMPTY_PRECONDITION",
         "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD", "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD",
         "admitted"] := by
