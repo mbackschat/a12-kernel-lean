@@ -1,0 +1,321 @@
+{
+ "header": {
+  "id": "MixFill_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "MixFill_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Probe",
+     "name": "Probe",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Probe/A",
+        "name": "A",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/B",
+        "name": "B",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/C",
+        "name": "C",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/S",
+        "name": "S",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/F",
+        "name": "F",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType",
+          "BooleanType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/K",
+        "name": "K",
+        "Field": {
+         "fieldType": {
+          "type": "ConfirmType",
+          "ConfirmType": {}
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/G",
+        "name": "G",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/G/X",
+           "name": "X",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Probe/G/Y",
+           "name": "Y",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/H",
+        "name": "H",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/H/Z",
+           "name": "Z",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Probe/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/Rows/R",
+           "name": "R",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/MXONE",
+        "name": "MXONE",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "MXONE",
+         "errorCondition": "AtLeastOneFieldFilled(A, G)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "MXONE"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/MXALL",
+        "name": "MXALL",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "MXALL",
+         "errorCondition": "AllFieldsFilled(A, Rows*/R)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "MXALL"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/MXCNT",
+        "name": "MXCNT",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "MXCNT",
+         "errorCondition": "NumberOfFilledFields(A, G, Rows*/R) == 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "MXCNT"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/MXNALL",
+        "name": "MXNALL",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "MXNALL",
+         "errorCondition": "NotAllFieldsFilled(A, Rows*/R, G)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "MXNALL"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/MXNO",
+        "name": "MXNO",
+        "Rule": {
+         "errorEntityRelPath": "../B",
+         "errorCode": "MXNO",
+         "errorCondition": "NoFieldFilled(B, Rows*/R)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "MXNO"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/MXCOL",
+        "name": "MXCOL",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "MXCOL",
+         "errorCondition": "FieldsNotCollectivelyFilled(A, G)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "MXCOL"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/MXMTO",
+        "name": "MXMTO",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "MXMTO",
+         "errorCondition": "MoreThanOneFieldFilled(A, Rows*/R)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "MXMTO"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/MXCNT0",
+        "name": "MXCNT0",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "MXCNT0",
+         "errorCondition": "NumberOfFilledFields(A, H, Rows*/R) < 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "MXCNT0"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

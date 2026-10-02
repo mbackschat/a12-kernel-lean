@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.FilledFieldGroupCount
+import A12Kernel.Elaboration.FieldFillList
 
 /-! # Group-scope `NumberOfFilledFields` extent laws
 
@@ -75,14 +75,14 @@ theorem flatModel_declarationSlots_repeatableDescendant
 
 /-- The instantiated tally contributes no declared-tail slots, so adding model capacity later
 cannot double-count them. Formal unknowns remain instantiated classifications. -/
-theorem checkedFilledFieldCountGroupSource_tally_uninstantiated_zero
-    (checked : CheckedFilledFieldCountGroupSource model)
+theorem checkedFieldFillList_tally_uninstantiated_zero
+    (list : CheckedFieldFillList model)
     (document : CheckedDocument model) (outer : Env)
     (tally : ValidationFillTally)
-    (resolved : checked.validationFillTally document outer = .ok tally) :
+    (resolved : list.validationFillTally document outer = .ok tally) :
     tally.uninstantiated = 0 := by
-  unfold CheckedFilledFieldCountGroupSource.validationFillTally at resolved
-  cases core : checked.observations document outer with
+  unfold CheckedFieldFillList.validationFillTally at resolved
+  cases core : list.observations document outer with
   | error error => simp [core, bind, Except.bind] at resolved
   | ok observations =>
       rw [core] at resolved
@@ -102,23 +102,28 @@ theorem checkedFilledFieldCountGroupSource_tally_uninstantiated_zero
           refine hypothesis _ ?_
           cases head <;> simp [ValidationFillTally.combine, CellObservation.asValidationFillTally, zero]
 
-/-- With retained capacity, every group operator is the shared validation evaluator on the same
-instantiated classifications plus the missing declared slots. This also preserves the four
+/-- With retained capacity, every operator over the list is the shared validation evaluator on the
+same instantiated classifications plus the missing declared slots. This also preserves the four
 operators whose result ignores the tail. -/
-theorem checkedFilledFieldCountGroupSource_fill_with_declared_capacity
-    (checked : CheckedFilledFieldCountGroupSource model)
+theorem checkedFieldFillList_fill_with_declared_capacity
+    (list : CheckedFieldFillList model)
     (document : CheckedDocument model) (outer : Env)
     (operator : FieldFillQuantifier) (tally : ValidationFillTally) (capacity : Nat)
-    (resolved : checked.validationFillTally document outer = .ok tally)
-    (available : model.declarationsSlotCapacity? checked.source.boundLevelCount
-      checked.declarations = some capacity) :
-    checked.evaluateCheckedDocumentValidationFill? operator document outer =
+    (resolved : list.validationFillTally document outer = .ok tally)
+    (available : list.fillCapacity? = some capacity) :
+    list.evaluateFill? operator document outer =
       .ok (some (operator.evalValidation { tally with
         uninstantiated := capacity - (tally.filled + tally.empty + tally.unknown) })) := by
   cases operator <;>
-    simp [CheckedFilledFieldCountGroupSource.evaluateCheckedDocumentValidationFill?,
-      CheckedFilledFieldCountGroupSource.fillCapacity?,
-      resolved, available, FieldFillQuantifier.evalValidation,
+    simp [CheckedFieldFillList.evaluateFill?, resolved, available, FieldFillQuantifier.evalValidation,
       bind, Except.bind, pure, Except.pure]
+
+/-- A group operand's list reads the group source's own declared slots, so the capacity theorem
+above specializes to a group with the group's capacity. -/
+theorem asFieldFillList_fillCapacity (checked : CheckedFilledFieldCountGroupSource model) :
+    checked.asFieldFillList.fillCapacity? = checked.fillCapacity? := by
+  cases h : checked.fillCapacity? <;>
+    simp [CheckedFilledFieldCountGroupSource.asFieldFillList, CheckedFieldFillList.fillCapacity?,
+      CheckedFieldFillList.sum?, CheckedFieldFillOperand.fillCapacity?, h]
 
 end A12Kernel

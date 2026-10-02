@@ -240,7 +240,7 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
           let outcome? ← source.evaluateFill? operator document context.outer
           pure ((outcome?.map ValidationFillOutcome.asConservativeVerdict).getD .unknown)
       | .legacy _ _ | .partialView _ _ =>
-          .error (.checkedDocumentRequired ((source.declarations.head?.map (·.groupPath)).getD []))
+          .error (.checkedDocumentRequired ((source.operands.head?.map (·.groupPath)).getD []))
   | leaf => pure (leaf.evalSelected context.scalar context.directRelevant)
 
 /-- Evaluate one reached leaf with the rule-owned current-row RNU result. Every other leaf delegates to the established addressed evaluator unchanged. -/

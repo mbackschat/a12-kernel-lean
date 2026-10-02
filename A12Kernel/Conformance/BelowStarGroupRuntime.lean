@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.FilledFieldGroupCount
+import A12Kernel.Elaboration.FieldFillList
 import A12Kernel.Elaboration.TokenValueCount
 import A12Kernel.Elaboration.BooleanValueCount
 import A12Kernel.Elaboration.NumericAggregate
@@ -93,9 +93,9 @@ private def reading (rows : List Nat) (cells : List (FieldId × Nat × Cell)) : 
     { group := belowRows "Texts" }).toOption
   let marks ← (elaborateBooleanValueCountSource model ["Probe"] true
     { first := .starredGroup (belowRows "Flags"), rest := [] }).toOption
-  let count := (filled.evaluateCheckedDocumentValidationOperand? document []).toOption.join
+  let count := (filled.asFieldFillList.evaluateCountOperand? document []).toOption.join
   let fills := String.ofList (quantifiers.map fun operator =>
-    fillCode (filled.evaluateCheckedDocumentValidationFill? operator document []).toOption.join)
+    fillCode (filled.asFieldFillList.evaluateFill? operator document []).toOption.join)
   pure (" ".intercalate [
     equalities count 5,
     fills,

@@ -591,3 +591,25 @@ Repeatable computation additionally uses `CalculatedFieldIterationLimitCreator`,
 - `outcome`: on every row of `NegDe_DM` the Kernel fires the same codes as on the grid's English model.
 - `outcome`: the population replay gives 380 matches, no divergence and 60 refusals: `VALD` and `VALT`, which no Lean carrier admits, and the German pattern pair.
 - `bytes`: [`negation-pair-supplement-2026-10-02`](../../evidence/kernel-30.8.1/captures/negation-pair-supplement-2026-10-02/), message and summary text redacted. `artifact-en.json` SHA-256 `875825782eb0d79715c59ce9be6adeb92bd584012d49d43cf07b4e05b28c4b72` and `artifact-de.json` SHA-256 `3e3729b5c3b531bc86e952a7ca88c9d3fdde2439776f9dd245b6b2b94664ab2e`.
+
+<a id="src-field-fill-mixed-list"></a>
+#### Field-fill quantifiers and `NumberOfFilledFields` over lists mixing direct fields, fixed groups and a starred field read each operand by its own source, measured locally 2026-10-02
+
+- `revision`: one `:adapter:kernelProbe` request at a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8` in the pinned measurement checkout, `source.state: CLEAN` in the artifact and `git status --short` empty before and after. `dmtool` 0.13.0, Kernel `30.8.1` built and runtime, `validateFull`, `enginesAgree: true` on all ten rows.
+- `question`: the entity-list field-fill source had Kernel rows only for lists of one operand kind; a cold review of `546c7ebe..d5d47ef9` found no lock and no observation for a mixed list.
+- `model`: the [pair grid](#src-negation-pair-grid)'s model and ten documents with its rules replaced by `AtLeastOneFieldFilled(A, G)`, `AllFieldsFilled(A, Rows*/R)`, `NumberOfFilledFields(A, G, Rows*/R) == 2`, `NotAllFieldsFilled(A, Rows*/R, G)`, `NoFieldFilled(B, Rows*/R)`, `FieldsNotCollectivelyFilled(A, G)`, `MoreThanOneFieldFilled(A, Rows*/R)` and `NumberOfFilledFields(A, H, Rows*/R) < 1`, each with error field `A` except the `NoFieldFilled` rule's `B`.
+- `matrix`: the grid's notation for one rule per row.
+
+| rule | all-filled | all-empty | blank | one-filled | two-filled | invalid-alone | invalid-one-filled | invalid-two-filled | over-limit | rows-none-a |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `AtLeastOneFieldFilled(A, G)` | `v` | `u` | `u` | `v` | `v` | `u` | `v` | `u` | `v` | `v` |
+| `AllFieldsFilled(A, Rows*/R)` | `v` | `u` | `u` | `u` | `u` | `u` | `u` | `u` | `u` | `u` |
+| `NumberOfFilledFields(A, G, Rows*/R) == 2` | `u` | `u` | `u` | `o` | `u` | `u` | `u` | `u` | `u` | `u` |
+| `NotAllFieldsFilled(A, Rows*/R, G)` | `u` | `o` | `o` | `o` | `o` | `o` | `o` | `o` | `o` | `o` |
+| `NoFieldFilled(B, Rows*/R)` | `u` | `o` | `o` | `o` | `u` | `u` | `u` | `u` | `o` | `o` |
+| `FieldsNotCollectivelyFilled(A, G)` | `u` | `u` | `u` | `o` | `o` | `u` | `u` | `u` | `o` | `o` |
+| `MoreThanOneFieldFilled(A, Rows*/R)` | `v` | `u` | `u` | `u` | `v` | `u` | `u` | `u` | `u` | `u` |
+| `NumberOfFilledFields(A, H, Rows*/R) < 1` | `u` | `o` | `o` | `u` | `u` | `u` | `u` | `u` | `u` | `u` |
+
+- `outcome`: the population replay matches all 80 rule-rows, with no refusal.
+- `bytes`: [`field-fill-mixed-list-2026-10-02`](../../evidence/kernel-30.8.1/captures/field-fill-mixed-list-2026-10-02/), message and summary text redacted, `artifact.json` SHA-256 `3f865456cdbf6cd755ad1a4c18a29f01a44392742f600f8e22bebbb8cef39f00`.

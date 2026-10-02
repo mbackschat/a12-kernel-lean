@@ -51,7 +51,7 @@ private def fixedOperand (cells : List ClassifiedCellInput) : Option NumericOper
   let document ← (checkDocument fixedPrepared "en_US" {
     instantiatedRows := []
     cells }).toOption
-  (checked.evaluateCheckedDocumentValidationOperand? document []).toOption.join
+  (checked.asFieldFillList.evaluateCountOperand? document []).toOption.join
 
 private def fixedVerdict (cells : List ClassifiedCellInput) : Option Verdict := do
   let operand ← fixedOperand cells
@@ -134,7 +134,7 @@ private def starredOperand (rows : List RowAddr)
     (cells : List ClassifiedCellInput) : Option NumericOperand := do
   let checked ← starredChecked?
   let document ← (checkDocument starredPrepared "en_US" { instantiatedRows := rows, cells }).toOption
-  (checked.evaluateCheckedDocumentValidationOperand? document []).toOption.join
+  (checked.asFieldFillList.evaluateCountOperand? document []).toOption.join
 
 example :
     starredOperand [] [] = some (.value 0 .growOnly) ∧
@@ -194,7 +194,7 @@ private def nestedOperand (rows : List RowAddr)
   let document ← (checkDocument nestedPrepared "en_US" {
     instantiatedRows := rows
     cells }).toOption
-  (checked.evaluateCheckedDocumentValidationOperand? document []).toOption.join
+  (checked.asFieldFillList.evaluateCountOperand? document []).toOption.join
 
 private def nestedRows (count : Nat) : List RowAddr :=
   (List.range count).map fun index => { group := 20, path := [index + 1] }
@@ -243,7 +243,7 @@ private def deepOperand (rows : List RowAddr)
   let document ← (checkDocument deepPrepared "en_US" {
     instantiatedRows := rows
     cells }).toOption
-  (checked.evaluateCheckedDocumentValidationOperand? document []).toOption.join
+  (checked.asFieldFillList.evaluateCountOperand? document []).toOption.join
 
 private def deepOuterRows : List RowAddr :=
   [{ group := 30, path := [1] }, { group := 30, path := [2] }]
@@ -403,7 +403,7 @@ private def fixedFill
   let document ← (checkDocument fixedPrepared "en_US" {
     instantiatedRows := []
     cells }).toOption
-  (checked.evaluateCheckedDocumentValidationFill? operator document []).toOption |>.bind id
+  (checked.asFieldFillList.evaluateFill? operator document []).toOption |>.bind id
 
 private def threeLevelFill
     (operator : FieldFillQuantifier)
@@ -413,7 +413,7 @@ private def threeLevelFill
   let document ← (checkDocument threeLevelPrepared "en_US" {
     instantiatedRows := rows
     cells }).toOption
-  (checked.evaluateCheckedDocumentValidationFill? operator document []).toOption |>.bind id
+  (checked.asFieldFillList.evaluateFill? operator document []).toOption |>.bind id
 
 /- The two Kernel-measured operators read the same depth-3 extent the count does, and each carries a
    different polarity: `AtLeastOneFieldFilled` fires VALUE, `NoFieldFilled` fires OMISSION. The empty
@@ -566,7 +566,7 @@ private def runtimeGroupFillResult? (starred : Bool) (direct : Option String)
       (texts.zipIdx.flatMap fun (text, index) =>
         (text.map (fillRuntimeCell 101 [index + 1])).toList)
   }).toOption
-  pure (observableFillResult (checked.evaluateCheckedDocumentValidationFill? operator document []))
+  pure (observableFillResult (checked.asFieldFillList.evaluateFill? operator document []))
 
 private def runtimeGroupFill? (starred : Bool) (direct : Option String)
     (texts : List (Option String)) (operator : FieldFillQuantifier) :
@@ -673,7 +673,7 @@ private def nestedRuntimeFillResults? (outer : Env) :
       fillRuntimeCell 102 [2, 2] "3"]
   }).toOption
   pure (runtimeFillOperators.map fun operator =>
-    observableFillResult (checked.evaluateCheckedDocumentValidationFill? operator document outer))
+    observableFillResult (checked.asFieldFillList.evaluateFill? operator document outer))
 
 private def nestedRuntimeFillMatrix? (outer : Env) :
     Option (List ValidationFillOutcome) := do

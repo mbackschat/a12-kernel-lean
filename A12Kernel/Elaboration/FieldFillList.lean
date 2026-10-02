@@ -42,6 +42,12 @@ def declarations : CheckedFieldFillOperand model → List FlatFieldDecl
   | .star source => [source.declaration]
   | .group source => source.declarations
 
+/-- The group the operand is written over: a field's own group, or the group operand's. -/
+def groupPath : CheckedFieldFillOperand model → GroupPath
+  | .field declaration => declaration.groupPath
+  | .star source => source.declaration.groupPath
+  | .group source => source.source.groupPath
+
 /-- The repeatable levels the reading rule's row must bind. -/
 def bindingScope : CheckedFieldFillOperand model → List RepeatableLevel
   | .field declaration => declaration.repeatableScope
@@ -77,24 +83,45 @@ def declarations (list : CheckedFieldFillList model) : List FlatFieldDecl :=
 def bindingScope (list : CheckedFieldFillList model) : List RepeatableLevel :=
   (list.operands.flatMap (·.bindingScope)).eraseDups
 
-private def sum? (capacities : List (Option Nat)) : Option Nat :=
+def sum? (capacities : List (Option Nat)) : Option Nat :=
   capacities.foldl (init := some 0) fun total capacity => total.bind fun t => capacity.map (t + ·)
+
+/-- The declared slots the declared-range quantifiers read, summed over the operands. -/
+def fillCapacity? (list : CheckedFieldFillList model) : Option Nat :=
+  sum? (list.operands.map (·.fillCapacity?))
+
+/-- The declared slots the count's movement runs against, summed over the operands. -/
+def countCapacity? (list : CheckedFieldFillList model) : Option Nat :=
+  sum? (list.operands.map (·.countCapacity?))
 
 def observations (list : CheckedFieldFillList model) (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (List CellObservation) :=
   (·.flatten) <$> list.operands.mapM (·.observations document outer)
 
-/-- A field-fill quantifier over the list. `none` when a declared-range quantifier needs a maximum the
-model does not retain, as on one group. -/
+/-- The extensional validation tally of the list's in-capacity extent.
+
+`uninstantiated` is `0`, because every operand enumerates instantiated rows only. The declared-range
+quantifiers supply the missing tail separately; counting a formally unknown instantiated cell as
+missing would turn the undecided all-full case into a false omission. -/
+def validationFillTally (list : CheckedFieldFillList model) (document : CheckedDocument model)
+    (outer : Env) : Except CheckedAddressingError ValidationFillTally := do
+  pure ((← list.observations document outer).foldl
+    (init := ({ filled := 0, empty := 0, unknown := 0, uninstantiated := 0 } : ValidationFillTally))
+    fun tally observation => tally.combine observation.asValidationFillTally)
+
+/-- A field-fill quantifier over the list's in-capacity extent and declared tail.
+
+This is not a projection of the count: the count is unavailable as soon as one cell is formally
+invalid, while `AtLeastOneFieldFilled` still fires on a filled sibling, so the two disagree on a
+document holding both, deliberately. `none` when a declared-range quantifier needs a maximum the
+model does not retain. -/
 def evaluateFill? (list : CheckedFieldFillList model) (operator : FieldFillQuantifier)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (Option ValidationFillOutcome) := do
-  let tally := (← list.observations document outer).foldl
-    (init := ({ filled := 0, empty := 0, unknown := 0, uninstantiated := 0 } : ValidationFillTally))
-    fun tally observation => tally.combine observation.asValidationFillTally
+  let tally ← list.validationFillTally document outer
   match operator with
   | .allFieldsFilled | .notAllFieldsFilled | .fieldsNotCollectivelyFilled =>
-      pure ((sum? (list.operands.map (·.fillCapacity?))).map fun capacity =>
+      pure (list.fillCapacity?.map fun capacity =>
         operator.evalValidation { tally with
           uninstantiated := capacity - (tally.filled + tally.empty + tally.unknown) })
   | .noFieldFilled | .atLeastOneFieldFilled | .moreThanOneFieldFilled
@@ -104,10 +131,15 @@ def evaluateFill? (list : CheckedFieldFillList model) (operator : FieldFillQuant
 def evaluateCountOperand? (list : CheckedFieldFillList model) (document : CheckedDocument model)
     (outer : Env) : Except CheckedAddressingError (Option NumericOperand) := do
   let count := numberOfFilledFields (← list.observations document outer)
-  pure ((sum? (list.operands.map (·.countCapacity?))).bind fun capacity =>
+  pure (list.countCapacity?.bind fun capacity =>
     (count.availableWithFillability? capacity).map fun available => .value available.1 available.2)
 
 end CheckedFieldFillList
+
+/-- A group source as the one-operand list, so a group operand is evaluated by the list's code. -/
+def CheckedFilledFieldCountGroupSource.asFieldFillList
+    (checked : CheckedFilledFieldCountGroupSource model) : CheckedFieldFillList model :=
+  { operands := [.group checked] }
 
 /-- Elaborate a field-fill list at the rule group. The shared entity-list shape runs the list gates,
 duplicates, containment and arity, with the rule's iteration binding its unstarred levels; each

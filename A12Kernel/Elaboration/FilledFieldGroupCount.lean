@@ -48,7 +48,7 @@ def observations (checked : CheckedFilledFieldCountGroupSource model)
     checked.source.boundLevelCount checked.declarations
   pure (resolved.inCapacityAddressedCells.map fun addressed => observeCell .validation addressed.cell)
 
-/-- Evaluate the measured full-validation group extent with the existing empty/filled/formal-invalid count semantics. This returns the count only; comparison movement for a group source remains outside until a non-vacuous polarity observation fixes it.
+/-- Evaluate the measured full-validation group extent with the existing empty/filled/formal-invalid count semantics. This returns the count only; `CheckedFieldFillList.evaluateCountOperand?` adds its movement against `countCapacity?`.
 
     The domain is the **in-capacity** projection, opted into here exactly as the starred carrier's
     measured consumers opt into it. A cell in a row beyond the group's declared repeatability is not
@@ -88,50 +88,6 @@ def countCapacity? (checked : CheckedFilledFieldCountGroupSource model) : Option
 /-- The declared slots the declared-range field-fill predicates read. -/
 def fillCapacity? (checked : CheckedFilledFieldCountGroupSource model) : Option Nat :=
   model.declarationsSlotCapacity? checked.source.boundLevelCount checked.declarations
-
-def evaluateCheckedDocumentValidationOperand?
-    (checked : CheckedFilledFieldCountGroupSource model)
-    (document : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError (Option NumericOperand) := do
-  let count ← checked.evaluateCheckedDocumentValidation document outer
-  pure (checked.countCapacity?.bind fun capacity => (count.availableWithFillability? capacity).map
-    fun available => .value available.1 available.2)
-
-/-- The extensional validation tally of the group operand's in-capacity extent.
-
-    `uninstantiated` is `0` because the resolved group core enumerates instantiated rows only.
-    The field-fill evaluator supplies the declared tail separately; counting a formally unknown
-    instantiated cell as missing would turn the undecided all-full case into a false omission. -/
-def validationFillTally (checked : CheckedFilledFieldCountGroupSource model)
-    (document : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError ValidationFillTally := do
-  let observations ← checked.observations document outer
-  pure (observations.foldl (init := ({ filled := 0, empty := 0, unknown := 0, uninstantiated := 0 } : ValidationFillTally))
-    fun tally observation => tally.combine observation.asValidationFillTally)
-
-/-- Answer a field-fill operator over the group operand's in-capacity extent and declared tail.
-
-    This is not a projection of `evaluateCheckedDocumentValidation`: the count is unavailable as soon
-    as one operand cell is formally invalid, while `AtLeastOneFieldFilled` still fires on a filled
-    sibling. The two carriers therefore disagree on a document holding both, deliberately.
-
-    The declared-range predicates require retained maxima below the source's own binding depth,
-    so an unretained maximum returns `none`, distinct from an evaluated false-or-unknown result.
-    The other four predicates require no capacity and preserve their instantiated-only account
-    ([group-fill checkpoint](../../docs/SOURCES.md#src-group-field-fill-declared-slots)). -/
-def evaluateCheckedDocumentValidationFill?
-    (checked : CheckedFilledFieldCountGroupSource model)
-    (operator : FieldFillQuantifier)
-    (document : CheckedDocument model) (outer : Env) :
-    Except CheckedAddressingError (Option ValidationFillOutcome) := do
-  let tally ← checked.validationFillTally document outer
-  match operator with
-  | .allFieldsFilled | .notAllFieldsFilled | .fieldsNotCollectivelyFilled =>
-      pure (checked.fillCapacity?.map fun capacity =>
-          operator.evalValidation { tally with
-            uninstantiated := capacity - (tally.filled + tally.empty + tally.unknown) })
-  | .noFieldFilled | .atLeastOneFieldFilled | .moreThanOneFieldFilled
-      | .notExactlyOneFieldFilled => pure (some (operator.evalValidation tally))
 
 end CheckedFilledFieldCountGroupSource
 
