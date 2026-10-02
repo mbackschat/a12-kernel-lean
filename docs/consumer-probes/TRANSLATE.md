@@ -69,3 +69,20 @@ Excluded: German spellings, for the reason the [rule negation probe](TRANSFORM.m
 - `wrong-accounts`: the account dropping a compound complement's parentheses was not killed: `X05` places that complement inside an `Or`, where dropping them only regroups one connective. The task now adds `X21`, which does kill it, and `X22` for the refusal order.
 - `questions-and-guesses`: the same unspelled group-form and value-list pairs as the rule negation run, guessed correctly; the consumer also asked whether infix comparisons, the pattern operators and `CustomCondition` have twins, and which twin names a refusal when several refuse. The record now answers all three.
 - `exclusions`: German spellings, static legality, messages, polarity, evaluation, and Kernel correspondence beyond the record's citations.
+
+<a id="run-translate-non-operation-03"></a>
+### `Non<Operation>` lowering — `translate-non-operation-03`
+
+- `task`: [`Non<Operation>` lowering probe](#task-non-operation), 22 inputs.
+- `status`: green
+- `started-at`: 2026-10-02T18:30:54+02:00
+- `finished-at`: 2026-10-02T18:34:08+02:00
+- `duration-seconds`: 194
+- `semantic-basis`: `151cfb48d2e8963b441ec30ee64454b61b20e841`
+- `oracle`: the Lean `lowerNon` result per input, compared as in [`translate-non-operation-02`](#run-translate-non-operation-02); reconciliation passed on all 22 inputs.
+- `consumer-access`: a fresh agent, isolated as in the previous run, with the corrected handover.
+- `cost`: 236 implementation and 27 test nonblank lines, all capability-local; the finish time is when the result was read, after a concurrent build, and the agent itself reported 133 seconds.
+- `result`: all 22 answers agreed with Lean, 18 lowerings and four refusals; `X21` keeps its compound complement's parentheses under `And`, and `X22` names its leftmost refusal.
+- `wrong-accounts`: all seven pre-registered accounts were killed by a mutant at a named input.
+- `questions-and-guesses`: none affected a fixture answer. Without a complete predicate inventory the consumer would read an unknown `NonX(...)` as a syntax error rather than a refusal, a case outside the fixture; it also noted the task's refusal wording, which names the predicate whose twin does not exist where the record says no complement for that argument form.
+- `exclusions`: German spellings, static legality, messages, polarity, evaluation, and Kernel correspondence beyond the record's citations.

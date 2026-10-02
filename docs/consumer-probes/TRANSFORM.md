@@ -95,3 +95,20 @@ Excluded: German spellings, whose complements the [keyword catalog](../../spec/1
 - `wrong-accounts`: every pre-registered account was killed by a mutant at its named input.
 - `questions-and-guesses`: the capability record named the group-form and value-list pairs without spelling them, and the consumer guessed all four correctly; it also asked which leaf names a refusal when several refuse, and noted that `@From` is documented only on `RepetitionNotUnique`. The record now spells every pair, states the refusal order and the `@From` scope, and the task replaced `N30` and added `N33`.
 - `exclusions`: German spellings, static legality, messages, polarity, evaluation, and Kernel correspondence beyond the record's citations.
+
+<a id="run-transform-rule-negation-05"></a>
+### Rule negation — `transform-rule-negation-05`
+
+- `task`: [Rule negation probe](#task-rule-negation), 33 inputs.
+- `status`: green
+- `started-at`: 2026-10-02T18:30:54+02:00
+- `finished-at`: 2026-10-02T18:34:08+02:00
+- `duration-seconds`: 194
+- `semantic-basis`: `151cfb48d2e8963b441ec30ee64454b61b20e841`
+- `oracle`: the Lean `negateText` result per input, compared as in [`transform-rule-negation-04`](#run-transform-rule-negation-04); reconciliation passed on all 33 inputs.
+- `consumer-access`: a fresh agent, isolated as in the previous run, with the corrected handover.
+- `cost`: 326 implementation and 33 test nonblank lines, all capability-local; the finish time is when the result was read, after a concurrent build, and the agent itself reported 144 seconds.
+- `result`: all 33 answers agreed with Lean, 23 negations and ten refusals, `N33` naming its leftmost refusal.
+- `wrong-accounts`: all eleven pre-registered accounts were killed by a mutant at a named input.
+- `questions-and-guesses`: none affected a fixture answer. The consumer noted that spec/12's keyword catalog is a sample, so no complete predicate inventory exists to tell a predicate such as `DateRangesOverlap` from a name, and that spec/12 showed only the parenthesised value list, which spec/12 now aligns with spec/06's bare form.
+- `exclusions`: German spellings, static legality, messages, polarity, evaluation, and Kernel correspondence beyond the record's citations.
