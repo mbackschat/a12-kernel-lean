@@ -358,9 +358,10 @@ def certifyTokenEntityShape (model : FlatModel)
 /-- Resolve duplicate/cardinality shape before certifying the complete list as String/ordinary stored-Enumeration. -/
 def elaborateTokenEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceTokenEntitySource)
-    (arity : EntityListArity := .manyRequired) (writtenGroup : GroupPath := declaringGroup) :
+    (arity : EntityListArity := .manyRequired) (writtenGroup : GroupPath := declaringGroup)
+    (fixedTargetGroup? : Option GroupPath := none) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored arity
+  let shape ← elaborateFieldEntityShape model declaringGroup authored arity fixedTargetGroup?
       (writtenGroup := writtenGroup)
     |>.mapError .shape
   certifyTokenEntityShape model declaringGroup shape
@@ -564,6 +565,19 @@ def resolvedSideAt (checked : CheckedTokenField model)
     hasHaving := false }
 
 end CheckedTokenField
+
+/-- The group's cells on the reader route, read through a caller-supplied checked-cell view over the
+shared group walk `FlatModel.groupOperandReads`, as a Number group's are, each cell classified through
+its own declaration's stored projection. -/
+def CheckedTokenEntityGroup.resolvedSideIn (group : CheckedTokenEntityGroup model) (phase : Phase)
+    (document : Document) (outer : Env) (read : Env → FieldId → CheckedCell) :
+    Except StarAddressingError (ResolvedValueListSide .token) := do
+  let (reads, hasUninstantiatedTail) ← model.groupOperandReads document outer
+    group.source.boundLevelCount group.slots (·.declaration.repeatableScope)
+  pure { cells := reads.map fun (slot, environment) =>
+           slot.operand.checkedValueListCellAt phase (read environment slot.declaration.id)
+         hasUninstantiatedTail
+         hasHaving := false }
 
 namespace CheckedTokenStarSource
 

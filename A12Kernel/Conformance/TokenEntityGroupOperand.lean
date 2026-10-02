@@ -527,8 +527,11 @@ private def rawRoutesResolve (operand : SurfaceFieldEntityOperand) : List Bool :
 example :
     rawRoutesResolve (field "Loose") = [true, true, true, true] := by native_decide
 
+/- A group slot reads its rows through the shared group walk on the computation arm, where the
+   [row-group grid](../../docs/sources/computation-scheduling-probes.md#src-row-groups) measures it,
+   and the three validation arms still refuse it. -/
 example :
-    rawRoutesResolve (group ["Form", "Bag"]) = [false, false, false, false] := by
+    rawRoutesResolve (group ["Form", "Bag"]) = [false, false, false, true] := by
   native_decide
 
 /- `FirstFilledValue` still refuses on this legacy raw-`Document` route because the route cannot

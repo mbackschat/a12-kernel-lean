@@ -1,198 +1,13 @@
-import A12Kernel.Elaboration.AddressedRepeatableTarget
-import A12Kernel.Elaboration.DateRangeBoundComponent
-import A12Kernel.Elaboration.FirstFilledValue
-import A12Kernel.Elaboration.NumericAggregate
-import A12Kernel.Elaboration.LiteralComparisonDiagnostic
-import A12Kernel.Elaboration.NumericComputation.OperationTyping
-import A12Kernel.Elaboration.TokenValueCount
-import A12Kernel.Semantics.ComputationCondition
-import A12Kernel.Semantics.NumericTarget
+import A12Kernel.Elaboration.NumericComputation.Atom
 
 /-! # Numeric computation-expression outcomes
 
 This capsule checks one parser-independent numeric operation with an ordinary Number target against a validated model. Its reading scope is the target's repeatable scope, which binds every operand level it holds ([`spec/09`](../../../spec/09-computations.md) §5), so a fixed target reads only nonrepeatable operands and a repeatable one also reads its own row's and then evaluates the resolved expression. Admission resolves scalar Number-field, numeric-`BaseYear`, Base-Year date-component, direct temporal field-component, UTF-16 String `Length`, checked ordinary String/Enumeration/category `FieldValueAsNumber`, Date-only month/year differences, exact-instant DateTime field/`Now` hour/minute/second differences, concrete-profile Date/DateTime day differences, checked direct/plain-star/filtered-star Number entity-list aggregates and `FirstFilledValue`, typed String/stored-Enumeration and Boolean/Confirm value counts, the distinct row-aligned `SumOfProducts` pair, and fixed distinct disjoint multi-group filled counts through one shared numeric tree. The direct aggregate surface maps into the checked entity-list payload, while the complete surface retains each specialized checked source and the product pair's proof-bearing common-row plan. Target self-reference traversal reaches selected entity-list fields, every `Having` reference, both product fields, and every counted group subtree; the Boolean/Confirm count cannot include its Number target by construction. Scale checking uses the selected declarations' union, integral count result, or product of pair scales. Each operand-list Min/Max call independently enforces its immediate-constant budget without flattening nested calls. A rounding or absolute-value node rejects an immediate numeric literal body; numeric `BaseYear` remains a distinct admitted source. The primary checked target entry points construct the complete policy from the validated target declaration and attach it once, so evaluation cannot substitute caller-selected constraints; the lower-level attachment remains an explicit compatibility seam for already-resolved policies and still rejects scale/signedness drift. The one explicit scale-warning suppression bypasses only the result-scale gate and selects the existing warning-suppressed target branch after evaluation. Scalar computation evaluation remains available for direct-only sources, reads dynamic `Now` only from its explicit optional `World`, fails structurally when that input is absent, and rejects repeatable atoms explicitly. Addressed computation evaluation accepts the document, outer environment, and checked readers required by the existing entity-list and product traversals, maps structural addressing failure into the computation-fault domain, and otherwise preserves ordinary values, arithmetic domain failure, inherited computation-read poison, and the fail-closed legacy-calendar boundary. Generated validation narrows direct ordinary aggregates and every direct-only specialized source into its existing nonrepeatable atoms, while repeatable entity-list, token-count, product, and first-filled payloads retain their checked certificates through the full-only addressed validation context; fixed filled-group computation remains an explicit arm-crossing generated-validation boundary. Concrete parsing, partially-known Date policy, constructed-Date legacy execution, application, delta projection, wider whole-rule repeatable generated validation, and scheduling remain outside this module.
 
 The measured arithmetic surface retains the target through scale summarization so it reaches the target-scale gate before self-reference: `+`, `-`, or `*` reading the target on exactly one side, against an immediate literal or a different direct Number field. The gate order rather than the authored shape is what that surface encodes. Every other target read keeps its pre-existing immediate local refusal, including when a later operand would otherwise fail resolution, and receives no projected Kernel class. Both operand kinds are measured at both scale relations: a field operand whose declared scale differs from the target's reports the scale gate first and exposes the self-reference under suppression, exactly as a matching one does.
-
-Numeric and Boolean/Confirm `NumberOfValueInFields` remain distinct checked atoms so their different field-kind matrices and per-cell provenance survive arithmetic, target evaluation, and generated validation without a second expression tree or aggregate fold.
 -/
 
 namespace A12Kernel
-
-abbrev NumericComputationAtom := ResolvedNumericAtom FlatFieldDecl
-
-/-- The complete computation surface keeps ordinary numeric atoms in their shared representation and adds distinct prefix-selecting and row-aligned aggregate atoms without creating another arithmetic tree. -/
-inductive SurfaceNumericComputationAtom where
-  | numeric (source : SurfaceNumericAtom SurfaceNumberEntitySource)
-  | firstFilled (source : SurfaceNumberEntitySource)
-  | valueCount (expected : Rat) (source : SurfaceNumberEntitySource)
-  | tokenValueCount (expected : String) (source : SurfaceTokenValueCountSource)
-  | booleanValueCount (expected : Bool)
-      (source : SurfaceBooleanValueCountSource)
-  | sumOfProducts (source : SurfaceNumericProductAggregate)
-  deriving Repr, DecidableEq
-
-
-/-- One checked numeric computation atom. Ordinary scalar/entity-list sources retain the shared resolved atom, `FirstFilledValue` and value count retain their distinct scans over that same entity-list source, and `SumOfProducts` retains its proof-bearing common-row plan. -/
-inductive CheckedNumericComputationAtom (model : FlatModel) where
-  | numeric
-      (source : ResolvedNumericAtom FlatFieldDecl
-        (CheckedNumberEntitySource model))
-  | firstFilled (source : CheckedNumberEntitySource model)
-  | valueCount (expected : Rat) (source : CheckedNumberEntitySource model)
-  | tokenValueCount (source : CheckedTokenValueCountSource model)
-  | booleanValueCount (source : CheckedBooleanValueCountSource model)
-  | sumOfProducts (source : CheckedNumericProductAggregate model)
-  /-- A filled-group count whose operand list carries at least one star. The fixed-only list
-  keeps the established `numeric` atom untouched, so widening this operator costs the
-  already-measured form nothing. -/
-  | filledGroupCountMixed (operands : List (CheckedGroupCountOperand model))
-
-/-- Fail-closed faults outside the admitted numeric computation-expression fragment. -/
-inductive NumericComputationFault where
-  | fieldKindMismatch (field : FieldId)
-  | unsupportedDateCalendar
-  | unsupportedDateTimeDifferenceOperand
-  | worldRequired
-  /-- One resolved group operand of a filled-group count lies outside the admitted scalar boundary.
-  The path names *which* operand, so an Explain or Qualify consumer can point at it rather than at the
-  whole count; the count itself is order-insensitive, so nothing else about the refusal is ordered. -/
-  | unsupportedGroupCount (group : GroupPath)
-  /-- The model-free resolved evaluator cannot enumerate any group's descendants, so no single operand
-  is at fault. Kept distinct from the class above because the remedy differs: that one is an authoring
-  boundary, this one a missing evaluation input. -/
-  | groupCountNeedsModel
-  | repeatableContextRequired
-  | repeatableAddressing (error : StarAddressingError)
-  deriving Repr, DecidableEq
-
-/-- The bounded runtime inputs needed when one checked numeric expression contains repeatable entity-list atoms. This is an expression evaluator context, not a document scheduler or dependency overlay. -/
-structure NumericComputationEvaluationContext where
-  scalar : ScalarComputationContext
-  document : Document
-  outer : Env
-  filterRead : Env → FieldId → CheckedCell
-  starRead : Env → FieldId → CheckedCell
-
-inductive NumericComputationElabError where
-  /-- An operand's reference, or the declaring group's syntax. -/
-  | resolve (error : ResolveError)
-  /-- The target's own declaration, looked up by identity rather than by an authored path. -/
-  | targetResolve (error : ResolveError)
-  /-- The model fails its own validation before any operation is read. -/
-  | invalidModel (error : ResolveError)
-  | targetNotNumber (field : FieldId)
-  | operandNotNumber (path : List String)
-  /-- The operation's post-order node check refused it, its typing or one of its authoring gates, with
-  the class of the node that failed first, `none` where that node's class is not measured. -/
-  | operationNode (diagnostic : Option KernelStaticDiagnostic)
-  | copyComparison (targetPath sourcePath : List String) (refusal : CopyComparisonRefusal)
-  | lengthOperandNotEvaluatedString (path : List String)
-  | rangeOperandNotString (path : List String)
-  | invalidStringRange (start finish : Nat)
-  | fieldValueAsNumberSource (path : List String)
-      (error : FieldValueAsNumberSourceError)
-  | incompatibleTemporalSource (path : List String)
-  /-- The declared DateRange profile does not expose the requested date component at its
-  endpoint; the same measured class the validation surface reports. -/
-  | dateRangeBoundPartNotExposed (path : List String) (part : DateNumericPart)
-  | incompatibleDateDifference
-  | unsupportedCalendarProfile (zoneId : String)
-  | baseYearNotDeclared
-  | aggregate (error : NumberEntityElabError)
-  | tokenValueCount (error : TokenValueCountElabError)
-  | booleanValueCount (error : BooleanValueCountElabError)
-  | productAggregate (error : NumericProductAggregateElabError)
-  | groupReference (error : FixedGroupReferenceError)
-  | currentRepetitionSource (error : FixedGroupReferenceError)
-  | groupCountNeedsMultipleOperands
-  /-- The starred group plan itself refused; the underlying error carries the class. -/
-  | starredGroupCountPlan (error : StarredGroupElabError)
-  | overlappingGroupCountOperands (left right : GroupPath)
-  /-- A root group beside any other operand. Reached only once containment is ruled out, because
-  the Kernel checks the two gates in that order on both arms. -/
-  | rootGroupInGroupCount (path : GroupPath)
-  /-- An operand leaves a repeatable level for its evaluation to bind that the target's scope does
-  not; the record carries what selects the class. -/
-  | unboundOperandLevel (unbound : UnboundOperandLevel)
-  | targetSelfReference (field : FieldId)
-  | authoring (result : NumericAuthoringCheck)
-  | unsupportedExpression
-  | operationScaleMismatch (targetScale : Nat) (operation : NumericScaleSummary)
-  | targetPolicyMismatch (target policy : NumField)
-  /-- A row target's placement or repetition. -/
-  | repeatableTarget (error : AddressedRepeatableTargetElabError)
-  | incoherentCore
-  deriving Repr, DecidableEq
-
-namespace NumericComputationElabError
-
-/-- Project the measured fixed filled-group computation admission failures to their exact
-    Kernel diagnostic classes. Every other computation refusal remains unmapped. -/
-def groupCountDiagnostic? :
-    NumericComputationElabError → Option KernelStaticDiagnostic
-  | .groupCountNeedsMultipleOperands => some .paramSizeInvalidGN
-  -- The plan's empty-group class and the resolver classes are measured on this arm too, not
-  -- borrowed from validation's
-  -- ([empty](../../../docs/sources/static-admission-and-class-probes.md#src-entity-list-kind-empty-and-root-carriers),
-  -- [resolver](../../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)).
-  | .starredGroupCountPlan error => error.diagnostic?
-  | .groupReference error => error.diagnostic?
-  | .overlappingGroupCountOperands left right =>
-      if left == right then some .duplicateParam1 else some .duplicateParam2
-  | .rootGroupInGroupCount _ => some .rootGroupWithOtherParameters
-  | _ => none
-
-/-- Project the measured computed Number target-scale rejection, the class of the operation's first
-failing node, a read of the target, which every measured shape reaches only past those gates,
-aggregates, `FirstFilledValue` and group counts included, and a copied field the generated comparison
-refuses ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)).
-The class is one operation's: a computation of several alternatives asks every alternative's other
-gates before any read of the target, which `elaborateNumericTargetComputationTable` owns. The shared
-authoring check this carrier also asks never answers first, because the node check raises each of its
-refusals at the node it inspects, so its result stays unmapped with the other computation failures. -/
-def targetDiagnostic? :
-    NumericComputationElabError → Option KernelStaticDiagnostic
-  | .operationScaleMismatch _ _ => some .invalidCompareDecimalPlaces
-  | .copyComparison _ _ refusal => some refusal.diagnostic
-  | .operationNode diagnostic => diagnostic
-  | .targetSelfReference _ => some .errorReferenceToCalculatedField
-  -- A row target's placement, measured on this carrier with a Number and a String copy and a
-  -- guarded constant ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-row-target-boundary)).
-  | .repeatableTarget (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
-  | .repeatableTarget (.targetIsIndexField _) => some .errorIndexAsCalculatedField
-  | _ => none
-
-/-- Project the per-row operand gate, whether this arm, an operand's resolver or an entity list's
-    shape asked it. The levels the target's scope holds are bound, so a read's class is decided by its
-    first other level: containment when the target lies outside the declaring group, and otherwise
-    where that level lies beside or below the target's group
-    ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
-def iterationDiagnostic? :
-    NumericComputationElabError → Option KernelStaticDiagnostic
-  | .unboundOperandLevel unbound
-  | .resolve (.unboundOperandLevel _ unbound)
-  | .groupReference (.unboundOperandLevel _ unbound)
-  | .aggregate (.shape (.unboundOperandLevel unbound))
-  | .tokenValueCount (.source (.shape (.unboundOperandLevel unbound)))
-  | .booleanValueCount (.shape (.unboundOperandLevel unbound)) => unbound.diagnostic?
-  | _ => none
-
-/-- The Kernel class of one operation's refusal, through whichever of the projections above owns its
-arm, or through the shared resolver projection for an operand's reference, whose classes the
-computation carrier draws as every other carrier does
-([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)).
-The target's lookup and the model's own validation claim no class. -/
-def diagnostic? (error : NumericComputationElabError) : Option KernelStaticDiagnostic :=
-  error.targetDiagnostic? <|> error.iterationDiagnostic? <|> error.groupCountDiagnostic? <|>
-    match error with
-    | .resolve cause => cause.diagnostic?
-    -- A `CurrentRepetition` naming no group, measured at a row target
-    -- ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-row-target-boundary)).
-    | .currentRepetitionSource (.unknownGroup _) => some .invalidEntity
-    | _ => none
-
-end NumericComputationElabError
 
 /-- One resolved numeric operation before target storage, retaining whether its result-scale warning was explicitly suppressed. -/
 structure NumericComputationOperation (model : FlatModel) where
@@ -504,6 +319,12 @@ private def FlatModel.elaborateNumericComputationAtom
     | .tokenValueCount expected source => do
         let checked ←
           (elaborateTokenValueCountSource model declaringGroup expected source
+              (fixedTargetGroup? := some targetGroup)).mapError
+            NumericComputationElabError.tokenValueCount
+        pure (.tokenValueCount checked)
+    | .tokenEntityValueCount expected source => do
+        let checked ←
+          (elaborateTokenEntityValueCountSource model declaringGroup expected source
               (fixedTargetGroup? := some targetGroup)).mapError
             NumericComputationElabError.tokenValueCount
         pure (.tokenValueCount checked)

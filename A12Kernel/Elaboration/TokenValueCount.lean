@@ -190,6 +190,19 @@ def elaborateTokenValueCountSource (model : FlatModel)
     |>.mapError .source
   finishTokenValueCountSource expected source
 
+/-- Resolve a token count over the shared entity-list shape, the form whose slots include a group, so
+    it meets every gate that shape asks, the group's own among them, before the String/Enumeration
+    certification and literal check the projection-bearing form shares. -/
+def elaborateTokenEntityValueCountSource (model : FlatModel)
+    (declaringGroup : GroupPath) (expected : String)
+    (authored : SurfaceTokenEntitySource) (fixedTargetGroup? : Option GroupPath := none)
+    (writtenGroup : GroupPath := declaringGroup) :
+    Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
+  let source ← elaborateTokenEntitySource model declaringGroup authored
+      (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup)
+    |>.mapError .source
+  finishTokenValueCountSource expected source
+
 /-- Resolve one starred group, a repeatable terminal or a fixed group below a starred level, and
     retain the whole-group carrier used by validation and computation. The Kernel admits the
     below-star form on both arms and computes it on the expansion account
@@ -279,7 +292,7 @@ namespace CheckedTokenEntityOperand
 
 /-- Resolve one token slot at computation phase, a star over its in-capacity extent ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-star-scans)). Filtered stars reuse the shared one-kept-successor traversal and retain per-slot filter provenance for the value-count fold.
 
-    A group slot refuses: this route reads through caller-supplied functions over a raw `Document`, which cannot answer which rows of the group's subtree exist, and computation over a group extent has no retained observation behind it either. -/
+    A group slot reads its declarations' rows through the shared group walk, as a Number group's do ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-groups)). -/
 def resolvedValueCountComputationSide
     (checked : CheckedTokenEntityOperand model)
     (document : Document) (outer : Env)
@@ -288,7 +301,7 @@ def resolvedValueCountComputationSide
     Except StarAddressingError
       (Sum (ResolvedValueListSide .token) NumericOperand) :=
   match checked with
-  | .group source => .error (.unsupportedGroupOperand source.groupPath)
+  | .group source => .inl <$> source.resolvedSideIn .computation document outer starRead
   | .field source =>
       pure (.inl (source.resolvedSideAt .computation directRead))
   | .star source => do

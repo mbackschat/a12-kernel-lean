@@ -117,6 +117,19 @@ def FlatModel.groupOperandUninstantiatedTail (model : FlatModel) (document : Doc
     return (← ({ axes, firstStar := boundCount } : StarPath).resolveTopology document outer).domain.hasOpenTail
   return tails.any id
 
+/-- Every row a group operand's declarations reach on the reader route, declaration-major as the
+checked document's group walk is, with whether any of their scopes leaves declared capacity open. A
+consumer pairs each declaration with its own environments, so it reads each cell through that cell's
+own declaration. -/
+def FlatModel.groupOperandReads (model : FlatModel) (document : Document) (outer : Env)
+    (boundCount : Nat) (declarations : List α) (scope : α → List RepeatableLevel) :
+    Except StarAddressingError (List (α × Env) × Bool) := do
+  let reads ← declarations.mapM fun declaration => do
+    let environments ← model.groupOperandEnvironments document outer boundCount (scope declaration)
+    pure (environments.map (declaration, ·))
+  pure (reads.flatten,
+    ← model.groupOperandUninstantiatedTail document outer boundCount (declarations.map scope))
+
 namespace CheckedDocument
 
 /-- Resolve one model-owned field instance to its exact address without reading its cell. -/

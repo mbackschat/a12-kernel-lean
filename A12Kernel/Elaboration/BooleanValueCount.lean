@@ -449,6 +449,18 @@ def booleanValueCountCellAt (phase : Phase)
   | .value _ => .unknown .malformed
   | .unknown cause | .poison cause => .unknown cause
 
+/-- The group's cells on the reader route, read through a caller-supplied checked-cell view over the
+shared group walk `FlatModel.groupOperandReads`, as a Number group's are. -/
+def CheckedBooleanValueCountGroup.resolvedSideIn (group : CheckedBooleanValueCountGroup model expected)
+    (phase : Phase) (document : Document) (outer : Env) (read : Env → FieldId → CheckedCell) :
+    Except StarAddressingError (ResolvedValueListSide .token) := do
+  let (reads, hasUninstantiatedTail) ← model.groupOperandReads document outer
+    group.source.boundLevelCount group.fields (·.repeatableScope)
+  pure { cells := reads.map fun (declaration, environment) =>
+           booleanValueCountCellAt phase (read environment declaration.id)
+         hasUninstantiatedTail
+         hasHaving := false }
+
 /-- Evaluate one certified Boolean group over its checked-document extent. This is the common scan of
     the fixed and starred carriers; the group walk already leaves an over-limit row out of both. -/
 def evaluateCheckedBooleanValueCountGroupComputation
@@ -615,8 +627,7 @@ def resolvedComputationSide
                 hasHaving := true })
           | .terminated cause | .poison cause =>
               pure (.inr (.unknown cause))
-  | .group source =>
-      .error (.unsupportedGroupOperand source.groupPath)
+  | .group source => .inl <$> source.resolvedSideIn .computation document outer starRead
 
 /-- Resolve one Boolean/Confirm slot from the immutable checked document and project its addressed cells only after topology and filter selection succeed.
 

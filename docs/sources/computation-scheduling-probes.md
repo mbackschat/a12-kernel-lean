@@ -334,7 +334,7 @@ Dependency order, join, poison, empty-substitution, and fill-guard probes for au
 - `claim`: each `Rows` target reads its own row's fixed group, and the root `TR` count is the same at every row. `SX` counts its enclosing `Rows` row's `Box` and `Pad`, `2` at both `Sub` rows of a row holding both and `1` under a row holding `Pad` alone.
 - `claim`: a malformed `N1` clears that row's `NB` scan and count, and a malformed `B1` its Boolean count, the other rows computing. An over-limit `Rows` or `Sub` row clears its own targets only, and an empty group scans and counts to `0`.
 - `retained`: in the [grid directory](../../evidence/kernel-30.8.1/captures/row-groups-2026-10-02/), `Rgo_DM.json` `c79b22ff8809831a4f8292d1af0eba43196ba63d76fef98f95e8f4c3c5e5107e`, `request.json` `9950cfb893879947528fe83211d34860cc8520fae3fcc730b4068c1eae31d2c5`, and `rows.tsv` `8b65639d8fe2efff2fafca23c09e8947e433d5288e0c9f1d2fb123102a5e85f0`, codes only.
-- `local-consequence`: the Number `FirstFilledValue` reads a group operand on the row route through the shared group walk, and with the Number count and `SX` answers exactly on all four documents. The token and Boolean group counts have no Number-atom surface in Lean, so their rows are unlocked.
+- `local-consequence`: the Number `FirstFilledValue` and the token and Boolean value counts read a group operand on the row route through the shared group walk, and every target answers exactly on all four documents.
 - `limit`: each group has one instance per row, so the scan's order across rows of one group is not exercised; `en_US`.
 - `sync`: confirms [`spec/09`](../../spec/09-computations.md) §5's row binding on group operands, and opens no entry.
 
