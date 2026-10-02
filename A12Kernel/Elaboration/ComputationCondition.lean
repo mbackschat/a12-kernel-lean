@@ -71,14 +71,32 @@ def FlatModel.elaborateComputationCondition (model : FlatModel)
       let left ← model.elaborateComputationCondition declaringGroup targetGroup left
       pure (.or left (← model.elaborateComputationCondition declaringGroup targetGroup right))
 
-/-- The one-based position of the first alternative whose guard its carrier refuses. A table's
-certifier asks this of every alternative before any alternative's own class, as the Kernel asks a
-guard's name and its index gates ahead of an unguarded alternative wherever either stands
-([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)). -/
-def ComputationAlternative.firstUnadmittedGuard? {Operation : Type}
-    (admits : ComputationCondition → Bool) (alternatives : List (ComputationAlternative Operation)) :
-    Option Nat :=
-  (alternatives.zipIdx.find? fun (alternative, _) => !alternative.precondition.all admits).map
-    (·.2 + 1)
+/-- An alternative whose guard its carrier admits, carrying that admission as evidence. -/
+abbrev AdmittedComputationAlternative (admits : ComputationCondition → Bool) (Operation : Type) :=
+  { alternative : ComputationAlternative Operation // alternative.precondition.all admits = true }
+
+private def admitRemainingGuards {Operation : Type} (admits : ComputationCondition → Bool)
+    (position : Nat) :
+    List (ComputationAlternative Operation) →
+      Except Nat (List (AdmittedComputationAlternative admits Operation))
+  | [] => .ok []
+  | alternative :: rest =>
+      if hAdmitted : alternative.precondition.all admits = true then do
+        pure (⟨alternative, hAdmitted⟩ :: (← admitRemainingGuards admits (position + 1) rest))
+      else .error position
+
+/-- Admit every alternative's guard in authored order, or the one-based position of the first its
+carrier refuses. A table's certifier asks this of every alternative before any alternative's own
+class, as the Kernel asks a guard's name and its index gates ahead of an unguarded alternative
+wherever either stands
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)), and
+consumes the admissions instead of asking again. -/
+def ComputationAlternative.admitGuards {Operation : Type} (admits : ComputationCondition → Bool)
+    (first : ComputationAlternative Operation) (remaining : List (ComputationAlternative Operation)) :
+    Except Nat (AdmittedComputationAlternative admits Operation ×
+      List (AdmittedComputationAlternative admits Operation)) :=
+  if hAdmitted : first.precondition.all admits = true then do
+    pure (⟨first, hAdmitted⟩, ← admitRemainingGuards admits 2 remaining)
+  else .error 1
 
 end A12Kernel

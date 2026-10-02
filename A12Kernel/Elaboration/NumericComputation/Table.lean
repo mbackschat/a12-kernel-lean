@@ -60,29 +60,27 @@ def NumericComputationTableError.diagnostic? : NumericComputationTableError → 
 private def certifyNumericComputationAlternative
     (target : FieldId) (policy : NumericTargetPolicy) (alternativeIndex : Nat)
     (guardRequired : Bool)
-    (alternative : ComputationAlternative
+    (admitted : AdmittedComputationAlternative (·.wellFormedBool model)
       (CheckedNumericTargetComputationOperation model)) :
     Except NumericComputationTableError
       (CheckedNumericComputationAlternative model target policy) := do
+  let alternative := admitted.val
   if hTarget : alternative.operation.operation.core.target.id = target then
     if hPolicy : alternative.operation.policy = policy then
       if guardRequired && alternative.precondition.isNone then
         throw (.unguardedAlternative alternativeIndex)
-      else if hGuard : alternative.precondition.all (·.wellFormedBool model) = true then
-        if hGuardTarget : alternative.precondition.all
-            (fun guard => !guard.referencesField target) = true then
-          pure {
-            precondition := alternative.precondition
-            operation := alternative.operation
-            targetMatches := hTarget
-            policyMatches := hPolicy
-            guardWellFormed := hGuard
-            guardExcludesTarget := hGuardTarget
-          }
-        else
-          throw (.guardTargetReference alternativeIndex)
+      else if hGuardTarget : alternative.precondition.all
+          (fun guard => !guard.referencesField target) = true then
+        pure {
+          precondition := alternative.precondition
+          operation := alternative.operation
+          targetMatches := hTarget
+          policyMatches := hPolicy
+          guardWellFormed := admitted.property
+          guardExcludesTarget := hGuardTarget
+        }
       else
-        throw (.guardNotAdmitted alternativeIndex)
+        throw (.guardTargetReference alternativeIndex)
     else
       throw (.targetPolicyMismatch alternativeIndex)
     else
@@ -100,11 +98,11 @@ def certifyNumericComputationTable
   match alternatives with
   | [] => .error .empty
   | first :: remaining => do
-      if let some position :=
-          ComputationAlternative.firstUnadmittedGuard? (·.wellFormedBool model) (first :: remaining) then
-        throw (.guardNotAdmitted position)
-      let target := first.operation.operation.core.target.id
-      let policy := first.operation.policy
+      let (first, remaining) ←
+        (ComputationAlternative.admitGuards (·.wellFormedBool model) first remaining).mapError
+          .guardNotAdmitted
+      let target := first.val.operation.operation.core.target.id
+      let policy := first.val.operation.policy
       let guardRequired := !remaining.isEmpty
       let checkedFirst ←
         certifyNumericComputationAlternative target policy 1 guardRequired first

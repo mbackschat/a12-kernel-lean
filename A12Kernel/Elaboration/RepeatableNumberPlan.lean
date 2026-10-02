@@ -85,7 +85,9 @@ row, a reached poisoned guard aborting the row rather than passing to the next a
 A sole alternative may go unguarded. -/
 structure CheckedRepeatableNumberRowStep (model : FlatModel) where
   private mk ::
-  /-- The first alternative's target placement, which every alternative's target field matches. -/
+  /-- The placement the rows execute through, the first alternative's: every alternative's target field
+  matches it, so its target policy and repeatable scope are the step's. Its declaring group is only the
+  first alternative's; each alternative's own stays on its operation, and no execution reads it here. -/
   target : CheckedAddressedNumericTarget model
   first : CheckedRepeatableNumberRowAlternative model target.targetField
     target.targetDeclaration.repeatableScope
@@ -122,18 +124,19 @@ def RepeatableNumberRowStepError.diagnostic? : RepeatableNumberRowStepError → 
 
 private def checkRepeatableNumberRowAlternative (target : FieldId) (scope : List RepeatableLevel)
     (index : Nat) (guardRequired : Bool)
-    (alternative : ComputationAlternative (CheckedRepeatableNumberRowOperation model)) :
+    (admitted : AdmittedComputationAlternative (·.rowBoundBool model scope)
+      (CheckedRepeatableNumberRowOperation model)) :
     Except RepeatableNumberRowStepError (CheckedRepeatableNumberRowAlternative model target scope) :=
+  let alternative := admitted.val
   if hTarget : alternative.operation.targetField = target then
     if guardRequired && alternative.precondition.isNone then
       .error (.unguardedAlternative index)
-    else if hBound : alternative.precondition.all (·.rowBoundBool model scope) = true then
-      if hExcludes : alternative.precondition.all
-          (fun condition => !condition.referencesField target) = true then
-        .ok { precondition := alternative.precondition, operation := alternative.operation
-              targetMatches := hTarget, guardRowBound := hBound, guardExcludesTarget := hExcludes }
-      else .error (.guardReadsTarget index target)
-    else .error (.guardNotRowBound index)
+    else if hExcludes : alternative.precondition.all
+        (fun condition => !condition.referencesField target) = true then
+      .ok { precondition := alternative.precondition, operation := alternative.operation
+            targetMatches := hTarget, guardRowBound := admitted.property
+            guardExcludesTarget := hExcludes }
+    else .error (.guardReadsTarget index target)
   else .error (.targetMismatch index target alternative.operation.targetField)
 
 /-- Certify ordered row alternatives in authored order against the first one's target, every guard's
@@ -146,9 +149,9 @@ def checkRepeatableNumberRowTable
   | head :: tail => do
       let target := head.operation.target
       let scope := target.targetDeclaration.repeatableScope
-      if let some position :=
-          ComputationAlternative.firstUnadmittedGuard? (·.rowBoundBool model scope) alternatives then
-        throw (.guardNotRowBound position)
+      let (head, tail) ←
+        (ComputationAlternative.admitGuards (·.rowBoundBool model scope) head tail).mapError
+          .guardNotRowBound
       let guardRequired := !tail.isEmpty
       let first ←
         checkRepeatableNumberRowAlternative target.targetField scope 1 guardRequired head
