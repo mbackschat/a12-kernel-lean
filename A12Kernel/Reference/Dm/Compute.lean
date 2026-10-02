@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.LowerNumeric
+import A12Kernel.Reference.Dm.LowerDocument
 import A12Kernel.Elaboration.RepeatableNumberPlan
 import A12Kernel.Elaboration.ScalarComputationRun
 
@@ -99,6 +100,7 @@ private def guards (language : Language) (model : FlatModel) (computation : DmCo
 inductive LoweredComputation (model : FlatModel)
   | number (table : CheckedNumericComputationTable model) (row : Bool)
   | string (table : CheckedStringComputationTable model)
+  | document (step : CheckedDocumentComputationStep model)
 
 /-- Lower one computation onto its target kind's checked table. -/
 def lowerComputation (model : FlatModel) (language : Language) (computation : DmComputation) :
@@ -109,6 +111,11 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
     pure (← parsed language alternative.operation).body
   let suppress := computation.errorCodesToSuppress.contains "MVK_INVALID_COMPARE_DEC_PLACES"
   let row := !target.repeatableScope.isEmpty
+  -- A whole-document step carries one operation and no precondition.
+  let document : Lowering (FlatFieldDecl × LoweredComputation model) := do
+    let ([none], [operation]) := (guards, operations)
+      | refuse "DocumentStep" "precondition or alternatives"
+    pure (target, .document (← lowerDocumentStep model computation.group target operation))
   match target.policy.kind with
   | .number _ => do
       let expressions ← operations.mapM
@@ -119,6 +126,8 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
       pure (target, .number table row)
   | .string => do
       if row then refuse "StringComputation" "row target"
+      if operations.any fun | .call "FirstFilledValue" _ none none => true | _ => false then
+        return ← document
       let alternatives ← (guards.zip operations).mapM fun (precondition, operation) => do
         let expression ← lowerStringExpr operation
         let checked ← elaborated "StringComputation"
@@ -126,6 +135,8 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
         pure ({ precondition, operation := checked } : ComputationAlternative _)
       pure (target, .string (← elaborated "StringComputation" (certifyStringComputationTable alternatives)))
   | kind =>
+      if !row then
+        if let .ok lowered := document then return lowered
       let name := match kind.surfaceKind with
         | .number => "Number" | .boolean => "Boolean" | .confirm => "Confirm" | .string => "String"
         | .enumeration => "Enumeration" | .dateRange => "DateRange"
@@ -140,6 +151,14 @@ private def numberOutcome (model : FlatModel) (entry : SourcedNumericTargetOutco
   | none, some failed => some { pointer, outcome := s!"errored {failed.attempted.render}" }
   | none, none =>
       if NumericComputationRunView.shouldClear entry then some { pointer, outcome := "cleared" } else none
+
+/-- The text an errored whole-document target attempted. -/
+private def documentAttempt? : DocumentTargetOutcome → Option String
+  | .dateTime (.errored attempted _) | .fullDate (.errored attempted _)
+  | .dateRange (.errored attempted _) => some attempted.text
+  | .enumeration (.errored attempted _) | .dateFragment (.errored attempted _)
+  | .string (.errored attempted _) => some attempted.text
+  | _ => none
 
 /-- Run the lowered computations and project their change outcomes. -/
 def runComputations (world : World) (prepared : PreparedFlatStringContext model compilePattern)
@@ -156,6 +175,7 @@ def runComputations (world : World) (prepared : PreparedFlatStringContext model 
     let steps := lowered.map fun
       | .number table _ => CheckedScalarComputationStep.number table
       | .string table => .string table
+      | .document step => .document step
     let plan ← elaborated "ComputationPlan" (certifyScalarComputationPlan steps)
     let outcomes ← elaborated "ComputationRun" (plan.execute world prepared.patterns checked)
     pure (outcomes.filterMap fun outcome =>
@@ -166,7 +186,8 @@ def runComputations (world : World) (prepared : PreparedFlatStringContext model 
         | .number target (.accepted value) => (target, some value.render, false, none)
         | .number target (.rejected attempted _) => (target, none, false, some attempted.render)
         | .number target _ => (target, none, true, none)
-        | .document target _ => (target, none, false, none)
+        | .document target outcome => (target, outcome.storedText?, outcome.storedText?.isNone &&
+            (documentAttempt? outcome).isNone, documentAttempt? outcome)
       let address : CellAddr := { field := target, path := [] }
       let pointer := renderPointer model (MessagePointer.ofCellAddr address)
       let stored := (checked.storedTextAt address).getD ""

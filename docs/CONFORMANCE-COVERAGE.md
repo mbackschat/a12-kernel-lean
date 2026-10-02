@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-02; HEAD was `5afdfa69`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-02; HEAD was `c63a69ce`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Replaying 590 retained Kernel observation rows through Lean, 1349 of the 1349 rule and computation instances Lean represents match the Kernel and 0 diverge; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 75 partially and 44 not at all, as classified on 2026-10-02 at `c3d40ed2` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
+**Replaying 590 retained Kernel observation rows through Lean, 1452 of the 1452 rule and computation instances Lean represents match the Kernel and 0 diverge; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 75 partially and 44 not at all, as classified on 2026-10-02 at `c3d40ed2` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -81,9 +81,9 @@ Each instance, one rule or computation on one document row, lands in one tier:
 
 | | rules | computations |
 |---|---|---|
-| match | 979 | 370 |
+| match | 979 | 473 |
 | tier 1 | 0 | 0 |
-| tier 2 | 302 | 455 |
+| tier 2 | 302 | 352 |
 | unattributed | 0 | 19 |
 | fault | 2 | 0 |
 
@@ -98,20 +98,18 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 | 112 | 36 | validation | `Comparison/NumberOfDifferentValues` |
 | 96 | 39 | computation | `StringComputation` |
 | 88 | 11 | validation | `Comparison/NumberOfValueInFields` |
-| 81 | 31 | computation | `DateComputation` |
 | 56 | 7 | computation | `NumberComputation` |
-| 37 | 10 | computation | `TimeComputation` |
-| 35 | 4 | computation | `DateRangeComputation` |
-| 29 | 10 | computation | `BooleanComputation` |
+| 49 | 29 | computation | `DateComputation` |
 | 24 | 6 | computation | `Guard/Comparison` |
+| 23 | 7 | computation | `TimeComputation` |
 | 21 | 3 | validation | `FieldValuesNotUnique` |
-| 21 | 3 | computation | `StringOperation/FirstFilledValue` |
+| 18 | 8 | computation | `BooleanComputation` |
 | 18 | 18 | validation | `Comparison/DifferenceInDays` |
 | 18 | 8 | computation | `ConfirmComputation` |
 | 16 | 8 | validation | `Comparison/Sum` |
 | 16 | 4 | computation | `ComputationRun` |
+| 14 | 2 | computation | `FirstFilledValue` |
 | 14 | 8 | computation | `Having` |
-| 10 | 4 | computation | `DateTimeComputation` |
 | 10 | 3 | computation | `EnumerationComputation` |
 | 9 | 2 | validation | `AtLeastOneGroupFilled` |
 | 9 | 9 | row | `IO` |
@@ -122,9 +120,11 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 | 6 | 2 | validation | `Comparison/NumberOfFilledFields` |
 | 5 | 2 | validation | `AllFieldsFilled` |
 | 4 | 2 | validation | `Comparison/MaxValue` |
+| 4 | 3 | computation | `DateTimeComputation` |
 | 4 | 4 | row | `Prepare` |
 | 3 | 1 | validation | `AtLeastOneFieldFilled` |
 | 3 | 1 | validation | `NotAllFieldsFilled` |
+| 2 | 1 | computation | `DateRangeComputation` |
 
 ### Tier-1 divergences
 
@@ -185,7 +185,7 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
 | Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 232460 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 10998 | 4% — ceiling 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 11018 | 4% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.
