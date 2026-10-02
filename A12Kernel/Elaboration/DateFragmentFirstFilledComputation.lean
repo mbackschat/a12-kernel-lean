@@ -1,54 +1,43 @@
 import A12Kernel.Elaboration.TemporalFirstFilledShape
+import A12Kernel.Elaboration.ComputationFormalInput
 import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Elaboration.StringComputationRunApplication
 import A12Kernel.Semantics.FirstFilledValue
 
-/-! # Fixed-target DateFragment `FirstFilledValue` computation over a direct star or a direct list -/
+/-! # DateFragment `FirstFilledValue` at a fixed or a repeatable target
+
+One carrier serves both address classes over the shared temporal site: a fixed target over a direct
+star or a list of plain fields, a repeatable one over a sibling single-axis star at every row of its
+scope. Target and source share one of the four exact fragment profiles, and the selected stored token
+is written as it stands.
+-/
 
 namespace A12Kernel
 
-abbrev DateFragmentFirstFilledComputationElabError :=
-  TemporalFirstFilledShapeElabError
+inductive DateFragmentFirstFilledComputationElabError where
+  | shape (cause : TemporalFirstFilledSiteElabError)
+  | targetNotFragment (path : List String)
+  deriving Repr, DecidableEq
 
-/-- One fixed DateFragment target and one direct single-level star or direct list sharing one exact admitted declaration format. -/
-inductive CheckedDateFragmentFirstFilledComputation (model : FlatModel) where
-  | month
-      (shape : CheckedTemporalFirstFilledShape model .monthFragment)
-  | year
-      (shape : CheckedTemporalFirstFilledShape model .yearFragment)
-  | yearMonth
-      (shape :
-        CheckedTemporalFirstFilledShape model .yearMonthFragment)
-  | monthDay
-      (shape :
-        CheckedTemporalFirstFilledShape model .monthDayFragment)
+/-- One DateFragment target, fixed or repeatable, and its source sharing one exact fragment profile. -/
+structure CheckedDateFragmentFirstFilledComputation (model : FlatModel) where
+  private mk ::
+  shape : CheckedTemporalFirstFilledSite model
+  fragment : shape.carrier.isDateFragment = true
 
-/-- Check the four exact admitted DateFragment formats. Runtime calibration covers the `MM` star and the `yyyy-MM` direct list; other operands, nesting, and validation use stay outside. -/
+/-- Check the site and the four exact admitted DateFragment profiles. Runtime calibration covers the
+`MM` star and the `yyyy-MM` direct list at a fixed target. -/
 def checkDateFragmentFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFirstFilledSource) :
     Except DateFragmentFirstFilledComputationElabError
-      (CheckedDateFragmentFirstFilledComputation model) :=
-  match checkTemporalFirstFilledShape
-      model declaringGroup targetField authored .monthFragment with
-  | .ok shape => pure (.month shape)
-  | .error (.targetCarrier _) =>
-      match checkTemporalFirstFilledShape
-          model declaringGroup targetField authored .yearFragment with
-      | .ok shape => pure (.year shape)
-      | .error (.targetCarrier _) =>
-          match checkTemporalFirstFilledShape model declaringGroup
-              targetField authored .yearMonthFragment with
-          | .ok shape => pure (.yearMonth shape)
-          | .error (.targetCarrier _) => do
-              let shape ← checkTemporalFirstFilledShape model
-                declaringGroup targetField authored .monthDayFragment
-              pure (.monthDay shape)
-          | .error cause => throw cause
-      | .error cause => throw cause
-  | .error cause => throw cause
+      (CheckedDateFragmentFirstFilledComputation model) := do
+  let shape ← (checkTemporalFirstFilledSite model declaringGroup targetField authored).mapError .shape
+  if fragment : shape.carrier.isDateFragment = true then pure { shape, fragment }
+  else throw (.targetNotFragment shape.site.target.path)
 
-/-- Project one checked DateFragment cell to the token consumed by the shared first-filled scan. Only the `MM` runtime row is externally calibrated, and it does not distinguish copy from render. -/
+/-- Project one checked DateFragment cell to the token consumed by the shared first-filled scan. Only
+the `MM` runtime row is externally calibrated, and it does not distinguish copy from render. -/
 def dateFragmentFirstFilledCellAt
     (addressed : CheckedAddressedCell) : ValueListCell .token :=
   match observeCell .computation addressed.cell, addressed.stored with
@@ -57,35 +46,36 @@ def dateFragmentFirstFilledCellAt
   | .empty, _ => .empty
   | .unknown cause, _ | .poison cause, _ => .unknown cause
 
-/-- The exact fixed target retained by any admitted DateFragment carrier. -/
-def CheckedDateFragmentFirstFilledComputation.targetField :
-    CheckedDateFragmentFirstFilledComputation model → FieldId
-  | .month shape => shape.target.id
-  | .year shape => shape.target.id
-  | .yearMonth shape => shape.target.id
-  | .monthDay shape => shape.target.id
+inductive DateFragmentFirstFilledComputationFault where
+  | targetRows (cause : ActualRowEnvironmentError)
+  | targetEnvironment (cause : EnvBindingError)
+  | source (cause : CheckedAddressingError)
+  deriving Repr, DecidableEq
 
-/-- The fields any admitted DateFragment carrier's source reads. -/
-def CheckedDateFragmentFirstFilledComputation.referencesField :
-    CheckedDateFragmentFirstFilledComputation model → FieldId → Bool
-  | .month shape | .year shape | .yearMonth shape | .monthDay shape => shape.source.referencesField
-
-theorem CheckedDateFragmentFirstFilledComputation.excludesTarget
-    (operation : CheckedDateFragmentFirstFilledComputation model) :
-    operation.referencesField operation.targetField = false := by
-  cases operation with
-  | month shape | year shape | yearMonth shape | monthDay shape => exact shape.excludesTarget
-
-/-- One checked DateFragment `FirstFilledValue` result backed by the common exact-text channels. Retaining the operation ties every action to the exact admitted fragment target and declaration profile. -/
+/-- One checked DateFragment `FirstFilledValue` result backed by the common exact-text channels. -/
 structure DateFragmentFirstFilledComputationRunView (model : FlatModel)
     (ResidualMessage : Type) where
   private mk ::
   operation : CheckedDateFragmentFirstFilledComputation model
-  string : StringComputationRunView ResidualMessage
+  string : StringComputationRunView ResidualMessage CellAddr
 
 namespace CheckedDateFragmentFirstFilledComputation
 
-/-- Evaluate the shared checked DateFragment token scan after a caller has resolved its own scalar or addressed source environment. -/
+def targetField (operation : CheckedDateFragmentFirstFilledComputation model) : FieldId :=
+  operation.shape.site.targetField
+
+def target (operation : CheckedDateFragmentFirstFilledComputation model) : FlatFieldDecl :=
+  operation.shape.site.target
+
+def referencesField (operation : CheckedDateFragmentFirstFilledComputation model) :
+    FieldId → Bool :=
+  operation.shape.site.referencesField
+
+theorem excludesTarget (operation : CheckedDateFragmentFirstFilledComputation model) :
+    operation.referencesField operation.targetField = false :=
+  operation.shape.excludesTarget
+
+/-- Evaluate the shared checked DateFragment token scan over cells resolved at one instance. -/
 def evalResolvedDateFragmentFirstFilled
     (cells : List CheckedAddressedCell) (hasOpenTail : Bool) : TokenComputationResult :=
   let side : ResolvedValueListSide .token := {
@@ -95,51 +85,89 @@ def evalResolvedDateFragmentFirstFilled
   }
   (evalFirstFilledToken side).asComputationResult
 
-/-- Execute one checked source over immutable rows and retain only the value/clear/poison token boundary. -/
-private def executeWith
-    (shape : CheckedTemporalFirstFilledShape model carrier)
-    (input : CheckedDocument model) :
-    Except CheckedStarDocumentError TokenComputationResult := do
-  let resolved ← shape.source.resolve input
-  pure (evalResolvedDateFragmentFirstFilled resolved.cells resolved.hasOpenTail)
+/-- Scan the source at one target instance's environment through a caller-supplied view. -/
+def evaluateAt (operation : CheckedDateFragmentFirstFilledComputation model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (target : CellAddr) (environment : Env) :
+    Except DateFragmentFirstFilledComputationFault AddressedTokenComputationOutcome := do
+  let resolved ← (operation.shape.site.source.resolveAt input read environment).mapError .source
+  pure { targetField := target
+         result := evalResolvedDateFragmentFirstFilled resolved.cells resolved.hasOpenTail }
 
-/-- Execute every admitted DateFragment policy through the same checked document and exact-token scan. -/
+/-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
+scope with a clear at each over-limit row. -/
+def executeWithRead (operation : CheckedDateFragmentFirstFilledComputation model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except DateFragmentFirstFilledComputationFault (List AddressedTokenComputationOutcome) :=
+  operation.shape.site.instances input .targetRows .targetEnvironment
+    (fun target _ => pure { targetField := target, result := .noValue })
+    (operation.evaluateAt input read)
+
 def execute (operation : CheckedDateFragmentFirstFilledComputation model)
     (input : CheckedDocument model) :
-    Except CheckedStarDocumentError TokenComputationResult :=
-  match operation with
-  | .month shape => executeWith shape input
-  | .year shape => executeWith shape input
-  | .yearMonth shape => executeWith shape input
-  | .monthDay shape => executeWith shape input
+    Except DateFragmentFirstFilledComputationFault (List AddressedTokenComputationOutcome) :=
+  operation.executeWithRead input input.read
 
-/-- Execute one checked DateFragment selection and classify its exact stored token relative to the immutable source target. This internal result boundary does not claim that the Kernel copies rather than rerenders the selected fragment. -/
-def executeResult (operation : CheckedDateFragmentFirstFilledComputation model)
-    (input : CheckedDocument model)
+/-- Classify caller-view token outcomes against the immutable source target at the same addresses.
+This result boundary does not claim that the Kernel copies rather than rerenders the fragment. -/
+def executeResultWithRead (operation : CheckedDateFragmentFirstFilledComputation model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (residualMessages : List ResidualMessage) :
-    Except CheckedStarDocumentError
+    Except DateFragmentFirstFilledComputationFault
       (DateFragmentFirstFilledComputationRunView model ResidualMessage) := do
-  let result ← operation.execute input
-  let targetField := operation.targetField
-  let string := StringComputationRunView.fromSourcedOutcomes residualMessages [{
-    targetField
-    outcome := result.asExactStringTargetOutcome
-    source := input.sourceStringTargetState targetField
-  }]
-  pure { operation, string }
+  let outcomes ← operation.executeWithRead input read
+  pure { operation, string := projectAddressedTokenResults input residualMessages outcomes }
+
+def executeResult (operation : CheckedDateFragmentFirstFilledComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except DateFragmentFirstFilledComputationFault
+      (DateFragmentFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
 
 end CheckedDateFragmentFirstFilledComputation
 
 namespace DateFragmentFirstFilledComputationRunView
 
-/-- Apply retained source-relative fragment actions to a separately supplied checked document of the same model. The result is an exact root text-state projection, not a reconstructed document or implicit validation pass. -/
+/-- Apply retained exact-address fragment actions to a separate same-model destination. The result
+is a text-state projection, not a reconstructed document or implicit validation pass. -/
 def applyToChecked
     (view : DateFragmentFirstFilledComputationRunView model ResidualMessage)
     (destination : CheckedDocument model) :
-    Except (StringComputationRunView.StringComputationRunApplicationError FieldId)
-      (StringComputationDestination FieldId) :=
-  view.string.applyTo destination.sourceStringTargetState
+    Except (StringComputationRunView.StringComputationRunApplicationError CellAddr)
+      (StringComputationDestination CellAddr) :=
+  view.string.applyTo destination.sourceStringTargetStateAt
 
 end DateFragmentFirstFilledComputationRunView
+
+/-- Failure while composing selected formal-input preparation with DateFragment `FirstFilledValue`. -/
+inductive DateFragmentFirstFilledCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : DateFragmentFirstFilledComputationFault)
+  deriving Repr, DecidableEq
+
+namespace CheckedDateFragmentFirstFilledComputation
+
+/-- Bind every source declaration and the computed target to the shared eager inventory. -/
+def formalInputPlan (operation : CheckedDateFragmentFirstFilledComputation model) :
+    Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model
+    (operation.shape.site.source.declarations.map (·.id)) [operation.targetField]
+
+/-- Prepare the selected sources once, retain every eager finding, and run lazily through the
+prepared read. -/
+def executeResultWithFormalInputs (operation : CheckedDateFragmentFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    Except DateFragmentFirstFilledCheckedResultFault
+      (DateFragmentFirstFilledComputationRunView model ComputationFormalInputFinding) := do
+  let plan ← operation.formalInputPlan |>.mapError .formalInput
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  match operation.executeResultWithRead input prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands with
+  | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok result => .ok result
+
+end CheckedDateFragmentFirstFilledComputation
 
 end A12Kernel

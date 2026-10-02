@@ -117,7 +117,12 @@ private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : Fla
   | .temporal .dateTime _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedDateTimeFirstFilled?
         (← elaborated "FirstFilledValue" (checkAddressedDateTimeFirstFilledComputation model group target.id star)))
-  | .temporal .date _ => do
+  | .temporal .date _ =>
+      if target.temporalFirstFilledStarCarrier?.any (·.isDateFragment) then
+        stepOf "FirstFilledValue" (CheckedRowComputationStep.ofDateFragmentFirstFilled?
+          (← elaborated "FirstFilledValue" (checkDateFragmentFirstFilledComputation model group target.id
+            (.star star))))
+      else
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedFullDateFirstFilled?
         (← elaborated "FirstFilledValue" (checkAddressedFullDateFirstFilledComputation model group target.id star)))
   | .dateRange => do

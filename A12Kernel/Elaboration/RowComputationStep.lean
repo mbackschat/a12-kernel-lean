@@ -38,6 +38,7 @@ inductive RowComputationStepFault where
   | booleanConstant (cause : RepeatableBooleanConstantComputationFault)
   | fieldValueAsString (cause : AddressedFieldValueAsStringFault)
   | stringFirstFilled (cause : StringFirstFilledComputationFault)
+  | dateFragmentFirstFilled (cause : DateFragmentFirstFilledComputationFault)
   | timeFirstFilled (cause : AddressedTimeFirstFilledComputationFault)
   | dateTimeFirstFilled (cause : AddressedDateTimeFirstFilledComputationFault)
   | fullDateFirstFilled (cause : AddressedFullDateFirstFilledComputationFault)
@@ -176,6 +177,14 @@ def ofStringFirstFilled? (operation : CheckedStringFirstFilledComputation model)
     let outcomes ← (operation.execute patterns document).mapError .stringFirstFilled
     readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .string
       fun _ => DocumentComputationReadBack.string
+
+/-- A per-row DateFragment `FirstFilledValue` over a sibling star. -/
+def ofDateFragmentFirstFilled? (operation : CheckedDateFragmentFirstFilledComputation model) :
+    Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
+  checked? operation.targetField .dateFragment operation.referencesField fun _ _ _ document => do
+    let outcomes ← (operation.execute document).mapError .dateFragmentFirstFilled
+    readBack (outcomes.map fun entry => (entry.targetField, entry.result.asExactStringTargetOutcome))
+      .dateFragment (DocumentComputationReadBack.dateFragment model)
 
 /-- A per-row Time `FirstFilledValue` over a sibling star. -/
 def ofAddressedTimeFirstFilled? (operation : CheckedAddressedTimeFirstFilledComputation model) :

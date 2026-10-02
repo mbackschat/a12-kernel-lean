@@ -128,7 +128,8 @@ private def resultFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
     Option TokenComputationResult := do
   let operation ← checked? targetDeclaration.id (star sourceDeclaration.name)
   let input ← inputFor? targetDeclaration sourceDeclaration sourceInput
-  operation.execute input |>.toOption
+  let [entry] ← operation.execute input |>.toOption | none
+  pure entry.result
 
 private def result? := resultFor? target source
 
@@ -172,14 +173,14 @@ private def resultApplicationSummary?
   pure {
     targetField := result.operation.targetField
     values := result.string.withoutErrors.map fun item =>
-      (item.targetField, item.value.text)
+      (item.targetField.field, item.value.text)
     changes := result.string.withChanges.map fun item =>
-      (item.targetField, item.value.text)
+      (item.targetField.field, item.value.text)
     hasTargetErrors := !result.string.withErrors.isEmpty
-    cleared := result.string.cleared
+    cleared := result.string.cleared.map (·.field)
     residual := result.string.formalErrorsInOperands
-    targetState := applied target.id
-    otherState := applied otherGroupTarget.id
+    targetState := applied { field := target.id, path := [] }
+    otherState := applied { field := otherGroupTarget.id, path := [] }
   }
 
 /- The externally measured empty selection clears a seeded target, while the filled source yields the measured `MM` token. -/

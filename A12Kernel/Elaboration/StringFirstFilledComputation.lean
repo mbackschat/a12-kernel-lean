@@ -214,11 +214,8 @@ def executeWithMatcher (operation : CheckedStringFirstFilledComputation model)
     (matcher : Option (String → Bool)) (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except StringFirstFilledComputationFault (List StringFirstFilledComputationOutcome) :=
-  if operation.target.repeatableScope.isEmpty then
-    (·::[]) <$> operation.evaluateAt matcher input read []
-  else
-    input.computationRowOutcomes operation.target.repeatableScope .targetRows
-      operation.clearedAt (operation.evaluateAt matcher input read)
+  input.computationTargetOutcomes operation.target.repeatableScope .targetRows operation.clearedAt
+    (operation.evaluateAt matcher input read)
 
 /-- Run with the target's prepared matcher, which must be present before any instance runs. -/
 def executeWithRead (operation : CheckedStringFirstFilledComputation model)

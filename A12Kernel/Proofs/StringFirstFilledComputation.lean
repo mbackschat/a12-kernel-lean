@@ -47,7 +47,8 @@ theorem checkedStringFirstFilled_fixed_runsOnce
     (fixed : operation.target.repeatableScope = []) :
     operation.executeWithMatcher matcher input read =
       (·::[]) <$> operation.evaluateAt matcher input read [] := by
-  simp [CheckedStringFirstFilledComputation.executeWithMatcher, fixed]
+  simp [CheckedStringFirstFilledComputation.executeWithMatcher,
+    CheckedDocument.computationTargetOutcomes, fixed]
 
 /-- The immutable executor is definitionally the caller-read route on the document's own read. -/
 theorem checkedStringFirstFilled_executeWithRead_base

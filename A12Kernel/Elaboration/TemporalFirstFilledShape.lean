@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.FirstFilledFieldSource
+import A12Kernel.Elaboration.FirstFilledPlacement
 
 /-! # Shared fixed-target temporal `FirstFilledValue` computation shape
 
@@ -235,5 +235,58 @@ def checkTemporalFirstFilledShape
     if carrier.dateRangeComponents?.isSome then throw (.sourceShape target.path)
     checkTemporalFirstFilledSourceAgainst model target carrier declaringGroup
       checked.declaringGroupValid (.list checked.fields)
+
+inductive TemporalFirstFilledSiteElabError where
+  | site (cause : FirstFilledPlacementElabError)
+  | targetCarrier (path : List String)
+  | sourceCarrier (path : List String)
+  /-- A list over a DateRange profile, which the direct DateRange carrier owns. -/
+  | sourceShape (path : List String)
+  | targetSelfReference (path : List String)
+  deriving Repr, DecidableEq
+
+/-- One placed target, fixed or repeatable, and its source, sharing a completed scalar temporal or
+DateRange carrier. The source's own profile may differ from the target's only where a DateRange
+crossing admits it, and every source declaration repeats it. -/
+structure CheckedTemporalFirstFilledSite (model : FlatModel) where
+  private mk ::
+  site : CheckedFirstFilledSite model
+  carrier : TemporalFirstFilledStarCarrier
+  sourceProfile : TemporalFirstFilledStarCarrier
+  targetCarrier : site.target.temporalFirstFilledStarCarrier? = some carrier
+  sourceCarrier :
+    site.source.declarations.all (·.temporalFirstFilledStarCarrier? == some sourceProfile) = true
+  sourceAccepted : carrier.acceptsSource sourceProfile = true
+  excludesTarget : site.referencesField site.targetField = false
+
+/-- Place the target and source, then check both carriers against the target's own profile. -/
+def checkTemporalFirstFilledSite (model : FlatModel) (declaringGroup : GroupPath)
+    (targetField : FieldId) (authored : SurfaceFirstFilledSource) :
+    Except TemporalFirstFilledSiteElabError (CheckedTemporalFirstFilledSite model) := do
+  let site ← (checkFirstFilledSite model declaringGroup targetField authored).mapError .site
+  match hTarget : site.target.temporalFirstFilledStarCarrier? with
+  | none => throw (.targetCarrier site.target.path)
+  | some carrier =>
+    let first := (site.source.declarations.head?).getD site.target
+    match first.temporalFirstFilledStarCarrier? with
+    | none => throw (.sourceCarrier first.path)
+    | some sourceProfile =>
+      if hSource : site.source.declarations.all
+          (·.temporalFirstFilledStarCarrier? == some sourceProfile) = true then
+        if hAccepted : carrier.acceptsSource sourceProfile = true then
+          if let .list _ := site.source then
+            if carrier.dateRangeComponents?.isSome then throw (.sourceShape site.target.path)
+          if hExcludes : site.referencesField site.targetField = false then
+            pure { site, carrier, sourceProfile
+                   targetCarrier := hTarget
+                   sourceCarrier := hSource
+                   sourceAccepted := hAccepted
+                   excludesTarget := hExcludes }
+          else throw (.targetSelfReference site.target.path)
+        else throw (.sourceCarrier first.path)
+      else
+        -- As on the fixed shape above: a list whose fields do not all repeat the first's profile.
+        throw (.sourceCarrier ((site.source.declarations.find?
+          (·.temporalFirstFilledStarCarrier? != some sourceProfile)).map (·.path) |>.getD first.path))
 
 end A12Kernel

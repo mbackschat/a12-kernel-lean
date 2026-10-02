@@ -425,6 +425,16 @@ def computationRowOutcomes {Outcome Fault : Type} (checked : CheckedDocument mod
     if checked.environmentOverLimit scope environment then clearOnly environment
     else produce environment
 
+/-- A computation target's outcomes over its instances: a fixed target's one, at the empty
+environment, or a repeatable target's per row as `computationRowOutcomes` gives them. -/
+def computationTargetOutcomes {Outcome Fault : Type} (checked : CheckedDocument model)
+    (scope : List RepeatableLevel)
+    (onRowError : ActualRowEnvironmentError → Fault)
+    (clearOnly produce : Env → Except Fault Outcome) :
+    Except Fault (List Outcome) :=
+  if scope.isEmpty then (·::[]) <$> produce []
+  else checked.computationRowOutcomes scope onRowError clearOnly produce
+
 private def environmentExtends (parent child : Env) : Bool :=
   child.take parent.length == parent
 

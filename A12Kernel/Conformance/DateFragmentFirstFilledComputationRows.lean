@@ -1,8 +1,8 @@
-import A12Kernel.Elaboration.AddressedDateFragmentFirstFilledFormalInput
+import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
 
 /-! # Exact-address repeatable DateFragment `FirstFilledValue` locks -/
 
-namespace A12Kernel.Conformance.AddressedDateFragmentFirstFilledComputation
+namespace A12Kernel.Conformance.DateFragmentFirstFilledComputationRows
 
 open A12Kernel
 
@@ -66,43 +66,42 @@ private def targetStar : SurfaceStarFieldPath := {
 }
 
 private def operation? :
-    Option (CheckedAddressedDateFragmentFirstFilledComputation model) :=
-  (checkAddressedDateFragmentFirstFilledComputation model
-    ["Projects", "Tasks"] target.id (siblingStar source.name)).toOption
+    Option (CheckedDateFragmentFirstFilledComputation model) :=
+  (checkDateFragmentFirstFilledComputation model
+    ["Projects", "Tasks"] target.id (.star (siblingStar source.name))).toOption
 
 private def elabError? (checked : Except
-    AddressedDateFragmentFirstFilledComputationElabError
-    (CheckedAddressedDateFragmentFirstFilledComputation model)) :=
+    DateFragmentFirstFilledComputationElabError
+    (CheckedDateFragmentFirstFilledComputation model)) :=
   match checked with
   | .error cause => some cause
   | .ok _ => none
 
-/- The addressed boundary admits all four exact fragment profiles and separates target placement, carrier identity, and self-reference. -/
+/- A repeatable target admits all four exact fragment profiles over a sibling star and separates carrier identity and self-reference. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
 example : operation?.isSome = true ∧
-    (checkAddressedDateFragmentFirstFilledComputation model
+    (checkDateFragmentFirstFilledComputation model
       ["Projects", "Tasks"] yearTarget.id
-      (siblingStar yearSource.name)).toOption.isSome = true ∧
-    (checkAddressedDateFragmentFirstFilledComputation model
+      (.star (siblingStar yearSource.name))).toOption.isSome = true ∧
+    (checkDateFragmentFirstFilledComputation model
       ["Projects", "Tasks"] yearMonthTarget.id
-      (siblingStar yearMonthSource.name)).toOption.isSome = true ∧
-    (checkAddressedDateFragmentFirstFilledComputation model
+      (.star (siblingStar yearMonthSource.name))).toOption.isSome = true ∧
+    (checkDateFragmentFirstFilledComputation model
       ["Projects", "Tasks"] monthDayTarget.id
-      (siblingStar monthDaySource.name)).toOption.isSome = true ∧
-    elabError? (checkAddressedDateFragmentFirstFilledComputation model
+      (.star (siblingStar monthDaySource.name))).toOption.isSome = true ∧
+    elabError? (checkDateFragmentFirstFilledComputation model
       ["Projects", "Tasks"] target.id
-      (siblingStar yearSource.name)) =
-        some (.sourceCarrier yearSource.path .monthFragment
-          (some .yearFragment)) ∧
-    elabError? (checkAddressedDateFragmentFirstFilledComputation model
+      (.star (siblingStar yearSource.name))) =
+        some (.shape (.sourceCarrier yearSource.path)) ∧
+    elabError? (checkDateFragmentFirstFilledComputation model
       ["Projects", "Tasks"] fullDateTarget.id
-      (siblingStar source.name)) =
-        some (.targetCarrier fullDateTarget.path) ∧
-    elabError? (checkAddressedDateFragmentFirstFilledComputation model
-      ["Summary"] fixedTarget.id (siblingStar source.name)) =
-        some (.targetNotRepeatable fixedTarget.path) ∧
-    elabError? (checkAddressedDateFragmentFirstFilledComputation model
-      ["Projects", "Tasks"] target.id targetStar) =
-        some (.targetSelfReference target.id) := by
+      (.star (siblingStar source.name))) =
+        some (.shape (.sourceCarrier source.path)) ∧
+    elabError? (checkDateFragmentFirstFilledComputation model
+      ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
+        some (.shape (.site (.source (.resolve (.aboveRoot 1))))) ∧
+    elabError? (checkDateFragmentFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star targetStar)) =
+        some (.shape (.site (.starPlacement (.targetSelfReference target.id)))) := by
   native_decide
 
 private def prepared :
@@ -284,4 +283,4 @@ example : formalInputSummary? = some {
   } := by
   native_decide
 
-end A12Kernel.Conformance.AddressedDateFragmentFirstFilledComputation
+end A12Kernel.Conformance.DateFragmentFirstFilledComputationRows

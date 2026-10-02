@@ -72,11 +72,12 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
       let operation ← check (checkDateTimeFirstFilledComputation model group target.id source)
       pure (.ofDateTimeFirstFilled operation)
   | .temporal .date =>
-      match checkFullDateFirstFilledComputation model group target.id source with
-      | .ok operation => pure (.ofFullDateFirstFilled operation)
-      | .error _ =>
-          let operation ← check (checkDateFragmentFirstFilledComputation model group target.id source)
-          pure (.ofDateFragmentFirstFilled operation)
+      if target.temporalFirstFilledStarCarrier?.any (·.isDateFragment) then
+        let operation ← check (checkDateFragmentFirstFilledComputation model group target.id source)
+        pure (.ofDateFragmentFirstFilled operation)
+      else
+        let operation ← check (checkFullDateFirstFilledComputation model group target.id source)
+        pure (.ofFullDateFirstFilled operation)
   | .dateRange =>
       match source with
       | .list list =>

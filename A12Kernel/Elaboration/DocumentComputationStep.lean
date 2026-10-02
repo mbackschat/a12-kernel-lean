@@ -144,6 +144,7 @@ inductive DocumentComputationStepFault where
   | dateRangeFirstFilled (cause : DateRangeFirstFilledComputationFault)
   | enumerationFirstFilled (cause : CheckedAddressingError)
   | stringFirstFilled (cause : StringFirstFilledComputationFault)
+  | dateFragmentFirstFilled (cause : DateFragmentFirstFilledComputationFault)
   | timeFromDateTime (cause : ValueAsDateTimeExtractionFault)
   | dateFromDateTime (cause : DateFromDateTimeComputationFault)
   | dateTimeDayThenSubdayShift (cause : DateTimeMixedShiftComputationFault)
@@ -417,7 +418,7 @@ def ofFullDateFirstFilled (operation : CheckedFullDateFirstFilledComputation mod
     let cell ← DocumentComputationReadBack.fullDate model operation.shape.targetField outcome
     pure (.fullDate outcome, cell)
 
-/-- A fixed-target DateFragment `FirstFilledValue`. -/
+/-- A fixed-target DateFragment `FirstFilledValue` at its single instance. -/
 def ofDateFragmentFirstFilled (operation : CheckedDateFragmentFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
   target := operation.targetField
@@ -425,8 +426,9 @@ def ofDateFragmentFirstFilled (operation : CheckedDateFragmentFirstFilledComputa
   referencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
   run _ _ document := do
-    let result ← (operation.execute document).mapError .firstFilledSource
-    let outcome := result.asExactStringTargetOutcome
+    let entry ← (operation.evaluateAt document document.read
+      { field := operation.targetField, path := [] } []).mapError .dateFragmentFirstFilled
+    let outcome := entry.result.asExactStringTargetOutcome
     let cell ← DocumentComputationReadBack.dateFragment model operation.targetField outcome
     pure (.dateFragment outcome, cell)
 

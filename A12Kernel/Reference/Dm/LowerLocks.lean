@@ -269,4 +269,28 @@ example :
         (computation ["Form", "Rows"] "Target" "FirstFilledValue(Items*/Choice)")).toOption.isSome].all id := by
   native_decide
 
+private def fragmentModel : FlatModel :=
+  let fragment (id : FieldId) (groupPath : GroupPath) (name : String) (scope : List RepeatableLevel) :
+      FlatFieldDecl :=
+    { id, groupPath, name, policy := { kind := .temporal .date (TemporalComponents.ofFormat "yyyy-MM") }
+      temporalTargetPolicy := some { format := "yyyy-MM" }, repeatableScope := scope }
+  { fields := [fragment 1 ["Form"] "Fixed" [], fragment 2 ["Form"] "First" [],
+      fragment 3 ["Form"] "Second" [], fragment 4 ["Form", "Rows", "Tasks"] "Target" [10, 30],
+      fragment 5 ["Form", "Rows", "Choices"] "Choice" [10, 20]]
+    repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 },
+      { level := 20, path := ["Form", "Rows", "Choices"], repeatability := some 3 },
+      { level := 30, path := ["Form", "Rows", "Tasks"], repeatability := some 3 }] }
+
+/- A DateFragment `FirstFilledValue`, its target read by its format, lowers onto the one fragment
+carrier over a list at a fixed target and over a sibling star at a row target. -/
+example :
+    let computation (group : GroupPath) (target operation : String) : DmComputation :=
+      { group, name := "C", targetRelPath := "../" ++ target, commonPrecondition := none
+        alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }
+    [(lowerComputation fragmentModel .english
+        (computation ["Form"] "Fixed" "FirstFilledValue(First, Second)")).toOption.isSome,
+     (lowerComputation fragmentModel .english
+        (computation ["Form", "Rows", "Tasks"] "Target" "FirstFilledValue(../Choices*/Choice)")).toOption.isSome].all id := by
+  native_decide
+
 end A12Kernel.Dm.LowerLocks
