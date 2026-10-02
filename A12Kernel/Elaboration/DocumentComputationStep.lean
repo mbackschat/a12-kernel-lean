@@ -371,16 +371,17 @@ def ofDateRangeConstruction (operation : CheckedDateRangeConstructionComputation
     let cell ← DocumentComputationReadBack.dateRange model operation.target.policy result.outcome
     pure (.dateRange result.outcome, cell)
 
-/-- A fixed-target Boolean `FirstFilledValue`. -/
+/-- A fixed-target Boolean `FirstFilledValue` at its single instance. -/
 def ofBooleanFirstFilled (operation : CheckedBooleanFirstFilledComputation model) :
     CheckedDocumentComputationStep model where
-  target := operation.target.id
+  target := operation.targetField
   family := .boolean
-  referencesField := operation.source.referencesField
+  referencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
   run _ _ document := do
-    let outcome ← (operation.execute document).mapError .firstFilledSource
-    pure (.boolean outcome, DocumentComputationReadBack.boolean outcome)
+    let entry ← (operation.evaluateAt document document.read
+      { field := operation.targetField, path := [] } []).mapError .firstFilledSite
+    pure (.boolean entry.result, DocumentComputationReadBack.boolean entry.result)
 
 /-- A fixed-target Time `FirstFilledValue` at its single instance. -/
 def ofTimeFirstFilled (operation : CheckedTimeFirstFilledComputation model) :

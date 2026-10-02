@@ -1,4 +1,4 @@
-import A12Kernel.Conformance.AddressedBooleanFirstFilledComputation
+import A12Kernel.Conformance.BooleanFirstFilledComputationRows
 import A12Kernel.Conformance.AddressedCustomFirstFilledComputation
 import A12Kernel.Conformance.DateFragmentFirstFilledComputationRows
 import A12Kernel.Conformance.AddressedDateFromDateTime

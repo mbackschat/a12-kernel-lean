@@ -97,7 +97,8 @@ private def result? (sourceStored : Option String) :
     Option FirstFilledBooleanComputationResult := do
   let operation ← checked? target.id (star "Approved")
   let input ← input? sourceStored
-  operation.execute input |>.toOption
+  let [entry] ← operation.execute input |>.toOption | none
+  pure entry.result
 
 private def document? (targetStored sourceStored : Option String)
     (unrelatedStored : String := "false") : Option (CheckedDocument model) :=
@@ -118,6 +119,8 @@ private def resultView? (input : CheckedDocument model)
     (residualMessages : List FormalCause := []) := do
   let operation ← checked? target.id (star "Approved")
   operation.executeResult input residualMessages |>.toOption
+
+private def root (field : FieldId) : CellAddr := { field, path := [] }
 
 /- The empty selection clears a seeded false target, while a filled true source preserves true. Kernel-calibrated
    per kind on a seeded target — BOOLEAN, CUSTOM, DATE_FRAGMENT, DATE, STRING, ENUM, TIME, DATE_TIME and DATE_RANGE
@@ -146,8 +149,8 @@ example : (do
     let result ← resultView? input
     let applied := result.applyToChecked destination
     pure (result.withoutErrors, result.withChanges, result.withErrors,
-      applied target.id, applied unrelated.id)) =
-  some ([{ targetField := target.id, value := true }], [], [],
+      applied (root target.id), applied (root unrelated.id))) =
+  some ([{ targetField := root target.id, value := true }], [], [],
     .presentValue false, .presentValue false) := by
   native_decide
 
@@ -157,8 +160,8 @@ example : (do
     let destination ← document? (some "false") none
     let result ← resultView? input
     let applied := result.applyToChecked destination
-    pure (result.withChanges, applied target.id, applied unrelated.id)) =
-  some ([{ targetField := target.id, value := true }],
+    pure (result.withChanges, applied (root target.id), applied (root unrelated.id))) =
+  some ([{ targetField := root target.id, value := true }],
     .presentValue true, .presentValue false) := by
   native_decide
 
@@ -170,10 +173,10 @@ example : (do
     let filledResult ← resultView? filledInput
     let absentResult ← resultView? absentInput
     pure (filledResult.cleared,
-      (filledResult.applyToChecked destination) target.id,
+      (filledResult.applyToChecked destination) (root target.id),
       absentResult.cleared,
-      (absentResult.applyToChecked destination) target.id)) =
-  some ([target.id], .presentEmpty, [], .absent) := by
+      (absentResult.applyToChecked destination) (root target.id))) =
+  some ([root target.id], .presentEmpty, [], .absent) := by
   native_decide
 
 /- Reached formal poison has no computed-error payload and applies through the source-filled clear action. -/
@@ -183,8 +186,8 @@ example : (do
     let result ← resultView? input
     let applied := result.applyToChecked destination
     pure (result.withoutErrors, result.withErrors, result.cleared,
-      applied target.id, applied unrelated.id)) =
-  some ([], [], [target.id], .presentEmpty, .presentValue false) := by
+      applied (root target.id), applied (root unrelated.id))) =
+  some ([], [], [root target.id], .presentEmpty, .presentValue false) := by
   native_decide
 
 /- The independently supplied residual channel is retained and solely controls the Boolean result's error predicate. -/
@@ -195,7 +198,7 @@ example : (do
   some ([.malformed], false) := by
   native_decide
 
-/- The checked boundary admits only a fixed Boolean target and one direct single-level starred Boolean source. Placement is not part of that boundary. Declaring at `["Review", "Rows"]` puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused, and so is the repeatable target — on the fixed-target gate rather than on placement. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
+/- The checked boundary admits only a fixed Boolean target and one direct single-level starred Boolean source. Placement is not part of that boundary. Declaring at `["Review", "Rows"]` puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused, and so is the repeatable target, whose direct star reopens its own row rather than a sibling. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
 example :
     (checked? target.id (star "Approved")).isSome = true ∧
       (checkedAt? ["Review", "Rows"] target.id (star "Approved")).isSome = true ∧

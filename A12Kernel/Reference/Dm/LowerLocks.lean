@@ -309,4 +309,24 @@ example :
         errorCodesToSuppress := [] }).toOption.isSome := by
   native_decide
 
+private def booleanModel : FlatModel :=
+  let boolean (id : FieldId) (groupPath : GroupPath) (name : String) (scope : List RepeatableLevel) :
+      FlatFieldDecl :=
+    { id, groupPath, name, policy := { kind := .boolean }, repeatableScope := scope }
+  { fields := [boolean 1 ["Form", "Rows", "Tasks"] "Target" [10, 30],
+      boolean 2 ["Form", "Rows", "Choices"] "Choice" [10, 20]]
+    repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 },
+      { level := 20, path := ["Form", "Rows", "Choices"], repeatability := some 3 },
+      { level := 30, path := ["Form", "Rows", "Tasks"], repeatability := some 3 }] }
+
+/- A Boolean `FirstFilledValue` lowers onto the one Boolean carrier over a sibling star at a row
+target. -/
+example :
+    (lowerComputation booleanModel .english
+      { group := ["Form", "Rows", "Tasks"], name := "C", targetRelPath := "../Target"
+        commonPrecondition := none, errorCodesToSuppress := []
+        alternatives := [{ precondition := none, operation := "FirstFilledValue(../Choices*/Choice)" }]
+      }).toOption.isSome := by
+  native_decide
+
 end A12Kernel.Dm.LowerLocks

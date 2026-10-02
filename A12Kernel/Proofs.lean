@@ -1,4 +1,3 @@
-import A12Kernel.Proofs.AddressedBooleanFirstFilledComputation
 import A12Kernel.Proofs.AddressedCustomFirstFilledComputation
 import A12Kernel.Proofs.AddressedDateFromDateTime
 import A12Kernel.Proofs.AddressedDateFromDateTimeFormalInput

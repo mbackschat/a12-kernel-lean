@@ -1,8 +1,8 @@
-import A12Kernel.Elaboration.AddressedBooleanFirstFilledFormalInput
+import A12Kernel.Elaboration.BooleanFirstFilledComputation
 
 /-! # Exact-address repeatable Boolean `FirstFilledValue` locks -/
 
-namespace A12Kernel.Conformance.AddressedBooleanFirstFilledComputation
+namespace A12Kernel.Conformance.BooleanFirstFilledComputationRows
 
 open A12Kernel
 
@@ -101,14 +101,14 @@ private def rootStar : SurfaceStarFieldPath := {
 }
 
 private def operation? :
-    Option (CheckedAddressedBooleanFirstFilledComputation model) :=
-  (checkAddressedBooleanFirstFilledComputation model
-    ["Projects", "Tasks"] target.id (siblingStar source.name)).toOption
+    Option (CheckedBooleanFirstFilledComputation model) :=
+  (checkBooleanFirstFilledComputation model
+    ["Projects", "Tasks"] target.id (.star (siblingStar source.name))).toOption
 
 private def elabError? (checked :
-    Except AddressedBooleanFirstFilledComputationElabError
-      (CheckedAddressedBooleanFirstFilledComputation model)) :
-    Option AddressedBooleanFirstFilledComputationElabError :=
+    Except BooleanFirstFilledComputationElabError
+      (CheckedBooleanFirstFilledComputation model)) :
+    Option BooleanFirstFilledComputationElabError :=
   match checked with
   | .error cause => some cause
   | .ok _ => none
@@ -124,16 +124,16 @@ checkpoint's operand-bearing row measured. The complementary direction — a dec
 the target — is separated by the other families named in
 [SG4](../../docs/SEMANTICS-GAPS.md#sg4--computation-scheduling-and-state-transition). -/
 example :
-    (checkAddressedBooleanFirstFilledComputation model
-      ["Projects"] target.id absoluteSiblingStar).toOption.isSome = true ∧
-    (checkAddressedBooleanFirstFilledComputation model
-      ["Projects"] target.id respelledSiblingStar).toOption.isSome = true ∧
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      ["Projects", "Choices"] target.id absoluteSiblingStar) =
-        some (.targetOutsideDeclaringGroup target.path ["Projects", "Choices"]) ∧
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      ["Summary"] target.id absoluteSiblingStar) =
-        some (.targetOutsideDeclaringGroup target.path ["Summary"]) := by
+    (checkBooleanFirstFilledComputation model
+      ["Projects"] target.id (.star absoluteSiblingStar)).toOption.isSome = true ∧
+    (checkBooleanFirstFilledComputation model
+      ["Projects"] target.id (.star respelledSiblingStar)).toOption.isSome = true ∧
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Projects", "Choices"] target.id (.star absoluteSiblingStar)) =
+        some (.site (.repeatableTarget (.targetOutsideDeclaringGroup target.path ["Projects", "Choices"]))) ∧
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Summary"] target.id (.star absoluteSiblingStar)) =
+        some (.site (.repeatableTarget (.targetOutsideDeclaringGroup target.path ["Summary"]))) := by
   native_decide
 
 /- Keeping the target-relative spelling while moving to the ancestor fails in the *source*, not the placement,
@@ -142,50 +142,50 @@ outcome: this fragment refuses the walk itself, because one parent exceeds a one
 the Kernel's measured `..` reached its root and then failed the lookup under it. Same separation of causes,
 different cause on this cell. -/
 example :
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      ["Projects"] target.id (siblingStar source.name)) =
-        some (.source (.resolve (.aboveRoot 1))) := by
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Projects"] target.id (.star (siblingStar source.name))) =
+        some (.site (.source (.resolve (.aboveRoot 1)))) := by
   native_decide
 
 /- Containment is checked against a representable declaring group, never on its own: `[]` is a prefix of every
 path, so containment alone would treat it as containing everything. An empty segment is refused here too,
 though that cell is about the reported cause rather than admission, since no declaration path can contain one. -/
 example :
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      [] target.id absoluteSiblingStar) =
-        some (.target (.invalidRuleGroup [])) ∧
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      ["Projects", ""] target.id absoluteSiblingStar) =
-        some (.target (.invalidRuleGroup ["Projects", ""])) := by
+    elabError? (checkBooleanFirstFilledComputation model
+      [] target.id (.star absoluteSiblingStar)) =
+        some (.site (.repeatableTarget (.target (.invalidRuleGroup [])))) ∧
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Projects", ""] target.id (.star absoluteSiblingStar)) =
+        some (.site (.repeatableTarget (.target (.invalidRuleGroup ["Projects", ""])))) := by
   native_decide
 
-/- The addressed boundary requires a repeatable Boolean target, one Boolean star axis, and no target self-read. -/
+/- A repeatable Boolean target requires one Boolean star axis and no target self-read, and a non-Boolean target is refused before placement. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
 example :
     operation?.isSome = true ∧
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      ["Summary"] fixedTarget.id (siblingStar source.name)) =
-        some (.targetNotRepeatable fixedTarget.path) ∧
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      ["Projects", "Choices"] confirmSource.id (siblingStar source.name)) =
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
+        some (.site (.source (.resolve (.aboveRoot 1)))) ∧
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Projects", "Choices"] confirmSource.id (.star (siblingStar source.name))) =
         some (.targetKind confirmSource.path .confirm) ∧
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (siblingStar confirmSource.name)) =
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star (siblingStar confirmSource.name))) =
         some (.sourceKind confirmSource.path .confirm) ∧
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      ["Projects", "Tasks"] target.id nestedSiblingStar) =
-        some (.sourceShape nestedSource.path) ∧
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      ["OtherTasks"] unboundTarget.id absoluteSiblingStar) =
-        some (.sourceScope source.path) ∧
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      ["Projects", "Tasks"] target.id rootStar) =
-        some (.sourceScope rootSource.path) ∧
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      ["Projects", "Tasks"] target.id peerStar) =
-        some (.sourceScope peerSource.path) ∧
-    elabError? (checkAddressedBooleanFirstFilledComputation model
-      ["Projects", "Tasks"] target.id selfStar) =
-        some (.targetSelfReference target.id) := by
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star nestedSiblingStar)) =
+        some (.site (.starPlacement (.sourceShape nestedSource.path))) ∧
+    elabError? (checkBooleanFirstFilledComputation model
+      ["OtherTasks"] unboundTarget.id (.star absoluteSiblingStar)) =
+        some (.site (.starPlacement (.sourceScope source.path))) ∧
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star rootStar)) =
+        some (.site (.starPlacement (.sourceScope rootSource.path))) ∧
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star peerStar)) =
+        some (.site (.starPlacement (.sourceScope peerSource.path))) ∧
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star selfStar)) =
+        some (.site (.starPlacement (.targetSelfReference target.id))) := by
   native_decide
 
 private def prepared :
@@ -251,8 +251,8 @@ private def runtimePrepared : PreparedFlatStringContext runtimeModel builtinStri
     builtinStringPatternCompiler runtimeModel).toOption.get (by native_decide)
 
 private def runtimeProjection? (seeded : Bool) : Option RuntimeProjection := do
-  let operation ← (checkAddressedBooleanFirstFilledComputation runtimeModel
-    ["Projects", "Tasks"] target.id (siblingStar source.name)).toOption
+  let operation ← (checkBooleanFirstFilledComputation runtimeModel
+    ["Projects", "Tasks"] target.id (.star (siblingStar source.name))).toOption
   let sources : List (List (Option String)) := [
     [none, some "false"], [some "true"], [], [some "false"],
     [some "maybe", some "false"], [some "false", some "maybe"], [some "true"]]
@@ -296,10 +296,10 @@ measures that invariance against the Kernel across the containment range on both
 locks it for the executable account, which is what makes widening admission safe for the correlation clause. -/
 example : (do
     let own ← operation?
-    let ancestorAbsolute ← (checkAddressedBooleanFirstFilledComputation model
-      ["Projects"] target.id absoluteSiblingStar).toOption
-    let ancestorRespelled ← (checkAddressedBooleanFirstFilledComputation model
-      ["Projects"] target.id respelledSiblingStar).toOption
+    let ancestorAbsolute ← (checkBooleanFirstFilledComputation model
+      ["Projects"] target.id (.star absoluteSiblingStar)).toOption
+    let ancestorRespelled ← (checkBooleanFirstFilledComputation model
+      ["Projects"] target.id (.star respelledSiblingStar)).toOption
     let input ← input?
     let ownOutcomes ← own.execute input |>.toOption
     let absoluteOutcomes ← ancestorAbsolute.execute input |>.toOption
@@ -443,4 +443,4 @@ example : formalInputSummary? = some {
   } := by
   native_decide
 
-end A12Kernel.Conformance.AddressedBooleanFirstFilledComputation
+end A12Kernel.Conformance.BooleanFirstFilledComputationRows

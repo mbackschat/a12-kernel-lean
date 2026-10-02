@@ -131,7 +131,7 @@ private def results? (cells : List (String × String)) : Option (List String) :=
   let clockResult ← (checkTimeFirstFilledComputation model ["Fc"] 8 (list ["T1", "T2"])).toOption
   let momentResult ←
     (checkDateTimeFirstFilledComputation model ["Fc"] 11 (list ["M1", "M2"])).toOption
-  let b ← (booleanResult.execute input).toOption
+  let [{ result := b, .. }] ← (booleanResult.execute input).toOption | none
   let [{ result := g, .. }] ← (fragmentResult.execute input).toOption | none
   let [{ outcome := t, .. }] ← (clockResult.execute input).toOption | none
   let [{ outcome := m, .. }] ← (momentResult.execute input).toOption | none
@@ -208,16 +208,16 @@ carrier, and a field under a repeatable group fails the shared shape as an unbou
 example :
     ((booleanError? [operand "B1", operand "B2", operand "B3"]).isNone &&
       (match booleanError? [operand "B1"] with
-        | some (.list (.shape .tooFewFields)) => true | _ => false) &&
+        | some (.site (.list (.shape .tooFewFields))) => true | _ => false) &&
       (match booleanError? [operand "B1", rowsStar] with
-        | some (.list .unsupportedOperand) => true | _ => false) &&
+        | some (.site (.list .unsupportedOperand)) => true | _ => false) &&
       (match booleanError? [operand "B1", operand "BTgt"] with
         | some (.targetSelfReference path) => path == ["Fc", "BTgt"] | _ => false) &&
       (match booleanError? [operand "B1", operand "T1"] with
         | some (.sourceKind path _) => path == ["Fc", "T1"] | _ => false) &&
       (match booleanError?
           [operand "B1", .field { base := .relative 0, groups := ["Rows"], field := "RB" }] with
-        | some (.list (.shape (.resolve (.unboundOperandLevel _ _)))) => true | _ => false)) =
+        | some (.site (.list (.shape (.resolve (.unboundOperandLevel _ _))))) => true | _ => false)) =
       true := by
   native_decide
 

@@ -1,98 +1,56 @@
-import A12Kernel.Elaboration.FirstFilledFieldSource
+import A12Kernel.Elaboration.FirstFilledPlacement
 import A12Kernel.Elaboration.BooleanComputationResult
+import A12Kernel.Elaboration.ComputationFormalInput
 import A12Kernel.Semantics.FirstFilledValue
 
-/-! # Typed Boolean `FirstFilledValue` result and fixed computation
+/-! # Boolean `FirstFilledValue` at a fixed or a repeatable target
 
-This module owns the fixed-target Boolean computation over a direct star or a direct list and specializes the shared target-polymorphic typed result/application fold.
+One carrier serves both address classes over the shared first-filled site, and specializes the shared
+target-polymorphic typed result/application fold over exact cell addresses.
 -/
 
 namespace A12Kernel
 
 inductive BooleanFirstFilledComputationElabError where
-  | target (cause : ResolveError)
-  | targetRepeatable (path : List String)
+  | site (cause : FirstFilledPlacementElabError)
   | targetKind (path : List String) (actual : SurfaceScalarKind)
-  | source (cause : StarPathElabError)
   | sourceKind (path : List String) (actual : SurfaceScalarKind)
-  | sourceShape (path : List String)
-  /-- A list source the shared entity list or its plain-field reading refuses. -/
-  | list (cause : FirstFilledListElabError)
   /-- A list source naming the target itself. -/
   | targetSelfReference (path : List String)
   deriving Repr, DecidableEq
 
-/-- One fixed Boolean target and one Boolean source, a direct single-level star or a direct list of
-plain nonrepeatable fields, certified against the same model. -/
+/-- One Boolean target, fixed or repeatable, and one Boolean source placed on the shared site. -/
 structure CheckedBooleanFirstFilledComputation (model : FlatModel) where
   private mk ::
-  target : FlatFieldDecl
-  source : FirstFilledFieldSource model
-  /-- The group the computation is declared in, which the target need not lie in. -/
-  declaringGroup : GroupPath
-  /-- The declaring group is a representable path, certified by the source's elaboration rather
-  than re-tested here. Placement itself is unconstrained; only representability survives. -/
-  declaringGroupValid : GroupPath.isValid declaringGroup = true
-  targetBoolean : target.policy.kind = .boolean
-  targetFixed : target.repeatableScope = []
-  sourceBoolean : source.declarations.all (·.policy.kind == .boolean) = true
-  sourceShape : source.admittedShape = true
-  excludesTarget : source.referencesField target.id = false
+  site : CheckedFirstFilledSite model
+  targetBoolean : site.target.policy.kind = .boolean
+  sourceBoolean : site.source.declarations.all (·.policy.kind == .boolean) = true
+  excludesTarget : site.referencesField site.targetField = false
 
-private def checkBooleanFirstFilledSourceAgainst (model : FlatModel) (target : FlatFieldDecl)
-    (declaringGroup : GroupPath) (declaringGroupValid : GroupPath.isValid declaringGroup = true)
-    (source : FirstFilledFieldSource model) :
-    Except BooleanFirstFilledComputationElabError (CheckedBooleanFirstFilledComputation model) := do
-  if hFixed : target.repeatableScope = [] then
-    if hTargetKind : target.policy.kind = .boolean then
-      if hSourceKind : source.declarations.all (·.policy.kind == .boolean) = true then
-        if hShape : source.admittedShape = true then
-          if hExcludes : source.referencesField target.id = false then
-            pure {
-              target, source, declaringGroup, declaringGroupValid
-              targetBoolean := hTargetKind
-              targetFixed := hFixed
-              sourceBoolean := hSourceKind
-              sourceShape := hShape
-              excludesTarget := hExcludes }
-          else throw (.targetSelfReference target.path)
-        else throw (.sourceShape (source.declarations.head?.map (·.path) |>.getD target.path))
-      else
-        let other := (source.declarations.find? (·.policy.kind != .boolean)).getD target
-        throw (.sourceKind other.path other.policy.kind.surfaceKind)
-    else
-      throw (.targetKind target.path target.policy.kind.surfaceKind)
-  else
-    throw (.targetRepeatable target.path)
-
-/-- Check the externally measured Boolean computation shapes: a direct single-level star, or a direct
-list read as the star is. Wider `entitySpec`, nested repetition, validation use, and target
-application remain outside this boundary. -/
+/-- Check the externally measured Boolean computation shapes: a direct single-level star or a direct
+list at a fixed target, a sibling star at a repeatable one. Wider `entitySpec`, nested repetition and
+validation use remain outside this boundary. -/
 def checkBooleanFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFirstFilledSource) :
     Except BooleanFirstFilledComputationElabError
       (CheckedBooleanFirstFilledComputation model) := do
-  match authored with
-  | .star path =>
-    match hStar : elaborateStarFieldPath model declaringGroup path with
-    | .error cause => .error (.source cause)
-    | .ok source => do
-      let target ← model.lookupUniqueId targetField |>.mapError .target
-      -- No placement test. `elaborateStarFieldPath` already rejects an unrepresentable declaring
-      -- group, and placement itself is unconstrained here: a fixed target under a star aggregate
-      -- derives no iteration, so the Kernel admits it from an unrelated group.
-      checkBooleanFirstFilledSourceAgainst model target declaringGroup
-        (elaborateStarFieldPath_declaringGroupValid hStar) (.star source)
-  | .list list => do
-    -- As on the temporal shape: the list resolves at the target's group first, the target after it.
-    let targetGroup :=
-      ((model.lookupUniqueId targetField).toOption.map (·.groupPath)).getD declaringGroup
-    let checked ← elaborateFirstFilledFieldList model declaringGroup targetGroup list
-      |>.mapError .list
-    let target ← model.lookupUniqueId targetField |>.mapError .target
-    checkBooleanFirstFilledSourceAgainst model target declaringGroup checked.declaringGroupValid
-      (.list checked.fields)
+  -- The target's kind is checked before its placement, so a non-Boolean target is refused as such
+  -- wherever it sits.
+  if let .ok target := model.lookupUniqueId targetField then
+    if target.policy.kind != .boolean then
+      throw (.targetKind target.path target.policy.kind.surfaceKind)
+  let site ← (checkFirstFilledSite model declaringGroup targetField authored).mapError .site
+  if hTargetKind : site.target.policy.kind = .boolean then
+    if hSourceKind : site.source.declarations.all (·.policy.kind == .boolean) = true then
+      if hExcludes : site.referencesField site.targetField = false then
+        pure { site, targetBoolean := hTargetKind, sourceBoolean := hSourceKind
+               excludesTarget := hExcludes }
+      else throw (.targetSelfReference site.target.path)
+    else
+      let other := (site.source.declarations.find? (·.policy.kind != .boolean)).getD site.target
+      throw (.sourceKind other.path other.policy.kind.surfaceKind)
+  else throw (.targetKind site.target.path site.target.policy.kind.surfaceKind)
 
 /-- Classify one checked Boolean source cell for computation-phase first-filled selection. -/
 def booleanFirstFilledCellAt (cell : CheckedCell) : FirstFilledBooleanCell :=
@@ -102,12 +60,20 @@ def booleanFirstFilledCellAt (cell : CheckedCell) : FirstFilledBooleanCell :=
   | .value _ => .unknown .malformed
   | .unknown cause | .poison cause => .unknown cause
 
-/-- Five extensional result collections for one model-certified Boolean `FirstFilledValue` computation. Retaining the checked operation makes every possible action target-owned. -/
+/-- One instance's Boolean selection retained under its exact target address. -/
+structure BooleanFirstFilledComputationOutcome where
+  targetField : CellAddr
+  result : FirstFilledBooleanComputationResult
+  deriving Repr, DecidableEq
+
+/-- Five extensional result collections for one model-certified Boolean `FirstFilledValue`
+computation over exact cell addresses. Retaining the checked operation makes every possible action
+target-owned. -/
 structure BooleanFirstFilledComputationRunView (model : FlatModel)
     (ResidualMessage : Type) where
   private mk ::
   operation : CheckedBooleanFirstFilledComputation model
-  boolean : BooleanComputationRunView ResidualMessage FieldId
+  boolean : BooleanComputationRunView ResidualMessage CellAddr
 
 namespace BooleanFirstFilledComputationRunView
 
@@ -127,60 +93,110 @@ def formalErrorsInOperands
     (view : BooleanFirstFilledComputationRunView model ResidualMessage) :=
   view.boolean.formalErrorsInOperands
 
-/-- The fixed result's public error predicate delegates to the shared typed channels. -/
+/-- The result's public error predicate delegates to the shared typed channels. -/
 def noErrorOccurred
     (view : BooleanFirstFilledComputationRunView model ResidualMessage) : Bool :=
   view.boolean.noErrorOccurred
 
-/-- Build the fixed Boolean result from the shared exact-target classifier. -/
-def fromOutcome (operation : CheckedBooleanFirstFilledComputation model)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
-    (outcome : FirstFilledBooleanComputationResult) :
-    BooleanFirstFilledComputationRunView model ResidualMessage := {
-  operation
-  boolean := BooleanComputationRunView.fromSourcedOutcomes residualMessages [(
-    operation.target.id, outcome,
-    input.sourceBooleanTargetState operation.target.id)]
-}
+/-- Targets consumed by the retained Boolean actions. -/
+def actionTargets
+    (view : BooleanFirstFilledComputationRunView model ResidualMessage) :
+    List CellAddr :=
+  view.boolean.actionTargets
+
+/-- Apply source-classified Boolean actions to a separately supplied checked document of the same
+certified model. Unchanged successes and residual messages are inert. -/
+def applyToChecked
+    (view : BooleanFirstFilledComputationRunView model ResidualMessage)
+    (destination : CheckedDocument model) : BooleanComputationDestination CellAddr :=
+  view.boolean.applyTo destination.sourceBooleanTargetStateAt
 
 end BooleanFirstFilledComputationRunView
 
 namespace CheckedBooleanFirstFilledComputation
 
-/-- Execute the checked source against immutable rows. Structural addressing failure stays outside the semantic no-value/poison result. -/
+def targetField (operation : CheckedBooleanFirstFilledComputation model) : FieldId :=
+  operation.site.targetField
+
+def target (operation : CheckedBooleanFirstFilledComputation model) : FlatFieldDecl :=
+  operation.site.target
+
+def referencesField (operation : CheckedBooleanFirstFilledComputation model) : FieldId → Bool :=
+  operation.site.referencesField
+
+/-- Scan the source at one target instance's environment. Structural addressing failure stays outside
+the semantic no-value/poison result. -/
+def evaluateAt (operation : CheckedBooleanFirstFilledComputation model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (target : CellAddr) (environment : Env) :
+    Except FirstFilledSiteFault BooleanFirstFilledComputationOutcome := do
+  let resolved ← (operation.site.source.resolveAt input read environment).mapError .source
+  pure { targetField := target
+         result := evalFirstFilledBoolean
+           (resolved.cells.map fun cell => booleanFirstFilledCellAt cell.cell) }
+
+/-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
+scope with a clear at each over-limit row. -/
+def executeWithRead (operation : CheckedBooleanFirstFilledComputation model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    Except FirstFilledSiteFault (List BooleanFirstFilledComputationOutcome) :=
+  operation.site.instances input .targetRows .targetEnvironment
+    (fun target _ => pure { targetField := target, result := .noValue })
+    (operation.evaluateAt input read)
+
 def execute (operation : CheckedBooleanFirstFilledComputation model)
     (input : CheckedDocument model) :
-    Except CheckedStarDocumentError FirstFilledBooleanComputationResult := do
-  let resolved ← operation.source.resolve input
-  pure (evalFirstFilledBoolean
-    (resolved.cells.map fun cell => booleanFirstFilledCellAt cell.cell))
+    Except FirstFilledSiteFault (List BooleanFirstFilledComputationOutcome) :=
+  operation.executeWithRead input input.read
 
-/-- Execute and classify one checked Boolean selection against the immutable source target. Successful payloads stay typed; exhaustion and reached poison clear only a source-filled target. -/
-def executeResult (operation : CheckedBooleanFirstFilledComputation model)
-    (input : CheckedDocument model)
+/-- Classify caller-view outcomes against immutable source target state through the shared Boolean
+result owner. Exhaustion and reached poison clear only a source-filled target. -/
+def executeResultWithRead (operation : CheckedBooleanFirstFilledComputation model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (residualMessages : List ResidualMessage) :
-    Except CheckedStarDocumentError
-      (BooleanFirstFilledComputationRunView model ResidualMessage) := do
-  let result ← operation.execute input
-  pure (BooleanFirstFilledComputationRunView.fromOutcome operation input
-    residualMessages result)
+    Except FirstFilledSiteFault (BooleanFirstFilledComputationRunView model ResidualMessage) := do
+  let outcomes ← operation.executeWithRead input read
+  pure { operation
+         boolean := BooleanComputationRunView.fromSourcedOutcomes residualMessages
+           (outcomes.map fun entry =>
+             (entry.targetField, entry.result, input.sourceBooleanTargetStateAt entry.targetField)) }
+
+def executeResult (operation : CheckedBooleanFirstFilledComputation model)
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    Except FirstFilledSiteFault (BooleanFirstFilledComputationRunView model ResidualMessage) :=
+  operation.executeResultWithRead input input.read residualMessages
 
 end CheckedBooleanFirstFilledComputation
 
-namespace BooleanFirstFilledComputationRunView
+/-- Failure while composing selected formal-input preparation with Boolean `FirstFilledValue`. -/
+inductive BooleanFirstFilledCheckedResultFault where
+  | formalInput (cause : ComputationFormalInputPlanError)
+  | preliminary (cause : CheckedIndexPreliminaryError)
+  | execution (formalErrorsInOperands : List ComputationFormalInputFinding)
+      (cause : FirstFilledSiteFault)
+  deriving Repr, DecidableEq
 
-/-- Targets consumed by the retained Boolean actions. -/
-def actionTargets
-    (view : BooleanFirstFilledComputationRunView model ResidualMessage) :
-    List FieldId :=
-  view.boolean.actionTargets
+namespace CheckedBooleanFirstFilledComputation
 
-/-- Apply source-classified Boolean actions to a separately supplied checked document of the same certified model. Unchanged successes and residual messages are inert. -/
-def applyToChecked
-    (view : BooleanFirstFilledComputationRunView model ResidualMessage)
-    (destination : CheckedDocument model) : BooleanComputationDestination :=
-  view.boolean.applyTo destination.sourceBooleanTargetState
+/-- Bind every source declaration and the computed target to the shared eager inventory. -/
+def formalInputPlan (operation : CheckedBooleanFirstFilledComputation model) :
+    Except ComputationFormalInputPlanError (CheckedComputationFormalInputPlan model) :=
+  checkComputationFormalInputPlan model
+    (operation.site.source.declarations.map (·.id)) [operation.targetField]
 
-end BooleanFirstFilledComputationRunView
+/-- Prepare the selected sources once, retain every eager finding, and run lazily through the
+prepared read. -/
+def executeResultWithFormalInputs (operation : CheckedBooleanFirstFilledComputation model)
+    (input : CheckedDocument model) :
+    Except BooleanFirstFilledCheckedResultFault
+      (BooleanFirstFilledComputationRunView model ComputationFormalInputFinding) := do
+  let plan ← operation.formalInputPlan |>.mapError .formalInput
+  let prepared ← plan.prepare input |>.mapError .preliminary
+  match operation.executeResultWithRead input prepared.preliminary.readComputation
+      prepared.formalErrorsInOperands with
+  | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
+  | .ok result => .ok result
+
+end CheckedBooleanFirstFilledComputation
 
 end A12Kernel
