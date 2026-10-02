@@ -2,6 +2,7 @@ import A12Kernel.Reference.Dm.LowerCore
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.TokenEntityList
 import A12Kernel.Elaboration.NumericAggregate.Fields
+import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 
 /-! # Lowering entity lists and row filters
 
@@ -137,6 +138,18 @@ def lowerProjectedTokenOperand (model : FlatModel) (group : GroupPath) (argument
   | _ => do
       let _ ← lowerEntityOperand model group argument
       refuse "EntityOperand" "group in a value count"
+
+/-- An Enumeration `FirstFilledValue` source: each operand a direct or starred field keeping its
+category projection, a starred one its own filter. -/
+def lowerEnumerationFirstFilledSource (model : FlatModel) (group : GroupPath) (arguments : List Argument) :
+    Lowering SurfaceEnumerationFirstFilledSource := do
+  let operand (argument : Argument) : Lowering SurfaceEnumerationFirstFilledOperand := do
+    match ← lowerProjectedTokenOperand model group argument with
+    | .field source => pure (.field source)
+    | .star source projection => pure (.star source projection)
+    | .starHaving source projection having => pure (.star source projection (some having))
+  let first :: rest ← arguments.mapM operand | refuse "EntityOperand" "empty"
+  pure { first, rest }
 
 /-- `SumOfProducts(left, right)` over two starred fields, each with its own optional filter. -/
 def lowerProductAggregate (arguments : List Argument) : Lowering SurfaceNumericProductAggregate := do

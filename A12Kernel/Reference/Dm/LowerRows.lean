@@ -100,6 +100,10 @@ private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : Fla
     return ← stepOf "FirstFilledValue" (CheckedRowComputationStep.ofStringFirstFilled?
       (← elaborated "FirstFilledValue" (checkStringFirstFilledComputation model group target.id
         (← lowerEntitySource model group arguments))))
+  if target.policy.kind == .enumeration then
+    return ← stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedEnumerationFirstFilled?
+      (← elaborated "FirstFilledValue" (checkAddressedEnumerationFirstFilledComputation model group
+        target.id (← lowerEnumerationFirstFilledSource model group arguments))))
   let star ← match arguments with
     | [.mk (.entity { path, index := none, category := none }) none none] =>
         match path.segments.any (·.star), path.toStarFieldPath? with

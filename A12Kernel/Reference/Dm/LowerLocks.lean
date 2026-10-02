@@ -246,4 +246,27 @@ example :
       | .error _ => false) = true := by
   native_decide
 
+private def enumerationModel : FlatModel :=
+  let enumeration (id : FieldId) (groupPath : GroupPath) (name : String) (scope : List RepeatableLevel) :
+      FlatFieldDecl :=
+    { id, groupPath, name, policy := { kind := .enumeration }, repeatableScope := scope
+      enumeration := some { storedTokens := ["A", "B"] } }
+  { fields := [enumeration 1 ["Form"] "Fixed" [], enumeration 2 ["Form"] "First" [],
+      enumeration 3 ["Form"] "Second" [], enumeration 4 ["Form", "Rows"] "Target" [10],
+      enumeration 5 ["Form", "Rows", "Items"] "Choice" [10, 20]]
+    repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 },
+      { level := 20, path := ["Form", "Rows", "Items"], repeatability := some 3 }] }
+
+/- An Enumeration `FirstFilledValue` lowers onto its fixed carrier over a list and onto its row
+carrier over a star below the target's row. -/
+example :
+    let computation (group : GroupPath) (target operation : String) : DmComputation :=
+      { group, name := "C", targetRelPath := "../" ++ target, commonPrecondition := none
+        alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }
+    [(lowerComputation enumerationModel .english
+        (computation ["Form"] "Fixed" "FirstFilledValue(First, Second)")).toOption.isSome,
+     (lowerComputation enumerationModel .english
+        (computation ["Form", "Rows"] "Target" "FirstFilledValue(Items*/Choice)")).toOption.isSome].all id := by
+  native_decide
+
 end A12Kernel.Dm.LowerLocks

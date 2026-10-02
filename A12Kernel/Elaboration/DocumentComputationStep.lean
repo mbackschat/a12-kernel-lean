@@ -202,12 +202,12 @@ def time (model : FlatModel) (target : FieldId) :
       storedText model target (certifyTimeInputField · |>.toOption)
         CheckedTimeInputField.classifyStoredForModel .timeRead stored.text
 
-/-- A completed Enumeration target, read as its declaration reads the stored token. -/
-def enumeration (target : CheckedEnumerationComputationTarget model) :
+/-- A completed Enumeration target, read as its declaration's stored projection reads the token. -/
+def enumeration (projection : CheckedEnumerationProjection) :
     StringTargetOutcome → CheckedCell
   | .noValue => empty
   | .poison _ | .errored _ _ => poison
-  | .accepted stored => target.projection.declaration.checkRaw (.parsed (.enum stored.text))
+  | .accepted stored => projection.declaration.checkRaw (.parsed (.enum stored.text))
 
 /-- A completed DateRange target, read back from its rendering as the document classifies a stored range. -/
 def dateRange (model : FlatModel) (policy : DateRangeDeclarationPolicy) :
@@ -353,7 +353,7 @@ def ofEnumeration (operation : CheckedEnumerationComputationOperation model) :
   excludesTarget := operation.targetNotReferenced
   run _ _ document :=
     let outcome := (operation.source.evaluate document.flatContext).asExactStringTargetOutcome
-    pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target outcome)
+    pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
 
 /-- A DateRange construction over two Date fields. -/
 def ofDateRangeConstruction (operation : CheckedDateRangeConstructionComputation model) :
@@ -455,7 +455,7 @@ def ofEnumerationFirstFilled (operation : CheckedEnumerationFirstFilledComputati
     let selected ← (operation.source.evaluateCheckedDocument document []).mapError
       .enumerationFirstFilled
     let outcome := selected.asComputationResult.asExactStringTargetOutcome
-    pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target outcome)
+    pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
 
 /-- A fixed-target String `FirstFilledValue` at its single instance, checked against its target's
 prepared pattern. -/

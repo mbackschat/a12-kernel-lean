@@ -9,6 +9,7 @@ import A12Kernel.Elaboration.AddressedTimeFirstFilledComputation
 import A12Kernel.Elaboration.AddressedDateTimeFirstFilledComputation
 import A12Kernel.Elaboration.AddressedFullDateFirstFilledComputation
 import A12Kernel.Elaboration.AddressedDateRangeFirstFilledComputation
+import A12Kernel.Elaboration.AddressedEnumerationFirstFilledComputation
 import A12Kernel.Elaboration.AddressedDateFromDateTime
 import A12Kernel.Elaboration.AddressedWorldTimeConstruction
 import A12Kernel.Elaboration.DocumentComputationStep
@@ -41,6 +42,7 @@ inductive RowComputationStepFault where
   | dateTimeFirstFilled (cause : AddressedDateTimeFirstFilledComputationFault)
   | fullDateFirstFilled (cause : AddressedFullDateFirstFilledComputationFault)
   | dateRangeFirstFilled (cause : AddressedDateRangeFirstFilledComputationFault)
+  | enumerationFirstFilled (cause : AddressedEnumerationFirstFilledComputationFault)
   | dateFromDateTime (cause : AddressedDateFromDateTimeFault)
   | timeConstruction (cause : AddressedTimeConstructionFault)
   deriving Repr, DecidableEq
@@ -156,6 +158,16 @@ def ofAddressedFieldValueAsString? (operation : CheckedAddressedFieldValueAsStri
     let outcomes ← (operation.execute patterns document).mapError .fieldValueAsString
     readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .string
       fun _ => DocumentComputationReadBack.string
+
+/-- A per-row Enumeration `FirstFilledValue`, its selected token checked as the target's stored
+projection reads it. -/
+def ofAddressedEnumerationFirstFilled? (operation : CheckedAddressedEnumerationFirstFilledComputation model) :
+    Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
+  checked? operation.target.field .enumeration operation.source.referencesField fun _ _ _ document => do
+    let outcomes ← (operation.execute document).mapError .enumerationFirstFilled
+    readBack (outcomes.map fun entry => (entry.targetField, entry.result.asExactStringTargetOutcome))
+      .enumeration fun _ outcome => pure (DocumentComputationReadBack.enumeration
+        operation.target.projection outcome)
 
 /-- A per-row String `FirstFilledValue` over its entity-list source. -/
 def ofStringFirstFilled? (operation : CheckedStringFirstFilledComputation model) :

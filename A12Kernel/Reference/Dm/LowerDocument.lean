@@ -88,7 +88,11 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
       let operation ← check (checkStringFirstFilledComputation model group target.id
         (← lowerEntitySource model group arguments))
       pure (.ofStringFirstFilled operation)
-  | .number | .enumeration => refuse "FirstFilledValue" "target kind"
+  | .enumeration => do
+      let operation ← check (elaborateEnumerationFirstFilledComputation model group target.id
+        (← lowerEnumerationFirstFilledSource model group arguments))
+      pure (.ofEnumerationFirstFilled operation)
+  | .number => refuse "FirstFilledValue" "target kind"
 
 /-- One unguarded operation onto its whole-document step, or a refusal naming its construct. -/
 def lowerDocumentStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) :
