@@ -3,7 +3,7 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # Model-certified computation conditions
 
-Direct computation-presence guards accept every nonrepeatable scalar declaration. Value-kind restrictions belong to the operation that consumes the field, not to presence.
+Direct computation-presence guards accept every scalar declaration the target's row binds, a nonrepeatable one for a fixed target. Value-kind restrictions belong to the operation that consumes the field, not to presence.
 -/
 
 namespace A12Kernel

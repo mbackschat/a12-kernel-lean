@@ -11,8 +11,8 @@ aggregate reads rows through the plan. At a repeatable target the table runs at 
 target's scope, selecting among its guarded alternatives as a fixed table selects, through a context
 reading each operand at its own scope under that row, as an ordinary operand is read
 ([`spec/09`](../../spec/09-computations.md) §5): an inner row reads an enclosing row's target at that
-row. Such a table admits only operations the scalar evaluator runs, so no aggregate reads rows from
-inside a row.
+row. Such a table is elaborated with the row target scope and admits only operations the scalar
+evaluator runs, so no aggregate reads rows from inside a row.
 
 Every read goes through one overlay: a completed step's outcome at its exact address, a target of a
 step not yet run as clean empty, and the immutable document otherwise. A stale stored value in a plan
@@ -24,8 +24,8 @@ with the enclosing outer target, the aggregate and the join authored ahead of wh
 [operator checkpoint](../../docs/sources/computation-scheduling-probes.md#src-repeatable-join-operators-and-guards),
 the [guard-source checkpoint](../../docs/sources/computation-scheduling-probes.md#src-guard-on-malformed-source)
 and the row-producer grid its conformance module cites measure subtraction, multiplication, fill
-guards on computed and malformed sources, and the extrema, rounded division, `Abs`, `FirstFilledValue`
-and value count at a row.
+guards on computed and malformed sources, and `Max`, rounded division, `Abs`, `FirstFilledValue` and
+the value counts at a row.
 -/
 
 namespace A12Kernel

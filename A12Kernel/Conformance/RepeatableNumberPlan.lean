@@ -76,7 +76,8 @@ private def row? (group : GroupPath) (target : FieldId)
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (guard : Option ComputationCondition := none) :
     Option (CheckedNumericComputationTable model) :=
-  (elaborateNumericTargetComputationTable model group target [(guard, expression)]).toOption
+  (elaborateNumericTargetComputationTable model group target [(guard, expression)]
+    (targetScope := .row)).toOption
 
 private def op? := row? outerPath opId (.atom (.field (bare "OBase"))) (some (.fieldFilled oGateId))
 

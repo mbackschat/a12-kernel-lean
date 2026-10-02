@@ -363,21 +363,33 @@ example :
         "MVK_ERROR_EMPTY_PRECONDITION", "MVK_ERROR_EMPTY_PRECONDITION"] := by
   native_decide
 
-/- The target's own lookup, a repeatable target's placement and the model's validation are no operand's
-reference, so none claims the resolver class an operand's failure projects: a model refusing its own
-declaration would otherwise claim `MVK_FRACT_DIGITS_INVALID`. A repeatable target contained in the
-declaring group is admitted at its reading scope, which no scalar executor accepts, and one outside it
-is refused as placement. -/
+/- The target's own lookup and the model's validation are no operand's reference, so neither claims the
+resolver class an operand's failure projects: a repeatable target would otherwise claim
+`MVK_NO_WILDCARD` and a model refusing its own declaration `MVK_FRACT_DIGITS_INVALID`. The default
+fixed scope refuses a repeatable target; the row scope admits one contained in the declaring group at
+its reading scope, which no scalar executor accepts, refuses one outside it with the placement class
+([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-row-target-boundary)), and
+refuses a fixed target. -/
 example :
     let source := surfaceField ["Root"] "Source"
     let badModel : FlatModel := { model with fields := model.fields ++
       [{ numberDeclaration 40 "Bad" with numericTargetConstraints := { minFractionalDigits := 3 } }] }
     (match elaborateNumericTargetComputationTable model ["Root"] repeatedId [(none, source)] with
+      | .error error@(.operation 1 (.targetResolve (.repeatableReference _))) => error.diagnostic?.isNone
+      | _ => false : Bool) = true ∧
+    (match elaborateNumericTargetComputationTable model ["Root"] repeatedId [(none, source)]
+        (targetScope := .row) with
       | .ok table => table.readingScope == [10] && !table.supportsScalarEvaluation &&
           table.atomsSupportScalarEvaluation
       | .error _ => false : Bool) = true ∧
-    (match elaborateNumericTargetComputationTable model ["Other"] repeatedId [(none, source)] with
+    (match elaborateNumericTargetComputationTable model ["Other"] repeatedId [(none, source)]
+        (targetScope := .row) with
       | .error error@(.operation 1 (.repeatableTarget (.targetOutsideDeclaringGroup _ _))) =>
+          error.diagnostic? == some .fieldNotInRuleGroup
+      | _ => false : Bool) = true ∧
+    (match elaborateNumericTargetComputationTable model ["Root"] targetId [(none, source)]
+        (targetScope := .row) with
+      | .error error@(.operation 1 (.repeatableTarget (.targetNotRepeatable _))) =>
           error.diagnostic?.isNone
       | _ => false : Bool) = true ∧
     (match elaborateNumericTargetComputationTable model ["Root"] 999 [(none, source)] with

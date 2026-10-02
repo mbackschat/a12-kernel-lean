@@ -244,7 +244,8 @@ inductive FixedGroupReferenceError where
   ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-list-rnu-admission-correction),
   [inbound](../../docs/SOURCES.md#inbound-2026-09-26j-count-star)). -/
   | walkedRepeatableGroupUnsupported (path : GroupPath)
-  /-- A computation's fixed group operand whose repeatable levels a fixed target cannot bind. -/
+  /-- A computation's fixed group operand crossing a repeatable level its target's scope does not
+  bind. -/
   | unboundOperandLevel (path : GroupPath) (unbound : UnboundOperandLevel)
   /-- A group operand whose path names a field, raised once the field's group passed its own gates.
   Only `CurrentRepetition` raises it, and its class is that operand's. -/
@@ -359,7 +360,7 @@ def FlatModel.resolveValidationBoundFixedGroupReference (model : FlatModel)
     Except FixedGroupReferenceError ResolvedGroupReference :=
   model.resolveFixedGroupReferenceWith .validationBound declaringGroup surface (some writtenGroup)
 
-/-- Resolve a fixed group operand of a computation whose target repeats at no level. -/
+/-- Resolve a fixed group operand of a computation, its target's scope binding the levels it holds. -/
 def FlatModel.resolveFixedTargetGroupReference (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (surface : SurfaceGroupReference) :
     Except FixedGroupReferenceError ResolvedGroupReference :=

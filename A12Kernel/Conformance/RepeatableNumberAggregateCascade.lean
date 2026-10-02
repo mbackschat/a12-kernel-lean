@@ -820,4 +820,22 @@ example :
 
 end FirstFilledProducer
 
+/- Both cascade stages write a fixed target at the empty path, so each refuses a repeatable target as
+the fixed scope's boundary rather than computing it once at `[]`: the aggregate stage's total and the
+scalar suffix, each placed in `Lines`. -/
+example :
+    (match checkRepeatableNumberBinaryAggregateCascade binaryModel
+        ["Order", "Lines"] amount.id (bare "Qty") (bare "Price") .multiply
+        ["Order", "Lines"] limit.id (binaryStar "Amount") .sum with
+      | .error (.aggregate (.targetResolve (.repeatableReference _))) => true
+      | _ => false) = true ∧
+    (match binaryPlan? with
+      | some cascade =>
+          match checkRepeatableNumberAggregateScalarCascade cascade ["Order", "Lines"] commission.id
+              (parent "Total") (bare "Limit") .add with
+          | .error (.scalar (.targetResolve (.repeatableReference _))) => true
+          | _ => false
+      | none => false) = true := by
+  native_decide
+
 end A12Kernel.Conformance.RepeatableNumberAggregateCascade

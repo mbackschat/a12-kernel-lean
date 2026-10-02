@@ -103,8 +103,9 @@ namespace CheckedNumericComputationOperation
 
     Fixed-only and star-bearing authored lists elaborate to different atom constructors but retain
     the same [`CheckedGroupCountOperand`] certificates here. Each operand delegates to the shared
-    group-pointer owner, and the checked nonrepeatable Number target contributes one exact pointer.
-    The list order is deterministic only; the observed message channel is a set. -/
+    group-pointer owner, and the nonrepeatable Number target contributes one exact pointer; a row
+    target's pointer is outside this projection, which answers `none` for it. The list order is
+    deterministic only; the observed message channel is a set. -/
 def filledGroupCountReferencedPointers?
     (checked : CheckedNumericComputationOperation model) :
     Except ReferenceProjectionError (Option (List MessagePointer)) :=
@@ -112,6 +113,7 @@ def filledGroupCountReferencedPointers?
     let operandPointers ← (·.flatten) <$> operands.mapM (·.referencePointers [])
     pure (some (operandPointers ++ [
       MessagePointer.ofCellAddr { field := checked.core.target.id, path := [] }]))
+  if !checked.core.readingScope.isEmpty then pure none else
   match checked.core.expression with
   | .atom (.numeric (.filledGroupCount groups)) =>
       project (groups.map CheckedGroupCountOperand.fixed)
@@ -123,13 +125,14 @@ def filledGroupCountReferencedPointers?
     The source delegates to [`CheckedNumberEntitySource.referencePointers`] so the reopened axis
     remains wildcarded, matching the computation-message coordinate observation in
     [`spec/10`](../../../spec/10-validation-and-polarity.md#41-the-same-rule-fires-either-type).
-    The checked computation target is admitted only as a nonrepeatable Number field by
-    [`FlatModel.admitsNumericComputationTarget`], so its pointer is the exact empty path. The list
+    A nonrepeatable target's pointer is the exact empty path; a row target's is outside this
+    projection, which answers `none` for it. The list
     order is deterministic only; the observed message channel is a set. Filtered, nested, mixed,
     direct, unbounded, and non-`Sum` shapes remain outside this projection. -/
 def plainStarSumReferencedPointers?
     (checked : CheckedNumericComputationOperation model) :
     Except ReferenceProjectionError (Option (List MessagePointer)) :=
+  if !checked.core.readingScope.isEmpty then pure none else
   match checked.core.expression with
   | .atom (.numeric (.aggregate .sum source)) =>
       match source.plainStarSumCarrier? with

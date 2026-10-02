@@ -1,0 +1,7 @@
+# row	field	code
+r1-fresh-empty-malformed-overlimit	Rg/Rows[3]/A	zahlHatUngueltigeZeichen
+r1-fresh-empty-malformed-overlimit	Rg/Rows[4]	zuGrosseZeile
+r1-fresh-empty-malformed-overlimit	Rg/Rows[4]/A	zuGrosseKontextnummer
+r1-fresh-empty-malformed-overlimit	Rg/Rows[4]/B	zuGrosseKontextnummer
+r2-zero-divisor-and-empty-second	Rg/Rows/DV	berechnungsWertFehler
+r2-zero-divisor-and-empty-second	Rg/Rows[2]/DV	berechnungsWertFehler

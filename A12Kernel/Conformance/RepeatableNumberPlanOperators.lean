@@ -94,7 +94,8 @@ private def row? (group : GroupPath) (target : FieldId)
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (guard : Option ComputationCondition := none) :
     Option (CheckedNumericComputationTable model) :=
-  (elaborateNumericTargetComputationTable model group target [(guard, expression)]).toOption
+  (elaborateNumericTargetComputationTable model group target [(guard, expression)]
+    (targetScope := .row)).toOption
 
 private def binary (group : GroupPath) (target : FieldId) (left right : SurfaceFieldPath)
     (op : NumericScaleBinaryOp) : Option (CheckedNumericComputationTable model) :=

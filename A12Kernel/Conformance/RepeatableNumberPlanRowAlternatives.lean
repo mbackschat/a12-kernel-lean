@@ -61,11 +61,11 @@ private def read (field : String) : AuthoredNumericExpr SurfaceNumericAtom :=
 private def table (alternatives : List (Option ComputationCondition × String)) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
   elaborateNumericTargetComputationTable model rowsPath rtId
-    (alternatives.map fun (precondition, source) => (precondition, read source))
+    (alternatives.map fun (precondition, source) => (precondition, read source)) (targetScope := .row)
 
 private def reader : Option (CheckedNumericComputationTable model) :=
   (elaborateNumericTargetComputationTable model rowsPath rdId
-    [(none, .binary .add (read "RT") (read "RC"))]).toOption
+    [(none, .binary .add (read "RT") (read "RC"))] (targetScope := .row)).toOption
 
 private def plan? : Option (CheckedRepeatableNumberPlan model) := do
   let rt ← (table [(some (.fieldFilled g1Id), "RA"), (some (.fieldFilled g2Id), "RB")]).toOption

@@ -2661,3 +2661,11 @@ Binding a computation's operands by its target's scope widened one shared resolv
 Lean treatment: the three certificates assert model ownership, the shape keeps the binding decision, and the Number operation's well-formedness checks its lists' direct fields against its reading scope, so the invariant has one owner per layer.
 
 **When a certificate restates the gate of the stage that produced it, it is a second copy of that gate, and widening the gate leaves the copy behind.** Before widening a gate, grep the certificates its outputs feed for the same predicate. The tell is a fail-closed internal error appearing where a measured refusal class was expected.
+
+## LF207 — widen an entry by an explicit opt-in, not by changing the default every caller shares
+
+The row-step batch let the complete Number elaborator admit a repeatable target by default, and gated the scalar executors on the table's reading scope. Two aggregate cascades call the same elaborator for their total and their suffix and execute the result at the fixed address, so a repeatable target there computed once at `[]`, a value no Kernel row can produce; the gate on tables never saw them because they consume operations. The cold review of `57ab215a..70b1d70c` found it; nothing locked it.
+
+Lean treatment: the elaborator takes a `ComputationTargetScope`, fixed by default with the old refusal, and only the repeatable plan's row tables name `.row`; the [boundary grid](sources/computation-scheduling-probes.md#src-row-target-boundary) locks both scopes' refusals.
+
+**A default is a contract with every existing caller; changing it widens all of them at once, and a gate at one consumer covers only that consumer.** When a capability is new for one consumer, add it as an opt-in at the entry that consumer calls, and leave every other call site exactly as it was. The tell is a guard added downstream "so the others refuse it", which names the consumers you remembered rather than the ones that exist.

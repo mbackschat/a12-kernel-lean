@@ -156,12 +156,12 @@ private def elaborateNumericTargetComputationTableWith (model : FlatModel) (decl
     (target : FieldId)
     (alternatives : List (Except ResolveError (Option ComputationCondition) ×
       AuthoredNumericExpr SurfaceNumericComputationAtom))
-    (suppressExactScaleWarning : Bool) :
+    (suppressExactScaleWarning : Bool) (targetScope : ComputationTargetScope) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
   let elaborated := alternatives.zipIdx.map fun ((guard, expression), index) =>
     (index + 1, guard,
       elaborateCompleteNumericTargetComputationOperation model declaringGroup target expression
-        suppressExactScaleWarning)
+        suppressExactScaleWarning targetScope)
   let otherRefusal? := elaborated.findSome? fun (index, guard, result) =>
     match guard with
     | .error error => some (.precondition index error)
@@ -202,34 +202,38 @@ private def AuthoredNumericExpr.asComplete (expression : AuthoredNumericExpr Sur
 
 /-- Elaborate a whole Number computation over the complete computation surface, `FirstFilledValue`
 and the value counts included, whose guards the caller has already resolved. A guard that names no
-model field meets it as an unadmitted guard, asked in its alternative's place. -/
+model field meets it as an unadmitted guard, asked in its alternative's place. `targetScope` names the
+targets the caller's executor addresses: a row table only for the repeatable plan. -/
 def elaborateCompleteNumericTargetComputationTable (model : FlatModel) (declaringGroup : GroupPath)
     (target : FieldId)
     (alternatives :
       List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericComputationAtom))
-    (suppressExactScaleWarning : Bool := false) :
+    (suppressExactScaleWarning : Bool := false)
+    (targetScope : ComputationTargetScope := .fixed) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
   elaborateNumericTargetComputationTableWith model declaringGroup target
     (alternatives.map fun (precondition, expression) => (.ok precondition, expression))
-    suppressExactScaleWarning
+    suppressExactScaleWarning targetScope
 
 /-- Elaborate a whole Number computation over ordinary numeric atoms, whose guards the caller has
 already resolved. -/
 def elaborateNumericTargetComputationTable (model : FlatModel) (declaringGroup : GroupPath)
     (target : FieldId)
     (alternatives : List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom))
-    (suppressExactScaleWarning : Bool := false) :
+    (suppressExactScaleWarning : Bool := false)
+    (targetScope : ComputationTargetScope := .fixed) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
   elaborateCompleteNumericTargetComputationTable model declaringGroup target
     (alternatives.map fun (precondition, expression) => (precondition, expression.asComplete))
-    suppressExactScaleWarning
+    suppressExactScaleWarning targetScope
 
 /-- Elaborate a whole Number computation whose guards are authored by name, each resolved against the
 target's group as the computation's operands are. -/
 def elaborateNumericTargetComputationTableFromSurface (model : FlatModel) (declaringGroup : GroupPath)
     (target : FieldId)
     (alternatives : List (Option SurfaceComputationCondition × AuthoredNumericExpr SurfaceNumericAtom))
-    (suppressExactScaleWarning : Bool := false) :
+    (suppressExactScaleWarning : Bool := false)
+    (targetScope : ComputationTargetScope := .fixed) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
   -- A target the model does not own fails in its operation's elaboration; its guards then resolve
   -- against the declaring group, and no measured row reaches that pairing.
@@ -240,7 +244,7 @@ def elaborateNumericTargetComputationTableFromSurface (model : FlatModel) (decla
         model.validate
         model.elaborateComputationCondition declaringGroup targetGroup authored,
         expression.asComplete))
-    suppressExactScaleWarning
+    suppressExactScaleWarning targetScope
 
 namespace CheckedNumericComputationTable
 
@@ -260,7 +264,7 @@ consume placement, but Analyze and Transform consumers do. -/
 def declaringGroups (table : CheckedNumericComputationTable model) : List GroupPath :=
   table.checkedAlternatives.map (·.operation.operation.declaringGroup)
 
-/-- Select first through computation-phase scalar guards, then evaluate only that checked operation. Repeatable operands retain the existing explicit scalar-context fault. -/
+/-- Select first through computation-phase scalar guards, then evaluate only that checked operation. The context's read decides which row the operands are read at: the repeatable plan supplies a row-local one. -/
 def evaluate (table : CheckedNumericComputationTable model)
     (context : ScalarComputationContext) :
     Except NumericComputationFault NumericTargetCheckResult :=

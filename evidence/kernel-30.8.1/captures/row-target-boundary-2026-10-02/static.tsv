@@ -1,0 +1,12 @@
+# model	operation	verification	valid	codes
+Pr_DM	runtime model	KERNEL_CONFIRMED	True	-
+Sb2_below	../T = [/Rg/Rows/Sub/IA]	KERNEL_CONFIRMED	False	MVK_NO_WILDCARD
+Sb3_below	../T = Max([/Rg/Rows/Sub/IA], [A])	KERNEL_CONFIRMED	False	MVK_NO_WILDCARD
+Sc2_curr	../T = CurrentRepetition($Rows)	KERNEL_CONFIRMED	False	MVK_INVALID_ENTITY
+Sc3_curr	../T = CurrentRepetition(/Rg/Rows)	KERNEL_CONFIRMED	True	-
+Sc_curr	../T = CurrentRepetition(Rows)	KERNEL_CONFIRMED	False	MVK_INVALID_ENTITY
+Sg_outguard	../../Rows/T = 1 if FieldFilled(/Rg/Rows/A)	KERNEL_CONFIRMED	False	MVK_ERROR_FIELD_NOT_IN_RULEGROUP
+Si_strcopy	../T = [S1]	KERNEL_CONFIRMED	False	MVK_INVALID_COMPARE_TO_ENUM_OR_STRING
+Sn_numcopy	../../Rows/T = [/Rg/Rows/A]	KERNEL_CONFIRMED	False	MVK_ERROR_FIELD_NOT_IN_RULEGROUP
+So_strcopy	../../Rows/T = [/Rg/Rows/S1]	KERNEL_CONFIRMED	False	MVK_ERROR_FIELD_NOT_IN_RULEGROUP
+Ss_sib	../T = [/Rg/Oth/OX]	KERNEL_CONFIRMED	False	MVK_NO_WILDCARD

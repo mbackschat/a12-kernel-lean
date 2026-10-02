@@ -20,6 +20,9 @@ inductive StringComputationElabError where
   | rawStringTarget (path : List String)
   | customStringTarget (path : List String)
   | targetSelfReference (field : FieldId)
+  /-- The group a target-less expression is judged in repeats, so its hypothetical target is a row
+  target, which this carrier never evaluates. Claims no class. -/
+  | repeatableTargetGroup (group : GroupPath)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -195,13 +198,15 @@ private def certifyStringExpr (model : FlatModel)
   else
     throw .incoherentCore
 
-/-- Validate the flat model once, preserve the authored expression tree exactly, and certify every resolved runtime leaf before returning it to computation evaluation. Without a target the expression is judged as if its target lay in the declaring group, where an undeclared declaring group defaults. -/
+/-- Validate the flat model once, preserve the authored expression tree exactly, and certify every resolved runtime leaf before returning it to computation evaluation. Without a target the expression is judged as if its target lay in the declaring group, where an undeclared declaring group defaults. A repeating target group is refused first: the computation binding would bind its levels, which this carrier's fixed-target evaluator cannot read. -/
 def elaborateStringExpr (model : FlatModel) (declaringGroup : GroupPath)
     (expression : StringExpr SurfaceFieldPath) (targetGroup : GroupPath := declaringGroup) :
     Except StringComputationElabError (CheckedStringExpr model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
+      if !(model.repeatableScopeForGroupPath targetGroup).isEmpty then
+        throw (.repeatableTargetGroup targetGroup)
       let core ← elaborateStringExprCore model declaringGroup targetGroup expression
       certifyStringExpr model hModel core
 

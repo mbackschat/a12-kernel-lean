@@ -658,7 +658,7 @@ def GroupPath.matchesTurningPoint (group : GroupPath)
 /-- Whether every repeatable level a declaration crosses is already bound by the reading scope.
 The empty scope admits exactly the nonrepeatable declarations, so a scalar read is this predicate's
 `[]` instance rather than a separate rule. The scope a caller supplies is the reading rule's own
-iteration scope; a computation has none and therefore reads the empty one. -/
+iteration scope, or a computation's target scope. -/
 def FlatFieldDecl.repetitionBoundBy (declaration : FlatFieldDecl)
     (scope : List RepeatableLevel) : Bool :=
   declaration.repeatableScope.all (scope.contains ·)

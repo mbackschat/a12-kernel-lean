@@ -54,7 +54,7 @@ private def step? (target : String) (guard : Option ComputationCondition)
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
     Option (CheckedNumericComputationTable model) :=
   (elaborateCompleteNumericTargetComputationTable model rowsPath (idOf target)
-    [(guard, expression)]).toOption
+    [(guard, expression)] (targetScope := .row)).toOption
 
 /-- The grid's computations in its authored order, every reader ahead of `CA`. -/
 private def authored : List (Option (CheckedNumericComputationTable model)) :=
@@ -143,6 +143,7 @@ private def nested : FlatModel where
 private def nestedTable (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable nested) :=
   elaborateCompleteNumericTargetComputationTable nested rowsPath 0 [(none, expression)]
+    (targetScope := .row)
 
 /- The target's scope binds only its own levels: a read crossing the nested level below it is refused
 `MVK_NO_WILDCARD` ([`spec/09`](../../spec/09-computations.md) §5), while a `Sum` over that level's

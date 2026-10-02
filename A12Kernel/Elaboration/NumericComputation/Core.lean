@@ -120,7 +120,7 @@ inductive NumericComputationElabError where
   | unsupportedExpression
   | operationScaleMismatch (targetScale : Nat) (operation : NumericScaleSummary)
   | targetPolicyMismatch (target policy : NumField)
-  /-- A repeatable target's placement, which claims no class here. -/
+  /-- A row target's placement or repetition. -/
   | repeatableTarget (error : AddressedRepeatableTargetElabError)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -157,12 +157,16 @@ def targetDiagnostic? :
   | .copyComparison _ _ refusal => some refusal.diagnostic
   | .operationNode diagnostic => diagnostic
   | .targetSelfReference _ => some .errorReferenceToCalculatedField
+  -- A row target's placement, measured on this carrier with a Number and a String copy and a
+  -- guarded constant ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-row-target-boundary)).
+  | .repeatableTarget (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
+  | .repeatableTarget (.targetIsIndexField _) => some .errorIndexAsCalculatedField
   | _ => none
 
 /-- Project the per-row operand gate, whether this arm, an operand's resolver or an entity list's
-    shape asked it. The target repeats at no level on this arm, so a per-row read's class is
-    containment when the target lies outside the declaring group and otherwise decided by where its
-    outermost level lies beside or below the target's group
+    shape asked it. The levels the target's scope holds are bound, so a read's class is decided by its
+    first other level: containment when the target lies outside the declaring group, and otherwise
+    where that level lies beside or below the target's group
     ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
 def iterationDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
@@ -210,7 +214,7 @@ private def FlatModel.admitsDeclarationIn (model : FlatModel) (scope : List Repe
 bind their own levels, which the list's shape asked against the same scope. -/
 private def FlatModel.directFieldsBoundBy (model : FlatModel) (scope : List RepeatableLevel)
     (fields : List FieldId) : Bool :=
-  fields.all fun field => (model.fieldRepeatableScope field).all scope.contains
+  fields.all fun field => (model.lookupUniqueId field).toOption.all (·.repetitionBoundBy scope)
 
 private def FlatModel.admitsTemporalComputationOperand
     (model : FlatModel) (scope : List RepeatableLevel) (source : FlatTemporalField) (accepts : Bool) :
@@ -402,17 +406,34 @@ structure CheckedNumericTargetComputationOperation (model : FlatModel) where
   policy : NumericTargetPolicy
   targetMatches : policy.info = operation.core.target.info
 
-/-- The Number target and the group it lies in, which decides a per-row read's class. A repeatable
-target meets the placement every repeatable computation target meets, ahead of its kind. -/
-private def FlatModel.resolveNumericComputationTarget
-    (model : FlatModel) (declaringGroup : GroupPath) (target : FieldId) :
-    Except NumericComputationElabError (FlatNumberField × GroupPath) := do
-  let declaration ← (model.lookupUniqueId target).mapError .targetResolve
-  if !declaration.repeatableScope.isEmpty then
-    discard <| (checkAddressedRepeatableTarget model declaringGroup target).mapError .repeatableTarget
+/-- The targets one elaboration admits. A fixed scope admits a nonrepeatable target, which the scalar
+executors write at the empty path; a row scope admits a repeatable one, which the repeatable plan runs
+at every row. A consumer names the scope its executor addresses, so a fixed executor never receives a
+row target. -/
+inductive ComputationTargetScope where
+  | fixed
+  | row
+  deriving Repr, DecidableEq
+
+/-- The target's declaration for its scope. A fixed scope refuses a repeatable target as the carrier's
+boundary, claiming no class. A row scope requires a repeatable target placed as every repeatable
+computation target is, and asks that placement ahead of the copy comparison: a String copied into a row
+target outside the declaring group draws the placement class alone
+([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-row-target-boundary)). -/
+private def FlatModel.lookupNumericComputationTarget (model : FlatModel)
+    (targetScope : ComputationTargetScope) (declaringGroup : GroupPath) (target : FieldId) :
+    Except NumericComputationElabError FlatFieldDecl :=
+  match targetScope with
+  | .fixed => (model.resolveNonrepeatableDeclarationById target).mapError .targetResolve
+  | .row => (·.declaration) <$>
+      (checkAddressedRepeatableTarget model declaringGroup target).mapError .repeatableTarget
+
+/-- The Number target and the group it lies in, which decides a per-row read's class. -/
+private def FlatFieldDecl.numericComputationTarget (declaration : FlatFieldDecl) :
+    Except NumericComputationElabError (FlatNumberField × GroupPath) :=
   match declaration.toNumberField? with
   | some field => pure (field, declaration.groupPath)
-  | none => throw (.targetNotNumber target)
+  | none => throw (.targetNotNumber declaration.id)
 
 def SurfaceNumericAggregateFields.toNumberEntitySource
     (source : SurfaceNumericAggregateFields) : SurfaceNumberEntitySource :=
@@ -725,10 +746,9 @@ asked after the target's read and then the copied field's read, ahead of this ca
 gates ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
 A wider expression is not typed here, and two Numbers pass to the scale rule. -/
 private def FlatModel.checkNumericCopyComparison (model : FlatModel) (declaringGroup : GroupPath)
-    (targetField : FieldId) :
+    (target : FlatFieldDecl) :
     AuthoredNumericExpr SurfaceNumericComputationAtom → Except NumericComputationElabError Unit
   | .atom (.numeric (.field reference)) => do
-      let target ← (model.lookupUniqueId targetField).mapError .targetResolve
       if target.fieldValueReadRefusal?.isNone then
         let source ←
           (model.resolveComputationFieldValueRead declaringGroup target.groupPath reference).mapError
@@ -741,7 +761,8 @@ private def FlatModel.checkNumericCopyComparison (model : FlatModel) (declaringG
 def elaborateCompleteNumericComputationOperation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom)
-    (suppressExactScaleWarning : Bool := false) :
+    (suppressExactScaleWarning : Bool := false)
+    (targetScope : ComputationTargetScope := .fixed) :
     Except NumericComputationElabError
       (CheckedNumericComputationOperation model) := do
   match hModel : model.validate with
@@ -749,9 +770,10 @@ def elaborateCompleteNumericComputationOperation
   | .ok () => do
       let checkedDeclaringGroup ←
         certifyNumericComputationDeclaringGroup declaringGroup
-      model.checkNumericCopyComparison checkedDeclaringGroup.val targetField expression
-      let (target, targetGroup) ←
-        model.resolveNumericComputationTarget checkedDeclaringGroup.val targetField
+      let declaration ←
+        model.lookupNumericComputationTarget targetScope checkedDeclaringGroup.val targetField
+      model.checkNumericCopyComparison checkedDeclaringGroup.val declaration expression
+      let (target, targetGroup) ← declaration.numericComputationTarget
       model.checkNumericOperationNodes checkedDeclaringGroup.val targetGroup expression
       -- The node walk already elaborated every atom by this same function, a field through the same
       -- declaration read, so this pass refuses nothing new and only rebuilds the checked tree.

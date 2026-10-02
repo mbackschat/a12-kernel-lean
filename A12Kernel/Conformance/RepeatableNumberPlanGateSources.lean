@@ -64,14 +64,15 @@ private def bare (field : String) : SurfaceFieldPath :=
 private def read (field : String) : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.field (bare field))
 
-private def step? (group : GroupPath) (target : FieldId) (guard : Option ComputationCondition)
-    (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+private def step? (group : GroupPath) (targetScope : ComputationTargetScope) (target : FieldId)
+    (guard : Option ComputationCondition) (expression : AuthoredNumericExpr SurfaceNumericAtom) :
     Option (CheckedNumericComputationTable model) :=
-  (elaborateNumericTargetComputationTable model group target [(guard, expression)]).toOption
+  (elaborateNumericTargetComputationTable model group target [(guard, expression)]
+    (targetScope := targetScope)).toOption
 
-private def fixed? := step? ["Gate"]
+private def fixed? := step? ["Gate"] .fixed
 
-private def row? := step? rowsPath
+private def row? := step? rowsPath .row
 
 private def sum (left right : String) : AuthoredNumericExpr SurfaceNumericAtom :=
   .binary .add (read left) (read right)

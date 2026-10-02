@@ -17,11 +17,12 @@ private def FlatModel.resolveNumericComputationTargetPolicy
 def elaborateCompleteNumericTargetComputationOperation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom)
-    (suppressExactScaleWarning : Bool := false) :
+    (suppressExactScaleWarning : Bool := false)
+    (targetScope : ComputationTargetScope := .fixed) :
     Except NumericComputationElabError
       (CheckedNumericTargetComputationOperation model) := do
   let operation ← elaborateCompleteNumericComputationOperation
-    model declaringGroup targetField expression suppressExactScaleWarning
+    model declaringGroup targetField expression suppressExactScaleWarning targetScope
   operation.attachTargetPolicy
     (← model.resolveNumericComputationTargetPolicy targetField)
 

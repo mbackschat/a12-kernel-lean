@@ -127,7 +127,7 @@ def FlatModel.computationGroupRead (model : FlatModel) (declaringGroup targetGro
     (group, (model.firstUnboundComputationLevel? declaringGroup targetGroup
       [model.repeatableScopeForGroupPath group]).filter (!·.passesWalk))
 
-/-- A computation's nonrepeatable field-value read, whose gates are measured on a String, an
+/-- A computation's field-value read, bound by its target's scope, whose gates are measured on a String, an
     Enumeration, a Time and a Number target
     ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-carriers)).
     Its target's scope binds its reads, so a group read meets the walk from there before the group

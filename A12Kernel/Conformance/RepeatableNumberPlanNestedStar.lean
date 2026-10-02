@@ -62,7 +62,8 @@ private def sum? (target : FieldId) (field : String) : Option (CheckedNumericCom
 
 private def copy? : Option (CheckedNumericComputationTable model) :=
   (elaborateNumericTargetComputationTable model innerPath ipId
-    [(none, .atom (.field { base := .relative 0, groups := [], field := "IBase" }))]).toOption
+    [(none, .atom (.field { base := .relative 0, groups := [], field := "IBase" }))]
+    (targetScope := .row)).toOption
 
 private def plan? : Option (CheckedRepeatableNumberPlan model) := do
   (certifyRepeatableNumberPlan [← sum? nsId "IP", ← sum? ns2Id "IBase", ← copy?]).toOption
