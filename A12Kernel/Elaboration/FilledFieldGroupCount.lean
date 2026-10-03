@@ -92,7 +92,8 @@ def fillCapacity? (checked : CheckedFilledFieldCountGroupSource model) : Option 
 
 end CheckedFilledFieldCountGroupSource
 
-private def finishFilledFieldCountGroupSource (model : FlatModel)
+/-- Certify the nonempty recursive expansion of a group whose path and binding are already resolved. -/
+def CheckedFilledFieldCountGroupSource.ofResolved (model : FlatModel)
     (source : CheckedEntityGroupSource model) :
     Except FilledFieldCountGroupElabError
       (CheckedFilledFieldCountGroupSource model) :=
@@ -118,7 +119,7 @@ def elaborateFilledFieldCountFixedGroupValidationSource (model : FlatModel)
       let reference ← model.resolveRuleBoundFixedGroupReference declaringGroup
         (.path authored.group) (some writtenGroup)
         |>.mapError fun error => .shape (.groupReference error)
-      finishFilledFieldCountGroupSource model (.fixed reference)
+      CheckedFilledFieldCountGroupSource.ofResolved model (.fixed reference)
 
 /-- Admit one starred group: a repeatable terminal, or a nonrepeatable group below a starred level,
     which the Kernel admits on the count and on all seven field-fill quantifiers
@@ -134,7 +135,7 @@ def elaborateFilledFieldCountStarredGroupValidationSource (model : FlatModel)
   match ← elaborateStarredGroupOperandSource model declaringGroup authored.group
       |>.mapError fun error =>
         .shape (.starredGroup (error.placeBelowStar model declaringGroup writtenGroup)) with
-  | .terminalRepeatable source => finishFilledFieldCountGroupSource model (.starred source)
-  | .terminalPresence source => finishFilledFieldCountGroupSource model (.starredPresence source)
+  | .terminalRepeatable source => CheckedFilledFieldCountGroupSource.ofResolved model (.starred source)
+  | .terminalPresence source => CheckedFilledFieldCountGroupSource.ofResolved model (.starredPresence source)
 
 end A12Kernel

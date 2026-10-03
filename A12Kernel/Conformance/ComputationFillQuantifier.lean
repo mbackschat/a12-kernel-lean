@@ -83,11 +83,12 @@ private def numberCell (id : FieldId) (path : List Nat) (text : String) : Classi
 
 private def slots (model : FlatModel) (source : SurfaceFieldEntitySource)
     (data : DocumentData) (outer : Env := []) (hidden : List FieldId := [])
-    (placements : List CheckedCellPlacement := []) : Option (List ComputationFillSlot) := do
+    (placements : List CheckedCellPlacement := [])
+    (targetGroup : GroupPath := ["Form"]) : Option (List ComputationFillSlot) := do
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler model).toOption
   let checked ← (checkDocument prepared "en_US" data).toOption
-  let list ← (elaborateFieldFillList model ["Form"] source).toOption
+  let list ← (elaborateComputationFieldFillList model ["Form"] targetGroup source).toOption
   (list.computationSlots (checked.overlayCells hidden placements) outer).toOption
 
 private def operators : List FieldFillQuantifier :=
@@ -187,6 +188,76 @@ example :
       [{ address := { field := 1, path := [1] }
          cell := { rawPresent := true, parsed := some (.num 1), findings := [] } }] =
         some [.filled, .uninstantiated, .empty] := by
+  native_decide
+
+private def boundSource : SurfaceFieldEntitySource :=
+  { first := .field { base := .absolute, groups := ["Form", "Inputs", "Entries"], field := "First" }
+    rest := [.field { base := .absolute, groups := ["Form", "Inputs"], field := "Later" }] }
+
+example :
+    ((elaborateComputationFieldFillList (groupModel false) ["Form"]
+      ["Form", "Inputs", "Entries"] boundSource).toOption.map fun list =>
+        (list.declarations.map (·.id), list.bindingScope)) = some ([1, 2], [10]) := by
+  native_decide
+
+example :
+    (match elaborateComputationFieldFillList (groupModel false)
+      ["Form", "Inputs", "Entries"] ["Form"] boundSource with
+    | .error (.shape (.unboundOperandLevel _)) => true
+    | _ => false) = true := by
+  native_decide
+
+example :
+    slots (groupModel false) boundSource {
+      instantiatedRows := [{ group := 10, path := [1] }, { group := 10, path := [2] }]
+      cells := [numberCell 1 [1] "bad", numberCell 1 [2] "1"] }
+      [(10, 2)] [] [] ["Form", "Inputs", "Entries"] = some [.filled, .empty] ∧
+    (elaborateFieldFillList (groupModel false) ["Form"] boundSource).isOk = false := by
+  native_decide
+
+private def admissionRefusals : Bool :=
+  let single := elaborateComputationFieldFillList directModel ["Form"] ["Form"]
+    { directSource with rest := [] }
+  let duplicate := elaborateComputationFieldFillList directModel ["Form"] ["Form"]
+    { directSource with rest := [directSource.first] }
+  let overlap := elaborateComputationFieldFillList (groupModel false) ["Form"] ["Form"]
+    { groupSource with rest := boundSource.rest }
+  let root := elaborateComputationFieldFillList directModel ["Form"] ["Form"]
+    { first := .group (.path { base := .absolute, groups := ["Form"] }), rest := [] }
+  (match single with | .error (.shape .tooFewFields) => true | _ => false) &&
+  (match duplicate with | .error (.shape (.duplicateOperand 1)) => true | _ => false) &&
+  (match overlap with
+    | .error (.shape (.overlappingOperands ["Form", "Inputs"] ["Form", "Inputs", "Later"])) => true
+    | _ => false) &&
+  (match root with | .error (.shape (.rootGroupOperand ["Form"])) => true | _ => false)
+
+example : admissionRefusals = true := by native_decide
+
+example :
+    let source : SurfaceFieldEntitySource := {
+      first := .starredGroup {
+        base := .absolute
+        groups := [{ name := "Form" }, { name := "Inputs" }, { name := "Entries", starred := true }] }
+      rest := [] }
+    slots (groupModel false) source {
+      instantiatedRows := [{ group := 10, path := [1] }]
+      cells := [numberCell 1 [1] "1"] } = some [.filled, .uninstantiated] := by
+  native_decide
+
+private def detailModel : FlatModel :=
+  { groupModel false with
+    fields := [number 1 ["Form", "Inputs", "Entries", "Detail"] "First" [10]] }
+
+example :
+    let source : SurfaceFieldEntitySource := {
+      first := .starredGroup {
+        base := .absolute
+        groups := [{ name := "Form" }, { name := "Inputs" },
+          { name := "Entries", starred := true }, { name := "Detail" }] }
+      rest := [] }
+    slots detailModel source {
+      instantiatedRows := [{ group := 10, path := [1] }]
+      cells := [numberCell 1 [1] "1"] } = some [.filled, .uninstantiated] := by
   native_decide
 
 end A12Kernel.Conformance.ComputationFillQuantifier

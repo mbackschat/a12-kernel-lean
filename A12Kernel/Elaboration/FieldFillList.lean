@@ -206,4 +206,25 @@ def elaborateFieldFillList (model : FlatModel) (rowGroup : GroupPath)
     | _ => throw .unsupportedOperand
   pure { operands }
 
+/-- Computation list admission uses the target scope, through the shared entity-list binding
+and multiplicity gates (`spec/09` §5). Resolved group expansions retain that binding instead of
+re-entering validation's rule-group resolver. -/
+def elaborateComputationFieldFillList (model : FlatModel)
+    (declaringGroup targetGroup : GroupPath) (authored : SurfaceFieldEntitySource) :
+    Except FieldFillListElabError (CheckedFieldFillList model) := do
+  let shape ← (elaborateFieldEntityShapeIn model declaringGroup
+    (model.repeatableScopeForGroupPath targetGroup) authored .manyRequired
+    (some targetGroup) targetGroup).mapError .shape
+  let group (source : CheckedEntityGroupSource model) :=
+    (CheckedFieldFillOperand.group <$>
+      CheckedFilledFieldCountGroupSource.ofResolved model source).mapError FieldFillListElabError.group
+  let operands ← shape.operands.mapM fun
+    | .field declaration .stored => pure (.field declaration)
+    | .star source => pure (.star source)
+    | .group reference => group (.fixed reference)
+    | .starredGroup source => group (.starred source)
+    | .starredGroupPresence source => group (.starredPresence source)
+    | .field _ (.projected _) | .starHaving _ _ => throw .unsupportedOperand
+  pure { operands }
+
 end A12Kernel
