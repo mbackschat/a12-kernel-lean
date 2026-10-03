@@ -281,6 +281,12 @@ def comparisonOperand :
 
 end ConstructedDateValue
 
+/-- The two projections of a constructed Date retain different failure polarities. -/
+inductive ConstructedDateValidityOp where
+  | valid
+  | invalid
+  deriving Repr, DecidableEq
+
 namespace ConstructedDateObservation
 
 /-- Resolve three cause-free checked components. `none` means empty; formal unavailability is intercepted before this seam, so this constructor cannot produce `.resolved .unknown`. -/
@@ -312,6 +318,13 @@ def validVerdict : ConstructedDateObservation → Except FormalCause Verdict
 def invalidVerdict : ConstructedDateObservation → Except FormalCause Verdict
   | .resolved result => .ok result.invalidVerdict
   | .unavailable cause => .error cause
+
+/-- Select the existing validity projection without changing its exact formal-cause channel. -/
+def validityVerdict (operation : ConstructedDateValidityOp) :
+    ConstructedDateObservation → Except FormalCause Verdict :=
+  match operation with
+  | .valid => validVerdict
+  | .invalid => invalidVerdict
 
 /-- Project one checked numeric component through the existing cause-free result family. A forged resolved UNKNOWN remains explicitly cause-free; checked evaluation never produces that branch. -/
 def numericPart (observation : ConstructedDateObservation)

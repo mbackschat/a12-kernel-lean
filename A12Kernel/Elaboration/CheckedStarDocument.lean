@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.ConstructedDateEvaluation
 import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.Correlation
@@ -11,6 +12,7 @@ This boundary joins the immutable checked input to the existing checked star pat
 namespace A12Kernel
 
 inductive CheckedAddressingError where
+  | constructedDate (cause : ConstructedDateEvaluationFault)
   | addressing (cause : StarAddressingError)
   | group (cause : CheckedGroupPresenceError)
   | field (field : FieldId) (cause : ResolveError)

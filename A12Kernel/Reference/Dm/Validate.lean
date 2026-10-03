@@ -107,11 +107,11 @@ def runRule (world : World) (checked : CheckedDocument model)
     (rule : CheckedResolvedValidationRule model) : Except String (List FlatRuleMessage) :=
   match rule.ordinaryIterationPlan with
   | .rows _ =>
-      match rule.evalOrdinaryRepeatableFull checked with
+      match rule.evalOrdinaryRepeatableFull checked (some world) with
       | .ok rows => .ok (rows.filterMap (·.2.message?))
       | .error error => .error (repr error).pretty
   | .once _ =>
-      match rule.evalOrdinaryOnceFull checked with
+      match rule.evalOrdinaryOnceFull checked (some world) with
       | .ok (_, outcome) => .ok outcome.message?.toList
       | .error error => .error (repr error).pretty
   | .scalar =>

@@ -265,6 +265,8 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   | valueList (source : CheckedValueListCondition model)
   | valuesNotUnique (source : CheckedValuesNotUniqueCondition model)
   | scalarTemporal (comparison : CheckedScalarTemporalComparison model)
+  | constructedDateValidity (operation : ConstructedDateValidityOp)
+      (source : CheckedConstructedDateComponents model)
 
 /-- One checked connective tree whose leaves retain their family-specific resolved certificates and evaluation policies. -/
 abbrev ValidationCondition (model : FlatModel) :=
@@ -457,6 +459,8 @@ def liftsEmptyGate : ValidationConditionLeaf model → Bool
 /-- Whether a presence leaf can hold on an instance without admitted content; it composes through
 `And` and `Or`. A comparison claims nothing here, `liftsEmptyGate` owning it. -/
 def canFireOnEmpty : ValidationConditionLeaf model → Bool
+  | .constructedDateValidity operation source =>
+      operation == .invalid || source.fields.isEmpty
   | .scalarTemporal _ => false
   | .valuesNotUnique _ => false
   | .valueList source => source.quantifier.canFireOnEmpty
@@ -480,6 +484,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
       | .fieldsNotCollectivelyFilled => false
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
+  | .constructedDateValidity _ source, field => source.fields.contains field
   | .scalarTemporal comparison, field => comparison.referencesField field
   | .valuesNotUnique source, field => source.referencesField field
   | .valueList source, field => source.referencesField field
@@ -517,12 +522,14 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | leaf@(.groupList _ _), field | leaf@(.repeatableFieldPresence _ _), field
   | leaf@(.repetitionNotUnique _), field | leaf@(.guardedRootCurrentRepetition _ _ _), field
   | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field
+  | leaf@(.constructedDateValidity _ _), field
   | leaf@(.customFieldValidity _), field | leaf@(.fieldFill _ _), field
   | leaf@(.stringPattern _), field | leaf@(.scalarTemporal _), field =>
       leaf.referencesField field
 
 /-- Whether a leaf retains any `Having` filter in its checked source. Ordered numeric, DateRange overlap and value-list leaves retain their owning sources’ filters; scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
+  | .constructedDateValidity _ _ => false
   | .scalarTemporal _ => false
   | .valuesNotUnique source => source.hasHaving
   | .valueList source => source.hasHaving
@@ -536,6 +543,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
+  | .constructedDateValidity _ _ => true
   | .valueList _ | .valuesNotUnique _ => true
   | .orderedNumeric _ comparison =>
       comparison.requiresAddressedValidation
@@ -555,6 +563,7 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
 def wellFormedBool (rowGroup : GroupPath) :
     ValidationConditionLeaf model → Bool
+  | .constructedDateValidity _ _ => true
   | .scalarTemporal _ => true
   | .valuesNotUnique source => source.admittedMultiplicity && source.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains

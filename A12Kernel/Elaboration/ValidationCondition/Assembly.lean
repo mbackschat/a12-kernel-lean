@@ -21,6 +21,7 @@ inductive ValidationConditionAssemblyError where
   | iteratedDateRange (error : IteratedDateRangeConditionElabError)
   | multipleRepetitionNotUnique
   | stringPattern (error : StringPatternConditionElabError)
+  | constructedDate (error : ConstructedDateComponentsElabError)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -63,7 +64,7 @@ def groupListDiagnostic? :
   -- these is measured as its own class through this projection.
   | .invalidModel _ | .repeatableFieldRequired _ | .emptyGroupList | .rowGroupMismatch _ _
   | .repetitionNotUnique _ | .iteratedDateRange _ | .multipleRepetitionNotUnique
-  | .stringPattern _ | .incoherentCore => none
+  | .constructedDate _ | .stringPattern _ | .incoherentCore => none
 
 end ValidationConditionAssemblyError
 
@@ -87,6 +88,17 @@ def fromFlat (condition : CheckedFlatCondition model) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   checkCore model condition.rowGroup (ValidationCondition.flat condition.core)
     condition.modelWellFormed
+
+/-- Compose either constructed-Date validity projection using the existing component certificate. -/
+def fromConstructedDateValidity (model : FlatModel) (rowGroup : GroupPath)
+    (operation : ConstructedDateValidityOp) (surface : SurfaceConstructedDateComponents) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) := do
+  match hModel : model.validate with
+  | .error error => throw (.invalidModel error)
+  | .ok () =>
+      let source ← (elaborateConstructedDateSources model surface).mapError .constructedDate
+      checkCore model rowGroup (.leaf (.constructedDateValidity operation source))
+        (by rw [hModel]; rfl)
 
 /-- Assemble one explicit `Valid`/`Invalid` predicate at a rule group.
 

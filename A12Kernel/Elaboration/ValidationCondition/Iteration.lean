@@ -282,7 +282,7 @@ private def ValidationConditionLeaf.iterationGuardAt
   -- The explicit validity operand is nonrepeatable by its own well-formedness, so it references no
   -- level and reads like a flat leaf here.
   | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
-  | .customFieldValidity _ | .stringPattern _ | .scalarTemporal _ =>
+  | .constructedDateValidity _ _ | .customFieldValidity _ | .stringPattern _ | .scalarTemporal _ =>
       .noReference
   | .guardedRepeatableCurrentRepetition guard _ _ =>
       if guard.repeatableScope.contains level then .guarded else .noReference
@@ -419,7 +419,7 @@ def supportsOrdinaryIteration
     | .repetitionNotUnique _ => true
     -- A nonrepeatable operand read is environment-insensitive, exactly as a flat leaf's is, so the
     -- default `false` here would narrow the fragment without a reason.
-    | .customFieldValidity _ | .stringPattern _ => true
+    | .constructedDateValidity _ _ | .customFieldValidity _ | .stringPattern _ => true
     | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => true
     | _ => false
 

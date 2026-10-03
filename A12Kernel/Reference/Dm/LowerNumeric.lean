@@ -19,7 +19,7 @@ def aggregateOp? : String → Option NumericAggregateOp
   | "NumberOfDifferentValues" => some .distinctCount
   | _ => none
 
-private def datePart? : String → Option DateNumericPart
+def datePart? : String → Option DateNumericPart
   | "YearFromDate" => some .year
   | "MonthFromDate" => some .month
   | "DayFromDate" => some .day

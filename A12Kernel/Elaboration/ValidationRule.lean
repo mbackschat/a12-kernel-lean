@@ -462,7 +462,8 @@ def evalOrdinaryRepeatablePartialAt
 private def evalOrdinaryRepeatableAt
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model) (environment : Env)
-    (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult := none) :
+    (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult := none)
+    (world : Option World := none) :
     Except OrdinaryRepeatableRuleEvaluationError (Env × FlatRuleOutcome) := do
   let _ ← rule.ordinaryRepeatableFieldIds.mapM fun field =>
     (checked.validationAddressedCell environment field)
@@ -470,7 +471,7 @@ private def evalOrdinaryRepeatableAt
   let errorCell ←
     (checked.validationAddressedCell environment rule.errorField)
       |>.mapError .addressing
-  let base := checked.flatContext
+  let base := { checked.flatContext with world }
   let context : AddressedValidationEvaluationContext model := {
     scalar := { fields := base, groups := GroupPresenceContext.unavailable }
     outer := environment
@@ -486,7 +487,7 @@ private def evalOrdinaryRepeatableAt
 /-- Execute a checked ordinary nonparallel repeatable rule over the validation row domain. Concrete deepest rows retain immutable document order; a missing nested child contributes implicit row 1 below each existing parent, while an absent outermost scope remains empty. Every repeated read and the error target use the validation-only addressed view without materializing stored topology. -/
 def evalOrdinaryRepeatableFull
     (rule : CheckedResolvedValidationRule model)
-    (checked : CheckedDocument model) :
+    (checked : CheckedDocument model) (world : Option World := none) :
     Except OrdinaryRepeatableRuleEvaluationError
       (List (Env × FlatRuleOutcome)) := do
   if !rule.condition.core.supportsOrdinaryIteration then
@@ -503,12 +504,12 @@ def evalOrdinaryRepeatableFull
     let result? :=
       repetitionNotUniqueResults.find? fun result =>
         result.row == environment
-    rule.evalOrdinaryRepeatableAt checked environment result?
+    rule.evalOrdinaryRepeatableAt checked environment result? world
 
 /-- Execute the distinct no-per-row-reference rule shape exactly once. Every repeatable error level is pinned to row 1, but target addressing is derived from the checked declaration and never read or inserted as document topology. Full validation retains the root admitted-content gate before addressed condition reads unless the error field lies in a repeatable root group. -/
 def evalOrdinaryOnceFull
     (rule : CheckedResolvedValidationRule model)
-    (checked : CheckedDocument model) :
+    (checked : CheckedDocument model) (world : Option World := none) :
     Except OrdinaryRepeatableRuleEvaluationError
       (Env × FlatRuleOutcome) := do
   if !rule.condition.core.supportsOrdinaryIteration then
@@ -531,7 +532,7 @@ def evalOrdinaryOnceFull
         .addressing (.environment cause))
   let context : AddressedValidationEvaluationContext model := {
     scalar := {
-      fields := checked.flatContext
+      fields := { checked.flatContext with world }
       groups := GroupPresenceContext.unavailable
     }
     outer := environment

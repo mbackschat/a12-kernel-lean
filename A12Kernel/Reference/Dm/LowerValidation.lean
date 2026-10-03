@@ -12,7 +12,7 @@ connectives are kept and each leaf is offered, in a fixed order, to the carriers
 the flat leaf, scalar temporal expression comparison, repeatable field presence, group presence, the group-list quantifiers, the filled-group
 numeric comparison, scalar, then addressed, then over entity lists, the starred filled-group count
 against a literal, the field-fill quantifiers (filled-field counts use the shared numeric expression carrier),
-typed entity-valued or token-literal value lists, the three checked uniqueness overloads, and named-type validity with the caller’s registry. The first carrier that admits a leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
+typed entity-valued or token-literal value lists, the three checked uniqueness overloads, constructed-Date validity, and named-type validity with the caller’s registry. The first carrier that admits a leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
 key; when an elaborator itself refused, its error is kept as the detail.
 
 Only public elaboration entry points are reached. A construct with a semantic evaluator but no rule
@@ -84,6 +84,47 @@ private def lowerScalarTemporalExpression (model : FlatModel) (rowGroup : GroupP
       pure (.extremum operator (← lowerEntitySource model rowGroup operands))
   | expression => refuse "TemporalExpression" expression.construct
 
+/-- Decode every direct component form the checked Date constructor already certifies. -/
+private def lowerDateComponent (model : FlatModel) (rowGroup : GroupPath) :
+    Expr → Lowering SurfaceConstructedDateSource
+  | .string text => pure (.constant text)
+  | .call name [.mk operand none none] none none => do
+      let some part := datePart? name | refuse "Date" "component extractor"
+      match operand with
+      | .constant "BaseYear" => pure (.baseYearExtractor part)
+      | .constant "Today" => pure (.todayExtractor part)
+      | .constant "Now" => pure (.nowExtractor part)
+      | .call bound [.mk (.constant "BaseYear") none none] none none =>
+          match bound with
+          | "StartOfDateRange" => pure (.baseYearRangeExtractor .start part)
+          | "EndOfDateRange" => pure (.baseYearRangeExtractor .finish part)
+          | _ => refuse "Date" "Base Year endpoint"
+      | _ =>
+          let some path := operand.fieldEntity? | refuse "Date" "extractor operand"
+          let field ← elaborated "Date" (model.resolveFieldDeclarationUnchecked rowGroup path)
+          pure (.extractor part field.id)
+  | expression => do
+      let some path := expression.fieldEntity? | refuse "Date" "component field"
+      let field ← elaborated "Date" (model.resolveFieldDeclarationUnchecked rowGroup path)
+      match field.policy.kind.surfaceKind with
+      | .number => pure (.numberField field.id)
+      | .string => pure (.stringField field.id)
+      | .temporal _ => pure (.dateYearField field.id)
+      | _ => refuse "Date" "component kind"
+
+private def lowerDateComponents (model : FlatModel) (rowGroup : GroupPath)
+    (arguments : List Argument) : Lowering SurfaceConstructedDateComponents := do
+  let some expressions := arguments.mapM plain | refuse "Date" "component modifier"
+  let component := lowerDateComponent model rowGroup
+  match expressions with
+  | [day, month] => pure { day := ← component day, month := ← component month, year := .baseYear }
+  | [day, month, year] => pure {
+      day := ← component day, month := ← component month, year := .complete (← component year) }
+  | [day, month, century, shortYear] => pure {
+      day := ← component day, month := ← component month
+      year := .centuryAndShortYear (← component century) (← component shortYear) }
+  | _ => refuse "Date" "component arity"
+
 /-- The carriers tried for one leaf, in order; the first to admit it answers. -/
 private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : World)
     (suppress : Bool) (leaf : Expr) :
@@ -107,6 +148,17 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         | _, _, _ => []
     | _ => []
   let validity := match leaf with
+    | .call id [.mk (.call "Date" arguments none none) none none] none none =>
+        let operation := match id with
+          | "Valid" => some ConstructedDateValidityOp.valid
+          | "Invalid" => some .invalid
+          | _ => none
+        match operation with
+        | some operation => [do
+            let source ← lowerDateComponents model rowGroup arguments
+            elaborated id (CheckedValidationCondition.fromConstructedDateValidity
+              model rowGroup operation source)]
+        | none => []
     | .call id [.mk field none none, .mk (.string name) none none] none none =>
         let operation := match id with
           | "Valid" => some CustomFieldValidityOp.valid

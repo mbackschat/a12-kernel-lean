@@ -252,6 +252,26 @@ structure CheckedConstructedDateComponents (model : FlatModel) where
   profileSelected :
     ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
 
+/-- The field a checked component reads; constants, Base Year and the execution clock read none. -/
+def CheckedConstructedDateSource.fieldId? : CheckedConstructedDateSource model → Option FieldId
+  | .numberField source => some source.source.id
+  | .stringField source => some source.source.id
+  | .dateYearField source => some source.source.id
+  | .extractor source => some source.source.id
+  | .constant _ | .baseYearExtractor _ | .pointInTimeExtractor _ => none
+
+/-- All authored components in evaluation order, including both split-year slots. -/
+def CheckedConstructedDateComponents.sources (checked : CheckedConstructedDateComponents model) :
+    List (CheckedConstructedDateSource model) :=
+  [checked.day, checked.month] ++ match checked.year with
+    | .complete source => [source]
+    | .baseYear _ => []
+    | .centuryAndShortYear century shortYear => [century, shortYear]
+
+/-- Dependency and pointer discovery retain the same component order as execution. -/
+def CheckedConstructedDateComponents.fields (checked : CheckedConstructedDateComponents model) :
+    List FieldId := checked.sources.filterMap (·.fieldId?)
+
 /-- Static rejection before any component is read. -/
 inductive ConstructedDateComponentsElabError where
   | field (position : ConstructedDateComponentPosition) (error : ResolveError)

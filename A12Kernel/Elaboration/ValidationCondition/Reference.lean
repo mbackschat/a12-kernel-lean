@@ -356,6 +356,8 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
   | .iteratedDateRange condition =>
       condition.operandDeclarations.mapM fun declaration =>
         concreteFieldPointer declaration environment
+  | .constructedDateValidity _ source =>
+      sievedFieldPointers model (fun declaration => source.fields.contains declaration.id) environment
   | .customFieldValidity leaf =>
       (concreteFieldPointer leaf.operand.declaration environment).map ([·])
   | .stringPattern leaf =>
