@@ -1,6 +1,5 @@
 import A12Kernel.Reference.Dm.Model
 import A12Kernel.Elaboration.CheckedDocument
-import A12Kernel.Elaboration.TimeInput
 
 /-! # Reading a Kernel document against a DM model
 
@@ -104,17 +103,11 @@ def classifyStored (model : FlatModel) (declaration : FlatFieldDecl) (address : 
           match classifyStoredDateRangeForModel model.timeZoneId model.baseYear policy stored with
           | .ok raw => pure (cell raw)
           | .error error => throw s!"date range text: {repr error}"
-  | .temporal kind _ =>
+  | .temporal _ _ =>
       match CheckedDocument.canonicalTemporalCell? model declaration stored with
       | some (some raw) => pure (cell raw)
       | some none => throw "temporal text resolves to no instant"
-      | none =>
-          match kind, certifyTimeInputField declaration with
-          | .time, .ok owner =>
-              match owner.classifyStoredForModel model.timeZoneId stored with
-              | .ok raw => pure (cell raw)
-              | .error error => throw s!"time text: {repr error}"
-          | _, _ => throw "temporal format without a classifier"
+      | none => throw "temporal format without a classifier"
 
 private structure DocumentState where
   rows : Array RowAddr := #[]

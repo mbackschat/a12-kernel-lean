@@ -3,6 +3,7 @@ import A12Kernel.Elaboration.DateRangeInput
 import A12Kernel.Elaboration.PartialDateInput
 import A12Kernel.Elaboration.OmittingDateInput
 import A12Kernel.Elaboration.DateTimeInput
+import A12Kernel.Elaboration.TimeInput
 import A12Kernel.Semantics.NumericInput
 import A12Kernel.Semantics.ScalarText
 import A12Kernel.Semantics.StarAddressing
@@ -256,6 +257,9 @@ private def temporalCellAgrees (canonical actual : RawCell) : Bool :=
       expectedDate == foundDate && expectedTime == foundTime &&
         expectedBasis == foundBasis &&
         sameSecond expectedInstant foundInstant
+  | .parsed (.temporal (.time expectedInstant expectedTime)),
+    .parsed (.temporal (.time foundInstant foundTime)) =>
+      expectedTime == foundTime && sameSecond expectedInstant foundInstant
   | _, _ => false
 
 private def ClassifiedCellInput.canonicalScalarCoherent
@@ -622,8 +626,8 @@ private def canonicalDateCell? (model : FlatModel) (date : CivilDate) : Option R
 /-- The cell the owning classifier makes of a temporal declaration's stored text: `none` when no
 classifier owns the declaration, and `some none` when one does but the text resolves to no instant in
 the model zone. A precision-partial text that is only partly known is the `partialDate` arm carrying
-that text; a component-omitting text is the earliest date it denotes. A clock declaration is owned by
-no classifier here, which is what `temporallyCoherent` reports on. -/
+that text; a component-omitting text is the earliest date it denotes. A clock uses the existing
+Time classifier's model-zone anchor, regardless of the declaration's temporal kind. -/
 def canonicalTemporalCell? (model : FlatModel) (declaration : FlatFieldDecl) (stored : String) :
     Option (Option RawCell) :=
   match declaration.policy.kind with
@@ -649,7 +653,9 @@ def canonicalTemporalCell? (model : FlatModel) (declaration : FlatFieldDecl) (st
           else if components == TemporalComponents.now then
             (certifyDateTimeInputField declaration).toOption.map fun owner =>
               (owner.classifyStoredForModel model.timeZoneId stored).toOption
-          else none
+          else
+            (certifyTimeInputField declaration).toOption.map fun owner =>
+              (owner.classifyStoredForModel model.timeZoneId stored).toOption
   | _ => none
 
 /-- Whether every placed temporal cell whose declaration a classifier owns agrees with the value that
@@ -665,15 +671,15 @@ case that pins which account that clause states needs two cells whose text and d
 text a function of the value would delete the clause's own subject from the representation.
 
 The second is coverage, and it is bounded by the declared format rather than the declared kind, because
-the Kernel's parser follows the declared format with no fallback to the kind (`SPEC-2026-09-06-09`). Four
+the Kernel's parser follows the declared format with no fallback to the kind (`SPEC-2026-09-06-09`). Five
 declaration families have an owning classifier: a complete Date, a complete DateTime, a precision-partial
 Date, whose partially known text is the `partialDate` arm and whose fully known text is that date, and a
-component-omitting Date or date fragment, whose value is the earliest date its text denotes. A clock
-declaration has none, and a gate covering part of a family is one no consumer could rely on, whereas a
-property may honestly report on the part it knows.
+component-omitting Date or date fragment, whose value is the earliest date its text denotes, and a
+clock at the bounded `HH:mm:ss` profile. A gate covering part of a family is one no consumer could
+rely on, whereas a property may honestly report on the part it knows.
 
-`true` therefore means: no cell on one of those four declaration families contradicts its stored text.
-It does not certify a clock declaration, and it is not a claim that the kernel would produce this
+`true` therefore means: no cell on one of those five declaration families contradicts its stored text.
+It does not certify an unsupported declaration and is not a claim that the kernel would produce this
 document. -/
 def temporallyCoherent (checked : CheckedDocument model) : Bool :=
   checked.source.cells.all fun input =>

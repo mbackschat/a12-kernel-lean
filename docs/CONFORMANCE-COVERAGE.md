@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-03; HEAD was `321c9325`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-03; HEAD was `b2d07a22`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Replaying 1024 retained Kernel observation rows through Lean, 5948 of the 5948 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 87 partially and 32 not at all, as classified on 2026-10-03 at `321c9325` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
+**Replaying 1024 retained Kernel observation rows through Lean, 6006 of the 6006 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 87 partially and 32 not at all, as classified on 2026-10-03 at `321c9325` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -82,13 +82,13 @@ Each instance, one rule or computation on one document row, lands in one tier:
 
 | | rules | computations |
 |---|---|---|
-| match | 4012 | 1936 |
+| match | 4070 | 1936 |
 | tier 1 | 0 | 0 |
-| tier 2 | 104 | 27 |
+| tier 2 | 104 | 30 |
 | unattributed | 0 | 0 |
 | fault | 0 | 0 |
 
-Of the 1024 rows, 161 have no matching row in a retained artifact, and 28 could not be read or prepared as a whole. Matching instances are calibration over this population only; they make no claim about a model the population does not contain.
+Of the 1024 rows, 161 have no matching row in a retained artifact, and 9 could not be read or prepared as a whole. Matching instances are calibration over this population only; they make no claim about a model the population does not contain.
 
 ### Tier-2 clusters
 
@@ -98,13 +98,13 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 |---|---|---|---|
 | 30 | 3 | validation | `PatternMatched` |
 | 30 | 3 | validation | `PatternViolated` |
-| 24 | 12 | row | `Document` |
 | 12 | 12 | computation | `StringLiteral` |
 | 10 | 1 | validation | `Invalid` |
 | 10 | 1 | validation | `Valid` |
+| 8 | 2 | computation | `NumberComputation` |
 | 8 | 3 | computation | `StringComputation` |
 | 6 | 2 | validation | `Comparison` |
-| 5 | 1 | computation | `NumberComputation` |
+| 5 | 4 | row | `Document` |
 | 4 | 2 | validation | `AtLeastOneFieldFilled` |
 | 4 | 4 | row | `Prepare` |
 | 3 | 1 | validation | `Comparison/FirstFilledValue` |
@@ -162,7 +162,7 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | count |
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 24 |
-| `remaining` rows across those gaps | 304 |
+| `remaining` rows across those gaps | 305 |
 | Gaps whose route is **blocked** | 0 |
 | Ledger entries `pending` with a12-dmkits | 3 |
 | Ledger entries `handed-off` | 0 |
@@ -175,8 +175,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 234798 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 13233 | 5% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 234828 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 13271 | 5% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.

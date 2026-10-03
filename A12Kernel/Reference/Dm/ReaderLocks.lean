@@ -93,4 +93,55 @@ example :
      read (Json.mkObj [("baseYear", "next")]) == none].all id := by
   native_decide
 
+private def clockField (kind : TemporalKind) : FlatFieldDecl := {
+  id := 0, groupPath := ["Order"], name := "Clock"
+  policy := { kind := .temporal kind TemporalComponents.time }
+  temporalTargetPolicy := some { format := "HH:mm:ss" } }
+
+private def clockRead (kind : TemporalKind) (zone text : String) :
+    Option (Int × Nat × Nat × Nat) := do
+  let field := clockField kind
+  let cell ← (classifyStored { fields := [field], timeZoneId := zone } field
+    { field := 0, path := [] } text).toOption
+  match cell.raw with
+  | .parsed (.temporal (.time instant clock)) =>
+      pure (instant.epochMillis, clock.hour, clock.minute, clock.second)
+  | _ => none
+
+/- The format owns the parser on all three declared kinds (cross-kind runtime checkpoint).
+The Berlin anchor is an internal model-zone check, not a new external observation. -/
+example : [.date, .time, .dateTime].all (fun kind =>
+    clockRead kind "UTC" "12:30:00" == some (45000000, 12, 30, 0) &&
+    clockRead kind "Europe/Berlin" "12:30:00" == some (41400000, 12, 30, 0) &&
+    (classified (clockField kind) "2024-03-05").map (·.raw) == some (.rejected .dateFormat) &&
+    (classified (clockField kind) "24:00:00").map (·.raw) == some (.rejected .dateFormat) &&
+    (classified (clockField kind) "").map (·.raw) == some .presentEmpty) := by
+  native_decide
+
+example : clockRead .date "unsupported-zone" "12:30:00" = none := by native_decide
+
+private def repeatedClocks : Option (List (CellAddr × RawCell)) := do
+  let field := { (clockField .dateTime) with
+    groupPath := ["Order", "Rows"], repeatableScope := [10] }
+  let dm : DmModel := {
+    flat := {
+      fields := [field], timeZoneId := "UTC"
+      repeatableGroups := [{ level := 10, path := ["Order", "Rows"], repeatability := some 2 }] }
+    rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Json.mkObj [("Order", Json.mkObj [
+    ("Rows", Json.arr #[Json.mkObj [("Clock", "12:30:00")],
+      Json.mkObj [("Clock", "2024-03-05")]])])])).toOption
+  if !input.refusals.isEmpty then none
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler dm.flat).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  if !checked.temporallyCoherent then none
+  pure (input.data.cells.map fun cell => (cell.address, cell.raw))
+
+example : (repeatedClocks.map fun (cells : List (CellAddr × RawCell)) =>
+    cells.map (·.1) == [{ field := 0, path := [1] }, { field := 0, path := [2] }] &&
+    match (cells.map fun cell => cell.2 : List RawCell) with
+    | [.parsed (.temporal (.time _ clock)), .rejected .dateFormat] => clock.hour == 12
+    | _ => false) = some true := by native_decide
+
 end A12Kernel.Dm.ReaderLocks

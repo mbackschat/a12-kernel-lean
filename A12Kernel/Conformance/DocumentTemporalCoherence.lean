@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.CheckedDocument
 
 /-! # Placed-temporal-cell coherence locks
 
-`CheckedDocument.temporallyCoherent` reports whether every placed Date or DateTime cell agrees with the
+`CheckedDocument.temporallyCoherent` reports whether every supported placed temporal cell agrees with the
 value its own classifier derives from its stored text, a precision-partial and a component-omitting Date
 included. It is a property a consumer asks for, never a
 construction gate, and these cases fix both halves of that boundary: what it detects, and what it
@@ -47,7 +47,7 @@ private def clockField : FlatFieldDecl := {
   policy := { kind := .temporal .time TemporalComponents.time }
   temporalTargetPolicy := some { format := "HH:mm:ss", partialMode := .full } }
 
-/-- A Date declaration whose format is not a storable one, so no classifier certifies it. -/
+/-- Inconsistent date components and clock format, so no classifier certifies this declaration. -/
 private def uncertifiedField : FlatFieldDecl := {
   id := 5
   groupPath := ["Policy"]
@@ -217,19 +217,48 @@ example :
     yearlessCoherent? (some 2024) "MM-dd" "02-29" 2024 2 29 = some true := by
   native_decide
 
-/- **The declared coverage limit, asserted rather than assumed.** A Time and a Date whose declared
-format no classifier certifies are reported coherent no matter what value they carry, because neither
-has an owner able to derive one. A consumer reading `true` must not conclude that these were checked. -/
+/- A clock now has an owning classifier; an inconsistent format/component declaration still has
+none. Coherence reports the latter as uncovered rather than inventing a decoded value. -/
 example :
-    coherent? [cell 4 "14:30:00" (canonicalDate "1999-01-01")] = some true ∧
+    coherent? [cell 4 "14:30:00" (canonicalDate "1999-01-01")] = some false ∧
     coherent? [cell 5 "nonsense" (canonicalDate "1999-01-01")] = some true := by
+  native_decide
+
+private def canonicalClock (text : String) : RawCell :=
+  match certifyTimeInputField clockField with
+  | .error _ => .rejected .dateFormat
+  | .ok owner => (owner.classifyStoredForModel model.timeZoneId text).toOption.getD
+      (.rejected .dateFormat)
+
+private def clockWithMillis (remainder : Int) : RawCell :=
+  match canonicalClock "14:30:00" with
+  | .parsed (.temporal (.time instant clock)) =>
+      .parsed (.temporal (.time { epochMillis := instant.epochMillis + remainder } clock))
+  | other => other
+
+example : coherent? [cell 4 "14:30:00" (canonicalClock "14:30:00")] = some true ∧
+    coherent? [cell 4 "14:30:00" (canonicalClock "15:30:00")] = some false ∧
+    coherent? [cell 4 "2024-03-05" (.rejected .dateFormat)] = some true ∧
+    coherent? [cell 4 "2024-03-05" (.rejected .dateInvalid)] = some false := by
+  native_decide
+
+example : [-999, 0, 999].all (fun remainder =>
+    coherent? [cell 4 "14:30:00" (clockWithMillis remainder)] == some true) ∧
+    [-3600000, -1000, 1000, 3600000].all (fun remainder =>
+      coherent? [cell 4 "14:30:00" (clockWithMillis remainder)] == some false) := by
+  native_decide
+
+example :
+    let changedClock := match canonicalClock "14:30:00", canonicalClock "15:30:00" with
+      | .parsed (.temporal (.time instant _)), .parsed (.temporal (.time _ clock)) =>
+          .parsed (.temporal (.time instant clock))
+      | _, _ => RawCell.empty
+    coherent? [cell 4 "14:30:00" changedClock] = some false := by
   native_decide
 
 /- **The coverage limit is the declared component set, not the declared kind.** A TIME field declared
 `yyyy-MM-dd` stores a Date, because the parser follows the format and the kind supplies no fallback,
-so the complete-Date classifier owns that cell and a contradicted value there is detected. The clock
-row above is the control that keeps this from reading as "every Time declaration is now checked": it
-carries genuine clock components and stays uncovered. -/
+so the complete-Date classifier owns that cell and a contradicted value there is detected. -/
 example :
     coherent? [cell 6 "2024-06-15" (canonicalDate "2024-06-15")] = some true ∧
     coherent? [cell 6 "2024-06-15" (canonicalDate "1999-01-01")] = some false := by
