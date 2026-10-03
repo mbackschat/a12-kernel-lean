@@ -16,7 +16,7 @@ row replays every rule and prints one tab-separated line per rule:
 `request  row  rule  code  tier  construct  detail`
 
 where `tier` is `match`, `tier1` (Lean fires a different message set), `unattributed` (a computation
-reading a refused computation's target, directly or through other computations, whose outcome is
+sharing a refused computation's target or reading one, directly or through other computations, whose outcome is
 therefore not attributable to it, agreeing or not), `tier2` (Lean cannot represent the
 rule, the computation, the model or the document), `fault` (Lean admitted the rule or plan but
 failed running it), or `absent` (no comparable Kernel observation: none retained, an unreadable
@@ -163,11 +163,11 @@ private def replayComputations (line : String → String → String → String �
         let path := "/".intercalate target.path
         let lean := sorted (outcomes.filter (unindexed ·.pointer == path))
         let expected := sorted (kernel.filter (unindexed ·.pointer == path))
-        -- A computation reading a refused computation's target, directly or through another
-        -- computation, may read a stored value the Kernel would have recomputed, so neither its
-        -- agreement nor its divergence is attributable to it. The test is by name, a group
-        -- operand naming one of the target's groups included, and so over-approximates the reads.
-        if reads fedTargets computation then
+        -- Shared targets have incomplete alternative tables; fed readers may instead observe
+        -- stored values the Kernel recomputes. Neither agreement nor divergence is attributable
+        -- in either case. Shared-target identity is exact; the lexical read closure over-approximates.
+        if hasRefusedComputationTarget language model.flat refused target.id ||
+            reads fedTargets computation then
           line computation.name "compute" "unattributed" s!"Fed\tlean={lean} kernel={expected}"
         else if lean == expected then line computation.name "compute" "match" ""
         else line computation.name "compute" "tier1" s!"Divergence\tlean={lean} kernel={expected}"

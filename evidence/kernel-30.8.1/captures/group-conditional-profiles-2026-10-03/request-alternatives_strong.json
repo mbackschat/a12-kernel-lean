@@ -1,0 +1,29 @@
+{
+  "model": "alternatives_strong_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "seed-only",
+      "documentInline": {
+        "Form": {
+          "X": 9,
+          "Y": 9
+        }
+      }
+    },
+    {
+      "name": "input-present",
+      "documentInline": {
+        "Form": {
+          "X": 9,
+          "Y": 9,
+          "Gate": 3
+        }
+      }
+    }
+  ]
+}

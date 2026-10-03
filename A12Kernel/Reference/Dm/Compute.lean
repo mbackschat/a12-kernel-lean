@@ -124,6 +124,14 @@ def targetOf (language : Language) (model : FlatModel) (computation : DmComputat
   let some field := relative.toFieldPath? | refuse "Target" computation.targetRelPath
   elaborated "Target" (model.resolveFieldDeclarationUnchecked computation.group field)
 
+/-- A refused computation leaves its whole target's alternative table incomplete, even when
+another computation for that target lowers. Resolve identity rather than comparing final names;
+the split-target rows in `src-group-conditional-profiles` expose both false matches and divergence. -/
+def hasRefusedComputationTarget (language : Language) (model : FlatModel)
+    (refused : List DmComputation) (target : FieldId) : Bool :=
+  refused.any fun computation =>
+    (targetOf language model computation).toOption.any (·.id == target)
+
 /-- The resolved common precondition and every alternative's own guard, kept apart because the
 tables judge an alternative's guardedness by its own guard alone. -/
 private def guards (language : Language) (model : FlatModel) (computation : DmComputation)

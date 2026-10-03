@@ -65,4 +65,15 @@ example : fillGuardFreshRun true false true = some ["holds"] := by native_decide
 example : fillGuardFreshRun true true true = some ["holds"] := by native_decide
 
 
+private def refusedTargetIdentity (target : FieldId) : Bool :=
+  let model : FlatModel := { fields := [
+    { id := 1, groupPath := ["Form"], name := "Y", policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 2, groupPath := ["Form", "Other"], name := "Y", policy := { kind := .number { scale := 0, signed := true } } }] }
+  let refused : DmComputation := {
+    group := ["Form", "Other"], name := "Refused", targetRelPath := "../../Y"
+    commonPrecondition := none, alternatives := [], errorCodesToSuppress := [] }
+  hasRefusedComputationTarget .english model [refused] target
+
+example : refusedTargetIdentity 1 = true ∧ refusedTargetIdentity 2 = false := by native_decide
+
 end A12Kernel.Dm.ComputationGuardLocks

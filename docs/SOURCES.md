@@ -1711,3 +1711,6 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 <a id="src-group-presence-conditional-dependencies"></a>
 - [Ancestor group guards: conditional dependencies and live cycle controls](sources/computation-scheduling-probes.md#src-group-presence-conditional-dependencies)
+
+<a id="src-group-conditional-profiles"></a>
+- [Conditional group profiles across alternatives, common guards and target scopes](sources/computation-scheduling-probes.md#src-group-conditional-profiles)

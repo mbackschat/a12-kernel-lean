@@ -1,0 +1,46 @@
+{
+  "model": "repeatable_implicit_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "no-row",
+      "documentInline": {
+        "Form": {
+          "X": 9
+        }
+      }
+    },
+    {
+      "name": "seed-row",
+      "documentInline": {
+        "Form": {
+          "X": 9,
+          "Rows": [
+            {
+              "Y": 9
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "two-rows",
+      "documentInline": {
+        "Form": {
+          "Gate": 3,
+          "X": 9,
+          "Rows": [
+            {
+              "Y": 9
+            },
+            {}
+          ]
+        }
+      }
+    }
+  ]
+}
