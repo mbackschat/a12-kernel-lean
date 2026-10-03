@@ -291,6 +291,8 @@ private def ValidationConditionLeaf.iterationGuardAt
   -- No guard rule is measured for a field-fill operand at a level its binding scope reaches.
   | .fieldFill _ source =>
       if source.bindingScope.contains level then .unclassified else .noReference
+  | .tokenComparison comparison =>
+      if comparison.bindingScopes.flatten.contains level then .unclassified else .noReference
   | .valueList source =>
       if source.bindingScopes.flatten.contains level then .unclassified else .noReference
   | .valuesNotUnique source =>

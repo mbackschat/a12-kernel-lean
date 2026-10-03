@@ -250,6 +250,14 @@ private def scanCheckedFirstFilledValidationOperands
           scanCheckedFirstFilledValidationOperands document outer remaining next
       | .inr result => pure result.asToken
 
+/-- Evaluate a supported stored-token source. The support proof excludes group and projected slots
+before traversal, so condition consumers need no fallback that could disguise an unsupported shape. -/
+def evaluateSupportedFirstFilledValidation
+    (checked : CheckedTokenEntitySource model) (document : CheckedDocument model) (outer : Env)
+    (_supported : checked.supportsCheckedDirectStarFirstFilledValidation = true) :
+    Except CheckedAddressingError FirstFilledTokenResult :=
+  scanCheckedFirstFilledValidationOperands document outer checked.operands {}
+
 /-- Evaluate one already-admitted direct/plain-star/filtered-star token source against the immutable
     checked document. Each reached slot selects its in-capacity projection before the common lazy
     scan; a terminal value or formal cause hides every later slot and its addressing work. Group
@@ -258,9 +266,8 @@ def evaluateCheckedDirectStarFirstFilledValidation?
     (checked : CheckedTokenEntitySource model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (Option FirstFilledTokenResult) :=
-  if checked.supportsCheckedDirectStarFirstFilledValidation then do
-    pure (some (← scanCheckedFirstFilledValidationOperands document outer
-      checked.operands {}))
+  if supported : checked.supportsCheckedDirectStarFirstFilledValidation = true then do
+    pure (some (← checked.evaluateSupportedFirstFilledValidation document outer supported))
   else
     pure none
 

@@ -140,6 +140,11 @@ def fromStringPattern (model : FlatModel) (rowGroup : GroupPath)
       checkCore model rowGroup (.leaf (.stringPattern { compilePattern, condition }))
         (by rw [hModel]; rfl)
 
+/-- Join the source-owning token comparison to ordinary condition composition. -/
+def fromTokenComparison (rowGroup : GroupPath) (comparison : CheckedTokenComparison model) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  checkCore model rowGroup (.leaf (.tokenComparison comparison)) comparison.modelWellFormed
+
 /-- Join a sealed scalar temporal comparison to the existing connective tree. -/
 def fromScalarTemporal (rowGroup : GroupPath) (comparison : CheckedScalarTemporalComparison model) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=

@@ -36,6 +36,31 @@ private def admitted (text : String) : Bool :=
   | .error _ => false
 
 example :
+    [admitted "FirstFilledValue(Rows*/Note, Ref) == \"x\"",
+     admitted "\"x\" != FirstFilledValue(Rows*/Note, Ref)",
+     admitted "FirstFilledValue(Rows*/Note) == FirstFilledValue(Ref, Head/Code)",
+     !admitted "FirstFilledValue(Rows*/Note) > \"x\""].all id := by
+  native_decide
+
+example : (do
+    let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    let rule : DmRule := {
+      group := ["Order"]
+      name := "R"
+      errorCode := "R"
+      errorEntityRelPath := "../Ref"
+      condition := "FirstFilledValue(Rows*/Note Having [Rows/Filter] == \"keep\", Ref) != \"x\"", severity := "ERROR" }
+    let checked ← (checkRule dm .english rule).toOption
+    let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+      builtinStringPatternCompiler model).toOption
+    let document ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := [] }).toOption
+    let partialResult ← (checked.evalOrdinaryOncePartial document .full).toOption
+    pure (checked.hasHaving, checked.condition.core.referencesField 10,
+      checked.condition.core.referencesErrorField 10, partialResult)) =
+    some (true, true, false, .skipped) := by native_decide
+
+
+example :
     [admitted "FieldFilled(Ref) And MinValue(Due1, Due2) == [Due1]",
      admitted "[Due2] >= MaxValue(Due1, Due2)",
      admitted "MinValue(Due1, Due2) <= MaxValue(Due1, Due2)",

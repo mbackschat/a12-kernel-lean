@@ -10,6 +10,7 @@ import A12Kernel.Elaboration.CustomFieldValidity
 import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.ValueListCondition
 import A12Kernel.Elaboration.ValuesNotUniqueCondition
+import A12Kernel.Elaboration.TokenComparison
 import A12Kernel.Elaboration.TemporalExpression
 
 /-! # Shared resolved validation conditions
@@ -264,6 +265,7 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   | stringPattern (leaf : CheckedStringPatternLeaf model)
   | valueList (source : CheckedValueListCondition model)
   | valuesNotUnique (source : CheckedValuesNotUniqueCondition model)
+  | tokenComparison (comparison : CheckedTokenComparison model)
   | scalarTemporal (comparison : CheckedScalarTemporalComparison model)
   | constructedDateValidity (operation : ConstructedDateValidityOp)
       (source : CheckedConstructedDateComponents model)
@@ -461,6 +463,7 @@ def liftsEmptyGate : ValidationConditionLeaf model → Bool
 def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .constructedDateValidity operation source =>
       operation == .invalid || source.fields.isEmpty
+  | .tokenComparison _ => false
   | .scalarTemporal _ => false
   | .valuesNotUnique _ => false
   | .valueList source => source.quantifier.canFireOnEmpty
@@ -485,6 +488,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .constructedDateValidity _ source, field => source.fields.contains field
+  | .tokenComparison comparison, field => comparison.referencesField field
   | .scalarTemporal comparison, field => comparison.referencesField field
   | .valuesNotUnique source, field => source.referencesField field
   | .valueList source, field => source.referencesField field
@@ -513,6 +517,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
 /-- Whether a leaf reaches `field` for the rule's error-field gates. Filter-owning sources count
     marked body reads but exclude unmarked candidate reads, following the shared correlation gate. -/
 def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
+  | .tokenComparison comparison, field => comparison.referencesField field CorrelatedHaving.referencesMarkedField
   | .fieldFill _ source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .valuesNotUnique source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .valueList source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
@@ -530,6 +535,7 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
 /-- Whether the checked source retains a `Having` filter, which makes whole-rule partial validation
     skip before evaluation (spec/10 §5). Scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
+  | .tokenComparison comparison => comparison.hasHaving
   | .fieldFill _ source => source.hasHaving
   | .constructedDateValidity _ _ => false
   | .scalarTemporal _ => false
@@ -546,7 +552,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .constructedDateValidity _ _ => true
-  | .valueList _ | .valuesNotUnique _ => true
+  | .tokenComparison _ | .valueList _ | .valuesNotUnique _ => true
   | .orderedNumeric _ comparison =>
       comparison.requiresAddressedValidation
   | .groupPresence _ reference =>
@@ -566,6 +572,8 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
 def wellFormedBool (rowGroup : GroupPath) :
     ValidationConditionLeaf model → Bool
   | .constructedDateValidity _ _ => true
+  | .tokenComparison comparison => comparison.bindingScopes.flatten.all
+      (model.repeatableScopeForGroupPath rowGroup).contains
   | .scalarTemporal _ => true
   | .valuesNotUnique source => source.admittedMultiplicity && source.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains

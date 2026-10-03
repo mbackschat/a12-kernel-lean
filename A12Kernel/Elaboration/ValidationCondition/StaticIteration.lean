@@ -320,6 +320,9 @@ def ordinaryIterationScope :
   | .leaf (.fieldFill _ source) =>
       mergeIterationScopeList (source.operands.flatMap fun operand =>
         operand.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
+  | .leaf (.tokenComparison comparison) =>
+      mergeIterationScopeList (comparison.bindingScopes.map fun scope =>
+        if scope.isEmpty then none else some scope)
   | .leaf (.valueList source) =>
       source.bindingScopes.foldlM
         (fun scope next => mergeIterationScopes scope (if next.isEmpty then none else some next)) none

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TokenFirstFilledValue
+import A12Kernel.Elaboration.TokenComparison
 
 /-! # Token `FirstFilledValue` conformance locks -/
 
@@ -417,5 +417,49 @@ example :
         some (.source (.group (.expansionNotToken ["Form", "RawMixed"]))) ∧
     diagnosticOf (fixedGroup ["Form", "RawMixed"]) = none := by
   native_decide
+
+private def comparedCheckedOf (op : EqualityOp) (left right : SurfaceTokenComparisonOperand)
+    (rowCount : Nat) (cells : List ClassifiedCellInput) : Option Verdict := do
+  let comparison ← (elaborateTokenComparison model ["Form"] op left right).toOption
+  let document ← (checkDocument checkedPrepared "en_US" {
+    instantiatedRows := (List.range rowCount).map fun index => checkedRow (index + 1)
+    cells }).toOption
+  (comparison.evaluateFull document []).toOption
+
+example :
+    comparedCheckedOf .equal (.firstFilled starThenEnumeration) (.literal "B") 4
+      [checkedDirectEnumerationCell "B", checkedRepeatedStringCell 4 (.parsed (.str "A")) "A"] =
+        some (.fired .omission) ∧
+    comparedCheckedOf .notEqual (.literal "B") (.firstFilled starThenEnumeration) 4
+      [checkedDirectEnumerationCell "B", checkedRepeatedStringCell 1 (.parsed (.str "A")) "A"] =
+        some (.fired .value) := by native_decide
+
+example :
+    comparedCheckedOf .equal (.firstFilled directThenStar) (.firstFilled enumerationStar) 1
+      [checkedDirectStringCell "A", checkedRepeatedEnumerationCell 1 "A",
+       checkedRepeatedStringCell 1 (.rejected .malformed) "bad"] = some (.fired .value) ∧
+    comparedCheckedOf .equal (.firstFilled directThenStar) (.literal "A") 1
+      [checkedRepeatedStringCell 1 (.rejected .malformed) "bad"] = some .unknown ∧
+    comparedCheckedOf .notEqual (.firstFilled directThenStar) (.literal "A") 0 [] =
+      some .notFired := by native_decide
+
+example :
+    comparedCheckedOf .notEqual (.firstFilled directMixed) (.literal "") 0
+      [checkedDirectStringCell "A"] = some .notFired ∧
+    comparedCheckedOf .equal (.literal "") (.firstFilled directThenStar) 1
+      [checkedRepeatedStringCell 1 (.rejected .malformed) "bad"] = some .unknown ∧
+    comparedCheckedOf .equal (.firstFilled filteredStarThenEnumeration) (.literal "A") 1
+      [checkedRepeatedStringCell 1 (.parsed (.str "A")) "A"] = some (.fired .omission) := by native_decide
+
+example :
+    (elaborateTokenComparison model ["Form"] .equal (.literal "A") (.literal "A")).isOk = false ∧
+    (do
+      let grouped := { model with fields := model.fields ++ [
+        { directString with id := 20, groupPath := ["Form", "Texts"], name := "One" },
+        { directString with id := 21, groupPath := ["Form", "Texts"], name := "Two" }] }
+      let source := fixedGroup ["Form", "Texts"]
+      pure ((elaborateFirstFilledTokenSource grouped ["Form"] source).isOk,
+        (elaborateTokenComparison grouped ["Form"] .equal
+          (.firstFilled source) (.literal "A")).isOk)) = some (true, false) := by native_decide
 
 end A12Kernel
