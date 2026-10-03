@@ -126,6 +126,7 @@ private def groupGuardRun (seed : Bool) (kind : GroupGuardKind := .number)
   let steps : List (MixedComputationStep model builtinStringPatternCompiler) := lowered.map fun (_, step) =>
     match step with
     | .number table _ => .number table | .string table => .string table
+    | .parallel step => .parallel step
     | .document step => .document step | .rows step => .rows (step builtinStringPatternCompiler)
   match certifyAuthoredMixedComputationPlan steps with
   | .error (.cycle _ _) => pure .cycle

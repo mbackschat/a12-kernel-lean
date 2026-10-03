@@ -141,26 +141,57 @@ def hasRefusedComputationTarget (language : Language) (model : FlatModel)
 /-- The resolved common precondition and every alternative's own guard, kept apart because the
 tables judge an alternative's guardedness by its own guard alone. -/
 private def guards (language : Language) (model : FlatModel) (computation : DmComputation)
-    (target : FlatFieldDecl) (suppress : Bool) :
+    (target : FlatFieldDecl) (suppress allowParallel : Bool) :
     Lowering (Option ComputationCondition × List (Option ComputationCondition)) := do
   let resolve (text : String) : Lowering ComputationCondition := do
     let guard := (← parsed language text).body
     if !guard.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
     let surface ← lowerGuard model computation.group suppress guard
-    elaborated "Guard" (model.elaborateComputationCondition computation.group target.groupPath surface)
+    match elaborated "Guard" (model.elaborateComputationCondition computation.group target.groupPath surface) with
+    | .ok guard => pure guard
+    | .error refusal =>
+        if allowParallel && target.toNumberField?.isSome && !target.repeatableScope.isEmpty then
+          match model.resolveParallelPresenceCondition computation.group surface with
+          | .ok guard => pure guard
+          | .error _ => .error refusal
+        else .error refusal
   let common ← computation.commonPrecondition.mapM resolve
   let own ← computation.alternatives.mapM (·.precondition.mapM resolve)
   pure (common, own)
 
+/-- Reuse the checked parallel carriers after ordinary scope binding refuses. Each operation must
+retain a joined Number operand; bound fields use the same target environment as the ordinary route. -/
+private def lowerParallelNumber (model : FlatModel) (group : GroupPath) (target : FieldId)
+    (guards : List (Option ComputationCondition))
+    (expressions : List (AuthoredNumericExpr SurfaceNumericComputationAtom))
+    (common : Option ComputationCondition) (suppress : Bool) :
+    Lowering (CheckedParallelNumericStep model) := do
+  let _ ← elaborated "ParallelNumber" (checkAddressedRepeatableTarget model group target)
+  if guards.length > 1 && guards.any Option.isNone then refuse "ParallelNumber" "unguarded alternative"
+  let operations ← (guards.zip expressions).mapM fun (guard, expression) => do
+    let expression ← expression.mapM fun
+      | .numeric (.field path) => pure (SurfaceNumericAtom.field path)
+      | _ => refuse "ParallelNumber" "operand"
+    let fields := expression.atoms.filterMap fun | .field path => some path | _ => none
+    let some operand := fields.find? fun path =>
+        (checkParallelNumericComputationClearingPlan model group target path).isOk
+      | refuse "ParallelNumber" "no joined operand"
+    elaborated "ParallelNumber" (checkIsolatedParallelNumericExpressionRunWithGuard model group
+      target operand expression (ComputationCondition.withCommon common guard) suppress)
+  match operations with
+  | [operation] => pure (.single operation)
+  | _ => (.alternatives ·) <$> elaborated "ParallelNumber" (certifyParallelNumericAlternativeTable operations)
+
 inductive LoweredComputation (model : FlatModel)
   | number (table : CheckedNumericComputationTable model) (row : Bool)
+  | parallel (step : CheckedParallelNumericStep model)
   | string (table : CheckedStringComputationTable model)
   | document (step : CheckedDocumentComputationStep model)
   /-- A computation into a repeatable target of a kind other than Number, run at every row. -/
   | rows (step : RowStep model)
 
-/-- Lower one computation onto its target kind's checked table. -/
-def lowerComputation (model : FlatModel) (language : Language) (computation : DmComputation) :
+private def lowerComputationWith (allowParallelGuards : Bool)
+    (model : FlatModel) (language : Language) (computation : DmComputation) :
     Lowering (FlatFieldDecl × LoweredComputation model) := do
   let target ← targetOf language model computation
   -- Decode once for guard scale admission, but retain the reader's guard/operation/refusal order.
@@ -169,7 +200,7 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
       (·.suppressed) <$> parsed language
         s!"@SuppressWarning({",".intercalate computation.errorCodesToSuppress}) 0"
   let guardSuppress := (suppression.toOption.getD []).contains "MVK_INVALID_COMPARE_DEC_PLACES"
-  let (common, guards) ← guards language model computation target guardSuppress
+  let (common, guards) ← guards language model computation target guardSuppress allowParallelGuards
   let operations ← computation.alternatives.mapM fun alternative => do
     let body := (← parsed language alternative.operation).body
     if !body.parensLegal false then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
@@ -203,10 +234,14 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
   | .number _ => do
       let expressions ← operations.mapM
         (lowerNumericExpr (lowerComputationNumericAtom model computation.group))
-      let table ← elaborated "NumberComputation"
-        (elaborateCompleteNumericTargetComputationTable model computation.group target.id
-          (guards.zip expressions) suppress (if row then .row else .fixed) common)
-      pure (target, .number table row)
+      match elaborated "NumberComputation"
+          (elaborateCompleteNumericTargetComputationTable model computation.group target.id
+            (guards.zip expressions) suppress (if row then .row else .fixed) common) with
+      | .ok table => pure (target, .number table row)
+      | .error refusal =>
+          match lowerParallelNumber model computation.group target.id guards expressions common suppress with
+          | .ok step => pure (target, .parallel step)
+          | .error _ => .error refusal
   | .string => do
       if row then
         let (none, [none], [operation]) := (common, guards, operations)
@@ -233,6 +268,18 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
         | .enumeration => "Enumeration" | .dateRange => "DateRange"
         | .temporal .date => "Date" | .temporal .time => "Time" | .temporal .dateTime => "DateTime"
       refuse s!"{name}Computation" (operations.head?.map (·.construct) |>.getD "")
+
+/-- Lower one computation onto its checked carrier. A parallel guard contributes admission only
+when the complete computation checks; failed fallback preserves the original guard refusal. -/
+def lowerComputation (model : FlatModel) (language : Language) (computation : DmComputation) :
+    Lowering (FlatFieldDecl × LoweredComputation model) :=
+  match lowerComputationWith false model language computation with
+  | .ok checked => .ok checked
+  | .error refusal =>
+      if refusal.construct != "Guard" then .error refusal
+      else match lowerComputationWith true model language computation with
+        | .ok checked => .ok checked
+        | .error _ => .error refusal
 
 private def numberOutcome (model : FlatModel) (entry : SourcedNumericTargetOutcome CellAddr) :
     Option ComputedOutcome :=
@@ -268,6 +315,7 @@ def runComputations (world : World) (prepared : PreparedFlatStringContext model 
     Lowering (List ComputedOutcome) := do
   let steps : List (MixedComputationStep model compilePattern) := lowered.map fun
     | .number table _ => .number table
+    | .parallel step => .parallel step
     | .string table => .string table
     | .document step => .document step
     | .rows step => .rows (step compilePattern)

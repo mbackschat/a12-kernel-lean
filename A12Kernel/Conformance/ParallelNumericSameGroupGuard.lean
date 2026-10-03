@@ -2,7 +2,7 @@ import A12Kernel.Conformance.ParallelComputationClearingPlan
 
 /-! # Parallel Number same-group guard locks
 
-These cases keep direct computation presence kind-neutral while requiring every bare guard ID to inhabit the already-selected operand-group environment.
+These cases keep direct computation presence kind-neutral, preserve target exclusion, and read joined guards from the matched operand-group environment.
 -/
 
 namespace A12Kernel.Conformance.ParallelNumericSameGroupGuard
@@ -33,10 +33,10 @@ private def shortCircuitHead? (cells : List ClassifiedCellInput) :
   let outcomes ← (checked.execute preliminary).toOption
   outcomes.head?.map (·.outcome)
 
-/- A checked parallel guard cannot read another repeatable field without a second addressed-read plan, even when that field shares the operand group. -/
+/- The target remains forbidden even though other fields bound by its row are admitted (spec/09 §1). -/
 example :
     (match checkIsolatedParallelNumericDirectRunWithGuard
-        model ["Plan"] 2 operandPath (some (.fieldFilled 5)) with
+        model ["Plan"] 2 operandPath (some (.fieldFilled 2)) with
     | .error error => some error
     | .ok _ => none) =
       some .guardNotLimitedToOperand := by

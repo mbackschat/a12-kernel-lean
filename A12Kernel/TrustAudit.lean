@@ -2348,6 +2348,7 @@ run_cmd do
 #print axioms A12Kernel.parallelNumericClearing_applyTo_extensional
 #print axioms A12Kernel.checkedIsolatedParallelNumericDirectRun_wellFormed
 #print axioms A12Kernel.checkedIsolatedParallelNumericDirectRun_excludes_target
+#print axioms A12Kernel.parallelNumericStep_operations_exclude_target
 #print axioms A12Kernel.parallelNumericExecutableTargets_own_primary_target
 #print axioms A12Kernel.parallelNumericExecutableTargets_addresses_nodup
 #print axioms A12Kernel.checkedParallelNumericAlternativeTable_wellFormed

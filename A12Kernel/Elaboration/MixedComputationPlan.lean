@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.ScalarComputationRun
 import A12Kernel.Elaboration.RepeatableNumberPlan
 import A12Kernel.Elaboration.RowComputationStep
+import A12Kernel.Elaboration.ParallelNumericStep
 
 /-! # One computation plan over every target kind, fixed and repeatable
 
@@ -18,7 +19,8 @@ plan target as clean empty, and the immutable document otherwise, so a stale sto
 target is never read ([`kf459`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf459)). A Number table
 runs through the repeatable Number plan's own fixed and row executors with that overlay as its read;
 a String table reads completed fixed targets through their String-family cell, as in the scalar
-plan; a whole-document step and a row step read the overlaid document.
+plan; a whole-document step, row step and parallel Number step read the overlaid document.
+Parallel Number steps retain their checked key joins and include index-invalid rows as clean clears.
 
 A **row step** ([`RowComputationStep`](RowComputationStep.lean)) is a checked computation into a
 repeatable target of a kind other than Number, run once per instantiated target row by its own carrier.
@@ -30,6 +32,7 @@ namespace A12Kernel
 of its target's scope, by its own reading scope. -/
 inductive MixedComputationStep (model : FlatModel) (compilePattern : StringPatternCompiler) where
   | number (table : CheckedNumericComputationTable model)
+  | parallel (step : CheckedParallelNumericStep model)
   | string (table : CheckedStringComputationTable model)
   | document (step : CheckedDocumentComputationStep model)
   | rows (step : CheckedRowComputationStep model compilePattern)
@@ -38,18 +41,21 @@ namespace MixedComputationStep
 
 def targetField : MixedComputationStep model compilePattern → FieldId
   | .number table => table.targetField
+  | .parallel step => step.targetField
   | .string table => table.targetField
   | .document step => step.target
   | .rows step => step.target
 
 def referencesField : MixedComputationStep model compilePattern → FieldId → Bool
   | .number table => table.referencesField
+  | .parallel step => step.referencesField
   | .string table => table.referencesField
   | .document step => step.referencesField
   | .rows step => step.referencesField
 
 def protectionConditions : MixedComputationStep model compilePattern → List (Option ComputationCondition)
   | .number table => table.protectionConditions
+  | .parallel step => step.protectionConditions
   | .string table => table.protectionConditions
   | .document step => step.protectionConditions
   | .rows step => step.protectionConditions
@@ -57,6 +63,7 @@ def protectionConditions : MixedComputationStep model compilePattern → List (O
 def requiresProducer (producerProtected : FieldId → ResolvedGroupReference → Bool) :
     MixedComputationStep model compilePattern → FieldId → Bool
   | .number table => table.requiresProducer producerProtected
+  | .parallel step => step.requiresProducer producerProtected
   | .string table => table.requiresProducer producerProtected
   | .document step => step.requiresProducer producerProtected
   | .rows step => step.requiresProducer producerProtected
@@ -88,6 +95,7 @@ inductive MixedComputationPlanError where
 
 inductive MixedComputationPlanFault where
   | number (cause : RepeatableNumberPlanFault)
+  | parallel (target : FieldId) (cause : ParallelNumericStepFault)
   | string (cause : StringComputationRunFault)
   | document (target : FieldId) (cause : DocumentComputationStepFault)
   | rows (target : FieldId) (cause : RowComputationStepFault)
@@ -195,6 +203,13 @@ def executeStep (plan : CheckedMixedComputationPlan model compilePattern) (world
         let outcomes ← (CheckedRepeatableNumberPlan.executeRows table world input read).mapError .number
         pure { state with rows := state.rows ++ outcomes.map numberPlacement
                           outcomes := state.outcomes ++ outcomes.map .number }
+  | .parallel step => do
+      let results ← (step.execute (plan.documentFor state input)).mapError (.parallel step.targetField)
+      let outcomes := results.map fun result =>
+        ({ targetField := result.address, outcome := result.outcome
+           source := input.numericTargetPlacementStateAt result.address } : SourcedNumericTargetOutcome CellAddr)
+      pure { state with rows := state.rows ++ outcomes.map numberPlacement
+                        outcomes := state.outcomes ++ outcomes.map .number }
   | .string table => do
       let completion ← (table.evaluateCompletion patterns (plan.stringContext state input)).mapError .string
       pure { state with fixed := state.fixed ++ [.string completion]

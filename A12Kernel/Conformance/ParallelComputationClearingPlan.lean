@@ -429,7 +429,8 @@ example :
       ] := by
   native_decide
 
-/- A computed target-group field is not an operand route; admitting it would bypass the checked target self-reference boundary. -/
+/- An expression with no joined operand cannot retain an irrelevant parallel route; ordinary
+bound expressions have their existing numeric-computation carrier. -/
 example :
     let peerPath : SurfaceFieldPath := {
       base := .absolute

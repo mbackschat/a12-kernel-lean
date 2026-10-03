@@ -217,6 +217,7 @@ import A12Kernel.Proofs.ParallelComputationClearingPlan
 import A12Kernel.Proofs.ParallelNumericAlternativeTable
 import A12Kernel.Proofs.ParallelNumericDirectRun
 import A12Kernel.Proofs.ParallelNumericDirectRunResult
+import A12Kernel.Proofs.ParallelNumericStep
 import A12Kernel.Proofs.ParallelNumericRun
 import A12Kernel.Proofs.ParallelNumericRunRelation
 import A12Kernel.Proofs.ParallelPresenceRule

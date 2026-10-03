@@ -272,6 +272,7 @@ import A12Kernel.Conformance.ParallelNumericAlternativeTable
 import A12Kernel.Conformance.PartialDatePresence
 import A12Kernel.Conformance.ParallelNumericCrossGroupGuard
 import A12Kernel.Conformance.ParallelNumericJoinedOperands
+import A12Kernel.Conformance.ParallelNumericLocalOperands
 import A12Kernel.Conformance.ParallelNumericRun
 import A12Kernel.Conformance.ParallelNumericSameGroupGuard
 import A12Kernel.Conformance.ParallelNumericScaleSuppression
