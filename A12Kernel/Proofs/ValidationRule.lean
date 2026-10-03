@@ -232,7 +232,7 @@ theorem assembleResolvedValidationRule_rejects_negativeIteration
   simp only [invalid]
   split
   · rename_i error _
-    cases hWalk : error.unboundLevel? model condition.rowGroup with
+    cases hWalk : error.unboundLevel? model condition.declaringGroup with
     | some refusal => exact ⟨_, rfl, Or.inr ⟨refusal.1, refusal.2, rfl⟩⟩
     | none => exact ⟨_, rfl, Or.inl rfl⟩
   · split

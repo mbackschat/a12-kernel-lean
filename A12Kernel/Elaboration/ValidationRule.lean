@@ -723,7 +723,7 @@ def assembleResolvedValidationRule (model : FlatModel)
   -- ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)).
   match assembled with
   | .error error =>
-      match error.unboundLevel? model condition.rowGroup with
+      match error.unboundLevel? model condition.declaringGroup with
       | some (field, unbound) => .error (.unboundOperandLevel field unbound)
       | none =>
           match condition.core.iterationLegality with
@@ -733,10 +733,10 @@ def assembleResolvedValidationRule (model : FlatModel)
       let errorGroup := rule.errorDeclaration.groupPath
       -- With the error field outside the rule group nothing binds a level, the rule group's own
       -- included, so an iterating rule whose error scope matches is refused all the same.
-      match rule.iterationScope, WrittenFieldPlacement.of condition.rowGroup errorGroup with
+      match rule.iterationScope, WrittenFieldPlacement.of condition.declaringGroup errorGroup with
       | some (level :: _), .outside =>
           .error (.unboundOperandLevel errorField
-            (model.unboundOperandLevel condition.rowGroup errorGroup level))
+            (model.unboundOperandLevel condition.declaringGroup errorGroup level))
       | _, _ =>
           match condition.core.iterationLegality with
           | .ok (.invalid level) => .error (.negativeConditionInIteration level)

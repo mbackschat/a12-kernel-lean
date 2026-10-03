@@ -360,6 +360,10 @@ def ordinaryIterationScope :
       orderedNumericComparisonIterationScope comparison
   | .leaf (.groupList _ operands) =>
       ResolvedGroupListOperands.iterationScope operands
+  | .leaf (.fieldFill _ source) =>
+      source.operands.foldlM
+        (fun scope operand => mergeIterationScopes scope
+          (if operand.bindingScope.isEmpty then none else some operand.bindingScope)) none
   | .leaf (.valueList source) =>
       source.bindingScopes.foldlM
         (fun scope next => mergeIterationScopes scope (if next.isEmpty then none else some next)) none

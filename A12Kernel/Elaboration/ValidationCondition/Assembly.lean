@@ -17,6 +17,7 @@ inductive ValidationConditionAssemblyError where
   | rootGroupRequiresSoleOperand (path : GroupPath)
   | overlappingGroupListOperands (left right : List String)
   | rowGroupMismatch (left right : GroupPath)
+  | declaringGroupMismatch (left right : GroupPath)
   | repetitionNotUnique (error : RepetitionNotUniqueElabError)
   | iteratedDateRange (error : IteratedDateRangeConditionElabError)
   | multipleRepetitionNotUnique
@@ -25,9 +26,11 @@ inductive ValidationConditionAssemblyError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-/-- A mixed resolved tree certified against one validated model and one exact rule-instance group. -/
+/-- A mixed resolved tree with separate lexical origin and certified row binding. The error field
+may bind a descendant scope without relocating the declaration (spec/07 §1 and spec/08 §2). -/
 structure CheckedValidationCondition (model : FlatModel) where
   rowGroup : GroupPath
+  declaringGroup : GroupPath := rowGroup
   core : ValidationCondition model
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.wellFormedBool rowGroup = true
@@ -63,6 +66,7 @@ def groupListDiagnostic? :
   -- Named rather than wildcarded, so a new refusal must be classified rather than absorbed. None of
   -- these is measured as its own class through this projection.
   | .invalidModel _ | .repeatableFieldRequired _ | .emptyGroupList | .rowGroupMismatch _ _
+  | .declaringGroupMismatch _ _
   | .repetitionNotUnique _ | .iteratedDateRange _ | .multipleRepetitionNotUnique
   | .constructedDate _ | .stringPattern _ | .incoherentCore => none
 
@@ -76,12 +80,19 @@ def hasHaving (condition : CheckedValidationCondition model) : Bool :=
 
 /-- Certify a resolved mixed core once after a semantic desugaring has assembled its complete tree. -/
 def checkCore (model : FlatModel) (rowGroup : GroupPath)
-    (core : ValidationCondition model) (modelWellFormed : model.validate.isOk = true) :
+    (core : ValidationCondition model) (modelWellFormed : model.validate.isOk = true)
+    (declaringGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   if hCore : core.wellFormedBool rowGroup = true then
-    .ok { rowGroup, core, modelWellFormed, wellFormed := hCore }
+    .ok { rowGroup, declaringGroup, core, modelWellFormed, wellFormed := hCore }
   else
     .error .incoherentCore
+
+/-- Recheck an existing core at an error-field binding while preserving lexical origin. A leaf
+whose certificate depends on its original group is refused rather than silently reinterpreted. -/
+def atBinding (condition : CheckedValidationCondition model) (rowGroup : GroupPath) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  checkCore model rowGroup condition.core condition.modelWellFormed condition.declaringGroup
 
 /-- Lift a checked flat tree without nesting or changing its connective shape. -/
 def fromFlat (condition : CheckedFlatCondition model) :
@@ -153,12 +164,13 @@ def fromNumeric (comparison : CheckedNumericComparison model) :
 
 /-- Lift one checked ordered-numeric comparison without reconstructing or flattening its authored expression tree. -/
 def fromOrderedNumeric
-    (comparison : CheckedOrderedNumericComparison model) :
+    (comparison : CheckedOrderedNumericComparison model)
+    (declaringGroup : GroupPath := comparison.rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   checkCore model comparison.rowGroup
     (ValidationCondition.orderedNumericIn
       comparison.operandScope comparison.core)
-    comparison.modelWellFormed
+    comparison.modelWellFormed declaringGroup
 
   /-- Resolve and certify one group-presence predicate against the same model and declaring group used by the surrounding rule. Repeatable ancestry is retained for the addressed whole-rule route rather than rejected as a fixed-list operand. -/
 def fromGroupPresence (model : FlatModel) (rowGroup : GroupPath)
@@ -521,11 +533,13 @@ private def combine (constructor : ValidationCondition model →
   if !left.core.repetitionNotUniqueSources.isEmpty &&
       !right.core.repetitionNotUniqueSources.isEmpty then
     .error .multipleRepetitionNotUnique
-  else if left.rowGroup == right.rowGroup then
-    checkCore model left.rowGroup (constructor left.core right.core)
-      left.modelWellFormed
-  else
+  else if left.rowGroup != right.rowGroup then
     .error (.rowGroupMismatch left.rowGroup right.rowGroup)
+  else if left.declaringGroup != right.declaringGroup then
+    .error (.declaringGroupMismatch left.declaringGroup right.declaringGroup)
+  else
+    checkCore model left.rowGroup (constructor left.core right.core)
+      left.modelWellFormed left.declaringGroup
 
 def and (left right : CheckedValidationCondition model) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=

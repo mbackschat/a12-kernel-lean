@@ -255,23 +255,23 @@ private def resolveAddressedNumericDeclaration (model : FlatModel)
 /-- The group gate a field read and an operator's field parameter ask first here: a bracket read's value gates follow it,
     while an operator parameter meets its operator's own gates instead
     ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
-private def addressedEntityResolution (model : FlatModel) (rowGroup : GroupPath)
+private def addressedEntityResolution (model : FlatModel) (declaringGroup rowGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except ResolveError FlatFieldDecl :=
-  displaceGroupRead (model.resolveFieldDeclarationUnchecked rowGroup reference)
-    (model.ruleGroupRead rowGroup rowGroup reference)
+  displaceGroupRead (model.resolveFieldDeclarationUnchecked declaringGroup reference)
+    (model.ruleGroupRead declaringGroup rowGroup reference)
 
-private def resolveAddressedNumericAtom (model : FlatModel)
-    (rowGroup : GroupPath) :
+private def resolveAddressedNumericAtomIn (model : FlatModel)
+    (declaringGroup rowGroup : GroupPath) :
     SurfaceNumericAtom → Except NumericValidationElabError NumericValidationAtom
   | .currentRepetition reference =>
-      model.resolveNumericCurrentRepetition rowGroup
+      model.resolveNumericCurrentRepetition declaringGroup
         (model.repeatableScopeForGroupPath rowGroup) reference
         |>.mapError .currentRepetitionSource
   | .field reference => do
       -- The bracket's group gate answers ahead of this fragment's scope boundary and its value
       -- gates after it, as the walk and then the value gates do on a same-group read.
       let declaration ← resolveAddressedNumericDeclaration model rowGroup reference
-        (addressedEntityResolution model rowGroup reference)
+        (addressedEntityResolution model declaringGroup rowGroup reference)
       if let some refusal := declaration.fieldValueReadRefusal? then
         throw (.resolve refusal)
       match declaration.toNumberField? with
@@ -280,12 +280,13 @@ private def resolveAddressedNumericAtom (model : FlatModel)
   | .temporalFieldPart reference part => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference
+          (model.resolveFieldDeclarationUnchecked declaringGroup reference)
       let field ← checkTemporalNumericPartField model declaration part
       pure (.temporalFieldPart field part)
   | .dateRangeBoundPart reference bound part => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference
-          (addressedEntityResolution model rowGroup reference)
+          (addressedEntityResolution model declaringGroup rowGroup reference)
       let source : FlatDateRangeField := { id := declaration.id }
       if model.exposesDateRangeBoundPart source part then
         pure (.dateRangeBoundPart source bound part)
@@ -294,14 +295,14 @@ private def resolveAddressedNumericAtom (model : FlatModel)
   | .stringLength reference => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference
-          (addressedEntityResolution model rowGroup reference)
+          (addressedEntityResolution model declaringGroup rowGroup reference)
       match declaration.toStringValueField? with
       | some field => pure (.stringLength field)
       | none => throw (.lengthOperandNotEvaluatedString declaration.path)
   | .stringRange reference start finish => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup reference
-          (addressedEntityResolution model rowGroup reference)
+          (addressedEntityResolution model declaringGroup rowGroup reference)
       if !validStringRange start finish then
         throw (.invalidStringRange start finish)
       match declaration.toStringValueField? with
@@ -310,13 +311,14 @@ private def resolveAddressedNumericAtom (model : FlatModel)
   | .fieldValueAsNumber surface => do
       let declaration ←
         resolveAddressedNumericDeclaration model rowGroup surface.reference
-          (addressedEntityResolution model rowGroup surface.reference)
+          (addressedEntityResolution model declaringGroup rowGroup surface.reference)
       resolveFieldValueAsNumberAtom declaration surface.projectionRef
   | .dateDifference unit left right => do
       let resolveOperand := resolveDateDifferenceOperandWith model
         (fun reference => do
           let declaration ←
             resolveAddressedNumericDeclaration model rowGroup reference
+              (model.resolveFieldDeclarationUnchecked declaringGroup reference)
           match declaration.toTemporalField? with
           | some field =>
               if unit.admittedBy model.hasBaseYear field.components then
@@ -340,6 +342,7 @@ private def resolveAddressedNumericAtom (model : FlatModel)
         | .field reference => do
             let declaration ←
               resolveAddressedNumericDeclaration model rowGroup reference
+                (model.resolveFieldDeclarationUnchecked declaringGroup reference)
             match declaration.toTemporalField? with
             | some field =>
                 if unit.admittedBy field.components then
@@ -365,6 +368,7 @@ private def resolveAddressedNumericAtom (model : FlatModel)
         (fun reference => do
           let declaration ←
             resolveAddressedNumericDeclaration model rowGroup reference
+              (model.resolveFieldDeclarationUnchecked declaringGroup reference)
           match declaration.toTemporalField? with
           | some field =>
               if CalendarDayDifference.admittedBy field.components then
@@ -379,7 +383,10 @@ private def resolveAddressedNumericAtom (model : FlatModel)
         pure (.dayDifference profile resolvedLeft resolvedRight)
       else
         throw .incompatibleDateDifference
-  | source => resolveNumericAtom model rowGroup rowGroup source
+  | source => resolveNumericAtom model declaringGroup rowGroup source
+
+private def resolveAddressedNumericAtom (model : FlatModel) (rowGroup : GroupPath) :=
+  resolveAddressedNumericAtomIn model rowGroup rowGroup
 
 /-- Resolve one ordinary same-group numeric atom through the established validation source boundary. -/
 def resolveNumericValidationAtom
@@ -513,11 +520,11 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
 subgroup or root use the same declaration certificates and evaluator as repeatable addressed reads. -/
 def elaborateBoundNumericComparison
     (model : FlatModel) (rowGroup : GroupPath)
-    (surface : SurfaceNumericComparison) :
+    (surface : SurfaceNumericComparison) (declaringGroup : GroupPath := rowGroup) :
     Except NumericValidationElabError
       (CheckedOrderedNumericComparison model) := do
   let checked ← elaborateNumericComparisonWith model rowGroup
-    .sameGroupAddressed (resolveAddressedNumericAtom model rowGroup) surface
+    .sameGroupAddressed (resolveAddressedNumericAtomIn model declaringGroup rowGroup) surface
   let core : OrderedNumericComparison model := {
     op := checked.core.op
     left := checked.core.left.map .ordinary

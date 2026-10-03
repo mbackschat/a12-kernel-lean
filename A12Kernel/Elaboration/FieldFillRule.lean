@@ -24,13 +24,13 @@ namespace CheckedValidationCondition
 
 /-- A field-fill quantifier over an entity list, at the rule group. -/
 def fromFieldFill (model : FlatModel) (rowGroup : GroupPath) (operator : FieldFillQuantifier)
-    (authored : SurfaceFieldEntitySource) :
+    (authored : SurfaceFieldEntitySource) (bindingGroup : GroupPath := rowGroup) :
     Except FieldFillRuleElabError (CheckedValidationCondition model) :=
   match hModel : model.validate with
   | .error error => .error (.invalidModel error)
   | .ok () => do
-      let source ← (elaborateFieldFillList model rowGroup authored).mapError .source
-      (checkCore model rowGroup (.leaf (.fieldFill operator source)) (by rw [hModel]; rfl))
+      let source ← (elaborateFieldFillList model rowGroup authored bindingGroup).mapError .source
+      (checkCore model bindingGroup (.leaf (.fieldFill operator source)) (by rw [hModel]; rfl) rowGroup)
         |>.mapError fun _ => .incoherent
 
 end CheckedValidationCondition

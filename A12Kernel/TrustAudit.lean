@@ -1215,6 +1215,7 @@ run_cmd do
 #print axioms A12Kernel.validationCondition_evalFull_of_multipleRoots
 #print axioms A12Kernel.validationCondition_evalAddressedFull_of_multipleRoots
 #print axioms A12Kernel.checkedValidationCondition_coherent
+#print axioms A12Kernel.checkedValidationCondition_atBinding_preserves
 #print axioms A12Kernel.rootCurrentRepetitionComparison_results
 #print axioms A12Kernel.fixedCurrentRepetition_scalar_readers
 #print axioms A12Kernel.fixedCurrentRepetition_generated_identity

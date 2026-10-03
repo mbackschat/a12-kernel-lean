@@ -127,7 +127,7 @@ private def lowerDateComponents (model : FlatModel) (rowGroup : GroupPath)
 
 /-- The carriers tried for one leaf, in order; the first to admit it answers. -/
 private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : World)
-    (suppress : Bool) (leaf : Expr) :
+    (suppress : Bool) (leaf : Expr) (bindingGroup : GroupPath) :
     List (Lowering (CheckedValidationCondition model)) :=
   let flat := match lowerFlat model rowGroup leaf with
     | some surface => [do
@@ -224,7 +224,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
     | .call id arguments none none => match fieldFillOp? id with
         | some operator => [do
             let source ← lowerEntitySource model rowGroup arguments
-            elaborated id (CheckedValidationCondition.fromFieldFill model rowGroup operator source)]
+            elaborated id (CheckedValidationCondition.fromFieldFill model rowGroup operator source bindingGroup)]
         | none => []
     | _ => []
   let groupCount := match leaf with
@@ -272,16 +272,18 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
                 let scalar := do
                   let checked ← elaborated "NumericComparison"
                     (elaborateNumericComparison model rowGroup surface)
-                  elaborated "NumericComparison" (CheckedValidationCondition.fromNumeric checked)
+                  let mixed ← elaborated "NumericComparison"
+                    (CheckedValidationCondition.fromNumeric checked)
+                  elaborated "NumericComparison" (mixed.atBinding bindingGroup)
                 match scalar with
                 | .ok checked => pure checked
                 | .error refusal =>
                     -- A bound-scope extension contributes successful cases only; rejected shapes
                     -- retain the scalar carrier's diagnostic (CrossRootValidationLocks).
-                    match elaborateBoundNumericComparison model rowGroup surface with
+                    match elaborateBoundNumericComparison model bindingGroup surface rowGroup with
                     | .ok checked =>
                         elaborated "NumericComparison"
-                          (CheckedValidationCondition.fromOrderedNumeric checked)
+                          (CheckedValidationCondition.fromOrderedNumeric checked rowGroup)
                     | .error _ => .error refusal]
         | .error refusal => [.error refusal])
       -- A comparison reading no entity list is not offered to the entity carrier, so the ordinary
@@ -342,29 +344,31 @@ private partial def scaleRefusal? (model : FlatModel) (rowGroup : GroupPath) (su
 
 /-- Lower a rule condition at its rule group. `suppress` is the `@SuppressWarning` preamble. -/
 partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress : Bool) (condition : Expr)
-    (world : World := { now := { epochMillis := 0 } }) :
+    (world : World := { now := { epochMillis := 0 } })
+    (bindingGroup : GroupPath := rowGroup) :
     Lowering (CheckedValidationCondition model) :=
   match scaleRefusal? model rowGroup suppress condition with
   | some refusal => .error refusal
   | none =>
   let whole := (lowerFlat model rowGroup condition).bind fun surface =>
     (elaborate model rowGroup surface).toOption.bind fun checked =>
-      (CheckedValidationCondition.fromFlat checked).toOption
+      ((CheckedValidationCondition.fromFlat checked).bind (·.atBinding bindingGroup)).toOption
   match whole, condition with
   | some checked, _ => pure checked
-  | none, .parens body => lowerCondition model rowGroup suppress body world
+  | none, .parens body => lowerCondition model rowGroup suppress body world bindingGroup
   | none, .logic op (first :: rest) => do
       let join := match op with
         | .and => CheckedValidationCondition.and
         | .or => CheckedValidationCondition.or
-      let mut result ← lowerCondition model rowGroup suppress first world
+      let mut result ← lowerCondition model rowGroup suppress first world bindingGroup
       for part in rest do
-        result ← elaborated "Connective" (join result (← lowerCondition model rowGroup suppress part world))
+        result ← elaborated "Connective" (join result (← lowerCondition model rowGroup suppress part world bindingGroup))
       pure result
   | none, leaf =>
       let construct := match leaf with
         | .compare _ _ _ => (leaf.leadingCall?.map ("Comparison/" ++ ·)).getD leaf.construct
         | _ => leaf.construct
-      firstAdmitted construct (leafCarriers model rowGroup world suppress leaf)
+      firstAdmitted construct ((leafCarriers model rowGroup world suppress leaf bindingGroup).map fun attempt =>
+        attempt.bind fun checked => elaborated construct (checked.atBinding bindingGroup))
 
 end A12Kernel.Dm

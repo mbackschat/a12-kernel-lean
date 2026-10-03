@@ -488,6 +488,19 @@ theorem checkedValidationCondition_coherent
       condition.core.wellFormedBool condition.rowGroup = true :=
   ⟨condition.modelWellFormed, condition.wellFormed⟩
 
+/-- Rebinding supplies an execution scope without changing the resolved expression or its lexical
+origin, so consumers can transport the same evaluation and reference queries through this boundary. -/
+theorem checkedValidationCondition_atBinding_preserves
+    (condition rebound : CheckedValidationCondition model) (group : GroupPath)
+    (admitted : condition.atBinding group = .ok rebound) :
+    rebound.core = condition.core ∧ rebound.declaringGroup = condition.declaringGroup ∧
+      rebound.rowGroup = group := by
+  unfold CheckedValidationCondition.atBinding CheckedValidationCondition.checkCore at admitted
+  split at admitted
+  · cases admitted
+    exact ⟨rfl, rfl, rfl⟩
+  · cases admitted
+
 /-- A static cross-root dependency removes the full-validation content prerequisite, independently
 of the runtime context and without changing the connective evaluator. -/
 theorem validationCondition_evalFull_of_multipleRoots

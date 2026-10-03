@@ -55,7 +55,7 @@ def errorFieldOf (language : Language) (model : FlatModel) (rule : DmRule) : Low
 
 /-- Parse, lower and assemble one rule, retaining named-type validity resolution from the supplied
 world. Replay supplies the same registry used to prepare and evaluate the document. -/
-def checkRule (model : DmModel) (language : Language) (rule : DmRule)
+private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language : Language) (rule : DmRule)
     (world : World := { now := { epochMillis := 0 } }) :
     Lowering (CheckedResolvedValidationRule model.flat) := do
   let text ← match parseText language rule.condition with
@@ -66,12 +66,29 @@ def checkRule (model : DmModel) (language : Language) (rule : DmRule)
   if let some other := text.suppressed.find? (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
     refuse "SuppressWarning" other
   let suppress := text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"
-  let condition ← lowerCondition model.flat rule.group suppress text.body world
+  let bindingGroup ← if useErrorBinding then do
+      let errorField ← errorFieldOf language model.flat rule
+      let declaration ← elaborated "ErrorEntity" (model.flat.lookupUniqueId errorField)
+      pure declaration.groupPath
+    else pure rule.group
+  let condition ← lowerCondition model.flat rule.group suppress text.body world bindingGroup
   let errorField ← errorFieldOf language model.flat rule
   let some severity := severity? rule.severity | refuse "Severity" rule.severity
   elaborated "RuleAssembly"
     (assembleResolvedValidationRule model.flat condition errorField rule.errorCode severity
       { parts := [] })
+
+/-- Preserve existing successful rules and refusals while admitting a complete rule whose error
+field supplies the binding scope. Lexical paths still resolve at the original declaring group. -/
+def checkRule (model : DmModel) (language : Language) (rule : DmRule)
+    (world : World := { now := { epochMillis := 0 } }) :
+    Lowering (CheckedResolvedValidationRule model.flat) :=
+  match checkRuleWith false model language rule world with
+  | .ok checked => .ok checked
+  | .error refusal =>
+      match checkRuleWith true model language rule world with
+      | .ok checked => .ok checked
+      | .error _ => .error refusal
 
 /-- The Kernel's text for a message pointer: the field's group path with each repeatable group's
 index after it, written only when it is not `1`. -/
