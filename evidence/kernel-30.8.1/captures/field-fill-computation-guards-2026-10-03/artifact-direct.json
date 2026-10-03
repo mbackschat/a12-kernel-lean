@@ -1,0 +1,4832 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "direct_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FlagComp1",
+              "field": "Form/Flag1",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag1",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp5",
+              "field": "Form/Flag5",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag5",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FlagComp1",
+              "field": "Form/Flag1",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag1",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp5",
+              "field": "Form/Flag5",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag5",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "all-filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FlagComp0",
+              "field": "Form/Flag0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp3",
+              "field": "Form/Flag3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp5",
+              "field": "Form/Flag5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FlagComp0",
+              "field": "Form/Flag0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp3",
+              "field": "Form/Flag3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp5",
+              "field": "Form/Flag5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "one-filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "filled-first",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "two-filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp3",
+              "field": "Form/Flag3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp5",
+              "field": "Form/Flag5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp3",
+              "field": "Form/Flag3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp5",
+              "field": "Form/Flag5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid-first",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Inputs/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Inputs/A"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Inputs/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Inputs/A"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Inputs/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Inputs/A"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Inputs/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Inputs/A"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "restart-before-invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Inputs/C",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Inputs/C",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Inputs/C"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Inputs/C",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Inputs/C",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Inputs/C"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "reached-invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Inputs/B",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Inputs/B"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Inputs/B",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Inputs/B"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Inputs/B",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Inputs/B"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Inputs/B",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Inputs/B"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "two-before-invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp3",
+              "field": "Form/Flag3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp5",
+              "field": "Form/Flag5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Inputs/C",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Inputs/C",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Inputs/C"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp3",
+              "field": "Form/Flag3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp5",
+              "field": "Form/Flag5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Inputs/C",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Inputs/C",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Inputs/C"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-before-invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Inputs/B",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Inputs/B"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Inputs/B",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Inputs/B"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FlagComp2",
+              "field": "Form/Flag2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FlagComp4",
+              "field": "Form/Flag4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag4",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "FlagComp6",
+              "field": "Form/Flag6",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ],
+              "fillToFix": [
+                "Form/Flag6",
+                "Form/Inputs/A",
+                "Form/Inputs/B",
+                "Form/Inputs/C"
+              ]
+            },
+            {
+              "code": "ProbeComp0",
+              "field": "Form/Probe0",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag0",
+                "Form/Probe0"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp1",
+              "field": "Form/Probe1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag1",
+                "Form/Probe1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp2",
+              "field": "Form/Probe2",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag2",
+                "Form/Probe2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp3",
+              "field": "Form/Probe3",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag3",
+                "Form/Probe3"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp4",
+              "field": "Form/Probe4",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag4",
+                "Form/Probe4"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp5",
+              "field": "Form/Probe5",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag5",
+                "Form/Probe5"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ProbeComp6",
+              "field": "Form/Probe6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Flag6",
+                "Form/Probe6"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Inputs/B",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Inputs/B"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Flag0",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Flag5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Flag6",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe0",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe1",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe2",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe3",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Probe5",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Probe6",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Inputs/B",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Inputs/B"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

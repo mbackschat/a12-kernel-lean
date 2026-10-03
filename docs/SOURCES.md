@@ -1700,3 +1700,6 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 <a id="src-peer-computation-shapes-replay"></a>
 - [Five transferred peer invoice computation models replay on 26 runtime documents](sources/evaluation-and-application-routes.md#src-peer-computation-shapes-replay)
+
+<a id="src-field-fill-computation-guards"></a>
+- [Seven computation field-fill guards: prefix decisions, restart and declaration order](sources/computation-scheduling-probes.md#src-field-fill-computation-guards)

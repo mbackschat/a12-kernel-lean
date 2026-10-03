@@ -1,0 +1,458 @@
+{
+  "header" : {
+    "id" : "invalid-first",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "invalid-first",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Flag0",
+            "name" : "Flag0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Probe0",
+            "name" : "Probe0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Flag1",
+            "name" : "Flag1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Probe1",
+            "name" : "Probe1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Flag2",
+            "name" : "Flag2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Probe2",
+            "name" : "Probe2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Flag3",
+            "name" : "Flag3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Probe3",
+            "name" : "Probe3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Flag4",
+            "name" : "Flag4",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Probe4",
+            "name" : "Probe4",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Flag5",
+            "name" : "Flag5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Probe5",
+            "name" : "Probe5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Flag6",
+            "name" : "Flag6",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Probe6",
+            "name" : "Probe6",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Inputs",
+            "name" : "Inputs",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Inputs/Later",
+                "name" : "Later",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Inputs/Entries",
+                "name" : "Entries",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Inputs/Entries/First",
+                    "name" : "First",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FlagComp0",
+            "name" : "FlagComp0",
+            "Computation" : {
+              "computedFieldRelPath" : "../Flag0",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AllFieldsFilled(/Form/Inputs)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ProbeComp0",
+            "name" : "ProbeComp0",
+            "Computation" : {
+              "computedFieldRelPath" : "../Probe0",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(/Form/Flag0) Or FieldNotFilled(/Form/Flag0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FlagComp1",
+            "name" : "FlagComp1",
+            "Computation" : {
+              "computedFieldRelPath" : "../Flag1",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldFilled(/Form/Inputs)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ProbeComp1",
+            "name" : "ProbeComp1",
+            "Computation" : {
+              "computedFieldRelPath" : "../Probe1",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(/Form/Flag1) Or FieldNotFilled(/Form/Flag1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FlagComp2",
+            "name" : "FlagComp2",
+            "Computation" : {
+              "computedFieldRelPath" : "../Flag2",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldFilled(/Form/Inputs)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ProbeComp2",
+            "name" : "ProbeComp2",
+            "Computation" : {
+              "computedFieldRelPath" : "../Probe2",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(/Form/Flag2) Or FieldNotFilled(/Form/Flag2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FlagComp3",
+            "name" : "FlagComp3",
+            "Computation" : {
+              "computedFieldRelPath" : "../Flag3",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "MoreThanOneFieldFilled(/Form/Inputs)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ProbeComp3",
+            "name" : "ProbeComp3",
+            "Computation" : {
+              "computedFieldRelPath" : "../Probe3",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(/Form/Flag3) Or FieldNotFilled(/Form/Flag3)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FlagComp4",
+            "name" : "FlagComp4",
+            "Computation" : {
+              "computedFieldRelPath" : "../Flag4",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldsFilled(/Form/Inputs)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ProbeComp4",
+            "name" : "ProbeComp4",
+            "Computation" : {
+              "computedFieldRelPath" : "../Probe4",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(/Form/Flag4) Or FieldNotFilled(/Form/Flag4)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FlagComp5",
+            "name" : "FlagComp5",
+            "Computation" : {
+              "computedFieldRelPath" : "../Flag5",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotExactlyOneFieldFilled(/Form/Inputs)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ProbeComp5",
+            "name" : "ProbeComp5",
+            "Computation" : {
+              "computedFieldRelPath" : "../Probe5",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(/Form/Flag5) Or FieldNotFilled(/Form/Flag5)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FlagComp6",
+            "name" : "FlagComp6",
+            "Computation" : {
+              "computedFieldRelPath" : "../Flag6",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldsNotCollectivelyFilled(/Form/Inputs)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ProbeComp6",
+            "name" : "ProbeComp6",
+            "Computation" : {
+              "computedFieldRelPath" : "../Probe6",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(/Form/Flag6) Or FieldNotFilled(/Form/Flag6)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "The marker follows the checked input state."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

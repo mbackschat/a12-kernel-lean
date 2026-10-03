@@ -1,0 +1,213 @@
+{
+  "model": "invalid-first_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "no-rows-invalid",
+      "documentInline": {
+        "Form": {
+          "Flag0": 9,
+          "Flag1": 9,
+          "Flag2": 9,
+          "Flag3": 9,
+          "Flag4": 9,
+          "Flag5": 9,
+          "Flag6": 9,
+          "Probe0": 9,
+          "Probe1": 9,
+          "Probe2": 9,
+          "Probe3": 9,
+          "Probe4": 9,
+          "Probe5": 9,
+          "Probe6": 9,
+          "Inputs": {
+            "Entries": [],
+            "Later": "bad"
+          }
+        }
+      }
+    },
+    {
+      "name": "one-filled-invalid",
+      "documentInline": {
+        "Form": {
+          "Flag0": 9,
+          "Flag1": 9,
+          "Flag2": 9,
+          "Flag3": 9,
+          "Flag4": 9,
+          "Flag5": 9,
+          "Flag6": 9,
+          "Probe0": 9,
+          "Probe1": 9,
+          "Probe2": 9,
+          "Probe3": 9,
+          "Probe4": 9,
+          "Probe5": 9,
+          "Probe6": 9,
+          "Inputs": {
+            "Entries": [
+              {
+                "First": 1
+              }
+            ],
+            "Later": "bad"
+          }
+        }
+      }
+    },
+    {
+      "name": "two-filled-invalid",
+      "documentInline": {
+        "Form": {
+          "Flag0": 9,
+          "Flag1": 9,
+          "Flag2": 9,
+          "Flag3": 9,
+          "Flag4": 9,
+          "Flag5": 9,
+          "Flag6": 9,
+          "Probe0": 9,
+          "Probe1": 9,
+          "Probe2": 9,
+          "Probe3": 9,
+          "Probe4": 9,
+          "Probe5": 9,
+          "Probe6": 9,
+          "Inputs": {
+            "Entries": [
+              {
+                "First": 1
+              },
+              {
+                "First": 2
+              }
+            ],
+            "Later": "bad"
+          }
+        }
+      }
+    },
+    {
+      "name": "full-invalid",
+      "documentInline": {
+        "Form": {
+          "Flag0": 9,
+          "Flag1": 9,
+          "Flag2": 9,
+          "Flag3": 9,
+          "Flag4": 9,
+          "Flag5": 9,
+          "Flag6": 9,
+          "Probe0": 9,
+          "Probe1": 9,
+          "Probe2": 9,
+          "Probe3": 9,
+          "Probe4": 9,
+          "Probe5": 9,
+          "Probe6": 9,
+          "Inputs": {
+            "Entries": [
+              {
+                "First": 1
+              },
+              {
+                "First": 2
+              },
+              {
+                "First": 3
+              }
+            ],
+            "Later": "bad"
+          }
+        }
+      }
+    },
+    {
+      "name": "over-limit-only",
+      "documentInline": {
+        "Form": {
+          "Flag0": 9,
+          "Flag1": 9,
+          "Flag2": 9,
+          "Flag3": 9,
+          "Flag4": 9,
+          "Flag5": 9,
+          "Flag6": 9,
+          "Probe0": 9,
+          "Probe1": 9,
+          "Probe2": 9,
+          "Probe3": 9,
+          "Probe4": 9,
+          "Probe5": 9,
+          "Probe6": 9,
+          "Inputs": {
+            "Entries": [
+              {},
+              {},
+              {},
+              {
+                "First": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "empty-row-filled-later",
+      "documentInline": {
+        "Form": {
+          "Flag0": 9,
+          "Flag1": 9,
+          "Flag2": 9,
+          "Flag3": 9,
+          "Flag4": 9,
+          "Flag5": 9,
+          "Flag6": 9,
+          "Probe0": 9,
+          "Probe1": 9,
+          "Probe2": 9,
+          "Probe3": 9,
+          "Probe4": 9,
+          "Probe5": 9,
+          "Probe6": 9,
+          "Inputs": {
+            "Entries": [
+              {}
+            ],
+            "Later": 1
+          }
+        }
+      }
+    },
+    {
+      "name": "all-empty",
+      "documentInline": {
+        "Form": {
+          "Flag0": 9,
+          "Flag1": 9,
+          "Flag2": 9,
+          "Flag3": 9,
+          "Flag4": 9,
+          "Flag5": 9,
+          "Flag6": 9,
+          "Probe0": 9,
+          "Probe1": 9,
+          "Probe2": 9,
+          "Probe3": 9,
+          "Probe4": 9,
+          "Probe5": 9,
+          "Probe6": 9,
+          "Inputs": {
+            "Entries": []
+          }
+        }
+      }
+    }
+  ]
+}
