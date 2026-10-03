@@ -82,8 +82,8 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
           | some (origin, field), .equal => pure (.compareStrings .equal { origin, field } expected)
           | some (origin, field), .notEqual => pure (.compareStrings .notEqual { origin, field } expected)
           | _, _ => refuse "Having" "String comparison"
-      | _, _ => pure (.numeric surfaceOp (← lowerNumericExpr lowerHavingNumericAtom left)
-          (← lowerNumericExpr lowerHavingNumericAtom right))
+      | _, _ => pure (.numeric surfaceOp (← lowerNumericExpr lowerHavingNumericAtom (fun _ => refuse "Having" "numeric field form") left)
+          (← lowerNumericExpr lowerHavingNumericAtom (fun _ => refuse "Having" "numeric field form") right))
   | other => refuse "Having" other.construct
 
 /-- Whether an unstarred path names a field of the model, read at the operator's group. -/

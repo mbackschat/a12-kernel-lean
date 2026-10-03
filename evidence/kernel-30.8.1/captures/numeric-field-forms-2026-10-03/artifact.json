@@ -1,0 +1,5186 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "NumericFieldForms_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "negative-tie",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Abs",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsExprComp",
+              "field": "Form/AbsExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsExpr",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsFieldComp",
+              "field": "Form/AbsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsField",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsGuardComp",
+              "field": "Form/AbsGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsGuard",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprComp",
+              "field": "Form/RoundAccountingExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprOneComp",
+              "field": "Form/RoundAccountingExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldComp",
+              "field": "Form/RoundAccountingField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldOneComp",
+              "field": "Form/RoundAccountingFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprComp",
+              "field": "Form/RoundDownExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprOneComp",
+              "field": "Form/RoundDownExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldComp",
+              "field": "Form/RoundDownField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldOneComp",
+              "field": "Form/RoundDownFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprComp",
+              "field": "Form/RoundUpExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprOneComp",
+              "field": "Form/RoundUpExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldComp",
+              "field": "Form/RoundUpField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldOneComp",
+              "field": "Form/RoundUpFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/AbsExpr",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsField",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "value": "-1.5"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": 1.5,
+                "AbsField": 1.5,
+                "AbsGuard": 1,
+                "N": -1.5,
+                "RoundAccountingExpr": -2,
+                "RoundAccountingExprOne": -1.5,
+                "RoundAccountingField": -2,
+                "RoundAccountingFieldOne": -1.5,
+                "RoundAccountingGuard": null,
+                "RoundDownExpr": -2,
+                "RoundDownExprOne": -1.5,
+                "RoundDownField": -2,
+                "RoundDownFieldOne": -1.5,
+                "RoundDownGuard": null,
+                "RoundUpExpr": -1,
+                "RoundUpExprOne": -1.5,
+                "RoundUpField": -1,
+                "RoundUpFieldOne": -1.5,
+                "RoundUpGuard": null
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Abs",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsExprComp",
+              "field": "Form/AbsExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsExpr",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsFieldComp",
+              "field": "Form/AbsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsField",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsGuardComp",
+              "field": "Form/AbsGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsGuard",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprComp",
+              "field": "Form/RoundAccountingExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprOneComp",
+              "field": "Form/RoundAccountingExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldComp",
+              "field": "Form/RoundAccountingField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldOneComp",
+              "field": "Form/RoundAccountingFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprComp",
+              "field": "Form/RoundDownExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprOneComp",
+              "field": "Form/RoundDownExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldComp",
+              "field": "Form/RoundDownField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldOneComp",
+              "field": "Form/RoundDownFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprComp",
+              "field": "Form/RoundUpExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprOneComp",
+              "field": "Form/RoundUpExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldComp",
+              "field": "Form/RoundUpField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldOneComp",
+              "field": "Form/RoundUpFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/AbsExpr",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsField",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "value": "-1.5"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": 1.5,
+                "AbsField": 1.5,
+                "AbsGuard": 1,
+                "N": -1.5,
+                "RoundAccountingExpr": -2,
+                "RoundAccountingExprOne": -1.5,
+                "RoundAccountingField": -2,
+                "RoundAccountingFieldOne": -1.5,
+                "RoundAccountingGuard": null,
+                "RoundDownExpr": -2,
+                "RoundDownExprOne": -1.5,
+                "RoundDownField": -2,
+                "RoundDownFieldOne": -1.5,
+                "RoundDownGuard": null,
+                "RoundUpExpr": -1,
+                "RoundUpExprOne": -1.5,
+                "RoundUpField": -1,
+                "RoundUpFieldOne": -1.5,
+                "RoundUpGuard": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "positive-tie",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Abs",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsExprComp",
+              "field": "Form/AbsExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsExpr",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsFieldComp",
+              "field": "Form/AbsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsField",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsGuardComp",
+              "field": "Form/AbsGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsGuard",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccounting",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprComp",
+              "field": "Form/RoundAccountingExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprOneComp",
+              "field": "Form/RoundAccountingExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldComp",
+              "field": "Form/RoundAccountingField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldOneComp",
+              "field": "Form/RoundAccountingFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingGuardComp",
+              "field": "Form/RoundAccountingGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingGuard"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDown",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprComp",
+              "field": "Form/RoundDownExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprOneComp",
+              "field": "Form/RoundDownExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldComp",
+              "field": "Form/RoundDownField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldOneComp",
+              "field": "Form/RoundDownFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownGuardComp",
+              "field": "Form/RoundDownGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownGuard"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUp",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprComp",
+              "field": "Form/RoundUpExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprOneComp",
+              "field": "Form/RoundUpExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldComp",
+              "field": "Form/RoundUpField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldOneComp",
+              "field": "Form/RoundUpFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpGuardComp",
+              "field": "Form/RoundUpGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpGuard"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/AbsExpr",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsField",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": 1.5,
+                "AbsField": 1.5,
+                "AbsGuard": 1,
+                "N": 1.5,
+                "RoundAccountingExpr": 2,
+                "RoundAccountingExprOne": 1.5,
+                "RoundAccountingField": 2,
+                "RoundAccountingFieldOne": 1.5,
+                "RoundAccountingGuard": 1,
+                "RoundDownExpr": 1,
+                "RoundDownExprOne": 1.5,
+                "RoundDownField": 1,
+                "RoundDownFieldOne": 1.5,
+                "RoundDownGuard": 1,
+                "RoundUpExpr": 2,
+                "RoundUpExprOne": 1.5,
+                "RoundUpField": 2,
+                "RoundUpFieldOne": 1.5,
+                "RoundUpGuard": 1
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Abs",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsExprComp",
+              "field": "Form/AbsExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsExpr",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsFieldComp",
+              "field": "Form/AbsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsField",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsGuardComp",
+              "field": "Form/AbsGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsGuard",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccounting",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprComp",
+              "field": "Form/RoundAccountingExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprOneComp",
+              "field": "Form/RoundAccountingExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldComp",
+              "field": "Form/RoundAccountingField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldOneComp",
+              "field": "Form/RoundAccountingFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingGuardComp",
+              "field": "Form/RoundAccountingGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingGuard"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDown",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprComp",
+              "field": "Form/RoundDownExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprOneComp",
+              "field": "Form/RoundDownExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldComp",
+              "field": "Form/RoundDownField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldOneComp",
+              "field": "Form/RoundDownFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownGuardComp",
+              "field": "Form/RoundDownGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownGuard"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUp",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprComp",
+              "field": "Form/RoundUpExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprOneComp",
+              "field": "Form/RoundUpExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldComp",
+              "field": "Form/RoundUpField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldOneComp",
+              "field": "Form/RoundUpFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpGuardComp",
+              "field": "Form/RoundUpGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpGuard"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/AbsExpr",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsField",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": 1.5,
+                "AbsField": 1.5,
+                "AbsGuard": 1,
+                "N": 1.5,
+                "RoundAccountingExpr": 2,
+                "RoundAccountingExprOne": 1.5,
+                "RoundAccountingField": 2,
+                "RoundAccountingFieldOne": 1.5,
+                "RoundAccountingGuard": 1,
+                "RoundDownExpr": 1,
+                "RoundDownExprOne": 1.5,
+                "RoundDownField": 1,
+                "RoundDownFieldOne": 1.5,
+                "RoundDownGuard": 1,
+                "RoundUpExpr": 2,
+                "RoundUpExprOne": 1.5,
+                "RoundUpField": 2,
+                "RoundUpFieldOne": 1.5,
+                "RoundUpGuard": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "negative-fraction",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Abs",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsExprComp",
+              "field": "Form/AbsExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsExpr",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsFieldComp",
+              "field": "Form/AbsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsField",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsGuardComp",
+              "field": "Form/AbsGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsGuard",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprComp",
+              "field": "Form/RoundAccountingExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprOneComp",
+              "field": "Form/RoundAccountingExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldComp",
+              "field": "Form/RoundAccountingField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldOneComp",
+              "field": "Form/RoundAccountingFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprComp",
+              "field": "Form/RoundDownExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprOneComp",
+              "field": "Form/RoundDownExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldComp",
+              "field": "Form/RoundDownField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldOneComp",
+              "field": "Form/RoundDownFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprComp",
+              "field": "Form/RoundUpExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprOneComp",
+              "field": "Form/RoundUpExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldComp",
+              "field": "Form/RoundUpField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldOneComp",
+              "field": "Form/RoundUpFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": false,
+                "errored": false,
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/AbsExpr",
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsField",
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "value": "-1.5"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": 1.55,
+                "AbsField": 1.55,
+                "AbsGuard": 1,
+                "N": -1.55,
+                "RoundAccountingExpr": -2,
+                "RoundAccountingExprOne": -1.6,
+                "RoundAccountingField": -2,
+                "RoundAccountingFieldOne": -1.6,
+                "RoundAccountingGuard": null,
+                "RoundDownExpr": -2,
+                "RoundDownExprOne": -1.6,
+                "RoundDownField": -2,
+                "RoundDownFieldOne": -1.6,
+                "RoundDownGuard": null,
+                "RoundUpExpr": -1,
+                "RoundUpExprOne": -1.5,
+                "RoundUpField": -1,
+                "RoundUpFieldOne": -1.5,
+                "RoundUpGuard": null
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Abs",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsExprComp",
+              "field": "Form/AbsExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsExpr",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsFieldComp",
+              "field": "Form/AbsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsField",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsGuardComp",
+              "field": "Form/AbsGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsGuard",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprComp",
+              "field": "Form/RoundAccountingExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprOneComp",
+              "field": "Form/RoundAccountingExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldComp",
+              "field": "Form/RoundAccountingField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldOneComp",
+              "field": "Form/RoundAccountingFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprComp",
+              "field": "Form/RoundDownExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprOneComp",
+              "field": "Form/RoundDownExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldComp",
+              "field": "Form/RoundDownField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldOneComp",
+              "field": "Form/RoundDownFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprComp",
+              "field": "Form/RoundUpExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprOneComp",
+              "field": "Form/RoundUpExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldComp",
+              "field": "Form/RoundUpField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldOneComp",
+              "field": "Form/RoundUpFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": false,
+                "errored": false,
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": false,
+                "errored": false,
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": false,
+                "errored": false,
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/AbsExpr",
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsField",
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "value": "-2"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "value": "-1.6"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "value": "-1.5"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "value": "-1"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "value": "-1.5"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": 1.55,
+                "AbsField": 1.55,
+                "AbsGuard": 1,
+                "N": -1.55,
+                "RoundAccountingExpr": -2,
+                "RoundAccountingExprOne": -1.6,
+                "RoundAccountingField": -2,
+                "RoundAccountingFieldOne": -1.6,
+                "RoundAccountingGuard": null,
+                "RoundDownExpr": -2,
+                "RoundDownExprOne": -1.6,
+                "RoundDownField": -2,
+                "RoundDownFieldOne": -1.6,
+                "RoundDownGuard": null,
+                "RoundUpExpr": -1,
+                "RoundUpExprOne": -1.5,
+                "RoundUpField": -1,
+                "RoundUpFieldOne": -1.5,
+                "RoundUpGuard": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "positive-fraction",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Abs",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsExprComp",
+              "field": "Form/AbsExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsExpr",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsFieldComp",
+              "field": "Form/AbsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsField",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsGuardComp",
+              "field": "Form/AbsGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsGuard",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccounting",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprComp",
+              "field": "Form/RoundAccountingExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprOneComp",
+              "field": "Form/RoundAccountingExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldComp",
+              "field": "Form/RoundAccountingField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldOneComp",
+              "field": "Form/RoundAccountingFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingGuardComp",
+              "field": "Form/RoundAccountingGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingGuard"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDown",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprComp",
+              "field": "Form/RoundDownExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprOneComp",
+              "field": "Form/RoundDownExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldComp",
+              "field": "Form/RoundDownField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldOneComp",
+              "field": "Form/RoundDownFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownGuardComp",
+              "field": "Form/RoundDownGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownGuard"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUp",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprComp",
+              "field": "Form/RoundUpExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprOneComp",
+              "field": "Form/RoundUpExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldComp",
+              "field": "Form/RoundUpField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldOneComp",
+              "field": "Form/RoundUpFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpGuardComp",
+              "field": "Form/RoundUpGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpGuard"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": false,
+                "errored": false,
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/AbsExpr",
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsField",
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": 1.55,
+                "AbsField": 1.55,
+                "AbsGuard": 1,
+                "N": 1.55,
+                "RoundAccountingExpr": 2,
+                "RoundAccountingExprOne": 1.6,
+                "RoundAccountingField": 2,
+                "RoundAccountingFieldOne": 1.6,
+                "RoundAccountingGuard": 1,
+                "RoundDownExpr": 1,
+                "RoundDownExprOne": 1.5,
+                "RoundDownField": 1,
+                "RoundDownFieldOne": 1.5,
+                "RoundDownGuard": 1,
+                "RoundUpExpr": 2,
+                "RoundUpExprOne": 1.6,
+                "RoundUpField": 2,
+                "RoundUpFieldOne": 1.6,
+                "RoundUpGuard": 1
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Abs",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsExprComp",
+              "field": "Form/AbsExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsExpr",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsFieldComp",
+              "field": "Form/AbsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsField",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsGuardComp",
+              "field": "Form/AbsGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsGuard",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccounting",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprComp",
+              "field": "Form/RoundAccountingExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprOneComp",
+              "field": "Form/RoundAccountingExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldComp",
+              "field": "Form/RoundAccountingField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldOneComp",
+              "field": "Form/RoundAccountingFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingGuardComp",
+              "field": "Form/RoundAccountingGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingGuard"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDown",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprComp",
+              "field": "Form/RoundDownExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprOneComp",
+              "field": "Form/RoundDownExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldComp",
+              "field": "Form/RoundDownField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldOneComp",
+              "field": "Form/RoundDownFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownGuardComp",
+              "field": "Form/RoundDownGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownGuard"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUp",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprComp",
+              "field": "Form/RoundUpExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprOneComp",
+              "field": "Form/RoundUpExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldComp",
+              "field": "Form/RoundUpField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldOneComp",
+              "field": "Form/RoundUpFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpGuardComp",
+              "field": "Form/RoundUpGuard",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpGuard"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": false,
+                "errored": false,
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/AbsExpr",
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsField",
+                "value": "1.55"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "value": "1"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "value": "2"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "value": "1.6"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "value": "1"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": 1.55,
+                "AbsField": 1.55,
+                "AbsGuard": 1,
+                "N": 1.55,
+                "RoundAccountingExpr": 2,
+                "RoundAccountingExprOne": 1.6,
+                "RoundAccountingField": 2,
+                "RoundAccountingFieldOne": 1.6,
+                "RoundAccountingGuard": 1,
+                "RoundDownExpr": 1,
+                "RoundDownExprOne": 1.5,
+                "RoundDownField": 1,
+                "RoundDownFieldOne": 1.5,
+                "RoundDownGuard": 1,
+                "RoundUpExpr": 2,
+                "RoundUpExprOne": 1.6,
+                "RoundUpField": 2,
+                "RoundUpFieldOne": 1.6,
+                "RoundUpGuard": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "zero",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AbsExprComp",
+              "field": "Form/AbsExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsExpr",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsFieldComp",
+              "field": "Form/AbsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsField",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprComp",
+              "field": "Form/RoundAccountingExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprOneComp",
+              "field": "Form/RoundAccountingExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldComp",
+              "field": "Form/RoundAccountingField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldOneComp",
+              "field": "Form/RoundAccountingFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprComp",
+              "field": "Form/RoundDownExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprOneComp",
+              "field": "Form/RoundDownExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldComp",
+              "field": "Form/RoundDownField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldOneComp",
+              "field": "Form/RoundDownFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprComp",
+              "field": "Form/RoundUpExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprOneComp",
+              "field": "Form/RoundUpExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldComp",
+              "field": "Form/RoundUpField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldOneComp",
+              "field": "Form/RoundUpFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/AbsExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/AbsField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "value": "0"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": 0,
+                "AbsField": 0,
+                "AbsGuard": null,
+                "N": 0,
+                "RoundAccountingExpr": 0,
+                "RoundAccountingExprOne": 0,
+                "RoundAccountingField": 0,
+                "RoundAccountingFieldOne": 0,
+                "RoundAccountingGuard": null,
+                "RoundDownExpr": 0,
+                "RoundDownExprOne": 0,
+                "RoundDownField": 0,
+                "RoundDownFieldOne": 0,
+                "RoundDownGuard": null,
+                "RoundUpExpr": 0,
+                "RoundUpExprOne": 0,
+                "RoundUpField": 0,
+                "RoundUpFieldOne": 0,
+                "RoundUpGuard": null
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AbsExprComp",
+              "field": "Form/AbsExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsExpr",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AbsFieldComp",
+              "field": "Form/AbsField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/AbsField",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprComp",
+              "field": "Form/RoundAccountingExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingExprOneComp",
+              "field": "Form/RoundAccountingExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldComp",
+              "field": "Form/RoundAccountingField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundAccountingFieldOneComp",
+              "field": "Form/RoundAccountingFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprComp",
+              "field": "Form/RoundDownExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownExprOneComp",
+              "field": "Form/RoundDownExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldComp",
+              "field": "Form/RoundDownField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundDownFieldOneComp",
+              "field": "Form/RoundDownFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprComp",
+              "field": "Form/RoundUpExpr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpExprOneComp",
+              "field": "Form/RoundUpExprOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldComp",
+              "field": "Form/RoundUpField",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpField"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RoundUpFieldOneComp",
+              "field": "Form/RoundUpFieldOne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/AbsExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/AbsField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "value": "0"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": 0,
+                "AbsField": 0,
+                "AbsGuard": null,
+                "N": 0,
+                "RoundAccountingExpr": 0,
+                "RoundAccountingExprOne": 0,
+                "RoundAccountingField": 0,
+                "RoundAccountingFieldOne": 0,
+                "RoundAccountingGuard": null,
+                "RoundDownExpr": 0,
+                "RoundDownExprOne": 0,
+                "RoundDownField": 0,
+                "RoundDownFieldOne": 0,
+                "RoundDownGuard": null,
+                "RoundUpExpr": 0,
+                "RoundUpExprOne": 0,
+                "RoundUpField": 0,
+                "RoundUpFieldOne": 0,
+                "RoundUpGuard": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AbsExprComp",
+              "field": "Form/AbsExpr",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/AbsExpr",
+                "Form/N"
+              ],
+              "fillToFix": [
+                "Form/AbsExpr",
+                "Form/N"
+              ]
+            },
+            {
+              "code": "AbsFieldComp",
+              "field": "Form/AbsField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/AbsField",
+                "Form/N"
+              ],
+              "fillToFix": [
+                "Form/AbsField",
+                "Form/N"
+              ]
+            },
+            {
+              "code": "RoundAccountingExprComp",
+              "field": "Form/RoundAccountingExpr",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ]
+            },
+            {
+              "code": "RoundAccountingExprOneComp",
+              "field": "Form/RoundAccountingExprOne",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ]
+            },
+            {
+              "code": "RoundAccountingFieldComp",
+              "field": "Form/RoundAccountingField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ]
+            },
+            {
+              "code": "RoundAccountingFieldOneComp",
+              "field": "Form/RoundAccountingFieldOne",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ]
+            },
+            {
+              "code": "RoundDownExprComp",
+              "field": "Form/RoundDownExpr",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ]
+            },
+            {
+              "code": "RoundDownExprOneComp",
+              "field": "Form/RoundDownExprOne",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ]
+            },
+            {
+              "code": "RoundDownFieldComp",
+              "field": "Form/RoundDownField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownField"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundDownField"
+              ]
+            },
+            {
+              "code": "RoundDownFieldOneComp",
+              "field": "Form/RoundDownFieldOne",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ]
+            },
+            {
+              "code": "RoundUpExprComp",
+              "field": "Form/RoundUpExpr",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ]
+            },
+            {
+              "code": "RoundUpExprOneComp",
+              "field": "Form/RoundUpExprOne",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ]
+            },
+            {
+              "code": "RoundUpFieldComp",
+              "field": "Form/RoundUpField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpField"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundUpField"
+              ]
+            },
+            {
+              "code": "RoundUpFieldOneComp",
+              "field": "Form/RoundUpFieldOne",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/AbsExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/AbsField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "value": "0"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": 0,
+                "AbsField": 0,
+                "AbsGuard": null,
+                "N": null,
+                "RoundAccountingExpr": 0,
+                "RoundAccountingExprOne": 0,
+                "RoundAccountingField": 0,
+                "RoundAccountingFieldOne": 0,
+                "RoundAccountingGuard": null,
+                "RoundDownExpr": 0,
+                "RoundDownExprOne": 0,
+                "RoundDownField": 0,
+                "RoundDownFieldOne": 0,
+                "RoundDownGuard": null,
+                "RoundUpExpr": 0,
+                "RoundUpExprOne": 0,
+                "RoundUpField": 0,
+                "RoundUpFieldOne": 0,
+                "RoundUpGuard": null
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AbsExprComp",
+              "field": "Form/AbsExpr",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/AbsExpr",
+                "Form/N"
+              ],
+              "fillToFix": [
+                "Form/AbsExpr",
+                "Form/N"
+              ]
+            },
+            {
+              "code": "AbsFieldComp",
+              "field": "Form/AbsField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/AbsField",
+                "Form/N"
+              ],
+              "fillToFix": [
+                "Form/AbsField",
+                "Form/N"
+              ]
+            },
+            {
+              "code": "RoundAccountingExprComp",
+              "field": "Form/RoundAccountingExpr",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundAccountingExpr"
+              ]
+            },
+            {
+              "code": "RoundAccountingExprOneComp",
+              "field": "Form/RoundAccountingExprOne",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundAccountingExprOne"
+              ]
+            },
+            {
+              "code": "RoundAccountingFieldComp",
+              "field": "Form/RoundAccountingField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundAccountingField"
+              ]
+            },
+            {
+              "code": "RoundAccountingFieldOneComp",
+              "field": "Form/RoundAccountingFieldOne",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundAccountingFieldOne"
+              ]
+            },
+            {
+              "code": "RoundDownExprComp",
+              "field": "Form/RoundDownExpr",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundDownExpr"
+              ]
+            },
+            {
+              "code": "RoundDownExprOneComp",
+              "field": "Form/RoundDownExprOne",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundDownExprOne"
+              ]
+            },
+            {
+              "code": "RoundDownFieldComp",
+              "field": "Form/RoundDownField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownField"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundDownField"
+              ]
+            },
+            {
+              "code": "RoundDownFieldOneComp",
+              "field": "Form/RoundDownFieldOne",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundDownFieldOne"
+              ]
+            },
+            {
+              "code": "RoundUpExprComp",
+              "field": "Form/RoundUpExpr",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundUpExpr"
+              ]
+            },
+            {
+              "code": "RoundUpExprOneComp",
+              "field": "Form/RoundUpExprOne",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundUpExprOne"
+              ]
+            },
+            {
+              "code": "RoundUpFieldComp",
+              "field": "Form/RoundUpField",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpField"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundUpField"
+              ]
+            },
+            {
+              "code": "RoundUpFieldOneComp",
+              "field": "Form/RoundUpFieldOne",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ],
+              "fillToFix": [
+                "Form/N",
+                "Form/RoundUpFieldOne"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/AbsExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/AbsField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpField",
+                "value": "0"
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "value": "0"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": 0,
+                "AbsField": 0,
+                "AbsGuard": null,
+                "N": null,
+                "RoundAccountingExpr": 0,
+                "RoundAccountingExprOne": 0,
+                "RoundAccountingField": 0,
+                "RoundAccountingFieldOne": 0,
+                "RoundAccountingGuard": null,
+                "RoundDownExpr": 0,
+                "RoundDownExprOne": 0,
+                "RoundDownField": 0,
+                "RoundDownFieldOne": 0,
+                "RoundDownGuard": null,
+                "RoundUpExpr": 0,
+                "RoundUpExprOne": 0,
+                "RoundUpField": 0,
+                "RoundUpFieldOne": 0,
+                "RoundUpGuard": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "malformed",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/N",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "Form/N"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": null,
+                "AbsField": null,
+                "AbsGuard": null,
+                "N": "bad",
+                "RoundAccountingExpr": null,
+                "RoundAccountingExprOne": null,
+                "RoundAccountingField": null,
+                "RoundAccountingFieldOne": null,
+                "RoundAccountingGuard": null,
+                "RoundDownExpr": null,
+                "RoundDownExprOne": null,
+                "RoundDownField": null,
+                "RoundDownFieldOne": null,
+                "RoundDownGuard": null,
+                "RoundUpExpr": null,
+                "RoundUpExprOne": null,
+                "RoundUpField": null,
+                "RoundUpFieldOne": null,
+                "RoundUpGuard": null
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/N"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/AbsExpr",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AbsField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/AbsGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingExpr",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingExprOne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingFieldOne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundAccountingGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownExpr",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownExprOne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownFieldOne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundDownGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpExpr",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpExprOne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpField",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpFieldOne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/RoundUpGuard",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/N",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "Form/N"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "AbsExpr": null,
+                "AbsField": null,
+                "AbsGuard": null,
+                "N": "bad",
+                "RoundAccountingExpr": null,
+                "RoundAccountingExprOne": null,
+                "RoundAccountingField": null,
+                "RoundAccountingFieldOne": null,
+                "RoundAccountingGuard": null,
+                "RoundDownExpr": null,
+                "RoundDownExprOne": null,
+                "RoundDownField": null,
+                "RoundDownFieldOne": null,
+                "RoundDownGuard": null,
+                "RoundUpExpr": null,
+                "RoundUpExprOne": null,
+                "RoundUpField": null,
+                "RoundUpFieldOne": null,
+                "RoundUpGuard": null
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

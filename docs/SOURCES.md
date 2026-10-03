@@ -905,6 +905,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-comparison-constant-gate-immediacy"></a>
 - [The comparison's constant gate asks whether both sides are immediate written-out literals, not whether either reads a cell](sources/static-admission-and-class-probes.md#src-comparison-constant-gate-immediacy)
 
+<a id="src-numeric-field-forms"></a>
+- [Numeric field forms, both-arm runtime](sources/evaluation-and-application-routes.md#src-numeric-field-forms)
+
 <a id="src-rounding-argument"></a>
 - [Rounding places distinguish signed-64-bit overflow from ordinary scale refusal](sources/static-admission-and-class-probes.md#src-rounding-argument)
 

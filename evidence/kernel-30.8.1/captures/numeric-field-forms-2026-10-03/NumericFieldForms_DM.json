@@ -1,0 +1,580 @@
+{
+  "header" : {
+    "id" : "NumericFieldForms_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "NumericFieldForms_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/N",
+            "name" : "N",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundDownField",
+            "name" : "RoundDownField",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundDownExpr",
+            "name" : "RoundDownExpr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundDownGuard",
+            "name" : "RoundDownGuard",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundUpField",
+            "name" : "RoundUpField",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundUpExpr",
+            "name" : "RoundUpExpr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundUpGuard",
+            "name" : "RoundUpGuard",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundAccountingField",
+            "name" : "RoundAccountingField",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundAccountingExpr",
+            "name" : "RoundAccountingExpr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundAccountingGuard",
+            "name" : "RoundAccountingGuard",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AbsField",
+            "name" : "AbsField",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AbsExpr",
+            "name" : "AbsExpr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AbsGuard",
+            "name" : "AbsGuard",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundDownFieldOne",
+            "name" : "RoundDownFieldOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundDownExprOne",
+            "name" : "RoundDownExprOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundUpFieldOne",
+            "name" : "RoundUpFieldOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundUpExprOne",
+            "name" : "RoundUpExprOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundAccountingFieldOne",
+            "name" : "RoundAccountingFieldOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RoundAccountingExprOne",
+            "name" : "RoundAccountingExprOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundDownFieldComp",
+            "name" : "RoundDownFieldComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundDownField",
+              "computationAlternatives" : [ {
+                "operation" : "RoundDownValue(N)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundDownExprComp",
+            "name" : "RoundDownExprComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundDownExpr",
+              "computationAlternatives" : [ {
+                "operation" : "RoundDown([N])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundDownGuardComp",
+            "name" : "RoundDownGuardComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundDownGuard",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "RoundDownValue(N) > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundUpFieldComp",
+            "name" : "RoundUpFieldComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundUpField",
+              "computationAlternatives" : [ {
+                "operation" : "RoundUpValue(N)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundUpExprComp",
+            "name" : "RoundUpExprComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundUpExpr",
+              "computationAlternatives" : [ {
+                "operation" : "RoundUp([N])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundUpGuardComp",
+            "name" : "RoundUpGuardComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundUpGuard",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "RoundUpValue(N) > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundAccountingFieldComp",
+            "name" : "RoundAccountingFieldComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundAccountingField",
+              "computationAlternatives" : [ {
+                "operation" : "RoundAccountingValue(N)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundAccountingExprComp",
+            "name" : "RoundAccountingExprComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundAccountingExpr",
+              "computationAlternatives" : [ {
+                "operation" : "RoundAccounting([N])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundAccountingGuardComp",
+            "name" : "RoundAccountingGuardComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundAccountingGuard",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "RoundAccountingValue(N) > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AbsFieldComp",
+            "name" : "AbsFieldComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AbsField",
+              "computationAlternatives" : [ {
+                "operation" : "AbsValue(N)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AbsExprComp",
+            "name" : "AbsExprComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AbsExpr",
+              "computationAlternatives" : [ {
+                "operation" : "Abs([N])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AbsGuardComp",
+            "name" : "AbsGuardComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AbsGuard",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AbsValue(N) > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundDownFieldOneComp",
+            "name" : "RoundDownFieldOneComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundDownFieldOne",
+              "computationAlternatives" : [ {
+                "operation" : "RoundDownValue(N, 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundDownExprOneComp",
+            "name" : "RoundDownExprOneComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundDownExprOne",
+              "computationAlternatives" : [ {
+                "operation" : "RoundDown([N], 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundUpFieldOneComp",
+            "name" : "RoundUpFieldOneComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundUpFieldOne",
+              "computationAlternatives" : [ {
+                "operation" : "RoundUpValue(N, 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundUpExprOneComp",
+            "name" : "RoundUpExprOneComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundUpExprOne",
+              "computationAlternatives" : [ {
+                "operation" : "RoundUp([N], 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundAccountingFieldOneComp",
+            "name" : "RoundAccountingFieldOneComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundAccountingFieldOne",
+              "computationAlternatives" : [ {
+                "operation" : "RoundAccountingValue(N, 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RoundAccountingExprOneComp",
+            "name" : "RoundAccountingExprOneComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RoundAccountingExprOne",
+              "computationAlternatives" : [ {
+                "operation" : "RoundAccounting([N], 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check computed value."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RoundDown",
+            "name" : "RoundDown",
+            "Rule" : {
+              "errorEntityRelPath" : "../N",
+              "errorCode" : "RoundDown",
+              "errorCondition" : "RoundDownValue(N) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check source value."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RoundUp",
+            "name" : "RoundUp",
+            "Rule" : {
+              "errorEntityRelPath" : "../N",
+              "errorCode" : "RoundUp",
+              "errorCondition" : "RoundUpValue(N) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check source value."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RoundAccounting",
+            "name" : "RoundAccounting",
+            "Rule" : {
+              "errorEntityRelPath" : "../N",
+              "errorCode" : "RoundAccounting",
+              "errorCondition" : "RoundAccountingValue(N) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check source value."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Abs",
+            "name" : "Abs",
+            "Rule" : {
+              "errorEntityRelPath" : "../N",
+              "errorCode" : "Abs",
+              "errorCondition" : "AbsValue(N) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check source value."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

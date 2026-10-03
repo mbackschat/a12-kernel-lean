@@ -4,13 +4,14 @@ import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.FullDateInput
 import A12Kernel.Elaboration.NumericExpression
 import A12Kernel.Elaboration.NumericSource
+import A12Kernel.Elaboration.RoundingArgument
 
 /-! # Lowering parse trees: the shared vocabulary
 
 The pieces every lowering of a parsed text needs: the refusal it reports, paths and literals in the
-elaborators' surface form, and the comparison operators. The lowering itself is a dispatcher over the
-existing checked carriers; it decides nothing semantic, so every typed refusal below names the
-construct and shape no carrier admits, which is what the replay ledger clusters on.
+elaborators' surface form, and the comparison operators. Lowering retains grammar-position and
+static operand restrictions before dispatching to the existing checked carriers; evaluation stays
+in those carriers. Refusals name the construct and shape the replay ledger clusters on.
 -/
 
 namespace A12Kernel.Dm
@@ -199,35 +200,95 @@ def roundingMode? : String → Option DecimalRoundingMode
   | "RoundAccounting" => some .halfUp
   | _ => none
 
+/-- Field forms share the checked Number read and arithmetic but retain their source slot
+until KF393/KF395's group, star, category and kind gates have answered. -/
+def lowerNumericFieldAtom (model : FlatModel) (group : GroupPath)
+    (atom : Expr → Lowering Atom) (source : Expr) : Lowering Atom := do
+  let reference ← match source with
+    | .entity reference => pure reference
+    | .number text =>
+        if !text.isEmpty && text.toList.all Char.isDigit then
+          pure ({ path := { segments := [{ name := text, star := false }] } } : Reference)
+        else refuse "NumericFieldForm" KernelStaticDiagnostic.unexpectedToken.kernelCode
+    | _ => refuse "NumericFieldForm" KernelStaticDiagnostic.unexpectedToken.kernelCode
+  let unstarred : Path := { reference.path with segments := reference.path.segments.map fun (segment : Segment) => { segment with star := false } }
+  let some field := unstarred.toFieldPath? | refuse "NumericFieldForm" "correlated source"
+  if (model.groupNamedBy? group field).isSome then
+    refuse "NumericFieldForm" KernelStaticDiagnostic.noGroupsAllowed.kernelCode
+  if reference.path.segments.any (·.star) then
+    refuse "NumericFieldForm" KernelStaticDiagnostic.noWildcardsAllowed.kernelCode
+  let declaration ← elaborated "NumericFieldForm" (model.resolveFieldDeclarationUnchecked group field)
+  if reference.category.isSome then
+    refuse "NumericFieldForm" KernelStaticDiagnostic.categoryNotAllowed.kernelCode
+  match declaration.policy.kind with
+  | .number _ => atom (.value reference)
+  | _ => refuse "NumericFieldForm" KernelStaticDiagnostic.noNumber.kernelCode
+
+private inductive NumericFieldForm where
+  | absolute
+  | rounded (mode : DecimalRoundingMode)
+
+private def numericFieldForm? : String → Option NumericFieldForm
+  | "AbsValue" => some .absolute
+  | "RoundDownValue" => some (.rounded .floor)
+  | "RoundUpValue" => some (.rounded .ceiling)
+  | "RoundAccountingValue" => some (.rounded .halfUp)
+  | _ => none
+
+/-- The grammar admits only an optional unsigned digit token (GrammarOnly rundenOp).
+Semantic precision bounds are checked separately, after the field (KF393/KF448). -/
+private def fieldRoundingArgument (arguments : List Argument) : Lowering (Option Nat) :=
+  match arguments with
+    | [] => pure none
+    | [.mk (.number text) none none] => match text.toNat? with
+        | some value => pure (some value)
+        | none => refuse "NumericFieldForm" KernelStaticDiagnostic.unexpectedToken.kernelCode
+    | _ => refuse "NumericFieldForm" KernelStaticDiagnostic.unexpectedToken.kernelCode
+
 /-- An authored numeric operation over atoms the caller lowers. Grouping braces, call boundaries and
 operand order are kept as written, since rounding at every node makes reassociation observable
 (spec §4); a `Min`/`Max` call is the left fold of its operands wrapped once as the call. -/
-partial def lowerNumericExpr (atom : Expr → Lowering Atom) : Expr → Lowering (AuthoredNumericExpr Atom)
+partial def lowerNumericExpr (atom fieldAtom : Expr → Lowering Atom) : Expr → Lowering (AuthoredNumericExpr Atom)
   | .number text => match decodeNumber? text with
       | some literal => pure (.literal literal)
       | none => refuse "NumberLiteral" text
-  | .braces body => (.group ·) <$> lowerNumericExpr atom body
+  | .braces body => (.group ·) <$> lowerNumericExpr atom fieldAtom body
   | .arith .pow base exponent => do
-      pure (.power (← lowerNumericExpr atom base) (← lowerNumericExpr atom exponent))
+      pure (.power (← lowerNumericExpr atom fieldAtom base) (← lowerNumericExpr atom fieldAtom exponent))
   | .arith op left right => do
       let op : NumericScaleBinaryOp := match op with
         | .add => .add | .sub => .subtract | .mul => .multiply | _ => .divide
-      pure (.binary op (← lowerNumericExpr atom left) (← lowerNumericExpr atom right))
-  | .call "Abs" [.mk body none none] none none => (.abs ·) <$> lowerNumericExpr atom body
+      pure (.binary op (← lowerNumericExpr atom fieldAtom left) (← lowerNumericExpr atom fieldAtom right))
+  | .call "Abs" [.mk body none none] none none => (.abs ·) <$> lowerNumericExpr atom fieldAtom body
   | .call id (.mk first none none :: rest) none none =>
-      if id == "Min" || id == "Max" then do
+      if let some form := numericFieldForm? id then do
+        match form with
+        | .absolute =>
+            if !rest.isEmpty then refuse id KernelStaticDiagnostic.unexpectedToken.kernelCode
+            else pure (.abs (.atom (← fieldAtom first)))
+        | .rounded mode =>
+            let argument ← fieldRoundingArgument rest
+            let source ← fieldAtom first
+            let places ← match checkRoundingArgument argument with
+              | .ok places => pure places
+              | .error error => refuse id error.kernelCode
+            pure (.round mode places (.atom source))
+      else if id == "Min" || id == "Max" then do
         let op : NumericExtremumOp := if id == "Min" then .minimum else .maximum
         let operands ← (first :: rest.filterMap fun | .mk e none none => some e | _ => none).mapM
-          (lowerNumericExpr atom)
+          (lowerNumericExpr atom fieldAtom)
         if operands.length != rest.length + 1 then refuse id "filtered operand"
         match operands with
         | head :: tail => pure (.extremumCall op (tail.foldl (.extremum op) head))
         | [] => refuse id
       else match roundingMode? id, roundingPlaces? rest with
         | some mode, some places => do
-            pure (.round mode places (← lowerNumericExpr atom first))
+            pure (.round mode places (← lowerNumericExpr atom fieldAtom first))
         | some _, none => refuse id "decimal places"
         | none, _ => (.atom ·) <$> atom (.call id (.mk first none none :: rest) none none)
+  | expression@(.call id [] none none) =>
+      if (numericFieldForm? id).isSome then refuse id KernelStaticDiagnostic.unexpectedToken.kernelCode
+      else (.atom ·) <$> atom expression
   | other => (.atom ·) <$> atom other
 
 /-- The first operator call in a tree, left to right: what a comparison is about when its sides are

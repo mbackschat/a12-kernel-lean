@@ -1,0 +1,193 @@
+{
+  "model": "NumericFieldForms_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "negative-tie",
+      "documentInline": {
+        "Form": {
+          "N": "-1.5",
+          "RoundDownField": "9",
+          "RoundDownExpr": "9",
+          "RoundDownGuard": "9",
+          "RoundUpField": "9",
+          "RoundUpExpr": "9",
+          "RoundUpGuard": "9",
+          "RoundAccountingField": "9",
+          "RoundAccountingExpr": "9",
+          "RoundAccountingGuard": "9",
+          "AbsField": "9",
+          "AbsExpr": "9",
+          "AbsGuard": "9",
+          "RoundDownFieldOne": "9",
+          "RoundDownExprOne": "9",
+          "RoundUpFieldOne": "9",
+          "RoundUpExprOne": "9",
+          "RoundAccountingFieldOne": "9",
+          "RoundAccountingExprOne": "9"
+        }
+      }
+    },
+    {
+      "name": "positive-tie",
+      "documentInline": {
+        "Form": {
+          "N": "1.5",
+          "RoundDownField": "9",
+          "RoundDownExpr": "9",
+          "RoundDownGuard": "9",
+          "RoundUpField": "9",
+          "RoundUpExpr": "9",
+          "RoundUpGuard": "9",
+          "RoundAccountingField": "9",
+          "RoundAccountingExpr": "9",
+          "RoundAccountingGuard": "9",
+          "AbsField": "9",
+          "AbsExpr": "9",
+          "AbsGuard": "9",
+          "RoundDownFieldOne": "9",
+          "RoundDownExprOne": "9",
+          "RoundUpFieldOne": "9",
+          "RoundUpExprOne": "9",
+          "RoundAccountingFieldOne": "9",
+          "RoundAccountingExprOne": "9"
+        }
+      }
+    },
+    {
+      "name": "negative-fraction",
+      "documentInline": {
+        "Form": {
+          "N": "-1.55",
+          "RoundDownField": "9",
+          "RoundDownExpr": "9",
+          "RoundDownGuard": "9",
+          "RoundUpField": "9",
+          "RoundUpExpr": "9",
+          "RoundUpGuard": "9",
+          "RoundAccountingField": "9",
+          "RoundAccountingExpr": "9",
+          "RoundAccountingGuard": "9",
+          "AbsField": "9",
+          "AbsExpr": "9",
+          "AbsGuard": "9",
+          "RoundDownFieldOne": "9",
+          "RoundDownExprOne": "9",
+          "RoundUpFieldOne": "9",
+          "RoundUpExprOne": "9",
+          "RoundAccountingFieldOne": "9",
+          "RoundAccountingExprOne": "9"
+        }
+      }
+    },
+    {
+      "name": "positive-fraction",
+      "documentInline": {
+        "Form": {
+          "N": "1.55",
+          "RoundDownField": "9",
+          "RoundDownExpr": "9",
+          "RoundDownGuard": "9",
+          "RoundUpField": "9",
+          "RoundUpExpr": "9",
+          "RoundUpGuard": "9",
+          "RoundAccountingField": "9",
+          "RoundAccountingExpr": "9",
+          "RoundAccountingGuard": "9",
+          "AbsField": "9",
+          "AbsExpr": "9",
+          "AbsGuard": "9",
+          "RoundDownFieldOne": "9",
+          "RoundDownExprOne": "9",
+          "RoundUpFieldOne": "9",
+          "RoundUpExprOne": "9",
+          "RoundAccountingFieldOne": "9",
+          "RoundAccountingExprOne": "9"
+        }
+      }
+    },
+    {
+      "name": "zero",
+      "documentInline": {
+        "Form": {
+          "N": "0",
+          "RoundDownField": "9",
+          "RoundDownExpr": "9",
+          "RoundDownGuard": "9",
+          "RoundUpField": "9",
+          "RoundUpExpr": "9",
+          "RoundUpGuard": "9",
+          "RoundAccountingField": "9",
+          "RoundAccountingExpr": "9",
+          "RoundAccountingGuard": "9",
+          "AbsField": "9",
+          "AbsExpr": "9",
+          "AbsGuard": "9",
+          "RoundDownFieldOne": "9",
+          "RoundDownExprOne": "9",
+          "RoundUpFieldOne": "9",
+          "RoundUpExprOne": "9",
+          "RoundAccountingFieldOne": "9",
+          "RoundAccountingExprOne": "9"
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "Form": {
+          "N": "",
+          "RoundDownField": "9",
+          "RoundDownExpr": "9",
+          "RoundDownGuard": "9",
+          "RoundUpField": "9",
+          "RoundUpExpr": "9",
+          "RoundUpGuard": "9",
+          "RoundAccountingField": "9",
+          "RoundAccountingExpr": "9",
+          "RoundAccountingGuard": "9",
+          "AbsField": "9",
+          "AbsExpr": "9",
+          "AbsGuard": "9",
+          "RoundDownFieldOne": "9",
+          "RoundDownExprOne": "9",
+          "RoundUpFieldOne": "9",
+          "RoundUpExprOne": "9",
+          "RoundAccountingFieldOne": "9",
+          "RoundAccountingExprOne": "9"
+        }
+      }
+    },
+    {
+      "name": "malformed",
+      "documentInline": {
+        "Form": {
+          "N": "bad",
+          "RoundDownField": "9",
+          "RoundDownExpr": "9",
+          "RoundDownGuard": "9",
+          "RoundUpField": "9",
+          "RoundUpExpr": "9",
+          "RoundUpGuard": "9",
+          "RoundAccountingField": "9",
+          "RoundAccountingExpr": "9",
+          "RoundAccountingGuard": "9",
+          "AbsField": "9",
+          "AbsExpr": "9",
+          "AbsGuard": "9",
+          "RoundDownFieldOne": "9",
+          "RoundDownExprOne": "9",
+          "RoundUpFieldOne": "9",
+          "RoundUpExprOne": "9",
+          "RoundAccountingFieldOne": "9",
+          "RoundAccountingExprOne": "9"
+        }
+      }
+    }
+  ]
+}

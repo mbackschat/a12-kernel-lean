@@ -8,6 +8,7 @@ import A12Kernel.Reference.Dm.ParserLocks
 import A12Kernel.Reference.Dm.ReaderLocks
 import A12Kernel.Reference.Dm.NegateLocks
 import A12Kernel.Reference.Dm.LowerLocks
+import A12Kernel.Reference.Dm.NumericFieldFormLocks
 import A12Kernel.Reference.Dm.ComputationGuardLocks
 import A12Kernel.Reference.Dm.ComputationPredicateGuardLocks
 import A12Kernel.Reference.Dm.TemporalExpressionLocks

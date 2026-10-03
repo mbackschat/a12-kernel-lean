@@ -57,11 +57,11 @@ private def groupListOperand? (model : FlatModel) (rowGroup : GroupPath) :
   | _ => none
 
 /-- A comparison both of whose sides are numeric operations. -/
-def lowerNumericComparison (op : CompareOp) (left right : Expr) (suppress : Bool) :
+def lowerNumericComparison (model : FlatModel) (rowGroup : GroupPath) (op : CompareOp) (left right : Expr) (suppress : Bool) :
     Lowering SurfaceNumericComparison := do
   let some op := op.toNumeric? | refuse "Comparison" "operator"
-  pure { op, left := ← lowerNumericExpr lowerValidationNumericAtom left
-         right := ← lowerNumericExpr lowerValidationNumericAtom right
+  pure { op, left := ← lowerNumericExpr lowerValidationNumericAtom (lowerNumericFieldAtom model rowGroup lowerValidationNumericAtom) left
+         right := ← lowerNumericExpr lowerValidationNumericAtom (lowerNumericFieldAtom model rowGroup lowerValidationNumericAtom) right
          suppressExactScaleWarning := suppress }
 
 private def fieldOperand (model : FlatModel) (group : GroupPath) (construct : String) (expr : Expr) :
@@ -145,7 +145,7 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
           let unit := if name == "AddHours" then DateTimeSubdayUnit.hours
             else if name == "AddMinutes" then .minutes else .seconds
           pure (.subdayShift unit (← lowerSourceSlot source)
-            (← lowerNumericExpr lowerValidationNumericAtom amount))
+            (← lowerNumericExpr lowerValidationNumericAtom (lowerNumericFieldAtom model rowGroup lowerValidationNumericAtom) amount))
       | "MinValue" | "MaxValue" =>
           pure (.extremum (if name == "MinValue" then .minimum else .maximum)
             (← lowerEntitySource model rowGroup [.mk source none none, .mk amount none none]))
@@ -353,7 +353,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         -- Parenthesized so the entity-list attempt follows either outcome of scalar lowering: a
         -- star-free aggregate such as `NumberOfDifferentValues(Shell)` lowers to the scalar
         -- surface and must still reach the entity carrier when the scalar ones refuse it.
-        (match lowerNumericComparison op left right suppress with
+        (match lowerNumericComparison model rowGroup op left right suppress with
         | .ok surface =>
             -- The addressed carrier first: it reads under the rule's row environment, so a group
             -- count below a repeatable ancestor runs inside an iterating rule, where the scalar
@@ -385,7 +385,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
             let some numericOp := op.toNumeric? | refuse "Comparison" "operator"
             let atom := lowerComputationNumericAtom model rowGroup
             match elaborateEntityNumericComparison model rowGroup numericOp
-                (← lowerNumericExpr atom left) (← lowerNumericExpr atom right) suppress bindingGroup with
+                (← lowerNumericExpr atom (lowerNumericFieldAtom model rowGroup atom) left) (← lowerNumericExpr atom (lowerNumericFieldAtom model rowGroup atom) right) suppress bindingGroup with
             | .error .readsNoList => pure none
             | result => do
                 let checked ← elaborated "EntityComparison" result
@@ -427,7 +427,7 @@ private partial def scaleRefusal? (model : FlatModel) (rowGroup : GroupPath) (su
   | .parens body => scaleRefusal? model rowGroup suppress body
   | .logic _ parts => parts.findSome? (scaleRefusal? model rowGroup suppress)
   | .compare op left right =>
-      match lowerNumericComparison op left right suppress with
+      match lowerNumericComparison model rowGroup op left right suppress with
       | .ok surface => match elaborateNumericComparison model rowGroup surface with
           | .error error@(.exactScaleMismatch _ _) =>
               some { construct := "Comparison", detail := oneLine (repr error).pretty }
