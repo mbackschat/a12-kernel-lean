@@ -7,7 +7,7 @@ import A12Kernel.Semantics.Correlation
 
 /-! # A12Kernel.Elaboration.Correlation — checked lowering for repeatable filters
 
-The established whole-rule route admits exactly one repeatable group, one starred direct-child Number field, an outer `FieldFilled` Number guard, and a correlated `Having` made from Number or `CurrentRepetition` comparisons and conjunction. The general-star route reuses the same authored filter traversal after a checked star path has fixed the complete candidate environment. It accepts only references available from that candidate environment or the captured rule environment and requires an ordinary reference to reach a reopened level.
+The established whole-rule route admits exactly one repeatable group, one starred direct-child Number field, an outer `FieldFilled` Number guard, and a correlated `Having` made from shared numeric-expression comparisons and conjunction. The general-star route also admits String equality, presence and disjunction after a checked star path has fixed the complete candidate environment. Both routes accept only references available from that candidate environment or the captured rule environment and require an ordinary reference to reach a reopened level.
 -/
 
 namespace A12Kernel
@@ -36,15 +36,14 @@ structure SurfaceHavingPresenceRef where
   field : SurfaceFieldPath
   deriving Repr, DecidableEq
 
+inductive SurfaceHavingNumericAtom where
+  | field (reference : SurfaceHavingNumberRef)
+  | repetition (reference : SurfaceHavingRepetitionRef)
+  deriving Repr, DecidableEq
+
 inductive SurfaceCorrelatedHaving where
-  | compareNumbers (op : SurfaceComparisonOp)
-      (left right : SurfaceHavingNumberRef)
-  | compareRepetitions (op : SurfaceComparisonOp)
-      (left right : SurfaceHavingRepetitionRef)
-  /-- A Number field against a decoded literal, the literal written second; a reader flips the
-      operator for a literal written first. -/
-  | compareNumberLiteral (op : SurfaceComparisonOp) (reference : SurfaceHavingNumberRef)
-      (literal : DecodedNumericLiteral)
+  | numeric (op : SurfaceComparisonOp)
+      (left right : AuthoredNumericExpr SurfaceHavingNumericAtom)
   /-- A String field against a literal. The operator slot is an `EqualityOp`, so a String ordering
       comparison is unrepresentable here rather than refused during elaboration — the same
       treatment the ordinary String comparison surface gives it, and what `spec/04`'s
@@ -63,6 +62,18 @@ inductive SurfaceCorrelatedHaving where
       row. The legacy one-group route still refuses it; only the star route admits it. -/
   | or (left right : SurfaceCorrelatedHaving)
   deriving Repr, DecidableEq
+
+def SurfaceCorrelatedHaving.compareNumbers (op : SurfaceComparisonOp)
+    (left right : SurfaceHavingNumberRef) : SurfaceCorrelatedHaving :=
+  .numeric op (.atom (.field left)) (.atom (.field right))
+
+def SurfaceCorrelatedHaving.compareRepetitions (op : SurfaceComparisonOp)
+    (left right : SurfaceHavingRepetitionRef) : SurfaceCorrelatedHaving :=
+  .numeric op (.atom (.repetition left)) (.atom (.repetition right))
+
+def SurfaceCorrelatedHaving.compareNumberLiteral (op : SurfaceComparisonOp)
+    (reference : SurfaceHavingNumberRef) (literal : DecodedNumericLiteral) : SurfaceCorrelatedHaving :=
+  .numeric op (.atom (.field reference)) (.literal literal)
 
 /-- The exact admitted validation shape: the error target is the outer Number guard, and the starred consumer is filtered by a genuinely correlated `Having`. Requiring `errorField = guardField` is this capsule's routing boundary, not a claim that every kernel rule has that shape. -/
 structure SurfaceSingleCorrelatedRule where
@@ -125,6 +136,9 @@ inductive CorrelationElabError where
       (rightPath : List String) (rightScale : Nat)
   /-- An equality against a literal carrying more fraction digits than the field's scale. -/
   | literalScaleMismatch (path : List String) (fieldScale : Nat) (literalScale : Int)
+  | constantNumericComparison
+  | numericExpressionUnsupported
+  | numericOperandFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
   | missingInner
   | missingOuter
   | errorGuardMismatch (errorPath guardPath : List String)
@@ -178,6 +192,7 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .wildcardOnRuleGroup | .wildcardWithParentNavigation _ =>
       some .noWildcardsAllowed
   | .equalityScaleMismatch _ _ _ _ | .literalScaleMismatch _ _ _ => some .invalidCompareDecimalPlaces
+  | .constantNumericComparison => some .invalidCompareToConst
   | .literalEqualityFieldNotNumber _ actual => literalComparisonDiagnostic? .number actual
   | .outerLevelUnbound _ unbound => unbound.diagnostic?
   | .resolve error => error.diagnostic?
@@ -190,6 +205,7 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .repetitionGroupMismatch _ _ | .unknownRepetitionGroup _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute
   | .missingOuter | .errorGuardMismatch _ _
+  | .numericExpressionUnsupported | .numericOperandFieldNotNumber _ _
   | .incoherentCore => none
 
 end CorrelationElabError
@@ -203,11 +219,10 @@ end CorrelationElabError
 def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) :
     SurfaceCorrelatedHaving → Option (List String × UnboundOperandLevel)
-  | .compareNumbers _ left right =>
-      (field left.origin left.field).orElse fun _ => field right.origin right.field
-  | .compareRepetitions _ left right =>
-      (group left.origin left.group).orElse fun _ => group right.origin right.group
-  | .compareNumberLiteral _ reference _ => field reference.origin reference.field
+  | .numeric _ left right =>
+      (left.atoms ++ right.atoms).findSome? fun
+        | .field reference => field reference.origin reference.field
+        | .repetition reference => group reference.origin reference.group
   | .compareStrings _ reference _ => field reference.origin reference.field
   | .presence _ reference => field reference.origin reference.field
   | .and left right | .or left right =>
@@ -328,10 +343,11 @@ private def orderingSides (left right : Except CorrelationElabError ResolvedNumb
       throw (.orderingFieldNotNumber path actual .number)
   | .ok _, .error error => throw error
 
-private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
-    SurfaceCorrelatedHaving →
-    Except CorrelationElabError CorrelatedHaving
-  | .compareNumbers op left right => do
+private def elaborateHavingNumeric (resolvers : HavingLeafResolvers)
+    (op : SurfaceComparisonOp) (left right : AuthoredNumericExpr SurfaceHavingNumericAtom) :
+    Except CorrelationElabError CorrelatedHaving := do
+  match left, right with
+  | .atom (.field left), .atom (.field right) => do
       let coreOp := op.toCorrelation
       let resolve (reference : SurfaceHavingNumberRef) :=
         resolvers.number reference.origin reference.field
@@ -349,7 +365,8 @@ private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
           leftResolved.declaration.path leftResolved.core.field.info.scale
           rightResolved.declaration.path rightResolved.core.field.info.scale)
       pure (.compareNumbers coreOp leftResolved.core rightResolved.core)
-  | .compareNumberLiteral op reference literal => do
+  | .atom (.field reference), .literal literal
+  | .literal literal, .atom (.field reference) => do
       let coreOp := op.toCorrelation
       let resolved ← (resolvers.number reference.origin reference.field).mapError fun
         | .fieldNotNumber path actual =>
@@ -360,12 +377,37 @@ private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
       if !coreOp.acceptsLiteralScale resolved.core.field literal then
         throw (.literalScaleMismatch resolved.declaration.path resolved.core.field.info.scale
           literal.authoredScale)
-      pure (.compareNumberLiteral coreOp resolved.core literal)
-  | .compareRepetitions op left right => do
+      pure (.leaf (.numeric
+        { op := .ordinary coreOp.toNumeric
+          left := left.map (fun _ => .field resolved.core)
+          right := right.map (fun _ => .field resolved.core) }))
+  | .atom (.repetition left), .atom (.repetition right) => do
       let coreOp := op.toCorrelation
       pure (.compareRepetitions coreOp
         (← resolvers.repetition left.origin left.group)
         (← resolvers.repetition right.origin right.group))
+  | _, _ =>
+      let resolve : SurfaceHavingNumericAtom → Except CorrelationElabError HavingNumericAtom
+        | .field reference => do
+            let resolved ← (resolvers.number reference.origin reference.field).mapError fun
+              | .fieldNotNumber path actual => .numericOperandFieldNotNumber path actual
+              | error => error
+            pure (.field resolved.core)
+        | .repetition reference =>
+            (.repetition ·) <$> resolvers.repetition reference.origin reference.group
+      let leftCore ← left.mapM resolve
+      let rightCore ← right.mapM resolve
+      if leftCore.isImmediateLiteral && rightCore.isImmediateLiteral then
+        throw .constantNumericComparison
+      let comparison : NumericComparisonOf HavingNumericAtom :=
+        { op := .ordinary op.toCorrelation.toNumeric, left := leftCore, right := rightCore }
+      if !comparison.havingAdmitted (fun _ => true) then
+        throw .numericExpressionUnsupported
+      pure (.leaf (.numeric comparison))
+
+private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
+    SurfaceCorrelatedHaving → Except CorrelationElabError CorrelatedHaving
+  | .numeric op left right => elaborateHavingNumeric resolvers op left right
   | .compareStrings op reference expected => do
       pure (.compareStringLiteral op
         (← resolvers.string reference.origin reference.field) expected)
@@ -394,17 +436,15 @@ private def FlatModel.resolveHavingNumberRead (model : FlatModel) (declaringGrou
     reference reads the captured outer row, not the level the filter reopens. -/
 private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) : SurfaceCorrelatedHaving → Bool
-  | .compareNumbers _ left right =>
-      [left, right].any fun reference =>
-        reference.origin == .inner &&
-          (model.resolveNumberInGroup declaringGroup group reference.field).isOk
+  | .numeric _ left right =>
+      (left.atoms ++ right.atoms).any fun
+        | .field reference => reference.origin == .inner &&
+            (model.resolveNumberInGroup declaringGroup group reference.field).isOk
+        | .repetition _ => false
   | .and left right | .or left right =>
       left.readsGroupNumber model declaringGroup group ||
         right.readsGroupNumber model declaringGroup group
-  | .compareNumberLiteral _ reference _ =>
-      reference.origin == .inner &&
-        (model.resolveNumberInGroup declaringGroup group reference.field).isOk
-  | .compareRepetitions _ _ _ | .compareStrings _ _ _ | .presence _ _ => false
+  | .compareStrings _ _ _ | .presence _ _ => false
 
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
     body in authored order, so each leaf's reads and comparison class answer as it closes; the
@@ -551,11 +591,10 @@ def CheckedStarHaving.condition
 def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
     (declaringGroup : GroupPath) (candidateLevels : List RepeatableLevel) :
     SurfaceCorrelatedHaving → Option CorrelationElabError
-  | .compareNumbers _ left right =>
-      (field left.origin left.field).orElse fun _ => field right.origin right.field
-  | .compareRepetitions _ left right =>
-      (group left.origin left.group).orElse fun _ => group right.origin right.group
-  | .compareNumberLiteral _ reference _ => field reference.origin reference.field
+  | .numeric _ left right =>
+      (left.atoms ++ right.atoms).findSome? fun
+        | .field reference => field reference.origin reference.field
+        | .repetition reference => group reference.origin reference.group
   | .compareStrings _ reference _ => field reference.origin reference.field
   | .presence _ reference => field reference.origin reference.field
   | .and left right | .or left right =>
@@ -576,7 +615,7 @@ where
       !candidateLevels.contains level
     pure (.repetitionOutsideEnvironment .inner resolved.path candidateLevels missing)
 
-/-- Lower the source-closed Number/repetition-comparison filter fragment against one validated star plan. The result retains the shared filter tree and exact candidate/captured environment split; wider filter leaves remain outside this fragment. -/
+/-- Lower the supported numeric-expression, String and presence filter tree against one validated star plan. The result retains the authored connectives and exact candidate/captured environment split established by the checked references. -/
 def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError (CheckedStarHaving model source declaringGroup) := do

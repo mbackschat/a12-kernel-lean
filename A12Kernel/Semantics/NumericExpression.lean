@@ -206,6 +206,14 @@ def mapM {SourceAtom TargetAtom Error : Type}
   | .round mode places body =>
       (body.mapM resolve).map (.round mode places)
 
+/-- Numeric sources in authored occurrence order, without deduplication or loss of repeated reads. -/
+def atoms : AuthoredNumericExpr Atom → List Atom
+  | .atom source => [source]
+  | .literal _ => []
+  | .group body | .abs body | .extremumCall _ body | .round _ _ body => body.atoms
+  | .binary _ left right | .power left right | .extremum _ left right =>
+      left.atoms ++ right.atoms
+
 def hasAtom : AuthoredNumericExpr Atom → Bool
   | .atom _ => true
   | .literal _ => false

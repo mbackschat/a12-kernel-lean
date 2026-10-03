@@ -80,14 +80,10 @@ private def outerHavingRepetitionIterationScope
 private def correlatedHavingOuterIterationScopes
     (model : FlatModel) :
     CorrelatedHaving → List (Option (List RepeatableLevel))
-  | .leaf (.compareNumbers _ left right) =>
-      [outerHavingNumberIterationScope model left,
-        outerHavingNumberIterationScope model right]
-  | .leaf (.compareRepetitions _ left right) =>
-      [outerHavingRepetitionIterationScope model left,
-        outerHavingRepetitionIterationScope model right]
-  | .leaf (.compareNumberLiteral _ reference _) =>
-      [outerHavingNumberIterationScope model reference]
+  | .leaf (.numeric comparison) =>
+      (comparison.left.atoms ++ comparison.right.atoms).map fun
+        | .field reference => outerHavingNumberIterationScope model reference
+        | .repetition reference => outerHavingRepetitionIterationScope model reference
   | .leaf (.compareStringLiteral _ reference _) =>
       [outerHavingFieldIterationScope model reference.origin reference.field.id]
   | .leaf (.presence _ reference) =>

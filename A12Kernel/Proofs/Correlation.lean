@@ -373,23 +373,18 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
   induction condition with
   | leaf leaf =>
       cases leaf with
-      | compareNumbers op left right =>
-          cases leftResolved : left.resolveIn context frame <;>
-            cases rightResolved : right.resolveIn context frame <;>
-            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
-              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
-              CorrelationComparisonOp.evalOperands, leftResolved, rightResolved]
-      | compareRepetitions op left right =>
-          cases leftResolved : frame.rowAt? left <;>
-            cases rightResolved : frame.rowAt? right <;>
-            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
-              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
-              CorrelationComparisonOp.evalRows, leftResolved, rightResolved]
-      | compareNumberLiteral op reference literal =>
-          cases resolved : reference.resolveIn context frame <;>
-            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
-              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
-              CorrelationComparisonOp.evalOperands, resolved]
+      | numeric comparison =>
+          cases left : comparison.left.lowerForEvaluation.evalAdmittedValidation?
+              (HavingNumericAtom.readValidation context frame) <;>
+            cases right : comparison.right.lowerForEvaluation.evalAdmittedValidation?
+              (HavingNumericAtom.readValidation context frame) <;>
+            simp only [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+              ConditionTree.evalK, CorrelatedHavingLeaf.evalTruthIn,
+              CorrelatedHavingLeaf.HoldsIn, NumericComparisonOf.evalWith, left, right]
+          all_goals try { solve | simp [CorrelatedHavingLeaf.verdictTruth] }
+          rename_i l r
+          cases verdict : comparison.op.evalArithmeticWith l r <;>
+            simp [CorrelatedHavingLeaf.verdictTruth, verdict]
       | compareStringLiteral op reference expected =>
           -- The String leaf's truth is a projection of the shared direct-String verdict, so the
           -- bridge is decided by that verdict alone rather than by the operand's own cases.
@@ -604,11 +599,18 @@ theorem currentRepetition_selfExclusion_false
       { innerRow := outerRow, outerRow } = .fls := by
   simp [CorrelatedHaving.evalTruth, CorrelatedHaving.evalTruthIn,
     CorrelatedHaving.compareRepetitions, CorrelatedHavingLeaf.evalTruthIn,
-    CorrelationComparisonOp.evalRows, CorrelationFrame.rowAt?,
+    CorrelatedHavingLeaf.compareRepetitions,
+    HavingNumericAtom.readValidation,
+    NumericComparisonOf.evalWith, AuthoredNumericExpr.lowerForEvaluation,
+    LoweredNumericExpr.evalAdmittedValidation?, LoweredNumericExpr.evalNumericOperation?,
+    LoweredNumericExpr.isNumericOperation, LoweredNumericExpr.evalNumericOperationTree,
+    NumericValidationOp.evalArithmeticWith, NumericValidationOp.eval,
+    NumericComparisonOp.eval, CorrelatedHavingLeaf.verdictTruth,
+    CorrelationComparisonOp.toNumeric, NumericComparisonOp.holds,
+    CorrelationFrame.rowAt?,
     CorrelationFrame.envAt, SingleGroupFilterFrame.toCorrelationFrame,
     SingleGroupValidationContext.envAt, Env.uniqueRowAt?, Env.bindingAt,
-    Except.toOption, positive,
-    CorrelationComparisonOp.holdsRow]
+    Except.toOption, positive]
 
 /-- A poison found while prefetching the successor of the first kept candidate wins before the consumer can inspect that candidate. -/
 theorem computationHavingScan_poisonedSuccessor_precedesCurrent
@@ -695,19 +697,29 @@ theorem explicitSelfExclusion_drops_outer (star : SingleCorrelatedStar)
   · simp [SingleCorrelatedStar.select, SingleCorrelatedStar.keeps, condition,
       CorrelatedHaving.keepsEnvironment, CorrelatedHaving.evalTruthIn,
       CorrelatedHaving.compareRepetitions, CorrelatedHavingLeaf.evalTruthIn,
-      CorrelationComparisonOp.evalRows,
-      CorrelationFrame.rowAt?, CorrelationFrame.envAt,
-      SingleGroupValidationContext.envAt,
-      Env.uniqueRowAt?, Env.bindingAt, Except.toOption, positive,
-      CorrelationComparisonOp.holdsRow, K.and]
+      CorrelatedHavingLeaf.compareRepetitions, HavingNumericAtom.readValidation,
+      NumericComparisonOf.evalWith, AuthoredNumericExpr.lowerForEvaluation,
+      LoweredNumericExpr.evalAdmittedValidation?, LoweredNumericExpr.evalNumericOperation?,
+      LoweredNumericExpr.isNumericOperation, LoweredNumericExpr.evalNumericOperationTree,
+      NumericValidationOp.evalArithmeticWith, NumericValidationOp.eval,
+      NumericComparisonOp.eval, CorrelatedHavingLeaf.verdictTruth,
+      CorrelationComparisonOp.toNumeric, NumericComparisonOp.holds,
+      SingleGroupValidationContext.envAt, CorrelationFrame.rowAt?, CorrelationFrame.envAt,
+      Env.uniqueRowAt?, Env.bindingAt, Except.toOption,
+      positive, K.and]
   · have zero : outerRow = 0 := Classical.byContradiction positive
     subst outerRow
     simp [SingleCorrelatedStar.select, SingleCorrelatedStar.keeps, condition,
       CorrelatedHaving.keepsEnvironment, CorrelatedHaving.evalTruthIn,
       CorrelatedHaving.compareRepetitions, CorrelatedHavingLeaf.evalTruthIn,
-      CorrelationComparisonOp.evalRows,
-      CorrelationFrame.rowAt?, CorrelationFrame.envAt,
-      SingleGroupValidationContext.envAt,
+      CorrelatedHavingLeaf.compareRepetitions, HavingNumericAtom.readValidation,
+      NumericComparisonOf.evalWith, AuthoredNumericExpr.lowerForEvaluation,
+      LoweredNumericExpr.evalAdmittedValidation?, LoweredNumericExpr.evalNumericOperation?,
+      LoweredNumericExpr.isNumericOperation, LoweredNumericExpr.evalNumericOperationTree,
+      NumericValidationOp.evalArithmeticWith,
+      CorrelatedHavingLeaf.verdictTruth,
+      CorrelationComparisonOp.toNumeric,
+      SingleGroupValidationContext.envAt, CorrelationFrame.rowAt?, CorrelationFrame.envAt,
       Env.uniqueRowAt?, Env.bindingAt, Except.toOption,
       K.and]
     cases evaluation : rest.evalTruthIn rows.asCorrelationContext
@@ -756,9 +768,16 @@ theorem sameFieldEquality_selfMatches (star : SingleCorrelatedStar)
   simp [SingleCorrelatedStar.select, candidate, SingleCorrelatedStar.keeps, condition,
     CorrelatedHaving.keepsEnvironment, CorrelatedHaving.evalTruthIn,
     CorrelatedHaving.compareNumbers, CorrelatedHavingLeaf.evalTruthIn,
-    CorrelationComparisonOp.evalOperands,
-    innerSelected, outerSelected,
-    CorrelationComparisonOp.holdsRat, CorrelationComparisonOp.toNumeric, NumericComparisonOp.holds]
+    CorrelatedHavingLeaf.compareNumbers,
+    HavingNumericAtom.readValidation,
+    NumericComparisonOf.evalWith, AuthoredNumericExpr.lowerForEvaluation,
+    LoweredNumericExpr.evalAdmittedValidation?, LoweredNumericExpr.evalNumericOperation?,
+    LoweredNumericExpr.isNumericOperation, LoweredNumericExpr.evalNumericOperationTree,
+    NumericValidationOp.evalArithmeticWith, NumericValidationOp.eval,
+    NumericComparisonOp.eval, NumericFillability.fixed, CorrelatedHavingLeaf.verdictTruth,
+    CorrelationComparisonOp.toNumeric, NumericComparisonOp.holds,
+    NumericComparisonOp.fillCanBreak,
+    innerSelected, outerSelected]
 
 /-- **A filter whose truth does not depend on the candidate selects all of them or none.** This is
     the internal law behind a measured runtime fact: a filter reference naming a repeatable level the
@@ -806,16 +825,11 @@ theorem correlatedHaving_referencesMarkedField_referencesField
   induction condition with
   | leaf leaf =>
     cases leaf with
-    | compareNumbers op left right =>
+    | numeric comparison =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds,
-        List.mem_eraseDups, List.mem_map, List.mem_filter] at marked ⊢
-      obtain ⟨reference, ⟨member, _⟩, rfl⟩ := marked
-      simp at member
-      rcases member with rfl | rfl <;> simp
-    | compareRepetitions => simp [CorrelatedHaving.markedFieldIds] at marked
-    | compareNumberLiteral op reference literal =>
-      simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
-      split at marked <;> simp_all
+        List.mem_eraseDups, List.mem_filterMap, List.mem_filter] at marked ⊢
+      obtain ⟨atom, ⟨member, _⟩, projected⟩ := marked
+      exact ⟨atom, member, projected⟩
     | compareStringLiteral op reference expected =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
       split at marked <;> simp_all

@@ -111,28 +111,12 @@ theorem correlatedHaving_wellFormed_equalityScalesAgree
   induction condition with
   | leaf leaf =>
       cases leaf with
-      | compareNumbers op left right =>
-          cases op with
-          | equal | notEqual =>
-              simp only [CorrelatedHaving.wellFormedForSingleGroup,
-                ConditionTree.allLeaves,
-                CorrelatedHavingLeaf.wellFormedForSingleGroup,
-                CorrelatedHaving.equalityScalesAgree,
-                CorrelatedHavingLeaf.equalityScalesAgree,
-                Bool.and_eq_true] at wellFormed ⊢
-              exact wellFormed.2
-          | lessThan | lessEqual | greaterThan | greaterEqual =>
-              rfl
-      | compareNumberLiteral op reference literal =>
-          simp only [CorrelatedHaving.wellFormedForSingleGroup,
-            ConditionTree.allLeaves,
+      | numeric comparison =>
+          simp only [CorrelatedHaving.wellFormedForSingleGroup, ConditionTree.allLeaves,
             CorrelatedHavingLeaf.wellFormedForSingleGroup,
-            CorrelatedHaving.equalityScalesAgree,
-            CorrelatedHavingLeaf.equalityScalesAgree,
-            Bool.and_eq_true] at wellFormed ⊢
-          exact wellFormed.2
-      | compareRepetitions =>
-          rfl
+            NumericComparisonOf.havingAdmitted, NumericComparisonOf.admittedWith,
+            Bool.and_eq_true] at wellFormed
+          exact wellFormed.2.2
       | compareStringLiteral | presence =>
           -- Vacuous: the legacy one-group predicate refuses both leaves outright, so each
           -- branch's hypothesis is `false = true`. The scale law itself admits them.

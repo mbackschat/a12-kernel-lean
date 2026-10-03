@@ -29,9 +29,20 @@ private def presencePolarity? : String → Option HavingPresencePolarity
   | "FieldNotFilled" => some .notFilled
   | _ => none
 
-/-- A `Having` body (spec §9). Which comparison arm a read takes follows its operands: a quoted
-literal compares a String, `CurrentRepetition` on both sides compares rows, two field reads compare
-Numbers, and a field beside a Number literal on either side compares the field with that literal. -/
+private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
+  | .value { path, index := none, category := none } =>
+      match path.havingField? with
+      | some (origin, field) => pure (.field { origin, field })
+      | none => refuse "Having" "numeric field"
+  | .call "CurrentRepetition" [.mk (.entity { path, index := none, category := none })
+        none none] none none =>
+      match path.havingGroup? with
+      | some (origin, group) => pure (.repetition { origin, group })
+      | none => refuse "Having" "CurrentRepetition"
+  | other => refuse "Having" other.construct
+
+/-- A filter comparison uses the shared numeric expression reader over correlated field and
+repetition atoms. String equality and presence keep their distinct operand domains. -/
 partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
   | .parens body => lowerHaving body
   | .logic op (first :: rest) => do
@@ -52,43 +63,9 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
           | some (origin, field), .equal => pure (.compareStrings .equal { origin, field } expected)
           | some (origin, field), .notEqual => pure (.compareStrings .notEqual { origin, field } expected)
           | _, _ => refuse "Having" "String comparison"
-      | .value { path := leftPath, index := none, category := none },
-          .value { path := rightPath, index := none, category := none } =>
-          match leftPath.havingField?, rightPath.havingField? with
-          | some (leftOrigin, leftField), some (rightOrigin, rightField) =>
-              pure (.compareNumbers surfaceOp { origin := leftOrigin, field := leftField }
-                { origin := rightOrigin, field := rightField })
-          | _, _ => refuse "Having" "field comparison"
-      | .value { path, index := none, category := none }, .number text =>
-          numberLiteral surfaceOp path text
-      | .number text, .value { path, index := none, category := none } =>
-          numberLiteral (flip surfaceOp) path text
-      | .call "CurrentRepetition" [.mk (.entity { path := leftPath, index := none, category := none })
-            none none] none none,
-          .call "CurrentRepetition" [.mk (.entity { path := rightPath, index := none, category := none })
-            none none] none none =>
-          match leftPath.havingGroup?, rightPath.havingGroup? with
-          | some (leftOrigin, leftGroup), some (rightOrigin, rightGroup) =>
-              pure (.compareRepetitions surfaceOp { origin := leftOrigin, group := leftGroup }
-                { origin := rightOrigin, group := rightGroup })
-          | _, _ => refuse "Having" "CurrentRepetition"
-      | _, _ => refuse "Having" "comparison shape"
+      | _, _ => pure (.numeric surfaceOp (← lowerNumericExpr lowerHavingNumericAtom left)
+          (← lowerNumericExpr lowerHavingNumericAtom right))
   | other => refuse "Having" other.construct
-where
-  /-- A field compared with a Number literal; a literal written first is the same comparison with
-  its operator flipped. -/
-  numberLiteral (op : SurfaceComparisonOp) (path : Path) (text : String) :
-      Lowering SurfaceCorrelatedHaving :=
-    match path.havingField?, decodeNumber? text with
-    | some (origin, field), some literal => pure (.compareNumberLiteral op { origin, field } literal)
-    | _, _ => refuse "Having" "Number literal comparison"
-  flip : SurfaceComparisonOp → SurfaceComparisonOp
-    | .equal => .equal
-    | .notEqual => .notEqual
-    | .less => .greater
-    | .lessEqual => .greaterEqual
-    | .greater => .less
-    | .greaterEqual => .lessEqual
 
 /-- Whether an unstarred path names a field of the model, read at the operator's group. -/
 def namesField (model : FlatModel) (group : GroupPath) (path : SurfaceFieldPath) : Bool :=

@@ -49,12 +49,20 @@ def HavingRepetitionRef.availableIn (reference : HavingRepetitionRef) (model : F
   (reference.scope? model).any fun scope =>
     repeatableScopeAvailable scope (reference.origin.availableLevels candidateLevels outerLevels)
 
+/-- Only ordinary, unsuppressed numeric comparisons belong to the current filter surface. -/
+def NumericComparisonOf.havingAdmitted (comparison : NumericComparisonOf HavingNumericAtom)
+    (admitted : HavingNumericAtom → Bool) : Bool :=
+  (match comparison.op with | .ordinary _ => true | .tolerance _ => false) &&
+    !comparison.suppressExactScaleWarning && comparison.admittedWith admitted HavingNumericAtom.summary
+
 /-- Operator-specific static scale law for one filter leaf: `==` and `!=` are gated, ordering is exempt. -/
 def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
-  | .compareNumbers op left right =>
-      op.acceptsScales left.field right.field
-  | .compareNumberLiteral op reference literal => op.acceptsLiteralScale reference.field literal
-  | .compareRepetitions _ _ _ => true
+  | .numeric comparison =>
+      match comparison.left.summary? HavingNumericAtom.summary,
+          comparison.right.summary? HavingNumericAtom.summary with
+      | some left, some right => comparison.op.acceptsScalesWithSuppression
+          comparison.suppressExactScaleWarning left right
+      | _, _ => false
   -- Neither text nor presence carries a declared scale, so the numeric scale law has nothing to
   -- say about either leaf.
   | .compareStringLiteral _ _ _ | .presence _ _ => true
@@ -65,15 +73,9 @@ def CorrelatedHaving.equalityScalesAgree (condition : CorrelatedHaving) : Bool :
 
 def CorrelatedHavingLeaf.wellFormedForSingleGroup
     (model : FlatModel) (group : RepeatableGroupDecl) : CorrelatedHavingLeaf → Bool
-  | .compareNumbers op left right =>
-      model.admitsSingleGroupNumber group left.field &&
-      model.admitsSingleGroupNumber group right.field &&
-      op.acceptsScales left.field right.field
-  | .compareNumberLiteral op reference literal =>
-      model.admitsSingleGroupNumber group reference.field &&
-        op.acceptsLiteralScale reference.field literal
-  | .compareRepetitions _ left right =>
-      left.source == .repeatable group.level && right.source == .repeatable group.level
+  | .numeric comparison => comparison.havingAdmitted fun
+      | .field reference => model.admitsSingleGroupNumber group reference.field
+      | .repetition reference => reference.source == .repeatable group.level
   -- The legacy one-group adapter admits only the leaves it was built for. The String and presence
   -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
   -- extending an adapter no current consumer needs them on.
@@ -108,16 +110,9 @@ private def FlatModel.admitsHavingStringInEnvironment (model : FlatModel)
 def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) :
     CorrelatedHavingLeaf → Bool
-  | .compareNumbers op left right =>
-      model.admitsHavingNumberInEnvironment candidateLevels outerLevels left &&
-        model.admitsHavingNumberInEnvironment candidateLevels outerLevels right &&
-        op.acceptsScales left.field right.field
-  | .compareNumberLiteral op reference literal =>
-      model.admitsHavingNumberInEnvironment candidateLevels outerLevels reference &&
-        op.acceptsLiteralScale reference.field literal
-  | .compareRepetitions _ left right =>
-      left.availableIn model candidateLevels outerLevels &&
-        right.availableIn model candidateLevels outerLevels
+  | .numeric comparison => comparison.havingAdmitted fun
+      | .field reference => model.admitsHavingNumberInEnvironment candidateLevels outerLevels reference
+      | .repetition reference => reference.availableIn model candidateLevels outerLevels
   | .compareStringLiteral _ reference _ =>
       model.admitsHavingStringInEnvironment candidateLevels outerLevels reference
   | .presence _ reference =>
@@ -151,13 +146,11 @@ private def HavingStringRef.reachesReopenedLevel (reference : HavingStringRef)
 
 def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
     (reopenedLevels : List RepeatableLevel) : CorrelatedHavingLeaf → Bool
-  | .compareNumbers _ left right =>
-      left.reachesReopenedLevel model reopenedLevels ||
-        right.reachesReopenedLevel model reopenedLevels
-  | .compareRepetitions _ left right =>
-      (left.origin == .inner && (left.scope? model).any (·.any reopenedLevels.contains)) ||
-        (right.origin == .inner && (right.scope? model).any (·.any reopenedLevels.contains))
-  | .compareNumberLiteral _ reference _ => reference.reachesReopenedLevel model reopenedLevels
+  | .numeric comparison =>
+      (comparison.left.atoms ++ comparison.right.atoms).any fun
+        | .field reference => reference.reachesReopenedLevel model reopenedLevels
+        | .repetition reference => reference.origin == .inner &&
+            (reference.scope? model).any (·.any reopenedLevels.contains)
   | .compareStringLiteral _ reference _ =>
       reference.reachesReopenedLevel model reopenedLevels
   | .presence _ reference =>

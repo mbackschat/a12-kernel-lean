@@ -1,6 +1,6 @@
 import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.Iteration
-import A12Kernel.Semantics.NumericLiteral
+import A12Kernel.Semantics.NumericExpression
 
 /-! # A12Kernel.Semantics.Correlation — captured outer `$` inside Having
 
@@ -34,6 +34,15 @@ inductive CorrelationComparisonOp where
   | greaterThan
   | greaterEqual
   deriving Repr, DecidableEq
+
+/-- The ordinary Number comparison operator a filter leaf's operator is. -/
+def CorrelationComparisonOp.toNumeric : CorrelationComparisonOp → NumericComparisonOp
+  | .equal => .equal
+  | .notEqual => .notEqual
+  | .lessThan => .less
+  | .lessEqual => .lessEqual
+  | .greaterThan => .greater
+  | .greaterEqual => .greaterEqual
 
 structure HavingNumberRef where
   origin : HavingOrigin
@@ -74,6 +83,24 @@ structure HavingRepetitionRef where
   source : HavingRepetitionSource
   deriving Repr, DecidableEq
 
+/-- A numeric filter source retains its origin even when nested inside arithmetic. -/
+inductive HavingNumericAtom where
+  | field (reference : HavingNumberRef)
+  | repetition (reference : HavingRepetitionRef)
+  deriving Repr, DecidableEq
+
+def HavingNumericAtom.origin : HavingNumericAtom → HavingOrigin
+  | .field reference => reference.origin
+  | .repetition reference => reference.origin
+
+def HavingNumericAtom.fieldId? : HavingNumericAtom → Option FieldId
+  | .field reference => some reference.field.id
+  | .repetition _ => none
+
+def HavingNumericAtom.summary : HavingNumericAtom → NumericScaleSummary
+  | .field reference => .field reference.field.info.scale
+  | .repetition _ => .field 0
+
 /-- One correlated filter frame. Both candidate and captured rule environments are
     explicit full repetition contexts. -/
 structure CorrelationFrame where
@@ -113,14 +140,7 @@ def CapturedSingleGroupContext.frame (context : CapturedSingleGroupContext)
 
 /-- Closed filter-only leaves. An outer reference cannot escape into an ordinary rule expression through this type; connective structure comes from the shared `ConditionTree`. -/
 inductive CorrelatedHavingLeaf where
-  | compareNumbers (op : CorrelationComparisonOp)
-      (left right : HavingNumberRef)
-  | compareRepetitions (op : CorrelationComparisonOp)
-      (left right : HavingRepetitionRef)
-  /-- A Number field against a literal, the literal written second. Only the field is read; the
-      literal's scale is a static gate the elaborator owns. -/
-  | compareNumberLiteral (op : CorrelationComparisonOp) (reference : HavingNumberRef)
-      (literal : DecodedNumericLiteral)
+  | numeric (comparison : NumericComparisonOf HavingNumericAtom)
   /-- A String field against a literal. The operator is an `EqualityOp` rather than the wider
       comparison type because the kernel refuses a String field in a numeric ordering comparison,
       so the exclusion is carried by this type instead of by a runtime check. -/
@@ -131,6 +151,28 @@ inductive CorrelatedHavingLeaf where
       condition. -/
   | presence (polarity : HavingPresencePolarity) (reference : HavingPresenceRef)
   deriving Repr, DecidableEq
+
+/-- Compatibility constructors use the same numeric root as arithmetic and repetition literals. -/
+def CorrelatedHavingLeaf.compareNumbers (op : CorrelationComparisonOp)
+    (left right : HavingNumberRef) : CorrelatedHavingLeaf :=
+  .numeric
+    { op := .ordinary op.toNumeric
+      left := .atom (.field left)
+      right := .atom (.field right) }
+
+def CorrelatedHavingLeaf.compareRepetitions (op : CorrelationComparisonOp)
+    (left right : HavingRepetitionRef) : CorrelatedHavingLeaf :=
+  .numeric
+    { op := .ordinary op.toNumeric
+      left := .atom (.repetition left)
+      right := .atom (.repetition right) }
+
+def CorrelatedHavingLeaf.compareNumberLiteral (op : CorrelationComparisonOp)
+    (reference : HavingNumberRef) (literal : DecodedNumericLiteral) : CorrelatedHavingLeaf :=
+  .numeric
+    { op := .ordinary op.toNumeric
+      left := .atom (.field reference)
+      right := .literal literal }
 
 /-- A correlated filter reuses the common connective tree while retaining its environment-sensitive leaf domain. -/
 abbrev CorrelatedHaving := ConditionTree CorrelatedHavingLeaf
@@ -159,10 +201,8 @@ def presence (polarity : HavingPresencePolarity)
 
 /-- Fields read by the filter in first authored occurrence order. Repetition-only leaves contribute no field dependency, and a String leaf contributes its single reference. -/
 def fieldIds : CorrelatedHaving → List FieldId
-  | .leaf (.compareNumbers _ left right) =>
-      [left.field.id, right.field.id].eraseDups
-  | .leaf (.compareRepetitions _ _ _) => []
-  | .leaf (.compareNumberLiteral _ reference _) => [reference.field.id]
+  | .leaf (.numeric comparison) =>
+      ((comparison.left.atoms ++ comparison.right.atoms).filterMap (·.fieldId?)).eraseDups
   | .leaf (.compareStringLiteral _ reference _) => [reference.field.id]
   | .leaf (.presence _ reference) => [reference.field]
   | .and left right | .or left right =>
@@ -175,11 +215,9 @@ def referencesField (condition : CorrelatedHaving) (field : FieldId) : Bool :=
     Kernel judges a marked read as the rule's own read, so these alone of a body's reads reach the
     rule's error-field gates ([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
 def markedFieldIds : CorrelatedHaving → List FieldId
-  | .leaf (.compareNumbers _ left right) =>
-      ([left, right].filter (·.origin == .outer)).map (·.field.id) |>.eraseDups
-  | .leaf (.compareRepetitions _ _ _) => []
-  | .leaf (.compareNumberLiteral _ reference _) =>
-      if reference.origin == .outer then [reference.field.id] else []
+  | .leaf (.numeric comparison) =>
+      ((comparison.left.atoms ++ comparison.right.atoms).filter (·.origin == .outer)
+        |>.filterMap (·.fieldId?)).eraseDups
   | .leaf (.compareStringLiteral _ reference _) =>
       if reference.origin == .outer then [reference.field.id] else []
   | .leaf (.presence _ reference) =>
@@ -201,16 +239,14 @@ private def HavingOrigin.isOuter : HavingOrigin → Bool
   | .outer => true
 
 private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
-  | .compareNumbers _ left right => left.origin.isInner || right.origin.isInner
-  | .compareRepetitions _ left right => left.origin.isInner || right.origin.isInner
-  | .compareNumberLiteral _ reference _ => reference.origin.isInner
+  | .numeric comparison =>
+      comparison.left.anyAtom (·.origin.isInner) || comparison.right.anyAtom (·.origin.isInner)
   | .compareStringLiteral _ reference _ => reference.origin.isInner
   | .presence _ reference => reference.origin.isInner
 
 private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
-  | .compareNumbers _ left right => left.origin.isOuter || right.origin.isOuter
-  | .compareRepetitions _ left right => left.origin.isOuter || right.origin.isOuter
-  | .compareNumberLiteral _ reference _ => reference.origin.isOuter
+  | .numeric comparison =>
+      comparison.left.anyAtom (·.origin.isOuter) || comparison.right.anyAtom (·.origin.isOuter)
   | .compareStringLiteral _ reference _ => reference.origin.isOuter
   | .presence _ reference => reference.origin.isOuter
 
@@ -367,50 +403,54 @@ def HavingNumberRef.resolve (reference : HavingNumberRef)
     CorrelatedNumberOperand :=
   reference.resolveIn context.asCorrelationContext (frame.toCorrelationFrame context)
 
-/-- The ordinary Number comparison operator a filter leaf's operator is. -/
-def CorrelationComparisonOp.toNumeric : CorrelationComparisonOp → NumericComparisonOp
-  | .equal => .equal
-  | .notEqual => .notEqual
-  | .lessThan => .less
-  | .lessEqual => .lessEqual
-  | .greaterThan => .greater
-  | .greaterEqual => .greaterEqual
+/-- Filter Number atoms apply comparison-local empty zero before ordinary arithmetic. Missing raw
+    repetition bindings remain unknown; checked addressed readers report them structurally. -/
+def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : CorrelationFrame) :
+    HavingNumericAtom → Except Unit NumericArithmeticOutcome
+  | .field reference =>
+      match reference.resolveIn context frame with
+      | .value amount => .ok (.value amount .fixed)
+      | .unknown _ => .error ()
+  | .repetition reference =>
+      match frame.rowAt? reference with
+      | some row => .ok (.value row .fixed)
+      | none => .error ()
 
-/-- A filter Number comparison holds exactly as the ordinary comparison does. -/
-def CorrelationComparisonOp.holdsRat (op : CorrelationComparisonOp)
-    (left right : Rat) : Bool :=
-  op.toNumeric.holds left right
+def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationContext Error)
+    (frame : CorrelationFrame) :
+    HavingNumericAtom → Except Error (Except Unit NumericArithmeticOutcome)
+  | .field reference => do
+      pure (match ← reference.resolveInAtResolving .validation context frame with
+        | .value amount => .ok (.value amount .fixed)
+        | .unknown _ => .error ())
+  | .repetition reference => do
+      pure (.ok (.value (← frame.rowAtResolving context reference) .fixed))
 
-def CorrelationComparisonOp.holdsRow (op : CorrelationComparisonOp)
-    (left right : RowIndex) : Bool :=
-  match op with
-  | .equal => left == right
-  | .notEqual => left != right
-  | .lessThan => left < right
-  | .lessEqual => left ≤ right
-  | .greaterThan => right < left
-  | .greaterEqual => right ≤ left
+def HavingNumericAtom.readComputation (context : CorrelationContext) (frame : CorrelationFrame) :
+    HavingNumericAtom → NumericComputationResult
+  | .field reference =>
+      match reference.resolveInAt .computation context frame with
+      | .value amount => .value amount
+      | .unknown cause => .poison cause
+  | .repetition reference =>
+      match frame.rowAt? reference with
+      | some row => .value row
+      | none => .domainFailure
 
-def CorrelationComparisonOp.evalOperands (op : CorrelationComparisonOp)
-    (left right : CorrelatedNumberOperand) : K :=
-  match left, right with
-  | .value left, .value right => if op.holdsRat left right then .tru else .fls
-  | _, _ => .unknown
-
-def CorrelationComparisonOp.evalRows (op : CorrelationComparisonOp)
-    (left right : Option RowIndex) : K :=
-  match left, right with
-  | some left, some right => if op.holdsRow left right then .tru else .fls
-  | _, _ => .unknown
+def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationContext Error)
+    (frame : CorrelationFrame) : HavingNumericAtom → Except Error NumericComputationResult
+  | .field reference => do
+      pure (match ← reference.resolveInAtResolving .computation context frame with
+        | .value amount => .value amount
+        | .unknown cause => .poison cause)
+  | .repetition reference => do
+      pure (.value (← frame.rowAtResolving context reference))
 
 def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
     (frame : CorrelationFrame) : CorrelatedHavingLeaf → K
-  | .compareNumbers op left right =>
-      op.evalOperands (left.resolveIn context frame) (right.resolveIn context frame)
-  | .compareRepetitions op left right =>
-      op.evalRows (frame.rowAt? left) (frame.rowAt? right)
-  | .compareNumberLiteral op reference literal =>
-      op.evalOperands (reference.resolveIn context frame) (.value literal.value)
+  | .numeric comparison =>
+      CorrelatedHavingLeaf.verdictTruth
+        (comparison.evalWith (HavingNumericAtom.readValidation context frame))
   | .compareStringLiteral op reference expected =>
       CorrelatedHavingLeaf.verdictTruth
         ((reference.resolveInAt .validation context frame).evalDirectString op expected)
@@ -427,17 +467,12 @@ def CorrelatedHaving.evalTruthIn (condition : CorrelatedHaving)
 def CorrelatedHavingLeaf.evalTruthInResolving
     (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) : CorrelatedHavingLeaf → Except Error K
-  | .compareNumbers op left right => do
-      pure (op.evalOperands
-        (← left.resolveInAtResolving .validation context frame)
-        (← right.resolveInAtResolving .validation context frame))
-  | .compareRepetitions op left right => do
-      pure (op.evalRows
-        (some (← frame.rowAtResolving context left))
-        (some (← frame.rowAtResolving context right)))
-  | .compareNumberLiteral op reference literal => do
-      pure (op.evalOperands
-        (← reference.resolveInAtResolving .validation context frame) (.value literal.value))
+  | .numeric comparison => do
+      let left ← comparison.left.mapM (HavingNumericAtom.readValidationResolving context frame)
+      let right ← comparison.right.mapM (HavingNumericAtom.readValidationResolving context frame)
+      pure (CorrelatedHavingLeaf.verdictTruth
+        (({ comparison with left, right } :
+          NumericComparisonOf (Except Unit NumericArithmeticOutcome)).evalWith id))
   | .compareStringLiteral op reference expected => do
       pure (CorrelatedHavingLeaf.verdictTruth
         ((← reference.resolveInAtResolving .validation context frame).evalDirectString
@@ -458,26 +493,11 @@ def CorrelatedHaving.evalTruthInResolving (condition : CorrelatedHaving)
 def CorrelatedHavingLeaf.evalComputationIn (context : CorrelationContext)
     (frame : CorrelationFrame) : CorrelatedHavingLeaf →
       ComputationConditionResult
-  | .compareNumbers op left right =>
-      match left.resolveInAt .computation context frame with
-      | .unknown cause => .poison cause
-      | .value leftValue =>
-          match right.resolveInAt .computation context frame with
-          | .unknown cause => .poison cause
-          | .value rightValue =>
-              if op.holdsRat leftValue rightValue then .holds else .notTrue
-  | .compareRepetitions op left right =>
-      match frame.rowAt? left with
-      | none => .notTrue
-      | some leftRow =>
-          match frame.rowAt? right with
-          | none => .notTrue
-          | some rightRow =>
-              if op.holdsRow leftRow rightRow then .holds else .notTrue
-  | .compareNumberLiteral op reference literal =>
-      match reference.resolveInAt .computation context frame with
-      | .unknown cause => .poison cause
-      | .value value => if op.holdsRat value literal.value then .holds else .notTrue
+  | .numeric comparison =>
+      match comparison.evalComputationWith
+          (fun atom => Except.ok (ε := Empty) (atom.readComputation context frame)) with
+      | .ok result => result
+      | .error impossible => nomatch impossible
   | .compareStringLiteral op reference expected =>
       match reference.resolveInAt .computation context frame with
       | .unknown cause => .poison cause
@@ -506,22 +526,8 @@ def CorrelatedHavingLeaf.evalComputationInResolving
     (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) : CorrelatedHavingLeaf →
       Except Error ComputationConditionResult
-  | .compareNumbers op left right => do
-      match ← left.resolveInAtResolving .computation context frame with
-      | .unknown cause => pure (.poison cause)
-      | .value leftValue =>
-          match ← right.resolveInAtResolving .computation context frame with
-          | .unknown cause => pure (.poison cause)
-          | .value rightValue =>
-              pure (if op.holdsRat leftValue rightValue then .holds else .notTrue)
-  | .compareRepetitions op left right => do
-      let leftRow ← frame.rowAtResolving context left
-      let rightRow ← frame.rowAtResolving context right
-      pure (if op.holdsRow leftRow rightRow then .holds else .notTrue)
-  | .compareNumberLiteral op reference literal => do
-      match ← reference.resolveInAtResolving .computation context frame with
-      | .unknown cause => pure (.poison cause)
-      | .value value => pure (if op.holdsRat value literal.value then .holds else .notTrue)
+  | .numeric comparison =>
+      comparison.evalComputationWith (HavingNumericAtom.readComputationResolving context frame)
   | .compareStringLiteral op reference expected => do
       match ← reference.resolveInAtResolving .computation context frame with
       | .unknown cause => pure (.poison cause)
@@ -660,19 +666,13 @@ def CorrelatedHaving.scanComputationResolving
 
 def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
     (frame : CorrelationFrame) : CorrelatedHavingLeaf → Prop
-  | .compareNumbers op left right =>
-      ∃ leftValue rightValue,
-        left.resolveIn context frame = .value leftValue ∧
-        right.resolveIn context frame = .value rightValue ∧
-        op.holdsRat leftValue rightValue = true
-  | .compareRepetitions op left right =>
-      ∃ leftRow rightRow,
-        frame.rowAt? left = some leftRow ∧
-        frame.rowAt? right = some rightRow ∧
-        op.holdsRow leftRow rightRow = true
-  | .compareNumberLiteral op reference literal =>
-      ∃ value, reference.resolveIn context frame = .value value ∧
-        op.holdsRat value literal.value = true
+  | .numeric comparison =>
+      ∃ left right messagePolarity,
+        comparison.left.lowerForEvaluation.evalAdmittedValidation?
+          (HavingNumericAtom.readValidation context frame) = some left ∧
+        comparison.right.lowerForEvaluation.evalAdmittedValidation?
+          (HavingNumericAtom.readValidation context frame) = some right ∧
+        comparison.op.evalArithmeticWith left right = .fired messagePolarity
   | .compareStringLiteral op reference expected =>
       ∃ messagePolarity,
         (reference.resolveInAt .validation context frame).evalDirectString op expected

@@ -341,6 +341,18 @@ example :
         some (.literalScaleMismatch countDecl.path 0 1) := by
   native_decide
 
+example :
+    let field (origin : HavingOrigin) : AuthoredNumericExpr SurfaceHavingNumericAtom :=
+      .atom (.field (numberRef origin (absolute items.path "Count")))
+    let arithmetic := SurfaceCorrelatedHaving.numeric .less
+      (.binary .add (field .inner) (.literal { value := 1, authoredScale := 0 })) (field .outer)
+    let repetition := SurfaceCorrelatedHaving.numeric .greater
+      (.atom (.repetition (ruleGroupRef .inner))) (.literal { value := 1, authoredScale := 0 })
+    (elaborateSingleCorrelatedRule model items.path (absoluteRule arithmetic)).isOk &&
+      (elaborateSingleCorrelatedRule model items.path
+        (absoluteRule (.and (equalCount .inner .outer) repetition))).isOk := by
+  native_decide
+
 /- A star written on `RuleGroup` reaches the keyword-specific diagnostic before repetition matching. -/
 example : errorOf (elaborateSingleCorrelatedRule model items.path
     (absoluteRule (.compareRepetitions .equal

@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.Correlation
 
-/-! # A `Having` filter's Number field compared with a literal
+/-! # Numeric expressions inside `Having` filters
 
 A filter body is the ordinary condition production, so a Number field is compared with a literal by
 the ordinary operator and the ordinary literal scale gate. The
@@ -117,7 +117,11 @@ example :
 /- A repetition leaf's ordering operators compare row indices, the left row against the right. -/
 example :
     [CorrelationComparisonOp.lessEqual, .greaterThan, .greaterEqual].map (fun op =>
-      [(1, 2), (2, 2), (3, 2)].map fun (left, right) => op.holdsRow left right) =
+      [(1, 2), (2, 2), (3, 2)].map fun (left, right) =>
+        (CorrelatedHaving.compareRepetitions op
+          { origin := .inner, source := .repeatable rows }
+          { origin := .outer, source := .repeatable rows }).evalTruthIn context
+            { innerEnv := [(rows, left)], outerEnv := [(rows, right)] } == .tru) =
       [[true, true, false], [false, false, true], [false, true, true]] := by
   native_decide
 
@@ -128,6 +132,114 @@ example :
       (CorrelatedHaving.compareNumberLiteral .lessThan reference (literal 6)).evalComputationIn
         context (frame row)) =
       [.holds, .holds, .poison .malformed] := by
+  native_decide
+
+private def arithmeticFilter : CorrelatedHaving :=
+  .leaf (.numeric
+    { op := .ordinary .less
+      left := .binary .add (.atom (.field reference)) (.literal (literal 1))
+      right := .literal (literal 6) })
+
+example :
+    ([1, 2, 4].map fun row => arithmeticFilter.evalTruthIn context (frame row)) =
+      [.fls, .tru, .unknown] := by
+  native_decide
+
+example :
+    ([1, 2, 4].map fun row => arithmeticFilter.evalComputationIn context (frame row)) =
+      [.notTrue, .holds, .poison .malformed] := by
+  native_decide
+
+private def surfaceField (name : String) : AuthoredNumericExpr SurfaceHavingNumericAtom :=
+  .atom (.field
+    { origin := .inner
+      field := { base := .absolute, groups := ["Probe", "Rows"], field := name } })
+
+private def surfaceRepetition : AuthoredNumericExpr SurfaceHavingNumericAtom :=
+  .atom (.repetition
+    { origin := .inner
+      group := .path { base := .absolute, groups := ["Probe", "Rows"] } })
+
+example :
+    (checked? (.numeric .less
+      (.binary .add (surfaceField "V") (.literal (literal 1))) (.literal (literal 6)))).isOk &&
+    (checked? (.numeric .greater (.literal (literal 6))
+      (.binary .add (surfaceField "V") (.literal (literal 1))))).isOk &&
+    (checked? (.numeric .greater
+      (.binary .add (surfaceField "V") surfaceRepetition) (.literal (literal 2)))).isOk &&
+    [SurfaceComparisonOp.equal, .notEqual, .less, .lessEqual, .greater, .greaterEqual].all
+      (fun op => (checked? (.numeric op surfaceRepetition (.literal (literal 2)))).isOk) := by
+  native_decide
+
+example :
+    refusal? (.numeric .less (.literal (literal 1)) (.literal (literal 2))) =
+      some .constantNumericComparison ∧
+    CorrelationElabError.constantNumericComparison.diagnostic? =
+      some .invalidCompareToConst := by
+  native_decide
+
+example :
+    [SurfaceComparisonOp.equal, .notEqual].all (fun op =>
+      (refusal? (.numeric op (.literal (literal 1 1)) (surfaceField "V"))).bind
+        CorrelationElabError.diagnostic? == some .invalidCompareDecimalPlaces) &&
+    [SurfaceComparisonOp.equal, .notEqual].all (fun op =>
+      (refusal? (.numeric op (.literal (literal 1)) (surfaceField "S"))).bind
+        CorrelationElabError.diagnostic? == some .invalidCompareToEnumOrString) := by
+  native_decide
+
+private def repetitionLiteralFilter (op : NumericComparisonOp) : CorrelatedHaving :=
+  .leaf (.numeric
+    { op := .ordinary op
+      left := .atom (.repetition { origin := .inner, source := .repeatable rows })
+      right := .literal (literal 2) })
+
+example :
+    [NumericComparisonOp.equal, .notEqual, .less, .lessEqual, .greater, .greaterEqual].map
+      (fun op => [1, 2, 3].map fun row =>
+        (repetitionLiteralFilter op).evalTruthIn context (frame row)) =
+      [[.fls, .tru, .fls], [.tru, .fls, .tru], [.tru, .fls, .fls],
+        [.tru, .tru, .fls], [.fls, .fls, .tru], [.fls, .tru, .tru]] := by
+  native_decide
+
+private def composedDependencies : CorrelatedHaving :=
+  .leaf (.numeric
+    { op := .ordinary .less
+      left := .binary .add (.atom (.field reference))
+        (.atom (.repetition { origin := .outer, source := .repeatable rows }))
+      right := .binary .add (.atom (.field
+        { reference with origin := .outer, field := { reference.field with id := 1 } })) (.atom (.field reference)) })
+
+example : composedDependencies.fieldIds = [0, 1] ∧
+    composedDependencies.markedFieldIds = [1] ∧ composedDependencies.usesInner = true ∧
+    composedDependencies.usesOuter = true := by
+  native_decide
+
+private def failureComparison : CorrelatedHaving :=
+  .leaf (.numeric
+    { op := .ordinary .less
+      left := .binary .divide (.literal (literal 1)) (.atom (.field reference))
+      right := .atom (.field { reference with field := { reference.field with id := 1 } }) })
+
+private def resolvingContext (left : RawCell) : ResolvingCorrelationContext String where
+  read _ id := if id == 0 then .ok (checkedNumber left) else .error "right read"
+  bindingError _ := "binding"
+
+example : (match failureComparison.evalTruthInResolving
+    (resolvingContext (.rejected .malformed)) (frame 1) with
+    | .error error => error == "right read"
+    | .ok _ => false) = true := by
+  native_decide
+
+example : (match failureComparison.evalComputationInResolving
+    (resolvingContext (.rejected .malformed)) (frame 1) with
+    | .ok (.poison .malformed) => true
+    | _ => false) = true := by
+  native_decide
+
+example : (match failureComparison.evalComputationInResolving
+    (resolvingContext .empty) (frame 1) with
+    | .error error => error == "right read"
+    | .ok _ => false) = true := by
   native_decide
 
 end A12Kernel.Conformance.HavingNumberLiteral

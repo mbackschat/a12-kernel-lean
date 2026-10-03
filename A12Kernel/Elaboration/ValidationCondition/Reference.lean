@@ -169,12 +169,11 @@ private def havingStringReferencePointer (source : CheckedStarFieldPath model)
 private def correlatedHavingReferencePointers (source : CheckedStarFieldPath model)
     (environment : Env) : CorrelatedHaving →
     Except ReferenceProjectionError (List MessagePointer)
-  | .leaf (.compareNumbers _ left right) => do
-      pure [← havingNumberReferencePointer source environment left,
-        ← havingNumberReferencePointer source environment right]
-  | .leaf (.compareRepetitions _ _ _) => pure []
-  | .leaf (.compareNumberLiteral _ reference _) => do
-      pure [← havingNumberReferencePointer source environment reference]
+  | .leaf (.numeric comparison) => do
+      let pointers ← (comparison.left.atoms ++ comparison.right.atoms).mapM fun
+        | .field reference => do pure [← havingNumberReferencePointer source environment reference]
+        | .repetition _ => pure []
+      pure pointers.flatten
   | .leaf (.compareStringLiteral _ reference _) => do
       pure [← havingStringReferencePointer source environment reference]
   | .leaf (.presence _ reference) => do

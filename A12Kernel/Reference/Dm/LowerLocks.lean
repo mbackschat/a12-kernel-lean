@@ -117,6 +117,25 @@ example :
         { field := 3, coordinates := [] }]) := by
   native_decide
 
+private def numericFilterModel : FlatModel :=
+  { model with fields := model.fields ++ [
+      { id := 11, groupPath := ["Order", "Rows"], name := "N", repeatableScope := [10],
+        policy := { kind := .number { scale := 0, signed := true } } }] }
+
+example :
+    (do
+      let parsed ← (parseText .english
+        "FieldValuesNotUnique(Rows*/Note Having [Rows/N] + 1 < [$Amt] + CurrentRepetition(Rows))").toOption
+      let checked ← (lowerCondition numericFilterModel ["Order"] false parsed.body).toOption
+      pure ([2, 4, 11].filter checked.core.referencesField,
+        [2, 4, 11].filter checked.core.referencesErrorField,
+        (checked.core.referencePointers []).toOption)) =
+      some ([2, 4, 11], [2, 4], some [
+        { field := 2, coordinates := [.wildcard] },
+        { field := 11, coordinates := [.wildcard] },
+        { field := 4, coordinates := [] }]) := by
+  native_decide
+
 /- The Base-Year ladder's literal endpoints must reach the shared numeric carrier, including the
 reversed mixed endpoint. Invalid calendar text stays outside it (spec/05 §1). -/
 example :
@@ -481,17 +500,20 @@ example :
        (lowered ["Xf"] "CheckedYear" "FirstFilledValue(Y1, Y2)")].all id := by
   native_decide
 
-/- A filter's Number literal written first is the same comparison with its operator flipped, so the
-reader lowers `6 < [Rows/V]` to the leaf it lowers `[Rows/V] > 6` to, for every operator. -/
+/- Analyze and Translate need authored operand order, including a literal written first. -/
 example :
     let having (text : String) : Option SurfaceCorrelatedHaving :=
       match parseText .english text with
       | .ok parsed => (lowerHaving parsed.body).toOption
       | .error _ => none
-    [("6 < [Rows/V]", "[Rows/V] > 6"), ("6 <= [Rows/V]", "[Rows/V] >= 6"),
-     ("6 > [Rows/V]", "[Rows/V] < 6"), ("6 >= [Rows/V]", "[Rows/V] <= 6"),
-     ("6 == [Rows/V]", "[Rows/V] == 6"), ("6 != [Rows/V]", "[Rows/V] != 6")].all
-      (fun (first, second) => (having first).isSome && having first == having second) := by
+    let field : AuthoredNumericExpr SurfaceHavingNumericAtom := .atom (.field
+      { origin := .inner, field := { base := .relative 0, groups := ["Rows"], field := "V" } })
+    [("<", SurfaceComparisonOp.less), ("<=", .lessEqual), (">", .greater),
+     (">=", .greaterEqual), ("==", .equal), ("!=", .notEqual)].all (fun (text, op) =>
+      having ("6 " ++ text ++ " [Rows/V]") ==
+        some (.numeric op (.literal { value := 6, authoredScale := 0 }) field) &&
+      having ("[Rows/V] " ++ text ++ " 6") ==
+        some (.numeric op field (.literal { value := 6, authoredScale := 0 }))) := by
   native_decide
 
 /- The reader keeps a literal's authored scale, a written trailing zero included, and its sign and
@@ -501,13 +523,14 @@ example :
       match parseText .english text with
       | .ok parsed =>
           match lowerHaving parsed.body with
-          | .ok (.compareNumberLiteral op _ literal) => some (op, literal.value, literal.authoredScale)
+          | .ok (.numeric op _ (.literal literal))
+          | .ok (.numeric op (.literal literal) _) => some (op, literal.value, literal.authoredScale)
           | _ => none
       | .error _ => none
     [literal? "[Rows/V] == 1.0" == some (.equal, 1, 1),
      literal? "[Rows/V] == 1.50" == some (.equal, 3 / 2, 2),
      literal? "1.5 == [Rows/V]" == some (.equal, 3 / 2, 1),
-     literal? "1.5 > [Rows/V]" == some (.less, 3 / 2, 1),
+     literal? "1.5 > [Rows/V]" == some (.greater, 3 / 2, 1),
      literal? "[Rows/V] > -1" == some (.greater, -1, 0),
      literal? "[Rows/V] < 1234567890123456" == some (.less, 1234567890123456, 0)].all id := by
   native_decide

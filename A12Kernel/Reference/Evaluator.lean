@@ -342,7 +342,9 @@ private def correlationElaborationResult : CorrelationElabError →
   -- core and the wire vocabulary disagree, which is what `incoherentCore` reports; the public
   -- diagnostic vocabulary is deliberately left unchanged rather than widened for unreachable arms.
   | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
-  | .disjunctionOutsideStarRoute | .literalScaleMismatch _ _ _ => throw .incoherentCore
+  | .disjunctionOutsideStarRoute | .literalScaleMismatch _ _ _
+  | .constantNumericComparison | .numericExpressionUnsupported
+  | .numericOperandFieldNotNumber _ _ => throw .incoherentCore
   -- The constant leaf splits from the placement refusal for the Kernel projection only; the public
   -- code stays the one this input always had.
   | .fieldOutsideGroup origin fieldPath expectedGroup
