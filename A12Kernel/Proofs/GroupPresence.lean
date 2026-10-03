@@ -226,4 +226,23 @@ theorem groupCountInstances_contribution_eq_fixed
         numberOfFilledGroupsForComputationOperands] at ih ⊢
       rw [ih]
 
+namespace GroupPresenceOperator
+
+/-- A group predicate asks whether the shared zero-or-one count has its selected value. -/
+theorem evalComputation_holds_iff_count
+    (operator : GroupPresenceOperator) (cells : List CellObservation) (rows : Bool) :
+    operator.evalComputation cells rows = .holds ↔
+      groupInstanceContribution cells rows = (match operator with | .filled => 1 | .notFilled => 0) := by
+  cases operator <;> cases h : (groupPresentForComputation cells || rows) <;>
+    simp [GroupPresenceOperator.evalComputation, groupInstanceContribution, h]
+
+/-- Invalid descendants affect content but cannot turn either group predicate into a poison read. -/
+theorem evalComputation_ne_poison
+    (operator : GroupPresenceOperator) (cells : List CellObservation) (rows : Bool)
+    (cause : FormalCause) : operator.evalComputation cells rows ≠ .poison cause := by
+  cases operator <;> cases h : (groupPresentForComputation cells || rows) <;>
+    simp [GroupPresenceOperator.evalComputation, h]
+
+end GroupPresenceOperator
+
 end A12Kernel

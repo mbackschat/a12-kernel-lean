@@ -1,0 +1,77 @@
+{
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "cases": [
+    {
+      "model": "or_DM.json",
+      "command": [
+        "computation",
+        "add",
+        "<spec>",
+        "--dry-run"
+      ],
+      "spec": {
+        "name": "YComp",
+        "computedField": "/Form/Y",
+        "alternatives": [
+          {
+            "operation": "2",
+            "precondition": "GroupFilled(/Form) Or FieldFilled(/Form/Gate)"
+          }
+        ],
+        "messages": [
+          {
+            "locale": "en_US",
+            "text": "The target follows the group dependency."
+          }
+        ]
+      },
+      "exit": 1,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": false,
+      "codes": [
+        "MVK_ERROR_CALC_CYCLE"
+      ]
+    },
+    {
+      "model": "direct-cycle_DM.json",
+      "command": [
+        "computation",
+        "add",
+        "<spec>",
+        "--dry-run"
+      ],
+      "spec": {
+        "name": "YComp",
+        "computedField": "/Form/Y",
+        "alternatives": [
+          {
+            "operation": "[X]",
+            "precondition": "GroupFilled(/Form)"
+          }
+        ],
+        "messages": [
+          {
+            "locale": "en_US",
+            "text": "The target follows the group dependency."
+          }
+        ]
+      },
+      "exit": 1,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": false,
+      "codes": [
+        "MVK_ERROR_CALC_CYCLE"
+      ]
+    }
+  ]
+}

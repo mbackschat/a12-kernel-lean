@@ -1707,3 +1707,7 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 <a id="src-group-presence-computation-guards"></a>
 - [Computation group presence: stored invalidity, failed producers, self-group reads and bound rows](sources/computation-scheduling-probes.md#src-group-presence-computation-guards)
+
+
+<a id="src-group-presence-conditional-dependencies"></a>
+- [Ancestor group guards: conditional dependencies and live cycle controls](sources/computation-scheduling-probes.md#src-group-presence-conditional-dependencies)

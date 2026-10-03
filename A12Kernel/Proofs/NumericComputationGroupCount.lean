@@ -191,9 +191,10 @@ theorem readGroupCountOperand_fixed_error_iff_notAdmitted
   cases cells : reference.computationDescendants? model <;>
     cases rows : reference.repeatableDescendantShape? model <;>
       cases bound : reference.boundInstanceOperand model <;>
-        simp [Except.map, NumericComputationEvaluationContext.readGroupInstanceAt] <;>
+        simp [Except.map, NumericComputationEvaluationContext.readGroupInstanceAt,
+          FlatModel.computationGroupSource, ResolvedComputationGroupSource.read] <;>
         cases path : context.outer.pathForScope (model.repeatableScopeForGroupPath reference.path) <;>
-        simp [path, Except.mapError, bind, Except.bind, pure, Except.pure, Functor.map, Except.map]
+        simp [Except.mapError, Functor.map, Except.map]
 
 /-- The two group-count atom shapes gate an all-fixed operand list identically.
 

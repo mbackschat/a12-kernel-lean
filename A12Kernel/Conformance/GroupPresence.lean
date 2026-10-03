@@ -159,4 +159,27 @@ example : malformedOnly.activatesRelativeRequiredness = false := by native_decid
 example : (state [duplicate] false false).activatesRelativeRequiredness = true := by native_decide
 example : (state [empty] true true).activatesRelativeRequiredness = true := by native_decide
 
+example : GroupPresenceOperator.filled.evalComputation [.poison .malformed] false = .holds ∧
+    GroupPresenceOperator.notFilled.evalComputation [.poison .malformed] false = .notTrue ∧
+    GroupPresenceOperator.filled.evalComputation [.poison .computedDependency] false = .notTrue ∧
+    GroupPresenceOperator.notFilled.evalComputation [.poison .computedDependency] false = .holds ∧
+    GroupPresenceOperator.filled.evalComputation [] true = .holds ∧
+    GroupPresenceOperator.notFilled.evalComputation [] false = .holds := by native_decide
+
+private def scopedGroup : ResolvedComputationGroupSource :=
+  { scope := [10], fields := [1], rowLevels := [20] }
+
+private def scopedRows : Document :=
+  { instantiatedRows := [{ group := 10, path := [1] }, { group := 10, path := [2] },
+      { group := 20, path := [2, 1] }], rawCells := fun _ => none }
+
+example : (scopedGroup.eval .filled scopedRows (fun _ _ => empty) [(10, 1)]).toOption =
+    some .notTrue ∧
+    (scopedGroup.eval .filled scopedRows (fun _ _ => empty) [(10, 2)]).toOption =
+    some .holds := by native_decide
+
+example : (match scopedGroup.eval .filled scopedRows (fun _ _ => valid) [] with
+    | .error (.missingBinding 10) => true
+    | _ => false) = true := by native_decide
+
 end A12Kernel

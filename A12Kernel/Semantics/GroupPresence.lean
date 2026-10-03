@@ -1,3 +1,5 @@
+import A12Kernel.Document
+import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.NumericFillability
 import A12Kernel.Semantics.ValidationFillQuantifier
@@ -325,6 +327,44 @@ def numberOfFilledGroupsForValidationOperands
     itself reads. -/
 def groupPresentForComputation (cells : List CellObservation) : Bool :=
   cells.any CellObservation.presentForComputation
+
+/-- The two computation group predicates share the count's content projection. Unlike
+field-presence reads, neither predicate propagates poison; the retained computation group grid
+separates malformed stored input from a failed computed dependency. -/
+def GroupPresenceOperator.evalComputation (operator : GroupPresenceOperator)
+    (cells : List CellObservation) (rowInstantiated : Bool) : ComputationConditionResult :=
+  let present := groupPresentForComputation cells || rowInstantiated
+  let holds := match operator with
+    | .filled => present
+    | .notFilled => !present
+  if holds then .holds else .notTrue
+
+/-- One model-resolved group instance: fields outside deeper repeated rows and row levels
+at or below the group. The caller supplies an instantiated outer scope, or the empty scope
+for a fixed root instance; row content uses physical topology. -/
+structure ResolvedComputationGroupSource where
+  scope : List RepeatableLevel
+  fields : List FieldId
+  rowLevels : List RepeatableLevel
+  deriving Repr, DecidableEq
+
+/-- Read the same content slice for a group predicate and a numeric group count. Descendant row
+identity includes the enclosing coordinates; presence does not use a starred in-capacity extent. -/
+def ResolvedComputationGroupSource.read (source : ResolvedComputationGroupSource)
+    (document : Document) (readCell : Env → FieldId → CheckedCell) (outer : Env) :
+    Except EnvBindingError (List CellObservation × Bool) := do
+  let addressPrefix ← outer.pathForScope source.scope
+  pure (source.fields.map (fun field => observeCell .computation (readCell outer field)),
+    document.instantiatedRows.any fun row =>
+      source.rowLevels.contains row.group && addressPrefix.isPrefixOf row.path)
+
+/-- Evaluate either group predicate without erasing a missing or inconsistent outer binding. -/
+def ResolvedComputationGroupSource.eval (source : ResolvedComputationGroupSource)
+    (operator : GroupPresenceOperator) (document : Document)
+    (readCell : Env → FieldId → CheckedCell) (outer : Env) :
+    Except EnvBindingError ComputationConditionResult := do
+  let (cells, rows) ← source.read document readCell outer
+  pure (operator.evalComputation cells rows)
 
 /-- Whether one group instance's computation-phase reads show no instantiated descendant row, no
     value, and at least one formal failure: the malformed-only group that validation leaves

@@ -251,18 +251,12 @@ namespace NumericComputationEvaluationContext
 
 /-- Read one instance of a fixed group whose own scope `environment` binds: its cells at that scope,
     and whether a repeatable descendant holds a row under that instance's address, decided by the
-    validation slice's own `rowWithinGroup`. -/
+    shared `ResolvedComputationGroupSource`. -/
 def readGroupInstanceAt (context : NumericComputationEvaluationContext) (model : FlatModel)
     (groupPath : GroupPath) (environment : Env) :
     Except NumericComputationFault (List CellObservation × Bool) := do
-  let scope := model.repeatableScopeForGroupPath groupPath
-  let fields := (model.groupSubtreeFields groupPath).filter (·.repeatableScope == scope)
-  let addressPrefix ← (environment.pathForScope scope).mapError fun error =>
-    NumericComputationFault.repeatableAddressing error.toStarAddressingError
-  pure (fields.map (fun declaration =>
-      observeCell .computation (context.starRead environment declaration.id)),
-    context.document.instantiatedRows.any
-      (CheckedDocument.rowWithinGroup model groupPath addressPrefix))
+  (model.computationGroupSource groupPath).read context.document context.starRead environment
+    |>.mapError (fun error => .repeatableAddressing error.toStarAddressingError)
 
 /-- A fixed group-count operand's content, with the row constituent the scalar reader cannot express.
 
@@ -308,7 +302,7 @@ def readGroupContent (context : NumericComputationEvaluationContext) (model : Fl
 /-- Read a fixed group below a starred level once in each in-capacity environment of its starred
     ancestry, each instance exactly as `readGroupContent` reads a fixed operand's two constituents:
     its cells at that environment's own scope, and whether a repeatable descendant holds a row under
-    that environment's address, decided by the validation slice's own `rowWithinGroup`. An over-limit
+    that environment's address, decided by the shared `ResolvedComputationGroupSource`. An over-limit
     ancestor row supplies no environment, so its instance is not read
     ([checkpoint](../../../docs/SOURCES.md#src-ancestor-starred-group-count-computation)). -/
 def readGroupInstances (context : NumericComputationEvaluationContext) (model : FlatModel)

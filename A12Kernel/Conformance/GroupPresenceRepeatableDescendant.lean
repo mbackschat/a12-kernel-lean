@@ -115,4 +115,36 @@ example :
         some false := by
   native_decide
 
+private def computationOf (data : DocumentData) (group : GroupPath) (outer : Env := []) :
+    Option (ComputationConditionResult × ComputationConditionResult) := do
+  let checked ← checkedFor data
+  let source := model.computationGroupSource group
+  let context := checked.computationFillContext
+  pure (← (source.eval .filled context.document context.read outer).toOption,
+    ← (source.eval .notFilled context.document context.read outer).toOption)
+
+example : computationOf emptyRow ["Probe", "RowShell"] = some (.holds, .notTrue) ∧
+    computationOf noRows ["Probe", "RowShell"] = some (.notTrue, .holds) ∧
+    computationOf emptyRow ["Probe", "Flat"] = some (.holds, .notTrue) := by native_decide
+
+example : computationOf emptyRow ["Probe", "RowShell", "Rows"] [(10, 1)] =
+    some (.holds, .notTrue) := by native_decide
+
+private def overlayPresence (replacement : Option CheckedCell) : Option ComputationConditionResult := do
+  let checked ← checkedFor noRows
+  let placements := replacement.toList.map fun value =>
+    ({ address := { field := flatValue.id, path := [] }, cell := value } : CheckedCellPlacement)
+  let overlaid := checked.overlayCells [flatValue.id] placements
+  let context := overlaid.computationFillContext
+  ((model.computationGroupSource ["Probe", "Flat"]).eval .filled
+    context.document context.read []).toOption
+
+example : overlayPresence none = some .notTrue ∧
+    overlayPresence (some { rawPresent := true, parsed := none, findings := [.computedDependency] }) =
+      some .notTrue ∧
+    overlayPresence (some { rawPresent := true, parsed := none, findings := [.malformed] }) =
+      some .holds ∧
+    overlayPresence (some { rawPresent := true, parsed := some (.num 3), findings := [] }) =
+      some .holds := by native_decide
+
 end A12Kernel.Conformance.GroupPresenceRepeatableDescendant

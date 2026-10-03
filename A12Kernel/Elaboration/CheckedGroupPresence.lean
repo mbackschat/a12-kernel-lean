@@ -13,6 +13,15 @@ inductive CheckedGroupPresenceError where
   | incoherentRepeatableScope (scope : List RepeatableLevel)
   deriving Repr, DecidableEq
 
+/-- Resolve a computation group's two content constituents from model ownership. Deeper fields
+need no cell read once their physical row already supplies content; fixed descendants stay local. -/
+def FlatModel.computationGroupSource (model : FlatModel) (groupPath : GroupPath) :
+    ResolvedComputationGroupSource :=
+  let scope := model.repeatableScopeForGroupPath groupPath
+  { scope
+    fields := ((model.groupSubtreeFields groupPath).filter (·.repeatableScope == scope)).map (·.id)
+    rowLevels := (model.repeatableGroups.filter (groupPath.isPrefixOf ·.path)).map (·.level) }
+
 namespace CheckedDocument
 
 private def CheckedGroupPresenceError.ofEnvBinding : EnvBindingError →
