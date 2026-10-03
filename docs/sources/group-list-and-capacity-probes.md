@@ -1,5 +1,37 @@
 # Group-list and capacity source checkpoints
 
+<a id="src-filtered-field-fill-ranges"></a>
+#### Filtered field-fill lists retain selected declared slots and deciding operand polarity, measured 2026-10-03
+
+- `basis`: pinned a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, clean before and after; the artifact reports CLEAN, dmtool 0.13.0, kernel built/runtime 30.8.1. Structured `rule add` admitted all 49 rules. The maintained `:adapter:kernelProbe` ran full and partial validation on both strategies, agreeing on all nine documents.
+- `question`: whether a filter erases every missing declared slot, and whether the mere presence of a filtered operand forces every fired quantifier to OMISSION.
+- `model`: `Probe` owns direct Numbers A, B, C and `Rows(max 2)/R`. Every rule guards with `FieldFilled(C)` and reports at C; C is filled in every document. The inherited model's other fields are unused by these rules.
+- `matrix`: Q0–Q6 are All, No, AtLeastOne, MoreThanOne, NotAll, NotExactlyOne and NotCollectively, in that order. The operand lists are:
+
+| Code | Operand list |
+|---|---|
+| F0 | `Rows*/R` |
+| F1 | `Rows*/R Having CurrentRepetition(Rows) == 1` |
+| F2 | A then F1 |
+| F3 | F1 then A |
+| F4 | `Rows*/R Having [Rows/R] > 0` |
+| F5 | `Rows*/R Having CurrentRepetition(Rows) > 0` |
+| F6 | A, B, then F1 |
+
+- `rows`: The request names nine documents: zero rows, one filled row, one empty row, one malformed row, empty first/filled second, both filled, direct A only, A plus the first row filled, and A plus B plus the first row filled. Every unspecified A/B is empty.
+- `claim-tail`: on `kept-filled`, F1Q0 fires OMISSION and F1Q4 is silent, but F5Q0 is silent and F5Q4 fires OMISSION: a missing second declared slot survives the broader coordinate filter. On `zero`, F1Q4 fires while F4Q0 fires vacuously, separating selected missing slots from a value filter's empty selection.
+- `claim-prefix`: on `both-sources`, F2Q2 fires VALUE and F3Q2 OMISSION. On `two-direct`, F6Q3 and F6Q5 fire VALUE although their later filtered operand is filled; on `both-sources` the same rules fire OMISSION because that filtered operand supplies the second filled witness.
+- `claim-unknown`: on `kept-invalid`, F1Q1 and F1Q4 are silent; F4Q1 fires after its value filter drops the malformed cell. Formal unavailability is neither a filled nor an empty selected cell.
+- `claim-partial`: every F1–F6 rule is silent with whole-root relevance on all nine documents. F0 is the unfiltered control. This observes only that coverage shape, not every possible relevant set.
+- `mechanism`: read-only kernel `RuntimeController` inspection connects All to the completed operand scan, AtLeastOne to the first supplying operand, MoreThanOne to the first two supplying cells, and NotExactlyOne to No followed by MoreThanOne. The matrix establishes runtime reachability; it does not establish physical read traces from public messages.
+- `redundancy`: current peer `5ca76014c9bdcf8b9445b84e7343ea510ae91de8` has `HavingQuantifierPolarityDiffTest` for sole filtered sources and `MixedFillScopeHavingDiffTest` for mixed lists, including malformed selected cells. Heading-first findings inspection and searches for missing-tail values found no retained separator for this declared-tail or deciding-prefix question.
+- `peer-reading`: at that revision, `PolarityWalk.predType` escalates any filtered field-list operand, and `Interpreter.filteredFillScope` derives declared flags from selected instantiated rows. These are reconciliation targets, not a measured peer failure: dispatch can refuse a mixed shape before polarity is reached, and this grid did not execute the peer interpreter.
+- `limit`: finite single-level Number field lists, the three filters named above, direct operands before/after the filtered star, full validation and whole-root partial coverage. Nested/unbounded selection, multiple filtered operands, groups, other kinds, computations and message-reference coordinates are outside this measurement.
+- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/filtered-field-fill-2026-10-03/), model SHA-256 `fc0a8709735acfbfae763d454f540867ac5df307ca9f2aefce1b7ba67223715b`; request `d7560a21c65661a69b6fbedbb0bf2567943ee667e8c56fee678597bee9b658c1`.
+- `bytes`: retained artifact SHA-256 `76eeba9f132015ca56b69fe36ea7d1d8006e588f0d888aa49a5d9bb6d4b2bf3c`. Retention replaces message text with `[redacted]` and reformats JSON; every other JSON value is preserved.
+- `projection`: the [resolved-range locks](../../A12Kernel/Conformance/ValidationFillQuantifier.lean) compare all 441 rule outcomes after supplying selected counts and missing slots. They calibrate the semantic fold, not checked-document selection or reader integration. The capture also enters the ordinary population replay, where unsupported filtered rules remain explicit.
+- `sync`: [SPEC-2026-10-03-03](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-03-03) carries the canonical addition; no new probe channel is requested.
+
 <a id="src-group-field-fill-declared-slots"></a>
 #### Field-group quantifiers retain declared slots and bound-parent capacity, measured 2026-09-08
 

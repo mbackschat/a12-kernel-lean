@@ -47,6 +47,9 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `boundary`: Validation fill quantifiers plus resolved group predicates/counts over checked topology
 - `owner`: [`ValidationFillQuantifier.lean`](../../A12Kernel/Semantics/ValidationFillQuantifier.lean), [`GroupPresence.lean`](../../A12Kernel/Semantics/GroupPresence.lean)
 - `assurance`: E/P closed for admitted shapes; upstream L partial; C none
+- `boundary`: `ValidationFillRange` retains selected instantiated counts, selected missing declared slots and per-operand filter ownership. `evalValidationRanges` reuses the unfiltered tally for firing and retains deciding-prefix polarity for filtered/mixed lists.
+- `assurance`: The [filtered grid](../sources/group-list-and-capacity-probes.md#src-filtered-field-fill-ranges) calibrates all seven operators over resolved inputs: 441 outcomes. Laws preserve non-firing and a sufficient prefix; swapping filled direct/filtered operands is the checked non-law. The global-filter-polarity mutant fails five conformance examples.
+- `remains`: Checked-document filter selection over declared slots and reader integration are [open](../gaps/paths-and-groups.md#gap-sg13-filtered-fill). Resolved-input calibration does not close the unsupported population cases or qualify a consumer shipment.
 - `remains`: Group-list completeness: [SG13](../SEMANTICS-GAPS.md#sg13--group-list-and-group-count-completion)
 
 <a id="cap-rule-negation"></a>

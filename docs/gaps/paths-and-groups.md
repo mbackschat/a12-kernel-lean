@@ -124,8 +124,22 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 - `forbidden`: do not use caller-supplied relevance on a full document, share validation and computation scans accidentally, infer rows from patterns, or use UNKNOWN or poison for structural failure.
 - `entry-gate`: select one result-domain family and show that existing product, tally, and traversal owners express every observed branch.
 - `completion-gate`: every admitted direct, list, starred, partial, filtered, and count consumer delegates to the established owner with exact order, relevance, error, polarity, and poison behavior.
-- `remaining`: count-valued computation guards do not use the shared numeric-operation tree. Filtered and indexed field-fill list operands and general partial list validation remain outside the count-expression carrier; fractional comparisons and arithmetic composition have static Kernel evidence and internal runtime locks, but no retained runtime calibration for those new expression shapes.
+- `remaining`: count-valued computation guards do not use the shared numeric-operation tree. [Filtered field-fill integration](#gap-sg13-filtered-fill), indexed list operands and general partial list validation remain outside the count-expression carrier; fractional comparisons and arithmetic composition have static Kernel evidence and internal runtime locks, but no retained runtime calibration for those new expression shapes.
 - `route-state`: discovery-required
+
+<a id="gap-sg13-filtered-fill"></a>
+#### SG13 filtered field-fill selection and integration
+
+- `state`: open
+- `missing`: Checked field-fill lists still refuse filtered operands. Their selection must preserve instantiated counts separately from selected missing declared slots, then call the [resolved-range fold](../implementation/validation-messages-and-custom.md#cap-fill-group-quantifiers).
+- `discriminator`: A coordinate filter can select an absent declared row while a value filter drops it. Direct-before-filter and filter-before-direct can fire with different polarity. The [grid](../sources/group-list-and-capacity-probes.md#src-filtered-field-fill-ranges) settles the finite one-level cases.
+- `consumer`: Execute needs exact fired polarity and structural refusals; Transform must reject reordering a direct and filtered operand as generally preserving messages.
+- `route-state`: verified
+- `red-locus`: [FieldFillList](../../A12Kernel/Conformance/FieldFillList.lean), add checked-document selected-tail and mixed-order separators before widening admission.
+- `green-locus`: [FieldFillList](../../A12Kernel/Elaboration/FieldFillList.lean), retain checked filter ownership and produce selected ranges for the existing semantic fold.
+- `supporting-locus`: [CheckedStarDocument](../../A12Kernel/Elaboration/CheckedStarDocument.lean), distinguish declared candidate selection from instantiated in-capacity resolution without changing aggregate extents.
+- `supporting-locus`: [Correlation](../../A12Kernel/Elaboration/Correlation.lean), retain lexical origin and error-field binding separately for captured filter reads.
+- `route-limit`: Admission also needs correct filter dependencies, marked error-field reads, iteration scopes and whole-rule partial skip. Computation scans, numeric count movement and nested/unbounded declared selection require their own established account; do not silently inherit the validation fold.
 
 <a id="sg17--having-filter-leaf-and-connective-completion"></a>
 <a id="gap-sg17"></a>

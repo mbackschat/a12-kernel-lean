@@ -1078,6 +1078,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [A group `NumberOfFilledFields` moves against declared slot capacity, not declared field count](sources/group-list-and-capacity-probes.md#src-filled-field-count-nested-capacity)
 <a id="src-filled-field-count-deep-capacity"></a>
 - [Slot capacity compounds through nested repetition levels and stops at the operand group](sources/group-list-and-capacity-probes.md#src-filled-field-count-deep-capacity)
+<a id="src-filtered-field-fill-ranges"></a>
+- [Filtered field-fill selected ranges and deciding polarity](sources/group-list-and-capacity-probes.md#src-filtered-field-fill-ranges)
+
 <a id="src-group-field-fill-declared-slots"></a>
 - [Field-group quantifiers retain declared slots and bound-parent capacity](sources/group-list-and-capacity-probes.md#src-group-field-fill-declared-slots)
 <a id="src-computation-star-binding-gate"></a>

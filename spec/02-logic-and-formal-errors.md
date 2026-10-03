@@ -80,6 +80,20 @@ For unfiltered validation, let `t` be the number of known filled instantiated ce
 | `NotExactlyOneFieldFilled` | instantiated | `(t = 0 ∧ u = 0) ∨ t ≥ 2` | OMISSION in the zero-filled region; VALUE in the at-least-two region |
 | `FieldsNotCollectivelyFilled` | instantiated fill plus declared empty | `t ≥ 1 ∧ e + d ≥ 1` | OMISSION |
 
+**Filtered field-fill lists retain operand order and distinguish the instantiated range from the declared range.** Apply the filter to the range the predicate asks for; only TRUE keeps a slot. In the declared-range predicates, a coordinate filter can keep an uninstantiated slot, which then contributes an omission. With `Rows` of maximum 2 and only its first row filled, `AllFieldsFilled(Rows*/R Having CurrentRepetition(Rows) == 1)` fires, while replacing `== 1` by `> 0` leaves the missing second slot selected and prevents it. A value filter `[Rows/R] > 0` drops that missing slot. With no rows, the coordinate-selected first slot remains missing, while the value-selected range is empty and `AllFieldsFilled` fires vacuously. These cases are measured on one finite repeatable level; they do not establish nested or unbounded declared-range selection ([filtered grid](../docs/sources/group-list-and-capacity-probes.md#src-filtered-field-fill-ranges)).
+
+Over the selected ranges, the firing conditions in the field-fill table still apply. Polarity retains which authored operands supplied the deciding filled witnesses:
+
+| Filtered or mixed field-fill predicate | Polarity when it fires |
+|---|---|
+| `AllFieldsFilled` | OMISSION if any operand carries a filter, including a filter selecting nothing; otherwise VALUE |
+| `AtLeastOneFieldFilled` | The first operand supplying a known filled cell determines the result: OMISSION if filtered, otherwise VALUE |
+| `MoreThanOneFieldFilled` | OMISSION if either of the first two known filled witnesses comes from a filtered operand; otherwise VALUE |
+| `NotExactlyOneFieldFilled` | OMISSION in the zero-filled/no-unknown region; otherwise the same deciding-two rule as `MoreThanOneFieldFilled` |
+| `NoFieldFilled`, `NotAllFieldsFilled`, `FieldsNotCollectivelyFilled` | OMISSION |
+
+A filtered operand with no filled witness cannot change a positive threshold's polarity, nor can an operand after its decision. Thus swapping a filled direct operand with a filled filtered operand can change `AtLeastOneFieldFilled` from VALUE to OMISSION without changing whether it fires. A malformed selected Number remains unknown, suppressing `NoFieldFilled`; a filter that drops it removes it from the range. Full and whole-root-covered partial validation are paired in the [grid](../docs/sources/group-list-and-capacity-probes.md#src-filtered-field-fill-ranges): every rule carrying a filter is skipped on the partial arm, consistent with the whole-rule filter gate in [§10](10-validation-and-polarity.md).
+
 For a resolved entity list, let `pₜ` be definitely filled contributions, `pₑ` be definitely empty contributions, and `pᵤ` be contributions in neither bucket. A checked field is definitely filled when it has a value, definitely empty when cleanly empty, and unavailable when formally invalid or not relevant. An ordinary resolved group uses the product-state classification above. A terminal repeatable star contributes one filled item per instantiated terminal row; a non-repeatable terminal below stars contributes one ordinary group-product classification per selected ancestor environment. The five legal group-list quantifiers consume that common tally without treating unavailable as empty:
 
 | Validation predicate | Fires when | Unfiltered polarity |

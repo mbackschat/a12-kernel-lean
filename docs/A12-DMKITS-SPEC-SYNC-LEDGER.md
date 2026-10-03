@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-03-03"></a>
+### `SPEC-2026-10-03-03` — filtered field-fill declared slots and deciding-prefix polarity
+
+- `status`: pending
+- `clause`: [spec/02 §A.4](../spec/02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges).
+- `delta`: filtered field-fill lists retain selected missing declared slots; positive thresholds take polarity from the filled witnesses before their decision, not from filter presence anywhere in the list.
+- `evidence`: the [49-rule, nine-document grid](sources/group-list-and-capacity-probes.md#src-filtered-field-fill-ranges) pins Kernel 30.8.1 full/partial results on both strategies and the independent source mechanism.
+- `redundancy`: the checkpoint records current peer revision, searched findings, existing sole/mixed-filter tests and the unmeasured separators. The existing tests do not settle coordinate-selected missing slots or a direct witness preceding a filtered one.
+- `surfaces`: the peer's field-fill declared-range account, `Interpreter.filteredFillScope` and `PolarityWalk.predType`; current-source discrepancies are identified, not claimed as a newly executed interpreter differential.
+- `acceptance`: reconcile F1 versus F5 on `kept-filled`, F1 versus F4 on `zero`, F2 versus F3 on `both-sources`, and F6 on `two-direct` versus `both-sources`, retaining the malformed and partial controls. Supply contrary kernel evidence for disagreement; nested/unbounded and computation behavior remains outside.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-03-02"></a>
 ### `SPEC-2026-10-03-02` — containing-group guards distinguish operands from producer dependencies
 

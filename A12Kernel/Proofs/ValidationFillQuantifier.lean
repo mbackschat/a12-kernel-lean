@@ -3,7 +3,7 @@ import A12Kernel.Semantics.ComputationFillQuantifier
 
 /-! # Resolved validation field-fill quantifier laws
 
-These laws characterize the extensional, unfiltered validation evaluator after range resolution. They preserve the kernel-visible collapse of false and unknown and prove the declared-versus-instantiated range split, sufficient witnesses, polarity changes, and the phase separator from ordered computation scans. They do not cover authored expansion, `Having`, row eligibility, partial validation, physical read traces, or correspondence to the external kernel.
+These laws characterize the extensional, unfiltered validation evaluator after range resolution. They preserve the kernel-visible collapse of false and unknown and prove the declared-versus-instantiated range split, sufficient witnesses, polarity changes, and the phase separator from ordered computation scans. The ordered-range laws additionally preserve non-firing and a sufficient deciding prefix under filter provenance. They do not cover authored expansion, filter evaluation, row eligibility, partial validation, physical read traces, or correspondence to the external kernel.
 -/
 
 namespace A12Kernel
@@ -155,5 +155,23 @@ theorem validationComputationFillQuantifier_unknownPoison_separator
       FieldFillQuantifier.atLeastOneFieldFilled.evalComputation
         [.poison cause] = .poison cause := by
   constructor <;> rfl
+
+/-- Once an operand supplies the positive threshold, suffix operands cannot change filter polarity. -/
+theorem validationFillRange_prefix_decides (needed : Nat) (first : ValidationFillRange)
+    (suffix : List ValidationFillRange) (positive : 0 < needed)
+    (enough : needed ≤ first.tally.filled) :
+    ValidationFillRange.filteredWitness needed (first :: suffix) = first.hasHaving := by
+  simp [ValidationFillRange.filteredWitness, Nat.ne_of_gt positive,
+    Nat.not_lt_of_ge enough, Nat.lt_of_lt_of_le positive enough]
+
+/-- Filter provenance changes polarity alone after the caller has supplied the selected ranges. -/
+theorem validationFillRanges_preserves_nonfiring (operator : FieldFillQuantifier)
+    (ranges : List ValidationFillRange) :
+    operator.evalValidationRanges ranges = .falseOrUnknown ↔
+      operator.evalValidation (ValidationFillRange.total ranges) = .falseOrUnknown := by
+  unfold FieldFillQuantifier.evalValidationRanges
+  cases result : operator.evalValidation (ValidationFillRange.total ranges) with
+  | falseOrUnknown => simp
+  | fired polarity => cases polarity <;> simp
 
 end A12Kernel

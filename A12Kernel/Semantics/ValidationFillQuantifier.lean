@@ -4,7 +4,7 @@ import A12Kernel.Semantics.FieldFillQuantifier
 
 /-! # Resolved validation field-fill quantifiers
 
-This capsule classifies instantiated validation observations, combines adjacent resolved ranges extensionally, and evaluates the seven unfiltered field-fill operators over the resulting counts. Validation exposes only `fired polarity` versus the kernel's collapsed `FALSE_OR_UNKNOWN`; it does not invent a hidden false/unknown distinction. Declared-but-uninstantiated slots are empty only for declared-range predicates. Authored expansion, `Having`, row eligibility, partial validation, and physical read traces remain separate boundaries.
+This capsule classifies instantiated validation observations, combines adjacent resolved ranges extensionally, and evaluates the seven unfiltered field-fill operators over the resulting counts. Validation exposes only `fired polarity` versus the kernel's collapsed `FALSE_OR_UNKNOWN`; it does not invent a hidden false/unknown distinction. Declared-but-uninstantiated slots are empty only for declared-range predicates. Ordered selected ranges additionally retain filter ownership for deciding-prefix polarity. Authored expansion, filter evaluation, row eligibility, partial validation, and physical read traces remain separate boundaries.
 -/
 
 namespace A12Kernel
@@ -55,6 +55,31 @@ def combine (left right : ValidationFillTally) : ValidationFillTally :=
 
 end ValidationFillTally
 
+/-- One authored operand after selection. `uninstantiated` counts only missing declared slots
+kept by its filter; the other buckets count selected instantiated cells. Operand boundaries retain
+the deciding-prefix polarity measured by the filtered field-fill grid (2026-10-03). -/
+structure ValidationFillRange where
+  tally : ValidationFillTally
+  hasHaving : Bool
+  deriving Repr, DecidableEq
+
+namespace ValidationFillRange
+
+/-- Counts compose extensionally; filter ownership does not. -/
+def total (ranges : List ValidationFillRange) : ValidationFillTally :=
+  ranges.foldr (fun range rest => range.tally.combine rest)
+    { filled := 0, empty := 0, unknown := 0, uninstantiated := 0 }
+
+/-- Whether a filtered operand contributes a filled witness before the threshold is met.
+Empty and unknown filtered operands do not contribute; later operands cannot change a decision. -/
+def filteredWitness (needed : Nat) : List ValidationFillRange → Bool
+  | [] => false
+  | range :: rest =>
+      needed != 0 && ((range.hasHaving && 0 < range.tally.filled) ||
+        (range.tally.filled < needed && filteredWitness (needed - range.tally.filled) rest))
+
+end ValidationFillRange
+
 namespace FieldFillQuantifier
 
 /-- Evaluate an unfiltered validation field-fill operator. The tally is intentionally unordered: the externally visible validation result depends on the final classifications, not on a computation-style deciding read prefix. -/
@@ -94,6 +119,22 @@ def evalValidation (operator : FieldFillQuantifier)
         .fired .omission
       else
         .falseOrUnknown
+
+/-- Evaluate an ordered list of selected validation ranges. Firing uses the shared tally law;
+VALUE polarity depends on the decisive witnesses, except `AllFieldsFilled`, whose successful scan
+reaches every operand. Selection and the declared-slot filter evaluation remain the caller's job. -/
+def evalValidationRanges (operator : FieldFillQuantifier)
+    (ranges : List ValidationFillRange) : ValidationFillOutcome :=
+  match operator.evalValidation (ValidationFillRange.total ranges) with
+  | .fired .value =>
+      let filtered := match operator with
+        | .allFieldsFilled => ranges.any (·.hasHaving)
+        | .atLeastOneFieldFilled => ValidationFillRange.filteredWitness 1 ranges
+        | .moreThanOneFieldFilled | .notExactlyOneFieldFilled =>
+            ValidationFillRange.filteredWitness 2 ranges
+        | .noFieldFilled | .notAllFieldsFilled | .fieldsNotCollectivelyFilled => false
+      .fired (if filtered then .omission else .value)
+  | outcome => outcome
 
 end FieldFillQuantifier
 

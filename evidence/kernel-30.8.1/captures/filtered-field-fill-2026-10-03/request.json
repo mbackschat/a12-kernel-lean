@@ -1,0 +1,186 @@
+{
+  "model": "model.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "zero",
+      "documentInline": {
+        "Probe": {
+          "C": "1",
+          "A": null,
+          "B": null,
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Probe"
+        }
+      ]
+    },
+    {
+      "name": "kept-filled",
+      "documentInline": {
+        "Probe": {
+          "C": "1",
+          "A": null,
+          "B": null,
+          "Rows": [
+            {
+              "R": "1"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Probe"
+        }
+      ]
+    },
+    {
+      "name": "kept-empty",
+      "documentInline": {
+        "Probe": {
+          "C": "1",
+          "A": null,
+          "B": null,
+          "Rows": [
+            {}
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Probe"
+        }
+      ]
+    },
+    {
+      "name": "kept-invalid",
+      "documentInline": {
+        "Probe": {
+          "C": "1",
+          "A": null,
+          "B": null,
+          "Rows": [
+            {
+              "R": "bad"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Probe"
+        }
+      ]
+    },
+    {
+      "name": "dropped-filled",
+      "documentInline": {
+        "Probe": {
+          "C": "1",
+          "A": null,
+          "B": null,
+          "Rows": [
+            {},
+            {
+              "R": "2"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Probe"
+        }
+      ]
+    },
+    {
+      "name": "both-filled",
+      "documentInline": {
+        "Probe": {
+          "C": "1",
+          "A": null,
+          "B": null,
+          "Rows": [
+            {
+              "R": "1"
+            },
+            {
+              "R": "2"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Probe"
+        }
+      ]
+    },
+    {
+      "name": "direct-only",
+      "documentInline": {
+        "Probe": {
+          "C": "1",
+          "A": "7",
+          "B": null,
+          "Rows": [
+            {}
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Probe"
+        }
+      ]
+    },
+    {
+      "name": "both-sources",
+      "documentInline": {
+        "Probe": {
+          "C": "1",
+          "A": "7",
+          "B": null,
+          "Rows": [
+            {
+              "R": "1"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Probe"
+        }
+      ]
+    },
+    {
+      "name": "two-direct",
+      "documentInline": {
+        "Probe": {
+          "C": "1",
+          "A": "7",
+          "B": "8",
+          "Rows": [
+            {
+              "R": "1"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Probe"
+        }
+      ]
+    }
+  ]
+}

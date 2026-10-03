@@ -3,7 +3,7 @@ import A12Kernel.Semantics.ComputationFillQuantifier
 
 /-! # Resolved validation field-fill quantifier locks
 
-These examples exercise the exact unfiltered `TRUE_WF | TRUE_AF | FALSE_OR_UNKNOWN` projection over already-classified counts. They distinguish instantiated cells from declared-but-uninstantiated absences and validation unknown from computation poison without claiming authored expansion, `Having`, row eligibility, or partial validation.
+These examples exercise the exact unfiltered `TRUE_WF | TRUE_AF | FALSE_OR_UNKNOWN` projection over already-classified counts. They distinguish instantiated cells from declared-but-uninstantiated absences and validation unknown from computation poison without claiming authored expansion, row eligibility, or partial validation. The [2026-10-03 filtered grid](../../docs/sources/group-list-and-capacity-probes.md#src-filtered-field-fill-ranges) separately locks deciding-prefix polarity over resolved selected ranges.
 -/
 
 namespace A12Kernel.Conformance.ValidationFillQuantifier
@@ -126,5 +126,66 @@ example :
       FieldFillQuantifier.atLeastOneFieldFilled.evalComputation
         [.poison .malformed] = .poison .malformed := by
   constructor <;> rfl
+
+/-- The filtered grid's operand-order separator: erasing the operand boundaries changes polarity. -/
+private def filledRange (count : Nat) (filtered : Bool) : ValidationFillRange :=
+  { tally := tally count 0 0 0, hasHaving := filtered }
+
+example : FieldFillQuantifier.atLeastOneFieldFilled.evalValidationRanges
+    [filledRange 1 false, filledRange 1 true] = .fired .value ∧
+    FieldFillQuantifier.atLeastOneFieldFilled.evalValidationRanges
+    [filledRange 1 true, filledRange 1 false] = .fired .omission := by native_decide
+
+example : FieldFillQuantifier.moreThanOneFieldFilled.evalValidationRanges
+    [filledRange 2 false, filledRange 1 true] = .fired .value ∧
+    FieldFillQuantifier.moreThanOneFieldFilled.evalValidationRanges
+    [filledRange 1 false, filledRange 1 true] = .fired .omission := by native_decide
+
+/-- Resolved input boundary of the 2026-10-03 kernel grid: plain and selected instantiated
+counts, and selected missing slots, are supplied independently of the polarity evaluator. This
+locks the semantic fold without resolving authored paths or evaluating filters. -/
+private def grid (plain first positive : ValidationFillTally) (a b : Bool) : List String := Id.run do
+  let direct (filled : Bool) : ValidationFillRange :=
+    { tally := tally (if filled then 1 else 0) (if filled then 0 else 1) 0 0, hasHaving := false }
+  let p : ValidationFillRange := { tally := plain, hasHaving := false }
+  let f : ValidationFillRange := { tally := first, hasHaving := true }
+  let v : ValidationFillRange := { tally := positive, hasHaving := true }
+  let every : ValidationFillRange := { tally := plain, hasHaving := true }
+  let sources := [[p], [f], [direct a, f], [f, direct a], [v], [every], [direct a, direct b, f]]
+  let operators : List FieldFillQuantifier := [.allFieldsFilled, .noFieldFilled,
+    .atLeastOneFieldFilled, .moreThanOneFieldFilled, .notAllFieldsFilled,
+    .notExactlyOneFieldFilled, .fieldsNotCollectivelyFilled]
+  return sources.map fun ranges => String.ofList (operators.map fun operator =>
+    match operator.evalValidationRanges ranges with
+    | .fired .value => 'v'
+    | .fired .omission => 'o'
+    | .falseOrUnknown => 'u')
+
+example : grid (tally 0 0 0 2) (tally 0 0 0 1) (tally 0 0 0 0) false false =
+    ["uouuoou", "uouuoou", "uouuoou", "uouuoou", "oouuuou", "uouuoou", "uouuoou"] := by native_decide
+
+example : grid (tally 1 0 0 1) (tally 1 0 0 0) (tally 1 0 0 0) false false =
+    ["uuvuouo", "ououuuu", "uuououo", "uuououo", "ououuuu", "uuououo", "uuououo"] := by native_decide
+
+example : grid (tally 0 1 0 1) (tally 0 1 0 0) (tally 0 0 0 0) false false =
+    ["uouuoou", "uouuoou", "uouuoou", "uouuoou", "oouuuou", "uouuoou", "uouuoou"] := by native_decide
+
+example : grid (tally 0 0 1 1) (tally 0 0 1 0) (tally 0 0 0 0) false false =
+    ["uuuuouu", "uuuuuuu", "uuuuouu", "uuuuouu", "oouuuou", "uuuuouu", "uuuuouu"] := by native_decide
+
+example : grid (tally 1 1 0 0) (tally 0 1 0 0) (tally 1 0 0 0) false false =
+    ["uuvuouo", "uouuoou", "uouuoou", "uouuoou", "ououuuu", "uuououo", "uouuoou"] := by native_decide
+
+example : grid (tally 2 0 0 0) (tally 1 0 0 0) (tally 2 0 0 0) false false =
+    ["vuvvuvu", "ououuuu", "uuououo", "uuououo", "ouoouou", "ouoouou", "uuououo"] := by native_decide
+
+example : grid (tally 0 1 0 1) (tally 0 1 0 0) (tally 0 0 0 0) true false =
+    ["uouuoou", "uouuoou", "uuvuouo", "uuvuouo", "oouuuou", "uouuoou", "uuvuouo"] := by native_decide
+
+example : grid (tally 1 0 0 1) (tally 1 0 0 0) (tally 1 0 0 0) true false =
+    ["uuvuouo", "ououuuu", "ouvouou", "ouoouou", "ououuuu", "uuououo", "uuvoooo"] := by native_decide
+
+example : grid (tally 1 0 0 1) (tally 1 0 0 0) (tally 1 0 0 0) true true =
+    ["uuvuouo", "ououuuu", "ouvouou", "ouoouou", "ououuuu", "uuououo", "ouvvuvu"] := by native_decide
 
 end A12Kernel.Conformance.ValidationFillQuantifier

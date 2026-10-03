@@ -124,6 +124,9 @@ The binding construction order is **SG1 → SG2 → SG4**. SG1 and SG2 are close
 <a id="sg17--having-filter-leaf-and-connective-completion"></a>
 ### SG17 — `Having`-filter leaf and connective completion
 
+<a id="gap-sg13-filtered-fill"></a>
+- [SG13 filtered field-fill selection and integration](gaps/paths-and-groups.md#gap-sg13-filtered-fill)
+
 <a id="gap-sg17"></a>
 - [open obligation](gaps/paths-and-groups.md#gap-sg17)
 

@@ -1,0 +1,850 @@
+{
+  "header" : {
+    "id" : "MixFill_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MixFill_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Probe",
+        "name" : "Probe",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Probe/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : { }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : { }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/C",
+            "name" : "C",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : { }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/S",
+            "name" : "S",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : { }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/F",
+            "name" : "F",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType",
+                "BooleanType" : { }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Probe/K",
+            "name" : "K",
+            "Field" : {
+              "fieldType" : {
+                "type" : "ConfirmType",
+                "ConfirmType" : { }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/G",
+            "name" : "G",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/G/X",
+                "name" : "X",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : { }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Probe/G/Y",
+                "name" : "Y",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : { }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/H",
+            "name" : "H",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/H/Z",
+                "name" : "Z",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : { }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Probe/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Probe/Rows/R",
+                "name" : "R",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : { }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F0Q0",
+            "name" : "F0Q0",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F0Q0",
+              "errorCondition" : "FieldFilled(C) And AllFieldsFilled(Rows*/R)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F0Q0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F0Q1",
+            "name" : "F0Q1",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F0Q1",
+              "errorCondition" : "FieldFilled(C) And NoFieldFilled(Rows*/R)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F0Q1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F0Q2",
+            "name" : "F0Q2",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F0Q2",
+              "errorCondition" : "FieldFilled(C) And AtLeastOneFieldFilled(Rows*/R)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F0Q2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F0Q3",
+            "name" : "F0Q3",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F0Q3",
+              "errorCondition" : "FieldFilled(C) And MoreThanOneFieldFilled(Rows*/R)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F0Q3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F0Q4",
+            "name" : "F0Q4",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F0Q4",
+              "errorCondition" : "FieldFilled(C) And NotAllFieldsFilled(Rows*/R)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F0Q4"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F0Q5",
+            "name" : "F0Q5",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F0Q5",
+              "errorCondition" : "FieldFilled(C) And NotExactlyOneFieldFilled(Rows*/R)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F0Q5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F0Q6",
+            "name" : "F0Q6",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F0Q6",
+              "errorCondition" : "FieldFilled(C) And FieldsNotCollectivelyFilled(Rows*/R)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F0Q6"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F1Q0",
+            "name" : "F1Q0",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F1Q0",
+              "errorCondition" : "FieldFilled(C) And AllFieldsFilled(Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F1Q0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F1Q1",
+            "name" : "F1Q1",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F1Q1",
+              "errorCondition" : "FieldFilled(C) And NoFieldFilled(Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F1Q1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F1Q2",
+            "name" : "F1Q2",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F1Q2",
+              "errorCondition" : "FieldFilled(C) And AtLeastOneFieldFilled(Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F1Q2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F1Q3",
+            "name" : "F1Q3",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F1Q3",
+              "errorCondition" : "FieldFilled(C) And MoreThanOneFieldFilled(Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F1Q3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F1Q4",
+            "name" : "F1Q4",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F1Q4",
+              "errorCondition" : "FieldFilled(C) And NotAllFieldsFilled(Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F1Q4"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F1Q5",
+            "name" : "F1Q5",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F1Q5",
+              "errorCondition" : "FieldFilled(C) And NotExactlyOneFieldFilled(Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F1Q5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F1Q6",
+            "name" : "F1Q6",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F1Q6",
+              "errorCondition" : "FieldFilled(C) And FieldsNotCollectivelyFilled(Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F1Q6"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F2Q0",
+            "name" : "F2Q0",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F2Q0",
+              "errorCondition" : "FieldFilled(C) And AllFieldsFilled(A, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F2Q0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F2Q1",
+            "name" : "F2Q1",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F2Q1",
+              "errorCondition" : "FieldFilled(C) And NoFieldFilled(A, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F2Q1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F2Q2",
+            "name" : "F2Q2",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F2Q2",
+              "errorCondition" : "FieldFilled(C) And AtLeastOneFieldFilled(A, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F2Q2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F2Q3",
+            "name" : "F2Q3",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F2Q3",
+              "errorCondition" : "FieldFilled(C) And MoreThanOneFieldFilled(A, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F2Q3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F2Q4",
+            "name" : "F2Q4",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F2Q4",
+              "errorCondition" : "FieldFilled(C) And NotAllFieldsFilled(A, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F2Q4"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F2Q5",
+            "name" : "F2Q5",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F2Q5",
+              "errorCondition" : "FieldFilled(C) And NotExactlyOneFieldFilled(A, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F2Q5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F2Q6",
+            "name" : "F2Q6",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F2Q6",
+              "errorCondition" : "FieldFilled(C) And FieldsNotCollectivelyFilled(A, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F2Q6"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F3Q0",
+            "name" : "F3Q0",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F3Q0",
+              "errorCondition" : "FieldFilled(C) And AllFieldsFilled(Rows*/R Having CurrentRepetition(Rows) == 1, A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F3Q0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F3Q1",
+            "name" : "F3Q1",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F3Q1",
+              "errorCondition" : "FieldFilled(C) And NoFieldFilled(Rows*/R Having CurrentRepetition(Rows) == 1, A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F3Q1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F3Q2",
+            "name" : "F3Q2",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F3Q2",
+              "errorCondition" : "FieldFilled(C) And AtLeastOneFieldFilled(Rows*/R Having CurrentRepetition(Rows) == 1, A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F3Q2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F3Q3",
+            "name" : "F3Q3",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F3Q3",
+              "errorCondition" : "FieldFilled(C) And MoreThanOneFieldFilled(Rows*/R Having CurrentRepetition(Rows) == 1, A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F3Q3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F3Q4",
+            "name" : "F3Q4",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F3Q4",
+              "errorCondition" : "FieldFilled(C) And NotAllFieldsFilled(Rows*/R Having CurrentRepetition(Rows) == 1, A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F3Q4"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F3Q5",
+            "name" : "F3Q5",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F3Q5",
+              "errorCondition" : "FieldFilled(C) And NotExactlyOneFieldFilled(Rows*/R Having CurrentRepetition(Rows) == 1, A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F3Q5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F3Q6",
+            "name" : "F3Q6",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F3Q6",
+              "errorCondition" : "FieldFilled(C) And FieldsNotCollectivelyFilled(Rows*/R Having CurrentRepetition(Rows) == 1, A)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F3Q6"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F4Q0",
+            "name" : "F4Q0",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F4Q0",
+              "errorCondition" : "FieldFilled(C) And AllFieldsFilled(Rows*/R Having [Rows/R] > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F4Q0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F4Q1",
+            "name" : "F4Q1",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F4Q1",
+              "errorCondition" : "FieldFilled(C) And NoFieldFilled(Rows*/R Having [Rows/R] > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F4Q1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F4Q2",
+            "name" : "F4Q2",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F4Q2",
+              "errorCondition" : "FieldFilled(C) And AtLeastOneFieldFilled(Rows*/R Having [Rows/R] > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F4Q2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F4Q3",
+            "name" : "F4Q3",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F4Q3",
+              "errorCondition" : "FieldFilled(C) And MoreThanOneFieldFilled(Rows*/R Having [Rows/R] > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F4Q3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F4Q4",
+            "name" : "F4Q4",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F4Q4",
+              "errorCondition" : "FieldFilled(C) And NotAllFieldsFilled(Rows*/R Having [Rows/R] > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F4Q4"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F4Q5",
+            "name" : "F4Q5",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F4Q5",
+              "errorCondition" : "FieldFilled(C) And NotExactlyOneFieldFilled(Rows*/R Having [Rows/R] > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F4Q5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F4Q6",
+            "name" : "F4Q6",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F4Q6",
+              "errorCondition" : "FieldFilled(C) And FieldsNotCollectivelyFilled(Rows*/R Having [Rows/R] > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F4Q6"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F5Q0",
+            "name" : "F5Q0",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F5Q0",
+              "errorCondition" : "FieldFilled(C) And AllFieldsFilled(Rows*/R Having CurrentRepetition(Rows) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F5Q0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F5Q1",
+            "name" : "F5Q1",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F5Q1",
+              "errorCondition" : "FieldFilled(C) And NoFieldFilled(Rows*/R Having CurrentRepetition(Rows) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F5Q1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F5Q2",
+            "name" : "F5Q2",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F5Q2",
+              "errorCondition" : "FieldFilled(C) And AtLeastOneFieldFilled(Rows*/R Having CurrentRepetition(Rows) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F5Q2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F5Q3",
+            "name" : "F5Q3",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F5Q3",
+              "errorCondition" : "FieldFilled(C) And MoreThanOneFieldFilled(Rows*/R Having CurrentRepetition(Rows) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F5Q3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F5Q4",
+            "name" : "F5Q4",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F5Q4",
+              "errorCondition" : "FieldFilled(C) And NotAllFieldsFilled(Rows*/R Having CurrentRepetition(Rows) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F5Q4"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F5Q5",
+            "name" : "F5Q5",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F5Q5",
+              "errorCondition" : "FieldFilled(C) And NotExactlyOneFieldFilled(Rows*/R Having CurrentRepetition(Rows) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F5Q5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F5Q6",
+            "name" : "F5Q6",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F5Q6",
+              "errorCondition" : "FieldFilled(C) And FieldsNotCollectivelyFilled(Rows*/R Having CurrentRepetition(Rows) > 0)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F5Q6"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F6Q0",
+            "name" : "F6Q0",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F6Q0",
+              "errorCondition" : "FieldFilled(C) And AllFieldsFilled(A, B, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F6Q0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F6Q1",
+            "name" : "F6Q1",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F6Q1",
+              "errorCondition" : "FieldFilled(C) And NoFieldFilled(A, B, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F6Q1"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F6Q2",
+            "name" : "F6Q2",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F6Q2",
+              "errorCondition" : "FieldFilled(C) And AtLeastOneFieldFilled(A, B, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F6Q2"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F6Q3",
+            "name" : "F6Q3",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F6Q3",
+              "errorCondition" : "FieldFilled(C) And MoreThanOneFieldFilled(A, B, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F6Q3"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F6Q4",
+            "name" : "F6Q4",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F6Q4",
+              "errorCondition" : "FieldFilled(C) And NotAllFieldsFilled(A, B, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F6Q4"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F6Q5",
+            "name" : "F6Q5",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F6Q5",
+              "errorCondition" : "FieldFilled(C) And NotExactlyOneFieldFilled(A, B, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F6Q5"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Probe/F6Q6",
+            "name" : "F6Q6",
+            "Rule" : {
+              "errorEntityRelPath" : "../C",
+              "errorCode" : "F6Q6",
+              "errorCondition" : "FieldFilled(C) And FieldsNotCollectivelyFilled(A, B, Rows*/R Having CurrentRepetition(Rows) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "F6Q6"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
