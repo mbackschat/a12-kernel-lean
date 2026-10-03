@@ -6,7 +6,7 @@
 
 [`CONFORMANCE-COVERAGE.md`](CONFORMANCE-COVERAGE.md) owns the figures. Its [construct axis](CONFORMANCE-COVERAGE.md#axis-0--kernel-constructs-by-arm) classifies all 110 constructs of the a12-dmkits operator catalog on both arms, and its headline gives the share the Kernel admits that Lean represents broadly. Two readings matter for the plan.
 
-- **The computation arm lags the validation arm.** Most constructs are broad on validation; on computation a third have no Lean surface at all, almost all because a computation guard accepts only `FieldFilled` and `FieldNotFilled` under `And` and `Or`.
+- **The computation arm lags the validation arm.** Guard composition and temporal expressions remain major closing routes. The [computation-condition owner](implementation/computations.md#cap-computation-conditions) states the implemented leaves and their limits; the construct axis owns the current counts.
 - **"Calibrated" overstates runtime evidence.** Many calibrated cells rest on static admission rows only, not on replayed runtime values.
 
 ## 2. Why the current method does not converge
@@ -80,9 +80,10 @@ The runner is one Lean executable. It reads a `kernelProbe` request (a model plu
 
 Run P2 through the existing `kernelProbe` route.
 
-### D3 — build the closing routes as keystones, in cluster order
+<a id="d3--build-the-closing-routes-as-keystones-in-cluster-order"></a>
+### D3 — close families through shared mechanisms
 
-**Recommendation:** after P1 lands, take the routes in the order its tier-2 cluster mass gives. The construct table predicts `guard`, `temporal-expr` and `rule-leaf` first.
+**Adopted priority correction, 2026-10-03:** select a route by the unfinished construct/arm cells and compositions it can close, reuse of existing semantics, and total delivery cost. Population clusters locate defects and provide regression controls; their frequency alone cannot prioritize constructs the population does not exercise. Guard composition and temporal expressions precede isolated residual rows. The permanent [conformance-convergence rule](../CLAUDE.md#permanent-conformance-convergence-rule) governs model inference, separating observations and family closure in every session.
 
 `temporal-expr` needs the gap records' restriction against a general temporal expression tree lifted. Their own rule asks for a second completed user before generalizing, and the per-route carriers are many such users.
 
@@ -104,7 +105,7 @@ Run P2 through the existing `kernelProbe` route.
 |---|---|---|
 | 0 | denominator and this proposal | the owner decides §4 |
 | 1 | D1 importer and reader, D2 runner, P1 replay ledger | every retained capture replays, and its tier-1 and tier-2 clusters are committed |
-| 2 | D3 keystones in cluster order, D4 retirements per family | each keystone empties its clusters |
+| 2 | D3 family mechanisms in coverage/payoff order, D4 retirements per family | the named construct/arm partitions close end to end, with their population clusters resolved and no regression |
 | 3 | orchestration keystones: result application ([SG16](gaps/keystone.md#gap-sg16)), messages ([SG10](gaps/strings-and-messages.md#gap-sg10)) and mandatory information ([SG14](gaps/targets-and-derivation.md#gap-sg14)) | each is replayed over P1 and P2 |
 | 4 | P2 at full size, static legality through `rule check` | no tier-1 cluster over the declared population |
 
