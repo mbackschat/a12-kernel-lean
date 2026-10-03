@@ -84,10 +84,10 @@ private def distinctPositionalError? (operands : List (ResolvedFieldEntityOperan
     otherwise certify through the common token list unchanged. -/
 def elaborateTokenDistinctCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceTokenDistinctCountSource)
-    (writtenGroup : GroupPath := declaringGroup) :
+    (writtenGroup : GroupPath := declaringGroup) (fixedTargetGroup? : Option GroupPath := none) :
     Except TokenDistinctCountElabError (CheckedTokenEntitySource model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
-      (categoryGate := .aheadOfRepeat)
+      (categoryGate := .aheadOfRepeat) (fixedTargetGroup? := fixedTargetGroup?)
     |>.mapError fun error => .source (.shape error)
   match distinctPositionalError? shape.operands with
   | some error => throw error
@@ -136,6 +136,20 @@ def evaluateDistinctValidation (checked : CheckedTokenEntitySource model)
           directRead starRead)))
       (fun cause => .unknown cause)
       (fun accumulated _ side => accumulated.append side)
+      checked.operands ResolvedValueListSide.empty with
+  | .inl side => pure (evalDistinctCountAggregate side)
+  | .inr result => pure result
+
+/-- Count through the shared computation-phase token stream, preserving its filter poison and
+in-capacity group/star extent. The distinct fold has no value-count-specific matching state. -/
+def evaluateDistinctComputation (checked : CheckedTokenEntitySource model)
+    (document : Document) (outer : Env) (directRead : FieldId → CheckedCell)
+    (filterRead starRead : Env → FieldId → CheckedCell) :
+    Except StarAddressingError NumericOperand := do
+  match ← scanResolvedValueListOperands
+      (state := ResolvedValueListSide .token) (terminal := NumericOperand)
+      (fun operand => operand.resolvedComputationSide document outer directRead filterRead starRead)
+      (fun cause => .unknown cause) (fun accumulated _ side => accumulated.append side)
       checked.operands ResolvedValueListSide.empty with
   | .inl side => pure (evalDistinctCountAggregate side)
   | .inr result => pure result

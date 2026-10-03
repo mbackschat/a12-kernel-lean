@@ -64,20 +64,11 @@ private def SurfaceNumericAtom.ofEntityAtom? :
 private def resolveEntityAtom (model : FlatModel) (rowGroup : GroupPath) :
     SurfaceNumericComputationAtom →
       Except EntityNumericComparisonElabError (OrderedNumericValidationAtom model)
-  -- `NumberOfDifferentValues` is one operator over three carriers: a list the Number one refuses is
-  -- offered to the String/Enumeration one, then to the temporal one, and a list all refuse keeps
-  -- the Number refusal.
-  | .numeric (.aggregate .distinctCount source) =>
-      match elaborateNumberEntitySource model rowGroup source with
-      | .ok checked => pure (.aggregate .distinctCount checked)
-      | .error error =>
-          match elaborateTokenDistinctCountSource model rowGroup source with
-          | .ok checked => pure (.tokenDistinctCount checked)
-          | .error _ =>
-              match (elaborateTemporalDistinctCountSource model rowGroup source).toOption.bind
-                  fun temporal => (checkTemporalDistinctCountRun temporal).toOption with
-              | some run => pure (.temporalDistinctCount run)
-              | none => throw (.numberSource error)
+  | .numeric (.aggregate .distinctCount source) => do
+      match ← (elaborateDistinctCountSource model rowGroup source).mapError .numberSource with
+      | .number checked => pure (.aggregate .distinctCount checked)
+      | .token checked => pure (.tokenDistinctCount checked)
+      | .temporal run => pure (.temporalDistinctCount run)
   | .numeric (.aggregate op source) =>
       (elaborateNumberEntitySource model rowGroup source).map (.aggregate op) |>.mapError .numberSource
   | .numeric (.filledGroupCount _) => throw .groupCount

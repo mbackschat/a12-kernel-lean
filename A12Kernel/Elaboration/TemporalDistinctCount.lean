@@ -228,6 +228,17 @@ def operands (checked : CheckedTemporalDistinctCountSource model) :
     List (CheckedTemporalDistinctCountOperand model) :=
   checked.first :: checked.rest
 
+/-- Direct reads retain their identities for target-scope admission; expanded reads carry their
+    binding certificates in the shared entity shape. -/
+def directFieldIds (checked : CheckedTemporalDistinctCountSource model) : List FieldId :=
+  checked.operands.filterMap fun
+    | .slot (.field source) => some source.declaration.id
+    | _ => none
+
+/-- The scalar reader has no row topology, so only direct field slots can use it. -/
+def isDirectOnly (checked : CheckedTemporalDistinctCountSource model) : Bool :=
+  checked.operands.all fun | .slot (.field _) => true | _ => false
+
 def referencesField (checked : CheckedTemporalDistinctCountSource model) (field : FieldId)
     (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) : Bool :=
   checked.operands.any (·.referencesField field filterReads)
@@ -349,10 +360,11 @@ def firstPartialTemporalOperand? :
     a stale comment takes: nothing executes prose, so only a reader loses. -/
 def elaborateTemporalDistinctCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource)
-    (writtenGroup : GroupPath := declaringGroup) :
+    (writtenGroup : GroupPath := declaringGroup) (fixedTargetGroup? : Option GroupPath := none) :
     Except TemporalDistinctCountElabError
       (CheckedTemporalDistinctCountSource model) := do
   let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
+    (fixedTargetGroup? := fixedTargetGroup?)
     |>.mapError fun error => .slot (.shape error)
   match firstKindGateRefusal? shape.operands with
   | some refusal => throw (.slot refusal)
@@ -464,11 +476,11 @@ def temporalDistinctCountFoldArm
     Measured: the count compares at the shared set's precision after Base Year supplementation
     ([checkpoint](../../docs/sources/temporal-runtime-fold-probes.md#src-distinct-count-component-omitting-fold)). -/
 private def temporalDistinctCountCell
-    (components : TemporalComponents) (baseYear : Option Int) :
-    (arm : TemporalDistinctCountFoldArm) → CheckedAddressedCell →
+    (phase : Phase) (components : TemporalComponents) (baseYear : Option Int) :
+    (arm : TemporalDistinctCountFoldArm) → CheckedCell →
       ValueListCell arm.kind
-  | .dated, addressed =>
-      match observeCell .validation addressed.cell with
+  | .dated, cell =>
+      match observeCell phase cell with
       | .value (.temporal (.date dateValue)) =>
           let (year, month, day) :=
             maskedDateComponents components baseYear dateValue.parts
@@ -478,8 +490,8 @@ private def temporalDistinctCountCell
       | .value _ => .unknown .malformed
       | .empty => .empty
       | .unknown cause | .poison cause => .unknown cause
-  | .yearless, addressed =>
-      match observeCell .validation addressed.cell with
+  | .yearless, cell =>
+      match observeCell phase cell with
       | .value (.temporal (.date dateValue)) =>
           let (_, month, day) :=
             maskedDateComponents components baseYear dateValue.parts
@@ -487,8 +499,8 @@ private def temporalDistinctCountCell
       | .value _ => .unknown .malformed
       | .empty => .empty
       | .unknown cause | .poison cause => .unknown cause
-  | .clock, addressed =>
-      match observeCell .validation addressed.cell with
+  | .clock, cell =>
+      match observeCell phase cell with
       -- **One case covers both temporal kinds that can declare a clock set, because the cell's value
       -- shape follows the declared component set and not the declared kind.** A DATETIME declared the
       -- degenerate `HH:mm:ss` holds a `.time` here — `formalCheck` marks a `.dateTime` value under
@@ -500,8 +512,8 @@ private def temporalDistinctCountCell
       | .value _ => .unknown .malformed
       | .empty => .empty
       | .unknown cause | .poison cause => .unknown cause
-  | .instant, addressed =>
-      match observeCell .validation addressed.cell with
+  | .instant, cell =>
+      match observeCell phase cell with
       -- Exact instants preserve the distinction needed by in-flight temporal consumers. For this
       -- field-list consumer, computed cells also store text, and injective fresh-label resolution
       -- on the concrete profiles makes label and instant identity agree
@@ -612,12 +624,64 @@ def evaluate (operation : CheckedTemporalDistinctCountRun model)
     let core ← operand.resolveDistinctCountCore document outer
     pure ({
       cells := core.addressedCells.map
-        (temporalDistinctCountCell operand.components model.baseYear operation.arm)
+        (fun addressed => temporalDistinctCountCell .validation operand.components model.baseYear
+          operation.arm addressed.cell)
       hasUninstantiatedTail := core.hasUninstantiatedTail
       hasHaving := core.hasHaving
       hasNonRelevant := core.hasNonRelevant } : ResolvedValueListSide operation.arm.kind)
   pure (evalDistinctCountAggregate
     (sides.foldl ResolvedValueListSide.append ResolvedValueListSide.empty))
+
+/-- Resolve typed identities through the caller's current computation view. The group walk and
+    filtered-star scan are shared with the other list consumers; only the temporal projection is
+    local (see the component-set and time-bearing checkpoints above). -/
+private def computationSide (operation : CheckedTemporalDistinctCountRun model)
+    (document : Document) (outer : Env) (directRead : FieldId → CheckedCell)
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (operand : CheckedTemporalDistinctCountOperand model) :
+    Except StarAddressingError (Sum (ResolvedValueListSide operation.arm.kind) NumericOperand) := do
+  let project := temporalDistinctCountCell .computation operand.components model.baseYear operation.arm
+  let groupSide := fun (boundCount : Nat) (declarations : List FlatFieldDecl) => do
+    let (reads, tail) ← model.groupOperandReads document outer boundCount declarations (·.repeatableScope)
+    pure (.inl {
+      cells := reads.map (fun (declaration, environment) =>
+        project (starRead environment declaration.id))
+      hasUninstantiatedTail := tail, hasHaving := false } : Sum (ResolvedValueListSide operation.arm.kind) NumericOperand)
+  match operand with
+  | .group source => groupSide source.source.boundLevelCount source.declarations
+  | .slot (.group source) => groupSide source.source.boundLevelCount source.declarations
+  | .slot (.field source) => pure (.inl {
+      cells := [project (directRead source.declaration.id)]
+      hasUninstantiatedTail := false, hasHaving := false })
+  | .slot (.star path source filter) =>
+      let resolved ← path.path.resolveInCapacity document outer
+      let read := fun environment => project (starRead environment source.declaration.id)
+      match filter with
+      | none => pure (.inl (resolved.toResolvedSide read))
+      | some having =>
+          let consume := fun cells environment => match read environment with
+            | .unknown cause => .inr cause
+            | cell => .inl (cell :: cells)
+          match having.scanComputation { read := filterRead } outer consume resolved.environments [] with
+          | .exhausted reversed => pure (.inl {
+              cells := reversed.reverse
+              hasUninstantiatedTail := resolved.domain.hasOpenTail
+              hasHaving := true })
+          | .terminated cause | .poison cause => pure (.inr (.unknown cause))
+
+/-- Fold the same typed identities as validation, with computation poison and fresh overlay reads.
+    `scanResolvedValueListOperands` preserves the shared slot-unavailability and authored-order rules. -/
+def evaluateComputation (operation : CheckedTemporalDistinctCountRun model)
+    (document : Document) (outer : Env) (directRead : FieldId → CheckedCell)
+    (filterRead starRead : Env → FieldId → CheckedCell) : Except StarAddressingError NumericOperand := do
+  match ← scanResolvedValueListOperands
+      (state := ResolvedValueListSide operation.arm.kind) (terminal := NumericOperand)
+      (operation.computationSide document outer directRead filterRead starRead)
+      (fun cause => .unknown cause)
+      (fun accumulated _ side => accumulated.append side)
+      operation.source.operands ResolvedValueListSide.empty with
+  | .inl side => pure (evalDistinctCountAggregate side)
+  | .inr result => pure result
 
 end CheckedTemporalDistinctCountRun
 

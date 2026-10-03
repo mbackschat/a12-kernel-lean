@@ -48,6 +48,11 @@ def FlatModel.admitsNumericComputationOperand
         !sources.isEmpty && sources.all (·.admitted model scope)
   | .firstFilled source | .valueCount _ source =>
       model.directFieldsBoundBy scope (source.operands.filterMap (·.directField?.map (·.id)))
+  | .tokenDistinctCount source =>
+      model.directFieldsBoundBy scope
+        (source.operands.filterMap (·.directField?.map (·.operand.field.id)))
+  | .temporalDistinctCount run =>
+      model.directFieldsBoundBy scope run.source.directFieldIds
   | .tokenValueCount source =>
       model.directFieldsBoundBy scope
         (source.source.operands.filterMap (·.directField?.map (·.operand.field.id)))
@@ -143,6 +148,7 @@ def CheckedNumericComputationAtom.numericScaleSummary
       source.summaryWith FlatFieldDecl.numericScaleSummary
         CheckedNumberEntitySource.aggregateScaleSummary
   | .firstFilled source => source.scaleSummary
+  | .tokenDistinctCount _ | .temporalDistinctCount _
   | .valueCount _ _ | .filledFieldCount _ => NumericScaleSummary.field 0
   | .tokenValueCount source => source.scaleSummary
   | .booleanValueCount source => source.scaleSummary
@@ -188,6 +194,8 @@ def CheckedNumericComputationAtom.references
   | .filledFieldCount source => source.declarations.any (·.id == field)
   | .firstFilled source => source.referencesField field
   | .valueCount _ source => source.referencesField field
+  | .tokenDistinctCount source => source.referencesField field
+  | .temporalDistinctCount run => run.source.referencesField field
   | .tokenValueCount source => source.referencesField field
   | .booleanValueCount source => source.referencesField field
   | .sumOfProducts source =>
@@ -489,6 +497,12 @@ private def FlatModel.elaborateNumericComputationAtom
             (.dayDifference profile resolvedLeft resolvedRight))
         else
           throw .incompatibleDateDifference
+    | .numeric (.aggregate .distinctCount source) => do
+        match ← (elaborateDistinctCountSource model declaringGroup source
+            (some targetGroup)).mapError .aggregate with
+        | .number checked => pure (.numeric (.aggregate .distinctCount checked))
+        | .token checked => pure (.tokenDistinctCount checked)
+        | .temporal run => pure (.temporalDistinctCount run)
     | .numeric (.aggregate op source) => do
         let checked ←
           (elaborateNumberEntitySource model declaringGroup source (fixedTargetGroup? := some targetGroup)).mapError

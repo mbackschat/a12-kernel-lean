@@ -392,7 +392,7 @@ private def readerRouteTokens (cells : List ClassifiedCellInput) : Option (List 
     (checkDocument prepared "en_US" { instantiatedRows := rows, cells }).toOption
   let read : Env → FieldId → CheckedCell := fun _ field =>
     (document.read { field, path := [] }).toOption.getD malformedCheckedCell
-  match source.first.resolvedValueCountComputationSide document.source.toDocument [] (read [])
+  match source.first.resolvedComputationSide document.source.toDocument [] (read [])
       read read with
   | .ok (.inl side) => some (side.cells.map token)
   | _ => none
@@ -539,7 +539,7 @@ private def rawRoutesResolve (operand : SurfaceFieldEntityOperand) : List Bool :
           starRead).toOption.isSome,
         (checked.first.resolvedPartialValueCountSide document [] .full directRead
           starRead).toOption.isSome,
-        (checked.first.resolvedValueCountComputationSide document [] directRead
+        (checked.first.resolvedComputationSide document [] directRead
           starRead starRead).toOption.isSome ]
 
 example :

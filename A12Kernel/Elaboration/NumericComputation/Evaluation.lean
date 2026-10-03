@@ -234,6 +234,16 @@ def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
           { read := context.read } with
       | some result => pure result.toComputationResult
       | none => throw .repeatableContextRequired
+  | .tokenDistinctCount source => do
+      if source.directFields?.isNone then throw .repeatableContextRequired
+      (source.evaluateDistinctComputation { instantiatedRows := [], rawCells := fun _ => none } {} context.read (fun _ => context.read)
+        (fun _ => context.read)).map NumericOperand.toComputationResult
+          |>.mapError .repeatableAddressing
+  | .temporalDistinctCount run => do
+      if !run.source.isDirectOnly then throw .repeatableContextRequired
+      (run.evaluateComputation { instantiatedRows := [], rawCells := fun _ => none } {} context.read (fun _ => context.read)
+        (fun _ => context.read)).map NumericOperand.toComputationResult
+          |>.mapError .repeatableAddressing
   | .tokenValueCount source =>
       match source.evaluateDirectAt? .computation context.read with
       | some result => pure result.toComputationResult
@@ -455,6 +465,14 @@ def readCheckedNumericComputationAtom
         context.outer context.scalar.read context.filterRead
         context.starRead).map NumericOperand.toComputationResult
           |>.mapError NumericComputationFault.repeatableAddressing
+  | .tokenDistinctCount source =>
+      (source.evaluateDistinctComputation context.document context.outer
+        context.scalar.read context.filterRead context.starRead).map NumericOperand.toComputationResult
+          |>.mapError .repeatableAddressing
+  | .temporalDistinctCount run =>
+      (run.evaluateComputation context.document context.outer
+        context.scalar.read context.filterRead context.starRead).map NumericOperand.toComputationResult
+          |>.mapError .repeatableAddressing
   | .tokenValueCount source =>
       (source.evaluateComputation context.document context.outer
         context.scalar.read context.filterRead context.starRead).map
@@ -556,6 +574,7 @@ def CheckedNumericComputationAtom.numericComputationFault? :
       | .error error => some (.fieldFillSource error)
   | .firstFilled _ => none
   | .valueCount _ _ => none
+  | .tokenDistinctCount _ | .temporalDistinctCount _ => none
   | .tokenValueCount _ => none
   | .booleanValueCount _ => none
   -- A group operand's boundary is model-structural, so it is decided here rather than left

@@ -410,6 +410,8 @@ def CheckedNumericComputationAtom.toValidationAtom :
       pure (.firstFilled source)
   | .valueCount expected source =>
       pure (.valueCount expected source)
+  | .tokenDistinctCount source => pure (.tokenDistinctCount source)
+  | .temporalDistinctCount run => pure (.temporalDistinctCount run)
   | .tokenValueCount source =>
       pure (.tokenValueCount source)
   | .booleanValueCount source =>

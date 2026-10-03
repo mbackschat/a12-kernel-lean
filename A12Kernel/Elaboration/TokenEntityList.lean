@@ -73,6 +73,11 @@ structure DirectReference where
   projection : Option EnumerationProjectionRef
   deriving Repr, DecidableEq
 
+def directField? : CheckedTokenEntityOperand model →
+    Option (CheckedTokenField model)
+  | .field source => some source
+  | .star _ | .group _ => none
+
 def directReference? : CheckedTokenEntityOperand model →
     Option DirectReference
   | .field source =>
@@ -173,6 +178,10 @@ def referencesField (checked : CheckedTokenEntitySource model)
     (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) :
     Bool :=
   checked.operands.any (fun operand => operand.referencesField field filterReads)
+
+def directFields? (checked : CheckedTokenEntitySource model) :
+    Option (List (CheckedTokenField model)) :=
+  checked.operands.mapM CheckedTokenEntityOperand.directField?
 
 end CheckedTokenEntitySource
 
@@ -760,6 +769,46 @@ def resolvedPartialValueCountSide
       else
         pure (.inr .skippedHaving)
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
+
+end CheckedTokenEntityOperand
+
+namespace CheckedTokenEntityOperand
+
+/-- Resolve one token slot at computation phase, a star over its in-capacity extent ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-star-scans)). Filtered stars reuse the shared one-kept-successor traversal and retain per-slot filter provenance for the consuming fold.
+
+    A group slot reads its declarations' rows through the shared group walk, as a Number group's do ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-row-groups)). -/
+def resolvedComputationSide
+    (checked : CheckedTokenEntityOperand model)
+    (document : Document) (outer : Env)
+    (directRead : FieldId → CheckedCell)
+    (filterRead starRead : Env → FieldId → CheckedCell) :
+    Except StarAddressingError
+      (Sum (ResolvedValueListSide .token) NumericOperand) :=
+  match checked with
+  | .group source => .inl <$> source.resolvedSideIn .computation document outer starRead
+  | .field source =>
+      pure (.inl (source.resolvedSideAt .computation directRead))
+  | .star source => do
+      let resolved ← source.source.path.resolveInCapacity document outer
+      match source.filter with
+      | none =>
+          pure (.inl (resolved.toResolvedSide
+            (source.valueListCellAt .computation starRead)))
+      | some having =>
+          let filterContext : CorrelationContext := { read := filterRead }
+          let consume := fun cells environment =>
+            match source.valueListCellAt .computation starRead environment with
+            | .unknown cause => .inr cause
+            | cell => .inl (cell :: cells)
+          match having.condition.scanComputation filterContext outer consume
+              resolved.environments [] with
+          | .exhausted reversed =>
+              pure (.inl {
+                cells := reversed.reverse
+                hasUninstantiatedTail := resolved.domain.hasOpenTail
+                hasHaving := true })
+          | .terminated cause | .poison cause =>
+              pure (.inr (.unknown cause))
 
 end CheckedTokenEntityOperand
 

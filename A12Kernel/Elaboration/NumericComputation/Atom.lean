@@ -6,6 +6,7 @@ import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.NumericComputation.OperationTyping
 import A12Kernel.Elaboration.TokenValueCount
+import A12Kernel.Elaboration.DistinctCountSource
 import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Semantics.NumericTarget
 
@@ -43,6 +44,8 @@ inductive CheckedNumericComputationAtom (model : FlatModel) where
   | filledFieldCount (source : CheckedFieldFillList model)
   | firstFilled (source : CheckedNumberEntitySource model)
   | valueCount (expected : Rat) (source : CheckedNumberEntitySource model)
+  | tokenDistinctCount (source : CheckedTokenEntitySource model)
+  | temporalDistinctCount (run : CheckedTemporalDistinctCountRun model)
   | tokenValueCount (source : CheckedTokenValueCountSource model)
   | booleanValueCount (source : CheckedBooleanValueCountSource model)
   | sumOfProducts (source : CheckedNumericProductAggregate model)

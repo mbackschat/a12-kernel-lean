@@ -17,6 +17,8 @@ def supportsScalarEvaluation :
       sources.all fun | .direct _ => true | .expanded _ _ _ => false
   | .firstFilled source | .valueCount _ source =>
       source.directFields?.isSome
+  | .tokenDistinctCount source => source.directFields?.isSome
+  | .temporalDistinctCount run => run.source.isDirectOnly
   | .tokenValueCount source => source.source.directFields?.isSome
   | .booleanValueCount source => source.directFields?.isSome
   | .sumOfProducts _ => false
