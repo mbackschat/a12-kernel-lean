@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.DocumentComputationStep
 
 A computation whose target is neither a Number nor a String table's carrier, or a String
 `FirstFilledValue`, is lowered onto the whole-document step its operation names: `FirstFilledValue`
-by its target's kind, the `Time(...)` construction, `DateFromDateTime` and `TimeFromDateTime`. A
+by its target's kind, Boolean/Confirm constants, the `Time(...)` construction, `DateFromDateTime` and `TimeFromDateTime`. A
 step carries no precondition and one operation, so a guarded or multi-alternative computation is
 refused here, as is every operation no step admits.
 -/
@@ -110,6 +110,8 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
 /-- One unguarded operation onto its whole-document step, or a refusal naming its construct. -/
 def lowerDocumentStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) :
     Expr → Lowering (CheckedDocumentComputationStep model)
+  | .constant "True" => boolean true
+  | .constant "False" => boolean false
   | .call "FirstFilledValue" arguments none none => firstFilledStep model group target arguments
   | .call "Time" arguments none none => do
       let components ← timeComponents model group arguments
@@ -126,5 +128,11 @@ def lowerDocumentStep (model : FlatModel) (group : GroupPath) (target : FlatFiel
         (elaborateTimeFromDateTimeComputation model source.id target.id)
       pure (.ofTimeFromDateTime operation)
   | other => refuse other.construct
+
+where
+  boolean (value : Bool) : Lowering (CheckedDocumentComputationStep model) := do
+    let operation ← elaborated "BooleanComputation"
+      (checkBooleanConstantComputation model group target.id value)
+    pure (.ofBooleanConstant operation)
 
 end A12Kernel.Dm

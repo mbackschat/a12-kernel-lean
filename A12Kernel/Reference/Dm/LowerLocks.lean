@@ -782,4 +782,64 @@ example :
         (computation ["Form", "Rows", "Tasks"] "Target" "FirstFilledValue(../Choices*/Choice)")).toOption.isSome].all id := by
   native_decide
 
+private def fixedBooleanModel (kind : FieldKind := .boolean) : FlatModel :=
+  { fields := [
+      { id := 1, groupPath := ["Form"], name := "Flag", policy := { kind } },
+      { id := 2, groupPath := ["Form"], name := "Copy", policy := { kind := .boolean } },
+      { id := 3, groupPath := ["Form"], name := "Fallback", policy := { kind := .boolean } }] }
+
+private def fixedBooleanDefinition (operation : String) : DmComputation :=
+  { group := ["Form"], name := "FlagComp", targetRelPath := "../Flag"
+    commonPrecondition := none, errorCodesToSuppress := []
+    alternatives := [{ precondition := none, operation }] }
+
+private def fixedBooleanRun (operation : String) (stored : Option String)
+    (kind : FieldKind := .boolean) (dependent : Bool := false) : Option (List ComputedOutcome) := do
+  let model := fixedBooleanModel kind
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let dm : DmModel := {
+    flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let fields := stored.toList.map fun value => ("Flag", Lean.Json.str value)
+  let input ← (readDocument dm (Lean.Json.mkObj [
+    ("Form", Lean.Json.mkObj fields)])).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let (_, producer) ← (lowerComputation model .english (fixedBooleanDefinition operation)).toOption
+  let steps ← if dependent then do
+      let (_, copy) ← (lowerComputation model .english
+        { (fixedBooleanDefinition "FirstFilledValue(Flag, Fallback)") with
+          name := "CopyComp", targetRelPath := "../Copy" }).toOption
+      pure [copy, producer]
+    else pure [producer]
+  (runComputations world prepared checked steps).toOption
+
+example :
+    fixedBooleanRun "True" (some "false") ==
+      some [{ pointer := "Form/Flag", outcome := "value true" }] ∧
+    fixedBooleanRun "False" (some "true") ==
+      some [{ pointer := "Form/Flag", outcome := "value false" }] ∧
+    fixedBooleanRun "True" (some "true") == some [] ∧
+    fixedBooleanRun "False" (some "false") == some [] ∧
+    fixedBooleanRun "True" none ==
+      some [{ pointer := "Form/Flag", outcome := "value true" }] ∧
+    fixedBooleanRun "True" (some "bad") ==
+      some [{ pointer := "Form/Flag", outcome := "value true" }] ∧
+    fixedBooleanRun "True" none .confirm ==
+      some [{ pointer := "Form/Flag", outcome := "value true" }] ∧
+    fixedBooleanRun "False" none .confirm == none := by
+  native_decide
+
+example :
+    fixedBooleanRun "False" (some "true") .boolean true == some [
+      { pointer := "Form/Flag", outcome := "value false" },
+      { pointer := "Form/Copy", outcome := "value false" }] := by
+  native_decide
+
+example :
+    let computation := fixedBooleanDefinition "True"
+    let guarded := { computation with commonPrecondition := some "FieldFilled(Fallback)" }
+    !(lowerComputation (fixedBooleanModel .string) .english computation).isOk ∧
+      !(lowerComputation fixedBooleanModel .english guarded).isOk := by
+  native_decide
+
 end A12Kernel.Dm.LowerLocks

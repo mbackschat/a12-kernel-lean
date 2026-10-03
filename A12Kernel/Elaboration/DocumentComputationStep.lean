@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.BooleanConstantComputation
 import A12Kernel.Elaboration.BooleanFirstFilledComputation
 import A12Kernel.Elaboration.CustomFirstFilledComputation
 import A12Kernel.Elaboration.DateRangeConstructionComputation
@@ -26,7 +27,7 @@ A computation whose evaluator reads the whole document joins a scalar plan as on
 its target, the fields it reads, a proof that it does not read its own target, and an evaluator returning
 the target's outcome together with the cell a later computation reads for it. Day, sub-day and mixed
 DateTime shifts, a full-Date computation, `TimeFromDateTime` and `DateFromDateTime`, a Time construction,
-an Enumeration copy, a DateRange construction and the fixed-target `FirstFilledValue` over a Boolean,
+a Boolean/Confirm constant, an Enumeration copy, a DateRange construction and the fixed-target `FirstFilledValue` over a Boolean,
 String, Custom, DateFragment, Time, DateTime, full Date, DateRange or Enumeration are its instances; each is one
 constructor here, and the plan's laws are stated once over the step rather than once per family. A
 String target is checked against its prepared pattern, which the plan hands every step as the lookup
@@ -286,6 +287,17 @@ namespace CheckedDocumentComputationStep
 
 def targetKind (step : CheckedDocumentComputationStep model) : SurfaceScalarKind :=
   step.family.kind
+
+/-- A fixed Boolean/Confirm constant has no reads; its checked carrier owns the Confirm/False refusal. -/
+def ofBooleanConstant (operation : CheckedBooleanConstantComputation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.id
+  family := .boolean
+  referencesField _ := false
+  excludesTarget := rfl
+  run _ _ _ :=
+    let outcome := operation.execute
+    pure (.boolean outcome, DocumentComputationReadBack.boolean outcome)
 
 /-- A field-backed DateTime day shift. -/
 def ofDateTimeDayShift (operation : CheckedDateTimeDayShiftComputation model) :
