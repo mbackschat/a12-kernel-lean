@@ -438,20 +438,7 @@ def NumericComparison.wellFormedInBool
     (comparison : NumericComparison)
     (model : FlatModel) (rowGroup : GroupPath)
     (scope : NumericOperandScope) : Bool :=
-  !(comparison.left.isImmediateLiteral && comparison.right.isImmediateLiteral) &&
-    comparison.left.isAdmittedResolvedNumericOperation &&
-    comparison.right.isAdmittedResolvedNumericOperation &&
-    comparison.left.allAtoms (NumericValidationAtom.admitted model rowGroup scope) &&
-    comparison.right.allAtoms (NumericValidationAtom.admitted model rowGroup scope) &&
-    comparison.left.numericOperationAuthoringCheck == .accepted &&
-    comparison.right.numericOperationAuthoringCheck == .accepted &&
-    match
-        comparison.left.summary? numericValidationSummary,
-        comparison.right.summary? numericValidationSummary with
-    | some leftSummary, some rightSummary =>
-        comparison.op.acceptsScalesWithSuppression
-          comparison.suppressExactScaleWarning leftSummary rightSummary
-    | _, _ => false
+  comparison.admittedWith (NumericValidationAtom.admitted model rowGroup scope) numericValidationSummary
 
 def NumericComparison.wellFormedBool
     (comparison : NumericComparison)

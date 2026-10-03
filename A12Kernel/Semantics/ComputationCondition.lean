@@ -1,10 +1,12 @@
 import A12Kernel.Document
+import A12Kernel.Semantics.NumericExpression
+import A12Kernel.Semantics.FlatValidation
 import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.Observation
 
 /-! # A12Kernel.Semantics.ComputationCondition — checked computation control
 
-This capsule admits direct, already-resolved field presence, ordered `And`/`Or`, optional common-precondition expansion, and first-match selection for one non-repeatable computation instance. An absent row precondition selects directly; model-level certification keeps that source shape to a sole alternative even though composed tables may later contain it beside other rows. The selector separates clean not-true and no-match from an invalid cell actually read as poison. Comparison and quantifier leaves, checked paths, operation evaluation, and model-level alternative legality remain separate clauses.
+This module admits resolved field presence and numeric comparisons over shared arithmetic trees, ordered `And`/`Or`, common-precondition expansion and first-match selection at one target instance. An absent row precondition selects directly; model-level certification keeps that source shape to a sole alternative even though composed tables may later contain it beside other rows. The selector separates clean not-true and no-match from an invalid cell actually read as poison. Numeric atoms retain field metadata or structural row bindings; checked consumers propagate a reached binding error outside semantic poison. Other predicate families, operation evaluation and model-level alternative legality remain separate clauses.
 -/
 
 namespace A12Kernel
@@ -23,10 +25,37 @@ def ScalarComputationContext.withWorld
     ScalarComputationContext :=
   { context with world := some world }
 
+/-- Scalar Number reads and structural coordinates share the ordinary arithmetic tree in guards. -/
+inductive ComputationNumericAtom where
+  | field (source : FlatNumberField)
+  | repetition (source : BoundCurrentRepetitionSource)
+  | baseYear (year : Int)
+  deriving Repr, DecidableEq
+
+def ComputationNumericAtom.referencesField : ComputationNumericAtom → FieldId → Bool
+  | .field source, target => source.id == target
+  | .repetition _, _ | .baseYear _, _ => false
+
+def ComputationNumericAtom.summary : ComputationNumericAtom → NumericScaleSummary
+  | .field source => .field source.info.scale
+  | .repetition _ | .baseYear _ => .field 0
+
+/-- Missing row coordinates remain structural failures, separate from reached cell poison. -/
+def ComputationNumericAtom.read (context : ScalarComputationContext) :
+    ComputationNumericAtom → Except EnvBindingError NumericComputationResult
+  | .field source =>
+      pure (match ({ read := context.read } : FlatContext).resolveNumberComparisonOperandAt
+          .computation source with
+        | .value amount _ => .value amount
+        | .unknown cause => .poison cause)
+  | .repetition source => do pure (.value (← source.coordinateAt context.row))
+  | .baseYear year => pure (.value year)
+
 /-- Atomic leaves of the parser-independent computation-condition fragment. -/
 inductive ComputationConditionLeaf where
   | fieldFilled (field : FieldId)
   | fieldNotFilled (field : FieldId)
+  | numeric (comparison : NumericComparisonOf ComputationNumericAtom)
   deriving Repr, DecidableEq
 
 /-- Computation control reuses the common checked connective tree; only its phase-specific leaves and result projection differ from validation. -/
@@ -70,6 +99,9 @@ abbrev or (left right : ComputationCondition) : ComputationCondition :=
 def referencesField (condition : ComputationCondition) (target : FieldId) : Bool :=
   match condition with
   | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) => field == target
+  | .leaf (.numeric comparison) =>
+      comparison.left.anyAtom (·.referencesField target) ||
+        comparison.right.anyAtom (·.referencesField target)
   | .and left right | .or left right =>
       left.referencesField target || right.referencesField target
 
@@ -78,17 +110,42 @@ def evalFieldFilled (context : ScalarComputationContext)
     (field : FieldId) : ComputationConditionResult :=
   (observeCell .computation (context.read field)).evalComputationFilled
 
-/-- Evaluate one computation presence leaf through its checked computation-phase observation. -/
+/-- Evaluate a resolved leaf through computation-phase reads; the pure compatibility entry assumes its row context is complete. -/
 def ComputationConditionLeaf.eval (context : ScalarComputationContext) :
     ComputationConditionLeaf → ComputationConditionResult
   | .fieldFilled field => evalFieldFilled context field
   | .fieldNotFilled field =>
       (observeCell .computation (context.read field)).evalComputationNotFilled
+  | .numeric comparison =>
+      (comparison.evalComputationWith (ComputationNumericAtom.read context)).toOption.getD .notTrue
 
 /-- Evaluate a computation condition left-to-right. `And` stops on clean not-true, `Or` stops on clean holds, and a poison already read aborts without consulting the remaining operand. -/
 def eval (condition : ComputationCondition)
     (context : ScalarComputationContext) : ComputationConditionResult :=
   condition.evalComputation (ComputationConditionLeaf.eval context)
+
+/-- Checked consumers retain coordinate failures instead of the low-level evaluator's
+non-holding fallback for a context outside its row contract. -/
+def evalChecked (condition : ComputationCondition) (context : ScalarComputationContext) :
+    Except EnvBindingError ComputationConditionResult :=
+  condition.evalComputationExcept fun
+    | .numeric comparison => comparison.evalComputationWith (ComputationNumericAtom.read context)
+    | leaf => pure (ComputationConditionLeaf.eval context leaf)
+
+theorem evalChecked_and (context : ScalarComputationContext) (left right : ComputationCondition) :
+    (and left right).evalChecked context = match left.evalChecked context with
+      | .error error => .error error
+      | .ok .holds => right.evalChecked context
+      | .ok .notTrue => .ok .notTrue
+      | .ok (.poison cause) => .ok (.poison cause) := by
+  change (do
+    match ← left.evalChecked context with
+    | .holds => right.evalChecked context
+    | .notTrue => pure .notTrue
+    | .poison cause => pure (.poison cause)) = _
+  cases h : left.evalChecked context with
+  | error error => rfl
+  | ok result => cases result <;> rfl
 
 @[simp]
 theorem eval_fieldFilled (context : ScalarComputationContext) (field : FieldId) :
@@ -161,20 +218,68 @@ def expandCommonPrecondition
         precondition := ComputationCondition.withCommon (some common) alternative.precondition
         operation := alternative.operation }
 
-/-- Select the first alternative directly when unguarded or when its guard holds. Clean guarded non-matches continue, while poison aborts without examining the remaining alternatives. -/
-def selectFirst (alternatives : List (ComputationAlternative Operation))
-    (context : ScalarComputationContext) :
-    ComputationAlternativeSelection Operation :=
+/-- One ordered scan shared by pure and structurally checked guard evaluation. -/
+def selectFirstWith [Monad m]
+    (evaluate : ComputationCondition → m ComputationConditionResult)
+    (alternatives : List (ComputationAlternative Operation)) :
+    m (ComputationAlternativeSelection Operation) :=
   match alternatives with
-  | [] => .noMatch
-  | alternative :: remaining =>
+  | [] => pure .noMatch
+  | alternative :: remaining => do
       match alternative.precondition with
-      | none => .selected alternative.operation
+      | none => pure (.selected alternative.operation)
       | some precondition =>
-          match precondition.eval context with
-          | .holds => .selected alternative.operation
-          | .notTrue => selectFirst remaining context
-          | .poison cause => .poison cause
+          match ← evaluate precondition with
+          | .holds => pure (.selected alternative.operation)
+          | .notTrue => selectFirstWith evaluate remaining
+          | .poison cause => pure (.poison cause)
+
+/-- Select the first holding alternative through the pure computation evaluator. -/
+def selectFirst (alternatives : List (ComputationAlternative Operation))
+    (context : ScalarComputationContext) : ComputationAlternativeSelection Operation :=
+  Id.run (selectFirstWith (m := Id) (fun condition => condition.eval context) alternatives)
+
+@[simp] theorem selectFirst_nil (context : ScalarComputationContext) :
+    selectFirst ([] : List (ComputationAlternative Operation)) context = .noMatch := rfl
+
+/-- The pure specialization retains the original one-step scan equation. -/
+theorem selectFirst_cons (head : ComputationAlternative Operation)
+    (tail : List (ComputationAlternative Operation)) (context : ScalarComputationContext) :
+    selectFirst (head :: tail) context = match head.precondition with
+      | none => .selected head.operation
+      | some precondition => match precondition.eval context with
+        | .holds => .selected head.operation
+        | .notTrue => selectFirst tail context
+        | .poison cause => .poison cause := by
+  cases h : head.precondition with
+  | none => simp [selectFirst, selectFirstWith, h, Id.run] <;> rfl
+  | some guard =>
+      cases hg : guard.eval context <;> simp [selectFirst, selectFirstWith, h, hg, Id.run] <;> rfl
+
+/-- The checked selector preserves a guard's structural coordinate failure. -/
+def selectFirstChecked (alternatives : List (ComputationAlternative Operation))
+    (context : ScalarComputationContext) :
+    Except EnvBindingError (ComputationAlternativeSelection Operation) :=
+  selectFirstWith (fun condition => condition.evalChecked context) alternatives
+
+@[simp] theorem selectFirstChecked_nil (context : ScalarComputationContext) :
+    selectFirstChecked ([] : List (ComputationAlternative Operation)) context = .ok .noMatch := rfl
+
+theorem selectFirstChecked_cons (head : ComputationAlternative Operation)
+    (tail : List (ComputationAlternative Operation)) (context : ScalarComputationContext) :
+    selectFirstChecked (head :: tail) context = match head.precondition with
+      | none => .ok (.selected head.operation)
+      | some guard => match guard.evalChecked context with
+        | .error error => .error error
+        | .ok .holds => .ok (.selected head.operation)
+        | .ok .notTrue => selectFirstChecked tail context
+        | .ok (.poison cause) => .ok (.poison cause) := by
+  cases h : head.precondition with
+  | none => simp [selectFirstChecked, selectFirstWith, h] <;> rfl
+  | some guard =>
+      cases hg : guard.evalChecked context with
+      | error error => simp [selectFirstChecked, selectFirstWith, h, hg] <;> rfl
+      | ok result => cases result <;> simp [selectFirstChecked, selectFirstWith, h, hg] <;> rfl
 
 end ComputationAlternative
 

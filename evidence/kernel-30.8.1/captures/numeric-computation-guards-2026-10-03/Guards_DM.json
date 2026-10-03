@@ -1,0 +1,505 @@
+{
+  "header" : {
+    "id" : "Guards_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Guards_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/G",
+        "name" : "G",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/G/N",
+            "name" : "N",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/D",
+            "name" : "D",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Bad",
+            "name" : "Bad",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Eq",
+            "name" : "Eq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Ne",
+            "name" : "Ne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Lt",
+            "name" : "Lt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Le",
+            "name" : "Le",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Gt",
+            "name" : "Gt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Ge",
+            "name" : "Ge",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Arithmetic",
+            "name" : "Arithmetic",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/LiteralFirst",
+            "name" : "LiteralFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Domain",
+            "name" : "Domain",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/DomainThenBad",
+            "name" : "DomainThenBad",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/BadThenDomain",
+            "name" : "BadThenDomain",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/FalseAnd",
+            "name" : "FalseAnd",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/TrueOr",
+            "name" : "TrueOr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterDomain",
+            "name" : "AfterDomain",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterFalse",
+            "name" : "AfterFalse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterTrue",
+            "name" : "AfterTrue",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/EqComp",
+            "name" : "EqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Eq",
+              "commonPrecondition" : "[N] == 0",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/NeComp",
+            "name" : "NeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Ne",
+              "commonPrecondition" : "[N] != 0",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/LtComp",
+            "name" : "LtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Lt",
+              "commonPrecondition" : "[N] < 1",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/LeComp",
+            "name" : "LeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Le",
+              "commonPrecondition" : "[N] <= 0",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/GtComp",
+            "name" : "GtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Gt",
+              "commonPrecondition" : "[N] > -1",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/GeComp",
+            "name" : "GeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Ge",
+              "commonPrecondition" : "[N] >= 0",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ArithmeticComp",
+            "name" : "ArithmeticComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Arithmetic",
+              "commonPrecondition" : "[N] + 1 > 0",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/LiteralFirstComp",
+            "name" : "LiteralFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../LiteralFirst",
+              "commonPrecondition" : "0 < [N] + 1",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/DomainComp",
+            "name" : "DomainComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Domain",
+              "commonPrecondition" : "[N] / [D] > 0",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/DomainThenBadComp",
+            "name" : "DomainThenBadComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DomainThenBad",
+              "commonPrecondition" : "[N] / [D] > [Bad]",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/BadThenDomainComp",
+            "name" : "BadThenDomainComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BadThenDomain",
+              "commonPrecondition" : "[Bad] > [N] / [D]",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/FalseAndComp",
+            "name" : "FalseAndComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FalseAnd",
+              "commonPrecondition" : "[N] < 0 And [Bad] > 0",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/TrueOrComp",
+            "name" : "TrueOrComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TrueOr",
+              "commonPrecondition" : "[N] >= 0 Or [Bad] > 0",
+              "computationAlternatives" : [ {
+                "operation" : "3"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "guard check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterDomainComp",
+            "name" : "AfterDomainComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDomain",
+              "computationAlternatives" : [ {
+                "operation" : "[DomainThenBad] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "downstream check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterFalseComp",
+            "name" : "AfterFalseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterFalse",
+              "computationAlternatives" : [ {
+                "operation" : "[FalseAnd] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "downstream check"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterTrueComp",
+            "name" : "AfterTrueComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTrue",
+              "computationAlternatives" : [ {
+                "operation" : "[TrueOr] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "downstream check"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

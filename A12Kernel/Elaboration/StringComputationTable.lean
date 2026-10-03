@@ -4,9 +4,9 @@ import A12Kernel.Semantics.StringAlternatives
 
 /-! # Checked nonrepeatable String computation tables
 
-This capsule certifies an already-resolved, nonempty String table against one validated flat model. A sole row may omit its precondition; every row in a multi-row source table must retain a direct-presence condition tree. Rows reuse the existing checked String operation, first-match selector, declaration-owned target policy, and resolved evaluator. The table stores one target and policy rather than repeating them per row, while every row retains its computation declaration group until the runtime-only projection.
+This capsule certifies an already-resolved, nonempty String table against one validated flat model. A sole row may omit its precondition; every row in a multi-row source table must retain an admitted condition tree. Rows reuse the existing checked String operation, first-match selector, declaration-owned target policy, and resolved evaluator. The table stores one target and policy rather than repeating them per row, while every row retains its computation declaration group until the runtime-only projection.
 
-The guard fragment admits any nonrepeatable scalar declaration, including raw String presence, but no repeatable reference. The certifier joins an optional common precondition onto every row's own guard. Scheduling, result projection, application, and validation remain separate.
+Guard admission belongs to `ComputationCondition.wellFormedBool`, including scalar presence and numeric comparisons at fixed scope. The certifier joins an optional common precondition onto every row's own guard. Scheduling, result projection, application, and validation remain separate.
 -/
 
 namespace A12Kernel

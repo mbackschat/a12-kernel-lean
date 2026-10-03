@@ -354,14 +354,6 @@ def ResolvedGroupReference.scalarRepetitionWellFormedBool
   reference.origin == .path && reference.boundRepeatableScope.isEmpty &&
     reference.fixedWellFormedBool model reference.path
 
-/-- A row-bound structural operand retains its complete ancestry separately from its own coordinate:
-    a fixed descendant requires ancestor bindings but returns one (`spec/08` §4). -/
-structure BoundCurrentRepetitionSource where
-  path : GroupPath
-  scope : List RepeatableLevel
-  level : Option RepeatableLevel
-  deriving Repr, DecidableEq
-
 def BoundCurrentRepetitionSource.wellFormedIn
     (source : BoundCurrentRepetitionSource) (model : FlatModel)
     (available : List RepeatableLevel) : Bool :=
@@ -369,15 +361,6 @@ def BoundCurrentRepetitionSource.wellFormedIn
     source.scope == model.repeatableScopeForGroupPath source.path &&
     source.scope.isPrefixOf available &&
     source.level == (model.repeatableGroups.find? (·.path == source.path)).map (·.level)
-
-/-- Check every required binding before selecting the group's own coordinate. A present terminal
-    coordinate cannot compensate for a missing, duplicated, or zero ancestor binding. -/
-def BoundCurrentRepetitionSource.coordinateAt (source : BoundCurrentRepetitionSource)
-    (environment : Env) : Except EnvBindingError Nat := do
-  let _ ← environment.pathForScope source.scope
-  match source.level with
-  | none => pure 1
-  | some level => environment.bindingAt level
 
 inductive SurfaceNumericAtom
     (Aggregate : Type := SurfaceNumericAggregateFields) where
@@ -493,30 +476,5 @@ def summary (fieldSummary : Field → NumericScaleSummary) :
 
 end ResolvedNumericAtom
 
-/-- The wrapper checker rejects only an immediate numeric literal or its grouped form. Semantically fixed sources such as numeric `BaseYear` remain distinct syntax and are admitted. -/
-def AuthoredNumericExpr.isImmediateResolvedNumericLiteral :
-    AuthoredNumericExpr Atom → Bool
-  | .literal _ => true
-  | .group body => body.isImmediateResolvedNumericLiteral
-  | _ => false
-
-/-- Check the source-specific immediate-literal prohibition at every rounding/absolute-value boundary while traversing the complete numeric operation tree, including operand-list calls and their normalized folds. -/
-def AuthoredNumericExpr.respectsResolvedWrapperLiteralBoundary :
-    AuthoredNumericExpr Atom → Bool
-  | .round _ _ body | .abs body =>
-      !body.isImmediateResolvedNumericLiteral &&
-        body.respectsResolvedWrapperLiteralBoundary
-  | .atom _ | .literal _ => true
-  | .group body => body.respectsResolvedWrapperLiteralBoundary
-  | .binary _ left right | .power left right | .extremum _ left right =>
-      left.respectsResolvedWrapperLiteralBoundary &&
-        right.respectsResolvedWrapperLiteralBoundary
-  | .extremumCall _ body => body.respectsResolvedWrapperLiteralBoundary
-
-/-- A resolved numeric operation must satisfy the shared authored shape and the source-specific wrapper boundary at every depth. -/
-def AuthoredNumericExpr.isAdmittedResolvedNumericOperation
-    (expression : AuthoredNumericExpr Atom) : Bool :=
-  expression.isAdmittedNumericOperation &&
-    expression.respectsResolvedWrapperLiteralBoundary
 
 end A12Kernel

@@ -121,7 +121,7 @@ def certifyNumericComputationTable
 /-- Why a whole Number computation is refused: one alternative's authored guard or operation, numbered
 from 1, or the table assembled from the checked operations. -/
 inductive NumericComputationTableElabError where
-  | precondition (alternative : Nat) (error : ResolveError)
+  | precondition (alternative : Nat) (error : NumericValidationElabError)
   | operation (alternative : Nat) (error : NumericComputationElabError)
   | table (error : NumericComputationTableError)
   deriving Repr, DecidableEq
@@ -132,7 +132,8 @@ namespace NumericComputationTableElabError
 the Kernel reports several codes this is the first of them; the reads of the target it reports once
 per occurrence are not counted. -/
 def diagnostic? : NumericComputationTableElabError → Option KernelStaticDiagnostic
-  | .precondition _ error => error.diagnostic?
+  | .precondition _ (.resolve error) => error.diagnostic?
+  | .precondition _ _ => none
   | .operation _ error => error.diagnostic?
   | .table error => error.diagnostic?
 
@@ -156,7 +157,7 @@ at the first alternative judged. Warning suppression is the whole computation's 
 scale gate. -/
 private def elaborateNumericTargetComputationTableWith (model : FlatModel) (declaringGroup : GroupPath)
     (target : FieldId)
-    (alternatives : List (Except ResolveError (Option ComputationCondition) ×
+    (alternatives : List (Except NumericValidationElabError (Option ComputationCondition) ×
       AuthoredNumericExpr SurfaceNumericComputationAtom))
     (suppressExactScaleWarning : Bool) (targetScope : ComputationTargetScope)
     (commonPrecondition : Option ComputationCondition) :
@@ -261,7 +262,7 @@ def elaborateNumericTargetComputationTableFromSurface (model : FlatModel) (decla
   elaborateNumericTargetComputationTableWith model declaringGroup target
     (alternatives.map fun (precondition, expression) =>
       (precondition.mapM fun authored => do
-        model.validate
+        model.validate |>.mapError .resolve
         model.elaborateComputationCondition declaringGroup targetGroup authored,
         expression.asComplete))
     suppressExactScaleWarning targetScope none
@@ -287,9 +288,9 @@ def declaringGroups (table : CheckedNumericComputationTable model) : List GroupP
 /-- Select first through computation-phase scalar guards, then evaluate only that checked operation with the scalar evaluator. The context's read decides which row the operands are read at. -/
 def evaluate (table : CheckedNumericComputationTable model)
     (context : ScalarComputationContext) :
-    Except NumericComputationFault NumericTargetCheckResult :=
-  match ComputationAlternative.selectFirst
-      table.selectableAlternatives context with
+    Except NumericComputationFault NumericTargetCheckResult := do
+  match ← (ComputationAlternative.selectFirstChecked
+      table.selectableAlternatives context).mapError .guardBinding with
   | .noMatch => pure (.supported .noValue)
   | .poison cause => pure (.supported (.inheritedPoison cause))
   | .selected operation => operation.evaluate context
@@ -298,9 +299,9 @@ def evaluate (table : CheckedNumericComputationTable model)
 repeatable reads, so a selected aggregate reads its rows through the context's star view. -/
 def evaluateIn (table : CheckedNumericComputationTable model)
     (context : NumericComputationEvaluationContext) :
-    Except NumericComputationFault NumericTargetCheckResult :=
-  match ComputationAlternative.selectFirst
-      table.selectableAlternatives context.scalar with
+    Except NumericComputationFault NumericTargetCheckResult := do
+  match ← (ComputationAlternative.selectFirstChecked
+      table.selectableAlternatives context.scalar).mapError .guardBinding with
   | .noMatch => pure (.supported .noValue)
   | .poison cause => pure (.supported (.inheritedPoison cause))
   | .selected operation => operation.evaluateIn context

@@ -213,20 +213,7 @@ def OrderedNumericComparison.wellFormedInBool
     (comparison : OrderedNumericComparison model)
     (rowGroup : GroupPath)
     (scope : NumericOperandScope) : Bool :=
-  !(comparison.left.isImmediateLiteral && comparison.right.isImmediateLiteral) &&
-    comparison.left.isAdmittedResolvedNumericOperation &&
-    comparison.right.isAdmittedResolvedNumericOperation &&
-    comparison.left.allAtoms (·.admitted rowGroup scope) &&
-    comparison.right.allAtoms (·.admitted rowGroup scope) &&
-    comparison.left.numericOperationAuthoringCheck == .accepted &&
-    comparison.right.numericOperationAuthoringCheck == .accepted &&
-    match
-        comparison.left.summary? OrderedNumericValidationAtom.summary,
-        comparison.right.summary? OrderedNumericValidationAtom.summary with
-    | some leftSummary, some rightSummary =>
-        comparison.op.acceptsScalesWithSuppression
-          comparison.suppressExactScaleWarning leftSummary rightSummary
-    | _, _ => false
+  comparison.admittedWith (·.admitted rowGroup scope) OrderedNumericValidationAtom.summary
 
 def OrderedNumericComparison.referencesField
     (comparison : OrderedNumericComparison model)

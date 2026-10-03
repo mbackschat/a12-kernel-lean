@@ -30,15 +30,15 @@ structure ComputedOutcome where
 instance : ToString ComputedOutcome where
   toString computed := s!"{computed.pointer}={computed.outcome}"
 
-/-- A computation guard: fill checks under `And` and `Or`, all a computation precondition admits. -/
-partial def lowerGuard : Expr → Lowering SurfaceComputationCondition
-  | .parens body => lowerGuard body
+/-- Lower presence and numeric guards into the shared computation condition tree. Unsupported atoms remain explicit refusals during model resolution. -/
+partial def lowerGuard (suppress : Bool := false) : Expr → Lowering SurfaceComputationCondition
+  | .parens body => lowerGuard suppress body
   | .logic op (first :: rest) => do
       let join := match op with
         | .and => SurfaceComputationCondition.and
         | .or => SurfaceComputationCondition.or
-      let mut result ← lowerGuard first
-      for part in rest do result := join result (← lowerGuard part)
+      let mut result ← lowerGuard suppress first
+      for part in rest do result := join result (← lowerGuard suppress part)
       pure result
   | .call "FieldFilled" [.mk field none none] none none => match field.fieldEntity? with
       | some path => pure (.fieldFilled path)
@@ -46,6 +46,7 @@ partial def lowerGuard : Expr → Lowering SurfaceComputationCondition
   | .call "FieldNotFilled" [.mk field none none] none none => match field.fieldEntity? with
       | some path => pure (.fieldNotFilled path)
       | none => refuse "Guard" "FieldNotFilled operand"
+  | .compare op left right => .numeric <$> lowerNumericComparison op left right suppress
   | other => refuse ("Guard/" ++ other.construct)
 
 /-- A String computation's operation: field reads, literals, `FieldValueAsString`, `RangeAsString`
@@ -92,12 +93,12 @@ def targetOf (language : Language) (model : FlatModel) (computation : DmComputat
 /-- The resolved common precondition and every alternative's own guard, kept apart because the
 tables judge an alternative's guardedness by its own guard alone. -/
 private def guards (language : Language) (model : FlatModel) (computation : DmComputation)
-    (target : FlatFieldDecl) :
+    (target : FlatFieldDecl) (suppress : Bool) :
     Lowering (Option ComputationCondition × List (Option ComputationCondition)) := do
   let resolve (text : String) : Lowering ComputationCondition := do
     let guard := (← parsed language text).body
     if !guard.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
-    let surface ← lowerGuard guard
+    let surface ← lowerGuard suppress guard
     elaborated "Guard" (model.elaborateComputationCondition computation.group target.groupPath surface)
   let common ← computation.commonPrecondition.mapM resolve
   let own ← computation.alternatives.mapM (·.precondition.mapM resolve)
@@ -114,16 +115,20 @@ inductive LoweredComputation (model : FlatModel)
 def lowerComputation (model : FlatModel) (language : Language) (computation : DmComputation) :
     Lowering (FlatFieldDecl × LoweredComputation model) := do
   let target ← targetOf language model computation
-  let (common, guards) ← guards language model computation target
+  -- Decode once for guard scale admission, but retain the reader's guard/operation/refusal order.
+  let suppression : Lowering (List String) :=
+    if computation.errorCodesToSuppress.isEmpty then pure [] else
+      (·.suppressed) <$> parsed language
+        s!"@SuppressWarning({",".intercalate computation.errorCodesToSuppress}) 0"
+  let guardSuppress := (suppression.toOption.getD []).contains "MVK_INVALID_COMPARE_DEC_PLACES"
+  let (common, guards) ← guards language model computation target guardSuppress
   let operations ← computation.alternatives.mapM fun alternative => do
     let body := (← parsed language alternative.operation).body
     if !body.parensLegal false then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
     pure body
-  -- The entries reach the condition parser joined into one preamble (spec §12.4), so padding is
-  -- admitted and a second name is a parse failure, as in a rule's own text.
-  let suppressed ← if computation.errorCodesToSuppress.isEmpty then pure [] else
-    (·.suppressed) <$> parsed language
-      s!"@SuppressWarning({",".intercalate computation.errorCodesToSuppress}) 0"
+  -- The entries reach the parser joined into one preamble (spec §12.4), so padding is admitted
+  -- and a second name is a parse failure, as in a rule's own text.
+  let suppressed ← suppression
   if let some other := suppressed.find? (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
     refuse "SuppressWarning" other
   let suppress := suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"

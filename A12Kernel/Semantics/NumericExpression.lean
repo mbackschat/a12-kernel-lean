@@ -1,3 +1,5 @@
+import A12Kernel.Document
+import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.NumericLiteral
 import A12Kernel.Semantics.NumericArithmetic
 import A12Kernel.Semantics.NumericTolerance
@@ -11,6 +13,24 @@ poison and arithmetic domain failure. Model and path admission remain with the c
 -/
 
 namespace A12Kernel
+
+/-- A row-bound structural operand retains its complete ancestry separately from its own coordinate:
+    a fixed descendant requires ancestor bindings but returns one (`spec/08` §4). -/
+structure BoundCurrentRepetitionSource where
+  path : List String
+  scope : List RepeatableLevel
+  level : Option RepeatableLevel
+  deriving Repr, DecidableEq
+
+/-- Check every required binding before selecting the group's own coordinate. A present terminal
+    coordinate cannot compensate for a missing, duplicated, or zero ancestor binding. -/
+def BoundCurrentRepetitionSource.coordinateAt (source : BoundCurrentRepetitionSource)
+    (environment : Env) : Except EnvBindingError Nat := do
+  let _ ← environment.pathForScope source.scope
+  match source.level with
+  | none => pure 1
+  | some level => environment.bindingAt level
+
 
 namespace ScaleInfo
 
@@ -735,5 +755,63 @@ def evalComputation {Fault : Type}
       pure ((← body.evalComputation read).round mode places)
 
 end LoweredNumericExpr
+
+/-- The wrapper checker rejects only an immediate numeric literal or its grouped form. Semantically fixed sources such as numeric `BaseYear` remain distinct syntax and are admitted. -/
+def AuthoredNumericExpr.isImmediateResolvedNumericLiteral :
+    AuthoredNumericExpr Atom → Bool
+  | .literal _ => true
+  | .group body => body.isImmediateResolvedNumericLiteral
+  | _ => false
+
+/-- Check the source-specific immediate-literal prohibition at every rounding/absolute-value boundary while traversing the complete numeric operation tree, including operand-list calls and their normalized folds. -/
+def AuthoredNumericExpr.respectsResolvedWrapperLiteralBoundary :
+    AuthoredNumericExpr Atom → Bool
+  | .round _ _ body | .abs body =>
+      !body.isImmediateResolvedNumericLiteral &&
+        body.respectsResolvedWrapperLiteralBoundary
+  | .atom _ | .literal _ => true
+  | .group body => body.respectsResolvedWrapperLiteralBoundary
+  | .binary _ left right | .power left right | .extremum _ left right =>
+      left.respectsResolvedWrapperLiteralBoundary &&
+        right.respectsResolvedWrapperLiteralBoundary
+  | .extremumCall _ body => body.respectsResolvedWrapperLiteralBoundary
+
+/-- A resolved numeric operation must satisfy the shared authored shape and the source-specific wrapper boundary at every depth. -/
+def AuthoredNumericExpr.isAdmittedResolvedNumericOperation
+    (expression : AuthoredNumericExpr Atom) : Bool :=
+  expression.isAdmittedNumericOperation &&
+    expression.respectsResolvedWrapperLiteralBoundary
+
+/-- Shared comparison admission, parameterized only by each carrier's atom certificate and scale. -/
+def NumericComparisonOf.admittedWith (comparison : NumericComparisonOf Atom)
+    (admitted : Atom → Bool) (summary : Atom → NumericScaleSummary) : Bool :=
+  !(comparison.left.isImmediateLiteral && comparison.right.isImmediateLiteral) &&
+    comparison.left.isAdmittedResolvedNumericOperation &&
+    comparison.right.isAdmittedResolvedNumericOperation &&
+    comparison.left.allAtoms admitted && comparison.right.allAtoms admitted &&
+    comparison.left.numericOperationAuthoringCheck == .accepted &&
+    comparison.right.numericOperationAuthoringCheck == .accepted &&
+    match comparison.left.summary? summary, comparison.right.summary? summary with
+    | some left, some right => comparison.op.acceptsScalesWithSuppression
+        comparison.suppressExactScaleWarning left right
+    | _, _ => false
+
+/-- Compare complete numeric expressions in computation order. A reached poison stops the
+right side; arithmetic domain failure still reaches it and otherwise supplies clean non-holding. -/
+def NumericComparisonOf.evalComputationWith (comparison : NumericComparisonOf Atom)
+    (read : Atom → Except Error NumericComputationResult) :
+    Except Error ComputationConditionResult := do
+  let left ← comparison.left.lowerForEvaluation.evalComputation read
+  match left with
+  | .poison cause => pure (.poison cause)
+  | _ =>
+      let right ← comparison.right.lowerForEvaluation.evalComputation read
+      match left, right with
+      | _, .poison cause => pure (.poison cause)
+      | .value left, .value right =>
+          pure (match comparison.op.eval (.value left .fixed) (.value right .fixed) with
+            | .fired _ => .holds
+            | _ => .notTrue)
+      | _, _ => pure .notTrue
 
 end A12Kernel

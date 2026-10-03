@@ -270,4 +270,68 @@ example :
   · rfl
   constructor <;> rfl
 
+local instance [DecidableEq ε] [DecidableEq α] : DecidableEq (Except ε α)
+  | .ok a, .ok b => decidable_of_iff (a = b) (by simp)
+  | .error a, .error b => decidable_of_iff (a = b) (by simp)
+  | .ok _, .error _ => isFalse (by intro h; cases h)
+  | .error _, .ok _ => isFalse (by intro h; cases h)
+
+private def numericSource : FlatNumberField := { id := probeId, info := { scale := 0, signed := true } }
+private def numberContext (raw : RawCell) (row : Env := []) : ScalarComputationContext :=
+  { read := fun _ => formalCheck { kind := .number numericSource.info } raw, row }
+private def numericGuard (op : NumericComparisonOp) (right : Rat) : ComputationCondition :=
+  .leaf (.numeric { op := .ordinary op, left := .binary .add (.atom (.field numericSource)) (.literal { value := 1, authoredScale := 0 }), right := .literal { value := right, authoredScale := 0 } })
+
+example :
+    ([.equal, .notEqual, .less, .lessEqual, .greater, .greaterEqual].map fun op =>
+      (numericGuard op 3).evalChecked (numberContext (.parsed (.num 2)))) =
+      [.ok .holds, .ok .notTrue, .ok .notTrue, .ok .holds, .ok .notTrue, .ok .holds] := by
+  native_decide
+
+example :
+    ([.equal, .notEqual, .less, .lessEqual, .greater, .greaterEqual].map fun op =>
+      (numericGuard op 3).evalChecked (numberContext .empty)) =
+      [.ok .notTrue, .ok .holds, .ok .holds, .ok .holds, .ok .notTrue, .ok .notTrue] := by
+  native_decide
+
+private def coordinate : ComputationNumericAtom :=
+  .repetition { path := ["Rows"], scope := [7], level := some 7 }
+private def coordinateGuard : ComputationCondition :=
+  .leaf (.numeric { op := .ordinary .greater, left := .atom coordinate, right := .literal { value := 0, authoredScale := 0 } })
+
+example :
+    ([[], [(7, 0)], [(7, 1), (7, 2)], [(7, 2)]].map fun row =>
+      coordinateGuard.evalChecked (numberContext .empty row)) =
+      [.error (.missingBinding 7), .error (.zeroBinding 7), .error (.duplicateBinding 7), .ok .holds] := by
+  native_decide
+
+example :
+    (ComputationCondition.and (numericGuard .equal 3) coordinateGuard).evalChecked
+      (numberContext .empty) = .ok .notTrue ∧
+    (ComputationCondition.or (numericGuard .notEqual 3) coordinateGuard).evalChecked
+      (numberContext .empty) = .ok .holds := by
+  native_decide
+
+example :
+    let comparison : NumericComparisonOf ComputationNumericAtom :=
+      { op := .ordinary .equal, left := .atom (.field numericSource), right := .atom coordinate }
+    comparison.evalComputationWith (ComputationNumericAtom.read
+      (numberContext (.rejected .declaredConstraint))) = .ok (.poison .declaredConstraint) := by
+  native_decide
+
+example :
+    let comparison : NumericComparisonOf ComputationNumericAtom :=
+      { op := .ordinary .equal, left := .binary .divide (.literal { value := 1, authoredScale := 0 }) (.literal { value := 0, authoredScale := 0 })
+        right := .atom (.field numericSource) }
+    comparison.evalComputationWith (ComputationNumericAtom.read
+      (numberContext (.rejected .declaredConstraint))) = .ok (.poison .declaredConstraint) ∧
+    comparison.evalComputationWith (ComputationNumericAtom.read
+      (numberContext .empty)) = .ok .notTrue := by
+  native_decide
+
+example : ComputationAlternative.selectFirstChecked
+    [alternative coordinateGuard 1, { operation := 2 }]
+    (numberContext .empty) = .error (.missingBinding 7) := by
+  native_decide
+
 end A12Kernel.Conformance.ComputationCondition

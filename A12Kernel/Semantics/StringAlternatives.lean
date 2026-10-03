@@ -39,8 +39,8 @@ def selectedStep (computation : StringAlternativeComputation)
 def evaluateOutcomeWithPattern (computation : StringAlternativeComputation)
     (wholeValueMatches? : Option (String → Bool))
     (context : StringComputationContext) :
-    Except StringComputationFault StringTargetOutcome :=
-  match ComputationAlternative.selectFirst computation.alternatives context with
+    Except StringComputationFault StringTargetOutcome := do
+  match ← (ComputationAlternative.selectFirstChecked computation.alternatives context).mapError .guardBinding with
   | .noMatch => .ok .noValue
   | .poison cause => .ok (.poison cause)
   | .selected expression =>

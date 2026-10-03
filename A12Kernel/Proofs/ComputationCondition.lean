@@ -167,7 +167,7 @@ theorem alternativeSelection_unguardedHead_selects
     (unguarded : head.precondition = none) :
     ComputationAlternative.selectFirst (head :: remaining) context =
       .selected head.operation := by
-  simp [ComputationAlternative.selectFirst, unguarded]
+  simp [ComputationAlternative.selectFirst_cons, unguarded]
 
 /-- A holding guarded head selects its operation without consulting the remaining alternatives. -/
 theorem alternativeSelection_holdingHead_selects
@@ -178,7 +178,7 @@ theorem alternativeSelection_holdingHead_selects
     (holds : guard.eval context = .holds) :
     ComputationAlternative.selectFirst (head :: remaining) context =
       .selected head.operation := by
-  simp [ComputationAlternative.selectFirst, guarded, holds]
+  simp [ComputationAlternative.selectFirst_cons, guarded, holds]
 
 /-- A clean non-matching head delegates selection to the remaining alternatives. -/
 theorem alternativeSelection_notTrueHead_continues
@@ -189,7 +189,7 @@ theorem alternativeSelection_notTrueHead_continues
     (notTrue : guard.eval context = .notTrue) :
     ComputationAlternative.selectFirst (head :: remaining) context =
       ComputationAlternative.selectFirst remaining context := by
-  simp [ComputationAlternative.selectFirst, guarded, notTrue]
+  simp [ComputationAlternative.selectFirst_cons, guarded, notTrue]
 
 /-- A poisoned head aborts selection with the same cause and leaves the remaining alternatives unread. -/
 theorem alternativeSelection_poisonedHead_aborts
@@ -201,7 +201,7 @@ theorem alternativeSelection_poisonedHead_aborts
     (poisoned : guard.eval context = .poison cause) :
     ComputationAlternative.selectFirst (head :: remaining) context =
       .poison cause := by
-  simp [ComputationAlternative.selectFirst, guarded, poisoned]
+  simp [ComputationAlternative.selectFirst_cons, guarded, poisoned]
 
 /-- Selection has no match exactly when every declared alternative is reached and cleanly not true. -/
 theorem alternativeSelection_noMatch_iff
@@ -213,19 +213,19 @@ theorem alternativeSelection_noMatch_iff
           guard.eval context = .notTrue := by
   induction alternatives with
   | nil =>
-      simp [ComputationAlternative.selectFirst]
+      simp
   | cons head remaining inductionHypothesis =>
       cases guarded : head.precondition with
-      | none => simp [ComputationAlternative.selectFirst, guarded]
+      | none => simp [ComputationAlternative.selectFirst_cons, guarded]
       | some guard =>
           cases headResult : guard.eval context with
           | holds =>
-              simp [ComputationAlternative.selectFirst, guarded, headResult]
+              simp [ComputationAlternative.selectFirst_cons, guarded, headResult]
           | notTrue =>
-              simp [ComputationAlternative.selectFirst, guarded, headResult,
+              simp [ComputationAlternative.selectFirst_cons, guarded, headResult,
                 inductionHypothesis]
           | poison cause =>
-              simp [ComputationAlternative.selectFirst, guarded, headResult]
+              simp [ComputationAlternative.selectFirst_cons, guarded, headResult]
 
 /-- Declaration order is observable when two holding alternatives carry different operations. -/
 theorem alternativeSelection_holdingOrderObservable
@@ -239,7 +239,7 @@ theorem alternativeSelection_holdingOrderObservable
     (different : first.operation ≠ second.operation) :
     ComputationAlternative.selectFirst [first, second] context ≠
       ComputationAlternative.selectFirst [second, first] context := by
-  simp only [ComputationAlternative.selectFirst, firstGuarded, secondGuarded,
+  simp only [ComputationAlternative.selectFirst_cons, firstGuarded, secondGuarded,
     firstHolds, secondHolds]
   intro same
   injection same with sameOperation
@@ -256,7 +256,7 @@ theorem alternativeSelection_holdingPoisonOrderObservable
     (poisoned : poisonousGuard.eval context = .poison cause) :
     ComputationAlternative.selectFirst [holding, poisonous] context ≠
       ComputationAlternative.selectFirst [poisonous, holding] context := by
-  simp only [ComputationAlternative.selectFirst, holdingGuarded,
+  simp only [ComputationAlternative.selectFirst_cons, holdingGuarded,
     poisonousGuarded, holds, poisoned]
   intro impossible
   cases impossible
@@ -295,10 +295,10 @@ theorem alternativeSelection_holdingCommon_preserves
           cases precondition with
           | none =>
               simp [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
-                ComputationAlternative.selectFirst, commonHolds]
+                ComputationAlternative.selectFirst_cons, commonHolds]
           | some guard =>
               simp only [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
-                List.map_cons, ComputationAlternative.selectFirst,
+                List.map_cons, ComputationAlternative.selectFirst_cons,
                 ComputationCondition.eval_and, commonHolds]
               cases headResult : guard.eval context with
               | holds => rfl
@@ -322,7 +322,7 @@ theorem alternativeSelection_notTrueCommon_noMatch
       | mk precondition operation =>
           cases precondition <;>
             simp only [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
-              List.map_cons, ComputationAlternative.selectFirst,
+              List.map_cons, ComputationAlternative.selectFirst_cons,
               ComputationCondition.eval_and, commonNotTrue]
           all_goals
             simpa [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon] using
@@ -342,7 +342,63 @@ theorem alternativeSelection_poisonedCommon_aborts
   | mk precondition operation =>
       cases precondition <;>
         simp [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
-          ComputationAlternative.selectFirst, ComputationCondition.eval_and,
+          ComputationAlternative.selectFirst_cons, ComputationCondition.eval_and,
           commonPoison]
+
+/-- Successful checked common guards preserve the shared scan, including structural failures. -/
+theorem checkedAlternativeSelection_holdingCommon_preserves
+    (context : ScalarComputationContext) (common : ComputationCondition)
+    (alternatives : List (ComputationAlternative Operation))
+    (commonHolds : common.evalChecked context = .ok .holds) :
+    ComputationAlternative.selectFirstChecked
+      (ComputationAlternative.expandCommonPrecondition (some common) alternatives) context =
+      ComputationAlternative.selectFirstChecked alternatives context := by
+  induction alternatives with
+  | nil => rfl
+  | cons head tail ih =>
+      cases head with
+      | mk precondition operation =>
+          cases precondition with
+          | none => simp [ComputationAlternative.expandCommonPrecondition,
+              ComputationCondition.withCommon, ComputationAlternative.selectFirstChecked_cons, commonHolds]
+          | some guard =>
+              simp only [ComputationAlternative.expandCommonPrecondition, List.map_cons,
+                ComputationCondition.withCommon, ComputationAlternative.selectFirstChecked_cons,
+                ComputationCondition.evalChecked_and, commonHolds]
+              cases h : guard.evalChecked context with
+              | error error => rfl
+              | ok result =>
+                  cases result <;> simp_all [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon]
+
+/-- A checked false common guard prevents every alternative guard from being read. -/
+theorem checkedAlternativeSelection_notTrueCommon_noMatch
+    (context : ScalarComputationContext) (common : ComputationCondition)
+    (alternatives : List (ComputationAlternative Operation))
+    (commonNotTrue : common.evalChecked context = .ok .notTrue) :
+    ComputationAlternative.selectFirstChecked
+      (ComputationAlternative.expandCommonPrecondition (some common) alternatives) context = .ok .noMatch := by
+  induction alternatives with
+  | nil => rfl
+  | cons head tail ih =>
+      cases head with
+      | mk precondition operation =>
+          cases precondition <;>
+            simpa [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
+              ComputationAlternative.selectFirstChecked_cons, ComputationCondition.evalChecked_and,
+              commonNotTrue] using ih
+
+/-- Checked common poison aborts before every alternative-specific read. -/
+theorem checkedAlternativeSelection_poisonedCommon_aborts
+    (context : ScalarComputationContext) (common : ComputationCondition)
+    (head : ComputationAlternative Operation) (tail : List (ComputationAlternative Operation))
+    (cause : FormalCause) (commonPoison : common.evalChecked context = .ok (.poison cause)) :
+    ComputationAlternative.selectFirstChecked
+      (ComputationAlternative.expandCommonPrecondition (some common) (head :: tail)) context =
+      .ok (.poison cause) := by
+  cases head with
+  | mk precondition operation =>
+      cases precondition <;> simp [ComputationAlternative.expandCommonPrecondition,
+        ComputationCondition.withCommon, ComputationAlternative.selectFirstChecked_cons,
+        ComputationCondition.evalChecked_and, commonPoison]
 
 end A12Kernel

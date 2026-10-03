@@ -696,6 +696,9 @@ run_cmd do
 #print axioms A12Kernel.alternativeSelection_holdingCommon_preserves
 #print axioms A12Kernel.alternativeSelection_notTrueCommon_noMatch
 #print axioms A12Kernel.alternativeSelection_poisonedCommon_aborts
+#print axioms A12Kernel.checkedAlternativeSelection_holdingCommon_preserves
+#print axioms A12Kernel.checkedAlternativeSelection_notTrueCommon_noMatch
+#print axioms A12Kernel.checkedAlternativeSelection_poisonedCommon_aborts
 #print axioms A12Kernel.computationFillQuantifier_poisonHead_preserves
 #print axioms A12Kernel.allFieldsFilled_emptyHead_shortCircuits
 #print axioms A12Kernel.notAllFieldsFilled_emptyHead_shortCircuits

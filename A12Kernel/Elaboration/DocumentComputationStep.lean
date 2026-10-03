@@ -133,6 +133,7 @@ end DocumentTargetFamily
 back in. `targetNotReadable` fails closed where the checked target does not certify as an input field of
 its family, and the two read faults carry the classifier's own context error. -/
 inductive DocumentComputationStepFault where
+  | guardBinding (error : EnvBindingError)
   | dateTimeDayShift (cause : DateTimeDayShiftComputationFault)
   | dateTimeSubdayShift (cause : DateTimeSubdayShiftComputationFault)
   | fullDate (cause : FullDateComputationFault)
@@ -618,8 +619,8 @@ def guarded (guard : ComputationCondition) (step : CheckedDocumentComputationSte
   family := step.family
   referencesField field := guard.referencesField field || step.referencesField field
   excludesTarget := by simp [guardExcludesTarget, step.excludesTarget]
-  run world matchers document :=
-    match guard.eval (document.scalarComputationContext world) with
+  run world matchers document := do
+    match ← (guard.evalChecked (document.scalarComputationContext world)).mapError .guardBinding with
     | .holds => step.run world matchers document
     | .notTrue => pure (step.family.noValue, DocumentComputationReadBack.empty)
     | .poison cause => pure (step.family.poison cause, DocumentComputationReadBack.poison)

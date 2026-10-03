@@ -102,9 +102,9 @@ def referencesField
 def evaluate (table : CheckedParallelNumericAlternativeTable model)
     (context : ScalarComputationContext) :
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
-      NumericTargetOutcome :=
-  match ComputationAlternative.selectFirst
-      table.selectableAlternatives context with
+      NumericTargetOutcome := do
+  match ← (ComputationAlternative.selectFirstChecked
+      table.selectableAlternatives context).mapError .environment with
   | .noMatch => .ok .noValue
   | .poison cause => .ok (.inheritedPoison cause)
   | .selected operation => operation.evaluateSelected context

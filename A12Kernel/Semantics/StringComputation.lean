@@ -39,6 +39,7 @@ end StringTerm
 
 /-- A malformed low-level context is outside the computation language. Ordinary formal invalidity is not a fault: it is represented by `StringTerm.poison`. -/
 inductive StringComputationFault where
+  | guardBinding (error : EnvBindingError)
   | fieldKindMismatch (field : FieldId)
   | invalidRange (start finish : Nat)
   | unalignedUtf16Range (field : FieldId) (start finish : Nat)

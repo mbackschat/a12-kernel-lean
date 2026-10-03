@@ -165,6 +165,28 @@ example :
      (lowerComputation dm.flat .english (computation [{ precondition := none, operation := "1" }])).toOption.isSome].all id := by
   native_decide
 
+example :
+    let computation (guard : String) : DmComputation :=
+      { group := ["Order"], name := "C", targetRelPath := "../Amt", commonPrecondition := some guard
+        alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := [] }
+    ["[Amt2] + 1 > 0", "1 < [Amt2] + 2", "Abs([Amt2]) == 2",
+      "[Amt2] != 0 And FieldFilled(Ref)", "[Amt2] >= 0", "0 <= [Amt2]"].all (fun guard =>
+        (lowerComputation model .english (computation guard)).toOption.isSome) := by
+  native_decide
+
+example :
+    let computation (guard : String) (suppressed : List String := []) : DmComputation :=
+      { group := ["Order"], name := "C", targetRelPath := "../Amt", commonPrecondition := some guard
+        alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := suppressed }
+    [!(lowerComputation model .english (computation "[Amt] > 0")).toOption.isSome,
+     !(lowerComputation model .english (computation "[Ref] > 0")).toOption.isSome,
+     !(lowerComputation model .english (computation "1 > 0")).toOption.isSome,
+     !(lowerComputation model .english (computation "[Amt2] == 1.50")).toOption.isSome,
+     (lowerComputation model .english (computation "[Amt2] == 1.50"
+       ["MVK_INVALID_COMPARE_DEC_PLACES"])).toOption.isSome,
+     (lowerComputation model .english (computation "[Amt2] > 1.50")).toOption.isSome].all id := by
+  native_decide
+
 private def rowModel : FlatModel :=
   { fields := [
       { id := 1, groupPath := ["Order", "Rows"], name := "Due", policy := { kind := .temporal .date TemporalComponents.fullDate },

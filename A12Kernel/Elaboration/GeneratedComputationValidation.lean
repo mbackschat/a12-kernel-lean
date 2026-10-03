@@ -108,6 +108,16 @@ def selectFirst (computation : GeneratedComputationTable Operation)
       GuardedGeneratedComputationAlternatives.selectFirst alternatives
         computation.commonPrecondition context
 
+/-- Checked generated execution retains structural guard failures through the common selector. -/
+def selectFirstChecked (computation : GeneratedComputationTable Operation)
+    (context : ScalarComputationContext) :
+    Except EnvBindingError (ComputationAlternativeSelection Operation) :=
+  let alternatives := match computation.alternatives with
+    | .singleton alternative => [{ precondition := alternative.precondition, operation := alternative.operation }]
+    | .guarded alternatives => alternatives.declaredAlternatives.map (·.toComputationAlternative)
+  ComputationAlternative.selectFirstChecked
+    (ComputationAlternative.expandCommonPrecondition computation.commonPrecondition alternatives) context
+
 end GeneratedComputationTable
 
 /-- Runtime phase boundary for an admitted generated numeric table. Activation no-match and guard poison remain distinct from the selected operation's numeric result so later target projection cannot confuse an unselected table with an evaluated failure. -/
@@ -154,6 +164,7 @@ inductive GeneratedComputationGuardPosition where
 
 inductive GeneratedComputationValidationError where
   | resolve (error : ResolveError)
+  | numericGuardRequiresConditionTree
   | targetNotNumber (field : FieldId)
   | targetSelfReference (guard : GeneratedComputationGuardPosition)
   | operationScaleMismatch (alternative : Nat)
@@ -213,6 +224,7 @@ private def lowerForGeneratedValidationUnchecked (model : FlatModel) :
       pure (.fieldFilled (← model.resolveGeneratedGuardField field))
   | .leaf (.fieldNotFilled field) => do
       pure (.fieldNotFilled (← model.resolveGeneratedGuardField field))
+  | .leaf (.numeric _) => throw .numericGuardRequiresConditionTree
   | .and left right => do
       pure (.and
         (← left.lowerForGeneratedValidationUnchecked model)
@@ -481,12 +493,31 @@ def CheckedNumericComputationOperation.generatedMismatchComparison
   else
     throw (.conditionAssembly .incoherentCore)
 
+private def generatedGuardAtom : ComputationNumericAtom → NumericValidationAtom
+  | .field source => .field source
+  | .baseYear year => .baseYear year
+  | .repetition source =>
+      if source.scope.isEmpty then .fixedCurrentRepetition { path := source.path, origin := .path }
+      else .boundCurrentRepetition source
+
 private def generatedGuardCondition (model : FlatModel) (target : FieldId)
     (position : GeneratedComputationGuardPosition)
     (condition : ComputationCondition) :
     Except GeneratedComputationValidationError (ValidationCondition model) := do
-  let lowered ← condition.lowerForGeneratedValidation model target position
-  pure (ValidationCondition.flat lowered)
+  if condition.referencesField target then throw (.targetSelfReference position)
+  match condition with
+  | .leaf (.numeric comparison) =>
+      pure (ValidationCondition.numericIn .modelWideNonrepeatable {
+        op := comparison.op
+        left := comparison.left.map generatedGuardAtom
+        right := comparison.right.map generatedGuardAtom
+        suppressExactScaleWarning := comparison.suppressExactScaleWarning })
+  | .leaf leaf =>
+      pure (ValidationCondition.flat (← ComputationCondition.lowerForGeneratedValidation (.leaf leaf) model target position))
+  | .and left right => pure (.and (← generatedGuardCondition model target position left)
+      (← generatedGuardCondition model target position right))
+  | .or left right => pure (.or (← generatedGuardCondition model target position left)
+      (← generatedGuardCondition model target position right))
 
 private def generatedNumericOperationMismatchCondition (target : FlatNumberField)
     (alternativeIndex : Nat)
@@ -668,8 +699,8 @@ def evaluateWith
     (evaluateOperation : CheckedNumericComputationOperation model →
       Except NumericComputationFault NumericComputationResult) :
     Except GeneratedNumericComputationEvaluationError
-      GeneratedNumericComputationEvaluation :=
-  match computation.selectFirst context with
+      GeneratedNumericComputationEvaluation := do
+  match ← (computation.selectFirstChecked context).mapError (fun error => .operation (.guardBinding error)) with
   | .noMatch => pure .noMatch
   | .poison cause => pure (.guardPoison cause)
   | .selected operation =>

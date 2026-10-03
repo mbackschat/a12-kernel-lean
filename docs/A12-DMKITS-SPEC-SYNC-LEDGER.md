@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-03-01"></a>
+### `SPEC-2026-10-03-01` — numeric computation guards substitute zero for empty operands
+
+- `status`: pending
+- `origin`: locally measured while closing the shared numeric computation guard; the peer's KF20 empty-operand claim has no empty document in its linked differential test.
+- `clause`: [spec/09 §2](../spec/09-computations.md#2-separate-operations-and-the-three-outcomes), the Number-comparison precondition paragraph.
+- `delta`: empty and explicit zero select identically for the six measured Number comparisons and both arithmetic orders. Division-domain failure and reached formal poison remain distinct; the clause states the downstream discriminator.
+- `evidence`: [numeric guard grid](sources/computation-scheduling-probes.md#src-numeric-computation-guards), Kernel `30.8.1`, both strategies agree on eight documents, 128 computation instances match Lean. The checkpoint owns the producer and artifact pins.
+- `surfaces`: KF20's empty-precondition wording and its linked `ComputationPreconditionDiffTest`; reconcile any interpreter behavior against the retained model and documents.
+- `acceptance`: reproduce the empty/zero equality and the domain-versus-poison downstream outcomes, or provide contrary retained evidence for these exact forms. No claim about another field kind or validation's message polarity.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-02-08"></a>
 ### `SPEC-2026-10-02-08` — a filter's Number field takes every ordinary operator against a literal on either side, and the literal scale gate binds `==` and `!=` alone
 

@@ -225,7 +225,7 @@ private theorem numericComparison_wellFormed_sidesAdmitted
     comparison.left.isAdmittedResolvedNumericOperation = true ∧
       comparison.right.isAdmittedResolvedNumericOperation = true := by
   simp only [NumericComparison.WellFormedIn,
-    NumericComparison.wellFormedInBool, Bool.and_eq_true] at wellFormed
+    NumericComparison.wellFormedInBool, NumericComparisonOf.admittedWith, Bool.and_eq_true] at wellFormed
   exact ⟨wellFormed.1.1.1.1.1.1.2, wellFormed.1.1.1.1.1.2⟩
 
 /-- The checked certificate makes both evaluator unsupported-shape fallbacks unreachable. -/

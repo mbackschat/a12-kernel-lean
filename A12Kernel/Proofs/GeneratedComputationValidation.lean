@@ -17,7 +17,7 @@ theorem generatedNumericComputationEvaluation_noMatch
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (admitted : admitGeneratedNumericOperationTable model computation =
       .ok admission)
-    (selection : computation.selectFirst context = .noMatch) :
+    (selection : computation.selectFirstChecked context = .ok .noMatch) :
     computation.evaluateNumeric context = .ok .noMatch := by
   simp [GeneratedComputationTable.evaluateNumeric, admitted,
     AdmittedGeneratedNumericOperationTable.evaluate,
@@ -33,7 +33,7 @@ theorem generatedNumericComputationEvaluation_guardPoison
     (cause : FormalCause)
     (admitted : admitGeneratedNumericOperationTable model computation =
       .ok admission)
-    (selection : computation.selectFirst context = .poison cause) :
+    (selection : computation.selectFirstChecked context = .ok (.poison cause)) :
     computation.evaluateNumeric context = .ok (.guardPoison cause) := by
   simp [GeneratedComputationTable.evaluateNumeric, admitted,
     AdmittedGeneratedNumericOperationTable.evaluate,
@@ -49,7 +49,7 @@ theorem generatedNumericComputationEvaluation_selected
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (admitted : admitGeneratedNumericOperationTable model computation =
       .ok admission)
-    (selection : computation.selectFirst context = .selected operation) :
+    (selection : computation.selectFirstChecked context = .ok (.selected operation)) :
     computation.evaluateNumeric context =
       ((operation.evaluate context).map
         (.evaluated operation.core.suppressExactScaleWarning)).mapError
@@ -57,7 +57,7 @@ theorem generatedNumericComputationEvaluation_selected
   cases result : operation.evaluate context <;>
     simp [GeneratedComputationTable.evaluateNumeric, admitted,
       AdmittedGeneratedNumericOperationTable.evaluate,
-      AdmittedGeneratedNumericOperationTable.evaluateWith, selection, result]
+      AdmittedGeneratedNumericOperationTable.evaluateWith, selection, result, bind, Except.bind, Except.mapError]
 
 /-- Addressed execution reuses the same first-selection decision and delegates only the selected operation to the complete direct/repeatable evaluator. -/
 theorem admittedGeneratedNumericOperationTable_evaluateIn_selected
@@ -66,14 +66,14 @@ theorem admittedGeneratedNumericOperationTable_evaluateIn_selected
     (context : NumericComputationEvaluationContext)
     (operation : CheckedNumericComputationOperation model)
     (admission : AdmittedGeneratedNumericOperationTable model computation)
-    (selection : computation.selectFirst context.scalar = .selected operation) :
+    (selection : computation.selectFirstChecked context.scalar = .ok (.selected operation)) :
     admission.evaluateIn context =
       ((operation.evaluateIn context).map
         (.evaluated operation.core.suppressExactScaleWarning)).mapError
           .operation := by
   cases result : operation.evaluateIn context <;>
     simp [AdmittedGeneratedNumericOperationTable.evaluateIn,
-      AdmittedGeneratedNumericOperationTable.evaluateWith, selection, result]
+      AdmittedGeneratedNumericOperationTable.evaluateWith, selection, result, bind, Except.bind, Except.mapError]
 
 /-- Cleanly unselected generated computation completes as target no-value. -/
 theorem generatedNumericComputationTarget_noMatch
@@ -444,8 +444,8 @@ theorem guardedGeneratedComputation_firstHolds_selects
   simp [GuardedGeneratedComputationAlternatives.selectFirst,
     GuardedGeneratedComputationAlternatives.declaredAlternatives,
     GeneratedComputationAlternative.toComputationAlternative,
-    ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
-    ComputationAlternative.selectFirst, holds]
+    ComputationAlternative.expandCommonPrecondition,
+    ComputationAlternative.selectFirst_cons, holds]
 
 /-- A holding common precondition preserves the ordinary first-holding-row selection for the checked guarded fragment. -/
 theorem guardedGeneratedComputation_holdingCommon_firstHolds_selects
@@ -460,7 +460,7 @@ theorem guardedGeneratedComputation_holdingCommon_firstHolds_selects
     GuardedGeneratedComputationAlternatives.declaredAlternatives,
     GeneratedComputationAlternative.toComputationAlternative,
     ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
-    ComputationAlternative.selectFirst, ComputationCondition.eval_and,
+    ComputationAlternative.selectFirst_cons, ComputationCondition.eval_and,
     commonHolds, firstHolds]
 
 /-- A singleton with no authored guard and no common precondition selects directly without inventing an always-true condition. -/
@@ -471,8 +471,8 @@ theorem singleGeneratedComputation_unconditional_selects
     SingleGeneratedComputationAlternative.selectFirst alternative none context =
       .selected alternative.operation := by
   simp [SingleGeneratedComputationAlternative.selectFirst, unconditional,
-    ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
-    ComputationAlternative.selectFirst]
+    ComputationAlternative.expandCommonPrecondition,
+    ComputationAlternative.selectFirst_cons]
 
 /-- A holding common precondition is the sole runtime guard for an otherwise-unconditional singleton. -/
 theorem singleGeneratedComputation_holdingCommon_selects
@@ -485,7 +485,7 @@ theorem singleGeneratedComputation_holdingCommon_selects
       .selected alternative.operation := by
   simp [SingleGeneratedComputationAlternative.selectFirst, unconditional,
     ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
-    ComputationAlternative.selectFirst, commonHolds]
+    ComputationAlternative.selectFirst_cons, commonHolds]
 
 /-- The minimum two-branch table is a left-to-right disjunction below the target-filled gate; no first-match decision occurs in this desugaring. -/
 theorem minimumGuardedGeneratedNumberCondition_exact

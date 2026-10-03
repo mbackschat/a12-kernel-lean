@@ -1,0 +1,3724 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Guards_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ArithmeticComp",
+              "field": "G/Arithmetic",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Arithmetic",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Arithmetic",
+                "G/N"
+              ]
+            },
+            {
+              "code": "BadThenDomainComp",
+              "field": "G/BadThenDomain",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/BadThenDomain",
+                "G/D",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Bad",
+                "G/BadThenDomain",
+                "G/D",
+                "G/N"
+              ]
+            },
+            {
+              "code": "EqComp",
+              "field": "G/Eq",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Eq",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Eq",
+                "G/N"
+              ]
+            },
+            {
+              "code": "GeComp",
+              "field": "G/Ge",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ge",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Ge",
+                "G/N"
+              ]
+            },
+            {
+              "code": "GtComp",
+              "field": "G/Gt",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Gt",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Gt",
+                "G/N"
+              ]
+            },
+            {
+              "code": "LeComp",
+              "field": "G/Le",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Le",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Le",
+                "G/N"
+              ]
+            },
+            {
+              "code": "LiteralFirstComp",
+              "field": "G/LiteralFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/LiteralFirst",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/LiteralFirst",
+                "G/N"
+              ]
+            },
+            {
+              "code": "LtComp",
+              "field": "G/Lt",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Lt",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Lt",
+                "G/N"
+              ]
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Gt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Le",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Lt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Ne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ArithmeticComp",
+              "field": "G/Arithmetic",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Arithmetic",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Arithmetic",
+                "G/N"
+              ]
+            },
+            {
+              "code": "BadThenDomainComp",
+              "field": "G/BadThenDomain",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/BadThenDomain",
+                "G/D",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Bad",
+                "G/BadThenDomain",
+                "G/D",
+                "G/N"
+              ]
+            },
+            {
+              "code": "EqComp",
+              "field": "G/Eq",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Eq",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Eq",
+                "G/N"
+              ]
+            },
+            {
+              "code": "GeComp",
+              "field": "G/Ge",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ge",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Ge",
+                "G/N"
+              ]
+            },
+            {
+              "code": "GtComp",
+              "field": "G/Gt",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Gt",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Gt",
+                "G/N"
+              ]
+            },
+            {
+              "code": "LeComp",
+              "field": "G/Le",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Le",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Le",
+                "G/N"
+              ]
+            },
+            {
+              "code": "LiteralFirstComp",
+              "field": "G/LiteralFirst",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/LiteralFirst",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/LiteralFirst",
+                "G/N"
+              ]
+            },
+            {
+              "code": "LtComp",
+              "field": "G/Lt",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Lt",
+                "G/N"
+              ],
+              "fillToFix": [
+                "G/Lt",
+                "G/N"
+              ]
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Gt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Le",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Lt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Ne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "zero",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ArithmeticComp",
+              "field": "G/Arithmetic",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Arithmetic",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BadThenDomainComp",
+              "field": "G/BadThenDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/BadThenDomain",
+                "G/D",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EqComp",
+              "field": "G/Eq",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Eq",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GeComp",
+              "field": "G/Ge",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ge",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GtComp",
+              "field": "G/Gt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Gt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LeComp",
+              "field": "G/Le",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Le",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LiteralFirstComp",
+              "field": "G/LiteralFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/LiteralFirst",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LtComp",
+              "field": "G/Lt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Lt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Gt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Le",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Lt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Ne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ArithmeticComp",
+              "field": "G/Arithmetic",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Arithmetic",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BadThenDomainComp",
+              "field": "G/BadThenDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/BadThenDomain",
+                "G/D",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EqComp",
+              "field": "G/Eq",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Eq",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GeComp",
+              "field": "G/Ge",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ge",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GtComp",
+              "field": "G/Gt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Gt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LeComp",
+              "field": "G/Le",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Le",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LiteralFirstComp",
+              "field": "G/LiteralFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/LiteralFirst",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LtComp",
+              "field": "G/Lt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Lt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Gt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Le",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Lt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Ne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "positive",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ArithmeticComp",
+              "field": "G/Arithmetic",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Arithmetic",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DomainComp",
+              "field": "G/Domain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/D",
+                "G/Domain",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DomainThenBadComp",
+              "field": "G/DomainThenBad",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/D",
+                "G/DomainThenBad",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GeComp",
+              "field": "G/Ge",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ge",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GtComp",
+              "field": "G/Gt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Gt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LiteralFirstComp",
+              "field": "G/LiteralFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/LiteralFirst",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NeComp",
+              "field": "G/Ne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/N",
+                "G/Ne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Domain",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Eq",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Gt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Le",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Lt",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ne",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ArithmeticComp",
+              "field": "G/Arithmetic",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Arithmetic",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DomainComp",
+              "field": "G/Domain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/D",
+                "G/Domain",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DomainThenBadComp",
+              "field": "G/DomainThenBad",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/D",
+                "G/DomainThenBad",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GeComp",
+              "field": "G/Ge",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ge",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GtComp",
+              "field": "G/Gt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Gt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LiteralFirstComp",
+              "field": "G/LiteralFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/LiteralFirst",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NeComp",
+              "field": "G/Ne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/N",
+                "G/Ne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Domain",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Eq",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Gt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Le",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Lt",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ne",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "negative",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BadThenDomainComp",
+              "field": "G/BadThenDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/BadThenDomain",
+                "G/D",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FalseAndComp",
+              "field": "G/FalseAnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/FalseAnd",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LeComp",
+              "field": "G/Le",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Le",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LtComp",
+              "field": "G/Lt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Lt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NeComp",
+              "field": "G/Ne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/N",
+                "G/Ne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Ge",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gt",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Le",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Lt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Ne",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BadThenDomainComp",
+              "field": "G/BadThenDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/BadThenDomain",
+                "G/D",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FalseAndComp",
+              "field": "G/FalseAnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/FalseAnd",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LeComp",
+              "field": "G/Le",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Le",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LtComp",
+              "field": "G/Lt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Lt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NeComp",
+              "field": "G/Ne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/N",
+                "G/Ne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Ge",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gt",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Le",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Lt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Ne",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/N"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gt",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Le",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Lt",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/N",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/N"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/N"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gt",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Le",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Lt",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/N",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/N"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "domain",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ArithmeticComp",
+              "field": "G/Arithmetic",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Arithmetic",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GeComp",
+              "field": "G/Ge",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ge",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GtComp",
+              "field": "G/Gt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Gt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LiteralFirstComp",
+              "field": "G/LiteralFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/LiteralFirst",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NeComp",
+              "field": "G/Ne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/N",
+                "G/Ne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Gt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Le",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Lt",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ne",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ArithmeticComp",
+              "field": "G/Arithmetic",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Arithmetic",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GeComp",
+              "field": "G/Ge",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ge",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GtComp",
+              "field": "G/Gt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Gt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LiteralFirstComp",
+              "field": "G/LiteralFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/LiteralFirst",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NeComp",
+              "field": "G/Ne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/N",
+                "G/Ne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Gt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Le",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Lt",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ne",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "domain-poison",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ArithmeticComp",
+              "field": "G/Arithmetic",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Arithmetic",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GeComp",
+              "field": "G/Ge",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ge",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GtComp",
+              "field": "G/Gt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Gt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LiteralFirstComp",
+              "field": "G/LiteralFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/LiteralFirst",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NeComp",
+              "field": "G/Ne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/N",
+                "G/Ne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/Bad",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Gt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Le",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Lt",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ne",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/Bad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Bad"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ArithmeticComp",
+              "field": "G/Arithmetic",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Arithmetic",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GeComp",
+              "field": "G/Ge",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ge",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GtComp",
+              "field": "G/Gt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Gt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LiteralFirstComp",
+              "field": "G/LiteralFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/LiteralFirst",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NeComp",
+              "field": "G/Ne",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/N",
+                "G/Ne"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/Bad",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Gt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Le",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Lt",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ne",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/Bad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Bad"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "short-circuit",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ArithmeticComp",
+              "field": "G/Arithmetic",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Arithmetic",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EqComp",
+              "field": "G/Eq",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Eq",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GeComp",
+              "field": "G/Ge",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ge",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GtComp",
+              "field": "G/Gt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Gt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LeComp",
+              "field": "G/Le",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Le",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LiteralFirstComp",
+              "field": "G/LiteralFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/LiteralFirst",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LtComp",
+              "field": "G/Lt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Lt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/Bad",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Gt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Le",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Lt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Ne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/Bad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Bad"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterDomainComp",
+              "field": "G/AfterDomain",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterDomain",
+                "G/DomainThenBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFalseComp",
+              "field": "G/AfterFalse",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterFalse",
+                "G/FalseAnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterTrueComp",
+              "field": "G/AfterTrue",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/AfterTrue",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ArithmeticComp",
+              "field": "G/Arithmetic",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Arithmetic",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EqComp",
+              "field": "G/Eq",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Eq",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GeComp",
+              "field": "G/Ge",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ge",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GtComp",
+              "field": "G/Gt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Gt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LeComp",
+              "field": "G/Le",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Le",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LiteralFirstComp",
+              "field": "G/LiteralFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/LiteralFirst",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LtComp",
+              "field": "G/Lt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Lt",
+                "G/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TrueOrComp",
+              "field": "G/TrueOr",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad",
+                "G/N",
+                "G/TrueOr"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/Bad",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Bad"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterFalse",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterTrue",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "G/Arithmetic",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/BadThenDomain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Domain",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DomainThenBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Eq",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/FalseAnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ge",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Gt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Le",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/LiteralFirst",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Lt",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "G/Ne",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/TrueOr",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/Bad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Bad"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

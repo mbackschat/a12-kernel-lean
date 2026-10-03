@@ -107,4 +107,41 @@ example :
   native_decide
 
 
+private def numericGuardTableOutcome (threshold : Rat) : Option FlatRuleOutcome := do
+  let table ← crossGroupExpressionTable
+  let source ← crossGroupSource.toNumberField?
+  let guard : ComputationCondition := .leaf (.numeric {
+    op := .ordinary .greater, left := .atom (.field source)
+    right := .literal { value := threshold, authoredScale := 0 } })
+  let rule ← (assembleGeneratedNumericOperationTableRule crossGroupModel
+    { table with commonPrecondition := some guard }).toOption
+  evalValidationRule? crossGroupModel rule (crossGroupRaw 3 3)
+    GroupPresenceContext.unavailable true
+
+/- Generated validation translates the numeric guard into validation phase and retains the later
+mismatch even though computation selects the first holding operation. -/
+example : numericGuardTableOutcome 0 = some (.fired expressionTableExpectedMessage) ∧
+    numericGuardTableOutcome 4 = some .notFired := by
+  native_decide
+
+private def emptyNumericGuardTableOutcome : Option FlatRuleOutcome := do
+  let table ← crossGroupExpressionTable
+  let extra ← crossGroupExtra.toNumberField?
+  let guard : ComputationCondition := .leaf (.numeric {
+    op := .ordinary .equal, left := .atom (.field extra)
+    right := .literal { value := 0, authoredScale := 0 } })
+  let rule ← (assembleGeneratedNumericOperationTableRule crossGroupModel
+    { table with commonPrecondition := some guard }).toOption
+  let raw : RawFlatContext := {
+    read field := if field = crossGroupExtra.id then .empty
+      else (crossGroupRaw 3 3).read field }
+  evalValidationRule? crossGroupModel rule raw
+    GroupPresenceContext.unavailable true
+
+/- NumericComparisonOp.eval retains validation's unknown empty operand, so Verdict.conj
+classifies the later mismatch as omission; computation's zero substitution would yield value. -/
+example : emptyNumericGuardTableOutcome =
+    some (.fired { expressionTableExpectedMessage with messageType := .omission }) := by
+  native_decide
+
 end A12Kernel.Conformance.GeneratedComputationValidation.CrossGroup

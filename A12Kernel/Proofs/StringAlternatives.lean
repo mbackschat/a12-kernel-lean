@@ -12,34 +12,34 @@ namespace A12Kernel
 theorem stringAlternatives_noMatch_evaluates_noValue
     (computation : StringAlternativeComputation)
     (context : StringComputationContext)
-    (noMatch : ComputationAlternative.selectFirst computation.alternatives context =
-      .noMatch) :
+    (noMatch : ComputationAlternative.selectFirstChecked computation.alternatives context =
+      .ok .noMatch) :
     computation.evaluateOutcome context = .ok .noValue := by
   simp only [StringAlternativeComputation.evaluateOutcome,
-    StringAlternativeComputation.evaluateOutcomeWithPattern, noMatch]
+    StringAlternativeComputation.evaluateOutcomeWithPattern, noMatch, Except.mapError, bind, Except.bind]
 
 /-- Poison reached during selection becomes target poison without evaluating an operation. -/
 theorem stringAlternatives_selectionPoison_preserves
     (computation : StringAlternativeComputation)
     (context : StringComputationContext) (cause : FormalCause)
-    (poisoned : ComputationAlternative.selectFirst computation.alternatives context =
-      .poison cause) :
+    (poisoned : ComputationAlternative.selectFirstChecked computation.alternatives context =
+      .ok (.poison cause)) :
     computation.evaluateOutcome context = .ok (.poison cause) := by
   simp only [StringAlternativeComputation.evaluateOutcome,
-    StringAlternativeComputation.evaluateOutcomeWithPattern, poisoned]
+    StringAlternativeComputation.evaluateOutcomeWithPattern, poisoned, Except.mapError, bind, Except.bind]
 
 /-- A selected expression delegates exactly once to the existing String step evaluator. -/
 theorem stringAlternatives_selected_delegates
     (computation : StringAlternativeComputation)
     (context : StringComputationContext) (expression : StringExpr)
-    (selected : ComputationAlternative.selectFirst computation.alternatives context =
-      .selected expression) :
+    (selected : ComputationAlternative.selectFirstChecked computation.alternatives context =
+      .ok (.selected expression)) :
     computation.evaluateOutcome context =
       (computation.selectedStep expression).evaluateOutcome context := by
   simp only [StringAlternativeComputation.evaluateOutcome,
     StringAlternativeComputation.evaluateOutcomeWithPattern, selected,
     StringAlternativeComputation.selectedStep,
-    StringComputationStep.evaluateOutcome, StringFieldPolicy.checkTarget]
+    StringComputationStep.evaluateOutcome, StringFieldPolicy.checkTarget, Except.mapError, bind, Except.bind]
   cases hResult : expression.evaluate context <;> simp
 
 /-- Once the head precondition holds, its expression is evaluated and every suffix is irrelevant. -/
@@ -49,14 +49,14 @@ theorem stringAlternatives_holdingHead_evaluates
     (head : ComputationAlternative StringExpr)
     (remaining : List (ComputationAlternative StringExpr))
     (guard : ComputationCondition) (guarded : head.precondition = some guard)
-    (holds : guard.eval context = .holds) :
+    (holds : guard.evalChecked context = .ok .holds) :
     ({ computation with alternatives := head :: remaining }).evaluateOutcome context =
       (computation.selectedStep head.operation).evaluateOutcome context := by
   simp only [StringAlternativeComputation.evaluateOutcome,
     StringAlternativeComputation.evaluateOutcomeWithPattern,
-    ComputationAlternative.selectFirst, guarded, holds,
+    ComputationAlternative.selectFirstChecked_cons, guarded, holds,
     StringAlternativeComputation.selectedStep,
-    StringComputationStep.evaluateOutcome, StringFieldPolicy.checkTarget]
+    StringComputationStep.evaluateOutcome, StringFieldPolicy.checkTarget, Except.mapError, bind, Except.bind]
   cases hResult : head.operation.evaluate context <;> simp
 
 /-- The payoff law: two arbitrary suffixes remain observationally equal after a holding head, even though evaluating the selected expression may yield no-value, target rejection, poison, or a fragment fault. -/
@@ -66,7 +66,7 @@ theorem stringAlternatives_holdingHead_suffixIrrelevant
     (head : ComputationAlternative StringExpr)
     (firstSuffix secondSuffix : List (ComputationAlternative StringExpr))
     (guard : ComputationCondition) (guarded : head.precondition = some guard)
-    (holds : guard.eval context = .holds) :
+    (holds : guard.evalChecked context = .ok .holds) :
     ({ computation with alternatives := head :: firstSuffix }).evaluateOutcome context =
       ({ computation with alternatives := head :: secondSuffix }).evaluateOutcome context := by
   rw [stringAlternatives_holdingHead_evaluates computation context head firstSuffix
@@ -81,7 +81,7 @@ theorem stringAlternatives_selectedNoValue_doesNotFallThrough
     (head : ComputationAlternative StringExpr)
     (remaining : List (ComputationAlternative StringExpr))
     (guard : ComputationCondition) (guarded : head.precondition = some guard)
-    (holds : guard.eval context = .holds)
+    (holds : guard.evalChecked context = .ok .holds)
     (noValue :
       (computation.selectedStep head.operation).evaluateOutcome context = .ok .noValue) :
     ({ computation with alternatives := head :: remaining }).evaluateOutcome context =
@@ -103,27 +103,28 @@ theorem stringAlternatives_evaluate_of_outcome
 theorem stringAlternatives_holdingCommon_preserves
     (computation : StringAlternativeComputation)
     (context : StringComputationContext) (common : ComputationCondition)
-    (commonHolds : common.eval context = .holds) :
+    (commonHolds : common.evalChecked context = .ok .holds) :
     (computation.withCommonPrecondition (some common)).evaluateOutcome context =
       computation.evaluateOutcome context := by
   simp only [StringAlternativeComputation.evaluateOutcome,
     StringAlternativeComputation.evaluateOutcomeWithPattern,
     StringAlternativeComputation.withCommonPrecondition]
-  rw [alternativeSelection_holdingCommon_preserves context common
+  rw [checkedAlternativeSelection_holdingCommon_preserves context common
     computation.alternatives commonHolds]
 
 /-- A clean non-holding common precondition produces quiet no-value for every String table, before any alternative-specific guard or operation can contribute. -/
 theorem stringAlternatives_notTrueCommon_noValue
     (computation : StringAlternativeComputation)
     (context : StringComputationContext) (common : ComputationCondition)
-    (commonNotTrue : common.eval context = .notTrue) :
+    (commonNotTrue : common.evalChecked context = .ok .notTrue) :
     (computation.withCommonPrecondition (some common)).evaluateOutcome context =
       .ok .noValue := by
   simp only [StringAlternativeComputation.evaluateOutcome,
     StringAlternativeComputation.evaluateOutcomeWithPattern,
     StringAlternativeComputation.withCommonPrecondition]
-  rw [alternativeSelection_notTrueCommon_noMatch context common
+  rw [checkedAlternativeSelection_notTrueCommon_noMatch context common
     computation.alternatives commonNotTrue]
+  rfl
 
 /-- On a nonempty String table, common-precondition poison becomes target poison before selection can reach an otherwise-safe operation. -/
 theorem stringAlternatives_poisonedCommon_preserves
@@ -132,13 +133,14 @@ theorem stringAlternatives_poisonedCommon_preserves
     (head : ComputationAlternative StringExpr)
     (remaining : List (ComputationAlternative StringExpr))
     (cause : FormalCause)
-    (commonPoison : common.eval context = .poison cause) :
+    (commonPoison : common.evalChecked context = .ok (.poison cause)) :
     (({ computation with alternatives := head :: remaining }).withCommonPrecondition
       (some common)).evaluateOutcome context = .ok (.poison cause) := by
   simp only [StringAlternativeComputation.evaluateOutcome,
     StringAlternativeComputation.evaluateOutcomeWithPattern,
     StringAlternativeComputation.withCommonPrecondition]
-  rw [alternativeSelection_poisonedCommon_aborts context common head remaining cause
+  rw [checkedAlternativeSelection_poisonedCommon_aborts context common head remaining cause
     commonPoison]
+  rfl
 
 end A12Kernel

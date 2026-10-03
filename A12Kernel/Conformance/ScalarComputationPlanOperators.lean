@@ -212,4 +212,25 @@ example :
       some (.inr (.cycle hId gId, some .calcCycle)) := by
   native_decide
 
+private def numericGuardResult (base : ClassifiedCellInput) : Option String := do
+  let guard ← (model.elaborateComputationCondition ["Join"] ["Join"] (.numeric {
+    op := .ordinary .greater
+    left := .atom (.field (bare "P1"))
+    right := .literal { value := 4, authoredScale := 0 } })).toOption
+  let consumer ← numberStep? hId (some guard) (read "Base3")
+  let producer ← numberStep? p1Id none (read "Base1")
+  let checkedPlan ← (certifyScalarComputationPlan [consumer, producer]).toOption
+  let input ← (checkDocument prepared "en_US" {
+    instantiatedRows := [], cells := seeds ++ [base, numberCell base3Id 2] }).toOption
+  let outcomes ← (checkedPlan.execute world prepared.patterns input).toOption
+  let found ← outcomes.mapM valueOf?
+  (found.find? (·.1 == hId)).map (·.2)
+
+/- The guard's dependency orders the producer before its earlier-authored consumer, and a fresh
+zero or poison replaces the seed 99 before comparison. These composition rows are internal locks. -/
+example : numericGuardResult (numberCell base1Id 7) = some "2" ∧
+    numericGuardResult (numberCell base1Id 0) = some "-" ∧
+    numericGuardResult (malformedNumberCell base1Id) = some "-" := by
+  native_decide
+
 end A12Kernel.Conformance.ScalarComputationPlanOperators

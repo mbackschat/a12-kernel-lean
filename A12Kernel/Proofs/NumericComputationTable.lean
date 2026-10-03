@@ -8,8 +8,8 @@ namespace A12Kernel
 theorem numericComputationTable_noMatch
     (table : CheckedNumericComputationTable model)
     (context : ScalarComputationContext)
-    (selection : ComputationAlternative.selectFirst
-      table.selectableAlternatives context = .noMatch) :
+    (selection : ComputationAlternative.selectFirstChecked
+      table.selectableAlternatives context = .ok .noMatch) :
     table.evaluate context = .ok (.supported .noValue) := by
   simp [CheckedNumericComputationTable.evaluate, selection]
   rfl
@@ -18,8 +18,8 @@ theorem numericComputationTable_noMatch
 theorem numericComputationTable_guardPoison
     (table : CheckedNumericComputationTable model)
     (context : ScalarComputationContext) (cause : FormalCause)
-    (selection : ComputationAlternative.selectFirst
-      table.selectableAlternatives context = .poison cause) :
+    (selection : ComputationAlternative.selectFirstChecked
+      table.selectableAlternatives context = .ok (.poison cause)) :
     table.evaluate context = .ok (.supported (.inheritedPoison cause)) := by
   simp [CheckedNumericComputationTable.evaluate, selection]
   rfl
@@ -29,9 +29,10 @@ theorem numericComputationTable_selected
     (table : CheckedNumericComputationTable model)
     (context : ScalarComputationContext)
     (operation : CheckedNumericTargetComputationOperation model)
-    (selection : ComputationAlternative.selectFirst
-      table.selectableAlternatives context = .selected operation) :
+    (selection : ComputationAlternative.selectFirstChecked
+      table.selectableAlternatives context = .ok (.selected operation)) :
     table.evaluate context = operation.evaluate context := by
   simp [CheckedNumericComputationTable.evaluate, selection]
+  rfl
 
 end A12Kernel

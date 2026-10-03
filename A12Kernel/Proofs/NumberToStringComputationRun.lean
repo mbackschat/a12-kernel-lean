@@ -87,9 +87,9 @@ theorem numericOutcomeOverlay_holdingHead_suffixIrrelevant
     (guard : ComputationCondition)
     (guarded : head.precondition = some guard)
     (holds :
-      guard.eval
+      guard.evalChecked
         (context.withDependencyCell producer
-          (StringDependencyCell.ofNumericOutcome outcome)) = .holds) :
+          (StringDependencyCell.ofNumericOutcome outcome)) = .ok .holds) :
     ({ computation with alternatives := head :: firstSuffix }).evaluateOutcome
         (context.withDependencyCell producer
           (StringDependencyCell.ofNumericOutcome outcome)) =

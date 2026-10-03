@@ -1685,3 +1685,6 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 <a id="src-peer-adapter-diagnostics-replay"></a>
 - [The peer's retained computation fixture and seven runtime documents replay with 18 matches and one document refusal](sources/evaluation-and-application-routes.md#src-peer-adapter-diagnostics-replay)
+
+<a id="src-numeric-computation-guards"></a>
+- [Numeric computation guards read empty as zero and distinguish arithmetic failure from reached poison](sources/computation-scheduling-probes.md#src-numeric-computation-guards)
