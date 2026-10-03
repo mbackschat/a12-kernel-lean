@@ -61,4 +61,20 @@ example :
       unknown.toCellAddr? = none := by
   native_decide
 
+private def rule : ResolvedRule Unit := {
+  condition := (), errorField := 7, errorCode := "JOIN", severity := .warning,
+  messagePlan := { parts := [.text "unmatched"] }
+}
+
+example : (rule.emitAtCoordinates [.concrete 2, .unknown] (.fired .omission)).message? =
+    some {
+      errorAddress := { field := 7, coordinates := [.concrete 2, .unknown] }
+      errorCode := "JOIN", severity := .warning, messageType := .omission,
+      text := { text := "unmatched" } } := by native_decide
+
+example : rule.emitAtCoordinates [.unknown] .unknown = .unknown ∧
+    rule.emitAtCoordinates [.unknown] .notFired = .notFired ∧
+    rule.emitAtCoordinates [.concrete 2, .concrete 4] (.fired .value) =
+      rule.emitAt [2, 4] (.fired .value) := by native_decide
+
 end A12Kernel.Conformance.MessagePointer

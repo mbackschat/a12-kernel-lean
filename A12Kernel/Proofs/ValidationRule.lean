@@ -54,12 +54,23 @@ theorem messageValue_present_isOpaque (value defaultDisplay : String)
     }).render = value := by
   simp [MessageRenderPart.render, MessageValueInput.resolve, nonempty]
 
+/-- Resolving an unmatched message address cannot change the condition's verdict. -/
+@[simp] theorem resolvedRule_emitAtCoordinates_verdict (rule : ResolvedRule Condition)
+    (coordinates : List MessageRepetitionCoordinate) (verdict : Verdict) :
+    (rule.emitAtCoordinates coordinates verdict).verdict = verdict := by
+  cases verdict <;> rfl
+
+/-- Existing physical emission is exactly the concrete-coordinate specialization. -/
+theorem resolvedRule_emitAtCoordinates_concrete (rule : ResolvedRule Condition)
+    (path : List Nat) (verdict : Verdict) :
+    rule.emitAtCoordinates (path.map .concrete) verdict = rule.emitAt path verdict := rfl
+
 /-- The addressed emitter preserves the exact verdict while changing only metadata on a firing. -/
 @[simp]
 theorem resolvedRule_emitAt_verdict (rule : ResolvedRule Condition)
     (errorPath : List Nat) (verdict : Verdict) :
-    (rule.emitAt errorPath verdict).verdict = verdict := by
-  cases verdict <;> rfl
+    (rule.emitAt errorPath verdict).verdict = verdict :=
+  resolvedRule_emitAtCoordinates_verdict rule (errorPath.map .concrete) verdict
 
 /-- A firing carries the caller-resolved path through the sole emitter unchanged. -/
 @[simp]
@@ -116,7 +127,7 @@ theorem flatRule_fired_message_exact (rule : ResolvedFlatRule)
         text := rule.messagePlan.render
   } := by
   simp [ResolvedRule.evalFull, ResolvedRule.evalWith,
-    ResolvedRule.evalWithAt, ResolvedRule.emitAt, fires]
+    ResolvedRule.evalWithAt, ResolvedRule.emitAt, ResolvedRule.emitAtCoordinates, MessagePointer.ofCellAddr, fires]
 
 /-- Error address, code, severity, and already-resolved text cannot change firing or polarity. -/
 theorem flatRule_metadata_doesNotChangeVerdict (rule : ResolvedFlatRule)
@@ -137,7 +148,7 @@ theorem flatRule_notFired_independentOfMessagePlan
     ({ rule with messagePlan := otherPlan }).evalFull context hasContent =
       rule.evalFull context hasContent := by
   simp [ResolvedRule.evalFull, ResolvedRule.evalWith,
-    ResolvedRule.evalWithAt, ResolvedRule.emitAt, notFired]
+    ResolvedRule.evalWithAt, ResolvedRule.emitAt, ResolvedRule.emitAtCoordinates, notFired]
 
 /-- An unavailable condition likewise suppresses message resolution rather than manufacturing text. -/
 theorem flatRule_unknown_independentOfMessagePlan
@@ -147,7 +158,7 @@ theorem flatRule_unknown_independentOfMessagePlan
     ({ rule with messagePlan := otherPlan }).evalFull context hasContent =
       rule.evalFull context hasContent := by
   simp [ResolvedRule.evalFull, ResolvedRule.evalWith,
-    ResolvedRule.evalWithAt, ResolvedRule.emitAt, unknown]
+    ResolvedRule.evalWithAt, ResolvedRule.emitAt, ResolvedRule.emitAtCoordinates, unknown]
 
 /-- A rule carries a message exactly when the reused condition evaluator fired. -/
 theorem flatRule_hasMessage_iff_fired (rule : ResolvedFlatRule)
@@ -422,7 +433,7 @@ theorem checkedValidationRule_fired_message_exact
       }) := by
   simp [CheckedResolvedValidationRule.evalFull,
     CheckedResolvedValidationRule.core, ResolvedValidationRule.evalFull,
-    ResolvedRule.evalWith, ResolvedRule.evalWithAt, ResolvedRule.emitAt,
+    ResolvedRule.evalWith, ResolvedRule.evalWithAt, ResolvedRule.emitAt, ResolvedRule.emitAtCoordinates, MessagePointer.ofCellAddr,
     scalar, fires]
 
 end A12Kernel

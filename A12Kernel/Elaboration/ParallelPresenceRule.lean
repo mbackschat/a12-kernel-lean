@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ValidationRule
 
 /-! # Bounded checked parallel presence rules
 
-This capsule places one existing positive presence conjunction into the checked exact-text parallel join. The join owns key construction and optional physical environments; the shared condition tree owns short-circuiting; the shared rule emitter owns messages. Nonrepeatable path segments around either keyed group and operand are transparent because they add no environment binding. One non-indexed repeatable frame may surround the error side and recalculates the same join inside each actual frame row. Number ordering, two framed sides, negative leaves, partial validation, and nonphysical error pointers remain outside.
+This capsule places one existing positive presence conjunction into the checked exact-text parallel join. The join owns key construction and optional physical environments; the shared condition tree owns short-circuiting; the shared rule emitter owns messages. Nonrepeatable path segments around either keyed group and operand are transparent because they add no environment binding. One non-indexed repeatable frame may surround the error side and recalculates the same join inside each actual frame row. Number ordering, two framed sides, negative leaves, and partial validation remain outside. Error pointers use the shared joined-side projection.
 -/
 
 namespace A12Kernel
@@ -22,8 +22,6 @@ inductive ParallelPresenceRuleAssemblyError where
 
 inductive ParallelPresenceRuleEvaluationError where
   | join (error : CheckedIndexColumnError)
-  | missingErrorEnvironment (key : SemanticIndexKey)
-  | environment (error : EnvBindingError)
   | unsupportedCondition
   deriving Repr, DecidableEq
 
@@ -141,13 +139,9 @@ private def evalRow (rule : CheckedParallelPresenceRule model)
     (evalLeaf row preliminary)
   let outcome ← match verdict with
     | .fired _ => do
-        let environment ← match (rule.errorSide row).environment with
-          | some environment => pure environment
-          | none => throw (.missingErrorEnvironment row.key)
-        let path ←
-          environment.pathForScope rule.errorDeclaration.repeatableScope
-            |>.mapError .environment
-        pure (rule.core.emitAt path verdict)
+        let pointer ← (rule.errorSide row).messagePointer model outerEnvironment rule.errorField
+          |>.mapError .join
+        pure (rule.core.emitAtCoordinates pointer.coordinates verdict)
     | .notFired | .unknown =>
         -- `emitAt` does not inspect the address for a silent verdict, so no
         -- nonphysical placeholder enters `CellAddr`.

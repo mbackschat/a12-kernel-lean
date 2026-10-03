@@ -660,4 +660,36 @@ example :
       some (.incompatibleGroups disjointLeft.path disjointRight.path) := by
   native_decide
 
+private def joinedPointers? (source : DocumentData) :
+    Option (List (MessagePointer × MessagePointer)) := do
+  let preliminary ← preliminaryFor source
+  let join ← (preliminary.resolveParallelIndexJoin demand supply).toOption
+  join.rows.mapM fun row => do
+    pure (← (row.left.messagePointer model [] 2).toOption,
+      ← (row.right.messagePointer model [] 4).toOption)
+
+example : joinedPointers? data = some [
+    ({ field := 2, coordinates := [.concrete 2] }, { field := 4, coordinates := [.concrete 1] }),
+    ({ field := 2, coordinates := [.unknown] }, { field := 4, coordinates := [.concrete 2] }),
+    ({ field := 2, coordinates := [.concrete 1] }, { field := 4, coordinates := [.unknown] })] := by
+  native_decide
+
+example : joinedPointers? invalidSupplyData = joinedPointers? data ∧
+    joinedPointers? invalidDemandData = joinedPointers? data := by native_decide
+
+private def missingFramedSide : ResolvedParallelIndexSide := {
+  group := framedDemand, environment := none, unavailableKey := none
+}
+
+example : (missingFramedSide.messagePointer framedModel [(50, 2)] 22).toOption =
+    some { field := 22, coordinates := [.concrete 2, .unknown] } ∧
+    (match missingFramedSide.messagePointer framedModel [] 22 with
+      | .error error => some error
+      | .ok _ => none) = some (.environment (.missingBinding 50)) := by native_decide
+
+example : (match (ResolvedParallelIndexSide.messagePointer
+    { group := demand, environment := none, unavailableKey := none } model [] 5) with
+    | .error error => some error
+    | .ok _ => none) = some (.fieldOutsideGroup 5 demand.path) := by native_decide
+
 end A12Kernel.Conformance.ParallelPresenceRule

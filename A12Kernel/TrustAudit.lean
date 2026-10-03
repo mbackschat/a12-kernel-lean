@@ -1094,6 +1094,8 @@ run_cmd do
 #print axioms A12Kernel.messageValue_missingOrEmpty_usesDefault
 #print axioms A12Kernel.messageRenderText_append
 #print axioms A12Kernel.messageValue_present_isOpaque
+#print axioms A12Kernel.resolvedRule_emitAtCoordinates_verdict
+#print axioms A12Kernel.resolvedRule_emitAtCoordinates_concrete
 #print axioms A12Kernel.resolvedRule_emitAt_verdict
 #print axioms A12Kernel.resolvedRule_emitAt_fired_exact
 #print axioms A12Kernel.flatRule_eval_verdict

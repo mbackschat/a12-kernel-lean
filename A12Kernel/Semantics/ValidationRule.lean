@@ -188,23 +188,26 @@ end FlatRuleOutcome
 
 namespace ResolvedRule
 
-/-- Attach metadata and one already-resolved error path to a computed verdict. Every scalar and addressed condition family reuses this sole post-verdict boundary. -/
-def emitAt (rule : ResolvedRule Condition) (errorPath : List Nat)
-    (verdict : Verdict) : FlatRuleOutcome :=
+/-- Attach metadata after the verdict without requiring a physical row. Parallel and keyed
+no-match addresses retain unknown coordinates (`spec/07` §2); they cannot be `CellAddr`s. -/
+def emitAtCoordinates (rule : ResolvedRule Condition)
+    (coordinates : List MessageRepetitionCoordinate) (verdict : Verdict) : FlatRuleOutcome :=
   match verdict with
   | .notFired => .notFired
   | .fired messageType =>
       .fired {
-        errorAddress := MessagePointer.ofCellAddr {
-          field := rule.errorField
-          path := errorPath
-        }
+        errorAddress := { field := rule.errorField, coordinates }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType
         text := rule.messagePlan.render
       }
   | .unknown => .unknown
+
+/-- Physical error paths are the concrete specialization of the shared message emitter. -/
+def emitAt (rule : ResolvedRule Condition) (errorPath : List Nat)
+    (verdict : Verdict) : FlatRuleOutcome :=
+  rule.emitAtCoordinates (errorPath.map .concrete) verdict
 
 /-- The established nonrepeatable emitter is the empty-path specialization. -/
 def emit (rule : ResolvedRule Condition) (verdict : Verdict) : FlatRuleOutcome :=

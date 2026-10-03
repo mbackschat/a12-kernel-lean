@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Semantics.SemanticIndex
+import A12Kernel.Semantics.MessagePointer
 
 /-! # Checked index columns and bounded parallel joins
 
@@ -531,6 +532,23 @@ def resolveParallelIndexJoin (preliminary : CheckedIndexPreliminary model)
 end CheckedIndexPreliminary
 
 namespace ResolvedParallelIndexSide
+
+/-- A missing joined row contributes an unknown coordinate while its outer frame stays concrete
+(`spec/07` §2). Index-column invalidity changes the read, not this address. Missing outer bindings
+remain structural errors rather than being widened into more unknown coordinates. -/
+def messagePointer (side : ResolvedParallelIndexSide) (model : FlatModel)
+    (outer : Env) (field : FieldId) : Except CheckedIndexColumnError MessagePointer := do
+  let declaration ← model.lookupUniqueId field |>.mapError .model
+  if !side.group.path.isPrefixOf declaration.groupPath then
+    throw (.fieldOutsideGroup field side.group.path)
+  let coordinates ← match side.environment with
+    | some environment => do
+        let path ← environment.pathForScope declaration.repeatableScope |>.mapError .environment
+        pure (path.map MessageRepetitionCoordinate.concrete)
+    | none => declaration.repeatableScope.mapM fun level =>
+        if level == side.group.level then pure .unknown
+        else (outer.bindingAt level).map MessageRepetitionCoordinate.concrete |>.mapError .environment
+  pure { field, coordinates }
 
 /-- An unmatched clean side is semantically empty; an unmatched invalid column is validation-unknown. No sentinel coordinate enters the physical address domain. -/
 def missingObservation (side : ResolvedParallelIndexSide) : CellObservation :=

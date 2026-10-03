@@ -91,6 +91,8 @@ Physical topology and validation iteration are distinct projections of that same
 
 Validation truth uses the closed `K`/`Verdict` algebras. Computation conditions use holds/not-true/poison. The shared tree evaluators preserve the relevant ordered short-circuit behavior, but a validation UNKNOWN is not a computation poison and a public message is not an evaluator result.
 
+Rule message emission takes the already-resolved coordinates of its `MessagePointer` after the verdict. Physical error paths specialize that boundary with concrete coordinates; unmatched indexed rows retain unknown coordinates without entering `CellAddr` or document topology.
+
 Polarity and partial validation are one-sided abstractions. VALUE/OMISSION does not encode an exact future-fill classification, and partial validation does not prove equivalence with full validation. Broader theorems must state the relevant agreement, refinement, row, world, and locality assumptions.
 
 ### Repeatable semantics use named environments and checked addresses
