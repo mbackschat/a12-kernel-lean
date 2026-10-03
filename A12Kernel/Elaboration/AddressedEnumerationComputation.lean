@@ -275,7 +275,8 @@ private def fieldResult (operand : FlatEnumerationOperand) (cell : CheckedCell) 
   | .present token => .value token
   | .unknown cause => .poison cause
 
-private def evaluateAtWithRead
+/-- The exact row operation shared by the standalone walk and lazy alternative selection. -/
+def evaluateAtWithRead
     (operation : CheckedAddressedEnumerationComputation model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (environment : Env) :

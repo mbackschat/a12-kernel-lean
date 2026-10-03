@@ -22,6 +22,7 @@ theorem checkedRepeatableStringConstantComputation_execute_ignoresDeclaringGroup
     (input : CheckedDocument model) :
     first.execute patterns input = second.execute patterns input := by
   simp only [CheckedRepeatableStringConstantComputation.execute,
+    CheckedRepeatableStringConstantComputation.outcomeWithPattern,
     CheckedRepeatableStringConstantComputation.store,
     sameTarget, sameDeclaration, sameLiteral]
 
@@ -43,7 +44,8 @@ theorem checkedRepeatableStringConstantComputation_execute_delegatesTargetCheck
         StringFieldPolicy.checkTargetWithPattern
           operation.checkedTarget.declaration.stringPolicy matcher operation.store ∨
         entry.outcome = .noValue := by
-  simp only [CheckedRepeatableStringConstantComputation.execute, prepared] at executed
+  simp only [CheckedRepeatableStringConstantComputation.execute,
+    CheckedRepeatableStringConstantComputation.outcomeWithPattern, prepared] at executed
   intro entry member
   rcases checkedDocument_computationRowOutcomes_mem input _ _ _ _ outcomes executed
       entry member with ⟨environment, built⟩ | ⟨environment, built⟩

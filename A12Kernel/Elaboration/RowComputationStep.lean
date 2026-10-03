@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.RowComputationTable
 import A12Kernel.Elaboration.RepeatableStringConstantComputation
 import A12Kernel.Elaboration.RepeatableDateConstantComputation
 import A12Kernel.Elaboration.RepeatableTimeConstantComputation
@@ -19,14 +20,16 @@ import A12Kernel.Elaboration.DocumentComputationStep
 A **row step** is a checked computation into a repeatable target of a kind other than Number, run once
 per instantiated target row by its own carrier and read back per row as the whole-document steps
 are, so a later step reads a completed row target through the cell a stored rendering of it reads as.
-Its instances are the row carriers; each is one constructor, and the read set it declares is checked
-against its target once, here, rather than proved per carrier.
+Each row carrier supplies its operation reads, checked against its target here. A table also retains
+its guard inventory: group membership may include the target, while the shared condition certificate
+and producer-protection rule separately decide forbidden reads and scheduling dependencies.
 -/
 
 namespace A12Kernel
 
 /-- Why a row step failed structurally. -/
 inductive RowComputationStepFault where
+  | table (cause : RowComputationTableFault)
   | readBack (cause : DocumentComputationStepFault)
   | stringConstant (cause : RepeatableStringConstantComputationFault)
   | dateConstant (cause : RepeatableDateConstantComputationFault)
@@ -52,31 +55,51 @@ structure CheckedRowComputationStep (model : FlatModel) (compilePattern : String
   private mk ::
   target : FieldId
   family : DocumentTargetFamily
-  referencesField : FieldId → Bool
-  excludesTarget : referencesField target = false
+  operationReferencesField : FieldId → Bool
+  excludesTarget : operationReferencesField target = false
+  protectionConditions : List (Option ComputationCondition) := [none]
   run : World → PreparedFlatStringPatterns model compilePattern → CheckedDocument model →
     Except RowComputationStepFault (List (CellAddr × DocumentTargetOutcome × CheckedCell))
 
 namespace CheckedRowComputationStep
+
+def referencesField (step : CheckedRowComputationStep model compilePattern) (field : FieldId) : Bool :=
+  step.protectionConditions.any (fun guard => guard.any (·.referencesField field)) ||
+    step.operationReferencesField field
+
+def requiresProducer (step : CheckedRowComputationStep model compilePattern)
+    (producerProtected : FieldId → ResolvedGroupReference → Bool) (field : FieldId) : Bool :=
+  step.protectionConditions.any (fun guard =>
+    guard.any (·.requiresProducer step.target field (producerProtected field))) ||
+      step.operationReferencesField field
 
 /-- A step reading `reads` for every pattern compiler, or `none` when that set reaches the target,
 which the plan's order and the read overlay both exclude. The decision reads the operation alone. -/
 private def checked? (target : FieldId) (family : DocumentTargetFamily) (reads : FieldId → Bool)
     (run : ∀ compilePattern, World → PreparedFlatStringPatterns model compilePattern →
       CheckedDocument model →
-      Except RowComputationStepFault (List (CellAddr × DocumentTargetOutcome × CheckedCell))) :
+      Except RowComputationStepFault (List (CellAddr × DocumentTargetOutcome × CheckedCell)))
+    (guards : List (Option ComputationCondition) := [none]) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
   if h : reads target = false then
     some fun compilePattern =>
-      { target, family, referencesField := reads, excludesTarget := h, run := run compilePattern }
+      { target, family, operationReferencesField := reads, excludesTarget := h,
+        protectionConditions := guards, run := run compilePattern }
   else none
+
+/-- A table supplies its complete guard inventory to dependency analysis before execution. -/
+def ofTable? (table : CheckedRowComputationTable model) :
+    Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
+  checked? table.target table.family table.operationReferencesField
+    (fun _ world patterns document => (table.execute world patterns document).mapError .table)
+    table.protectionConditions
 
 /-- A String constant written into every row of a repeatable String target. -/
 def ofRepeatableStringConstant (operation : CheckedRepeatableStringConstantComputation model) :
     CheckedRowComputationStep model compilePattern where
   target := operation.checkedTarget.targetField
   family := .string
-  referencesField _ := false
+  operationReferencesField _ := false
   excludesTarget := rfl
   run _ patterns document := do
     let outcomes ← (operation.execute patterns document).mapError .stringConstant
@@ -89,7 +112,7 @@ def ofRepeatableDateConstant (operation : CheckedRepeatableDateConstantComputati
     CheckedRowComputationStep model compilePattern where
   target := operation.checkedTarget.targetField
   family := .fullDate
-  referencesField _ := false
+  operationReferencesField _ := false
   excludesTarget := rfl
   run _ _ document := do
     let outcomes ← (operation.execute document).mapError .dateConstant
@@ -105,7 +128,7 @@ def ofDateLiteral? (operation : CheckedDateLiteralComputation model) :
     some fun _ => {
       target := operation.target.id
       family := .fullDate
-      referencesField _ := false
+      operationReferencesField _ := false
       excludesTarget := rfl
       run _ _ document := do
         let scope := operation.target.repeatableScope
@@ -123,7 +146,7 @@ def ofRepeatableTimeConstant (operation : CheckedRepeatableTimeConstantComputati
     CheckedRowComputationStep model compilePattern where
   target := operation.checkedTarget.targetField
   family := .time
-  referencesField _ := false
+  operationReferencesField _ := false
   excludesTarget := rfl
   run _ _ document := do
     let outcomes ← (operation.execute document).mapError .timeConstant
@@ -137,7 +160,7 @@ def ofRepeatableDateTimeConstant (operation : CheckedRepeatableDateTimeConstantC
     CheckedRowComputationStep model compilePattern where
   target := operation.checkedTarget.targetField
   family := .dateTime
-  referencesField _ := false
+  operationReferencesField _ := false
   excludesTarget := rfl
   run _ _ document := do
     let result ← (operation.execute document).mapError .dateTimeConstant
@@ -152,7 +175,7 @@ def ofRepeatableBooleanConstant (operation : CheckedRepeatableBooleanConstantCom
     CheckedRowComputationStep model compilePattern where
   target := operation.checkedTarget.targetField
   family := .boolean
-  referencesField _ := false
+  operationReferencesField _ := false
   excludesTarget := rfl
   run _ _ document := do
     let outcomes ← (operation.execute document).mapError .booleanConstant

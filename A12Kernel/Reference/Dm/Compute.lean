@@ -9,7 +9,7 @@ import A12Kernel.Elaboration.MixedComputationPlan
 
 Each computation is parsed and lowered onto the checked table of its target's kind, which joins its
 common precondition onto every alternative, or refused by the construct no carrier admits. The lowered
-steps, Number and String tables, whole-document targets and repeatable String constants, are certified
+steps, Number and String tables, whole-document targets and repeatable row operations, are certified
 together as one `MixedComputationPlan` and executed in its order over the checked document.
 
 The result is projected onto what a Kernel `compute` observation reports: its change projection,
@@ -190,6 +190,15 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
       | none => pure step
       | some guard => (step.guard? guard).getDM (refuse "DocumentStep" "guard admission")
     pure (target, .document step)
+  if row && (target.policy.kind == .string || target.policy.kind == .enumeration) &&
+      operations.all (isRowAlternativeOperation target) then
+    let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do
+      let operation ← lowerRowAlternativeOperation model computation.group target expression
+      pure ({ precondition, operation } : ComputationAlternative _)
+    let table ← elaborated "RowComputation" (certifyRowComputationTable alternatives common)
+    let some step := CheckedRowComputationStep.ofTable? table
+      | refuse "RowComputation" "target self-read"
+    return (target, .rows step)
   match target.policy.kind with
   | .number _ => do
       let expressions ← operations.mapM

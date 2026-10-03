@@ -42,8 +42,8 @@ comparison's read of the target, drawing `MVK_INVALID_RAW_TYPE` on the one row m
 field copied into a nonrepeatable raw target
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-26c-target-read)), but this error does not separate
 the two, so neither projects a class. At an **Enumeration** target the Kernel gates the literal
-rather than the kind, and a declared token is admitted outright where this carrier refuses it. All
-three are tracked in
+rather than the kind: its domain certificate belongs to `checkAddressedEnumerationComputation`,
+which the reader uses for that target. Raw and custom refusal classification remains in
 [SG15](../../docs/gaps/targets-and-derivation.md#gap-sg15). -/
 def diagnostic? :
     RepeatableStringConstantComputationElabError → Option KernelStaticDiagnostic
@@ -107,6 +107,12 @@ def store (operation : CheckedRepeatableStringConstantComputation model) :
     StringStore :=
   (StringTerm.text operation.literal).store
 
+/-- The declaration-owned check shared by standalone execution and a selected table alternative. -/
+def outcomeWithPattern (operation : CheckedRepeatableStringConstantComputation model)
+    (matcher : Option (String → Bool)) : StringTargetOutcome :=
+  StringFieldPolicy.checkTargetWithPattern operation.checkedTarget.declaration.stringPolicy
+    matcher operation.store
+
 /-- Write the constant once per **in-capacity** target row, in document order, applying the declaration's
 own target policy at each, and only a clear at each over-limit row. A group with no instantiated row
 yields no outcome at all. -/
@@ -127,9 +133,7 @@ def execute (operation : CheckedRepeatableStringConstantComputation model)
         | .error cause => .error (.targetEnvironment cause)
         | .ok path => .ok { targetField := { field, path }, outcome }
       input.computationRowOutcomes scope .targetRows (at? .noValue)
-        (at? (StringFieldPolicy.checkTargetWithPattern
-          operation.checkedTarget.declaration.stringPolicy matcher
-          operation.store))
+        (at? (operation.outcomeWithPattern matcher))
 
 /-- Classify every exact row outcome against immutable source target state through the shared String
 result owner. -/

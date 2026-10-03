@@ -52,14 +52,14 @@ def protectionConditions : MixedComputationStep model compilePattern → List (O
   | .number table => table.protectionConditions
   | .string table => table.protectionConditions
   | .document step => step.protectionConditions
-  | .rows _ => [none]
+  | .rows step => step.protectionConditions
 
 def requiresProducer (producerProtected : FieldId → ResolvedGroupReference → Bool) :
     MixedComputationStep model compilePattern → FieldId → Bool
   | .number table => table.requiresProducer producerProtected
   | .string table => table.requiresProducer producerProtected
   | .document step => step.requiresProducer producerProtected
-  | .rows step => step.referencesField
+  | .rows step => step.requiresProducer producerProtected
 
 end MixedComputationStep
 

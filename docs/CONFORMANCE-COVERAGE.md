@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-03; HEAD was `342a56bb`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-03; HEAD was `6382e6ea`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Replaying 1024 retained Kernel observation rows through Lean, 6041 of the 6041 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 87 partially and 32 not at all, as classified on 2026-10-03 at `321c9325` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
+**Replaying 1024 retained Kernel observation rows through Lean, 6049 of the 6049 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 98 broadly (45%), 87 partially and 32 not at all, as classified on 2026-10-03 at `321c9325` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -82,9 +82,9 @@ Each instance, one rule or computation on one document row, lands in one tier:
 
 | | rules | computations |
 |---|---|---|
-| match | 4090 | 1951 |
+| match | 4090 | 1959 |
 | tier 1 | 0 | 0 |
-| tier 2 | 84 | 15 |
+| tier 2 | 84 | 7 |
 | unattributed | 0 | 0 |
 | fault | 0 | 0 |
 
@@ -98,7 +98,6 @@ Each cluster is a construct no carrier admits, with its instances and its distin
 |---|---|---|---|
 | 30 | 3 | validation | `PatternMatched` |
 | 30 | 3 | validation | `PatternViolated` |
-| 8 | 3 | computation | `StringComputation` |
 | 6 | 2 | validation | `Comparison` |
 | 5 | 4 | row | `Document` |
 | 5 | 1 | computation | `NumberComputation` |
@@ -172,8 +171,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 235151 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 13718 | 5% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 235321 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 13860 | 5% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.

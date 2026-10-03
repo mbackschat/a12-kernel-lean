@@ -59,6 +59,32 @@ where
       (checkRepeatableBooleanConstantComputation model group target.id value)
     pure fun _ => .ofRepeatableBooleanConstant operation
 
+/-- Only ordinary quoted tokens and Enumeration field reads belong to this row table; temporal
+literal classification stays with `rowConstant`, whose family gate precedes the target kind. -/
+def isRowAlternativeOperation (target : FlatFieldDecl) : Expr → Bool
+  | .string text => !isTemporalConstant text
+  | .value { index := none, .. } => target.policy.kind == .enumeration
+  | _ => false
+
+/-- Reuse the checked literal/direct/category operations before certifying row-local selection. -/
+def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) :
+    Expr → Lowering (CheckedRowComputationOperation model)
+  | .string text => do
+      if isTemporalConstant text then refuse "RowComputation" "temporal literal"
+      if target.policy.kind == .enumeration then
+        return .enumeration (← elaborated "EnumerationComputation"
+          (checkAddressedEnumerationComputation model group target.id (.literal text)))
+      return .stringConstant (← elaborated "StringComputation"
+        (checkRepeatableStringConstantComputation model group target.id text))
+  | .value { path, index := none, category } => do
+      let some field := path.toFieldPath? | refuse "EnumerationComputation" "source path"
+      let source := match category with
+        | none => SurfaceTextFieldOperand.direct field
+        | some name => .category field name
+      return .enumeration (← elaborated "EnumerationComputation"
+        (checkAddressedEnumerationComputation model group target.id (.field source)))
+  | other => refuse "RowComputation" other.construct
+
 /-- One `Time(...)` component: a quoted constant, an extractor over a field, or a Number or digit
 String field. -/
 private def timeComponent (model : FlatModel) (group : GroupPath) :

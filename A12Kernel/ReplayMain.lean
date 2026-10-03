@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.RowAlternativeLocks
 import A12Kernel.Reference.Dm.Replay
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.ParserLocks
