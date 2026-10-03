@@ -1,0 +1,244 @@
+{
+  "header" : {
+    "id" : "TemporalFamily",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "TemporalFamily",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/G",
+        "name" : "G",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/G/D",
+            "name" : "D",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/T",
+            "name" : "T",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Stamp",
+            "name" : "Stamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Output",
+            "name" : "Output",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/DateProjection",
+            "name" : "DateProjection",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/DateProjectionComp",
+            "name" : "DateProjectionComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DateProjection",
+              "computationAlternatives" : [ {
+                "operation" : "DateFromDateTime(AddHours(Now,25))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/TimeProjection",
+            "name" : "TimeProjection",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/TimeProjectionComp",
+            "name" : "TimeProjectionComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TimeProjection",
+              "computationAlternatives" : [ {
+                "operation" : "TimeFromDateTime(AddMinutes(Now,90))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/TimeConstruction",
+            "name" : "TimeConstruction",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/TimeConstructionComp",
+            "name" : "TimeConstructionComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TimeConstruction",
+              "computationAlternatives" : [ {
+                "operation" : "Time(\"1\",\"30\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/ShiftedStamp",
+            "name" : "ShiftedStamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ShiftedStampComp",
+            "name" : "ShiftedStampComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ShiftedStamp",
+              "computationAlternatives" : [ {
+                "operation" : "AddSeconds(Now,61)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/NestedStamp",
+            "name" : "NestedStamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/EarlierStamp",
+            "name" : "EarlierStamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/EarlierStampComp",
+            "name" : "EarlierStampComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EarlierStamp",
+              "computationAlternatives" : [ {
+                "operation" : "MinValue(Stamp,Output)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/NestedStampComp",
+            "name" : "NestedStampComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NestedStamp",
+              "computationAlternatives" : [ {
+                "operation" : "AddMinutes(AddHours(Stamp,2),3)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -71,12 +71,7 @@ def readPartialCell (context : AddressedValidationEvaluationContext model)
 end AddressedValidationEvaluationContext
 
 /-- Parser-independent input to the checked numeric consumer. -/
-structure SurfaceNumericComparison where
-  op : NumericValidationOp
-  left : AuthoredNumericExpr SurfaceNumericAtom
-  right : AuthoredNumericExpr SurfaceNumericAtom
-  suppressExactScaleWarning : Bool := false
-  deriving Repr, DecidableEq
+abbrev SurfaceNumericComparison := NumericComparisonOf SurfaceNumericAtom
 
 /-- Ordinary resolved numeric comparisons retain their established atom type and API. -/
 abbrev NumericComparison := NumericComparisonOf NumericValidationAtom

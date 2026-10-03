@@ -1,0 +1,613 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "TemporalDisposition_DM.json",
+    "locale": "en_US",
+    "clock": "2026-10-02T00:00:00Z"
+  },
+  "rows": [
+    {
+      "name": "seeded",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DateGapComp",
+              "field": "G/DateGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "DependentComp",
+              "field": "G/Dependent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "G/Dependent",
+                "G/Gap"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GapComp",
+              "field": "G/Gap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedGapComp",
+              "field": "G/NestedGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "OrdinaryComp",
+              "field": "G/Ordinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "G/Ordinary"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ShiftGapComp",
+              "field": "G/ShiftGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ShiftOrdinaryComp",
+              "field": "G/ShiftOrdinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "G/ShiftOrdinary"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeGapComp",
+              "field": "G/TimeGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/DateGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Dependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/NestedGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ordinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/ShiftGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ShiftOrdinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:01"
+              },
+              {
+                "field": "G/TimeGap",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/DateGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/DateGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Gap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/Gap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/NestedGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/NestedGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ShiftGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/ShiftGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/TimeGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/TimeGap"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "G/Ordinary",
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/ShiftOrdinary",
+                "value": "2024-03-31T01:30:01"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "G": {
+                "DateGap": null,
+                "Dependent": null,
+                "Gap": null,
+                "NestedGap": null,
+                "Ordinary": "2024-03-31T01:30:00",
+                "ShiftGap": null,
+                "ShiftOrdinary": "2024-03-31T01:30:01",
+                "TimeGap": null
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DateGapComp",
+              "field": "G/DateGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "DependentComp",
+              "field": "G/Dependent",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "G/Dependent",
+                "G/Gap"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GapComp",
+              "field": "G/Gap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "NestedGapComp",
+              "field": "G/NestedGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "OrdinaryComp",
+              "field": "G/Ordinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "G/Ordinary"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ShiftGapComp",
+              "field": "G/ShiftGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ShiftOrdinaryComp",
+              "field": "G/ShiftOrdinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "G/ShiftOrdinary"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeGapComp",
+              "field": "G/TimeGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/DateGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Dependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/NestedGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ordinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/ShiftGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ShiftOrdinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:01"
+              },
+              {
+                "field": "G/TimeGap",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/DateGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/DateGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Gap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/Gap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/NestedGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/NestedGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ShiftGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/ShiftGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/TimeGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/TimeGap"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "G/Ordinary",
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/ShiftOrdinary",
+                "value": "2024-03-31T01:30:01"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "G": {
+                "DateGap": null,
+                "Dependent": null,
+                "Gap": null,
+                "NestedGap": null,
+                "Ordinary": "2024-03-31T01:30:00",
+                "ShiftGap": null,
+                "ShiftOrdinary": "2024-03-31T01:30:01",
+                "TimeGap": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/Ordinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/ShiftOrdinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:01"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/DateGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/DateGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Gap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/Gap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/NestedGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/NestedGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ShiftGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/ShiftGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/TimeGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/TimeGap"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "G/Ordinary",
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/ShiftOrdinary",
+                "value": "2024-03-31T01:30:01"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "G": {
+                "Ordinary": "2024-03-31T01:30:00",
+                "ShiftOrdinary": "2024-03-31T01:30:01"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/Ordinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/ShiftOrdinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:01"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/DateGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/DateGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Gap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/Gap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/NestedGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/NestedGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ShiftGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/ShiftGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/TimeGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "referenced": [
+                  "G/TimeGap"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "G/Ordinary",
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/ShiftOrdinary",
+                "value": "2024-03-31T01:30:01"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "G": {
+                "Ordinary": "2024-03-31T01:30:00",
+                "ShiftOrdinary": "2024-03-31T01:30:01"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

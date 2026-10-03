@@ -258,7 +258,8 @@ private def numberListPath? :
     erases the rejected expansion's kind; no shared group error is reclassified. -/
 def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
-    (authored : SurfaceTokenEntityStringLiteralValueListSource) (writtenGroup : GroupPath := declaringGroup) :
+    (authored : SurfaceTokenEntityStringLiteralValueListSource) (writtenGroup : GroupPath := declaringGroup)
+    (targetGroup? : Option GroupPath := none) :
     Except TokenEntityStringLiteralValueListElabError
       (CheckedTokenEntityStringLiteralValueListSource model) := do
   -- **A sole unstarred field is legal here**, on all three quantifiers, where the entity-list
@@ -266,8 +267,9 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
   -- ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
   -- The rule is the carrier's, not the shared checker's: comparing fields against *literals* is a
   -- complete question with one field, where comparing them against each other is not.
-  let shape ← elaborateFieldEntityShape model declaringGroup authored.fields
-      .soleAllowed (writtenGroup := writtenGroup)
+  let shape ← elaborateFieldEntityShapeIn model declaringGroup
+      (targetGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored.fields
+      .soleAllowed targetGroup? (writtenGroup := targetGroup?.getD writtenGroup)
     |>.mapError .shape
   let (firstValue, restValues) ←
     match authored.values with
@@ -418,13 +420,16 @@ private def crossListRepeat? (operands : List (ResolvedFieldEntityOperand model)
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-entity-list-sole-operand-arity)). -/
 def elaborateTokenEntityValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
-    (authored : SurfaceTokenEntityValueListSource) (writtenGroup : GroupPath := declaringGroup) :
+    (authored : SurfaceTokenEntityValueListSource) (writtenGroup : GroupPath := declaringGroup)
+    (targetGroup? : Option GroupPath := none) :
     Except TokenEntityValueListElabError
       (CheckedTokenEntityValueListSource model) := do
-  let fieldsShape? := elaborateFieldEntityShape model declaringGroup authored.fields .soleAllowed
-    (writtenGroup := writtenGroup)
-  let valuesShape? := elaborateFieldEntityShape model declaringGroup authored.values .soleAllowed
-    (writtenGroup := writtenGroup)
+  let fieldsShape? := elaborateFieldEntityShapeIn model declaringGroup
+    (targetGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored.fields .soleAllowed targetGroup?
+    (writtenGroup := targetGroup?.getD writtenGroup)
+  let valuesShape? := elaborateFieldEntityShapeIn model declaringGroup
+    (targetGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored.values .soleAllowed targetGroup?
+    (writtenGroup := targetGroup?.getD writtenGroup)
   if let .error error := fieldsShape? then
     if error.isOperandRead then throw (.fields (.shape error))
   if let .error error := valuesShape? then

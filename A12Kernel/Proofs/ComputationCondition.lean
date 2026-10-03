@@ -318,7 +318,7 @@ theorem expandCommonPrecondition_preserves_operations
       commonPrecondition alternatives).map (fun alternative => alternative.operation) =
         alternatives.map (fun alternative => alternative.operation) := by
   cases commonPrecondition <;>
-    simp [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon]
+    simp [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon]
 
 /-- A holding common precondition leaves the existing first-match result unchanged for every alternative table. -/
 theorem alternativeSelection_holdingCommon_preserves
@@ -336,16 +336,16 @@ theorem alternativeSelection_holdingCommon_preserves
       | mk precondition operation =>
           cases precondition with
           | none =>
-              simp [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
+              simp [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon,
                 ComputationAlternative.selectFirst_cons, commonHolds]
           | some guard =>
-              simp only [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
+              simp only [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon,
                 List.map_cons, ComputationAlternative.selectFirst_cons,
                 ComputationCondition.eval_and, commonHolds]
               cases headResult : guard.eval context with
               | holds => rfl
               | notTrue =>
-                  simpa [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon] using
+                  simpa [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon] using
                     inductionHypothesis
               | poison cause => rfl
 
@@ -363,11 +363,11 @@ theorem alternativeSelection_notTrueCommon_noMatch
       cases head with
       | mk precondition operation =>
           cases precondition <;>
-            simp only [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
+            simp only [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon,
               List.map_cons, ComputationAlternative.selectFirst_cons,
               ComputationCondition.eval_and, commonNotTrue]
           all_goals
-            simpa [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon] using
+            simpa [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon] using
               inductionHypothesis
 
 /-- On a nonempty table, a poisoned common precondition aborts at the first expanded guard before its alternative-specific guard can contribute. -/
@@ -383,7 +383,7 @@ theorem alternativeSelection_poisonedCommon_aborts
   cases head with
   | mk precondition operation =>
       cases precondition <;>
-        simp [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
+        simp [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon,
           ComputationAlternative.selectFirst_cons, ComputationCondition.eval_and,
           commonPoison]
 
@@ -402,15 +402,15 @@ theorem checkedAlternativeSelection_holdingCommon_preserves
       | mk precondition operation =>
           cases precondition with
           | none => simp [ComputationAlternative.expandCommonPrecondition,
-              ComputationCondition.withCommon, ComputationAlternative.selectFirstChecked_cons, commonHolds]
+              ComputationCondition.withCommon, ComputationConditionOf.withCommon, ComputationAlternative.selectFirstChecked_cons, commonHolds]
           | some guard =>
               simp only [ComputationAlternative.expandCommonPrecondition, List.map_cons,
-                ComputationCondition.withCommon, ComputationAlternative.selectFirstChecked_cons,
+                ComputationCondition.withCommon, ComputationConditionOf.withCommon, ComputationAlternative.selectFirstChecked_cons,
                 ComputationCondition.evalChecked_and, commonHolds]
               cases h : guard.evalChecked context with
               | error error => rfl
               | ok result =>
-                  cases result <;> simp_all [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon]
+                  cases result <;> simp_all [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon]
 
 /-- A checked false common guard prevents every alternative guard from being read. -/
 theorem checkedAlternativeSelection_notTrueCommon_noMatch
@@ -425,7 +425,7 @@ theorem checkedAlternativeSelection_notTrueCommon_noMatch
       cases head with
       | mk precondition operation =>
           cases precondition <;>
-            simpa [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
+            simpa [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon,
               ComputationAlternative.selectFirstChecked_cons, ComputationCondition.evalChecked_and,
               commonNotTrue] using ih
 
@@ -440,7 +440,7 @@ theorem checkedAlternativeSelection_poisonedCommon_aborts
   cases head with
   | mk precondition operation =>
       cases precondition <;> simp [ComputationAlternative.expandCommonPrecondition,
-        ComputationCondition.withCommon, ComputationAlternative.selectFirstChecked_cons,
+        ComputationCondition.withCommon, ComputationConditionOf.withCommon, ComputationAlternative.selectFirstChecked_cons,
         ComputationCondition.evalChecked_and, commonPoison]
 
 end A12Kernel

@@ -22,7 +22,7 @@ private def plusOne : AuthoredNumericExpr SurfaceNumericAtom :=
 private def divideByZero : AuthoredNumericExpr SurfaceNumericAtom :=
   .binary .divide input (literal 0)
 
-private def row? (guard : ComputationCondition)
+private def row? (guard : (CheckedComputationCondition model))
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (suppressExactScaleWarning : Bool := false) :=
   (checkIsolatedParallelNumericExpressionRunWithGuard
@@ -42,7 +42,7 @@ private def secondTargetModel : FlatModel := {
 
 private def secondModelRow? (target : FieldId)
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
-    (guard : ComputationCondition) :=
+    (guard : CheckedComputationCondition secondTargetModel) :=
   (checkIsolatedParallelNumericExpressionRunWithGuard
     secondTargetModel ["Plan"] target inputPath expression
       (some guard)).toOption

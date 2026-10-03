@@ -1,0 +1,33 @@
+{
+  "model": "TemporalDisposition_DM.json",
+  "clock": "2026-10-02T00:00:00Z",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "seeded",
+      "documentInline": {
+        "G": {
+          "Gap": "2020-01-01T00:00:00",
+          "Ordinary": "2020-01-01T00:00:00",
+          "ShiftGap": "2020-01-01T00:00:00",
+          "ShiftOrdinary": "2020-01-01T00:00:00",
+          "DateGap": "2020-01-01",
+          "TimeGap": "00:00:00",
+          "NestedGap": "2020-01-01T00:00:00",
+          "Dependent": "2020-01-01T00:00:00"
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "G": {}
+      }
+    }
+  ]
+}

@@ -102,7 +102,7 @@ private theorem scalarComputationRun_executeSteps_noDocument
             subst added
             cases step with
             | string table =>
-                cases result : table.evaluateCompletion patterns (run.stringContext state input) <;>
+                cases result : table.evaluateCompletion patterns (run.stringContext state input) (run.numberContext world state input) <;>
                   simp [CheckedScalarComputationRun.evaluateStep, result] at evaluation
                 subst evaluation
                 simp

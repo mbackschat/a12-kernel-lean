@@ -50,7 +50,7 @@ def operandRoutes : CheckedParallelNumericStep model → List (CheckedParallelNu
   | .single operation => operation.operandRoutes
   | .alternatives table => table.operandRoutes
 
-def protectionConditions (step : CheckedParallelNumericStep model) : List (Option ComputationCondition) :=
+def protectionConditions (step : CheckedParallelNumericStep model) : List (Option (CheckedComputationCondition model)) :=
   step.operations.map (·.precondition)
 
 /-- Index columns participate statically even when a guard prevents the numeric read (spec/07 §2). -/

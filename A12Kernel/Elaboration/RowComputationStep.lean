@@ -57,7 +57,7 @@ structure CheckedRowComputationStep (model : FlatModel) (compilePattern : String
   family : DocumentTargetFamily
   operationReferencesField : FieldId → Bool
   excludesTarget : operationReferencesField target = false
-  protectionConditions : List (Option ComputationCondition) := [none]
+  protectionConditions : List (Option (CheckedComputationCondition model)) := [none]
   run : World → PreparedFlatStringPatterns model compilePattern → CheckedDocument model →
     Except RowComputationStepFault (List (CellAddr × DocumentTargetOutcome × CheckedCell))
 
@@ -79,7 +79,7 @@ private def checked? (target : FieldId) (family : DocumentTargetFamily) (reads :
     (run : ∀ compilePattern, World → PreparedFlatStringPatterns model compilePattern →
       CheckedDocument model →
       Except RowComputationStepFault (List (CellAddr × DocumentTargetOutcome × CheckedCell)))
-    (guards : List (Option ComputationCondition) := [none]) :
+    (guards : List (Option (CheckedComputationCondition model)) := [none]) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
   if h : reads target = false then
     some fun compilePattern =>

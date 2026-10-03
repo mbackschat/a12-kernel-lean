@@ -57,7 +57,7 @@ private def sum? (target : FieldId) (field : String) : Option (CheckedNumericCom
     (.atom (.aggregate .sum { first := .star (nestedStar field), rest := [] }))).toOption
   let table ← (certifyNumericComputationTable
     [({ precondition := none, operation } :
-      ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
+      CheckedComputationAlternative model (CheckedNumericTargetComputationOperation model))]).toOption
   pure table
 
 private def copy? : Option (CheckedNumericComputationTable model) :=

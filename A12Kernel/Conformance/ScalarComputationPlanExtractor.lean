@@ -68,7 +68,7 @@ private def entities (first second : String) : SurfaceFieldEntitySource :=
 
 private def one : DecodedNumericLiteral := { value := 1, authoredScale := 0 }
 
-private def numberStep? (target : String) (guard : Option ComputationCondition)
+private def numberStep? (target : String) (guard : Option (CheckedComputationCondition model))
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
     Option (CheckedScalarComputationStep model) :=
   (elaborateCompleteNumericTargetComputationTable model ["Xj"] (idOf target)
@@ -169,6 +169,7 @@ private def reported : List String :=
   (["TT", "DD", "MX", "MY", "SF", "QF"].flatMap fun target => ["K" ++ target, "KN" ++ target])
 
 private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
+  | .document _ (.valueError _) => none
   | .number target (.accepted value) => some (target, toString value.unscaled)
   | .number target .noValue | .number target (.inheritedPoison _) => some (target, "-")
   | .document target (.dateTime (.accepted stored)) | .document target (.time (.accepted stored))

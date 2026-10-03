@@ -16,7 +16,7 @@ private def literalOperation (value : Int) :
     (.literal { value, authoredScale := 0 })
 
 private def overlappingTable? : Option (GeneratedComputationTable
-    (CheckedNumericComputationOperation model)) := do
+    (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) := do
   let first ← (literalOperation 1).toOption
   let second ← (literalOperation 2).toOption
   pure {
@@ -29,9 +29,9 @@ private def overlappingTable? : Option (GeneratedComputationTable
     messagePlan
   }
 
-private def singletonTable? (precondition : Option ComputationCondition := none) :
+private def singletonTable? (precondition : Option (CheckedComputationCondition model) := none) :
     Option (GeneratedComputationTable
-      (CheckedNumericComputationOperation model)) := do
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) := do
   let operation ← (literalOperation 1).toOption
   pure {
     targetField := target.id
@@ -70,7 +70,7 @@ private structure Observation where
   deriving Repr, DecidableEq
 
 private def observe? (table : GeneratedComputationTable
-    (CheckedNumericComputationOperation model))
+    (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (sourceGate sourceTarget destinationGate destinationTarget : Option Int) :
     Option Observation := do
   let source ← document? sourceGate sourceTarget
@@ -145,7 +145,7 @@ private def crossGroupPrepared : PreparedFlatStringContext crossGroupModel
     crossGroupModel).toOption.get (by native_decide)
 
 private def crossGroupNumberTable? : Option (GeneratedComputationTable
-    (CheckedNumericComputationOperation crossGroupModel)) := do
+    (CheckedNumericComputationOperation crossGroupModel) (CheckedComputationCondition crossGroupModel)) := do
   let operation ← crossGroupNumberOperation.toOption
   pure {
     targetField := crossGroupTarget.id
@@ -187,7 +187,7 @@ example : destinationOperandResult? = some (
   native_decide
 
 private def clockTable? : Option (GeneratedComputationTable
-    (CheckedNumericComputationOperation crossGroupModel)) := do
+    (CheckedNumericComputationOperation crossGroupModel) (CheckedComputationCondition crossGroupModel)) := do
   let operation ← crossGroupNowDifferenceOperation.toOption
   pure {
     targetField := crossGroupTarget.id

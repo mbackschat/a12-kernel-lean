@@ -83,28 +83,36 @@ theorem implicitGroupProtection_preserved (model : FlatModel) (target : FieldId)
     model.computationProtectsGroup target queriedGroup groupLeaf conditions = true := by
   simp [FlatModel.computationProtectsGroup, resolved, ownedGroup, implicitProtection]
 
-/-- Self-dependency is exactly the static target ban, independently of producer protection. -/
-@[simp] theorem computationCondition_requires_own (condition : ComputationCondition)
+/-- Self-dependency is exactly the static target ban for every typed leaf family. -/
+theorem computationConditionOf_requires_own (condition : ComputationConditionOf Atom Predicate)
+    (references : Atom → FieldId → Bool) (predicateReferences : Predicate → FieldId → Bool)
     (target : FieldId) (producerProtected : ResolvedGroupReference → Bool) :
-    condition.requiresProducer target target producerProtected = condition.forbidsTarget target := by
+    ComputationConditionOf.requiresProducerWith condition references predicateReferences
+      target target producerProtected =
+      ComputationConditionOf.forbidsTargetWith condition references predicateReferences target := by
   induction condition with
   | leaf leaf =>
       cases leaf with
       | groupPresence operator source =>
-          cases operator with
-          | filled =>
-              simp [ComputationCondition.requiresProducer, ComputationCondition.forbidsTarget,
-                ComputationGroupDependency.requiresProducer]
-          | notFilled =>
-              simp [ComputationCondition.requiresProducer, ComputationCondition.forbidsTarget,
-                ComputationCondition.referencesField, ComputationGroupDependency.requiresProducer]
+          cases operator <;>
+            simp [ComputationConditionOf.requiresProducerWith,
+              ComputationConditionOf.forbidsTargetWith,
+              ComputationConditionOf.referencesFieldWith, ConditionTree.anyLeaf,
+              ComputationGroupDependency.requiresProducer]
       | _ => rfl
   | and left right leftIH rightIH | or left right leftIH rightIH =>
-      simp [ComputationCondition.requiresProducer, ComputationCondition.forbidsTarget, leftIH, rightIH]
+      simp only [ComputationConditionOf.requiresProducerWith,
+        ComputationConditionOf.forbidsTargetWith, leftIH, rightIH]
+
+/-- The legacy condition is a specialization of the same structural dependency invariant. -/
+@[simp] theorem computationCondition_requires_own (condition : ComputationCondition)
+    (target : FieldId) (producerProtected : ResolvedGroupReference → Bool) :
+    condition.requiresProducer target target producerProtected = condition.forbidsTarget target :=
+  computationConditionOf_requires_own condition _ _ target producerProtected
 
 /-- Reordering computations cannot change a producer's syntactic group profile. -/
 theorem computationProducerProtection_perm (model : FlatModel) (targetOf : Step → FieldId)
-    (conditionsOf : Step → List (Option ComputationCondition)) {left right : List Step}
+    (conditionsOf : Step → List (Option (ComputationConditionOf Atom Predicate))) {left right : List Step}
     (permuted : left.Perm right) (producer : FieldId) (reference : ResolvedGroupReference) :
     computationProducerProtection model targetOf conditionsOf left producer reference =
       computationProducerProtection model targetOf conditionsOf right producer reference := by

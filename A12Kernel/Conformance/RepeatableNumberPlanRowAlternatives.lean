@@ -58,7 +58,7 @@ private def bare (field : String) : SurfaceFieldPath :=
 private def read (field : String) : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.field (bare field))
 
-private def table (alternatives : List (Option ComputationCondition × String)) :
+private def table (alternatives : List (Option (CheckedComputationCondition model) × String)) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
   elaborateNumericTargetComputationTable model rowsPath rtId
     (alternatives.map fun (precondition, source) => (precondition, read source)) (targetScope := .row)

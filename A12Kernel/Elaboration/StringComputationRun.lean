@@ -34,7 +34,7 @@ def outcomes (state : StringComputationRunState) :
 end StringComputationRunState
 
 inductive StringComputationRunFault where
-  | evaluation (target : FieldId) (fault : StringComputationFault)
+  | evaluation (target : FieldId) (fault : CheckedStringComputationFault)
   | dependency (target : FieldId) (fault : StringDependencyFault)
   deriving Repr, DecidableEq
 
@@ -51,14 +51,15 @@ namespace CheckedStringComputationTable
 /-- Evaluate one checked String table against an explicit context and retain the dependency cell required by any later step. Homogeneous and heterogeneous runs share this atomic boundary. -/
 def evaluateCompletion (table : CheckedStringComputationTable model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
-    (context : StringComputationContext) :
+    (context : StringComputationContext)
+    (guardContext : ScalarComputationContext) :
     Except StringComputationRunFault StringComputationRunCompletion :=
   match patterns.targetMatcher? table.targetField with
   | none =>
       .error (.evaluation table.targetField
-        (.targetPatternUnavailable table.targetField))
+        (.operation (.targetPatternUnavailable table.targetField)))
   | some matcher =>
-      match table.evaluateOutcomeWithPattern matcher context with
+      match table.evaluateOutcomeWithPattern matcher context guardContext with
       | .error fault => .error (.evaluation table.targetField fault)
       | .ok outcome =>
           match StringDependencyCell.ofOutcome outcome with
@@ -84,13 +85,25 @@ def readPolicy (run : CheckedStringComputationRun model)
         | none => StringDependencyCell.empty.checked)
     else none
 
+/-- Guards read declaration-typed cells, while String operations keep their rendered-value view.
+Both views hide the same pending targets and expose the same completed String outcomes. -/
+def guardReadPolicy (run : CheckedStringComputationRun model)
+    (state : StringComputationRunState) (input : CheckedDocument model) :
+    ScalarComputationContext :=
+  input.computationContext.withFixedOverlay fun field =>
+    if run.targetFields.contains field then
+      some (match state.find? field with
+        | some completion => completion.dependencyCell.checked
+        | none => StringDependencyCell.empty.checked)
+    else none
+
 /-- Evaluate one checked table through the current run overlay and retain the exact dependency cell required by a later step. This is the shared atomic step for fixed execution and the independent relation. -/
 def evaluateTable (run : CheckedStringComputationRun model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model) (state : StringComputationRunState)
     (table : CheckedStringComputationTable model) :
     Except StringComputationRunFault StringComputationRunCompletion :=
-  table.evaluateCompletion patterns (run.readPolicy state input)
+  table.evaluateCompletion patterns (run.readPolicy state input) (run.guardReadPolicy state input)
 
 /-- Execute an explicitly supplied suffix with the same checked run read policy. The public suffix form is the induction boundary for the run relation; `execute` is its only whole-plan entry point. -/
 def executeTables (run : CheckedStringComputationRun model)

@@ -11,7 +11,7 @@ namespace A12Kernel
 /-- Every present checked-row guard is a model-admitted direct-presence condition. -/
 theorem checkedStringComputationAlternative_guard_wellFormed
     (alternative : CheckedStringComputationAlternative model target) :
-    alternative.precondition.all (·.wellFormedBool model) = true :=
+    alternative.precondition.all (·.wellFormedBool) = true :=
   alternative.guardWellFormed
 
 /-- Every present checked-row guard excludes its own target before evaluation. -/
@@ -29,9 +29,10 @@ theorem checkedStringComputationAlternative_expression_excludes_target
 /-- Table evaluation erases certificates and delegates to the established resolved first-match evaluator without rebuilding selection. -/
 theorem checkedStringComputationTable_evaluateOutcome_erases
     (table : CheckedStringComputationTable model)
-    (wholeValueMatches? : Option (String → Bool)) (context : StringComputationContext) :
-    table.evaluateOutcomeWithPattern wholeValueMatches? context =
-      (table.toResolved .empty).evaluateOutcomeWithPattern wholeValueMatches? context := by
+    (wholeValueMatches? : Option (String → Bool)) (context : StringComputationContext) (guardContext : ScalarComputationContext) :
+    table.evaluateOutcomeWithPattern wholeValueMatches? context guardContext =
+      (table.toResolved .empty).evaluateOutcomeWithGuard
+        (fun condition => condition.evalChecked guardContext) .guard .operation wholeValueMatches? context := by
   rfl
 
 end A12Kernel

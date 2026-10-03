@@ -28,7 +28,7 @@ theorem checkedParallelNumericAlternativeTable_excludes_target
 theorem parallelNumericAlternativeTable_noMatch
     (table : CheckedParallelNumericAlternativeTable model)
     (context : ScalarComputationContext)
-    (selection : ComputationAlternative.selectFirstChecked
+    (selection : CheckedComputationAlternative.selectFirstChecked
       table.selectableAlternatives context = .ok .noMatch) :
     table.evaluate context = .ok .noValue := by
   simp [CheckedParallelNumericAlternativeTable.evaluate, selection, bind, Except.bind, Except.mapError]
@@ -36,7 +36,7 @@ theorem parallelNumericAlternativeTable_noMatch
 theorem parallelNumericAlternativeTable_guardPoison
     (table : CheckedParallelNumericAlternativeTable model)
     (context : ScalarComputationContext) (cause : FormalCause)
-    (selection : ComputationAlternative.selectFirstChecked
+    (selection : CheckedComputationAlternative.selectFirstChecked
       table.selectableAlternatives context = .ok (.poison cause)) :
     table.evaluate context = .ok (.inheritedPoison cause) := by
   simp [CheckedParallelNumericAlternativeTable.evaluate, selection, bind, Except.bind, Except.mapError]
@@ -45,7 +45,7 @@ theorem parallelNumericAlternativeTable_selected
     (table : CheckedParallelNumericAlternativeTable model)
     (context : ScalarComputationContext)
     (operation : CheckedIsolatedParallelNumericDirectRun model)
-    (selection : ComputationAlternative.selectFirstChecked
+    (selection : CheckedComputationAlternative.selectFirstChecked
       table.selectableAlternatives context = .ok (.selected operation)) :
     table.evaluate context = operation.evaluateSelected context := by
   simp [CheckedParallelNumericAlternativeTable.evaluate, selection, bind, Except.bind, Except.mapError]

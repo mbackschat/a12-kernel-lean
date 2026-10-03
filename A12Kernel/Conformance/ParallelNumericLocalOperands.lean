@@ -14,7 +14,7 @@ private def peerPath : SurfaceFieldPath := {
   base := .absolute, groups := ["Plan", "Frame", "Target"], field := "Peer" }
 private def expression : AuthoredNumericExpr SurfaceNumericAtom :=
   .binary .add (.atom (.field operandPath)) (.atom (.field peerPath))
-private def operation (guard : Option ComputationCondition := none) :=
+private def operation (guard : Option (CheckedComputationCondition model) := none) :=
   (checkIsolatedParallelNumericExpressionRunWithGuard model ["Plan"] 2
     operandPath expression guard).toOption
 private def peerCell (path : List Nat) (value : Int) : ClassifiedCellInput := {
@@ -24,7 +24,7 @@ private def cells : List ClassifiedCellInput := cleanIndexCells ++ [
   operandNumericCell [1] { unscaled := 10, scale := 0 },
   operandNumericCell [2] { unscaled := 20, scale := 0 },
   peerCell [1, 1] 1, peerCell [1, 2] 2, peerCell [2, 1] 3]
-private def outcomes (guard : Option ComputationCondition := none)
+private def outcomes (guard : Option (CheckedComputationCondition model) := none)
     (input : List ClassifiedCellInput := cells) : Option (List NumericTargetOutcome) := do
   let checked ← operation guard
   let preliminary ← preliminaryFor input

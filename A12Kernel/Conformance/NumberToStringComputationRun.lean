@@ -55,7 +55,7 @@ private def divisionByZero : AuthoredNumericExpr SurfaceNumericAtom :=
   .binary .divide (literal 1) (literal 0)
 
 private def numberTable? (expression : AuthoredNumericExpr SurfaceNumericAtom)
-    (guard : ComputationCondition := .fieldNotFilled gateId) :
+    (guard : (CheckedComputationCondition model) := .fieldNotFilled gateId) :
     Option (CheckedNumericComputationTable model) := do
   let operation ← (elaborateNumericTargetComputationOperation
     model ["Form"] producerId expression true).toOption
@@ -67,12 +67,12 @@ private def stringOperation? (expression : StringExpr SurfaceFieldPath) :
     model ["Form"] consumerId expression).toOption
 
 private def stringTable? (rows : List
-    (ComputationCondition × StringExpr SurfaceFieldPath)) :
+    ((CheckedComputationCondition model) × StringExpr SurfaceFieldPath)) :
     Option (CheckedStringComputationTable model) := do
   let alternatives ← rows.mapM fun (guard, expression) => do
     let operation ← stringOperation? expression
     pure ({ precondition := guard, operation } :
-      ComputationAlternative (CheckedStringComputationOperation model))
+      CheckedComputationAlternative model (CheckedStringComputationOperation model))
   (certifyStringComputationTable alternatives).toOption
 
 private def producerValue :=

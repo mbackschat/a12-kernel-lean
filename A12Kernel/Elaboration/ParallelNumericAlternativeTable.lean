@@ -17,7 +17,7 @@ inductive ParallelNumericAlternativeTableError where
 structure CheckedParallelNumericAlternative (model : FlatModel)
     (target : FieldId) where
   operation : CheckedIsolatedParallelNumericDirectRun model
-  precondition : ComputationCondition
+  precondition : CheckedComputationCondition model
   preconditionOwned : operation.precondition = some precondition
   targetMatches : operation.route.targetField = target
 
@@ -25,7 +25,7 @@ namespace CheckedParallelNumericAlternative
 
 def toSelectable
     (alternative : CheckedParallelNumericAlternative model target) :
-    ComputationAlternative
+    CheckedComputationAlternative model
       (CheckedIsolatedParallelNumericDirectRun model) where
   precondition := alternative.precondition
   operation := alternative.operation
@@ -87,7 +87,7 @@ def alternatives
 
 def selectableAlternatives
     (table : CheckedParallelNumericAlternativeTable model) :
-    List (ComputationAlternative
+    List (CheckedComputationAlternative model
       (CheckedIsolatedParallelNumericDirectRun model)) :=
   table.alternatives.map (·.toSelectable)
 
@@ -103,7 +103,7 @@ def evaluate (table : CheckedParallelNumericAlternativeTable model)
     (context : ScalarComputationContext) :
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
       NumericTargetOutcome := do
-  match ← (ComputationAlternative.selectFirstChecked
+  match ← (CheckedComputationAlternative.selectFirstChecked
       table.selectableAlternatives context).mapError .guard with
   | .noMatch => .ok .noValue
   | .poison cause => .ok (.inheritedPoison cause)

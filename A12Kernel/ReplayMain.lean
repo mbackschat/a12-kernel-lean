@@ -9,6 +9,8 @@ import A12Kernel.Reference.Dm.ReaderLocks
 import A12Kernel.Reference.Dm.NegateLocks
 import A12Kernel.Reference.Dm.LowerLocks
 import A12Kernel.Reference.Dm.ComputationGuardLocks
+import A12Kernel.Reference.Dm.ComputationPredicateGuardLocks
+import A12Kernel.Reference.Dm.TemporalExpressionLocks
 import A12Kernel.Reference.Dm.NumericCountLocks
 import A12Kernel.Reference.Dm.DistinctCountLocks
 import A12Kernel.Reference.Dm.DateLiteralLocks

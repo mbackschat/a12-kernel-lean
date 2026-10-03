@@ -1,7 +1,7 @@
 import A12Kernel.Elaboration.RepeatableStringConstantComputation
 import A12Kernel.Elaboration.AddressedEnumerationComputation
 import A12Kernel.Elaboration.DocumentComputationStep
-import A12Kernel.Elaboration.ComputationCondition
+import A12Kernel.Elaboration.ComputationNumericGuard
 
 /-! # Checked alternatives at a repeatable non-Number target
 
@@ -47,16 +47,16 @@ inductive RowComputationTableError where
 structure CheckedRowComputationAlternative (model : FlatModel) (target : FieldId)
     (scope : List RepeatableLevel) (family : DocumentTargetFamily) where
   operation : CheckedRowComputationOperation model
-  precondition : Option ComputationCondition
+  precondition : Option (CheckedComputationCondition model)
   sameTarget : operation.target = target
   sameScope : operation.scope = scope
   sameFamily : operation.family = family
-  guardBound : precondition.all (·.rowBoundBool model scope) = true
+  guardBound : precondition.all (·.rowBoundBool scope) = true
   guardExcludesTarget : precondition.any (·.forbidsTarget target) = false
 
 def CheckedRowComputationAlternative.toResolved
     (alternative : CheckedRowComputationAlternative model target scope family) :
-    ComputationAlternative (CheckedRowComputationOperation model) :=
+    CheckedComputationAlternative model (CheckedRowComputationOperation model) :=
   { operation := alternative.operation, precondition := alternative.precondition }
 
 /-- A nonempty row table keeps its target identity and each member's checked guard and operation. -/
@@ -68,15 +68,15 @@ structure CheckedRowComputationTable (model : FlatModel) where
   remaining : List (CheckedRowComputationAlternative model target scope family)
 
 private def certifyAlternative (target : FieldId) (scope : List RepeatableLevel)
-    (family : DocumentTargetFamily) (guardRequired : Bool) (common : Option ComputationCondition)
-    (alternative : ComputationAlternative (CheckedRowComputationOperation model)) (index : Nat) :
+    (family : DocumentTargetFamily) (guardRequired : Bool) (common : Option (CheckedComputationCondition model))
+    (alternative : CheckedComputationAlternative model (CheckedRowComputationOperation model)) (index : Nat) :
     Except RowComputationTableError (CheckedRowComputationAlternative model target scope family) := do
   if guardRequired && alternative.precondition.isNone then throw (.unguardedAlternative index)
   if hTarget : alternative.operation.target = target then
     if hScope : alternative.operation.scope = scope then
       if hFamily : alternative.operation.family = family then
-        let guard := ComputationCondition.withCommon common alternative.precondition
-        if hGuard : guard.all (·.rowBoundBool model scope) = true then
+        let guard := CheckedComputationCondition.withCommon common alternative.precondition
+        if hGuard : guard.all (·.rowBoundBool scope) = true then
           if hSelf : guard.any (·.forbidsTarget target) = false then
             pure {
               operation := alternative.operation, precondition := guard
@@ -91,8 +91,8 @@ private def certifyAlternative (target : FieldId) (scope : List RepeatableLevel)
 /-- Check own guardedness before combining the common condition, as the existing String and Number
 source tables do. Target-row binding and the target-read exemption use the shared guard owner. -/
 def certifyRowComputationTable
-    (alternatives : List (ComputationAlternative (CheckedRowComputationOperation model)))
-    (common : Option ComputationCondition := none) :
+    (alternatives : List (CheckedComputationAlternative model (CheckedRowComputationOperation model)))
+    (common : Option (CheckedComputationCondition model) := none) :
     Except RowComputationTableError (CheckedRowComputationTable model) := do
   let some prototype := alternatives.head? | throw .empty
   let target := prototype.operation.target
@@ -106,7 +106,7 @@ def certifyRowComputationTable
 inductive RowComputationTableFault where
   | rows (cause : ActualRowEnvironmentError)
   | environment (cause : EnvBindingError)
-  | guardBinding (cause : ComputationConditionError)
+  | guardBinding (cause : CheckedComputationConditionError)
   | targetPatternUnavailable (field : FieldId)
   | enumeration (cause : AddressedEnumerationComputationFault)
   | readBack (cause : DocumentComputationStepFault)
@@ -139,7 +139,7 @@ def alternatives (table : CheckedRowComputationTable model) :=
 def operationReferencesField (table : CheckedRowComputationTable model) (field : FieldId) : Bool :=
   table.alternatives.any (·.operation.referencesField field)
 
-def protectionConditions (table : CheckedRowComputationTable model) : List (Option ComputationCondition) :=
+def protectionConditions (table : CheckedRowComputationTable model) : List (Option (CheckedComputationCondition model)) :=
   table.alternatives.map (·.precondition)
 
 /-- Traverse the existing in-capacity row domain. An over-limit row clears without guard or operation
@@ -159,7 +159,7 @@ def execute (table : CheckedRowComputationTable model) (world : World)
       let context : ScalarComputationContext := {
         read := document.computationFillContext.read environment
         world := some world, row := environment, addressed := some document.computationFillContext }
-      match ← (ComputationAlternative.selectFirstChecked table.alternatives context).mapError .guardBinding with
+      match ← (CheckedComputationAlternative.selectFirstChecked table.alternatives context).mapError .guardBinding with
       | .noMatch => atRow environment family.noValue DocumentComputationReadBack.empty
       | .poison cause => atRow environment (family.poison cause) DocumentComputationReadBack.poison
       | .selected operation =>

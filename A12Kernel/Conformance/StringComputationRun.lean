@@ -56,17 +56,17 @@ private def operation? (target : FieldId) (expression : StringExpr SurfaceFieldP
     Option (CheckedStringComputationOperation model) :=
   (elaborateStringComputationOperation model ["Form"] target expression).toOption
 
-private def alternative (condition : ComputationCondition)
+private def alternative (condition : (CheckedComputationCondition model))
     (op : CheckedStringComputationOperation model) :
-    ComputationAlternative (CheckedStringComputationOperation model) :=
+    CheckedComputationAlternative model (CheckedStringComputationOperation model) :=
   { precondition := condition, operation := op }
 
 private def table? (alternatives : List
-    (ComputationAlternative (CheckedStringComputationOperation model))) :
+    (CheckedComputationAlternative model (CheckedStringComputationOperation model))) :
     Option (CheckedStringComputationTable model) :=
   (certifyStringComputationTable alternatives).toOption
 
-private def holding : ComputationCondition := .fieldNotFilled gate.id
+private def holding : (CheckedComputationCondition model) := .fieldNotFilled gate.id
 
 private inductive FixtureOperation
   | producerCopySource | producerValue | producerFallback | producerError | producerPoison

@@ -60,14 +60,14 @@ private def prepared : PreparedFlatStringContext model builtinStringPatternCompi
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
-private def numberStep? (target : FieldId) (guard : Option ComputationCondition)
+private def numberStep? (target : FieldId) (guard : Option (CheckedComputationCondition model))
     (expression : AuthoredNumericExpr SurfaceNumericAtom) :
     Option (CheckedScalarComputationStep model) := do
   let operation ← (elaborateNumericTargetComputationOperation
     model ["Join"] target expression).toOption
   let table ← (certifyNumericComputationTable
     [({ precondition := guard, operation } :
-      ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
+      CheckedComputationAlternative model (CheckedNumericTargetComputationOperation model))]).toOption
   pure (.number table)
 
 private def read (field : String) : AuthoredNumericExpr SurfaceNumericAtom :=
@@ -217,6 +217,7 @@ private def numericGuardResult (base : ClassifiedCellInput) : Option String := d
     op := .ordinary .greater
     left := .atom (.field (bare "P1"))
     right := .literal { value := 4, authoredScale := 0 } })).toOption
+  let guard ← (CheckedComputationCondition.ofLegacy model guard).toOption
   let consumer ← numberStep? hId (some guard) (read "Base3")
   let producer ← numberStep? p1Id none (read "Base1")
   let checkedPlan ← (certifyScalarComputationPlan [consumer, producer]).toOption
@@ -236,6 +237,7 @@ example : numericGuardResult (numberCell base1Id 7) = some "2" ∧
 private def textGuardJoinResult (source : String) : Option String := do
   let guard ← (model.elaborateComputationCondition ["Join"] ["Join"]
     (.text .equal (.direct (bare "Gate2")) (.inr "A"))).toOption
+  let guard ← (CheckedComputationCondition.ofLegacy model guard).toOption
   let consumer ← numberStep? hId (some guard) (read "Base3")
   let producer ← (elaborateStringComputationOperation model ["Join"] gate2Id
     (.field (bare "Gate1"))).toOption

@@ -64,7 +64,7 @@ def supportsScalarEvaluation : CheckedScalarComputationStep model → Bool
   | .string _ | .document _ => true
   | .number table => table.supportsScalarEvaluation
 
-def protectionConditions : CheckedScalarComputationStep model → List (Option ComputationCondition)
+def protectionConditions : CheckedScalarComputationStep model → List (Option (CheckedComputationCondition model))
   | .number table => table.protectionConditions
   | .string table => table.protectionConditions
   | .document step => step.protectionConditions
@@ -395,7 +395,7 @@ def evaluateStep (run : CheckedScalarComputationRun model)
       Except ScalarComputationRunFault ScalarComputationCompletion
   | .string table =>
       match table.evaluateCompletion patterns
-          (run.stringContext state input) with
+          (run.stringContext state input) (run.numberContext world state input) with
       | .ok completion => .ok (.string completion)
       | .error cause => .error (.string cause)
   | .number table =>

@@ -12,7 +12,7 @@ open A12Kernel.Conformance.GeneratedComputationValidation.Support.Repeatable
 open A12Kernel.Conformance.GeneratedComputationValidation.Support.CrossGroup
 
 private def formalInputTable? : Option (GeneratedComputationTable
-    (CheckedNumericComputationOperation crossGroupModel)) := do
+    (CheckedNumericComputationOperation crossGroupModel) (CheckedComputationCondition crossGroupModel)) := do
   let first ← crossGroupNumberOperation.toOption
   let second ← crossGroupDatePartOperation.toOption
   pure {
@@ -56,7 +56,7 @@ private def invalidCommonFormalInputError? :
     Option GeneratedNumericComputationFormalInputPlanError := do
   let table ← formalInputTable?
   match { table with
-      commonPrecondition := some (.fieldFilled 999) }.formalInputPlan with
+      commonPrecondition := some (CheckedComputationCondition.fieldFilled (model := crossGroupModel) 999) }.formalInputPlan with
   | .error error => some error
   | .ok _ => none
 
@@ -71,7 +71,7 @@ private def unsupportedCalendarOperation :
       (.field (absolutePath ["Input"] "StartDate"))))
 
 private def table? : Option (GeneratedComputationTable
-    (CheckedNumericComputationOperation crossGroupModel)) := do
+    (CheckedNumericComputationOperation crossGroupModel) (CheckedComputationCondition crossGroupModel)) := do
   let first ← unsupportedCalendarOperation.toOption
   let second ← crossGroupNumberOperation.toOption
   pure {
@@ -177,7 +177,7 @@ private def domainFailureOperation :
       (.literal { value := 0, authoredScale := 0 })) true
 
 private def domainFailureFirstTable? : Option (GeneratedComputationTable
-    (CheckedNumericComputationOperation crossGroupModel)) := do
+    (CheckedNumericComputationOperation crossGroupModel) (CheckedComputationCondition crossGroupModel)) := do
   let first ← domainFailureOperation.toOption
   let second ← crossGroupNumberOperation.toOption
   pure {
@@ -195,7 +195,7 @@ private def domainFailureFirstTable? : Option (GeneratedComputationTable
   }
 
 private def operationPoisonTable? : Option (GeneratedComputationTable
-    (CheckedNumericComputationOperation crossGroupModel)) := do
+    (CheckedNumericComputationOperation crossGroupModel) (CheckedComputationCondition crossGroupModel)) := do
   let first ← crossGroupNumberOperation.toOption
   let second ← crossGroupDatePartOperation.toOption
   pure {
@@ -229,7 +229,7 @@ private def invalidRuntimeCommonValidationError? :
     Option GeneratedComputationValidationError := do
   let table ← formalInputTable?
   match { table with
-      commonPrecondition := some (.fieldFilled 999) }.evaluateNumeric
+      commonPrecondition := some (CheckedComputationCondition.fieldFilled (model := crossGroupModel) 999) }.evaluateNumeric
         (generatedRuntimeContext (.parsed (.num 1))
           (.parsed (.num 7)) .empty .empty) with
   | .error (.validation error) => some error
@@ -279,7 +279,7 @@ private def policyBoundOperation : Except NumericComputationElabError
     (.atom (.field (absolutePath ["Input"] "PolicySource")))
 
 private def policyBoundTable? : Option (GeneratedComputationTable
-    (CheckedNumericComputationOperation policyBoundModel)) := do
+    (CheckedNumericComputationOperation policyBoundModel) (CheckedComputationCondition policyBoundModel)) := do
   let operation ← policyBoundOperation.toOption
   pure {
     targetField := policyBoundTarget.id
@@ -332,7 +332,7 @@ private def policyBoundTargetExecution? (source : StoredNumber)
   (table.executeNumericTargetResult evaluationWorld input).toOption
 
 private def policyBoundGuardedTable? : Option (GeneratedComputationTable
-    (CheckedNumericComputationOperation policyBoundModel)) := do
+    (CheckedNumericComputationOperation policyBoundModel) (CheckedComputationCondition policyBoundModel)) := do
   let table ← policyBoundTable?
   pure { table with
     commonPrecondition := some (.fieldFilled policyBoundSource.id) }

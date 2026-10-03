@@ -57,6 +57,7 @@ inductive CheckedNumericComputationAtom (model : FlatModel) where
 /-- Fail-closed faults outside the admitted numeric computation-expression fragment. -/
 inductive NumericComputationFault where
   | guardBinding (error : ComputationConditionError)
+  | unsupportedGuardPredicate
   | fieldFillSource (error : FieldFillListElabError)
   | fieldKindMismatch (field : FieldId)
   | unsupportedDateCalendar

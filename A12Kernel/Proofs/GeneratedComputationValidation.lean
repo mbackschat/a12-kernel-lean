@@ -12,44 +12,46 @@ namespace A12Kernel
 /-- Runtime activation no-match stays distinct from every evaluated numeric result. -/
 theorem generatedNumericComputationEvaluation_noMatch
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (context : ScalarComputationContext)
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (admitted : admitGeneratedNumericOperationTable model computation =
       .ok admission)
-    (selection : computation.selectFirstChecked context = .ok .noMatch) :
+    (selection : computation.selectFirstCheckedNumeric context = .ok .noMatch) :
     computation.evaluateNumeric context = .ok .noMatch := by
   simp [GeneratedComputationTable.evaluateNumeric, admitted,
     AdmittedGeneratedNumericOperationTable.evaluate,
-    AdmittedGeneratedNumericOperationTable.evaluateWith, selection]
+    AdmittedGeneratedNumericOperationTable.evaluateWith,
+      AdmittedGeneratedNumericOperationTable.evaluateSelection, selection]
   rfl
 
 /-- A poisoned generated-table guard stops before operation evaluation and retains its exact cause at the activation boundary. -/
 theorem generatedNumericComputationEvaluation_guardPoison
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (context : ScalarComputationContext)
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (cause : FormalCause)
     (admitted : admitGeneratedNumericOperationTable model computation =
       .ok admission)
-    (selection : computation.selectFirstChecked context = .ok (.poison cause)) :
+    (selection : computation.selectFirstCheckedNumeric context = .ok (.poison cause)) :
     computation.evaluateNumeric context = .ok (.guardPoison cause) := by
   simp [GeneratedComputationTable.evaluateNumeric, admitted,
     AdmittedGeneratedNumericOperationTable.evaluate,
-    AdmittedGeneratedNumericOperationTable.evaluateWith, selection]
+    AdmittedGeneratedNumericOperationTable.evaluateWith,
+      AdmittedGeneratedNumericOperationTable.evaluateSelection, selection]
   rfl
 
 /-- Once an operation is selected, runtime evaluation delegates exactly to that operation and never re-enters the alternative scan. -/
 theorem generatedNumericComputationEvaluation_selected
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (context : ScalarComputationContext)
     (operation : CheckedNumericComputationOperation model)
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (admitted : admitGeneratedNumericOperationTable model computation =
       .ok admission)
-    (selection : computation.selectFirstChecked context = .ok (.selected operation)) :
+    (selection : computation.selectFirstCheckedNumeric context = .ok (.selected operation)) :
     computation.evaluateNumeric context =
       ((operation.evaluate context).map
         (.evaluated operation.core.suppressExactScaleWarning)).mapError
@@ -57,23 +59,24 @@ theorem generatedNumericComputationEvaluation_selected
   cases result : operation.evaluate context <;>
     simp [GeneratedComputationTable.evaluateNumeric, admitted,
       AdmittedGeneratedNumericOperationTable.evaluate,
-      AdmittedGeneratedNumericOperationTable.evaluateWith, selection, result, bind, Except.bind, Except.mapError]
+      AdmittedGeneratedNumericOperationTable.evaluateWith,
+      AdmittedGeneratedNumericOperationTable.evaluateSelection, selection, result, bind, Except.bind, Except.mapError]
 
 /-- Addressed execution reuses the same first-selection decision and delegates only the selected operation to the complete direct/repeatable evaluator. -/
 theorem admittedGeneratedNumericOperationTable_evaluateIn_selected
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (context : NumericComputationEvaluationContext)
     (operation : CheckedNumericComputationOperation model)
     (admission : AdmittedGeneratedNumericOperationTable model computation)
-    (selection : computation.selectFirstChecked context.scalar = .ok (.selected operation)) :
+    (selection : computation.selectFirstCheckedNumericIn context = .ok (.selected operation)) :
     admission.evaluateIn context =
       ((operation.evaluateIn context).map
         (.evaluated operation.core.suppressExactScaleWarning)).mapError
           .operation := by
   cases result : operation.evaluateIn context <;>
     simp [AdmittedGeneratedNumericOperationTable.evaluateIn,
-      AdmittedGeneratedNumericOperationTable.evaluateWith, selection, result, bind, Except.bind, Except.mapError]
+      AdmittedGeneratedNumericOperationTable.evaluateSelection, selection, result, bind, Except.bind, Except.mapError]
 
 /-- Cleanly unselected generated computation completes as target no-value. -/
 theorem generatedNumericComputationTarget_noMatch
@@ -109,7 +112,7 @@ theorem generatedNumericComputationTarget_suppressed
 /-- Every admitted generated numeric table retains a resolved declaration and its exact target policy. -/
 theorem admittedGeneratedNumericOperationTable_targetPolicyOwned
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (admission : AdmittedGeneratedNumericOperationTable model computation) :
     model.resolveNonrepeatableDeclarationById computation.targetField =
         .ok admission.targetDeclaration ∧
@@ -120,7 +123,7 @@ theorem admittedGeneratedNumericOperationTable_targetPolicyOwned
 /-- Whole generated numeric target evaluation uses only the policy retained by successful table admission. -/
 theorem generatedNumericComputationTarget_usesDeclarationPolicy
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (context : ScalarComputationContext)
     (evaluation : GeneratedNumericComputationEvaluation)
     (admission : AdmittedGeneratedNumericOperationTable model computation)
@@ -135,7 +138,7 @@ theorem generatedNumericComputationTarget_usesDeclarationPolicy
 /-- Checked generated execution binds target completion and source-relative classification to the same immutable input and the admission-owned scalar target address. -/
 theorem admittedGeneratedNumericOperationTable_executeTargetResult_exact
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (world : World) (input : CheckedDocument model)
     (evaluation : GeneratedNumericComputationEvaluation)
@@ -154,7 +157,7 @@ theorem admittedGeneratedNumericOperationTable_executeTargetResult_exact
 /-- Caller-read addressed execution always keeps the generated target identity and immutable source placement, independently of which prepared source cells drive selection or operation evaluation. -/
 theorem admittedGeneratedNumericOperationTable_executeAddressedTargetResultWithRead_source_exact
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (world : World) (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
@@ -194,7 +197,7 @@ theorem admittedGeneratedNumericOperationTable_executeAddressedTargetResultWithR
 /-- Generated public-result construction delegates exactly to the established Number result projection after the target result has narrowed successfully. -/
 theorem admittedGeneratedNumericOperationTable_executeResult_exact
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (world : World) (input : CheckedDocument model)
     (payloadAt : CellAddr → Payload)
@@ -215,7 +218,7 @@ theorem admittedGeneratedNumericOperationTable_executeResult_exact
 /-- Static generated-table rejection stops the bounded applied-validation route before execution, destination application, or later validation can contribute an outcome. -/
 theorem generatedNumericAppliedValidation_admissionError
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (executionWorld validationWorld : World)
     (source destination : CheckedDocument model)
     (payloadAt : CellAddr → Payload)
@@ -233,7 +236,7 @@ theorem generatedNumericAppliedValidation_admissionError
 /-- Generated whole-call composition preserves the exact-address public result and the admitted plan's eager raw findings on success. -/
 theorem generatedNumericOperationTable_executeResultWithFormalInputs_exact
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (world : World) (input : CheckedDocument model)
     (inputPlan : CheckedComputationFormalInputPlan model)
@@ -258,7 +261,7 @@ theorem generatedNumericOperationTable_executeResultWithFormalInputs_exact
 /-- After generated preparation succeeds, any subsequent execution failure retains the exact eager raw findings beside the unchanged failure. -/
 theorem generatedNumericOperationTable_executeResultWithFormalInputs_failure_exact
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (world : World) (input : CheckedDocument model)
     (inputPlan : CheckedComputationFormalInputPlan model)
@@ -281,7 +284,7 @@ theorem generatedNumericOperationTable_executeResultWithFormalInputs_failure_exa
 /-- Successful application and later validation cannot alter the prepared execution result or its eager finding inventory. -/
 theorem generatedNumericFormalInputAppliedValidation_success_result_exact
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (executionWorld validationWorld : World)
     (source destination : CheckedDocument model)
@@ -315,7 +318,7 @@ theorem generatedNumericFormalInputAppliedValidation_success_result_exact
 /-- The generated numeric table inventory is exactly the validated model declarations referenced by its common guard, alternative guards, or checked operations. -/
 theorem generatedNumericOperationTable_fieldDependencies_exact
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (field : FieldId) :
     field ∈ computation.fieldDependencies ↔
       ∃ declaration ∈ model.fields,
@@ -459,7 +462,7 @@ theorem guardedGeneratedComputation_holdingCommon_firstHolds_selects
   simp [GuardedGeneratedComputationAlternatives.selectFirst,
     GuardedGeneratedComputationAlternatives.declaredAlternatives,
     GeneratedComputationAlternative.toComputationAlternative,
-    ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
+    ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon,
     ComputationAlternative.selectFirst_cons, ComputationCondition.eval_and,
     commonHolds, firstHolds]
 
@@ -484,7 +487,7 @@ theorem singleGeneratedComputation_holdingCommon_selects
       (some common) context =
       .selected alternative.operation := by
   simp [SingleGeneratedComputationAlternative.selectFirst, unconditional,
-    ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon,
+    ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon,
     ComputationAlternative.selectFirst_cons, commonHolds]
 
 /-- The minimum two-branch table is a left-to-right disjunction below the target-filled gate; no first-match decision occurs in this desugaring. -/

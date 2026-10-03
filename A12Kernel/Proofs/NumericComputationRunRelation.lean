@@ -66,7 +66,11 @@ theorem checkedNumericComputationTable_excludes_target
     (table : CheckedNumericComputationTable model)
     (producerProtected : FieldId → ResolvedGroupReference → Bool) :
     table.requiresProducer producerProtected table.targetField = false := by
-  simp [CheckedNumericComputationTable.requiresProducer, computationCondition_requires_own,
+  have requiresOwn (guard : CheckedComputationCondition model) :
+      guard.requiresProducer table.targetField table.targetField (producerProtected table.targetField) =
+        guard.forbidsTarget table.targetField :=
+    computationConditionOf_requires_own guard _ _ _ _
+  simp [CheckedNumericComputationTable.requiresProducer, requiresOwn,
     CheckedNumericComputationTable.selectableAlternatives,
     CheckedNumericComputationTable.checkedAlternatives,
     checkedNumericComputationAlternative_excludes_target]

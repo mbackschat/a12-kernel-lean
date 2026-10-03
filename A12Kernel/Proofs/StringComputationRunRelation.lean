@@ -15,7 +15,11 @@ theorem checkedStringComputationTable_excludes_target
     (table : CheckedStringComputationTable model)
     (producerProtected : FieldId → ResolvedGroupReference → Bool) :
     table.requiresProducer producerProtected table.targetField = false := by
-  simp only [CheckedStringComputationTable.requiresProducer, computationCondition_requires_own,
+  have requiresOwn (guard : CheckedComputationCondition model) :
+      guard.requiresProducer table.targetField table.targetField (producerProtected table.targetField) =
+        guard.forbidsTarget table.targetField :=
+    computationConditionOf_requires_own guard _ _ _ _
+  simp only [CheckedStringComputationTable.requiresProducer, requiresOwn,
     List.any_eq_false]
   intro alternative member
   have guardExcludes :
@@ -43,7 +47,7 @@ theorem stringComputationRun_evaluateTable_target
   | some targetMatcher =>
       cases outcome :
           table.evaluateOutcomeWithPattern targetMatcher
-            (run.readPolicy state input) with
+            (run.readPolicy state input) (run.guardReadPolicy state input) with
       | error fault =>
           simp [CheckedStringComputationRun.evaluateTable,
             CheckedStringComputationTable.evaluateCompletion,

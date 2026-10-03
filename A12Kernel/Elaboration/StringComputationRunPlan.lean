@@ -25,7 +25,7 @@ def referencesField (table : CheckedStringComputationTable model)
     (field : FieldId) : Bool :=
   table.selectableAlternatives.any (·.referencesField field)
 
-def protectionConditions (table : CheckedStringComputationTable model) : List (Option ComputationCondition) :=
+def protectionConditions (table : CheckedStringComputationTable model) : List (Option (CheckedComputationCondition model)) :=
   table.selectableAlternatives.map (·.precondition)
 
 def requiresProducer (table : CheckedStringComputationTable model)

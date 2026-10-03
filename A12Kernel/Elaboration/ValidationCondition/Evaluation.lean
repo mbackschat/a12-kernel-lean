@@ -18,7 +18,7 @@ def evalSelected (context : ValidationEvaluationContext)
     ValidationConditionLeaf model → Verdict
   | .flat condition => condition.evalSelected context.fields isRelevant
   | .scalarTemporal comparison =>
-      if comparison.fields.all (fun field => isRelevant field.id) then
+      if comparison.fieldIds.all isRelevant then
         comparison.eval context.fields
       else .unknown
   | .numeric _ comparison =>

@@ -342,4 +342,31 @@ example :
     (ComputationCondition.and (.fieldFilled 1) missingFillContext).evalChecked (numberContext .empty) =
       .ok .notTrue := by native_decide
 
+private def booleanComparison (confirm : Bool) (op : EqualityOp) : ComputationCondition :=
+  .leaf (.scalar (if confirm then .confirm op { id := 1 }
+    else .boolean op { id := 1 } true))
+
+example :
+    ([false, true].map fun confirm =>
+      (booleanComparison confirm .notEqual).evalChecked { read := fun _ => ({ rawPresent := false, parsed := none, findings := [] } : CheckedCell) }) =
+      [.ok .notTrue, .ok .holds] := by native_decide
+
+example :
+    let required : ScalarComputationContext := {
+      read := fun _ => { rawPresent := false, parsed := none, findings := [.required] } }
+    (booleanComparison true .notEqual).evalChecked required = .ok .holds ∧
+    (booleanComparison false .notEqual).evalChecked required = .ok .notTrue ∧
+    (booleanComparison true .notEqual).evalChecked { read := fun _ => (checkedBoolean (.rejected .malformed)) } =
+      .ok (.poison .malformed) := by
+  dsimp only
+  native_decide
+
+example :
+    let context : ScalarComputationContext := { read := fun _ => (checkedBoolean (.rejected .malformed)) }
+    (ComputationCondition.or (.fieldNotFilled 2) (booleanComparison true .equal)).evalChecked
+      { context with read := fun field => if field == 2 then ({ rawPresent := false, parsed := none, findings := [] } : CheckedCell) else context.read field } =
+      .ok .holds := by
+  dsimp only
+  native_decide
+
 end A12Kernel.Conformance.ComputationCondition

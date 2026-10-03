@@ -113,6 +113,7 @@ private def numericGuardTableOutcome (threshold : Rat) : Option FlatRuleOutcome 
   let guard : ComputationCondition := .leaf (.numeric {
     op := .ordinary .greater, left := .atom (.field source)
     right := .literal { value := threshold, authoredScale := 0 } })
+  let guard ← (CheckedComputationCondition.ofLegacy crossGroupModel guard).toOption
   let rule ← (assembleGeneratedNumericOperationTableRule crossGroupModel
     { table with commonPrecondition := some guard }).toOption
   evalValidationRule? crossGroupModel rule (crossGroupRaw 3 3)
@@ -130,6 +131,7 @@ private def emptyNumericGuardTableOutcome : Option FlatRuleOutcome := do
   let guard : ComputationCondition := .leaf (.numeric {
     op := .ordinary .equal, left := .atom (.field extra)
     right := .literal { value := 0, authoredScale := 0 } })
+  let guard ← (CheckedComputationCondition.ofLegacy crossGroupModel guard).toOption
   let rule ← (assembleGeneratedNumericOperationTableRule crossGroupModel
     { table with commonPrecondition := some guard }).toOption
   let raw : RawFlatContext := {

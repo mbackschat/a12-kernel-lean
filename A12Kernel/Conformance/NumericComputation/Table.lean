@@ -8,7 +8,7 @@ namespace A12Kernel.Conformance.NumericComputation.Table
 open A12Kernel
 open A12Kernel.Conformance.NumericComputation.Support
 
-private abbrev NumericRow := ComputationAlternative
+private abbrev NumericRow := CheckedComputationAlternative model
   (CheckedNumericTargetComputationOperation model)
 
 private def operation? (target : FieldId)
@@ -23,7 +23,7 @@ private def operationAt? (declaringGroup : GroupPath) (target : FieldId)
   (elaborateNumericTargetComputationOperation
     model declaringGroup target expression).toOption
 
-private def literalRow? (guard : ComputationCondition) (target : FieldId)
+private def literalRow? (guard : (CheckedComputationCondition model)) (target : FieldId)
     (value : Rat) : Option NumericRow := do
   let operation ← operation? target
     (.literal { value, authoredScale := 0 })
@@ -42,7 +42,7 @@ private def unguardedLiteralRow? (target : FieldId)
   }
 
 private def literalRowAt? (declaringGroup : GroupPath)
-    (guard : ComputationCondition) (target : FieldId)
+    (guard : (CheckedComputationCondition model)) (target : FieldId)
     (value : Rat) : Option NumericRow := do
   let operation ← operationAt? declaringGroup target
     (.literal { value, authoredScale := 0 })
@@ -51,7 +51,7 @@ private def literalRowAt? (declaringGroup : GroupPath)
     operation := operation
   }
 
-private def divisionRow? (guard : ComputationCondition) : Option NumericRow := do
+private def divisionRow? (guard : (CheckedComputationCondition model)) : Option NumericRow := do
   let operation ←
     (elaborateNumericTargetComputationOperation model ["Root"] targetId
     (.binary .divide
@@ -63,7 +63,7 @@ private def divisionRow? (guard : ComputationCondition) : Option NumericRow := d
     operation := operation
   }
 
-private def alteredPolicyRow? (guard : ComputationCondition) : Option NumericRow := do
+private def alteredPolicyRow? (guard : (CheckedComputationCondition model)) : Option NumericRow := do
   let operation ← operation? targetId
     (.literal { value := 3, authoredScale := 0 })
   let policy := { operation.policy with zeroAllowed := true }
@@ -197,7 +197,7 @@ private def fractionModel : FlatModel :=
 
 /-- The class a whole computation draws, or the refusal's arm where it projects none. -/
 private def tableClass
-    (alternatives : List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom))
+    (alternatives : List (Option (CheckedComputationCondition fractionModel) × AuthoredNumericExpr SurfaceNumericAtom))
     (suppress : Bool := false) : String :=
   match elaborateNumericTargetComputationTable fractionModel ["Root"] targetId alternatives
       suppress with
@@ -207,7 +207,7 @@ private def tableClass
 
 /-- A two-alternative computation guarded on `Source` and `Later`. -/
 private def computationClass (first second : AuthoredNumericExpr SurfaceNumericAtom)
-    (firstGuard : ComputationCondition := .fieldFilled sourceId) : String :=
+    (firstGuard : (CheckedComputationCondition fractionModel) := .fieldFilled sourceId) : String :=
   tableClass [(some firstGuard, first), (some (.fieldFilled laterId), second)]
 
 /- The Kernel asks every alternative's other gates before a read of the target, so a self-read in one
@@ -252,9 +252,9 @@ example :
     let later := surfaceField ["Root"] "Later"
     let frac := surfaceField ["Root"] "Frac"
     let two : AuthoredNumericExpr SurfaceNumericAtom := .literal { value := 2, authoredScale := 0 }
-    let g1 := some (ComputationCondition.fieldFilled sourceId)
-    let g2 := some (ComputationCondition.fieldFilled laterId)
-    let gT := some (ComputationCondition.fieldFilled targetId)
+    let g1 := some (CheckedComputationCondition.fieldFilled sourceId)
+    let g2 := some (CheckedComputationCondition.fieldFilled laterId)
+    let gT := some (CheckedComputationCondition.fieldFilled targetId)
     [tableClass [(none, target), (g2, source)], tableClass [(g1, source), (none, target)],
       tableClass [(none, .binary .multiply target two), (g2, source)],
       tableClass [(none, target), (none, source)], tableClass [(none, source), (g2, target)],
@@ -316,7 +316,7 @@ in either order, where the Kernel reports that guard's unresolved name; beside a
 the reference class (`settle2k.tsv` R01 to R03). -/
 example :
     let source := surfaceField ["Root"] "Source"
-    let unresolved := some (ComputationCondition.fieldFilled 999)
+    let unresolved := some (CheckedComputationCondition.fieldFilled 999)
     (elaborateNumericTargetComputationTable fractionModel ["Root"] targetId
         [(some (.fieldFilled targetId), source), (unresolved, source)] matches
       .error (.table (.guardNotAdmitted 2))) ∧
@@ -334,7 +334,7 @@ project. -/
 example :
     let source := surfaceField ["Root"] "Source"
     let frac := surfaceField ["Root"] "Frac"
-    let unresolved := some (ComputationCondition.fieldFilled 999)
+    let unresolved := some (CheckedComputationCondition.fieldFilled 999)
     tableClass [(unresolved, source), (some (.fieldFilled laterId), frac)] = "none:A12Kernel.NumericComputationTableElabError.table" ∧
       (elaborateNumericTargetComputationTable fractionModel ["Root"] targetId
           [(unresolved, source), (some (.fieldFilled laterId), frac)] matches
@@ -351,8 +351,8 @@ example :
     let source := surfaceField ["Root"] "Source"
     let later := surfaceField ["Root"] "Later"
     let frac := surfaceField ["Root"] "Frac"
-    let g1 := some (ComputationCondition.fieldFilled sourceId)
-    let g2 := some (ComputationCondition.fieldFilled laterId)
+    let g1 := some (CheckedComputationCondition.fieldFilled sourceId)
+    let g2 := some (CheckedComputationCondition.fieldFilled laterId)
     [tableClass [(g1, target), (g2, frac)] true, tableClass [(g1, frac), (g2, target)] true,
       tableClass [(g1, frac), (g2, .binary .divide (.binary .divide source later) source)] true,
       tableClass [(g1, frac), (g2, surfaceField ["Root"] "Nope")] true,
@@ -364,8 +364,8 @@ example :
   native_decide
 
 /-- The class a whole computation with a common precondition draws. -/
-private def commonClass (common : ComputationCondition)
-    (alternatives : List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom)) :
+private def commonClass (common : (CheckedComputationCondition fractionModel))
+    (alternatives : List (Option (CheckedComputationCondition fractionModel) × AuthoredNumericExpr SurfaceNumericAtom)) :
     String :=
   match elaborateNumericTargetComputationTable fractionModel ["Root"] targetId alternatives
       (commonPrecondition := some common) with
@@ -381,9 +381,9 @@ C11). -/
 example :
     let source := surfaceField ["Root"] "Source"
     let later := surfaceField ["Root"] "Later"
-    let g := some (ComputationCondition.fieldFilled laterId)
-    let ownTarget := ComputationCondition.fieldFilled targetId
-    let other := ComputationCondition.fieldFilled sourceId
+    let g := some (CheckedComputationCondition.fieldFilled laterId)
+    let ownTarget := CheckedComputationCondition.fieldFilled targetId
+    let other := CheckedComputationCondition.fieldFilled sourceId
     let selfRead := surfaceField ["Root"] "Target"
     [commonClass other [(none, source), (none, later)], commonClass ownTarget [(none, source), (none, later)],
       commonClass ownTarget [(none, selfRead), (none, later)],

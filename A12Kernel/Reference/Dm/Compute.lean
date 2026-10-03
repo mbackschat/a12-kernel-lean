@@ -4,6 +4,7 @@ import A12Kernel.Reference.Dm.LowerDocument
 import A12Kernel.Reference.Dm.LowerRows
 import A12Kernel.Elaboration.RepeatableNumberPlan
 import A12Kernel.Elaboration.MixedComputationPlan
+import A12Kernel.Elaboration.ComputationNumericGuard
 
 /-! # Running a DM model's computations over one document
 
@@ -37,12 +38,12 @@ private def guardTextField? : Expr → Option SurfaceTextFieldOperand
   | _ => none
 
 /-- Lower presence, numeric and text guards into the shared computation condition tree. Unsupported atoms remain explicit refusals during model resolution. -/
-partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool := false) : Expr → Lowering SurfaceComputationCondition
+partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool := false) : Expr → Lowering (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate)
   | .parens body => lowerGuard model group suppress body
   | .logic op (first :: rest) => do
       let join := match op with
-        | .and => SurfaceComputationCondition.and
-        | .or => SurfaceComputationCondition.or
+        | .and => SurfaceComputationConditionOf.and
+        | .or => SurfaceComputationConditionOf.or
       let mut result ← lowerGuard model group suppress first
       for part in rest do result := join result (← lowerGuard model group suppress part)
       pure result
@@ -58,9 +59,18 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
   | .call "GroupNotFilled" [.mk group none none] none none => match group.groupReference? with
       | some reference => pure (.groupPresence .notFilled reference)
       | none => refuse "Guard/GroupNotFilled" "group operand"
+  | .call id arguments (some values) none => do
+      let some quantifier := valueListQuantifier? id | refuse ("Guard/" ++ id)
+      let fields ← lowerEntitySource model group arguments
+      match values.mapM (fun | .mk (.string value) none none => some value | _ => none) with
+      | some literals => pure (.predicate (.tokenLiteralValueList { quantifier, fields, values := literals }))
+      | none => pure (.predicate (.entityValueList {
+          quantifier, fields, values := ← lowerEntitySource model group values }))
   | .call id arguments none none => match fieldFillOp? id with
       | some operator => .fieldFill operator <$> lowerEntitySource model group arguments
-      | none => refuse ("Guard/" ++ id)
+      | none => match groupQuantifier? id with
+          | some operator => .groupFill operator <$> lowerEntitySource model group arguments
+          | none => refuse ("Guard/" ++ id)
   | expression@(.compare op left right) =>
       let textPair := do
         let left ← guardTextField? left
@@ -68,10 +78,11 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
         let op ← op.toSurface?
         let declaration ← (model.resolveFieldDeclarationUnchecked group left.reference).toOption
         if declaration.toTextFieldComparison?.isSome || left.projectionRef != EnumerationProjectionRef.stored then
-          some (SurfaceComputationCondition.text op left (.inl right))
+          some (SurfaceComputationConditionOf.text op left (.inl right))
         else none
       let textSurface := textPair.orElse fun _ => (lowerFlat model group expression).bind fun
         | .compare op field (.string expected) => some (.text op (.direct field) (.inr expected))
+        | .compare op field (.boolean expected) => some (.boolean op field expected)
         | .compareEnumeration op field projection expected =>
             let source := match projection with
               | .stored => SurfaceTextFieldOperand.direct field
@@ -86,7 +97,13 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
         | _ => none
       match textSurface with
       | some surface => pure surface
-      | none => .numeric <$> lowerNumericComparison op left right suppress
+      | none => do
+          let some operator := op.toNumeric? | refuse "Comparison" "operator"
+          pure (.numeric {
+            op := operator
+            left := ← lowerNumericExpr (lowerComputationNumericAtom model group) left
+            right := ← lowerNumericExpr (lowerComputationNumericAtom model group) right
+            suppressExactScaleWarning := suppress })
   | other => refuse ("Guard/" ++ other.construct)
 
 /-- A String computation's operation: field reads, literals, `FieldValueAsString`, `RangeAsString`
@@ -142,17 +159,25 @@ def hasRefusedComputationTarget (language : Language) (model : FlatModel)
 tables judge an alternative's guardedness by its own guard alone. -/
 private def guards (language : Language) (model : FlatModel) (computation : DmComputation)
     (target : FlatFieldDecl) (suppress allowParallel : Bool) :
-    Lowering (Option ComputationCondition × List (Option ComputationCondition)) := do
-  let resolve (text : String) : Lowering ComputationCondition := do
+    Lowering (Option (CheckedComputationCondition model) × List (Option (CheckedComputationCondition model))) := do
+  let resolve (text : String) : Lowering (CheckedComputationCondition model) := do
     let guard := (← parsed language text).body
     if !guard.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
     let surface ← lowerGuard model computation.group suppress guard
-    match elaborated "Guard" (model.elaborateComputationCondition computation.group target.groupPath surface) with
+    match elaborated "Guard" (model.elaborateCheckedComputationCondition computation.group target.groupPath surface) with
     | .ok guard => pure guard
     | .error refusal =>
         if allowParallel && target.toNumberField?.isSome && !target.repeatableScope.isEmpty then
-          match model.resolveParallelPresenceCondition computation.group surface with
-          | .ok guard => pure guard
+          let rec presenceSurface : SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate →
+              Option SurfaceComputationCondition
+            | .fieldFilled field => some (.fieldFilled field)
+            | .fieldNotFilled field => some (.fieldNotFilled field)
+            | .and left right => do pure (.and (← presenceSurface left) (← presenceSurface right))
+            | .or left right => do pure (.or (← presenceSurface left) (← presenceSurface right))
+            | _ => none
+          let some legacy := presenceSurface surface | .error refusal
+          match model.resolveParallelPresenceCondition computation.group legacy with
+          | .ok guard => elaborated "Guard" (CheckedComputationCondition.ofLegacy model guard)
           | .error _ => .error refusal
         else .error refusal
   let common ← computation.commonPrecondition.mapM resolve
@@ -162,9 +187,9 @@ private def guards (language : Language) (model : FlatModel) (computation : DmCo
 /-- Reuse the checked parallel carriers after ordinary scope binding refuses. Each operation must
 retain a joined Number operand; bound fields use the same target environment as the ordinary route. -/
 private def lowerParallelNumber (model : FlatModel) (group : GroupPath) (target : FieldId)
-    (guards : List (Option ComputationCondition))
+    (guards : List (Option (CheckedComputationCondition model)))
     (expressions : List (AuthoredNumericExpr SurfaceNumericComputationAtom))
-    (common : Option ComputationCondition) (suppress : Bool) :
+    (common : Option (CheckedComputationCondition model)) (suppress : Bool) :
     Lowering (CheckedParallelNumericStep model) := do
   let _ ← elaborated "ParallelNumber" (checkAddressedRepeatableTarget model group target)
   if guards.length > 1 && guards.any Option.isNone then refuse "ParallelNumber" "unguarded alternative"
@@ -177,7 +202,7 @@ private def lowerParallelNumber (model : FlatModel) (group : GroupPath) (target 
         (checkParallelNumericComputationClearingPlan model group target path).isOk
       | refuse "ParallelNumber" "no joined operand"
     elaborated "ParallelNumber" (checkIsolatedParallelNumericExpressionRunWithGuard model group
-      target operand expression (ComputationCondition.withCommon common guard) suppress)
+      target operand expression (CheckedComputationCondition.withCommon common guard) suppress)
   match operations with
   | [operation] => pure (.single operation)
   | _ => (.alternatives ·) <$> elaborated "ParallelNumber" (certifyParallelNumericAlternativeTable operations)
@@ -217,7 +242,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
     let ([own], [operation]) := (guards, operations)
       | refuse "DocumentStep" "alternatives"
     let step ← lowerDocumentStep model computation.group target operation
-    let step ← match ComputationCondition.withCommon common own with
+    let step ← match CheckedComputationCondition.withCommon common own with
       | none => pure step
       | some guard => (step.guard? guard).getDM (refuse "DocumentStep" "guard admission")
     pure (target, .document step)
@@ -225,7 +250,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
       operations.all (isRowAlternativeOperation target) then
     let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do
       let operation ← lowerRowAlternativeOperation model computation.group target expression
-      pure ({ precondition, operation } : ComputationAlternative _)
+      pure ({ precondition, operation } : CheckedComputationAlternative model _)
     let table ← elaborated "RowComputation" (certifyRowComputationTable alternatives common)
     let some step := CheckedRowComputationStep.ofTable? table
       | refuse "RowComputation" "target self-read"
@@ -253,7 +278,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
         let expression ← lowerStringExpr operation
         let checked ← elaborated "StringComputation"
           (elaborateStringComputationOperation model computation.group target.id expression)
-        pure ({ precondition, operation := checked } : ComputationAlternative _)
+        pure ({ precondition, operation := checked } : CheckedComputationAlternative model _)
       pure (target, .string (← elaborated "StringComputation" (certifyStringComputationTable alternatives common)))
   | kind =>
       if !row then

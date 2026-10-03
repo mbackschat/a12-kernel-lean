@@ -81,7 +81,7 @@ private def fixedStep? (operation : Option (CheckedNumericTargetComputationOpera
     Option (CheckedNumericComputationTable model) := do
   let table ← (certifyNumericComputationTable
     [({ precondition := none, operation := ← operation } :
-      ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
+      CheckedComputationAlternative model (CheckedNumericTargetComputationOperation model))]).toOption
   pure table
 
 private def rootSum? := fixedStep? (elaborateNumberEntityTargetComputationOperation model ["Rows"]
@@ -92,7 +92,7 @@ private def fix? := fixedStep?
 
 private def row? (group : GroupPath) (target : FieldId)
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
-    (guard : Option ComputationCondition := none) :
+    (guard : Option (CheckedComputationCondition model) := none) :
     Option (CheckedNumericComputationTable model) :=
   (elaborateNumericTargetComputationTable model group target [(guard, expression)]
     (targetScope := .row)).toOption
@@ -102,7 +102,7 @@ private def binary (group : GroupPath) (target : FieldId) (left right : SurfaceF
   row? group target (.binary op (.atom (.field left)) (.atom (.field right)))
 
 private def copy (group : GroupPath) (target : FieldId) (source : SurfaceFieldPath)
-    (guard : ComputationCondition) : Option (CheckedNumericComputationTable model) :=
+    (guard : (CheckedComputationCondition model)) : Option (CheckedNumericComputationTable model) :=
   row? group target (.atom (.field source)) (some guard)
 
 /-- The model's nine computations in its authored order: every reader of `OP` ahead of it, `OSub`

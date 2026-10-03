@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.ComputationNumericGuard
 import A12Kernel.Elaboration.BooleanConstantComputation
 import A12Kernel.Elaboration.BooleanFirstFilledComputation
 import A12Kernel.Elaboration.CustomFirstFilledComputation
@@ -21,6 +22,7 @@ import A12Kernel.Elaboration.FullDateFirstFilledComputation
 import A12Kernel.Elaboration.OmittingDateInput
 import A12Kernel.Elaboration.TimeComputation
 import A12Kernel.Elaboration.TimeFirstFilledComputation
+import A12Kernel.Elaboration.TemporalExpression
 
 /-! # Whole-document computation steps
 
@@ -54,32 +56,6 @@ audited for never observing it. -/
 
 namespace A12Kernel
 
-/-- A completed whole-document target with its family retained. -/
-inductive DocumentTargetOutcome where
-  | dateTime (outcome : DateTimeTargetOutcome)
-  | fullDate (outcome : FullDateTargetOutcome)
-  | time (outcome : TimeTargetOutcome)
-  | enumeration (outcome : StringTargetOutcome)
-  | dateRange (outcome : DateRangeTargetOutcome)
-  | boolean (outcome : BooleanComputationOutcome)
-  | dateFragment (outcome : StringTargetOutcome)
-  | string (outcome : StringTargetOutcome)
-  deriving Repr, DecidableEq
-
-/-- The rendering a completed target stores, which a reader pairs with its read-back cell; a cleared,
-errored or poisoned target stores none. -/
-def DocumentTargetOutcome.storedText? : DocumentTargetOutcome → Option String
-  | .dateTime (.accepted stored) => some stored.text
-  | .fullDate (.accepted stored) => some stored.text
-  | .time (.accepted stored) => some stored.text
-  | .enumeration (.accepted stored) => some stored.text
-  | .dateRange (.accepted stored) => some stored.text
-  | .boolean (.value value) => some (toString value)
-  | .dateFragment (.accepted stored) => some stored.text
-  | .string (.accepted stored) => some stored.text
-  | .dateTime _ | .fullDate _ | .time _ | .enumeration _ | .dateRange _ | .boolean _
-  | .dateFragment _ | .string _ => none
-
 /-- The target family of a whole-document step: the family of the outcome it computes, and the outcome it
 reports when a guard keeps it from running. It is not the target's declared kind, which a temporal
 target admitted by its format rather than its kind may not share: a DATE-declared clock-format target
@@ -94,6 +70,44 @@ inductive DocumentTargetFamily where
   | dateFragment
   | string
   deriving Repr, DecidableEq
+
+/-- A completed whole-document target with its family retained. -/
+inductive DocumentTargetOutcome where
+  | dateTime (outcome : DateTimeTargetOutcome)
+  | fullDate (outcome : FullDateTargetOutcome)
+  | time (outcome : TimeTargetOutcome)
+  | enumeration (outcome : StringTargetOutcome)
+  | dateRange (outcome : DateRangeTargetOutcome)
+  | boolean (outcome : BooleanComputationOutcome)
+  | dateFragment (outcome : StringTargetOutcome)
+  | string (outcome : StringTargetOutcome)
+  | valueError (family : DocumentTargetFamily)
+  deriving Repr, DecidableEq
+
+/-- The rendering a completed target stores, which a reader pairs with its read-back cell; a cleared,
+errored or poisoned target stores none. -/
+def DocumentTargetOutcome.storedText? : DocumentTargetOutcome → Option String
+  | .dateTime (.accepted stored) => some stored.text
+  | .fullDate (.accepted stored) => some stored.text
+  | .time (.accepted stored) => some stored.text
+  | .enumeration (.accepted stored) => some stored.text
+  | .dateRange (.accepted stored) => some stored.text
+  | .boolean (.value value) => some (toString value)
+  | .dateFragment (.accepted stored) => some stored.text
+  | .string (.accepted stored) => some stored.text
+  | .dateTime _ | .fullDate _ | .time _ | .enumeration _ | .dateRange _ | .boolean _
+  | .dateFragment _ | .string _ | .valueError _ => none
+
+/-- A runtime value failure clears its target without poisoning a dependent read. Its message stays
+at that target, as measured by the temporal disposition grid (2026-10-03). -/
+def DocumentTargetOutcome.formalValueMessage? (pointer : MessagePointer) :
+    DocumentTargetOutcome → Option (ComputationFormalMessage Unit)
+  | .valueError _ => some {
+      pointer
+      errorCode := berechnungsWertFehler
+      messageType := .value
+      payload := () }
+  | _ => none
 
 namespace DocumentTargetFamily
 
@@ -135,7 +149,8 @@ end DocumentTargetFamily
 back in. `targetNotReadable` fails closed where the checked target does not certify as an input field of
 its family, and the two read faults carry the classifier's own context error. -/
 inductive DocumentComputationStepFault where
-  | guardBinding (error : ComputationConditionError)
+  | temporalExpressionTarget (cause : DateTimeTargetEvaluationFault)
+  | guardBinding (error : CheckedComputationConditionError)
   | dateTimeDayShift (cause : DateTimeDayShiftComputationFault)
   | dateTimeSubdayShift (cause : DateTimeSubdayShiftComputationFault)
   | fullDate (cause : FullDateComputationFault)
@@ -291,17 +306,82 @@ structure CheckedDocumentComputationStep (model : FlatModel) where
   family : DocumentTargetFamily
   operationReferencesField : FieldId → Bool
   excludesTarget : operationReferencesField target = false
-  precondition : Option { guard : ComputationCondition //
-    guard.wellFormedBool model = true ∧ guard.forbidsTarget target = false } := none
+  precondition : Option { guard : CheckedComputationCondition model //
+    guard.wellFormedBool = true ∧ guard.forbidsTarget target = false } := none
   run : World → StringTargetMatchers → CheckedDocument model →
     Except DocumentComputationStepFault (DocumentTargetOutcome × CheckedCell)
 
 namespace CheckedDocumentComputationStep
 
+/-- A checked temporal expression enters the same target rendering and read-back boundary as the
+direct carriers. The expression's complete dependency fold enforces the target-read exclusion. -/
+def ofScalarTemporalExpression? (expression : CheckedScalarTemporalExpression model)
+    (targetField : FieldId) : Option (CheckedDocumentComputationStep model) := do
+  if excludes : expression.referencesField targetField = false then
+    if expression.components == TemporalComponents.time then
+      let target ← (elaborateClockFormatTarget model targetField).toOption
+      pure {
+        target := targetField
+        family := .time
+        operationReferencesField := expression.referencesField
+        excludesTarget := excludes
+        run world _ document := do
+          let result ← match expression.evalResult .computation (document.flatContext.withWorld world) with
+            | .ok result => pure result
+            | .error _ => return (.valueError .time, DocumentComputationReadBack.empty)
+          let outcome := target.evaluate (match result with
+            | .value (.time value) _ => .value value
+            | .notEvaluated => .noValue
+            | .unknown cause => .poison cause
+            | _ => .poison .malformed)
+          let cell ← DocumentComputationReadBack.time model targetField outcome
+          pure (.time outcome, cell)
+      }
+    else if expression.components == TemporalComponents.now then
+      let target ← (elaborateDateTimeTarget model targetField).toOption
+      pure {
+        target := targetField
+        family := .dateTime
+        operationReferencesField := expression.referencesField
+        excludesTarget := excludes
+        run world _ document := do
+          let result ← match expression.evalResult .computation (document.flatContext.withWorld world) with
+            | .ok result => pure result
+            | .error _ => return (.valueError .dateTime, DocumentComputationReadBack.empty)
+          let outcome ← (target.evaluate (match result with
+            | .value (.instant value) _ => .value value
+            | .notEvaluated => .noValue
+            | .unknown cause => .poison cause
+            | _ => .poison .malformed)).mapError .temporalExpressionTarget
+          let cell ← DocumentComputationReadBack.dateTime model targetField outcome
+          pure (.dateTime outcome, cell)
+      }
+    else if expression.components == TemporalComponents.fullDate then
+      let target ← (elaborateFullDateTarget model targetField).toOption
+      pure {
+        target := targetField
+        family := .fullDate
+        operationReferencesField := expression.referencesField
+        excludesTarget := excludes
+        run world _ document := do
+          let result ← match expression.evalResult .computation (document.flatContext.withWorld world) with
+            | .ok result => pure result
+            | .error _ => return (.valueError .fullDate, DocumentComputationReadBack.empty)
+          let outcome := match result with
+            | .value (.date value) _ => target.evaluateCivil value.civil
+            | .notEvaluated => .noValue
+            | .unknown cause => .poison cause
+            | _ => .poison .malformed
+          let cell ← DocumentComputationReadBack.fullDate model targetField outcome
+          pure (.fullDate outcome, cell)
+      }
+    else none
+  else none
+
 def referencesField (step : CheckedDocumentComputationStep model) (field : FieldId) : Bool :=
   step.precondition.any (·.val.referencesField field) || step.operationReferencesField field
 
-def protectionConditions (step : CheckedDocumentComputationStep model) : List (Option ComputationCondition) :=
+def protectionConditions (step : CheckedDocumentComputationStep model) : List (Option (CheckedComputationCondition model)) :=
   [step.precondition.map (·.val)]
 
 def requiresProducer (step : CheckedDocumentComputationStep model)
@@ -664,9 +744,9 @@ poisons it, read as poison, both without running the step. The Kernel guards a D
 full-Date copy, a DateRange construction and an Enumeration copy that way, a guard on a computed Number
 reading its completion
 ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-guarded-document-steps)). -/
-def guarded (guard : ComputationCondition) (step : CheckedDocumentComputationStep model)
+def guarded (guard : CheckedComputationCondition model) (step : CheckedDocumentComputationStep model)
     (guardExcludesTarget : guard.forbidsTarget step.target = false)
-    (guardWellFormed : guard.wellFormedBool model = true) :
+    (guardWellFormed : guard.wellFormedBool = true) :
     CheckedDocumentComputationStep model where
   target := step.target
   family := step.family
@@ -678,8 +758,10 @@ def guarded (guard : ComputationCondition) (step : CheckedDocumentComputationSte
       cases previous : step.precondition with
       | none => simpa [previous] using And.intro guardWellFormed guardExcludesTarget
       | some previousGuard =>
-          simp [ComputationCondition.wellFormedBool, ComputationCondition.forbidsTarget,
-            guardWellFormed, guardExcludesTarget, previousGuard.property.1, previousGuard.property.2]⟩
+          change (guard.wellFormedBool && previousGuard.val.wellFormedBool) = true ∧
+            (guard.forbidsTarget step.target || previousGuard.val.forbidsTarget step.target) = false
+          rw [guardWellFormed, guardExcludesTarget, previousGuard.property.1, previousGuard.property.2]
+          decide⟩
   run world matchers document := do
     match ← (guard.evalChecked (document.scalarComputationContext world)).mapError .guardBinding with
     | .holds => step.run world matchers document
@@ -689,9 +771,9 @@ def guarded (guard : ComputationCondition) (step : CheckedDocumentComputationSte
 /-- Guard a step, refusing a guard that names a field the model does not own, as a Number table's
 certifier does, or that violates the target-read ban. Positive containing-group guards retain the
 [`spec/09`](../../spec/09-computations.md) §5 exemption while their full operand inventory still contains the target. -/
-def guard? (guard : ComputationCondition) (step : CheckedDocumentComputationStep model) :
+def guard? (guard : CheckedComputationCondition model) (step : CheckedDocumentComputationStep model) :
     Option (CheckedDocumentComputationStep model) :=
-  if admitted : guard.wellFormedBool model = true then
+  if admitted : guard.wellFormedBool = true then
     if excludes : guard.forbidsTarget step.target = false then some (step.guarded guard excludes admitted) else none
   else none
 

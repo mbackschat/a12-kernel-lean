@@ -1,0 +1,1701 @@
+{
+  "header" : {
+    "id" : "GuardFamily",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "GuardFamily",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/G",
+        "name" : "G",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/G/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Text",
+            "name" : "Text",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 3,
+                  "pattern" : "[0-9]+",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Use digits."
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Flag",
+            "name" : "Flag",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType",
+                "BooleanType" : { }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Confirm",
+            "name" : "Confirm",
+            "Field" : {
+              "fieldType" : {
+                "type" : "ConfirmType",
+                "ConfirmType" : { }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/G/Left",
+            "name" : "Left",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/G/Left/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/G/Right",
+            "name" : "Right",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/G/Right/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerBoolTrue",
+            "name" : "MarkerBoolTrue",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterBoolTrue",
+            "name" : "MarkerAfterBoolTrue",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerBoolFalse",
+            "name" : "MarkerBoolFalse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterBoolFalse",
+            "name" : "MarkerAfterBoolFalse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerBoolNe",
+            "name" : "MarkerBoolNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterBoolNe",
+            "name" : "MarkerAfterBoolNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerConfirmEq",
+            "name" : "MarkerConfirmEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterConfirmEq",
+            "name" : "MarkerAfterConfirmEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerConfirmNe",
+            "name" : "MarkerConfirmNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterConfirmNe",
+            "name" : "MarkerAfterConfirmNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerSum",
+            "name" : "MarkerSum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterSum",
+            "name" : "MarkerAfterSum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerCount",
+            "name" : "MarkerCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterCount",
+            "name" : "MarkerAfterCount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerLength",
+            "name" : "MarkerLength",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterLength",
+            "name" : "MarkerAfterLength",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerConvert",
+            "name" : "MarkerConvert",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterConvert",
+            "name" : "MarkerAfterConvert",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerSkipAnd",
+            "name" : "MarkerSkipAnd",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterSkipAnd",
+            "name" : "MarkerAfterSkipAnd",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerSkipOr",
+            "name" : "MarkerSkipOr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterSkipOr",
+            "name" : "MarkerAfterSkipOr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAllGroupsFilled",
+            "name" : "MarkerAllGroupsFilled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterAllGroupsFilled",
+            "name" : "MarkerAfterAllGroupsFilled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerNoGroupFilled",
+            "name" : "MarkerNoGroupFilled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterNoGroupFilled",
+            "name" : "MarkerAfterNoGroupFilled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAtLeastOneGroupFilled",
+            "name" : "MarkerAtLeastOneGroupFilled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterAtLeastOneGroupFilled",
+            "name" : "MarkerAfterAtLeastOneGroupFilled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerNotAllGroupsFilled",
+            "name" : "MarkerNotAllGroupsFilled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterNotAllGroupsFilled",
+            "name" : "MarkerAfterNotAllGroupsFilled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerGroupsNotCollectivelyFilled",
+            "name" : "MarkerGroupsNotCollectivelyFilled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterGroupsNotCollectivelyFilled",
+            "name" : "MarkerAfterGroupsNotCollectivelyFilled",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/BoolTrueComp",
+            "name" : "BoolTrueComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerBoolTrue",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Flag] == True"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterBoolTrueComp",
+            "name" : "AfterBoolTrueComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterBoolTrue",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerBoolTrue) Or FieldNotFilled(MarkerBoolTrue)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/BoolFalseComp",
+            "name" : "BoolFalseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerBoolFalse",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Flag] == False"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterBoolFalseComp",
+            "name" : "AfterBoolFalseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterBoolFalse",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerBoolFalse) Or FieldNotFilled(MarkerBoolFalse)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/BoolNeComp",
+            "name" : "BoolNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerBoolNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Flag] != True"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterBoolNeComp",
+            "name" : "AfterBoolNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterBoolNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerBoolNe) Or FieldNotFilled(MarkerBoolNe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ConfirmEqComp",
+            "name" : "ConfirmEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerConfirmEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Confirm] == True"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterConfirmEqComp",
+            "name" : "AfterConfirmEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterConfirmEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerConfirmEq) Or FieldNotFilled(MarkerConfirmEq)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ConfirmNeComp",
+            "name" : "ConfirmNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerConfirmNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Confirm] != True"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterConfirmNeComp",
+            "name" : "AfterConfirmNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterConfirmNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerConfirmNe) Or FieldNotFilled(MarkerConfirmNe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/SumComp",
+            "name" : "SumComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerSum",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "Sum(A,B) > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterSumComp",
+            "name" : "AfterSumComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterSum",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerSum) Or FieldNotFilled(MarkerSum)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/CountComp",
+            "name" : "CountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerCount",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NumberOfFilledFields(A,B) > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterCountComp",
+            "name" : "AfterCountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterCount",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerCount) Or FieldNotFilled(MarkerCount)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/LengthComp",
+            "name" : "LengthComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerLength",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "Length(Text) > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterLengthComp",
+            "name" : "AfterLengthComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterLength",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerLength) Or FieldNotFilled(MarkerLength)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ConvertComp",
+            "name" : "ConvertComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerConvert",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueAsNumber(Text) > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterConvertComp",
+            "name" : "AfterConvertComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterConvert",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerConvert) Or FieldNotFilled(MarkerConvert)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/SkipAndComp",
+            "name" : "SkipAndComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerSkipAnd",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[B] > 0 And FieldValueAsNumber(Text) > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterSkipAndComp",
+            "name" : "AfterSkipAndComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterSkipAnd",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerSkipAnd) Or FieldNotFilled(MarkerSkipAnd)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/SkipOrComp",
+            "name" : "SkipOrComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerSkipOr",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[B] == 0 Or FieldValueAsNumber(Text) > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterSkipOrComp",
+            "name" : "AfterSkipOrComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterSkipOr",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerSkipOr) Or FieldNotFilled(MarkerSkipOr)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AllGroupsFilledComp",
+            "name" : "AllGroupsFilledComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAllGroupsFilled",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AllGroupsFilled(Left,Right)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterAllGroupsFilledComp",
+            "name" : "AfterAllGroupsFilledComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterAllGroupsFilled",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerAllGroupsFilled) Or FieldNotFilled(MarkerAllGroupsFilled)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/NoGroupFilledComp",
+            "name" : "NoGroupFilledComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerNoGroupFilled",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoGroupFilled(Left,Right)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterNoGroupFilledComp",
+            "name" : "AfterNoGroupFilledComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterNoGroupFilled",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerNoGroupFilled) Or FieldNotFilled(MarkerNoGroupFilled)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AtLeastOneGroupFilledComp",
+            "name" : "AtLeastOneGroupFilledComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAtLeastOneGroupFilled",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneGroupFilled(Left,Right)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterAtLeastOneGroupFilledComp",
+            "name" : "AfterAtLeastOneGroupFilledComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterAtLeastOneGroupFilled",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerAtLeastOneGroupFilled) Or FieldNotFilled(MarkerAtLeastOneGroupFilled)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/NotAllGroupsFilledComp",
+            "name" : "NotAllGroupsFilledComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerNotAllGroupsFilled",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllGroupsFilled(Left,Right)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterNotAllGroupsFilledComp",
+            "name" : "AfterNotAllGroupsFilledComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterNotAllGroupsFilled",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerNotAllGroupsFilled) Or FieldNotFilled(MarkerNotAllGroupsFilled)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/GroupsNotCollectivelyFilledComp",
+            "name" : "GroupsNotCollectivelyFilledComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerGroupsNotCollectivelyFilled",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "GroupsNotCollectivelyFilled(Left,Right)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterGroupsNotCollectivelyFilledComp",
+            "name" : "AfterGroupsNotCollectivelyFilledComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterGroupsNotCollectivelyFilled",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerGroupsNotCollectivelyFilled) Or FieldNotFilled(MarkerGroupsNotCollectivelyFilled)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/SubjectFirst",
+            "name" : "SubjectFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 3
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/SubjectSecond",
+            "name" : "SubjectSecond",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 3
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MemberFirst",
+            "name" : "MemberFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 3
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MemberSecond",
+            "name" : "MemberSecond",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 3
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerListAny",
+            "name" : "MarkerListAny",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterListAny",
+            "name" : "MarkerAfterListAny",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerListAnyReverse",
+            "name" : "MarkerListAnyReverse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterListAnyReverse",
+            "name" : "MarkerAfterListAnyReverse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerListNone",
+            "name" : "MarkerListNone",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterListNone",
+            "name" : "MarkerAfterListNone",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerListNoneReverse",
+            "name" : "MarkerListNoneReverse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterListNoneReverse",
+            "name" : "MarkerAfterListNoneReverse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerListNotAll",
+            "name" : "MarkerListNotAll",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterListNotAll",
+            "name" : "MarkerAfterListNotAll",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerListNotAllReverse",
+            "name" : "MarkerListNotAllReverse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterListNotAllReverse",
+            "name" : "MarkerAfterListNotAllReverse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerMember",
+            "name" : "MarkerMember",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterMember",
+            "name" : "MarkerAfterMember",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerNotMember",
+            "name" : "MarkerNotMember",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterNotMember",
+            "name" : "MarkerAfterNotMember",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerMixedGroupFirst",
+            "name" : "MarkerMixedGroupFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterMixedGroupFirst",
+            "name" : "MarkerAfterMixedGroupFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerMixedFieldFirst",
+            "name" : "MarkerMixedFieldFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterMixedFieldFirst",
+            "name" : "MarkerAfterMixedFieldFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerMixedNoGroupFirst",
+            "name" : "MarkerMixedNoGroupFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterMixedNoGroupFirst",
+            "name" : "MarkerAfterMixedNoGroupFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerMixedNoFieldFirst",
+            "name" : "MarkerMixedNoFieldFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MarkerAfterMixedNoFieldFirst",
+            "name" : "MarkerAfterMixedNoFieldFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ListAnyComp",
+            "name" : "ListAnyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerListAny",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldValueIncludedInValueList(SubjectFirst,SubjectSecond In MemberFirst,MemberSecond)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterListAnyComp",
+            "name" : "AfterListAnyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterListAny",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerListAny) Or FieldNotFilled(MarkerListAny)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ListAnyReverseComp",
+            "name" : "ListAnyReverseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerListAnyReverse",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldValueIncludedInValueList(SubjectSecond,SubjectFirst In MemberFirst,MemberSecond)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterListAnyReverseComp",
+            "name" : "AfterListAnyReverseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterListAnyReverse",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerListAnyReverse) Or FieldNotFilled(MarkerListAnyReverse)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ListNoneComp",
+            "name" : "ListNoneComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerListNone",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldValueIncludedInValueList(SubjectFirst,SubjectSecond In MemberFirst,MemberSecond)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterListNoneComp",
+            "name" : "AfterListNoneComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterListNone",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerListNone) Or FieldNotFilled(MarkerListNone)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ListNoneReverseComp",
+            "name" : "ListNoneReverseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerListNoneReverse",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldValueIncludedInValueList(SubjectSecond,SubjectFirst In MemberFirst,MemberSecond)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterListNoneReverseComp",
+            "name" : "AfterListNoneReverseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterListNoneReverse",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerListNoneReverse) Or FieldNotFilled(MarkerListNoneReverse)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ListNotAllComp",
+            "name" : "ListNotAllComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerListNotAll",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldValuesIncludedInValueList(SubjectFirst,SubjectSecond In MemberFirst,MemberSecond)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterListNotAllComp",
+            "name" : "AfterListNotAllComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterListNotAll",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerListNotAll) Or FieldNotFilled(MarkerListNotAll)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ListNotAllReverseComp",
+            "name" : "ListNotAllReverseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerListNotAllReverse",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldValuesIncludedInValueList(SubjectSecond,SubjectFirst In MemberFirst,MemberSecond)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterListNotAllReverseComp",
+            "name" : "AfterListNotAllReverseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterListNotAllReverse",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerListNotAllReverse) Or FieldNotFilled(MarkerListNotAllReverse)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MemberComp",
+            "name" : "MemberComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerMember",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueIncludedInValueList(SubjectFirst, \"a\", \"b\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMemberComp",
+            "name" : "AfterMemberComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterMember",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerMember) Or FieldNotFilled(MarkerMember)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/NotMemberComp",
+            "name" : "NotMemberComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerNotMember",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueNotIncludedInValueList(SubjectFirst, \"a\", \"b\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterNotMemberComp",
+            "name" : "AfterNotMemberComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterNotMember",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerNotMember) Or FieldNotFilled(MarkerNotMember)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MixedGroupFirstComp",
+            "name" : "MixedGroupFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerMixedGroupFirst",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneGroupFilled(Left,A)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMixedGroupFirstComp",
+            "name" : "AfterMixedGroupFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterMixedGroupFirst",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerMixedGroupFirst) Or FieldNotFilled(MarkerMixedGroupFirst)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MixedFieldFirstComp",
+            "name" : "MixedFieldFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerMixedFieldFirst",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneGroupFilled(A,Left)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMixedFieldFirstComp",
+            "name" : "AfterMixedFieldFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterMixedFieldFirst",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerMixedFieldFirst) Or FieldNotFilled(MarkerMixedFieldFirst)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MixedNoGroupFirstComp",
+            "name" : "MixedNoGroupFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerMixedNoGroupFirst",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoGroupFilled(Left,A)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMixedNoGroupFirstComp",
+            "name" : "AfterMixedNoGroupFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterMixedNoGroupFirst",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerMixedNoGroupFirst) Or FieldNotFilled(MarkerMixedNoGroupFirst)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MixedNoFieldFirstComp",
+            "name" : "MixedNoFieldFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerMixedNoFieldFirst",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoGroupFilled(A,Left)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMixedNoFieldFirstComp",
+            "name" : "AfterMixedNoFieldFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MarkerAfterMixedNoFieldFirst",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MarkerMixedNoFieldFirst) Or FieldNotFilled(MarkerMixedNoFieldFirst)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed marker differs."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

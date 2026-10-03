@@ -15,6 +15,14 @@ filtered row, `$` marking a read of the enclosing row (spec §9).
 
 namespace A12Kernel.Dm
 
+def groupQuantifier? : String → Option GroupFillQuantifier
+  | "AllGroupsFilled" => some .allGroupsFilled
+  | "NoGroupFilled" => some .noGroupFilled
+  | "AtLeastOneGroupFilled" => some .atLeastOneGroupFilled
+  | "NotAllGroupsFilled" => some .notAllGroupsFilled
+  | "GroupsNotCollectivelyFilled" => some .groupsNotCollectivelyFilled
+  | _ => none
+
 def fieldFillOp? : String → Option FieldFillQuantifier
   | "AllFieldsFilled" => some .allFieldsFilled
   | "NoFieldFilled" => some .noFieldFilled

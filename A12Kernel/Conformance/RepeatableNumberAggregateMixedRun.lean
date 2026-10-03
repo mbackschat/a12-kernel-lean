@@ -63,13 +63,13 @@ private def prefix? (source : SurfaceFieldPath := bare "Qty") :
     ["Order"] total.id starAmount .sum).toOption
 
 private def stringTable? (target : FieldId)
-    (rows : List (ComputationCondition × StringExpr SurfaceFieldPath)) :
+    (rows : List ((CheckedComputationCondition model) × StringExpr SurfaceFieldPath)) :
     Option (CheckedStringComputationTable model) := do
   let alternatives ← rows.mapM fun (precondition, expression) => do
     let operation ← (elaborateStringComputationOperation
       model ["Order"] target expression).toOption
     pure ({ precondition, operation } :
-      ComputationAlternative (CheckedStringComputationOperation model))
+      CheckedComputationAlternative model (CheckedStringComputationOperation model))
   (certifyStringComputationTable alternatives).toOption
 
 private def rootNumber (field : String) :
@@ -336,7 +336,7 @@ private def seededFailure? : Option RepeatableNumberAggregateMixedRunFault := do
 String matcher terminates the public composite executor. -/
 example :
     seededFailure? = some (.run (.string (.evaluation label.id
-      (.targetPatternUnavailable label.id)))) := by
+      (.operation (.targetPatternUnavailable label.id))))) := by
   native_decide
 
 private def transitionPlan : CheckedRepeatableNumberAggregateMixedRun model :=

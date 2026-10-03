@@ -74,7 +74,7 @@ def referencesField (table : CheckedNumericComputationTable model)
     alternative.precondition.any (·.referencesField field) ||
       alternative.operation.referencesField field
 
-def protectionConditions (table : CheckedNumericComputationTable model) : List (Option ComputationCondition) :=
+def protectionConditions (table : CheckedNumericComputationTable model) : List (Option (CheckedComputationCondition model)) :=
   table.selectableAlternatives.map (·.precondition)
 
 def requiresProducer (table : CheckedNumericComputationTable model)

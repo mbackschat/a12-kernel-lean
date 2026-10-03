@@ -1,0 +1,353 @@
+{
+  "header": {
+    "id": "TemporalDisposition",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "TemporalDisposition",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/G",
+          "name": "G",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/G/D",
+                "name": "D",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/T",
+                "name": "T",
+                "Field": {
+                  "fieldType": {
+                    "type": "TimeType",
+                    "TimeType": {
+                      "format": "HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/Stamp",
+                "name": "Stamp",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/Output",
+                "name": "Output",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/Gap",
+                "name": "Gap",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/G/GapComp",
+                "name": "GapComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Gap",
+                  "computationAlternatives": [
+                    {
+                      "operation": "\"31.03.2024T02:30:00\""
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Computed value differs."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/Ordinary",
+                "name": "Ordinary",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/G/OrdinaryComp",
+                "name": "OrdinaryComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Ordinary",
+                  "computationAlternatives": [
+                    {
+                      "operation": "\"31.03.2024T01:30:00\""
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Computed value differs."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/ShiftGap",
+                "name": "ShiftGap",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/G/ShiftGapComp",
+                "name": "ShiftGapComp",
+                "Computation": {
+                  "computedFieldRelPath": "../ShiftGap",
+                  "computationAlternatives": [
+                    {
+                      "operation": "AddSeconds(\"31.03.2024T02:30:00\",1)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Computed value differs."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/ShiftOrdinary",
+                "name": "ShiftOrdinary",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/G/ShiftOrdinaryComp",
+                "name": "ShiftOrdinaryComp",
+                "Computation": {
+                  "computedFieldRelPath": "../ShiftOrdinary",
+                  "computationAlternatives": [
+                    {
+                      "operation": "AddSeconds(\"31.03.2024T01:30:00\",1)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Computed value differs."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/DateGap",
+                "name": "DateGap",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/G/DateGapComp",
+                "name": "DateGapComp",
+                "Computation": {
+                  "computedFieldRelPath": "../DateGap",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateFromDateTime(\"31.03.2024T02:30:00\")"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Computed value differs."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/TimeGap",
+                "name": "TimeGap",
+                "Field": {
+                  "fieldType": {
+                    "type": "TimeType",
+                    "TimeType": {
+                      "format": "HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/G/TimeGapComp",
+                "name": "TimeGapComp",
+                "Computation": {
+                  "computedFieldRelPath": "../TimeGap",
+                  "computationAlternatives": [
+                    {
+                      "operation": "TimeFromDateTime(\"31.03.2024T02:30:00\")"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Computed value differs."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/NestedGap",
+                "name": "NestedGap",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/G/NestedGapComp",
+                "name": "NestedGapComp",
+                "Computation": {
+                  "computedFieldRelPath": "../NestedGap",
+                  "computationAlternatives": [
+                    {
+                      "operation": "AddHours(AddSeconds(\"31.03.2024T02:30:00\",1),1)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Computed value differs."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/Dependent",
+                "name": "Dependent",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/G/DependentComp",
+                "name": "DependentComp",
+                "Computation": {
+                  "computedFieldRelPath": "../Dependent",
+                  "computationAlternatives": [
+                    {
+                      "operation": "AddSeconds(Gap,1)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Computed value differs."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

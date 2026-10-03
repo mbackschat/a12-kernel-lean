@@ -15,16 +15,16 @@ namespace A12Kernel
 private theorem checkedStringComputationTable_evaluateCompletion_target
     (table : CheckedStringComputationTable model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
-    (context : StringComputationContext)
+    (context : StringComputationContext) (guardContext : ScalarComputationContext)
     (completion : StringComputationRunCompletion)
     (evaluated :
-      table.evaluateCompletion patterns context = .ok completion) :
+      table.evaluateCompletion patterns context guardContext = .ok completion) :
     completion.targetField = table.targetField := by
   cases matcher : patterns.targetMatcher? table.targetField with
   | none =>
       simp [CheckedStringComputationTable.evaluateCompletion, matcher] at evaluated
   | some targetMatcher =>
-      cases outcome : table.evaluateOutcomeWithPattern targetMatcher context with
+      cases outcome : table.evaluateOutcomeWithPattern targetMatcher context guardContext with
       | error fault =>
           simp [CheckedStringComputationTable.evaluateCompletion,
             matcher, outcome] at evaluated
@@ -72,14 +72,14 @@ theorem scalarComputationRun_evaluateStep_target
   cases step with
   | string table =>
       cases result : table.evaluateCompletion patterns
-          (run.stringContext state input) with
+          (run.stringContext state input) (run.numberContext world state input) with
       | error fault =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
       | ok stringCompletion =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
           cases evaluated
           exact checkedStringComputationTable_evaluateCompletion_target
-            table patterns (run.stringContext state input) stringCompletion result
+            table patterns (run.stringContext state input) (run.numberContext world state input) stringCompletion result
   | number table =>
       cases result : table.evaluateCompletion
           (run.numberContext world state input) with
@@ -102,7 +102,7 @@ theorem scalarComputationRun_evaluateStep_target
 /-- Every guard retained by the shared whole-document step is admitted by its own model. -/
 theorem checkedDocumentComputationStep_guard_wellFormed
     (step : CheckedDocumentComputationStep model) :
-    step.precondition.all (fun guard => guard.val.wellFormedBool model) = true := by
+    step.precondition.all (fun guard => guard.val.wellFormedBool) = true := by
   cases step.precondition with
   | none => rfl
   | some guard => exact guard.property.1
@@ -115,8 +115,12 @@ private theorem checkedScalarComputationStep_excludes_target
   | string table => exact checkedStringComputationTable_excludes_target table producerProtected
   | number table => exact checkedNumericComputationTable_excludes_target table producerProtected
   | document step =>
+      have requiresOwn (guard : CheckedComputationCondition model) :
+          guard.requiresProducer step.target step.target (producerProtected step.target) =
+            guard.forbidsTarget step.target :=
+        computationConditionOf_requires_own guard _ _ _ _
       simp only [CheckedScalarComputationStep.targetField, CheckedScalarComputationStep.requiresProducer,
-        CheckedDocumentComputationStep.requiresProducer, computationCondition_requires_own]
+        CheckedDocumentComputationStep.requiresProducer, requiresOwn]
       have guardExcludes : step.precondition.any (·.val.forbidsTarget step.target) = false := by
         cases step.precondition with
         | none => rfl

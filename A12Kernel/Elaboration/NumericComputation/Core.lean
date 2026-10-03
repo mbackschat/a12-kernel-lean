@@ -317,7 +317,7 @@ def FlatModel.requireOperandLevelsBound (model : FlatModel)
   | none => pure ()
   | some unbound => throw (.unboundOperandLevel unbound)
 
-private def FlatModel.elaborateNumericComputationAtom
+def FlatModel.elaborateNumericComputationAtom
     (model : FlatModel) (declaringGroup targetGroup : GroupPath) :
     SurfaceNumericComputationAtom →
       Except NumericComputationElabError (CheckedNumericComputationAtom model)
@@ -583,7 +583,7 @@ private def FlatModel.numericComputationAtomType
 it at the first failing node, or where its well-typed result is not a Number, ahead of the scale rule
 and the target's read
 ([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates)). -/
-private def FlatModel.checkNumericOperationNodes
+def FlatModel.checkNumericOperationNodes
     (model : FlatModel) (declaringGroup targetGroup : GroupPath)
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
     Except NumericComputationElabError Unit :=

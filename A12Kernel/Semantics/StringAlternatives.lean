@@ -10,9 +10,9 @@ The caller supplies a model-legal table and an already-resolved common condition
 namespace A12Kernel
 
 /-- One resolved String alternative table and its shared target state. Target and prior state are not duplicated in each alternative. -/
-structure StringAlternativeComputation where
+structure StringAlternativeComputation (Guard : Type := ComputationCondition) where
   targetField : FieldId
-  alternatives : List (ComputationAlternative StringExpr)
+  alternatives : List (ComputationAlternative StringExpr Guard)
   targetPolicy : StringFieldPolicy
   prior : PriorStringTarget
   deriving Repr, DecidableEq
@@ -28,7 +28,7 @@ def withCommonPrecondition (computation : StringAlternativeComputation)
       commonPrecondition computation.alternatives) }
 
 /-- Materialize the already-selected expression as the existing one-step String computation. This function never performs selection. -/
-def selectedStep (computation : StringAlternativeComputation)
+def selectedStep (computation : StringAlternativeComputation Guard)
     (expression : StringExpr) : StringComputationStep where
   targetField := computation.targetField
   expression
@@ -36,19 +36,25 @@ def selectedStep (computation : StringAlternativeComputation)
   prior := computation.prior
 
 /-- Select once, then evaluate only the selected expression against an explicitly prepared target matcher. An operation outcome is never fed back into the alternative scan. -/
-def evaluateOutcomeWithPattern (computation : StringAlternativeComputation)
+def evaluateOutcomeWithGuard (computation : StringAlternativeComputation Guard)
+    (evaluateGuard : Guard → Except GuardError ComputationConditionResult)
+    (guardError : GuardError → Error)
+    (operationError : StringComputationFault → Error)
     (wholeValueMatches? : Option (String → Bool))
-    (context : StringComputationContext) :
-    Except StringComputationFault StringTargetOutcome := do
-  match ← (ComputationAlternative.selectFirstChecked computation.alternatives context).mapError .guardBinding with
+    (context : StringComputationContext) : Except Error StringTargetOutcome := do
+  match ← (ComputationAlternative.selectFirstWith evaluateGuard computation.alternatives).mapError guardError with
   | .noMatch => .ok .noValue
   | .poison cause => .ok (.poison cause)
   | .selected expression =>
-      match expression.evaluate context with
-      | .error fault => .error fault
-      | .ok store =>
-          .ok (computation.targetPolicy.checkTargetWithPattern
-            wholeValueMatches? store)
+      let store ← (expression.evaluate context).mapError operationError
+      pure (computation.targetPolicy.checkTargetWithPattern wholeValueMatches? store)
+
+def evaluateOutcomeWithPattern (computation : StringAlternativeComputation)
+    (wholeValueMatches? : Option (String → Bool))
+    (context : StringComputationContext) : Except StringComputationFault StringTargetOutcome :=
+  computation.evaluateOutcomeWithGuard
+    (fun condition => condition.evalChecked context) .guardBinding id
+    wholeValueMatches? context
 
 /-- The no-pattern specialization retained by the resolved table API. -/
 def evaluateOutcome (computation : StringAlternativeComputation)

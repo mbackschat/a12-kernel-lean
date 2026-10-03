@@ -286,6 +286,7 @@ umbrella_roots=(
   A12Kernel/Conformance.lean
   A12Kernel/Elaboration/Flat.lean
   A12Kernel/Elaboration/Flat/Condition.lean
+  A12Kernel/Elaboration/GeneratedComputationValidation.lean
   A12Kernel/Elaboration/NumericAggregate.lean
   A12Kernel/Elaboration/NumericComputation.lean
   A12Kernel/Elaboration/NumericValidation.lean

@@ -32,12 +32,16 @@ inductive NumberEntityValueListElabError where
 /-- Check both nonempty, sole-allowed entity-list sides, then apply the parser's combined direct-reference uniqueness gate. -/
 def elaborateNumberEntityValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
-    (authored : SurfaceNumberEntityValueListSource) :
+    (authored : SurfaceNumberEntityValueListSource) (targetGroup? : Option GroupPath := none) :
     Except NumberEntityValueListElabError
       (CheckedNumberEntityValueListSource model) := do
-  let fields ← elaborateNumberEntitySource model declaringGroup authored.fields (arity := .soleAllowed)
+  let fields ← elaborateNumberEntitySource model declaringGroup authored.fields
+      (fixedTargetGroup? := targetGroup?) (writtenGroup := targetGroup?.getD declaringGroup)
+      (arity := .soleAllowed) (bindingGroup? := targetGroup?)
     |>.mapError .fields
-  let values ← elaborateNumberEntitySource model declaringGroup authored.values (arity := .soleAllowed)
+  let values ← elaborateNumberEntitySource model declaringGroup authored.values
+      (fixedTargetGroup? := targetGroup?) (writtenGroup := targetGroup?.getD declaringGroup)
+      (arity := .soleAllowed) (bindingGroup? := targetGroup?)
     |>.mapError .values
   match hUnique : firstDuplicateDirectNumberEntityField?
       (fields.operands ++ values.operands) with

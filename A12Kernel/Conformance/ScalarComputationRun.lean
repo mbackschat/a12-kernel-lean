@@ -54,25 +54,24 @@ private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
 private def stringTable? (target : FieldId)
-    (rows : List (Option ComputationCondition × StringExpr SurfaceFieldPath)) :
+    (rows : List (Option (CheckedComputationCondition model) × StringExpr SurfaceFieldPath)) :
     Option (CheckedStringComputationTable model) := do
   let alternatives ← rows.mapM fun (guard, expression) => do
     let operation ← (elaborateStringComputationOperation
       model ["Form"] target expression).toOption
     pure ({ precondition := guard, operation } :
-      ComputationAlternative (CheckedStringComputationOperation model))
+      CheckedComputationAlternative model (CheckedStringComputationOperation model))
   (certifyStringComputationTable alternatives).toOption
 
 private def numberTable? (target : FieldId)
     (rows : List
-      (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom)) :
+      (Option (CheckedComputationCondition model) × AuthoredNumericExpr SurfaceNumericAtom)) :
     Option (CheckedNumericComputationTable model) := do
   let alternatives ← rows.mapM fun (guard, expression) => do
     let operation ← (elaborateNumericTargetComputationOperation
       model ["Form"] target expression).toOption
     pure ({ precondition := guard, operation } :
-      ComputationAlternative
-        (CheckedNumericTargetComputationOperation model))
+      CheckedComputationAlternative model (CheckedNumericTargetComputationOperation model))
   (certifyNumericComputationTable alternatives).toOption
 
 private def literalNumber (value : Rat) :
@@ -87,7 +86,7 @@ private def numberField (field : String) :
     AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.field (bare field))
 
-private def holding : ComputationCondition := .fieldNotFilled gateId
+private def holding : (CheckedComputationCondition model) := .fieldNotFilled gateId
 
 private def firstStringValue :=
   (stringTable? firstStringId [(holding, .literal "7")]).get
@@ -340,7 +339,7 @@ example :
     fault? [.number firstNumberValue, .string firstStringValue]
         missingPatterns =
       some (.string (.evaluation firstStringId
-        (.targetPatternUnavailable firstStringId))) ∧
+        (.operation (.targetPatternUnavailable firstStringId)))) ∧
     (fault? [.number firstNumberValue, .string firstStringValue]
       missingPatterns).map ScalarComputationRunFault.target =
         some firstStringId ∧
@@ -839,7 +838,7 @@ private def failingStringRun : CheckedScalarComputationRun model :=
 
 private def missingStringPatternFault : ScalarComputationRunFault :=
   .string (.evaluation firstStringId
-    (.targetPatternUnavailable firstStringId))
+    (.operation (.targetPatternUnavailable firstStringId)))
 
 private theorem failingString_evaluated :
     failingStringRun.evaluateStep world missingPatterns independentInput {}

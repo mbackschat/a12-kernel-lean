@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.LowerNumeric
+import A12Kernel.Reference.Dm.LowerValidation
 import A12Kernel.Elaboration.DocumentComputationStep
 
 /-! # Lowering whole-document computation steps
@@ -21,39 +22,6 @@ private def firstFilledSource (model : FlatModel) (group : GroupPath) (arguments
       | true, some star => pure (.star star)
       | _, _ => (.list ·) <$> lowerEntitySource model group arguments
   | _ => (.list ·) <$> lowerEntitySource model group arguments
-
-private def fieldOperand (model : FlatModel) (group : GroupPath) (construct : String) (expr : Expr) :
-    Lowering FlatFieldDecl := do
-  let some path := expr.fieldEntity? | refuse construct "operand"
-  elaborated construct (model.resolveFieldDeclarationUnchecked group path)
-
-private def timeComponent (model : FlatModel) (group : GroupPath) : Argument → Lowering SurfaceTimeComponent
-  | .mk (.string text) none none => pure (.constant text)
-  | .mk (.call id [.mk field none none] none none) none none => do
-      let part ← match id with
-        | "HoursFromTime" => pure TimeNumericPart.hour
-        | "MinutesFromTime" => pure .minute
-        | "SecondsFromTime" => pure .second
-        | _ => refuse "Time" id
-      pure (.extractor part (← fieldOperand model group "Time" field).id)
-  | .mk expr none none => do
-      let declaration ← fieldOperand model group "Time" expr
-      match declaration.policy.kind.surfaceKind with
-      | .number => pure (.number declaration.id)
-      | .string => pure (.string declaration.id)
-      | _ => refuse "Time" "component kind"
-  | _ => refuse "Time" "component"
-
-private def timeComponents (model : FlatModel) (group : GroupPath) :
-    List Argument → Lowering SurfaceTimeComponents
-  | [] => pure .empty
-  | [hour] => do pure (.hour (← timeComponent model group hour))
-  | [hour, minute] => do
-      pure (.minute (← timeComponent model group hour) (← timeComponent model group minute))
-  | [hour, minute, second] => do
-      pure (.second (← timeComponent model group hour) (← timeComponent model group minute)
-        (← timeComponent model group second))
-  | _ => refuse "Time" "arity"
 
 /-- A carrier's whole-document step, which exists only at a fixed target. -/
 private def fixedStep : Option (CheckedDocumentComputationStep model) →
@@ -111,30 +79,23 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
 def lowerDocumentStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) :
     Expr → Lowering (CheckedDocumentComputationStep model)
   | .string text => do
-      let source ← (authoredDateLiteral? text).getDM (refuse "StringLiteral")
+      let some source := authoredDateLiteral? text | return ← temporal (.string text)
       let operation ← elaborated "DateComputation" (checkDateLiteralComputation model group target.id source)
       (CheckedDocumentComputationStep.ofDateLiteral? operation).getDM
         (refuse "DateComputation" "row target")
   | .constant "True" => boolean true
   | .constant "False" => boolean false
   | .call "FirstFilledValue" arguments none none => firstFilledStep model group target arguments
-  | .call "Time" arguments none none => do
-      let components ← timeComponents model group arguments
-      let operation ← elaborated "Time" (elaborateTimeConstructionComputation model components target.id)
-      pure (.ofTimeConstruction operation)
-  | .call "DateFromDateTime" [.mk source none none] none none => do
-      let source ← fieldOperand model group "DateFromDateTime" source
-      let operation ← elaborated "DateFromDateTime"
-        (elaborateDateFromDateTimeComputation model source.id target.id)
-      pure (.ofDateFromDateTime operation)
-  | .call "TimeFromDateTime" [.mk source none none] none none => do
-      let source ← fieldOperand model group "TimeFromDateTime" source
-      let operation ← elaborated "TimeFromDateTime"
-        (elaborateTimeFromDateTimeComputation model source.id target.id)
-      pure (.ofTimeFromDateTime operation)
-  | other => refuse other.construct
+  | other => temporal other
 
 where
+  temporal (source : Expr) : Lowering (CheckedDocumentComputationStep model) := do
+    let surface ← lowerScalarTemporalExpression model group source
+    let expression ← elaborated "TemporalExpression"
+      (elaborateScalarTemporalExpression model group surface)
+    (CheckedDocumentComputationStep.ofScalarTemporalExpression? expression target.id).getDM
+      (refuse source.construct "temporal target or dependency")
+
   boolean (value : Bool) : Lowering (CheckedDocumentComputationStep model) := do
     let operation ← elaborated "BooleanComputation"
       (checkBooleanConstantComputation model group target.id value)

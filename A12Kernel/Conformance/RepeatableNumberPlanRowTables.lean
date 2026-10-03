@@ -50,7 +50,7 @@ private def entities : SurfaceFieldEntitySource :=
 
 private def one : DecodedNumericLiteral := { value := 1, authoredScale := 0 }
 
-private def step? (target : String) (guard : Option ComputationCondition)
+private def step? (target : String) (guard : Option (CheckedComputationCondition model))
     (expression : AuthoredNumericExpr SurfaceNumericComputationAtom) :
     Option (CheckedNumericComputationTable model) :=
   (elaborateCompleteNumericTargetComputationTable model rowsPath (idOf target)

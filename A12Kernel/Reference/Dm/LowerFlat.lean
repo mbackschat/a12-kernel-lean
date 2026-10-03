@@ -45,7 +45,7 @@ private def membershipOp? : String → Option ValueListMembershipOp
   | "FieldValueNotIncludedInValueList" => some .notIncluded
   | _ => none
 
-private def quantifier? : String → Option ValueListQuantifier
+def valueListQuantifier? : String → Option ValueListQuantifier
   | "AtLeastOneFieldValueIncludedInValueList" => some .atLeastOne
   | "NoFieldValueIncludedInValueList" => some .no
   | "NotAllFieldValuesIncludedInValueList" => some .notAll
@@ -134,7 +134,7 @@ partial def lowerFlat (model : FlatModel) (rowGroup : GroupPath) : Expr → Opti
   | .call "FieldFilled" [.mk field none none] none none => (field.fieldEntity?).map .fieldFilled
   | .call "FieldNotFilled" [.mk field none none] none none => (field.fieldEntity?).map .fieldNotFilled
   | .call id arguments listed none =>
-      match membershipOp? id, quantifier? id, listed with
+      match membershipOp? id, valueListQuantifier? id, listed with
       | some op, _, none => membership model rowGroup op arguments
       | _, some quantifier, some values => quantified model rowGroup quantifier arguments values
       | _, _, _ => none

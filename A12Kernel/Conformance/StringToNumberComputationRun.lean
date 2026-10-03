@@ -60,12 +60,12 @@ private def stringOperation? (expression : StringExpr SurfaceFieldPath) :
     model ["Form"] producerId expression).toOption
 
 private def stringTable? (rows : List
-    (ComputationCondition × StringExpr SurfaceFieldPath)) :
+    ((CheckedComputationCondition model) × StringExpr SurfaceFieldPath)) :
     Option (CheckedStringComputationTable model) := do
   let alternatives ← rows.mapM fun (guard, expression) => do
     let operation ← stringOperation? expression
     pure ({ precondition := guard, operation } :
-      ComputationAlternative (CheckedStringComputationOperation model))
+      CheckedComputationAlternative model (CheckedStringComputationOperation model))
   (certifyStringComputationTable alternatives).toOption
 
 private def numberOperation?
@@ -75,13 +75,12 @@ private def numberOperation?
     model ["Form"] consumerId expression true).toOption
 
 private def numberTable? (rows : List
-    (ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom)) :
+    ((CheckedComputationCondition model) × AuthoredNumericExpr SurfaceNumericAtom)) :
     Option (CheckedNumericComputationTable model) := do
   let alternatives ← rows.mapM fun (guard, expression) => do
     let operation ← numberOperation? expression
     pure ({ precondition := guard, operation } :
-      ComputationAlternative
-        (CheckedNumericTargetComputationOperation model))
+      CheckedComputationAlternative model (CheckedNumericTargetComputationOperation model))
   (certifyNumericComputationTable alternatives).toOption
 
 private def literalNumber (value : Rat) :

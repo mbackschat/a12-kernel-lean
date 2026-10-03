@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.ComputationNumericGuard
 import A12Kernel.Elaboration.NumericComputation.Evaluation
 import A12Kernel.Elaboration.ParallelComputationClearing
 
@@ -48,25 +49,25 @@ def CheckedParallelNumericClearingPlan.admitsGuardField
 /-- Whether every guard leaf belongs to one statically participating checked route. -/
 def parallelNumericDirectGuardAdmitted
     (routes : List (CheckedParallelNumericTargetRoute model)) :
-    Option ComputationCondition → Bool
+    Option (CheckedComputationCondition model) → Bool
   | none => true
   | some condition => referencesOnly condition
 where
-  referencesOnly : ComputationCondition → Bool
+  referencesOnly : CheckedComputationCondition model → Bool
     | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) =>
         routes.any fun route => route.admitsGuardField field
-    | .leaf (.numeric _) | .leaf (.text _) | .leaf (.fieldFill _ _) | .leaf (.groupPresence _ _) => false
+    | .leaf (.predicate _) | .leaf (.numeric _) | .leaf (.text _) | .leaf (.scalar _) | .leaf (.fieldFill _ _) | .leaf (.groupPresence _ _) => false
     | .and left right | .or left right =>
         referencesOnly left && referencesOnly right
 
 private def parallelNumericGuardFields :
-    Option ComputationCondition → List FieldId
+    Option (CheckedComputationCondition model) → List FieldId
   | none => []
   | some condition => fields condition
 where
-  fields : ComputationCondition → List FieldId
+  fields : CheckedComputationCondition model → List FieldId
     | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) => [field]
-    | .leaf (.numeric _) | .leaf (.text _) | .leaf (.fieldFill _ _) | .leaf (.groupPresence _ _) => []
+    | .leaf (.predicate _) | .leaf (.numeric _) | .leaf (.text _) | .leaf (.scalar _) | .leaf (.fieldFill _ _) | .leaf (.groupPresence _ _) => []
     | .and left right | .or left right => fields left ++ fields right
 
 /-- Admit one expression field exactly when it is a model-owned Number declaration addressable from the route's observed-group environment. Nested nonrepeatable groups remain legal; another repeatable or indexed scope does not. -/
@@ -123,7 +124,7 @@ structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
   private mk ::
   route : CheckedParallelNumericClearingPlan model
   additionalRoutes : List (CheckedParallelNumericTargetRoute model)
-  precondition : Option ComputationCondition
+  precondition : Option (CheckedComputationCondition model)
   suppressExactScaleWarning : Bool
   expression : AuthoredNumericExpr FlatFieldDecl
   guardExcludesTarget :
@@ -208,7 +209,7 @@ def WellFormed
       checked.operationScale = true
 
 inductive ExecutionError where
-  | guard (error : ComputationConditionError)
+  | guard (error : CheckedComputationConditionError)
   | marking (side : ParallelComputationIndexSide)
       (error : ParallelComputationMarkingError)
   | targetRows (error : ActualRowEnvironmentError)
@@ -434,7 +435,7 @@ private def FlatModel.resolveParallelNumericGuardRoutes
     (model : FlatModel) (declaringGroup : GroupPath)
     (primary : CheckedParallelNumericTargetRoute model)
     (additionalRoutes : List (CheckedParallelNumericTargetRoute model))
-    (precondition : Option ComputationCondition) :
+    (precondition : Option (CheckedComputationCondition model)) :
     Except ParallelNumericDirectPlanError
       (List (CheckedParallelNumericTargetRoute model)) := do
   let routes ← (parallelNumericGuardFields precondition).foldlM
@@ -467,7 +468,7 @@ private def FlatModel.resolveParallelNumericGuardRoutes
 /-- Certify target exclusion at the complete operation boundary. Keeping the direct guard and expression facts makes the checked operation's public self-reference invariant eliminable without reconstructing model paths in every consumer proof. -/
 private structure ParallelNumericTargetExclusion
     (target : FieldId)
-    (precondition : Option ComputationCondition)
+    (precondition : Option (CheckedComputationCondition model))
     (expression : AuthoredNumericExpr FlatFieldDecl) : Type where
   guard :
     (precondition.map
@@ -478,7 +479,7 @@ private structure ParallelNumericTargetExclusion
 
 private def checkParallelNumericTargetExclusion
     (target : FieldId)
-    (precondition : Option ComputationCondition)
+    (precondition : Option (CheckedComputationCondition model))
     (expression : AuthoredNumericExpr FlatFieldDecl) :
     Except ParallelNumericDirectPlanError
       (ParallelNumericTargetExclusion target precondition expression) :=
@@ -502,7 +503,7 @@ def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (operandReference : SurfaceFieldPath)
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
-    (precondition : Option ComputationCondition)
+    (precondition : Option (CheckedComputationCondition model))
     (suppressExactScaleWarning : Bool := false) :
     Except ParallelNumericDirectPlanError
       (CheckedIsolatedParallelNumericDirectRun model) := do
@@ -583,7 +584,7 @@ def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
 def checkIsolatedParallelNumericDirectRunWithGuard (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (operandReference : SurfaceFieldPath)
-    (precondition : Option ComputationCondition) :
+    (precondition : Option (CheckedComputationCondition model)) :
     Except ParallelNumericDirectPlanError
       (CheckedIsolatedParallelNumericDirectRun model) :=
   checkIsolatedParallelNumericExpressionRunWithGuard model declaringGroup

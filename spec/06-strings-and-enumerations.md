@@ -148,6 +148,12 @@ Runtime equality follows the family's ordinary value boundary: normalized evalua
 
 > **Non-normative implementation note.** Reuse the resolved value-list quantifiers: `Included → AtLeastOne`, `NotIncluded → NotAll`. Do not introduce Boolean negation or a second membership evaluator; those shortcuts lose the empty-subject and UNKNOWN-member asymmetries.
 
+### B.5 Computation preconditions preserve reached errors and traversal order
+
+Computation preconditions use computation-phase reads: a reached formally invalid operand poisons the computation rather than becoming validation's skipped or unknown operand. For field-valued member lists, `AtLeastOneFieldValueIncludedInValueList` and `NoFieldValueIncludedInValueList` collect the members before scanning the subjects. The subject scan stops on its deciding match. `AtLeastOne` with no present members returns not-true without reading the subjects; `No` still scans them. `NotAllFieldValuesIncludedInValueList` first searches for a present subject, then collects the members, then restarts the subject scan and stops at the first present value outside the member set. If the presence search finds none, it returns not-true without reading the members.
+
+The [computation guard grid](../docs/sources/computation-scheduling-probes.md#src-compositional-computation-guards) separates these orders on fixed String fields: a matching subject before an invalid subject decides `AtLeastOne` and `No`, an outside subject before an invalid subject decides `NotAll`, and an invalid member after a matching member still poisons. Empty subjects skip invalid members only under `NotAll`; empty members skip an invalid subject only under `AtLeastOne`. The checkpoint supplies the runtime/code-generation mechanism and bounds the external calibration; it does not establish filtered, repeated, category-projected or Number membership correspondence.
+
 ---
 
 ## Checklist for §7 + §8

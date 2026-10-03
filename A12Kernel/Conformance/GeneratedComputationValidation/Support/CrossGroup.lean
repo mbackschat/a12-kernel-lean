@@ -154,7 +154,7 @@ def crossGroupDayDifferenceExpectedMessage : FlatRuleMessage :=
 def crossGroupExpressionTable
     (secondTolerance : Option NumericToleranceRange := none) :
     Option (GeneratedComputationTable
-      (CheckedNumericComputationOperation crossGroupModel)) := do
+      (CheckedNumericComputationOperation crossGroupModel) (CheckedComputationCondition crossGroupModel)) := do
   let first ← crossGroupNumberOperation.toOption
   let second ← crossGroupOffsetOperation.toOption
   pure {
@@ -174,14 +174,14 @@ def selectedCrossGroupExpression :
     Option (AuthoredNumericExpr
       (CheckedNumericComputationAtom crossGroupModel)) := do
   let table ← crossGroupExpressionTable
-  match table.selectFirst {
+  match table.selectFirstCheckedNumeric {
       read := (crossGroupModel.checkContext (crossGroupRaw 3 3)).read } with
-  | .selected operation => some operation.core.expression
-  | .noMatch | .poison _ => none
+  | .ok (.selected operation) => some operation.core.expression
+  | _ => none
 
 def crossGroupExpressionTableOutcome
     (secondTolerance : Option NumericToleranceRange := none)
-    (common : Option ComputationCondition := none) : Option FlatRuleOutcome := do
+    (common : Option (CheckedComputationCondition crossGroupModel) := none) : Option FlatRuleOutcome := do
   let table ← crossGroupExpressionTable secondTolerance
   let rule ← (assembleGeneratedNumericOperationTableRule crossGroupModel
     { table with commonPrecondition := common }).toOption
@@ -192,7 +192,7 @@ def crossGroupExpressionSingletonOutcome
     (target : Rat) : Option FlatRuleOutcome := do
   let operation ← crossGroupNumberOperation.toOption
   let table : GeneratedComputationTable
-      (CheckedNumericComputationOperation crossGroupModel) := {
+      (CheckedNumericComputationOperation crossGroupModel) (CheckedComputationCondition crossGroupModel) := {
     targetField := crossGroupTarget.id
     name := "computedExpressionTable"
     alternatives := .singleton { operation }
@@ -212,7 +212,7 @@ def crossGroupAggregateTableOutcome (target : Rat) : Option FlatRuleOutcome := d
   let first ← crossGroupNumberOperation.toOption
   let second ← crossGroupAggregateOperation.toOption
   let table : GeneratedComputationTable
-      (CheckedNumericComputationOperation crossGroupModel) := {
+      (CheckedNumericComputationOperation crossGroupModel) (CheckedComputationCondition crossGroupModel) := {
     targetField := crossGroupTarget.id
     name := "computedAggregate"
     alternatives := .guarded {
@@ -289,7 +289,7 @@ def crossGroupExpressionTargetMismatch :
   let first ← crossGroupNumberOperation.toOption
   let second ← crossGroupOtherTargetOperation.toOption
   let table : GeneratedComputationTable
-      (CheckedNumericComputationOperation crossGroupModel) := {
+      (CheckedNumericComputationOperation crossGroupModel) (CheckedComputationCondition crossGroupModel) := {
     targetField := crossGroupTarget.id
     name := "mismatchedTargets"
     alternatives := .guarded {

@@ -52,7 +52,7 @@ private def prepared : PreparedFlatStringContext model builtinStringPatternCompi
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
-private def numberStep? (target : FieldId) (guard : Option ComputationCondition)
+private def numberStep? (target : FieldId) (guard : Option (CheckedComputationCondition model))
     (expression : AuthoredNumericExpr SurfaceNumericAtom) :
     Option (CheckedScalarComputationStep model) :=
   (elaborateNumericTargetComputationTable model ["Mix"] target [(guard, expression)]).toOption.map
@@ -111,6 +111,7 @@ private def reported : List FieldId := [n1Id, dtaId, dtbId, hId, kId, knId]
 /-- A computed value, `E ` before the attempted rendering of a target the Kernel retains as errored,
 or `-` for one it reports cleared without an error at it. -/
 private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
+  | .document _ (.valueError _) => none
   | .number target (.accepted value) => some (target, toString value.unscaled)
   | .number target .noValue | .number target (.inheritedPoison _) => some (target, "-")
   | .document target (.dateTime (.accepted stored)) => some (target, stored.text)

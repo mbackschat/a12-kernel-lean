@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ComputationCondition
+import A12Kernel.Elaboration.ComputationNumericGuard
 import A12Kernel.Elaboration.StringComputation
 import A12Kernel.Semantics.StringAlternatives
 
@@ -14,17 +14,17 @@ namespace A12Kernel
 /-- One row after its checked operation has been consolidated into the table's shared target. -/
 structure CheckedStringComputationAlternative (model : FlatModel) (target : FieldId) where
   declaringGroup : GroupPath
-  precondition : Option ComputationCondition
+  precondition : Option (CheckedComputationCondition model)
   expression : CheckedStringExpr model
   declaringGroupValid : GroupPath.isValid declaringGroup = true
-  guardWellFormed : precondition.all (·.wellFormedBool model) = true
+  guardWellFormed : precondition.all (·.wellFormedBool) = true
   guardExcludesTarget : precondition.all
     (fun guard => !guard.forbidsTarget target) = true
   expressionExcludesTarget : expression.core.referencesField target = false
 
 namespace CheckedStringComputationAlternative
 
-def toResolved (alternative : CheckedStringComputationAlternative model target) : ComputationAlternative StringExpr where
+def toResolved (alternative : CheckedStringComputationAlternative model target) : CheckedComputationAlternative model StringExpr where
   precondition := alternative.precondition
   operation := alternative.expression.core
 
@@ -63,15 +63,15 @@ the own guard alone, and the joined guard's read of the target refuses at the fi
 is where the walk judges the common precondition. -/
 private def certifyStringComputationAlternative
     (target : FieldId) (alternativeIndex : Nat) (guardRequired : Bool)
-    (commonPrecondition : Option ComputationCondition)
-    (own : ComputationAlternative (CheckedStringComputationOperation model)) :
+    (commonPrecondition : Option (CheckedComputationCondition model))
+    (own : CheckedComputationAlternative model (CheckedStringComputationOperation model)) :
     Except StringComputationTableError (CheckedStringComputationAlternative model target) := do
   if guardRequired && own.precondition.isNone then
     throw (.unguardedAlternative alternativeIndex)
-  let alternative : ComputationAlternative (CheckedStringComputationOperation model) :=
-    { own with precondition := ComputationCondition.withCommon commonPrecondition own.precondition }
+  let alternative : CheckedComputationAlternative model (CheckedStringComputationOperation model) :=
+    { own with precondition := CheckedComputationCondition.withCommon commonPrecondition own.precondition }
   if hSameTarget : alternative.operation.targetField = target then
-    if hGuard : alternative.precondition.all (·.wellFormedBool model) = true then
+    if hGuard : alternative.precondition.all (·.wellFormedBool) = true then
       if hTarget : alternative.precondition.all
           (fun guard => !guard.forbidsTarget target) = true then
         pure {
@@ -92,8 +92,8 @@ private def certifyStringComputationAlternative
     throw (.targetMismatch alternativeIndex target alternative.operation.targetField)
 
 private def certifyStringComputationAlternatives
-    (target : FieldId) (guardRequired : Bool) (commonPrecondition : Option ComputationCondition) :
-    Nat → List (ComputationAlternative (CheckedStringComputationOperation model)) →
+    (target : FieldId) (guardRequired : Bool) (commonPrecondition : Option (CheckedComputationCondition model)) :
+    Nat → List (CheckedComputationAlternative model (CheckedStringComputationOperation model)) →
       Except StringComputationTableError (List (CheckedStringComputationAlternative model target))
   | _, [] => pure []
   | alternativeIndex, alternative :: remaining => do
@@ -109,9 +109,9 @@ private def certifyStringComputationAlternatives
     unguarded, and its reads of the target are judged once, at the first row
     ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-self-read-alternative-walk)). -/
 def certifyStringComputationTable
-    (alternatives : List (ComputationAlternative
+    (alternatives : List (CheckedComputationAlternative model
       (CheckedStringComputationOperation model)))
-    (commonPrecondition : Option ComputationCondition := none) :
+    (commonPrecondition : Option (CheckedComputationCondition model) := none) :
     Except StringComputationTableError (CheckedStringComputationTable model) :=
   match alternatives with
   | [] => .error .empty
@@ -132,6 +132,11 @@ def certifyStringComputationTable
         targetAdmitted := first.operation.targetAdmitted
       }
 
+inductive CheckedStringComputationFault where
+  | operation (fault : StringComputationFault)
+  | guard (fault : CheckedComputationConditionError)
+  deriving Repr, DecidableEq
+
 namespace CheckedStringComputationTable
 
 /-- The checked alternatives in their authored encounter order. -/
@@ -145,7 +150,7 @@ def declaringGroups (table : CheckedStringComputationTable model) : List GroupPa
   table.selectableAlternatives.map (·.declaringGroup)
 
 /-- Erase only model certificates, retaining target, policy, guard order, and expression trees exactly. Prior target state is supplied by the later result-projection boundary. -/
-def toResolved (table : CheckedStringComputationTable model) (prior : PriorStringTarget) : StringAlternativeComputation where
+def toResolved (table : CheckedStringComputationTable model) (prior : PriorStringTarget) : StringAlternativeComputation (CheckedComputationCondition model) where
   targetField := table.targetField
   alternatives := table.selectableAlternatives.map (·.toResolved)
   targetPolicy := table.targetPolicy
@@ -153,9 +158,11 @@ def toResolved (table : CheckedStringComputationTable model) (prior : PriorStrin
 
 /-- Evaluate through the sole resolved first-match owner and an explicitly prepared target matcher. Selection completes before the chosen String expression can produce no value, rejection, or poison. -/
 def evaluateOutcomeWithPattern (table : CheckedStringComputationTable model)
-    (wholeValueMatches? : Option (String → Bool)) (context : StringComputationContext) :
-    Except StringComputationFault StringTargetOutcome :=
-  (table.toResolved .empty).evaluateOutcomeWithPattern wholeValueMatches? context
+    (wholeValueMatches? : Option (String → Bool)) (context : StringComputationContext)
+    (guardContext : ScalarComputationContext) :
+    Except CheckedStringComputationFault StringTargetOutcome :=
+  (table.toResolved .empty).evaluateOutcomeWithGuard
+    (fun condition => condition.evalChecked guardContext) .guard .operation wholeValueMatches? context
 
 end CheckedStringComputationTable
 

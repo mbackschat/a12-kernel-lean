@@ -49,16 +49,16 @@ private def operationAt (declaringGroup : GroupPath) (targetField : FieldId)
     Option (CheckedStringComputationOperation model) :=
   (elaborateStringComputationOperation model declaringGroup targetField expression).toOption
 
-private def alternative (guard : ComputationCondition) (op : CheckedStringComputationOperation model) :
-    ComputationAlternative (CheckedStringComputationOperation model) :=
+private def alternative (guard : (CheckedComputationCondition model)) (op : CheckedStringComputationOperation model) :
+    CheckedComputationAlternative model (CheckedStringComputationOperation model) :=
   { precondition := guard, operation := op }
 
 private def unguarded (op : CheckedStringComputationOperation model) :
-    ComputationAlternative (CheckedStringComputationOperation model) :=
+    CheckedComputationAlternative model (CheckedStringComputationOperation model) :=
   { precondition := none, operation := op }
 
 private def tableError
-    (alternatives : List (ComputationAlternative
+    (alternatives : List (CheckedComputationAlternative model
       (CheckedStringComputationOperation model))) :
     Option StringComputationTableError :=
   match certifyStringComputationTable alternatives with
@@ -66,21 +66,21 @@ private def tableError
   | .error error => some error
 
 private def tableOutcome
-    (alternatives : List (ComputationAlternative
+    (alternatives : List (CheckedComputationAlternative model
       (CheckedStringComputationOperation model)))
     (context : StringComputationContext) : Option StringTargetOutcome := do
   let table ← (certifyStringComputationTable alternatives).toOption
-  (table.evaluateOutcomeWithPattern none context).toOption
+  (table.evaluateOutcomeWithPattern none context context).toOption
 
 private def tableReferencesField
-    (alternatives : List (ComputationAlternative
+    (alternatives : List (CheckedComputationAlternative model
       (CheckedStringComputationOperation model)))
     (field : FieldId) : Option Bool := do
   let table ← (certifyStringComputationTable alternatives).toOption
   pure (table.referencesField field)
 
 private def tableDeclaringGroups
-    (alternatives : List (ComputationAlternative
+    (alternatives : List (CheckedComputationAlternative model
       (CheckedStringComputationOperation model))) : Option (List GroupPath) := do
   let table ← (certifyStringComputationTable alternatives).toOption
   pure table.declaringGroups
@@ -192,7 +192,7 @@ self-reading included, and a guarded first row or a sole unguarded one meets the
 The rows measured write a Number target (`self-read-alternative-walk-2026-10-02/static.tsv` C01,
 C05, C07, C11); a String target carries the same walk by assumption. -/
 example :
-    let common (field : FieldId) := some (ComputationCondition.fieldFilled field)
+    let common (field : FieldId) := some (CheckedComputationCondition.fieldFilled field)
     let error (field : FieldId) alternatives :=
       match certifyStringComputationTable alternatives (common field) with
       | .ok _ => none

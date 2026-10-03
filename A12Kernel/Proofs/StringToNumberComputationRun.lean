@@ -60,7 +60,7 @@ theorem stringToNumberRun_preservesFamilyOutcomes
     (outcomes : StringToNumberComputationOutcomes)
     (stringEvaluated :
       run.string.evaluateCompletion patterns
-        input.stringComputationContext = .ok string)
+        input.stringComputationContext (input.scalarComputationContext world) = .ok string)
     (numberEvaluated :
       run.number.evaluateCompletion
         (run.numberContextWithString world input string) = .ok number)

@@ -401,15 +401,15 @@ example :
         (lowerComputation model .english (computation guard)).toOption.isSome) := by
   native_decide
 
-private def textGuard (text : String) : Option ComputationCondition := do
+private def textGuard (text : String) : Option (CheckedComputationCondition model) := do
   let parsed ← (parseText .english text).toOption
   let surface ← (lowerGuard model ["Order"] false parsed.body).toOption
-  (model.elaborateComputationCondition ["Order"] ["Order"] surface).toOption
+  (model.elaborateCheckedComputationCondition ["Order"] ["Order"] surface).toOption
 
 private def textGuardEval (text : String) (first second : CheckedCell) :
     Option ComputationConditionResult := do
   let guard ← textGuard text
-  pure (guard.eval { read := fun id => if id == 1 then first else second })
+  (guard.evalChecked { read := fun id => if id == 1 then first else second }).toOption
 
 private def textEmpty : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
 private def textBad : CheckedCell := formalCheck { kind := .string } (.rejected .malformed)
@@ -440,9 +440,9 @@ private def enumGuardModel : FlatModel :=
 private def enumGuardEval (text : String) : Option ComputationConditionResult := do
   let parsed ← (parseText .english text).toOption
   let surface ← (lowerGuard enumGuardModel ["Order"] false parsed.body).toOption
-  let guard ← (enumGuardModel.elaborateComputationCondition ["Order"] ["Order"] surface).toOption
-  pure (guard.eval { read := fun field =>
-    if field == 11 then temporalCell (.enum "A") else temporalCell (.str "X") })
+  let guard ← (enumGuardModel.elaborateCheckedComputationCondition ["Order"] ["Order"] surface).toOption
+  (guard.evalChecked { read := fun field =>
+    if field == 11 then temporalCell (.enum "A") else temporalCell (.str "X") }).toOption
 
 example :
     [enumGuardEval "[E] == \"A\"", enumGuardEval "\"B\" != [E]",
@@ -488,7 +488,7 @@ example :
     (do
       let parsed ← (parseText .english "[Rows/Note] == \"A\"").toOption
       let surface ← (lowerGuard model ["Order"] false parsed.body).toOption
-      pure (!(model.elaborateComputationCondition ["Order"] ["Order"] surface).isOk)) = some true := by
+      pure (!(model.elaborateCheckedComputationCondition ["Order"] ["Order"] surface).isOk)) = some true := by
   native_decide
 
 /- A row target of a kind other than Number lowers onto the row step its operation names: a Date

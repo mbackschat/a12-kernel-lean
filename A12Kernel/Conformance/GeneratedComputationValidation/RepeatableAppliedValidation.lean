@@ -15,7 +15,7 @@ private def prepared : PreparedFlatStringContext repeatableModel
     repeatableModel).toOption.get (by native_decide)
 
 private def table? : Option (GeneratedComputationTable
-    (CheckedNumericComputationOperation repeatableModel)) := do
+    (CheckedNumericComputationOperation repeatableModel) (CheckedComputationCondition repeatableModel)) := do
   let operation ← repeatableAggregateOperation.toOption
   pure {
     targetField := target.id
@@ -25,7 +25,7 @@ private def table? : Option (GeneratedComputationTable
   }
 
 private def firstFilledTable? : Option (GeneratedComputationTable
-    (CheckedNumericComputationOperation repeatableModel)) := do
+    (CheckedNumericComputationOperation repeatableModel) (CheckedComputationCondition repeatableModel)) := do
   let operation ← repeatableFirstFilledOperation.toOption
   pure {
     targetField := target.id

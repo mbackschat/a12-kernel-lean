@@ -110,7 +110,7 @@ private def refusalOf (result : Lowering α) : Option (String × String) :=
   match result with | .ok _ => none | .error refusal => some (refusal.construct, refusal.detail)
 
 private def originalGuardRefusal : Option (String × String) :=
-  refusalOf (elaborated "Guard" (model.elaborateComputationCondition ["Form", "Supply"] ["Form", "Supply"]
+  refusalOf (elaborated "Guard" (model.elaborateCheckedComputationCondition ["Form", "Supply"] ["Form", "Supply"]
     (.fieldFilled { base := .absolute, groups := ["Form", "Demand"], field := "Amount" })))
 
 example : originalGuardRefusal.isSome ∧ ["1", "[Amount] + 1"].all (fun operation =>

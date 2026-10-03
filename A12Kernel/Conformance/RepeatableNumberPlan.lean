@@ -69,12 +69,12 @@ private def rootSum? : Option (CheckedNumericComputationTable model) := do
     (.atom (.aggregate .sum { first := .star outerStar, rest := [] }))).toOption
   let table ← (certifyNumericComputationTable
     [({ precondition := none, operation } :
-      ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
+      CheckedComputationAlternative model (CheckedNumericTargetComputationOperation model))]).toOption
   pure table
 
 private def row? (group : GroupPath) (target : FieldId)
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
-    (guard : Option ComputationCondition := none) :
+    (guard : Option (CheckedComputationCondition model) := none) :
     Option (CheckedNumericComputationTable model) :=
   (elaborateNumericTargetComputationTable model group target [(guard, expression)]
     (targetScope := .row)).toOption

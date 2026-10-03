@@ -16,14 +16,14 @@ private def literal (value : Rat) :
 private def rowExpression? (target : FieldId)
     (operand : SurfaceFieldPath)
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
-    (guard : ComputationCondition)
+    (guard : (CheckedComputationCondition model))
     (suppressExactScaleWarning : Bool := false) :=
   (checkIsolatedParallelNumericExpressionRunWithGuard
     model ["Plan"] target operand expression (some guard)
       suppressExactScaleWarning).toOption
 
 private def row? (target : FieldId) (operand : SurfaceFieldPath)
-    (guard : ComputationCondition) :=
+    (guard : (CheckedComputationCondition model)) :=
   rowExpression? target operand (.atom (.field operand)) guard
 
 private def table? (target : FieldId) (operand : SurfaceFieldPath)
@@ -60,7 +60,7 @@ private def noValueProducerTable? :
 
 private def unreadProducerConsumerTable? :
     Option (CheckedParallelNumericAlternativeTable model) := do
-  let guard := ComputationCondition.or
+  let guard := CheckedComputationCondition.or
     (.fieldFilled 6) (.fieldNotFilled 6)
   let first ← row? 2 offsetPath guard
   let second ← row? 2 inputPath (.fieldFilled 4)

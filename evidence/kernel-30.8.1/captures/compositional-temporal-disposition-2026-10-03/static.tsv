@@ -1,0 +1,14 @@
+row	target	operation	verdict	codes
+0	/G/D	DateFromDateTime(MinValue(Stamp,Output))	refused	MVK_UNEXPECTED_TOKEN
+1	/G/Target	AddHours(MinValue(Stamp,Output),1)	refused	MVK_UNEXPECTED_TOKEN
+2	/G/D	DateFromDateTime({Now})	refused	MVK_UNEXPECTED_TOKEN
+3	/G/Target	AddHours({Now},1)	refused	MVK_UNEXPECTED_TOKEN
+4	/G/D	DateFromDateTime(AddHours(Now,25))	admitted	-
+5	/G/Target	AddHours(AddSeconds(Now,1),1)	admitted	-
+6	/G/Target	MinValue(Stamp,Output)	admitted	-
+7	/G/Target	"AddSeconds(""31.03.2024T02:30:00"",1)"	admitted	-
+8	/G/Target	AddHours([Stamp],1)	refused	MVK_UNEXPECTED_TOKEN
+9	/G/Target	AddHours(Stamp,1)	admitted	-
+10	/G/D	DateFromDateTime([Stamp])	refused	MVK_UNEXPECTED_TOKEN
+11	/G/D	DateFromDateTime(Stamp)	admitted	-
+12	/G/Target	AddHours(Min(Now,Stamp),1)	refused	MVK_UNEXPECTED_TOKEN

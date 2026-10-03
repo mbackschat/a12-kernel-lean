@@ -78,7 +78,7 @@ def ResolvedGroupReference.requiresComputationProducer (reference : ResolvedGrou
 /-- Assemble a producer's present conditions across every authored computation of that target.
 Callers supply common-expanded conditions; the model-bound query accounts for implicit guards. -/
 def computationProducerProtection (model : FlatModel) (targetOf : Step → FieldId)
-    (conditionsOf : Step → List (Option ComputationCondition)) (steps : List Step)
+    (conditionsOf : Step → List (Option (ComputationConditionOf Atom Predicate))) (steps : List Step)
     (producer : FieldId) (reference : ResolvedGroupReference) : Bool :=
   model.computationProtectsGroup producer reference.path ComputationConditionLeaf.groupReference?
     ((steps.filter (fun step => targetOf step == producer)).flatMap conditionsOf)

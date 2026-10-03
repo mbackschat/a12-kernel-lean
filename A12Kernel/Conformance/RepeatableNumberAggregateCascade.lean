@@ -147,14 +147,14 @@ private def rootNumber (field : String) :
 
 private def scalarTable? (target : FieldId)
     (alternatives : List
-      (ComputationCondition ×
+      ((CheckedComputationCondition binaryModel) ×
         AuthoredNumericExpr SurfaceNumericComputationAtom)) :
     Option (CheckedNumericComputationTable binaryModel) := do
   let checked ← alternatives.mapM fun (precondition, expression) => do
     let operation ← (elaborateCompleteNumericTargetComputationOperation
       binaryModel ["Order"] target expression).toOption
     pure ({ precondition, operation } :
-      ComputationAlternative
+      CheckedComputationAlternative binaryModel
         (CheckedNumericTargetComputationOperation binaryModel))
   (certifyNumericComputationTable checked).toOption
 

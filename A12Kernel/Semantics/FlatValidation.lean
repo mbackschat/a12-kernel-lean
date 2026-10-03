@@ -281,26 +281,34 @@ def FlatContext.resolveNumberComparisonOperand (context : FlatContext)
   context.resolveNumberComparisonOperandAt .validation field
 
 /-- Resolve a Boolean field for direct comparison. Empty Boolean is not evaluated. -/
-def FlatContext.resolveBooleanComparisonOperand
-    (context : FlatContext) (field : FlatBooleanField) :
+def FlatContext.resolveBooleanComparisonOperandAt
+    (context : FlatContext) (phase : Phase) (field : FlatBooleanField) :
     SimpleComparisonOperand Bool :=
-  match context.observeValidationAt field.id with
+  match observeCell phase (context.read field.id) with
   | .empty => .notEvaluated
   | .value (.bool value) => .value value true
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
+def FlatContext.resolveBooleanComparisonOperand (context : FlatContext)
+    (field : FlatBooleanField) : SimpleComparisonOperand Bool :=
+  context.resolveBooleanComparisonOperandAt .validation field
+
 /-- Resolve a Confirm field for direct comparison. Empty Confirm substitutes false. -/
-def FlatContext.resolveConfirmComparisonOperand
-    (context : FlatContext) (field : FlatConfirmField) :
+def FlatContext.resolveConfirmComparisonOperandAt
+    (context : FlatContext) (phase : Phase) (field : FlatConfirmField) :
     SimpleComparisonOperand Bool :=
-  match context.observeValidationAt field.id with
+  match observeCell phase (context.read field.id) with
   | .empty => .value false false
   | .value (.conf true) => .value true true
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
+
+def FlatContext.resolveConfirmComparisonOperand (context : FlatContext)
+    (field : FlatConfirmField) : SimpleComparisonOperand Bool :=
+  context.resolveConfirmComparisonOperandAt .validation field
 
 /-- Resolve one String field for direct comparison at a chosen phase, mirroring the numeric pair
     above. There are no empty String *values*, so a present-empty cell and an absent one both

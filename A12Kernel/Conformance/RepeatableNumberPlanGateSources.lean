@@ -65,7 +65,7 @@ private def read (field : String) : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.field (bare field))
 
 private def step? (group : GroupPath) (targetScope : ComputationTargetScope) (target : FieldId)
-    (guard : Option ComputationCondition) (expression : AuthoredNumericExpr SurfaceNumericAtom) :
+    (guard : Option (CheckedComputationCondition model)) (expression : AuthoredNumericExpr SurfaceNumericAtom) :
     Option (CheckedNumericComputationTable model) :=
   (elaborateNumericTargetComputationTable model group target [(guard, expression)]
     (targetScope := targetScope)).toOption

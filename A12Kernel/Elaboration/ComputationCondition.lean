@@ -50,13 +50,27 @@ def ComputationGroupOperand.admitted (source : ComputationGroupOperand)
     source.content == model.computationGroupSource source.reference.path &&
     source.members == (model.groupSubtreeFields source.reference.path).map (·.id) &&
     source.reference.boundRepeatableScope == source.content.scope &&
-    source.content.scope.isPrefixOf scope
+    match source.starPath with
+    | none => source.content.scope.isPrefixOf scope
+    | some path =>
+        model.repeatableAxesForScope? source.content.scope == some path.axes &&
+          path.firstStar < path.axes.length && path.bindingScope.isPrefixOf scope
+
+/-- Scalar equality preserves exact model-owned kind and target-bound field identity. -/
+def FlatModel.admitsScalarGuardIn (model : FlatModel) (scope : List RepeatableLevel)
+    (comparison : FlatComparison) : Bool :=
+  let supported := match comparison with
+    | .boolean .. | .confirm .. => true
+    | _ => false
+  supported && comparison.fields.all fun field =>
+    model.ownsField field && (model.fieldRepeatableScope field.id).isPrefixOf scope
 
 namespace ComputationCondition
 
 /-- Check model ownership and fixed-target admission for every guard leaf. -/
 def wellFormedBool (condition : ComputationCondition) (model : FlatModel) : Bool :=
   match condition with
+  | .leaf (.predicate source) => nomatch source
   | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) =>
       match model.lookupUniqueId field with
       | .ok declaration => declaration.repeatableScope.isEmpty
@@ -64,6 +78,7 @@ def wellFormedBool (condition : ComputationCondition) (model : FlatModel) : Bool
   | .leaf (.fieldFill _ sources) => !sources.isEmpty && sources.all (·.admitted model [])
   | .leaf (.groupPresence _ source) => source.admitted model []
   | .leaf (.text comparison) => model.admitsTextComparisonIn [] comparison
+  | .leaf (.scalar comparison) => model.admitsScalarGuardIn [] comparison
   | .leaf (.numeric comparison) => computationNumericGuardAdmitted comparison model []
   | .and left right | .or left right =>
       left.wellFormedBool model && right.wellFormedBool model
@@ -72,6 +87,7 @@ def wellFormedBool (condition : ComputationCondition) (model : FlatModel) : Bool
 def rowBoundBool (condition : ComputationCondition) (model : FlatModel)
     (scope : List RepeatableLevel) : Bool :=
   match condition with
+  | .leaf (.predicate source) => nomatch source
   | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) =>
       match model.lookupUniqueId field with
       | .ok declaration => declaration.repeatableScope.isPrefixOf scope
@@ -79,6 +95,7 @@ def rowBoundBool (condition : ComputationCondition) (model : FlatModel)
   | .leaf (.fieldFill _ sources) => !sources.isEmpty && sources.all (·.admitted model scope)
   | .leaf (.groupPresence _ source) => source.admitted model scope
   | .leaf (.text comparison) => model.admitsTextComparisonIn scope comparison
+  | .leaf (.scalar comparison) => model.admitsScalarGuardIn scope comparison
   | .leaf (.numeric comparison) => computationNumericGuardAdmitted comparison model scope
   | .and left right | .or left right =>
       left.rowBoundBool model scope && right.rowBoundBool model scope
@@ -89,16 +106,31 @@ def WellFormed (condition : ComputationCondition) (model : FlatModel) : Prop :=
 end ComputationCondition
 
 /-- A computation precondition retaining authored numeric expressions and field paths. -/
-inductive SurfaceComputationCondition where
+inductive SurfaceComputationConditionOf (Atom : Type) (Predicate : Type := Empty) where
   | fieldFilled (field : SurfaceFieldPath)
   | fieldNotFilled (field : SurfaceFieldPath)
   | text (op : SurfaceComparisonOp) (left : SurfaceTextFieldOperand)
       (right : Sum SurfaceTextFieldOperand String)
-  | numeric (comparison : SurfaceNumericComparison)
+  | numeric (comparison : NumericComparisonOf Atom)
+  | predicate (source : Predicate)
+  | boolean (op : SurfaceComparisonOp) (field : SurfaceFieldPath) (expected : Bool)
   | fieldFill (operator : FieldFillQuantifier) (source : SurfaceFieldEntitySource)
   | groupPresence (operator : GroupPresenceOperator) (source : SurfaceGroupReference)
-  | and (left right : SurfaceComputationCondition)
-  | or (left right : SurfaceComputationCondition)
+  | groupFill (operator : GroupFillQuantifier) (source : SurfaceFieldEntitySource)
+  | and (left right : SurfaceComputationConditionOf Atom Predicate)
+  | or (left right : SurfaceComputationConditionOf Atom Predicate)
+  deriving Repr, DecidableEq
+
+abbrev SurfaceComputationCondition := SurfaceComputationConditionOf SurfaceNumericAtom
+
+/-- Group-list gates retain their own arity and star policy after shared entity resolution. -/
+inductive ComputationGroupListElabError where
+  | shape (error : FieldEntityShapeElabError)
+  | tooFewOperands
+  | rootRequiresSoleOperand (path : GroupPath)
+  | rootNotAllowed (path : GroupPath)
+  | starNotAllowed (operator : GroupFillQuantifier)
+  | unsupportedOperand
   deriving Repr, DecidableEq
 
 /-- Guard errors retain the owning predicate family's admission failure. -/
@@ -108,6 +140,7 @@ inductive ComputationConditionElabError where
   | text (error : ElabError)
   | fieldFill (error : FieldFillListElabError)
   | groupPresence (error : FixedGroupReferenceError)
+  | groupFill (error : ComputationGroupListElabError)
   deriving DecidableEq
 
 instance : Repr ComputationConditionElabError where
@@ -117,6 +150,7 @@ instance : Repr ComputationConditionElabError where
     | .text error => reprPrec error precedence
     | .fieldFill error => reprPrec error precedence
     | .groupPresence error => reprPrec error precedence
+    | .groupFill error => reprPrec error precedence
 
 private def numericGuardError : NumericValidationElabError → ComputationConditionElabError
   | .resolve error => .resolve error
@@ -211,11 +245,60 @@ private def FlatModel.elaborateComputationNumericGuard (model : FlatModel)
     pure (.leaf (.numeric comparison))
   else throw .unsupportedExpression
 
+/-- Resolve computation group lists with the common target-bound entity walk and overlap checks.
+The operator chooses whether a sole/root/starred operand is legal before each entity contributes
+its own presence leaves; fields are never replaced by their containing groups. -/
+def FlatModel.elaborateComputationGroupList (model : FlatModel)
+    (declaringGroup targetGroup : GroupPath) (operator : GroupFillQuantifier)
+    (authored : SurfaceFieldEntitySource) :
+    Except ComputationGroupListElabError ComputationCondition := do
+  let scope := model.repeatableScopeForGroupPath targetGroup
+  let operands ← (resolveFieldEntityOperands model declaringGroup scope (some targetGroup)
+    targetGroup (authored.first :: authored.rest)).mapError .shape
+  if let some unbound := model.firstUnboundComputationLevel? declaringGroup targetGroup
+      (operands.map ResolvedFieldEntityOperand.bindingScope) then
+    throw (.shape (.unboundOperandLevel unbound))
+  if let some duplicate := firstDuplicateResolvedEntityOperand? operands then
+    throw (.shape (match duplicate with
+      | .field (field, _) => .duplicateOperand field
+      | .fixedGroup path => .duplicateGroupOperand path))
+  if let some (left, right) := firstResolvedOperandOverlap? operands then
+    throw (.shape (.overlappingOperands left right))
+  if let some path := operands.findSome? ResolvedFieldEntityOperand.rootGroupPath? then
+    if operator.requiresMultipleOperands then throw (.rootNotAllowed path)
+    if operands.length != 1 then throw (.rootRequiresSoleOperand path)
+  let isStarred : ResolvedFieldEntityOperand model → Bool
+    | .starredGroup _ | .starredGroupPresence _ => true
+    | _ => false
+  if operator.requiresMultipleOperands then
+    if operands.any isStarred then throw (.starNotAllowed operator)
+    if operands.length < 2 then throw .tooFewOperands
+  let group (reference : ResolvedGroupReference) (starPath : Option StarPath := none) :=
+    let source : ComputationGroupOperand := {
+      reference := { reference with boundRepeatableScope := model.repeatableScopeForGroupPath reference.path }
+      content := model.computationGroupSource reference.path
+      members := (model.groupSubtreeFields reference.path).map (·.id)
+      starPath }
+    (ConditionTree.leaf (.groupPresence .filled source), ConditionTree.leaf (.groupPresence .notFilled source))
+  let conditions ← operands.mapM fun operand => match operand with
+    | .field declaration .stored => pure (ComputationCondition.fieldFilled declaration.id,
+        ComputationCondition.fieldNotFilled declaration.id)
+    | .group reference => pure (group reference)
+    | .starredGroup source => pure (group { path := source.group.path, origin := .path } (some source.path))
+    | .starredGroupPresence source => pure (group { path := source.groupPath, origin := .path } (some source.path))
+    | _ => throw .unsupportedOperand
+  match conditions with
+  | [] => throw .tooFewOperands
+  | first :: rest => pure (ComputationCondition.ofGroupList operator first rest)
+
 /-- Resolve a precondition's names left to right against a validated model, so its first unresolved
 name is the one reported. -/
 def FlatModel.elaborateComputationCondition (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) :
     SurfaceComputationCondition → Except ComputationConditionElabError ComputationCondition
+  | .predicate impossible => nomatch impossible
+  | .groupFill operator source =>
+      (model.elaborateComputationGroupList declaringGroup targetGroup operator source).mapError .groupFill
   | .groupPresence operator surface => do
       let reference ← (model.resolveFixedTargetGroupReference declaringGroup targetGroup surface).mapError .groupPresence
       let source : ComputationGroupOperand := {
@@ -235,6 +318,16 @@ def FlatModel.elaborateComputationCondition (model : FlatModel)
       (.leaf ∘ .fieldNotFilled) <$> (model.resolveComputationPresence declaringGroup targetGroup reference).mapError .resolve
   | .text op left right =>
       (model.elaborateComputationTextGuard declaringGroup targetGroup op left right).mapError textGuardError
+  | .boolean op reference expected => do
+      let declaration ← (model.resolveComputationFieldValueRead declaringGroup targetGroup reference).mapError .resolve
+      let some equality := op.toEquality? | throw (.text (.unsupportedOperator op))
+      let comparison ← match declaration.policy.kind with
+        | .boolean => pure (FlatComparison.boolean equality { id := declaration.id } expected)
+        | .confirm =>
+            if expected then pure (.confirm equality { id := declaration.id })
+            else throw (.text (.illegalConfirmLiteral declaration.path))
+        | kind => throw (.text (.literalKindMismatch declaration.path kind.surfaceKind .boolean))
+      pure (.leaf (.scalar comparison))
   | .numeric comparison =>
       (model.elaborateComputationNumericGuard declaringGroup targetGroup comparison).mapError numericGuardError
   | .and left right => do
@@ -245,12 +338,12 @@ def FlatModel.elaborateComputationCondition (model : FlatModel)
       pure (.or left (← model.elaborateComputationCondition declaringGroup targetGroup right))
 
 /-- An alternative whose guard its carrier admits, carrying that admission as evidence. -/
-abbrev AdmittedComputationAlternative (admits : ComputationCondition → Bool) (Operation : Type) :=
-  { alternative : ComputationAlternative Operation // alternative.precondition.all admits = true }
+abbrev AdmittedComputationAlternative {Guard : Type} (admits : Guard → Bool) (Operation : Type) :=
+  { alternative : ComputationAlternative Operation Guard // alternative.precondition.all admits = true }
 
-private def admitRemainingGuards {Operation : Type} (admits : ComputationCondition → Bool)
+private def admitRemainingGuards {Operation : Type} (admits : Guard → Bool)
     (position : Nat) :
-    List (ComputationAlternative Operation) →
+    List (ComputationAlternative Operation Guard) →
       Except Nat (List (AdmittedComputationAlternative admits Operation))
   | [] => .ok []
   | alternative :: rest =>
@@ -264,8 +357,8 @@ class, as the Kernel asks a guard's name and its index gates ahead of an unguard
 wherever either stands
 ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)), and
 consumes the admissions instead of asking again. -/
-def ComputationAlternative.admitGuards {Operation : Type} (admits : ComputationCondition → Bool)
-    (first : ComputationAlternative Operation) (remaining : List (ComputationAlternative Operation)) :
+def ComputationAlternative.admitGuards {Operation : Type} (admits : Guard → Bool)
+    (first : ComputationAlternative Operation Guard) (remaining : List (ComputationAlternative Operation Guard)) :
     Except Nat (AdmittedComputationAlternative admits Operation ×
       List (AdmittedComputationAlternative admits Operation)) :=
   if hAdmitted : first.precondition.all admits = true then do

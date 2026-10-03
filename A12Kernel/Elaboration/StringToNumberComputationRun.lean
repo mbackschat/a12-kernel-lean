@@ -105,7 +105,7 @@ def execute (run : CheckedStringToNumberComputationRun model)
     Except StringToNumberComputationRunFault
       StringToNumberComputationOutcomes :=
   match run.string.evaluateCompletion patterns
-      input.stringComputationContext with
+      input.stringComputationContext (input.scalarComputationContext world) with
   | .error cause => .error (.string cause)
   | .ok string =>
       match run.number.evaluateCompletion

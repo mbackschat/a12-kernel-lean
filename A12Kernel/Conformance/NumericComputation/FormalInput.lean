@@ -50,10 +50,10 @@ private def surfaceDirectExpression : AuthoredNumericExpr SurfaceNumericAtom :=
     field := directSource.name
   })
 
-private abbrev NumericRow := ComputationAlternative
+private abbrev NumericRow := CheckedComputationAlternative model
   (CheckedNumericTargetComputationOperation model)
 
-private def rowFor? (targetField : FieldId) (guard : ComputationCondition)
+private def rowFor? (targetField : FieldId) (guard : (CheckedComputationCondition model))
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (suppressExactScaleWarning : Bool := false) : Option NumericRow := do
   let operation ← (elaborateNumericTargetComputationOperation model ["Root"]
@@ -148,7 +148,7 @@ private def probeModel : FlatModel := {
       else declaration
 }
 
-private abbrev Row := ComputationAlternative
+private abbrev Row := CheckedComputationAlternative probeModel
   (CheckedNumericTargetComputationOperation probeModel)
 
 private def literal (value : Rat) : AuthoredNumericExpr SurfaceNumericAtom :=
@@ -158,7 +158,7 @@ private def unsupportedCalendar : AuthoredNumericExpr SurfaceNumericAtom :=
   surfaceDateDifference .months
     (.baseYear .direct) (surfaceDateOperand "Date")
 
-private def rowFor? (guard : ComputationCondition)
+private def rowFor? (guard : (CheckedComputationCondition probeModel))
     (expression : AuthoredNumericExpr SurfaceNumericAtom) : Option Row := do
   let operation ← (elaborateNumericTargetComputationOperation
     probeModel ["Root"] targetId expression).toOption

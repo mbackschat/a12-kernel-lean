@@ -10,7 +10,7 @@ open A12Kernel.Conformance.NumericComputation.Support
 
 private def table? (target : FieldId)
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
-    (guard : ComputationCondition := .fieldNotFilled laterId)
+    (guard : (CheckedComputationCondition model) := .fieldNotFilled laterId)
     (suppressExactScaleWarning : Bool := false) :
     Option (CheckedNumericComputationTable model) := do
   let operation ← (elaborateNumericTargetComputationOperation

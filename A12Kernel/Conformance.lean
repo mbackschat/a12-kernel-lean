@@ -131,6 +131,10 @@ import A12Kernel.Conformance.CustomFieldType
 import A12Kernel.Conformance.CustomFieldValidity
 import A12Kernel.Conformance.CustomFieldValidityOperand
 import A12Kernel.Conformance.TemporalExtremumOperands
+import A12Kernel.Conformance.ComputationNumericGuard
+import A12Kernel.Conformance.ComputationGroupQuantifiers
+import A12Kernel.Conformance.ComputationPredicate
+import A12Kernel.Conformance.ComputationValueList
 import A12Kernel.Conformance.TemporalExtremumReducedPrecision
 import A12Kernel.Conformance.TemporalExtremumStream
 import A12Kernel.Conformance.TemporalVocabularyCoverage

@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.TemporalExtremumOperands
 import A12Kernel.Semantics.TemporalFormat
+import A12Kernel.Elaboration.TemporalExpression
 
 /-! # A12Kernel.Conformance.TemporalExtremumOperands — the extrema's temporal operand gate
 
@@ -82,6 +83,83 @@ private def plainModel : FlatModel :=
 
 private def baseYearModel : FlatModel :=
   { fields := declarations ++ groupDeclarations, baseYear := some 2024 }
+
+private def temporalExpressionResult
+    (left right : SurfaceScalarTemporalExpression) : Option Verdict := do
+  let checked ← (elaborateScalarTemporalComparison plainModel ["Probe"] .equal left right).toOption
+  let empty : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
+  let context : FlatContext := {
+    read := fun _ => empty
+    world := some { now := { epochMillis := 0 } }
+  }
+  pure (checked.eval context)
+
+example :
+    temporalExpressionResult
+      (.timeFromDateTime (.subdayShift .hours .now (.literal { value := 25, authoredScale := 0 })))
+      (.timeFromDateTime (.subdayShift .hours .now (.literal { value := 1, authoredScale := 0 }))) = some (.fired .value) ∧
+    temporalExpressionResult
+      (.dateFromDateTime (.subdayShift .seconds .now (.literal { value := 86400, authoredScale := 0 })))
+      (.dateFromDateTime (.subdayShift .minutes .now (.literal { value := 1440, authoredScale := 0 }))) =
+        some (.fired .value) := by native_decide
+
+private def temporalExpressionOutcome (source : SurfaceScalarTemporalExpression)
+    (read : FieldId → CheckedCell) : Option (SimpleComparisonOperand ScalarTemporalValue) := do
+  let checked ← (elaborateScalarTemporalExpression plainModel ["Probe"] source).toOption
+  let context : FlatContext := { read, world := some { now := { epochMillis := 0 } } }
+  pure (checked.eval .computation context)
+
+example :
+    let amount : AuthoredNumericExpr SurfaceNumericAtom :=
+      .atom (.field { base := .relative 0, groups := [], field := "Amount" })
+    let missing : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
+    let poisoned (cause : FormalCause) : CheckedCell :=
+      { rawPresent := true, parsed := none, findings := [cause] }
+    temporalExpressionOutcome (.subdayShift .hours .now amount) (fun _ => missing) =
+      some (.value (.instant { epochMillis := 0 }) false) ∧
+    temporalExpressionOutcome
+      (.subdayShift .hours (.field { base := .relative 0, groups := [], field := "Stamp" }) amount)
+      (fun id => poisoned (if id == 9 then .dateFormat else .malformed)) =
+        some (.unknown .dateFormat) ∧
+    temporalExpressionOutcome
+      (.subdayShift .hours (.field { base := .relative 0, groups := [], field := "Stamp" }) amount)
+      (fun id => if id == 9 then missing else poisoned .malformed) =
+        some (.unknown .malformed) := by native_decide
+
+example :
+    temporalExpressionResult (.timeConstruction (.minute (.constant "1") (.constant "30")))
+      (.timeFromDateTime (.subdayShift .minutes .now (.literal { value := 90, authoredScale := 0 }))) =
+        some (.fired .value) := by native_decide
+
+example :
+    temporalExpressionResult (.group .now) .now = some (.fired .value) ∧
+      temporalExpressionResult (.group .now) (.group .now) = none := by native_decide
+
+private def berlinGap : LocalDateTime :=
+  (LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide)
+
+private def berlinTemporalResult (source : SurfaceScalarTemporalExpression) := do
+  let checked ← (elaborateScalarTemporalExpression
+    { plainModel with timeZoneId := "Europe/Berlin" } ["Probe"] source).toOption
+  let empty : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
+  pure (match checked.evalResult .computation {
+    read := fun _ => empty
+    world := some { now := { epochMillis := 0 } }
+  } with
+    | .error cause => some cause
+    | .ok _ => none)
+
+example :
+    berlinTemporalResult (.dateTimeLiteral berlinGap) = some (some .dateTimeLabelUnresolved) ∧
+    berlinTemporalResult
+      (.subdayShift .seconds (.dateTimeLiteral berlinGap)
+        (.literal { value := 1, authoredScale := 0 })) = some (some .dateTimeLabelUnresolved) ∧
+    berlinTemporalResult (.dateFromDateTime (.dateTimeLiteral berlinGap)) =
+      some (some .dateTimeLabelUnresolved) ∧
+    berlinTemporalResult (.timeFromDateTime (.dateTimeLiteral berlinGap)) =
+      some (some .dateTimeLabelUnresolved) ∧
+    berlinTemporalResult (.combine .minimum .now (.dateTimeLiteral berlinGap)) =
+      some (some .dateTimeLabelUnresolved) := by native_decide
 
 /-- A repeatable row carrying a full-date field and a numeric guard, plus a **non**-repeatable `Sub`
     beneath it. `Sub` is what makes the starred-group *presence* form reachable from the surface:

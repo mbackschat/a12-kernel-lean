@@ -81,26 +81,33 @@ structure ComputationGroupOperand where
   reference : ResolvedGroupReference
   content : ResolvedComputationGroupSource
   members : List FieldId
+  starPath : Option StarPath := none
   deriving Repr, DecidableEq
 
 /-- Atomic leaves of the parser-independent computation-condition fragment. -/
-inductive ComputationConditionLeaf where
+inductive ComputationConditionLeaf (Atom : Type := ComputationNumericAtom) (Predicate : Type := Empty) where
   | fieldFilled (field : FieldId)
   | fieldNotFilled (field : FieldId)
-  | numeric (comparison : NumericComparisonOf ComputationNumericAtom)
+  | numeric (comparison : NumericComparisonOf Atom)
+  | predicate (source : Predicate)
   /-- The certifier restricts this shared comparison carrier to String/Enumeration forms. -/
   | text (comparison : FlatComparison)
+  /-- Boolean/Confirm scalar comparisons retain their distinct empty policies. -/
+  | scalar (comparison : FlatComparison)
   | fieldFill (operator : FieldFillQuantifier) (sources : List ComputationFillSource)
   | groupPresence (operator : GroupPresenceOperator) (source : ComputationGroupOperand)
   deriving Repr, DecidableEq
 
 def ComputationConditionLeaf.groupReference? :
-    ComputationConditionLeaf → Option (GroupPresenceOperator × ResolvedGroupReference)
+    ComputationConditionLeaf Atom Predicate → Option (GroupPresenceOperator × ResolvedGroupReference)
   | .groupPresence operator source => some (operator, source.reference)
   | _ => none
 
 /-- Computation control reuses the common checked connective tree; its phase-specific leaves and result projection differ from validation. -/
-abbrev ComputationCondition := ConditionTree ComputationConditionLeaf
+abbrev ComputationConditionOf (Atom : Type) (Predicate : Type := Empty) :=
+  ConditionTree (ComputationConditionLeaf Atom Predicate)
+
+abbrev ComputationCondition := ComputationConditionOf ComputationNumericAtom
 
 namespace CellObservation
 
@@ -122,6 +129,47 @@ def evalComputationNotFilled : CellObservation → ComputationConditionResult
 
 end CellObservation
 
+namespace ComputationConditionOf
+
+/-- Numeric leaves supply their structural inventory; primitive identities remain unchanged. -/
+def referencesFieldWith (condition : ComputationConditionOf Atom Predicate)
+    (references : Atom → FieldId → Bool) (predicateReferences : Predicate → FieldId → Bool)
+    (target : FieldId) : Bool :=
+  condition.anyLeaf fun
+    | .predicate source => predicateReferences source target
+    | .fieldFilled field | .fieldNotFilled field => field == target
+    | .fieldFill _ sources => sources.any (·.field == target)
+    | .groupPresence _ source => source.members.contains target
+    | .text comparison | .scalar comparison => comparison.fieldIds.contains target
+    | .numeric comparison => comparison.left.anyAtom (fun atom => references atom target) ||
+        comparison.right.anyAtom (fun atom => references atom target)
+
+def forbidsTargetWith (condition : ComputationConditionOf Atom Predicate)
+    (references : Atom → FieldId → Bool) (predicateReferences : Predicate → FieldId → Bool)
+    (target : FieldId) : Bool :=
+  match condition with
+  | .leaf (.groupPresence .filled _) => false
+  | .and left right | .or left right =>
+      forbidsTargetWith left references predicateReferences target || forbidsTargetWith right references predicateReferences target
+  | leaf => referencesFieldWith leaf references predicateReferences target
+
+def requiresProducerWith (condition : ComputationConditionOf Atom Predicate)
+    (references : Atom → FieldId → Bool) (predicateReferences : Predicate → FieldId → Bool)
+    (consumer producer : FieldId)
+    (producerProtected : ResolvedGroupReference → Bool) : Bool :=
+  match condition with
+  | .leaf (.groupPresence operator source) =>
+      let member := source.members.contains producer
+      let conditional := operator == .filled && source.members.contains consumer
+      ComputationGroupDependency.requiresProducer (member && !conditional)
+        (member && conditional) (consumer == producer) (producerProtected source.reference)
+  | .and left right | .or left right =>
+      requiresProducerWith left references predicateReferences consumer producer producerProtected ||
+        requiresProducerWith right references predicateReferences consumer producer producerProtected
+  | leaf => referencesFieldWith leaf references predicateReferences producer
+
+end ComputationConditionOf
+
 namespace ComputationCondition
 
 abbrev fieldFilled (field : FieldId) : ComputationCondition :=
@@ -136,49 +184,58 @@ abbrev and (left right : ComputationCondition) : ComputationCondition :=
 abbrev or (left right : ComputationCondition) : ComputationCondition :=
   ConditionTree.or left right
 
+/-- Group-list predicates compose each entity's own positive and negative presence tests.
+The source expansion uses the same structure (`ExpandService.expandAndCreate`); retaining the
+leaves also preserves conditional group dependencies instead of flattening them to field reads. -/
+def ofGroupList (operator : GroupFillQuantifier)
+    (first : ComputationCondition × ComputationCondition)
+    (rest : List (ComputationCondition × ComputationCondition)) : ComputationCondition :=
+  let positives (join : ComputationCondition → ComputationCondition → ComputationCondition) :=
+    rest.foldl (fun accumulated next => join accumulated next.1) first.1
+  let negatives (join : ComputationCondition → ComputationCondition → ComputationCondition) :=
+    rest.foldl (fun accumulated next => join accumulated next.2) first.2
+  match operator with
+  | .allGroupsFilled => positives .and
+  | .noGroupFilled => negatives .and
+  | .atLeastOneGroupFilled => positives .or
+  | .notAllGroupsFilled => negatives .or
+  | .groupsNotCollectivelyFilled => .and (positives .or) (negatives .or)
+
 /-- Complete operand membership, including a target contained by its positive group guard.
 Static target bans and conditional scheduling use separate queries. -/
 def referencesField (condition : ComputationCondition) (target : FieldId) : Bool :=
-  match condition with
-  | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) => field == target
-  | .leaf (.fieldFill _ sources) => sources.any (·.field == target)
-  | .leaf (.groupPresence _ source) => source.members.contains target
-  | .leaf (.text comparison) => comparison.fieldIds.contains target
-  | .leaf (.numeric comparison) =>
-      comparison.left.anyAtom (·.referencesField target) ||
-        comparison.right.anyAtom (·.referencesField target)
-  | .and left right | .or left right =>
-      left.referencesField target || right.referencesField target
+  ComputationConditionOf.referencesFieldWith condition ComputationNumericAtom.referencesField
+    (fun source => nomatch source) target
 
 /-- The positive ancestor-group carve-out changes the target ban, not operand membership
 ([`spec/09`](../../spec/09-computations.md) §5). Other reads keep their complete structural inventory. -/
 def forbidsTarget (condition : ComputationCondition) (target : FieldId) : Bool :=
-  match condition with
-  | .leaf (.groupPresence .filled _) => false
-  | .and left right | .or left right => left.forbidsTarget target || right.forbidsTarget target
-  | leaf => leaf.referencesField target
+  ComputationConditionOf.forbidsTargetWith condition ComputationNumericAtom.referencesField
+    (fun source => nomatch source) target
 
 /-- Preserve ordinary dependencies while consulting the producer profile only for a positive
 containing-group read. The complete operand inventory remains available in `referencesField`. -/
 def requiresProducer (condition : ComputationCondition) (consumer producer : FieldId)
     (producerProtected : ResolvedGroupReference → Bool) : Bool :=
-  match condition with
-  | .leaf (.groupPresence operator source) =>
-      let member := source.members.contains producer
-      let conditional := operator == .filled && source.members.contains consumer
-      ComputationGroupDependency.requiresProducer (member && !conditional)
-        (member && conditional) (consumer == producer) (producerProtected source.reference)
-  | .and left right | .or left right =>
-      left.requiresProducer consumer producer producerProtected || right.requiresProducer consumer producer producerProtected
-  | leaf => leaf.referencesField producer
+  ComputationConditionOf.requiresProducerWith condition ComputationNumericAtom.referencesField
+    (fun source => nomatch source) consumer producer producerProtected
 
 /-- Group content uses the addressed overlay whenever topology is needed. A missing overlay is
 structural failure, never evidence that no descendant row exists. -/
 def evalGroupPresence (operator : GroupPresenceOperator) (source : ComputationGroupOperand)
     (context : ScalarComputationContext) : Except ComputationConditionError ComputationConditionResult :=
   match context.addressed with
-  | some addressed =>
-      (source.content.eval operator addressed.document addressed.read context.row).mapError .binding
+  | some addressed => do
+      match source.starPath with
+      | none => (source.content.eval operator addressed.document addressed.read context.row).mapError .binding
+      | some path =>
+          let resolved ← (path.resolveInCapacity addressed.document context.row).mapError
+            (ComputationConditionError.fieldFill ∘ ComputationFillError.addressing)
+          let instances ← resolved.environments.mapM fun environment =>
+            (source.content.eval .filled addressed.document addressed.read environment).mapError .binding
+          let present := instances.any (· == .holds)
+          pure (if (match operator with | .filled => present | .notFilled => !present)
+            then .holds else .notTrue)
   | none =>
       if source.content.rowLevels.isEmpty then
         (source.content.eval operator { instantiatedRows := [], rawCells := fun _ => none }
@@ -190,6 +247,27 @@ def evalFieldFilled (context : ScalarComputationContext)
     (field : FieldId) : ComputationConditionResult :=
   (observeCell .computation (context.read field)).evalComputationFilled
 
+/-- Equality consumes typed operands after their phase-specific reads. Unavailability precedes
+empty comparison suppression, shared by token and Boolean/Confirm comparisons. -/
+def evalSimpleEquality [BEq α] (op : EqualityOp)
+    (left right : SimpleComparisonOperand α) : ComputationConditionResult :=
+  match left, right with
+  | .unknown cause, _ | _, .unknown cause => .poison cause
+  | .notEvaluated, _ | _, .notEvaluated => .notTrue
+  | .value left _, .value right _ => if op.holds (left == right) then .holds else .notTrue
+
+/-- Boolean and Confirm guards use computation observations; the owning readers retain Boolean's
+suppressed empty comparison and Confirm's false substitution (`spec/02` §A.3). -/
+def evalScalarComparison (comparison : FlatComparison)
+    (context : ScalarComputationContext) : ComputationConditionResult :=
+  let read : FlatContext := { read := context.read }
+  match comparison with
+  | .boolean op field expected =>
+      evalSimpleEquality op (read.resolveBooleanComparisonOperandAt .computation field) (.value expected true)
+  | .confirm op field =>
+      evalSimpleEquality op (read.resolveConfirmComparisonOperandAt .computation field) (.value true true)
+  | _ => .notTrue
+
 /-- Text guards reuse declaration-checked projections. Formal unavailability dominates an empty
 partner, as measured by the empty-before-invalid rows in `src-text-computation-guards`. -/
 def evalTextComparison (comparison : FlatComparison)
@@ -199,11 +277,7 @@ def evalTextComparison (comparison : FlatComparison)
     | .empty => .notEvaluated
     | .present value => .value value true
     | .unknown cause => .unknown cause
-  let compare (op : EqualityOp) (left right : SimpleComparisonOperand String) :=
-    match left, right with
-    | .unknown cause, _ | _, .unknown cause => ComputationConditionResult.poison cause
-    | .notEvaluated, _ | _, .notEvaluated => .notTrue
-    | .value left _, .value right _ => if op.holds (left == right) then .holds else .notTrue
+  let compare := evalSimpleEquality (α := String)
   match comparison with
   | .string op field expected => compare op (read (.string field))
       (if expected.isEmpty then .notEvaluated else .value expected true)
@@ -217,19 +291,64 @@ def evalFieldFill (operator : FieldFillQuantifier) (sources : List ComputationFi
   let slots ← sources.mapM (·.slots context.read context.row context.addressed)
   pure (operator.evalComputation slots.flatten)
 
+end ComputationCondition
+
+namespace ComputationConditionOf
+
+/-- Preserve every primitive guard while changing only its numeric source representation. -/
+def mapNumericM (transform : Atom → Except Error Other)
+    (predicate : Predicate → Except Error OtherPredicate) :
+    ComputationConditionOf Atom Predicate → Except Error (ComputationConditionOf Other OtherPredicate)
+  | .leaf (.numeric comparison) => do
+      let left ← comparison.left.mapM transform
+      let right ← comparison.right.mapM transform
+      pure (.leaf (.numeric { comparison with left, right }))
+  | .leaf (.predicate source) => (.leaf ∘ .predicate) <$> predicate source
+  | .leaf (.fieldFilled field) => pure (.leaf (.fieldFilled field))
+  | .leaf (.fieldNotFilled field) => pure (.leaf (.fieldNotFilled field))
+  | .leaf (.text comparison) => pure (.leaf (.text comparison))
+  | .leaf (.scalar comparison) => pure (.leaf (.scalar comparison))
+  | .leaf (.fieldFill operator sources) => pure (.leaf (.fieldFill operator sources))
+  | .leaf (.groupPresence operator source) => pure (.leaf (.groupPresence operator source))
+  | .and left right => do pure (.and (← mapNumericM transform predicate left) (← mapNumericM transform predicate right))
+  | .or left right => do pure (.or (← mapNumericM transform predicate left) (← mapNumericM transform predicate right))
+
+/-- All checked source families share the ordered connective and numeric comparison owners.
+The reader retains its typed atom and structural error; it cannot certify an unchecked leaf. -/
+def evalCheckedWith (condition : ComputationConditionOf Atom Predicate) (context : ScalarComputationContext)
+    (primitiveError : ComputationConditionError → Error)
+    (read : Atom → Except Error NumericComputationResult)
+    (evaluatePredicate : Predicate → Except Error ComputationConditionResult) :
+    Except Error ComputationConditionResult :=
+  condition.evalComputationExcept fun
+    | .numeric comparison => comparison.evalComputationWith read
+    | .predicate source => evaluatePredicate source
+    | .fieldFilled field => pure (ComputationCondition.evalFieldFilled context field)
+    | .fieldNotFilled field => pure ((observeCell .computation (context.read field)).evalComputationNotFilled)
+    | .text comparison => pure (ComputationCondition.evalTextComparison comparison context)
+    | .scalar comparison => pure (ComputationCondition.evalScalarComparison comparison context)
+    | .fieldFill operator sources =>
+        (ComputationCondition.evalFieldFill operator sources context).mapError (primitiveError ∘ .fieldFill)
+    | .groupPresence operator source =>
+        (ComputationCondition.evalGroupPresence operator source context).mapError primitiveError
+
+def withCommon (common own : Option (ComputationConditionOf Atom Predicate)) :
+    Option (ComputationConditionOf Atom Predicate) :=
+  match common, own with
+  | none, own => own
+  | some common, none => some common
+  | some common, some own => some (.and common own)
+
+end ComputationConditionOf
+
+namespace ComputationCondition
+
 /-- Evaluate a resolved leaf through computation-phase reads; the pure compatibility entry assumes its row context is complete. -/
-def ComputationConditionLeaf.eval (context : ScalarComputationContext) :
-    ComputationConditionLeaf → ComputationConditionResult
-  | .fieldFilled field => evalFieldFilled context field
-  | .fieldNotFilled field =>
-      (observeCell .computation (context.read field)).evalComputationNotFilled
-  | .text comparison => evalTextComparison comparison context
-  | .groupPresence operator source =>
-      (evalGroupPresence operator source context).toOption.getD .notTrue
-  | .fieldFill operator sources =>
-      (evalFieldFill operator sources context).toOption.getD .notTrue
-  | .numeric comparison =>
-      (comparison.evalComputationWith (ComputationNumericAtom.read context)).toOption.getD .notTrue
+def ComputationConditionLeaf.eval (context : ScalarComputationContext)
+    (leaf : ComputationConditionLeaf) : ComputationConditionResult :=
+  (ComputationConditionOf.evalCheckedWith (.leaf leaf) context id
+    (fun atom => (atom.read context).mapError ComputationConditionError.binding)
+    (fun source => nomatch source)).toOption.getD .notTrue
 
 /-- Evaluate a computation condition left-to-right. `And` stops on clean not-true, `Or` stops on clean holds, and a poison already read aborts without consulting the remaining operand. -/
 def eval (condition : ComputationCondition)
@@ -240,12 +359,8 @@ def eval (condition : ComputationCondition)
 non-holding fallback for a context outside its row contract. -/
 def evalChecked (condition : ComputationCondition) (context : ScalarComputationContext) :
     Except ComputationConditionError ComputationConditionResult :=
-  condition.evalComputationExcept fun
-    | .numeric comparison =>
-        (comparison.evalComputationWith (ComputationNumericAtom.read context)).mapError .binding
-    | .fieldFill operator sources => (evalFieldFill operator sources context).mapError .fieldFill
-    | .groupPresence operator source => evalGroupPresence operator source context
-    | leaf => pure (ComputationConditionLeaf.eval context leaf)
+  ComputationConditionOf.evalCheckedWith condition context id
+    (fun atom => (atom.read context).mapError .binding) (fun source => nomatch source)
 
 theorem evalChecked_and (context : ScalarComputationContext) (left right : ComputationCondition) :
     (and left right).evalChecked context = match left.evalChecked context with
@@ -295,9 +410,11 @@ theorem eval_or (context : ScalarComputationContext)
 
 end ComputationCondition
 
+
+
 /-- One ordered computation alternative. An absent precondition selects its operation directly without fabricating a field read; the payload remains unevaluated during selection. -/
-structure ComputationAlternative (Operation : Type) where
-  precondition : Option ComputationCondition := none
+structure ComputationAlternative (Operation : Type) (Guard : Type := ComputationCondition) where
+  precondition : Option Guard := none
   operation : Operation
   deriving Repr, DecidableEq
 
@@ -313,10 +430,7 @@ common guard is the left operand so clean false and poison decide before the alt
 guard. -/
 def ComputationCondition.withCommon (commonPrecondition own : Option ComputationCondition) :
     Option ComputationCondition :=
-  match commonPrecondition, own with
-  | none, own => own
-  | some common, none => some common
-  | some common, some own => some (.and common own)
+  ComputationConditionOf.withCommon commonPrecondition own
 
 namespace ComputationAlternative
 
@@ -335,8 +449,8 @@ def expandCommonPrecondition
 
 /-- One ordered scan shared by pure and structurally checked guard evaluation. -/
 def selectFirstWith [Monad m]
-    (evaluate : ComputationCondition → m ComputationConditionResult)
-    (alternatives : List (ComputationAlternative Operation)) :
+    (evaluate : Guard → m ComputationConditionResult)
+    (alternatives : List (ComputationAlternative Operation Guard)) :
     m (ComputationAlternativeSelection Operation) :=
   match alternatives with
   | [] => pure .noMatch

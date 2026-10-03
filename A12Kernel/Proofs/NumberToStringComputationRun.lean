@@ -54,7 +54,7 @@ theorem numberToStringRun_preservesFamilyOutcomes
         .ok number)
     (stringEvaluated :
       run.string.evaluateCompletion patterns
-        (run.stringContext input number.outcome) = .ok string)
+        (run.stringContext input number.outcome) (run.guardContext world input number.outcome) = .ok string)
     (executed : run.execute world patterns input = .ok outcomes) :
     outcomes.number = (number.targetField, number.outcome) ∧
       outcomes.string = (string.targetField, string.outcome) := by

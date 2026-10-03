@@ -95,7 +95,7 @@ private def numberStep? (target : FieldId) (expression : AuthoredNumericExpr Sur
     Option (CheckedScalarComputationStep model) :=
   (elaborateNumericTargetComputationTable model ["Gd"] target [(none, expression)]).toOption.map .number
 
-private def guarded? (guard : ComputationCondition) (step : Option (CheckedDocumentComputationStep model)) :
+private def guarded? (guard : (CheckedComputationCondition model)) (step : Option (CheckedDocumentComputationStep model)) :
     Option (CheckedScalarComputationStep model) := do
   pure (.document (← (← step).guard? guard))
 
@@ -114,7 +114,7 @@ private def enumerationCopy? : Option (CheckedDocumentComputationStep model) :=
   (elaborateEnumerationComputation model ["Gd"] ecId (.field (.direct (bare "E0")))).toOption.map
     .ofEnumeration
 
-private def filled (field : FieldId) : ComputationCondition := .leaf (.fieldFilled field)
+private def filled (field : FieldId) : (CheckedComputationCondition model) := .leaf (.fieldFilled field)
 
 /-- The model's computations in its authored order, every reader ahead of what it reads. -/
 private def authored : List (CheckedScalarComputationStep model) :=
@@ -174,6 +174,7 @@ private def reported : List FieldId :=
 
 /-- A computed value, or `-` for one the Kernel reports cleared. -/
 private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
+  | .document _ (.valueError _) => none
   | .number target (.accepted value) => some (target, toString value.unscaled)
   | .number target .noValue | .number target (.inheritedPoison _) => some (target, "-")
   | .document target (.fullDate (.accepted stored)) => some (target, stored.text)

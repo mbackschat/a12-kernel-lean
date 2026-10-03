@@ -1,0 +1,69 @@
+{
+  "model": "TemporalFamily_DM.json",
+  "clock": "2026-10-02T00:00:00Z",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "empty",
+      "documentInline": {
+        "G": {
+          "DateProjection": "2020-01-01",
+          "TimeProjection": "00:00:00",
+          "TimeConstruction": "00:00:00",
+          "ShiftedStamp": "2020-01-01T00:00:00",
+          "NestedStamp": "2020-01-01T00:00:00",
+          "EarlierStamp": "2020-01-01T00:00:00"
+        }
+      }
+    },
+    {
+      "name": "filled",
+      "documentInline": {
+        "G": {
+          "DateProjection": "2020-01-01",
+          "TimeProjection": "00:00:00",
+          "TimeConstruction": "00:00:00",
+          "ShiftedStamp": "2020-01-01T00:00:00",
+          "NestedStamp": "2020-01-01T00:00:00",
+          "EarlierStamp": "2020-01-01T00:00:00",
+          "Stamp": "2024-03-05T12:30:00",
+          "Output": "2024-03-06T12:30:00"
+        }
+      }
+    },
+    {
+      "name": "invalid-stamp",
+      "documentInline": {
+        "G": {
+          "DateProjection": "2020-01-01",
+          "TimeProjection": "00:00:00",
+          "TimeConstruction": "00:00:00",
+          "ShiftedStamp": "2020-01-01T00:00:00",
+          "NestedStamp": "2020-01-01T00:00:00",
+          "EarlierStamp": "2020-01-01T00:00:00",
+          "Stamp": "bad",
+          "Output": "2024-03-06T12:30:00"
+        }
+      }
+    },
+    {
+      "name": "invalid-other",
+      "documentInline": {
+        "G": {
+          "DateProjection": "2020-01-01",
+          "TimeProjection": "00:00:00",
+          "TimeConstruction": "00:00:00",
+          "ShiftedStamp": "2020-01-01T00:00:00",
+          "NestedStamp": "2020-01-01T00:00:00",
+          "EarlierStamp": "2020-01-01T00:00:00",
+          "Stamp": "2024-03-05T12:30:00",
+          "Output": "bad"
+        }
+      }
+    }
+  ]
+}

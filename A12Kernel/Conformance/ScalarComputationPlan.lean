@@ -75,17 +75,17 @@ private def stringStep? (target : FieldId) (expression : StringExpr SurfaceField
   let operation ← (elaborateStringComputationOperation model ["Join"] target expression).toOption
   let table ← (certifyStringComputationTable
     [({ precondition := none, operation } :
-      ComputationAlternative (CheckedStringComputationOperation model))]).toOption
+      CheckedComputationAlternative model (CheckedStringComputationOperation model))]).toOption
   pure (.string table)
 
-private def numberStep? (target : FieldId) (guard : Option ComputationCondition)
+private def numberStep? (target : FieldId) (guard : Option (CheckedComputationCondition model))
     (expression : AuthoredNumericExpr SurfaceNumericAtom) :
     Option (CheckedScalarComputationStep model) := do
   let operation ← (elaborateNumericTargetComputationOperation
     model ["Join"] target expression).toOption
   let table ← (certifyNumericComputationTable
     [({ precondition := guard, operation } :
-      ComputationAlternative (CheckedNumericTargetComputationOperation model))]).toOption
+      CheckedComputationAlternative model (CheckedNumericTargetComputationOperation model))]).toOption
   pure (.number table)
 
 private def read (field : String) : AuthoredNumericExpr SurfaceNumericAtom :=

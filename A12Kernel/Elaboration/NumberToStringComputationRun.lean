@@ -98,6 +98,15 @@ def stringContext (run : CheckedNumberToStringComputationRun model)
     run.number.targetField
     (StringDependencyCell.ofNumericOutcome outcome)
 
+/-- Numeric guards retain the producer's Number cell while String expressions consume its text. -/
+def guardContext (run : CheckedNumberToStringComputationRun model)
+    (world : World) (input : CheckedDocument model) (outcome : NumericTargetOutcome) :
+    ScalarComputationContext :=
+  (input.scalarComputationContext world).withFixedOverlay fun field =>
+    if field == run.number.targetField then
+      some (NumericDependencyCell.ofOutcome outcome).checked
+    else none
+
 /-- Execute the Number producer against the immutable document, overlay only its completed dependency observation, and evaluate the reached String consumer. -/
 def execute (run : CheckedNumberToStringComputationRun model)
     (world : World)
@@ -110,7 +119,7 @@ def execute (run : CheckedNumberToStringComputationRun model)
   | .error cause => .error (.number cause)
   | .ok number =>
       match run.string.evaluateCompletion patterns
-          (run.stringContext input number.outcome) with
+          (run.stringContext input number.outcome) (run.guardContext world input number.outcome) with
       | .error cause => .error (.string cause)
       | .ok string => .ok {
           number := (number.targetField, number.outcome)

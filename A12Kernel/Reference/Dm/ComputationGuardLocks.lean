@@ -43,7 +43,7 @@ private def fillGuardFreshRun (repeated : Bool) (stringTarget : Bool := false)
   if legacy then
     let parsed ← (parseText .english guardText).toOption
     let surface ← (lowerGuard model ["Form"] false parsed.body).toOption
-    let guard ← (model.elaborateComputationCondition ["Form"] ["Form"] surface).toOption
+    let guard ← (model.elaborateCheckedComputationCondition ["Form"] ["Form"] surface).toOption
     let context ← match consumer with
       | .number table _ => do
           let run ← (certifyNumericComputationRun [table]).toOption
@@ -244,7 +244,7 @@ private def standaloneGuardOverlay (stringTargets scalar stored filledList : Boo
     (definition "Producer" (if filledList then "Inputs/Y" else "Y") none)).toOption
   let (_, consumer) ← (lowerComputation model .english
     (definition "Consumer" "X" (some (if filledList then "AllFieldsFilled(/Form/Inputs)" else "GroupFilled(/Form)")))).toOption
-  let holds (guard : ComputationCondition) (context : ScalarComputationContext) :=
+  let holds (guard : CheckedComputationCondition model) (context : ScalarComputationContext) :=
     (guard.evalChecked context).toOption == some .holds
   match producer, consumer with
   | .number producer _, .number consumer _ => do
@@ -280,5 +280,61 @@ example : [false, true].all (fun strings => [false, true].all fun scalar =>
 example : [false, true].all (fun strings => [false, true].all fun scalar =>
     [false, true].all fun stored => standaloneGuardOverlay strings scalar stored true == some (false, true)) = true := by
   native_decide
+
+private def numericExpressionGuardRun (guard : String) (stringTarget : Bool)
+    (produceA : Bool := false) : Option (List String) := do
+  let number : FieldKind := .number { scale := 0, signed := true }
+  let model : FlatModel := { fields := [
+    { id := 1, groupPath := ["Form"], name := "A", policy := { kind := number } },
+    { id := 2, groupPath := ["Form"], name := "B", policy := { kind := number } },
+    { id := 3, groupPath := ["Form"], name := "Text", policy := { kind := .string }
+      stringPatternSource := some "[0-9]+", stringPolicy := { maxLength := some 3 } },
+    { id := 4, groupPath := ["Form"], name := "Out", policy := {
+      kind := if stringTarget then .string else number } },
+    { id := 5, groupPath := ["Form"], name := "After", policy := { kind := number } }] }
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := [
+      { address := { field := 1, path := [] }, stored := "bad", raw := .rejected .malformed },
+      { address := { field := 2, path := [] }, stored := "0", raw := .parsed (.num 0) },
+      { address := { field := 3, path := [] }, stored := "bad", raw := .rejected .malformed },
+      { address := { field := 4, path := [] }, stored := "9",
+        raw := .parsed (if stringTarget then .str "9" else .num 9) },
+      { address := { field := 5, path := [] }, stored := "9", raw := .parsed (.num 9) }] }).toOption
+  let producer : DmComputation := {
+    group := ["Form"], name := "Producer", targetRelPath := "../A"
+    commonPrecondition := none, alternatives := [{ precondition := none, operation := "1" }]
+    errorCodesToSuppress := [] }
+  let consumer : DmComputation := {
+    group := ["Form"], name := "Consumer", targetRelPath := "../Out"
+    commonPrecondition := some guard
+    alternatives := [{ precondition := none, operation := if stringTarget then "\"ready\"" else "2" }]
+    errorCodesToSuppress := [] }
+  let dependent : DmComputation := {
+    group := ["Form"], name := "Dependent", targetRelPath := "../After"
+    commonPrecondition := some "FieldFilled(Out) Or FieldNotFilled(Out)"
+    alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := [] }
+  let authored := [dependent, consumer] ++ if produceA then [producer] else []
+  let lowered ← authored.mapM fun computation => (lowerComputation model .english computation).toOption
+  let outcomes ← (runComputations world prepared checked (lowered.map (·.2))).toOption
+  pure (outcomes.map (·.outcome))
+
+-- The dependent separates clean non-selection from reached poison: either clears the guarded
+-- target, but only poison clears its reader (spec/09 §1).
+example : numericExpressionGuardRun "Sum(A,B) > 0" false true =
+    some ["value 1", "value 2", "value 1"] ∧
+    numericExpressionGuardRun "Sum(A,B) > 0" true true =
+    some ["value 1", "value ready", "value 1"] := by native_decide
+
+example : [false, true].all (fun strings =>
+    numericExpressionGuardRun "FieldValueAsNumber(Text) > 0" strings ==
+      some ["cleared", "cleared"]) = true := by native_decide
+
+example : numericExpressionGuardRun "[B] > 0 And FieldValueAsNumber(Text) > 0" false =
+    some ["cleared", "value 1"] ∧
+    numericExpressionGuardRun "[B] == 0 Or FieldValueAsNumber(Text) > 0" true =
+    some ["value ready", "value 1"] := by native_decide
 
 end A12Kernel.Dm.ComputationGuardLocks

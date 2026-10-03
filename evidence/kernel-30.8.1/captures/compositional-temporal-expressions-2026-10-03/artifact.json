@@ -1,0 +1,921 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "TemporalFamily_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-10-02T00:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DateProjectionComp",
+              "field" : "G/DateProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/DateProjection"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ShiftedStampComp",
+              "field" : "G/ShiftedStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/ShiftedStamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeConstructionComp",
+              "field" : "G/TimeConstruction",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeConstruction"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeProjectionComp",
+              "field" : "G/TimeProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeProjection"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "G/DateProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-03"
+              },
+              {
+                "field" : "G/EarlierStamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "G/NestedStamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "G/ShiftedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-02T02:01:01"
+              },
+              {
+                "field" : "G/TimeConstruction",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "01:30:00"
+              },
+              {
+                "field" : "G/TimeProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DateProjectionComp",
+              "field" : "G/DateProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/DateProjection"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ShiftedStampComp",
+              "field" : "G/ShiftedStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/ShiftedStamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeConstructionComp",
+              "field" : "G/TimeConstruction",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeConstruction"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeProjectionComp",
+              "field" : "G/TimeProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeProjection"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "G/DateProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-03"
+              },
+              {
+                "field" : "G/EarlierStamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "G/NestedStamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "G/ShiftedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-02T02:01:01"
+              },
+              {
+                "field" : "G/TimeConstruction",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "01:30:00"
+              },
+              {
+                "field" : "G/TimeProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DateProjectionComp",
+              "field" : "G/DateProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/DateProjection"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "EarlierStampComp",
+              "field" : "G/EarlierStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/EarlierStamp",
+                "G/Output",
+                "G/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NestedStampComp",
+              "field" : "G/NestedStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/NestedStamp",
+                "G/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ShiftedStampComp",
+              "field" : "G/ShiftedStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/ShiftedStamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeConstructionComp",
+              "field" : "G/TimeConstruction",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeConstruction"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeProjectionComp",
+              "field" : "G/TimeProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeProjection"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "G/DateProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-03"
+              },
+              {
+                "field" : "G/EarlierStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05T12:30:00"
+              },
+              {
+                "field" : "G/NestedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05T14:33:00"
+              },
+              {
+                "field" : "G/ShiftedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-02T02:01:01"
+              },
+              {
+                "field" : "G/TimeConstruction",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "01:30:00"
+              },
+              {
+                "field" : "G/TimeProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DateProjectionComp",
+              "field" : "G/DateProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/DateProjection"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "EarlierStampComp",
+              "field" : "G/EarlierStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/EarlierStamp",
+                "G/Output",
+                "G/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NestedStampComp",
+              "field" : "G/NestedStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/NestedStamp",
+                "G/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ShiftedStampComp",
+              "field" : "G/ShiftedStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/ShiftedStamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeConstructionComp",
+              "field" : "G/TimeConstruction",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeConstruction"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeProjectionComp",
+              "field" : "G/TimeProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeProjection"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "G/DateProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-03"
+              },
+              {
+                "field" : "G/EarlierStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05T12:30:00"
+              },
+              {
+                "field" : "G/NestedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05T14:33:00"
+              },
+              {
+                "field" : "G/ShiftedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-02T02:01:01"
+              },
+              {
+                "field" : "G/TimeConstruction",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "01:30:00"
+              },
+              {
+                "field" : "G/TimeProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "invalid-stamp",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DateProjectionComp",
+              "field" : "G/DateProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/DateProjection"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ShiftedStampComp",
+              "field" : "G/ShiftedStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/ShiftedStamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeConstructionComp",
+              "field" : "G/TimeConstruction",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeConstruction"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeProjectionComp",
+              "field" : "G/TimeProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeProjection"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "G/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/Stamp"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "G/DateProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-03"
+              },
+              {
+                "field" : "G/EarlierStamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "G/NestedStamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "G/ShiftedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-02T02:01:01"
+              },
+              {
+                "field" : "G/TimeConstruction",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "01:30:00"
+              },
+              {
+                "field" : "G/TimeProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "G/Stamp",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "G/Stamp"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DateProjectionComp",
+              "field" : "G/DateProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/DateProjection"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ShiftedStampComp",
+              "field" : "G/ShiftedStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/ShiftedStamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeConstructionComp",
+              "field" : "G/TimeConstruction",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeConstruction"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeProjectionComp",
+              "field" : "G/TimeProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeProjection"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "G/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/Stamp"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "G/DateProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-03"
+              },
+              {
+                "field" : "G/EarlierStamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "G/NestedStamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "G/ShiftedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-02T02:01:01"
+              },
+              {
+                "field" : "G/TimeConstruction",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "01:30:00"
+              },
+              {
+                "field" : "G/TimeProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "G/Stamp",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "G/Stamp"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "invalid-other",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "DateProjectionComp",
+              "field" : "G/DateProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/DateProjection"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NestedStampComp",
+              "field" : "G/NestedStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/NestedStamp",
+                "G/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ShiftedStampComp",
+              "field" : "G/ShiftedStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/ShiftedStamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeConstructionComp",
+              "field" : "G/TimeConstruction",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeConstruction"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeProjectionComp",
+              "field" : "G/TimeProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeProjection"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "G/Output",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/Output"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "G/DateProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-03"
+              },
+              {
+                "field" : "G/EarlierStamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "G/NestedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05T14:33:00"
+              },
+              {
+                "field" : "G/ShiftedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-02T02:01:01"
+              },
+              {
+                "field" : "G/TimeConstruction",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "01:30:00"
+              },
+              {
+                "field" : "G/TimeProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "G/Output",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "G/Output"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "DateProjectionComp",
+              "field" : "G/DateProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/DateProjection"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NestedStampComp",
+              "field" : "G/NestedStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/NestedStamp",
+                "G/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ShiftedStampComp",
+              "field" : "G/ShiftedStamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/ShiftedStamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeConstructionComp",
+              "field" : "G/TimeConstruction",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeConstruction"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TimeProjectionComp",
+              "field" : "G/TimeProjection",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/TimeProjection"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "G/Output",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "G/Output"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "G/DateProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-03"
+              },
+              {
+                "field" : "G/EarlierStamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "G/NestedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-05T14:33:00"
+              },
+              {
+                "field" : "G/ShiftedStamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-10-02T02:01:01"
+              },
+              {
+                "field" : "G/TimeConstruction",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "01:30:00"
+              },
+              {
+                "field" : "G/TimeProjection",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "G/Output",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "G/Output"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

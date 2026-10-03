@@ -1695,6 +1695,12 @@ Update this owner only when an authoritative locus, reusable drill route, source
 <a id="src-numeric-computation-guards"></a>
 - [Numeric computation guards read empty as zero and distinguish arithmetic failure from reached poison](sources/computation-scheduling-probes.md#src-numeric-computation-guards)
 
+<a id="src-compositional-computation-guards"></a>
+- [Shared computation guards preserve typed reads, subject prefixes and group content](sources/computation-scheduling-probes.md#src-compositional-computation-guards)
+
+<a id="src-compositional-temporal-expressions"></a>
+- [Temporal expression compositions reach scalar targets with model-zone rendering](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-expressions)
+
 <a id="src-peer-ba-computations-replay"></a>
 - [Six transferred peer computation models replay on 30 runtime documents](sources/evaluation-and-application-routes.md#src-peer-ba-computations-replay)
 
@@ -1723,3 +1729,6 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 <a id="src-filled-field-count-expressions"></a>
 - [Filled-field count expression admission, 2026-10-03](sources/group-list-and-capacity-probes.md#src-filled-field-count-expressions)
+
+<a id="src-compositional-temporal-disposition"></a>
+- [Temporal source slots and runtime wall-label failures](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-disposition), including the peer's already committed seeded-target correction to spec/09.

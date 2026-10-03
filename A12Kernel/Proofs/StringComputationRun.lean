@@ -40,9 +40,9 @@ theorem stringComputationRun_read_input
 theorem stringComputationTable_evaluateCompletion_faultTarget
     (table : CheckedStringComputationTable model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
-    (context : StringComputationContext)
+    (context : StringComputationContext) (guardContext : ScalarComputationContext)
     (fault : StringComputationRunFault)
-    (evaluated : table.evaluateCompletion patterns context = .error fault) :
+    (evaluated : table.evaluateCompletion patterns context guardContext = .error fault) :
     fault.target = table.targetField := by
   unfold CheckedStringComputationTable.evaluateCompletion at evaluated
   split at evaluated
@@ -69,7 +69,7 @@ theorem stringComputationRun_evaluateTable_faultTarget
     (evaluated : run.evaluateTable patterns input state table = .error fault) :
     fault.target = table.targetField :=
   stringComputationTable_evaluateCompletion_faultTarget
-    table patterns (run.readPolicy state input) fault evaluated
+    table patterns (run.readPolicy state input) (run.guardReadPolicy state input) fault evaluated
 
 private theorem stringComputationRun_executeTables_faultTarget
     (run : CheckedStringComputationRun model)

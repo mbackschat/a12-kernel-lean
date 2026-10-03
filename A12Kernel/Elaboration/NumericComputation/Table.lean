@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.ComputationCondition
+import A12Kernel.Elaboration.ComputationNumericGuard
 import A12Kernel.Elaboration.NumericComputation.Target
 
 /-! # Checked Number computation tables
@@ -11,11 +11,11 @@ namespace A12Kernel
 /-- One Number row certified against the table's shared target and target policy. The complete checked operation is retained because assignment-scale admission and warning suppression are target-specific. -/
 structure CheckedNumericComputationAlternative (model : FlatModel)
     (target : FieldId) (policy : NumericTargetPolicy) where
-  precondition : Option ComputationCondition
+  precondition : Option (CheckedComputationCondition model)
   operation : CheckedNumericTargetComputationOperation model
   targetMatches : operation.operation.core.target.id = target
   policyMatches : operation.policy = policy
-  guardRowBound : precondition.all (·.rowBoundBool model (model.fieldRepeatableScope target)) = true
+  guardRowBound : precondition.all (·.rowBoundBool (model.fieldRepeatableScope target)) = true
   guardExcludesTarget : precondition.all
     (fun guard => !guard.forbidsTarget target) = true
 
@@ -23,7 +23,7 @@ namespace CheckedNumericComputationAlternative
 
 def toSelectable (alternative :
     CheckedNumericComputationAlternative model target policy) :
-    ComputationAlternative (CheckedNumericTargetComputationOperation model) where
+    CheckedComputationAlternative model (CheckedNumericTargetComputationOperation model) where
   precondition := alternative.precondition
   operation := alternative.operation
 
@@ -61,7 +61,7 @@ private def certifyNumericComputationAlternative
     (target : FieldId) (policy : NumericTargetPolicy) (alternativeIndex : Nat)
     (guardRequired : Bool)
     (admitted : AdmittedComputationAlternative
-      (·.rowBoundBool model (model.fieldRepeatableScope target))
+      (fun guard : CheckedComputationCondition model => guard.rowBoundBool (model.fieldRepeatableScope target))
       (CheckedNumericTargetComputationOperation model)) :
     Except NumericComputationTableError
       (CheckedNumericComputationAlternative model target policy) := do
@@ -93,7 +93,7 @@ are one-based. Every guard's admission is asked before any alternative's own cla
 guard's name ahead of an unguarded alternative wherever either stands
 ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)). -/
 def certifyNumericComputationTable
-    (alternatives : List (ComputationAlternative
+    (alternatives : List (CheckedComputationAlternative model
       (CheckedNumericTargetComputationOperation model))) :
     Except NumericComputationTableError (CheckedNumericComputationTable model) :=
   match alternatives with
@@ -102,7 +102,7 @@ def certifyNumericComputationTable
       let target := first.operation.operation.core.target.id
       let (first, remaining) ←
         (ComputationAlternative.admitGuards
-          (·.rowBoundBool model (model.fieldRepeatableScope target)) first remaining).mapError
+          (·.rowBoundBool (model.fieldRepeatableScope target)) first remaining).mapError
           .guardNotAdmitted
       let policy := first.val.operation.policy
       let guardRequired := !remaining.isEmpty
@@ -121,7 +121,7 @@ def certifyNumericComputationTable
 /-- Why a whole Number computation is refused: one alternative's authored guard or operation, numbered
 from 1, or the table assembled from the checked operations. -/
 inductive NumericComputationTableElabError where
-  | precondition (alternative : Nat) (error : ComputationConditionElabError)
+  | precondition (alternative : Nat) (error : CheckedComputationConditionElabError)
   | operation (alternative : Nat) (error : NumericComputationElabError)
   | table (error : NumericComputationTableError)
   deriving Repr, DecidableEq
@@ -132,7 +132,8 @@ namespace NumericComputationTableElabError
 the Kernel reports several codes this is the first of them; the reads of the target it reports once
 per occurrence are not counted. -/
 def diagnostic? : NumericComputationTableElabError → Option KernelStaticDiagnostic
-  | .precondition _ (.resolve error) => error.diagnostic?
+  | .precondition _ (.primitive (.resolve error)) => error.diagnostic?
+  | .precondition _ (.numeric error) => error.diagnostic?
   | .precondition _ _ => none
   | .operation _ error => error.diagnostic?
   | .table error => error.diagnostic?
@@ -157,12 +158,12 @@ at the first alternative judged. Warning suppression is the whole computation's 
 scale gate. -/
 private def elaborateNumericTargetComputationTableWith (model : FlatModel) (declaringGroup : GroupPath)
     (target : FieldId)
-    (alternatives : List (Except ComputationConditionElabError (Option ComputationCondition) ×
+    (alternatives : List (Except CheckedComputationConditionElabError (Option (CheckedComputationCondition model)) ×
       AuthoredNumericExpr SurfaceNumericComputationAtom))
     (suppressExactScaleWarning : Bool) (targetScope : ComputationTargetScope)
-    (commonPrecondition : Option ComputationCondition) :
+    (commonPrecondition : Option (CheckedComputationCondition model)) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
-  let join := ComputationCondition.withCommon commonPrecondition
+  let join := CheckedComputationCondition.withCommon commonPrecondition
   let elaborated := alternatives.zipIdx.map fun ((guard, expression), index) =>
     (index + 1, guard,
       elaborateCompleteNumericTargetComputationOperation model declaringGroup target expression
@@ -171,7 +172,7 @@ private def elaborateNumericTargetComputationTableWith (model : FlatModel) (decl
     match guard.map join with
     | .error error => some (.precondition index error)
     | .ok precondition =>
-        if !precondition.all (·.rowBoundBool model (model.fieldRepeatableScope target)) then
+        if !precondition.all (·.rowBoundBool (model.fieldRepeatableScope target)) then
           some (.table (.guardNotAdmitted index))
         else
           match result with
@@ -181,7 +182,7 @@ private def elaborateNumericTargetComputationTableWith (model : FlatModel) (decl
   -- Unguardedness is the alternative's own: a common precondition guards none of them. The common
   -- precondition's reads are judged once, at the first alternative judged, so several alternatives
   -- without their own leave it unjudged ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-self-read-alternative-walk)).
-  let judged (guard : Option ComputationCondition) := !(several && guard.isNone)
+  let judged (guard : Option (CheckedComputationCondition model)) := !(several && guard.isNone)
   let firstJudged := elaborated.find? fun (_, guard, _) =>
     match guard with
     | .ok own => judged own
@@ -226,10 +227,10 @@ targets the caller's executor addresses: a row table only for the repeatable pla
 def elaborateCompleteNumericTargetComputationTable (model : FlatModel) (declaringGroup : GroupPath)
     (target : FieldId)
     (alternatives :
-      List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericComputationAtom))
+      List (Option (CheckedComputationCondition model) × AuthoredNumericExpr SurfaceNumericComputationAtom))
     (suppressExactScaleWarning : Bool := false)
     (targetScope : ComputationTargetScope := .fixed)
-    (commonPrecondition : Option ComputationCondition := none) :
+    (commonPrecondition : Option (CheckedComputationCondition model) := none) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
   elaborateNumericTargetComputationTableWith model declaringGroup target
     (alternatives.map fun (precondition, expression) => (.ok precondition, expression))
@@ -239,10 +240,10 @@ def elaborateCompleteNumericTargetComputationTable (model : FlatModel) (declarin
 already resolved. -/
 def elaborateNumericTargetComputationTable (model : FlatModel) (declaringGroup : GroupPath)
     (target : FieldId)
-    (alternatives : List (Option ComputationCondition × AuthoredNumericExpr SurfaceNumericAtom))
+    (alternatives : List (Option (CheckedComputationCondition model) × AuthoredNumericExpr SurfaceNumericAtom))
     (suppressExactScaleWarning : Bool := false)
     (targetScope : ComputationTargetScope := .fixed)
-    (commonPrecondition : Option ComputationCondition := none) :
+    (commonPrecondition : Option (CheckedComputationCondition model) := none) :
     Except NumericComputationTableElabError (CheckedNumericComputationTable model) :=
   elaborateCompleteNumericTargetComputationTable model declaringGroup target
     (alternatives.map fun (precondition, expression) => (precondition, expression.asComplete))
@@ -262,8 +263,9 @@ def elaborateNumericTargetComputationTableFromSurface (model : FlatModel) (decla
   elaborateNumericTargetComputationTableWith model declaringGroup target
     (alternatives.map fun (precondition, expression) =>
       (precondition.mapM fun authored => do
-        model.validate |>.mapError .resolve
-        model.elaborateComputationCondition declaringGroup targetGroup authored,
+        model.validate |>.mapError (.primitive ∘ .resolve)
+        let condition ← (model.elaborateComputationCondition declaringGroup targetGroup authored).mapError .primitive
+        CheckedComputationCondition.ofLegacy model condition,
         expression.asComplete))
     suppressExactScaleWarning targetScope none
 
@@ -276,7 +278,7 @@ def checkedAlternatives (table : CheckedNumericComputationTable model) :
   table.first :: table.remaining
 
 def selectableAlternatives (table : CheckedNumericComputationTable model) :
-    List (ComputationAlternative
+    List (CheckedComputationAlternative model
       (CheckedNumericTargetComputationOperation model)) :=
   table.checkedAlternatives.map (·.toSelectable)
 
@@ -289,8 +291,8 @@ def declaringGroups (table : CheckedNumericComputationTable model) : List GroupP
 def evaluate (table : CheckedNumericComputationTable model)
     (context : ScalarComputationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
-  match ← (ComputationAlternative.selectFirstChecked
-      table.selectableAlternatives context).mapError .guardBinding with
+  match ← (CheckedComputationAlternative.selectFirstChecked
+      table.selectableAlternatives context).mapError CheckedComputationConditionError.toNumericFault with
   | .noMatch => pure (.supported .noValue)
   | .poison cause => pure (.supported (.inheritedPoison cause))
   | .selected operation => operation.evaluate context
@@ -300,10 +302,8 @@ repeatable reads, so a selected aggregate reads its rows through the context's s
 def evaluateIn (table : CheckedNumericComputationTable model)
     (context : NumericComputationEvaluationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
-  match ← (ComputationAlternative.selectFirstChecked
-      table.selectableAlternatives { context.scalar with
-        row := context.outer
-        addressed := some { document := context.document, read := context.starRead } }).mapError .guardBinding with
+  match ← (CheckedComputationAlternative.selectFirstCheckedIn
+      table.selectableAlternatives context).mapError CheckedComputationConditionError.toNumericFault with
   | .noMatch => pure (.supported .noValue)
   | .poison cause => pure (.supported (.inheritedPoison cause))
   | .selected operation => operation.evaluateIn context

@@ -80,7 +80,7 @@ private def continueNumericAppliedValidation
 
 /-- Execute one admitted scalar-target generated Number table against an immutable source, apply its retained actions to a compatible destination, then evaluate the complete generated validation twin against the applied destination under an independently supplied later world. -/
 def executeNumericAppliedValidation (computation : GeneratedComputationTable
-    (CheckedNumericComputationOperation model))
+    (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (executionWorld validationWorld : World)
     (source destination : CheckedDocument model)
     (payloadAt : CellAddr → Payload)
@@ -107,7 +107,7 @@ def executeNumericAppliedValidation (computation : GeneratedComputationTable
 /-- Prepare one generated Number table's complete selected input inventory, execute only its selected operation through that exact view, apply the retained source-relative actions to a compatible destination, then evaluate the generated validation twin against the applied destination under an independently supplied later world. -/
 def executeNumericFormalInputAppliedValidation
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (executionWorld validationWorld : World)
     (source destination : CheckedDocument model) :
     Except FormalInputAppliedValidationError

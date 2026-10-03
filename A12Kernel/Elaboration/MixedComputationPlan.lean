@@ -53,7 +53,7 @@ def referencesField : MixedComputationStep model compilePattern → FieldId → 
   | .document step => step.referencesField
   | .rows step => step.referencesField
 
-def protectionConditions : MixedComputationStep model compilePattern → List (Option ComputationCondition)
+def protectionConditions : MixedComputationStep model compilePattern → List (Option (CheckedComputationCondition model))
   | .number table => table.protectionConditions
   | .parallel step => step.protectionConditions
   | .string table => table.protectionConditions
@@ -211,7 +211,8 @@ def executeStep (plan : CheckedMixedComputationPlan model compilePattern) (world
       pure { state with rows := state.rows ++ outcomes.map numberPlacement
                         outcomes := state.outcomes ++ outcomes.map .number }
   | .string table => do
-      let completion ← (table.evaluateCompletion patterns (plan.stringContext state input)).mapError .string
+      let completion ← (table.evaluateCompletion patterns (plan.stringContext state input)
+        ((plan.documentFor state input).scalarComputationContext world)).mapError .string
       pure { state with fixed := state.fixed ++ [.string completion]
                         outcomes := state.outcomes ++ [.string completion.targetField completion.outcome] }
   | .document step => do

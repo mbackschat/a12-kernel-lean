@@ -103,7 +103,7 @@ theorem scalarComputationRun_evaluateStringStep
     (completion : StringComputationRunCompletion)
     (evaluated :
       table.evaluateCompletion patterns
-        (run.stringContext state input) = .ok completion) :
+        (run.stringContext state input) (run.numberContext world state input) = .ok completion) :
     run.evaluateStep world patterns input state (.string table) =
       .ok (.string completion) := by
   simp [CheckedScalarComputationRun.evaluateStep, evaluated]
@@ -139,13 +139,13 @@ theorem scalarComputationRun_evaluateStep_faultIdentity
   cases step with
   | string table =>
       cases result : table.evaluateCompletion patterns
-          (run.stringContext state input) with
+          (run.stringContext state input) (run.numberContext world state input) with
       | error cause =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
           subst fault
           constructor
           · exact stringComputationTable_evaluateCompletion_faultTarget
-              table patterns (run.stringContext state input) cause result
+              table patterns (run.stringContext state input) (run.numberContext world state input) cause result
           · rfl
       | ok completion =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated

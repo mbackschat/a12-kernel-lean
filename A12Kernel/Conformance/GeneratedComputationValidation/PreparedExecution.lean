@@ -72,7 +72,7 @@ private def aggregateOperation? :
     }))).toOption
 
 private def table? : Option (GeneratedComputationTable
-    (CheckedNumericComputationOperation model)) := do
+    (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) := do
   let first ← directOperation?
   let second ← aggregateOperation?
   pure {

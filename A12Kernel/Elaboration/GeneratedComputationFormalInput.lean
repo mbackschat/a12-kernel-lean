@@ -24,7 +24,7 @@ inductive GeneratedNumericComputationFormalInputRunError where
   deriving Repr
 
 private def optionalGeneratedGuardReferences
-    (guard : Option ComputationCondition) (field : FieldId) : Bool :=
+    (guard : Option (CheckedComputationCondition model)) (field : FieldId) : Bool :=
   match guard with
   | none => false
   | some condition => condition.referencesField field
@@ -37,14 +37,14 @@ private def generatedNumericOperationReferences
 
 private def generatedNumericAlternativeReferences
     (alternative : GeneratedComputationAlternative
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (field : FieldId) : Bool :=
   alternative.precondition.referencesField field ||
     generatedNumericOperationReferences alternative.operation field
 
 private def generatedNumericAlternativesReference
     (alternatives : GeneratedComputationAlternatives
-      (CheckedNumericComputationOperation model))
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (field : FieldId) : Bool :=
   match alternatives with
   | .singleton alternative =>
@@ -58,13 +58,13 @@ namespace GeneratedComputationTable
 
 /-- Whether the common guard, any alternative guard, or any complete checked operation references one field. -/
 def referencesField (computation : GeneratedComputationTable
-    (CheckedNumericComputationOperation model)) (field : FieldId) : Bool :=
+    (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) (field : FieldId) : Bool :=
   optionalGeneratedGuardReferences computation.commonPrecondition field ||
     generatedNumericAlternativesReference computation.alternatives field
 
 /-- Enumerate every validated model declaration referenced anywhere in the generated numeric table. -/
 def fieldDependencies (computation : GeneratedComputationTable
-    (CheckedNumericComputationOperation model)) : List FieldId :=
+    (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) : List FieldId :=
   (model.fields.filter fun declaration =>
     computation.referencesField declaration.id).map fun declaration =>
       declaration.id
@@ -87,7 +87,7 @@ namespace GeneratedComputationTable
 
 /-- Admit the generated-validation shell first, then bind its complete common, row-guard, and checked-operation dependency union to the shared target-excluding formal-input plan. -/
 def formalInputPlan (computation : GeneratedComputationTable
-    (CheckedNumericComputationOperation model)) :
+    (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) :
     Except GeneratedNumericComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) := do
   let admission ← admitGeneratedNumericOperationTable model computation
@@ -96,7 +96,7 @@ def formalInputPlan (computation : GeneratedComputationTable
 
 /-- Admit one generated table once, prepare its selected noncomputed inputs, execute scalar guards and the selected operation through that view, and retain the eager findings beside either its exact-address Number result or any subsequent execution failure. -/
 def executeNumericResultWithFormalInputs (computation : GeneratedComputationTable
-    (CheckedNumericComputationOperation model))
+    (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (world : World) (input : CheckedDocument model) :
     Except GeneratedNumericComputationFormalInputRunError
       (NumericComputationFormalInputRunView model CellAddr) := do
