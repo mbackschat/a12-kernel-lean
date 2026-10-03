@@ -22,7 +22,7 @@ The three year-bearing formats classify into an existing `PartiallyKnownDateValu
 omitted-month shape and a year-month is the omitted-day shape, so every existing `ValueAsDate` consumer
 reads them through the endpoint resolver it already has.
 
-The four **yearless** formats cannot: a month without a year denotes no interval of concrete dates, so it
+The **yearless** formats cannot: a month without a year denotes no interval of concrete dates, so it
 has no `PartiallyKnownDateValue` form. They classify into the `MonthDayValue` the DateRange family
 already uses for exactly this, reached here through a local two-armed result rather than by widening the
 partial-Date domain with a shape most of its consumers could not resolve.
@@ -139,7 +139,7 @@ end OmittingDateFormat
 inductive CanonicalOmittingDateFieldError where
   | notDate (path : List String) (actual : FieldKind)
   | policyUnavailable (path : List String)
-  /-- The declaration is a Date whose format is outside this seven-format component-omitting
+  /-- The declaration is a Date whose format is outside this component-omitting
   classifier, including a complete or otherwise unsupported spelling. -/
   | unsupportedFormat (path : List String) (format : String)
   deriving Repr, DecidableEq
