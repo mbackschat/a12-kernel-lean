@@ -260,6 +260,16 @@ def CheckedNumericProductAggregate.referencePointers
   pure [← starFieldPointer checked.left.source environment,
     ← starFieldPointer checked.right.source environment]
 
+/-- Field-fill lists retain operand shape: expanded descendants and starred fields need the
+existing wildcard projection, not the direct-field sieve. Filter coordinates remain unclassified. -/
+def CheckedFieldFillList.referencePointers (source : CheckedFieldFillList model)
+    (environment : Env) : Except ReferenceProjectionError (List MessagePointer) :=
+  if source.hasHaving then .error .filteredStarOperand else
+  (·.flatten) <$> source.operands.mapM fun
+    | .field declaration => (concreteFieldPointer declaration environment).map ([·])
+    | .star star => (starFieldPointer star.source environment).map ([·])
+    | .group group => group.source.referencePointers environment
+
 /-- The complete ordered atom family. Every constructor is classified, so the only refusals reaching a caller from here are an unsupported sieve shape and a filtered star; there is no catch-all, and a new atom must state its own projection.
 
     Number entity lists share one operand projection; each token-family source keeps its own, because their operand types are distinct and their filter is an optional field rather than a constructor. The fixed group count traverses each retained group explicitly, preserving a concrete bound ancestor and wildcarding deeper reopened levels. Every other delegated scalar atom is sieved on the same terms as the scalar leaf. Under addressed admission a delegated declaration may be repeatable but is bound by the rule's own iteration scope, so it projects concretely; nothing else in the delegated arm reopens a level. -/
@@ -285,9 +295,7 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env) :
       (·.flatten) <$> run.source.operands.mapM (CheckedTemporalDistinctCountOperand.referencePointers environment)
   | .booleanValueCount source => source.referencePointers environment
   | .sumOfProducts source => source.referencePointers environment
-  | .filledFieldCount source =>
-      sievedFieldPointers model
-        (fun declaration => source.declarations.any (·.id == declaration.id)) environment
+  | .filledFieldCount source => source.referencePointers environment
   | .filledGroupCountMixed operands =>
       -- Routed through the same sieve as the scalar group count, so a star in the list cannot
       -- change which references a message may project.
@@ -382,10 +390,7 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
       | .literals source =>
           (·.flatten) <$> source.fields.operands.mapM
             (CheckedTokenEntityOperand.referencePointers environment)
-  | .fieldFill _ source =>
-      if source.hasHaving then .error .filteredStarOperand else
-      sievedFieldPointers model
-        (fun declaration => source.declarations.any (·.id == declaration.id)) environment
+  | .fieldFill _ source => source.referencePointers environment
   | _ => .error .unclassifiedLeaf
 
 private def treePointers (environment : Env) :

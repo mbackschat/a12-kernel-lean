@@ -256,8 +256,8 @@ def elaborateFieldFillList (model : FlatModel) (rowGroup : GroupPath)
     (authored : SurfaceFieldEntitySource) (bindingGroup : GroupPath := rowGroup)
     (consumer : FieldFillListConsumer := .count) :
     Except FieldFillListElabError (CheckedFieldFillList model) := do
-  -- A sole group keeps the group source's rule-bound reference, which the shared shape's scalar
-  -- group resolution would refuse below a bound repeatable ancestor.
+  -- Keep the sole-group source's existing admission and error projection; mixed lists run the
+  -- shared duplicate and overlap gates with the same rule-bound resolution.
   match authored with
   | { first := .group (.path group), rest := [] } =>
       return { operands := [.group (← (elaborateFilledFieldCountFixedGroupValidationSource model
@@ -267,7 +267,7 @@ def elaborateFieldFillList (model : FlatModel) (rowGroup : GroupPath)
         rowGroup { group } bindingGroup).mapError .group)] }
   | _ => pure ()
   let shape ← (elaborateFieldEntityShapeIn model rowGroup (model.repeatableScopeForGroupPath bindingGroup)
-    authored .manyRequired none bindingGroup).mapError .shape
+    authored .manyRequired none bindingGroup (groupReadScope := .ruleBound)).mapError .shape
   let operands ← ((authored.first :: authored.rest).zip shape.operands).mapM fun
     | (_, .field declaration .stored) => pure (.field declaration)
     | (_, .star source) => pure (.star (.plain rowGroup source))
@@ -275,9 +275,9 @@ def elaborateFieldFillList (model : FlatModel) (rowGroup : GroupPath)
         if consumer == .count then throw .unsupportedOperand
         pure (.star (← (CheckedFilledFieldStarSource.withHaving model rowGroup bindingGroup
           source having).mapError .having))
-    | (.group (.path group), .group _) =>
+    | (.group (.path _), .group reference) =>
         (CheckedFieldFillOperand.group <$>
-          elaborateFilledFieldCountFixedGroupValidationSource model rowGroup { group } bindingGroup).mapError .group
+          CheckedFilledFieldCountGroupSource.ofResolved model (.fixed reference)).mapError .group
     | (.starredGroup group, _) =>
         (CheckedFieldFillOperand.group <$>
           elaborateFilledFieldCountStarredGroupValidationSource model rowGroup { group } bindingGroup).mapError .group

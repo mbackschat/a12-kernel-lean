@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.FieldFillRule
 import A12Kernel.Elaboration.FilledFieldGroupCount
 import A12Kernel.Elaboration.RepeatableNumberFixedGroupCountComputation
 import A12Kernel.Elaboration.ValidationCondition
@@ -5,10 +6,10 @@ import A12Kernel.Elaboration.ValidationRule
 
 /-! # Fixed groups below a bound repeatable ancestor
 
-These cases mirror the retained Kernel carrier matrix. One checked scope certificate feeds the
-group-scope filled-field count, group-list predicate, numeric validation count, and repeatable
-Number computation; the two documents swap the full operand set between enclosing rows and reject a
-cross-row union.
+The field-fill cases use the retained Kernel matrix
+[`fixed-group-repeatable-ancestor-carriers`](../../evidence/kernel-30.8.1/captures/fixed-group-repeatable-ancestor-carriers/request.json).
+The smaller one-descendant-row fixtures separately exercise group presence and distinguish it from
+field filling. Every carrier must preserve the enclosing row rather than taking a cross-row union.
 -/
 
 namespace A12Kernel.Conformance.FixedGroupRepeatableAncestorCarriers
@@ -302,5 +303,100 @@ example : (pointers? [(10, 1)], pointers? [(10, 2)]) =
 example : (numericPointers? [(10, 1)], numericPointers? [(10, 2)]) =
     (pointers? [(10, 1)], pointers? [(10, 2)]) := by
   native_decide
+
+
+private def fieldFillSource : SurfaceFieldEntitySource :=
+  { first := .group flat, rest := [.group peer] }
+
+private def fieldFill? (operator : FieldFillQuantifier := .allFieldsFilled) :
+    Option (CheckedValidationCondition model) :=
+  (CheckedValidationCondition.fromFieldFill model ["Probe", "Outer"] operator fieldFillSource).toOption
+
+private def fullDocument? (filledRow : Nat) : Option (CheckedDocument model) :=
+  (checkDocument prepared "en_US" {
+    instantiatedRows := [
+      { group := 10, path := [1] }, { group := 10, path := [2] },
+      { group := 20, path := [filledRow, 1] }, { group := 20, path := [filledRow, 2] }]
+    cells := [cell flatA.id [1] "f1", cell flatA.id [2] "f2",
+      cell rowR.id [filledRow, 1] "r1", cell rowR.id [filledRow, 2] "r2",
+      cell peerA.id [filledRow] "p", cell marker.id [1] "m1", cell marker.id [2] "m2"]
+  }).toOption
+
+example : ((do
+    let condition ← fieldFill?
+    let first ← fullDocument? 1
+    let second ← fullDocument? 2
+    pure (verdicts? condition first, verdicts? condition second,
+      condition.core.ordinaryIterationScope.toOption,
+      condition.core.referencePointers [(10, 2)] |>.toOption)) ==
+    some (some [.fired .value, .unknown], some [.unknown, .fired .value],
+      some (some [10]), pointers? [(10, 2)])) = true := by native_decide
+
+-- The older one-row fixtures separate expanded field filling from group presence: one missing
+-- declared descendant prevents AllFieldsFilled even when AllGroupsFilled fires.
+example : (do
+    let condition ← fieldFill?
+    pure (verdicts? condition (← firstDocument?), verdicts? condition (← secondDocument?))) =
+    some (some [.unknown, .unknown], some [.unknown, .unknown]) := by native_decide
+
+example : (do
+    let condition ← fieldFill? .notAllFieldsFilled
+    pure (verdicts? condition (← fullDocument? 1), verdicts? condition (← fullDocument? 2))) =
+    some (some [.unknown, .fired .omission], some [.fired .omission, .unknown]) := by native_decide
+
+private def mixedFieldFillSource : SurfaceFieldEntitySource :=
+  { first := .group flat,
+    rest := [.field { base := .relative 0, groups := ["Peer"], field := "PeerA" }] }
+
+example : (do
+    let source ← (elaborateFieldFillList model ["Probe", "Outer"] mixedFieldFillSource).toOption
+    let first ← fullDocument? 1
+    let second ← fullDocument? 2
+    pure (source.bindingScope, source.fillCapacity?,
+      (source.evaluateFill? .allFieldsFilled first [(10, 1)]).toOption.join,
+      (source.evaluateFill? .allFieldsFilled second [(10, 1)]).toOption.join)) =
+    some ([10], some 4, some (.fired .value), some .falseOrUnknown) := by native_decide
+
+example : (elaborateFieldEntityShapeIn model ["Probe", "Outer"] [10] fieldFillSource
+    .manyRequired none ["Probe", "Outer"]).isOk = false := by native_decide
+
+example : (match elaborateFieldFillList model ["Probe", "Outer"]
+    { first := .group flat, rest := [.group flat] } with
+    | .error (.shape (.duplicateGroupOperand path)) => path == ["Probe", "Outer", "Flat"]
+    | _ => false) = true ∧
+    (match elaborateFieldFillList model ["Probe", "Outer"]
+      { first := .group flat, rest := [.field { base := .relative 0, groups := ["Flat"], field := "FlatA" }] } with
+    | .error (.shape (.overlappingOperands _ _)) => true
+    | _ => false) = true := by native_decide
+
+private def listScopeRefused (declaring path : GroupPath) (level? : Option RepeatableLevel) : Bool :=
+  match elaborateFieldFillList boundaryModel declaring
+      { first := .group (fixedGroup path), rest := [.group peer] } with
+  | .error (.shape (.groupReference (.unboundOperandLevel actual unbound))) =>
+      actual == path && level? == some unbound.level
+  | .error (.shape (.groupReference (.walkedRepeatableGroupUnsupported actual))) =>
+      actual == path && level?.isNone
+  | _ => false
+
+example : listScopeRefused ["Probe"] ["Probe", "Outer", "Flat"] (some 10) = true ∧
+    listScopeRefused ["Probe", "Outer"] ["Probe", "Outer", "Flat", "Rows", "Deep"] (some 20) = true ∧
+    listScopeRefused ["Probe", "Outer"] ["Probe", "Outer"] none = true := by native_decide
+
+example : (do
+    let condition ← (CheckedValidationCondition.fromFieldFill model ["Probe", "Outer"]
+      .allFieldsFilled {
+        first := .field { base := .relative 0, groups := ["Flat"], field := "FlatA" }
+        rest := [.star { base := .relative 0, groups := [{ name := "Flat" }, { name := "Rows", starred := true }], field := "RowR" }] }).toOption
+    condition.core.referencePointers [(10, 2)] |>.toOption) = some [
+      { field := flatA.id, coordinates := [.concrete 2] },
+      { field := rowR.id, coordinates := [.concrete 2, .wildcard] }] := by native_decide
+
+example : (do
+    let comparison ← (elaborateFilledFieldCountComparison model ["Probe", "Outer"]
+      fieldFillSource .equal 4).toOption
+    let condition ← (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
+    pure (verdicts? condition (← fullDocument? 1),
+      condition.core.referencePointers [(10, 2)] |>.toOption)) =
+    some (some [.fired .value, .notFired], pointers? [(10, 2)]) := by native_decide
 
 end A12Kernel.Conformance.FixedGroupRepeatableAncestorCarriers

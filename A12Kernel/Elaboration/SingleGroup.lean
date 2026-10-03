@@ -350,6 +350,21 @@ def FlatModel.resolveRuleBoundFixedGroupReference (model : FlatModel)
     Except FixedGroupReferenceError ResolvedGroupReference :=
   model.resolveFixedGroupReferenceWith .ruleBound declaringGroup surface writtenGroup?
 
+/-- Validation entity lists keep scalar resolution unless their addressed consumer retains the
+rule-bound certificate measured by `src-fixed-group-repeatable-ancestor-carriers`. -/
+inductive FixedGroupReadScope where
+  | scalar
+  | ruleBound
+
+/-- Select the existing reference resolver without changing its path or placement gates. -/
+def FixedGroupReadScope.resolve (scope : FixedGroupReadScope) (model : FlatModel)
+    (declaringGroup : GroupPath) (surface : SurfaceGroupReference)
+    (writtenGroup? : Option GroupPath := none) :
+    Except FixedGroupReferenceError ResolvedGroupReference :=
+  match scope with
+  | .scalar => model.resolveFixedGroupReference declaringGroup surface writtenGroup?
+  | .ruleBound => model.resolveRuleBoundFixedGroupReference declaringGroup surface writtenGroup?
+
 /-- Resolve a fixed group operand of a validation carrier whose measured admission covers the
 repeatable root its rule sits in as well as a fixed child of the rule's group
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-24c-group-operand-walk)). -/
@@ -542,6 +557,16 @@ theorem FlatModel.resolveFixedGroupReference_declaringGroupValid
     (ok : model.resolveFixedGroupReference declaringGroup surface writtenGroup? = .ok resolved) :
     GroupPath.isValid declaringGroup = true :=
   FlatModel.resolveFixedGroupReferenceWith_declaringGroupValid ok
+
+theorem FixedGroupReadScope.resolve_declaringGroupValid
+    {scope : FixedGroupReadScope} {model : FlatModel} {declaringGroup : GroupPath}
+    {surface : SurfaceGroupReference} {writtenGroup? : Option GroupPath}
+    {resolved : ResolvedGroupReference}
+    (ok : scope.resolve model declaringGroup surface writtenGroup? = .ok resolved) :
+    GroupPath.isValid declaringGroup = true := by
+  cases scope <;> simp only [FixedGroupReadScope.resolve,
+    FlatModel.resolveFixedGroupReference, FlatModel.resolveRuleBoundFixedGroupReference] at ok <;>
+    exact FlatModel.resolveFixedGroupReferenceWith_declaringGroupValid ok
 
 theorem FlatModel.resolveFixedTargetListGroupReference_declaringGroupValid
     {model : FlatModel} {declaringGroup : GroupPath} {surface : SurfaceGroupReference}
