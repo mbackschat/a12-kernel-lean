@@ -38,7 +38,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-03-03"></a>
 ### `SPEC-2026-10-03-03` — filtered field-fill declared slots and deciding-prefix polarity
 
-- `status`: pending
+- `status`: handed-off
+- `handoff`: owner reports sending this ledger to a12-dmkits on 2026-10-03; peer disposition remains pending.
 - `clause`: [spec/02 §A.4](../spec/02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges).
 - `delta`: filtered field-fill lists retain selected missing declared slots; positive thresholds take polarity from the filled witnesses before their decision, not from filter presence anywhere in the list.
 - `evidence`: the [49-rule, nine-document grid](sources/group-list-and-capacity-probes.md#src-filtered-field-fill-ranges) pins Kernel 30.8.1 full/partial results on both strategies and the independent source mechanism.
@@ -50,7 +51,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-03-02"></a>
 ### `SPEC-2026-10-03-02` — containing-group guards distinguish operands from producer dependencies
 
-- `status`: pending
+- `status`: handed-off
+- `handoff`: owner reports sending this ledger to a12-dmkits on 2026-10-03; peer disposition remains pending.
 - `origin`: the group-guard consumer readback could not recover conditional scheduling from the canonical clause; the retained dependency and profile grids already settle its separating cases.
 - `clause`: [spec/09 §1.1](../spec/09-computations.md#11-group-derived-scheduling-dependencies).
 - `delta`: positive containing-group reads omit self and group-protected producers from the schedule while retaining complete operands. For nonrepeatable producers, present conditions determine the syntactic profile across common-expanded alternatives; absent conditions are omitted. At repeatable targets, implicit guards are supplied before assembling the target profile, so absence below the row becomes a nonprotecting condition. Ordinary reads survive even in unselectable alternatives.
@@ -63,7 +65,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-03-01"></a>
 ### `SPEC-2026-10-03-01` — numeric computation guards substitute zero for empty operands
 
-- `status`: pending
+- `status`: handed-off
+- `handoff`: owner reports sending this ledger to a12-dmkits on 2026-10-03; peer disposition remains pending.
 - `origin`: locally measured while closing the shared numeric computation guard; the peer's KF20 empty-operand claim has no empty document in its linked differential test.
 - `clause`: [spec/09 §2](../spec/09-computations.md#2-separate-operations-and-the-three-outcomes), the Number-comparison precondition paragraph.
 - `delta`: empty and explicit zero select identically for the six measured Number comparisons and both arithmetic orders. Division-domain failure and reached formal poison remain distinct; the clause states the downstream discriminator.
@@ -75,7 +78,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-02-08"></a>
 ### `SPEC-2026-10-02-08` — a filter's Number field takes every ordinary operator against a literal on either side, and the literal scale gate binds `==` and `!=` alone
 
-- `status`: pending
+- `status`: handed-off
+- `handoff`: owner reports sending this ledger to a12-dmkits on 2026-10-03; peer disposition remains pending.
 - `origin`: locally originated. `spec/07` §3 listed a Number `!=` as the filter's measured Number comparison; this grid measures the rest of the operator and literal surface.
 - `clause`: [`07`](../spec/07-repetition-and-iteration.md) §3, the bullet that the filter's condition is the ordinary condition production.
 - `delta`: inside `Sum(Rows*/V Having <leaf>)` all six operators are admitted between a Number field and an integer literal, and all six with the literal first; on a scale-0 field `== 1.5`, `== 1.0`, `== 1.50`, `!= 1.5`, `!= 1.0`, `1.5 == [Rows/V]` and `1.5 != [Rows/V]` draw `MVK_INVALID_COMPARE_DEC_PLACES` while `<`, `<=`, `>` and `>=` against `1.5` and `1.5 > [Rows/V]` are admitted, on a scale-2 field `== 1.505` draws it and `< 1.505` is admitted, and `==` and `!=` between `[Rows/V]` and `[Rows/W]` across scales 0 and 2 draw it while `<`, `<=`, `>` and `>=` are admitted; `1 < 2` draws `MVK_INVALID_COMPARE_TO_CONST`, `[Rows/V] == "6"`, `[Rows/S] == 6` and `[Rows/S] != 6` `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING`, `[Rows/S] < 6` `MVK_INVALID_TYPE_FOR_COMPARISON`, and `[Rows/V] + 1 < 6` and `CurrentRepetition(Rows)` against a literal are admitted.
