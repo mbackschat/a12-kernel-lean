@@ -42,7 +42,9 @@ The raw packet remains immutable and inspectable at its named Git revision. “O
 
 ### Tier 1 — semantic development
 
-The default unit is the small vertical Lean capsule: source study, exact executable clause, red/green conformance, useful theorem, nearest non-law, assumptions, and implementation-map update. A missing external observation is recorded as `external evidence pending`; it does not block independent semantic and proof work when the clause is sufficiently grounded to model narrowly.
+The default implementation and verification unit within a family milestone is the small vertical Lean capsule: source study, exact executable clause, red/green conformance, useful theorem, nearest non-law, assumptions, and implementation-map update. A missing external observation is recorded as `external evidence pending`; it does not block independent semantic and proof work when the clause is sufficiently grounded to model narrowly.
+
+The [permanent conformance-convergence rule](../CLAUDE.md#permanent-conformance-convergence-rule) selects and closes family milestones; these tiers govern assurance within them. A verified prerequisite capsule alone does not establish the family's coverage.
 
 Tier 1 must remain the dominant day-to-day work. It must not require a capture schema change, packet binder, qualification report, filesystem inventory, or release artifact.
 

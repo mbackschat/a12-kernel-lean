@@ -509,7 +509,7 @@ Of the ${replay_rows} rows, ${replay_rows_absent} have no matching row in a reta
 
 ### Tier-2 clusters
 
-Each cluster is a construct no carrier admits, with its instances and its distinct members (one rule or computation of one request). The order is the keystone order of [D3](CONFORMANCE-ECONOMY-PROPOSAL.md#d3--build-the-closing-routes-as-keystones-in-cluster-order).
+Each cluster is a construct no carrier admits, with its instances and its distinct members (one rule or computation of one request). Clusters are sorted by observed instance count; family priority follows unfinished coverage and delivery cost under [D3](CONFORMANCE-ECONOMY-PROPOSAL.md#d3--build-the-closing-routes-as-keystones-in-cluster-order).
 
 | instances | members | arm | construct |
 |---|---|---|---|
