@@ -1264,6 +1264,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [The distinct count folds a component-omitting date at its declared precision](sources/temporal-runtime-fold-probes.md#src-distinct-count-component-omitting-fold)
 <a id="src-distinct-count-temporal-identity-both-strategies"></a>
 - [The distinct count's temporal identity is the decoded date on both codegen strategies](sources/temporal-runtime-fold-probes.md#src-distinct-count-temporal-identity-both-strategies)
+<a id="src-having-numeric-expression-runtime"></a>
+- [Numeric filter expressions and captured repetition ordering](sources/having-filter-probes.md#src-having-numeric-expression-runtime)
+
 <a id="src-having-number-leaf-grid"></a>
 - [A filter's Number field takes every ordinary operator against a literal on either side, under the ordinary literal scale gate on `==` and `!=` alone](sources/having-filter-probes.md#src-having-number-leaf-grid)
 <a id="src-filter-reference-two-levels-above"></a>

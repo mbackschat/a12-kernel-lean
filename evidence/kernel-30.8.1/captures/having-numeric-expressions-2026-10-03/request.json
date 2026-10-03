@@ -1,0 +1,336 @@
+{
+  "model": "HavingExpr_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "three-rows",
+      "documentInline": {
+        "G": {
+          "Err": 1,
+          "Control": 999,
+          "RepEq": 999,
+          "RepNe": 999,
+          "RepLt": 999,
+          "RepLe": 999,
+          "RepGt": 999,
+          "RepGe": 999,
+          "RepReverse": 999,
+          "Add": 999,
+          "AddReverse": 999,
+          "Both": 999,
+          "Mixed": 999,
+          "Domain": 999,
+          "DomainBad": 999,
+          "BadDomain": 999,
+          "FalseAnd": 999,
+          "TrueOr": 999,
+          "AfterDomainBad": 999,
+          "Rows": [
+            {
+              "V": 10,
+              "X": 0,
+              "Y": 1,
+              "D": 1,
+              "Bad": 3,
+              "RowEq": 999,
+              "RowNe": 999,
+              "RowLt": 999,
+              "RowLe": 999,
+              "RowGt": 999,
+              "RowGe": 999
+            },
+            {
+              "V": 20,
+              "X": 1,
+              "Y": 2,
+              "D": 1,
+              "Bad": 3,
+              "RowEq": 999,
+              "RowNe": 999,
+              "RowLt": 999,
+              "RowLe": 999,
+              "RowGt": 999,
+              "RowGe": 999
+            },
+            {
+              "V": 40,
+              "X": 2,
+              "Y": 3,
+              "D": 1,
+              "Bad": 3,
+              "RowEq": 999,
+              "RowNe": 999,
+              "RowLt": 999,
+              "RowLe": 999,
+              "RowGt": 999,
+              "RowGe": 999
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "one-row",
+      "documentInline": {
+        "G": {
+          "Err": 1,
+          "Control": 999,
+          "RepEq": 999,
+          "RepNe": 999,
+          "RepLt": 999,
+          "RepLe": 999,
+          "RepGt": 999,
+          "RepGe": 999,
+          "RepReverse": 999,
+          "Add": 999,
+          "AddReverse": 999,
+          "Both": 999,
+          "Mixed": 999,
+          "Domain": 999,
+          "DomainBad": 999,
+          "BadDomain": 999,
+          "FalseAnd": 999,
+          "TrueOr": 999,
+          "AfterDomainBad": 999,
+          "Rows": [
+            {
+              "V": 10,
+              "X": 1,
+              "Y": 2,
+              "D": 1,
+              "Bad": 3,
+              "RowEq": 999,
+              "RowNe": 999,
+              "RowLt": 999,
+              "RowLe": 999,
+              "RowGt": 999,
+              "RowGe": 999
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-numeric",
+      "documentInline": {
+        "G": {
+          "Err": 1,
+          "Control": 999,
+          "RepEq": 999,
+          "RepNe": 999,
+          "RepLt": 999,
+          "RepLe": 999,
+          "RepGt": 999,
+          "RepGe": 999,
+          "RepReverse": 999,
+          "Add": 999,
+          "AddReverse": 999,
+          "Both": 999,
+          "Mixed": 999,
+          "Domain": 999,
+          "DomainBad": 999,
+          "BadDomain": 999,
+          "FalseAnd": 999,
+          "TrueOr": 999,
+          "AfterDomainBad": 999,
+          "Rows": [
+            {
+              "V": 10,
+              "RowEq": 999,
+              "RowNe": 999,
+              "RowLt": 999,
+              "RowLe": 999,
+              "RowGt": 999,
+              "RowGe": 999
+            },
+            {
+              "V": 20,
+              "RowEq": 999,
+              "RowNe": 999,
+              "RowLt": 999,
+              "RowLe": 999,
+              "RowGt": 999,
+              "RowGe": 999
+            },
+            {
+              "V": 40,
+              "RowEq": 999,
+              "RowNe": 999,
+              "RowLt": 999,
+              "RowLe": 999,
+              "RowGt": 999,
+              "RowGe": 999
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "invalid-x",
+      "documentInline": {
+        "G": {
+          "Err": 1,
+          "Control": 999,
+          "RepEq": 999,
+          "RepNe": 999,
+          "RepLt": 999,
+          "RepLe": 999,
+          "RepGt": 999,
+          "RepGe": 999,
+          "RepReverse": 999,
+          "Add": 999,
+          "AddReverse": 999,
+          "Both": 999,
+          "Mixed": 999,
+          "Domain": 999,
+          "DomainBad": 999,
+          "BadDomain": 999,
+          "FalseAnd": 999,
+          "TrueOr": 999,
+          "AfterDomainBad": 999,
+          "Rows": [
+            {
+              "V": 10,
+              "X": "bad",
+              "Y": 2,
+              "D": 1,
+              "Bad": 3,
+              "RowEq": 999,
+              "RowNe": 999,
+              "RowLt": 999,
+              "RowLe": 999,
+              "RowGt": 999,
+              "RowGe": 999
+            },
+            {
+              "V": 20,
+              "X": 1,
+              "Y": 2,
+              "D": 1,
+              "Bad": 3,
+              "RowEq": 999,
+              "RowNe": 999,
+              "RowLt": 999,
+              "RowLe": 999,
+              "RowGt": 999,
+              "RowGe": 999
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "domain",
+      "documentInline": {
+        "G": {
+          "Err": 1,
+          "Control": 999,
+          "RepEq": 999,
+          "RepNe": 999,
+          "RepLt": 999,
+          "RepLe": 999,
+          "RepGt": 999,
+          "RepGe": 999,
+          "RepReverse": 999,
+          "Add": 999,
+          "AddReverse": 999,
+          "Both": 999,
+          "Mixed": 999,
+          "Domain": 999,
+          "DomainBad": 999,
+          "BadDomain": 999,
+          "FalseAnd": 999,
+          "TrueOr": 999,
+          "AfterDomainBad": 999,
+          "Rows": [
+            {
+              "V": 10,
+              "X": 1,
+              "Y": 2,
+              "D": 0,
+              "Bad": 3,
+              "RowEq": 999,
+              "RowNe": 999,
+              "RowLt": 999,
+              "RowLe": 999,
+              "RowGt": 999,
+              "RowGe": 999
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "domain-poison",
+      "documentInline": {
+        "G": {
+          "Err": 1,
+          "Control": 999,
+          "RepEq": 999,
+          "RepNe": 999,
+          "RepLt": 999,
+          "RepLe": 999,
+          "RepGt": 999,
+          "RepGe": 999,
+          "RepReverse": 999,
+          "Add": 999,
+          "AddReverse": 999,
+          "Both": 999,
+          "Mixed": 999,
+          "Domain": 999,
+          "DomainBad": 999,
+          "BadDomain": 999,
+          "FalseAnd": 999,
+          "TrueOr": 999,
+          "AfterDomainBad": 999,
+          "Rows": [
+            {
+              "V": 10,
+              "X": 1,
+              "Y": 2,
+              "D": 0,
+              "Bad": "bad",
+              "RowEq": 999,
+              "RowNe": 999,
+              "RowLt": 999,
+              "RowLe": 999,
+              "RowGt": 999,
+              "RowGe": 999
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "G": {
+          "Err": 1,
+          "Control": 999,
+          "RepEq": 999,
+          "RepNe": 999,
+          "RepLt": 999,
+          "RepLe": 999,
+          "RepGt": 999,
+          "RepGe": 999,
+          "RepReverse": 999,
+          "Add": 999,
+          "AddReverse": 999,
+          "Both": 999,
+          "Mixed": 999,
+          "Domain": 999,
+          "DomainBad": 999,
+          "BadDomain": 999,
+          "FalseAnd": 999,
+          "TrueOr": 999,
+          "AfterDomainBad": 999,
+          "Rows": []
+        }
+      }
+    }
+  ]
+}

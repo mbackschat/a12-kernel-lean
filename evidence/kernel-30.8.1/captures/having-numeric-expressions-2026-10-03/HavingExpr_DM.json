@@ -1,0 +1,1066 @@
+{
+  "header" : {
+    "id" : "HavingExpr_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "HavingExpr_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/G",
+        "name" : "G",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/G/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/G/Rows/V",
+                "name" : "V",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/X",
+                "name" : "X",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/Y",
+                "name" : "Y",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/D",
+                "name" : "D",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/Bad",
+                "name" : "Bad",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/RowEq",
+                "name" : "RowEq",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/G/Rows/RowEqComp",
+                "name" : "RowEqComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../RowEq",
+                  "computationAlternatives" : [ {
+                    "operation" : "Sum(/G/Rows*/V Having CurrentRepetition(/G/Rows) == CurrentRepetition($/G/Rows))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row filter check"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/G/Rows/RowEqRule",
+                "name" : "RowEqRule",
+                "Rule" : {
+                  "errorEntityRelPath" : "../V",
+                  "errorCode" : "R_RowEq",
+                  "errorCondition" : "FieldFilled(/G/Rows/V) And Sum(/G/Rows*/V Having CurrentRepetition(/G/Rows) == CurrentRepetition($/G/Rows)) > 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row filter rule"
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/RowNe",
+                "name" : "RowNe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/G/Rows/RowNeComp",
+                "name" : "RowNeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../RowNe",
+                  "computationAlternatives" : [ {
+                    "operation" : "Sum(/G/Rows*/V Having CurrentRepetition(/G/Rows) != CurrentRepetition($/G/Rows))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row filter check"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/G/Rows/RowNeRule",
+                "name" : "RowNeRule",
+                "Rule" : {
+                  "errorEntityRelPath" : "../V",
+                  "errorCode" : "R_RowNe",
+                  "errorCondition" : "FieldFilled(/G/Rows/V) And Sum(/G/Rows*/V Having CurrentRepetition(/G/Rows) != CurrentRepetition($/G/Rows)) > 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row filter rule"
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/RowLt",
+                "name" : "RowLt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/G/Rows/RowLtComp",
+                "name" : "RowLtComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../RowLt",
+                  "computationAlternatives" : [ {
+                    "operation" : "Sum(/G/Rows*/V Having CurrentRepetition(/G/Rows) < CurrentRepetition($/G/Rows))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row filter check"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/G/Rows/RowLtRule",
+                "name" : "RowLtRule",
+                "Rule" : {
+                  "errorEntityRelPath" : "../V",
+                  "errorCode" : "R_RowLt",
+                  "errorCondition" : "FieldFilled(/G/Rows/V) And Sum(/G/Rows*/V Having CurrentRepetition(/G/Rows) < CurrentRepetition($/G/Rows)) > 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row filter rule"
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/RowLe",
+                "name" : "RowLe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/G/Rows/RowLeComp",
+                "name" : "RowLeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../RowLe",
+                  "computationAlternatives" : [ {
+                    "operation" : "Sum(/G/Rows*/V Having CurrentRepetition(/G/Rows) <= CurrentRepetition($/G/Rows))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row filter check"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/G/Rows/RowLeRule",
+                "name" : "RowLeRule",
+                "Rule" : {
+                  "errorEntityRelPath" : "../V",
+                  "errorCode" : "R_RowLe",
+                  "errorCondition" : "FieldFilled(/G/Rows/V) And Sum(/G/Rows*/V Having CurrentRepetition(/G/Rows) <= CurrentRepetition($/G/Rows)) > 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row filter rule"
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/RowGt",
+                "name" : "RowGt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/G/Rows/RowGtComp",
+                "name" : "RowGtComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../RowGt",
+                  "computationAlternatives" : [ {
+                    "operation" : "Sum(/G/Rows*/V Having CurrentRepetition(/G/Rows) > CurrentRepetition($/G/Rows))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row filter check"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/G/Rows/RowGtRule",
+                "name" : "RowGtRule",
+                "Rule" : {
+                  "errorEntityRelPath" : "../V",
+                  "errorCode" : "R_RowGt",
+                  "errorCondition" : "FieldFilled(/G/Rows/V) And Sum(/G/Rows*/V Having CurrentRepetition(/G/Rows) > CurrentRepetition($/G/Rows)) > 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row filter rule"
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/RowGe",
+                "name" : "RowGe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/G/Rows/RowGeComp",
+                "name" : "RowGeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../RowGe",
+                  "computationAlternatives" : [ {
+                    "operation" : "Sum(/G/Rows*/V Having CurrentRepetition(/G/Rows) >= CurrentRepetition($/G/Rows))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row filter check"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/G/Rows/RowGeRule",
+                "name" : "RowGeRule",
+                "Rule" : {
+                  "errorEntityRelPath" : "../V",
+                  "errorCode" : "R_RowGe",
+                  "errorCondition" : "FieldFilled(/G/Rows/V) And Sum(/G/Rows*/V Having CurrentRepetition(/G/Rows) >= CurrentRepetition($/G/Rows)) > 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "row filter rule"
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Err",
+            "name" : "Err",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Control",
+            "name" : "Control",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/RepEq",
+            "name" : "RepEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/RepNe",
+            "name" : "RepNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/RepLt",
+            "name" : "RepLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/RepLe",
+            "name" : "RepLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/RepGt",
+            "name" : "RepGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/RepGe",
+            "name" : "RepGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/RepReverse",
+            "name" : "RepReverse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Add",
+            "name" : "Add",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AddReverse",
+            "name" : "AddReverse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Both",
+            "name" : "Both",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Mixed",
+            "name" : "Mixed",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Domain",
+            "name" : "Domain",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/DomainBad",
+            "name" : "DomainBad",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/BadDomain",
+            "name" : "BadDomain",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/FalseAnd",
+            "name" : "FalseAnd",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/TrueOr",
+            "name" : "TrueOr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterDomainBad",
+            "name" : "AfterDomainBad",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ControlComp",
+            "name" : "ControlComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Control",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having [Rows/X] < 2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/ControlRule",
+            "name" : "ControlRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_Control",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having [Rows/X] < 2) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/RepEqComp",
+            "name" : "RepEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RepEq",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having CurrentRepetition(Rows) == 2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/RepEqRule",
+            "name" : "RepEqRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_RepEq",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having CurrentRepetition(Rows) == 2) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/RepNeComp",
+            "name" : "RepNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RepNe",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having CurrentRepetition(Rows) != 2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/RepNeRule",
+            "name" : "RepNeRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_RepNe",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having CurrentRepetition(Rows) != 2) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/RepLtComp",
+            "name" : "RepLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RepLt",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having CurrentRepetition(Rows) < 2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/RepLtRule",
+            "name" : "RepLtRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_RepLt",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having CurrentRepetition(Rows) < 2) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/RepLeComp",
+            "name" : "RepLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RepLe",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having CurrentRepetition(Rows) <= 2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/RepLeRule",
+            "name" : "RepLeRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_RepLe",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having CurrentRepetition(Rows) <= 2) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/RepGtComp",
+            "name" : "RepGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RepGt",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having CurrentRepetition(Rows) > 2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/RepGtRule",
+            "name" : "RepGtRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_RepGt",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having CurrentRepetition(Rows) > 2) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/RepGeComp",
+            "name" : "RepGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RepGe",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having CurrentRepetition(Rows) >= 2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/RepGeRule",
+            "name" : "RepGeRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_RepGe",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having CurrentRepetition(Rows) >= 2) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/RepReverseComp",
+            "name" : "RepReverseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RepReverse",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having 2 < CurrentRepetition(Rows))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/RepReverseRule",
+            "name" : "RepReverseRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_RepReverse",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having 2 < CurrentRepetition(Rows)) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AddComp",
+            "name" : "AddComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Add",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having [Rows/X] + 1 < 3)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/AddRule",
+            "name" : "AddRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_Add",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having [Rows/X] + 1 < 3) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AddReverseComp",
+            "name" : "AddReverseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AddReverse",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having 3 > [Rows/X] + 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/AddReverseRule",
+            "name" : "AddReverseRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_AddReverse",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having 3 > [Rows/X] + 1) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/BothComp",
+            "name" : "BothComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Both",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having [Rows/X] + 1 == [Rows/Y])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/BothRule",
+            "name" : "BothRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_Both",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having [Rows/X] + 1 == [Rows/Y]) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MixedComp",
+            "name" : "MixedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Mixed",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having [Rows/X] + CurrentRepetition(Rows) > 2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/MixedRule",
+            "name" : "MixedRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_Mixed",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having [Rows/X] + CurrentRepetition(Rows) > 2) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/DomainComp",
+            "name" : "DomainComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Domain",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having [Rows/X] / [Rows/D] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/DomainRule",
+            "name" : "DomainRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_Domain",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having [Rows/X] / [Rows/D] > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/DomainBadComp",
+            "name" : "DomainBadComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DomainBad",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having [Rows/X] / [Rows/D] < [Rows/Bad])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/DomainBadRule",
+            "name" : "DomainBadRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_DomainBad",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having [Rows/X] / [Rows/D] < [Rows/Bad]) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/BadDomainComp",
+            "name" : "BadDomainComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BadDomain",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having [Rows/Bad] > [Rows/X] / [Rows/D])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/BadDomainRule",
+            "name" : "BadDomainRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_BadDomain",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having [Rows/Bad] > [Rows/X] / [Rows/D]) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/FalseAndComp",
+            "name" : "FalseAndComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FalseAnd",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having [Rows/X] < 0 And [Rows/Bad] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/FalseAndRule",
+            "name" : "FalseAndRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_FalseAnd",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having [Rows/X] < 0 And [Rows/Bad] > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/TrueOrComp",
+            "name" : "TrueOrComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TrueOr",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/V Having [Rows/X] >= 0 Or [Rows/Bad] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter check"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/TrueOrRule",
+            "name" : "TrueOrRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Err",
+              "errorCode" : "R_TrueOr",
+              "errorCondition" : "FieldFilled(Err) And Sum(Rows*/V Having [Rows/X] >= 0 Or [Rows/Bad] > 0) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "filter rule"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterDomainBadComp",
+            "name" : "AfterDomainBadComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDomainBad",
+              "computationAlternatives" : [ {
+                "operation" : "[DomainBad] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "downstream check"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
