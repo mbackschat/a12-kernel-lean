@@ -9,6 +9,7 @@ import A12Kernel.Elaboration.IteratedDateRangeCondition
 import A12Kernel.Elaboration.CustomFieldValidity
 import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.ValueListCondition
+import A12Kernel.Elaboration.ValuesNotUniqueCondition
 
 /-! # Shared resolved validation conditions
 
@@ -261,6 +262,7 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   flat leaf through the field's validation-phase String. -/
   | stringPattern (leaf : CheckedStringPatternLeaf model)
   | valueList (source : CheckedValueListCondition model)
+  | valuesNotUnique (source : CheckedValuesNotUniqueCondition model)
 
 /-- One checked connective tree whose leaves retain their family-specific resolved certificates and evaluation policies. -/
 abbrev ValidationCondition (model : FlatModel) :=
@@ -453,6 +455,7 @@ def liftsEmptyGate : ValidationConditionLeaf model → Bool
 /-- Whether a presence leaf can hold on an instance without admitted content; it composes through
 `And` and `Or`. A comparison claims nothing here, `liftsEmptyGate` owning it. -/
 def canFireOnEmpty : ValidationConditionLeaf model → Bool
+  | .valuesNotUnique _ => false
   | .valueList source => source.quantifier.canFireOnEmpty
   | .flat condition => condition.canFireOnEmpty
   | .numeric _ _ | .orderedNumeric _ _ => false
@@ -474,6 +477,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
       | .fieldsNotCollectivelyFilled => false
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
+  | .valuesNotUnique source, field => source.referencesField field
   | .valueList source, field => source.referencesField field
   | .flat condition, field => condition.referencesField field
   | .numeric _ comparison, field => comparison.referencesField model field
@@ -501,6 +505,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
     and the DateRange overlap leaves own filters, and there a body's unmarked reads do not count
     while its marked ones do; every other leaf reads as `referencesField` does. -/
 def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
+  | .valuesNotUnique source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .valueList source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .orderedNumeric _ comparison, field => comparison.referencesErrorField field
   | .iteratedDateRange condition, field => condition.referencesErrorField field
@@ -514,6 +519,7 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
 
 /-- Whether a leaf retains any `Having` filter in its checked source. Ordered numeric, DateRange overlap and value-list leaves retain their owning sources’ filters; scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
+  | .valuesNotUnique source => source.hasHaving
   | .valueList source => source.hasHaving
   | .orderedNumeric _ comparison => comparison.hasHaving
   | .iteratedDateRange condition => !condition.filters.isEmpty
@@ -525,7 +531,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
-  | .valueList _ => true
+  | .valueList _ | .valuesNotUnique _ => true
   | .orderedNumeric _ comparison =>
       comparison.requiresAddressedValidation
   | .groupPresence _ reference =>
@@ -544,6 +550,8 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
 def wellFormedBool (rowGroup : GroupPath) :
     ValidationConditionLeaf model → Bool
+  | .valuesNotUnique source => source.admittedMultiplicity && source.bindingScopes.flatten.all
+      (model.repeatableScopeForGroupPath rowGroup).contains
   | .valueList source => source.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains
   | .flat condition => condition.wellFormedBool model

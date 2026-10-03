@@ -176,6 +176,13 @@ def referencesField (checked : CheckedTokenEntitySource model)
 
 end CheckedTokenEntitySource
 
+def CheckedTokenEntitySource.bindingScopes (source : CheckedTokenEntitySource model) : List (List RepeatableLevel) :=
+  source.operands.map fun
+    | .field field => field.declaration.repeatableScope
+    | .star source => source.source.bindingScope
+    | .group source => source.source.bindingScope
+
+
 inductive TokenEntityElabError where
   | shape (error : FieldEntityShapeElabError)
   | fieldKindMismatch (path : List String) (actual : SurfaceScalarKind)

@@ -293,6 +293,8 @@ private def ValidationConditionLeaf.iterationGuardAt
       if source.bindingScope.contains level then .unclassified else .noReference
   | .valueList source =>
       if source.bindingScopes.flatten.contains level then .unclassified else .noReference
+  | .valuesNotUnique source =>
+      if source.bindingScopes.flatten.contains level then .unclassified else .noReference
   | .orderedNumeric _ comparison =>
       match orderedNumericCompositeGuardAt level comparison with
       | some status => status
@@ -418,7 +420,7 @@ def supportsOrdinaryIteration
     -- A nonrepeatable operand read is environment-insensitive, exactly as a flat leaf's is, so the
     -- default `false` here would narrow the fragment without a reason.
     | .customFieldValidity _ | .stringPattern _ => true
-    | .fieldFill _ _ | .valueList _ => true
+    | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => true
     | _ => false
 
 /-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/

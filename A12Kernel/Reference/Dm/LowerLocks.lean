@@ -35,6 +35,16 @@ private def admitted (text : String) : Bool :=
   | .error _ => false
 
 example :
+    [admitted "FieldValuesNotUnique(Amt, Amt2) And FieldFilled(Ref)",
+     admitted "FieldValuesNotUnique(Rows*/Note)",
+     admitted "FieldValuesNotUnique(Rows*)",
+     admitted "FieldValuesNotUnique(Head)",
+     admitted "FieldValuesNotUnique(Due1, Due2)",
+     !admitted "FieldValuesNotUnique(Ref, Amt)",
+     !admitted "FieldValuesNotUnique(Ref)"].all id := by
+  native_decide
+
+example :
     [admitted "AtLeastOneFieldValueIncludedInValueList(Rows*/Note In Ref) And FieldFilled(Ref)",
      admitted "NoFieldValueIncludedInValueList(Rows* In Ref) Or FieldNotFilled(Ref)",
      admitted "NotAllFieldValuesIncludedInValueList(Tail In Amt)",
@@ -45,6 +55,21 @@ example :
     (do
       let parsed ← (parseText .english
         "AtLeastOneFieldValueIncludedInValueList(Rows*/Note Having ([Rows/Filter] == \"x\" And [$Head/Code] == \"x\") In \"x\")").toOption
+      let checked ← (lowerCondition model ["Order"] false parsed.body).toOption
+      pure (checked.hasHaving,
+        [1, 2, 3, 10].filter checked.core.referencesField,
+        [1, 2, 3, 10].filter checked.core.referencesErrorField,
+        (checked.core.referencePointers []).toOption)) =
+      some (true, [2, 3, 10], [2, 3], some [
+        { field := 2, coordinates := [.wildcard] },
+        { field := 10, coordinates := [.wildcard] },
+        { field := 3, coordinates := [] }]) := by
+  native_decide
+
+example :
+    (do
+      let parsed ← (parseText .english
+        "FieldValuesNotUnique(Rows*/Note Having ([Rows/Filter] == \"x\" And [$Head/Code] == \"x\"))").toOption
       let checked ← (lowerCondition model ["Order"] false parsed.body).toOption
       pure (checked.hasHaving,
         [1, 2, 3, 10].filter checked.core.referencesField,

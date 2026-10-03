@@ -41,23 +41,10 @@ def referencesField (source : CheckedValueListCondition model) (field : FieldId)
       source.values.referencesField field filterReads
   | .literals source => source.fields.referencesField field filterReads
 
-private def numberScopes (source : CheckedNumberEntitySource model) : List (List RepeatableLevel) :=
-  source.operands.map fun
-    | .field field => field.declaration.repeatableScope
-    | .star source => source.source.bindingScope
-    | .starHaving source => source.source.source.bindingScope
-    | .group source => source.source.bindingScope
-
-private def tokenScopes (source : CheckedTokenEntitySource model) : List (List RepeatableLevel) :=
-  source.operands.map fun
-    | .field field => field.declaration.repeatableScope
-    | .star source => source.source.bindingScope
-    | .group source => source.source.bindingScope
-
 def bindingScopes : CheckedValueListCondition model → List (List RepeatableLevel)
-  | .number source => numberScopes source.fields ++ numberScopes source.values
-  | .token source => tokenScopes source.fields ++ tokenScopes source.values
-  | .literals source => tokenScopes source.fields
+  | .number source => source.fields.bindingScopes ++ source.values.bindingScopes
+  | .token source => source.fields.bindingScopes ++ source.values.bindingScopes
+  | .literals source => source.fields.bindingScopes
 
 /-- Evaluate the certified sides through the shared ordered quantifier. Literal values form one
 fully known operand and carry no document addresses. -/

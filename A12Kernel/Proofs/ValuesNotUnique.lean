@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.NumberValuesNotUnique
+import A12Kernel.Elaboration.ValuesNotUniqueCondition
 import A12Kernel.Elaboration.TokenValuesNotUnique
 import A12Kernel.Elaboration.TemporalValuesNotUnique
 import A12Kernel.Proofs.NumericAggregate
@@ -35,6 +35,16 @@ theorem temporalValuesNotUnique_route_never_unknown
     CheckedTemporalValuesNotUniqueSource.evaluateCheckedDocumentValuesNotUnique
       checked document outer ≠ .ok .unknown :=
   collectTaggedValueListCells_valuesNotUnique_never_unknown _ _
+
+/-- The shared condition adapter preserves the checked overloads' unavailable-cell skip. -/
+theorem valuesNotUniqueCondition_never_unknown
+    (source : CheckedValuesNotUniqueCondition model)
+    (document : CheckedDocument model) (outer : Env) :
+    source.evaluateFull document outer ≠ .ok .unknown := by
+  cases source with
+  | number source => exact numberValuesNotUnique_route_never_unknown source document outer
+  | token source => exact tokenValuesNotUnique_route_never_unknown source document outer
+  | temporal source => exact temporalValuesNotUnique_route_never_unknown source document outer
 
 /-- A retained temporal group omits no descendant: every declaration in its recursive subtree is
     present in the certified expansion with its exact declared temporal policy. -/

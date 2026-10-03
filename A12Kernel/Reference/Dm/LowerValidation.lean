@@ -12,7 +12,7 @@ connectives are kept and each leaf is offered, in a fixed order, to the carriers
 the flat leaf, repeatable field presence, group presence, the group-list quantifiers, the filled-group
 numeric comparison, scalar, then addressed, then over entity lists, the starred filled-group count
 against a literal, the field-fill quantifiers and `NumberOfFilledFields` over an entity list,
-and typed entity-valued or token-literal value lists. The first carrier that admits a leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
+typed entity-valued or token-literal value lists, and the three checked uniqueness overloads. The first carrier that admits a leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
 key; when an elaborator itself refused, its error is kept as the detail.
 
 Only public elaboration entry points are reached. A construct with a semantic evaluator but no rule
@@ -87,6 +87,25 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
         let checked ← elaborated "Flat" (elaborate model rowGroup surface)
         elaborated "Flat" (CheckedValidationCondition.fromFlat checked)]
     | none => []
+  let uniqueness := match leaf with
+    | .call "FieldValuesNotUnique" arguments none none =>
+        let operands := lowerEntitySource model rowGroup arguments
+        [do
+          let source ← elaborated "FieldValuesNotUnique"
+            (elaborateNumberValuesNotUniqueSource model rowGroup (← operands))
+          elaborated "FieldValuesNotUnique"
+            (CheckedValidationCondition.fromValuesNotUnique rowGroup (.number source)),
+         do
+          let source ← elaborated "FieldValuesNotUnique"
+            (elaborateTokenValuesNotUniqueSource model rowGroup (← operands))
+          elaborated "FieldValuesNotUnique"
+            (CheckedValidationCondition.fromValuesNotUnique rowGroup (.token source)),
+         do
+          let source ← elaborated "FieldValuesNotUnique"
+            (elaborateTemporalValuesNotUniqueSource model rowGroup (← operands))
+          elaborated "FieldValuesNotUnique"
+            (CheckedValidationCondition.fromValuesNotUnique rowGroup (.temporal source))]
+    | _ => []
   let valueLists := match leaf with
     | .call id arguments (some values) none =>
         let quantifier := match id with
@@ -206,7 +225,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
               { op := .violated, field, source })]
         | _, _ => []
     | _ => []
-  flat ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists
+  flat ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :

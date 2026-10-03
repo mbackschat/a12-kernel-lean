@@ -232,6 +232,14 @@ def directAggregateFields?
 
 end CheckedNumberEntitySource
 
+def CheckedNumberEntitySource.bindingScopes (source : CheckedNumberEntitySource model) : List (List RepeatableLevel) :=
+  source.operands.map fun
+    | .field field => field.declaration.repeatableScope
+    | .star source => source.source.bindingScope
+    | .starHaving source => source.source.source.bindingScope
+    | .group source => source.source.bindingScope
+
+
 inductive NumberEntityElabError where
   | shape (error : FieldEntityShapeElabError)
   /-- The list's **first** field operand is not Number-valued. Certification binds the first operand before the rest, so reaching any later arm implies this one passed — which is what lets the later arm read the list's family off its own position instead of carrying it. -/

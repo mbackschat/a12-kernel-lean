@@ -221,15 +221,20 @@ def CheckedTokenValueCountSource.referencePointers
   (·.flatten) <$> checked.source.operands.mapM
     (CheckedTokenEntityOperand.referencePointers environment)
 
-/-- A temporal slot refuses a filter on the Boolean/Confirm carrier's terms: the token carrier's
-    measured filter coordinates do not cross to it. -/
+/-- Temporal predicates and counts share the certified slot's references. Filter coordinates
+remain refused until temporal-carrier observations establish their projection. -/
+def CheckedTemporalUniquenessOperand.referencePointers (environment : Env) :
+    CheckedTemporalUniquenessOperand model →
+      Except ReferenceProjectionError (List MessagePointer)
+  | .field source => (concreteFieldPointer source.declaration environment).map ([·])
+  | .star path _ none => (starFieldPointer path environment).map ([·])
+  | .star _ _ (some _) => .error .filteredStarOperand
+  | .group source => source.source.referencePointers environment
+
 def CheckedTemporalDistinctCountOperand.referencePointers (environment : Env) :
     CheckedTemporalDistinctCountOperand model →
       Except ReferenceProjectionError (List MessagePointer)
-  | .slot (.field source) => (concreteFieldPointer source.declaration environment).map ([·])
-  | .slot (.star path _ none) => (starFieldPointer path environment).map ([·])
-  | .slot (.star _ _ (some _)) => .error .filteredStarOperand
-  | .slot (.group source) => source.source.referencePointers environment
+  | .slot source => source.referencePointers environment
   | .group source => source.source.referencePointers environment
 
 /-- The Boolean/Confirm companion has the same optional-filter shape, but it does not inherit the token carrier's measured coordinate account and therefore still refuses a filter. Its fixed canonical-token projection is invisible here for the same reason the token projection is. -/
@@ -355,6 +360,13 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
       match model.lookupUniqueId leaf.condition.field.id with
       | .ok declaration => (concreteFieldPointer declaration environment).map ([·])
       | .error _ => .error .unclassifiedLeaf
+  | .valuesNotUnique source =>
+      match source with
+      | .number source => source.referencePointers environment
+      | .token source => (·.flatten) <$> source.source.operands.mapM
+          (CheckedTokenEntityOperand.referencePointers environment)
+      | .temporal source => (·.flatten) <$> source.operands.mapM
+          (CheckedTemporalUniquenessOperand.referencePointers environment)
   | .valueList source =>
       match source with
       | .number source => do

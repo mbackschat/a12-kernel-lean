@@ -117,6 +117,11 @@ def fromStringPattern (model : FlatModel) (rowGroup : GroupPath)
       checkCore model rowGroup (.leaf (.stringPattern { compilePattern, condition }))
         (by rw [hModel]; rfl)
 
+/-- Compose the owning uniqueness certificate without changing its operand order or identity. -/
+def fromValuesNotUnique (rowGroup : GroupPath) (source : CheckedValuesNotUniqueCondition model) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  checkCore model rowGroup (.leaf (.valuesNotUnique source)) source.modelWellFormed
+
 /-- Compose a value-list certificate without flattening its authored operands. -/
 def fromValueList (rowGroup : GroupPath) (source : CheckedValueListCondition model) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
