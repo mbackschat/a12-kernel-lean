@@ -842,4 +842,11 @@ example :
       !(lowerComputation fixedBooleanModel .english guarded).isOk := by
   native_decide
 
+example :
+    let computation : DmComputation := {
+      group := ["Order"], name := "Self", targetRelPath := "../Amt"
+      commonPrecondition := some "AllFieldsFilled(Ref, Amt)"
+      alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := [] }
+    !(lowerComputation model .english computation).isOk := by native_decide
+
 end A12Kernel.Dm.LowerLocks

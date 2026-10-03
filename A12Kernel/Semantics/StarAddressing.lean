@@ -318,6 +318,21 @@ def StarPath.resolveInCapacity (path : StarPath) (document : Document) (outer : 
     Except StarAddressingError ResolvedStarTopology :=
   (·.inCapacity path.axes) <$> path.resolveTopology document outer
 
+/-- Resolve one declaration under an operand's bound depth. Fully bound repeated declarations
+contribute only an instantiated in-capacity row; reopened declarations retain their omitted tail. -/
+def StarAxes.resolveOperandExtent (axes : List StarAxis) (document : Document)
+    (outer : Env) (boundCount : Nat) : Except StarAddressingError (List Env × Bool) := do
+  if axes.isEmpty then return ([[]], false)
+  if boundCount < axes.length then
+    let resolved ← ({ axes, firstStar := boundCount } : StarPath).resolveInCapacity document outer
+    return (resolved.environments, resolved.domain.hasOpenTail)
+  let scope := axes.map (·.level)
+  let path ← (outer.pathForScope scope).mapError (·.toStarAddressingError)
+  let environment := scope.zip path
+  let instantiated := document.instantiatedRows.any fun row =>
+    row.group == scope.getLast?.getD 0 && row.path == path
+  return (if instantiated && !StarAxes.environmentOverLimit axes environment then [environment] else [], false)
+
 /-- A successful checked star resolution constructs its hierarchical tree and ordered leaf environments from the same named axes and exact bound outer prefix. -/
 theorem StarPath.resolveTopology_environmentCorrespondence
     (path : StarPath) (document : Document) (outer : Env)

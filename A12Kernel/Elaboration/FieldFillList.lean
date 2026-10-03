@@ -40,7 +40,7 @@ inductive FieldFillListElabError where
   | group (error : FilledFieldCountGroupElabError)
   /-- A filtered operand, a category read, or the rule group as an operand. -/
   | unsupportedOperand
-  deriving Repr
+  deriving Repr, DecidableEq
 
 namespace CheckedFieldFillOperand
 
@@ -132,6 +132,20 @@ def observations (list : CheckedFieldFillList model) (document : CheckedDocument
 def computationSlots (list : CheckedFieldFillList model) (document : CheckedDocument model)
     (outer : Env) : Except CheckedAddressingError (List ComputationFillSlot) :=
   (·.flatten) <$> list.operands.mapM (·.computationSlots document outer)
+
+/-- Erase model certificates while retaining each declaration's identity, axes and bound depth
+for the model-independent computation guard. -/
+def computationSources (list : CheckedFieldFillList model) :
+    Except FieldFillListElabError (List ComputationFillSource) := do
+  let sources ← list.operands.mapM fun
+    | .field declaration => pure [ComputationFillSource.direct declaration.id]
+    | .star source => pure [.expanded source.declaration.id source.path.axes source.path.firstStar]
+    | .group source => source.declarations.mapM fun declaration => do
+        if declaration.repeatableScope.isEmpty then return .direct declaration.id
+        let some axes := model.repeatableAxesForScope? declaration.repeatableScope
+          | throw .unsupportedOperand
+        pure (.expanded declaration.id axes source.source.boundLevelCount)
+  pure sources.flatten
 
 /-- The extensional validation tally of the list's in-capacity extent.
 

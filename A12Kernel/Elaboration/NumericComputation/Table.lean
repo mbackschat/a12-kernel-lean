@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.NumericComputation.Target
 
 /-! # Checked Number computation tables
 
-This capsule consolidates a nonempty table of already-checked Number target operations. A sole source row may omit its precondition; every row in a multi-row source table must be guarded. Every row retains the same target and complete target policy, and every guard reads only cells one row of the target's scope binds, as the table's operations do. Selection reuses the shared first-match owner and delegates only the selected operation to the existing scalar Numeric evaluator.
+This capsule consolidates a nonempty table of already-checked Number target operations. A sole source row may omit its precondition; every row in a multi-row source table must be guarded. Every row retains the same target and complete target policy, direct guard reads bind at the target's row, and expanded field-fill sources reopen their own declared extents. Selection reuses the shared first-match owner and delegates only the selected operation to the existing scalar Numeric evaluator.
 -/
 
 namespace A12Kernel
@@ -301,7 +301,9 @@ def evaluateIn (table : CheckedNumericComputationTable model)
     (context : NumericComputationEvaluationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
   match ← (ComputationAlternative.selectFirstChecked
-      table.selectableAlternatives context.scalar).mapError .guardBinding with
+      table.selectableAlternatives { context.scalar with
+        row := context.outer
+        addressed := some { document := context.document, read := context.starRead } }).mapError .guardBinding with
   | .noMatch => pure (.supported .noValue)
   | .poison cause => pure (.supported (.inheritedPoison cause))
   | .selected operation => operation.evaluateIn context

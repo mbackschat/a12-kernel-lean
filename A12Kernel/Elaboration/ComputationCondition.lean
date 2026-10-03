@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.FieldFillList
 import A12Kernel.Elaboration.Flat.ComputationBinding
 import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Elaboration.NumericValidation.Core
@@ -29,6 +30,17 @@ def computationNumericGuardAdmitted (comparison : NumericComparisonOf Computatio
   comparison.admittedWith (ComputationNumericAtom.admitted model scope)
     ComputationNumericAtom.summary
 
+/-- A resolved fill source must retain the model's exact repeatable axes and bind its outer prefix. -/
+def ComputationFillSource.admitted (model : FlatModel) (scope : List RepeatableLevel) :
+    ComputationFillSource → Bool
+  | .direct field => match model.lookupUniqueId field with
+      | .ok declaration => declaration.repeatableScope.isPrefixOf scope
+      | .error _ => false
+  | .expanded field axes boundCount => match model.lookupUniqueId field with
+      | .ok declaration => model.repeatableAxesForScope? declaration.repeatableScope == some axes &&
+          boundCount ≤ axes.length && ((axes.take boundCount).map (·.level)).isPrefixOf scope
+      | .error _ => false
+
 namespace ComputationCondition
 
 /-- Check model ownership and fixed-target admission for every guard leaf. -/
@@ -38,6 +50,7 @@ def wellFormedBool (condition : ComputationCondition) (model : FlatModel) : Bool
       match model.lookupUniqueId field with
       | .ok declaration => declaration.repeatableScope.isEmpty
       | .error _ => false
+  | .leaf (.fieldFill _ sources) => !sources.isEmpty && sources.all (·.admitted model [])
   | .leaf (.text comparison) => model.admitsTextComparisonIn [] comparison
   | .leaf (.numeric comparison) => computationNumericGuardAdmitted comparison model []
   | .and left right | .or left right =>
@@ -51,6 +64,7 @@ def rowBoundBool (condition : ComputationCondition) (model : FlatModel)
       match model.lookupUniqueId field with
       | .ok declaration => declaration.repeatableScope.isPrefixOf scope
       | .error _ => false
+  | .leaf (.fieldFill _ sources) => !sources.isEmpty && sources.all (·.admitted model scope)
   | .leaf (.text comparison) => model.admitsTextComparisonIn scope comparison
   | .leaf (.numeric comparison) => computationNumericGuardAdmitted comparison model scope
   | .and left right | .or left right =>
@@ -68,6 +82,7 @@ inductive SurfaceComputationCondition where
   | text (op : SurfaceComparisonOp) (left : SurfaceTextFieldOperand)
       (right : Sum SurfaceTextFieldOperand String)
   | numeric (comparison : SurfaceNumericComparison)
+  | fieldFill (operator : FieldFillQuantifier) (source : SurfaceFieldEntitySource)
   | and (left right : SurfaceComputationCondition)
   | or (left right : SurfaceComputationCondition)
   deriving Repr, DecidableEq
@@ -77,6 +92,7 @@ inductive ComputationConditionElabError where
   | resolve (error : ResolveError)
   | numeric (error : NumericValidationElabError)
   | text (error : ElabError)
+  | fieldFill (error : FieldFillListElabError)
   deriving DecidableEq
 
 instance : Repr ComputationConditionElabError where
@@ -84,6 +100,7 @@ instance : Repr ComputationConditionElabError where
     | .resolve error => reprPrec (NumericValidationElabError.resolve error) precedence
     | .numeric error => reprPrec error precedence
     | .text error => reprPrec error precedence
+    | .fieldFill error => reprPrec error precedence
 
 private def numericGuardError : NumericValidationElabError → ComputationConditionElabError
   | .resolve error => .resolve error
@@ -183,6 +200,10 @@ name is the one reported. -/
 def FlatModel.elaborateComputationCondition (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) :
     SurfaceComputationCondition → Except ComputationConditionElabError ComputationCondition
+  | .fieldFill operator source => do
+      let checked ← (elaborateComputationFieldFillList model declaringGroup targetGroup source).mapError .fieldFill
+      let sources ← checked.computationSources.mapError .fieldFill
+      pure (.leaf (.fieldFill operator sources))
   | .fieldFilled reference =>
       (.leaf ∘ .fieldFilled) <$> (model.resolveComputationPresence declaringGroup targetGroup reference).mapError .resolve
   | .fieldNotFilled reference =>

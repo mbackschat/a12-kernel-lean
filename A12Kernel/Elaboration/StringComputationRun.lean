@@ -76,14 +76,16 @@ def targetFields (run : CheckedStringComputationRun model) : List FieldId :=
 /-- Read ordinary inputs from the checked document, hide every pending computed target, and expose only completed semantic outcomes at computed targets. -/
 def readPolicy (run : CheckedStringComputationRun model)
     (state : StringComputationRunState) (input : CheckedDocument model) :
-    StringComputationContext where
-  read field :=
-    if run.targetFields.contains field then
-      match state.find? field with
-      | some completion => completion.dependencyCell.checked
-      | none => StringDependencyCell.empty.checked
-    else
-      input.stringComputationContext.read field
+    StringComputationContext :=
+  { input.stringComputationContext with
+    read := fun field =>
+      if run.targetFields.contains field then
+        match state.find? field with
+        | some completion => completion.dependencyCell.checked
+        | none => StringDependencyCell.empty.checked
+      else
+        input.stringComputationContext.read field
+  }
 
 /-- Evaluate one checked table through the current run overlay and retain the exact dependency cell required by a later step. This is the shared atomic step for fixed execution and the independent relation. -/
 def evaluateTable (run : CheckedStringComputationRun model)

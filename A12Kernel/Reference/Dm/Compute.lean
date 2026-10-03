@@ -52,6 +52,9 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
   | .call "FieldNotFilled" [.mk field none none] none none => match field.fieldEntity? with
       | some path => pure (.fieldNotFilled path)
       | none => refuse "Guard" "FieldNotFilled operand"
+  | .call id arguments none none => match fieldFillOp? id with
+      | some operator => .fieldFill operator <$> lowerEntitySource model group arguments
+      | none => refuse ("Guard/" ++ id)
   | expression@(.compare op left right) =>
       let textPair := do
         let left ← guardTextField? left

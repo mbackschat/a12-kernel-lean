@@ -111,7 +111,7 @@ def selectFirst (computation : GeneratedComputationTable Operation)
 /-- Checked generated execution retains structural guard failures through the common selector. -/
 def selectFirstChecked (computation : GeneratedComputationTable Operation)
     (context : ScalarComputationContext) :
-    Except EnvBindingError (ComputationAlternativeSelection Operation) :=
+    Except ComputationConditionError (ComputationAlternativeSelection Operation) :=
   let alternatives := match computation.alternatives with
     | .singleton alternative => [{ precondition := alternative.precondition, operation := alternative.operation }]
     | .guarded alternatives => alternatives.declaredAlternatives.map (·.toComputationAlternative)
@@ -165,6 +165,7 @@ inductive GeneratedComputationGuardPosition where
 inductive GeneratedComputationValidationError where
   | resolve (error : ResolveError)
   | numericGuardRequiresConditionTree
+  | fieldFillGuardRequiresConditionTree
   | targetNotNumber (field : FieldId)
   | targetSelfReference (guard : GeneratedComputationGuardPosition)
   | operationScaleMismatch (alternative : Nat)
@@ -226,6 +227,7 @@ private def lowerForGeneratedValidationUnchecked (model : FlatModel) :
       pure (.fieldNotFilled (← model.resolveGeneratedGuardField field))
   | .leaf (.text comparison) => pure (.compare comparison)
   | .leaf (.numeric _) => throw .numericGuardRequiresConditionTree
+  | .leaf (.fieldFill _ _) => throw .fieldFillGuardRequiresConditionTree
   | .and left right => do
       pure (.and
         (← left.lowerForGeneratedValidationUnchecked model)

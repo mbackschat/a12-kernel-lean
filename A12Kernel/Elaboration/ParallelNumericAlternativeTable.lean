@@ -104,7 +104,7 @@ def evaluate (table : CheckedParallelNumericAlternativeTable model)
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
       NumericTargetOutcome := do
   match ← (ComputationAlternative.selectFirstChecked
-      table.selectableAlternatives context).mapError .environment with
+      table.selectableAlternatives context).mapError .guard with
   | .noMatch => .ok .noValue
   | .poison cause => .ok (.inheritedPoison cause)
   | .selected operation => operation.evaluateSelected context

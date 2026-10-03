@@ -2,11 +2,12 @@ import A12Kernel.Document
 import A12Kernel.Semantics.NumericExpression
 import A12Kernel.Semantics.FlatValidation
 import A12Kernel.Semantics.Condition
+import A12Kernel.Semantics.ComputationFillQuantifier
 import A12Kernel.Semantics.Observation
 
 /-! # A12Kernel.Semantics.ComputationCondition — checked computation control
 
-This module admits resolved field presence, text equality and numeric comparisons over shared arithmetic trees, ordered `And`/`Or`, common-precondition expansion and first-match selection at one target instance. An absent row precondition selects directly; model-level certification keeps that source shape to a sole alternative even though composed tables may later contain it beside other rows. The selector separates clean not-true and no-match from an invalid cell actually read as poison. Numeric atoms retain field metadata or structural row bindings; checked consumers propagate a reached binding error outside semantic poison. Other predicate families, operation evaluation and model-level alternative legality remain separate clauses.
+This module admits resolved field presence, ordered field-fill lists, text equality and numeric comparisons over shared arithmetic trees, ordered `And`/`Or`, common-precondition expansion and first-match selection at one target instance. An absent row precondition selects directly; model-level certification keeps that source shape to a sole alternative even though composed tables may later contain it beside other rows. The selector separates clean not-true and no-match from an invalid cell actually read as poison. Numeric atoms retain field metadata or structural row bindings; checked consumers propagate a reached binding error outside semantic poison. Other predicate families, operation evaluation and model-level alternative legality remain separate clauses.
 -/
 
 namespace A12Kernel
@@ -18,12 +19,19 @@ structure ScalarComputationContext where
   /-- The repeatable target row being computed, empty for a fixed target. Only a structural
   `CurrentRepetition` operand reads it; every field read is already addressed by `read`. -/
   row : Env := []
+  addressed : Option ComputationFillContext := none
 
 /-- Supply the explicit evaluation world without changing the checked-cell read policy. -/
 def ScalarComputationContext.withWorld
     (context : ScalarComputationContext) (world : World) :
     ScalarComputationContext :=
   { context with world := some world }
+
+/-- Guard failures retain structural context errors outside semantic poison. -/
+inductive ComputationConditionError where
+  | binding (error : EnvBindingError)
+  | fieldFill (error : ComputationFillError)
+  deriving Repr, DecidableEq
 
 /-- Scalar Number reads and structural coordinates share the ordinary arithmetic tree in guards. -/
 inductive ComputationNumericAtom where
@@ -58,9 +66,10 @@ inductive ComputationConditionLeaf where
   | numeric (comparison : NumericComparisonOf ComputationNumericAtom)
   /-- The certifier restricts this shared comparison carrier to String/Enumeration forms. -/
   | text (comparison : FlatComparison)
+  | fieldFill (operator : FieldFillQuantifier) (sources : List ComputationFillSource)
   deriving Repr, DecidableEq
 
-/-- Computation control reuses the common checked connective tree; only its phase-specific leaves and result projection differ from validation. -/
+/-- Computation control reuses the common checked connective tree; its phase-specific leaves and result projection differ from validation. -/
 abbrev ComputationCondition := ConditionTree ComputationConditionLeaf
 
 namespace CellObservation
@@ -101,6 +110,7 @@ abbrev or (left right : ComputationCondition) : ComputationCondition :=
 def referencesField (condition : ComputationCondition) (target : FieldId) : Bool :=
   match condition with
   | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) => field == target
+  | .leaf (.fieldFill _ sources) => sources.any (·.field == target)
   | .leaf (.text comparison) => comparison.fieldIds.contains target
   | .leaf (.numeric comparison) =>
       comparison.left.anyAtom (·.referencesField target) ||
@@ -134,6 +144,12 @@ def evalTextComparison (comparison : FlatComparison)
   | .textFields op left right => compare op (read left) (read right)
   | _ => .notTrue
 
+/-- Resolve the ordered list against the current overlay before applying the shared fill scan. -/
+def evalFieldFill (operator : FieldFillQuantifier) (sources : List ComputationFillSource)
+    (context : ScalarComputationContext) : Except ComputationFillError ComputationConditionResult := do
+  let slots ← sources.mapM (·.slots context.read context.row context.addressed)
+  pure (operator.evalComputation slots.flatten)
+
 /-- Evaluate a resolved leaf through computation-phase reads; the pure compatibility entry assumes its row context is complete. -/
 def ComputationConditionLeaf.eval (context : ScalarComputationContext) :
     ComputationConditionLeaf → ComputationConditionResult
@@ -141,6 +157,8 @@ def ComputationConditionLeaf.eval (context : ScalarComputationContext) :
   | .fieldNotFilled field =>
       (observeCell .computation (context.read field)).evalComputationNotFilled
   | .text comparison => evalTextComparison comparison context
+  | .fieldFill operator sources =>
+      (evalFieldFill operator sources context).toOption.getD .notTrue
   | .numeric comparison =>
       (comparison.evalComputationWith (ComputationNumericAtom.read context)).toOption.getD .notTrue
 
@@ -152,9 +170,11 @@ def eval (condition : ComputationCondition)
 /-- Checked consumers retain coordinate failures instead of the low-level evaluator's
 non-holding fallback for a context outside its row contract. -/
 def evalChecked (condition : ComputationCondition) (context : ScalarComputationContext) :
-    Except EnvBindingError ComputationConditionResult :=
+    Except ComputationConditionError ComputationConditionResult :=
   condition.evalComputationExcept fun
-    | .numeric comparison => comparison.evalComputationWith (ComputationNumericAtom.read context)
+    | .numeric comparison =>
+        (comparison.evalComputationWith (ComputationNumericAtom.read context)).mapError .binding
+    | .fieldFill operator sources => (evalFieldFill operator sources context).mapError .fieldFill
     | leaf => pure (ComputationConditionLeaf.eval context leaf)
 
 theorem evalChecked_and (context : ScalarComputationContext) (left right : ComputationCondition) :
@@ -284,7 +304,7 @@ theorem selectFirst_cons (head : ComputationAlternative Operation)
 /-- The checked selector preserves a guard's structural coordinate failure. -/
 def selectFirstChecked (alternatives : List (ComputationAlternative Operation))
     (context : ScalarComputationContext) :
-    Except EnvBindingError (ComputationAlternativeSelection Operation) :=
+    Except ComputationConditionError (ComputationAlternativeSelection Operation) :=
   selectFirstWith (fun condition => condition.evalChecked context) alternatives
 
 @[simp] theorem selectFirstChecked_nil (context : ScalarComputationContext) :

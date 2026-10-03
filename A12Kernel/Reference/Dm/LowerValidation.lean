@@ -40,15 +40,6 @@ private def groupQuantifier? : String → Option GroupFillQuantifier
   | "GroupsNotCollectivelyFilled" => some .groupsNotCollectivelyFilled
   | _ => none
 
-private def fieldFillOp? : String → Option FieldFillQuantifier
-  | "AllFieldsFilled" => some .allFieldsFilled
-  | "NoFieldFilled" => some .noFieldFilled
-  | "AtLeastOneFieldFilled" => some .atLeastOneFieldFilled
-  | "MoreThanOneFieldFilled" => some .moreThanOneFieldFilled
-  | "NotAllFieldsFilled" => some .notAllFieldsFilled
-  | "NotExactlyOneFieldFilled" => some .notExactlyOneFieldFilled
-  | "FieldsNotCollectivelyFilled" => some .fieldsNotCollectivelyFilled
-  | _ => none
 
 private def plain : Argument → Option Expr
   | .mk expr none none => some expr

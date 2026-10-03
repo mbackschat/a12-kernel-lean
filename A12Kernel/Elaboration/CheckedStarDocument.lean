@@ -96,13 +96,7 @@ def FlatModel.groupOperandEnvironments (model : FlatModel) (document : Document)
   let axes ← match model.repeatableAxesForScope? scope with
     | some axes => pure axes
     | none => throw (.invalidRepeatability (scope.getLast?.getD 0))
-  if boundCount < scope.length then
-    return (← ({ axes, firstStar := boundCount } : StarPath).resolveInCapacity document outer).environments
-  let path ← (outer.pathForScope scope).mapError (·.toStarAddressingError)
-  let environment := scope.zip path
-  let instantiated := document.instantiatedRows.any fun row =>
-    row.group == scope.getLast?.getD 0 && row.path == path
-  return if instantiated && !StarAxes.environmentOverLimit axes environment then [environment] else []
+  return (← StarAxes.resolveOperandExtent axes document outer boundCount).1
 
 /-- Whether any repeatable scope a group operand reopens retains **declared but uninstantiated**
 capacity at the operand's own depth, read off the same star topology `groupOperandEnvironments`

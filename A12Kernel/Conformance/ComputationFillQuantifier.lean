@@ -89,7 +89,12 @@ private def slots (model : FlatModel) (source : SurfaceFieldEntitySource)
     builtinStringPatternCompiler model).toOption
   let checked ← (checkDocument prepared "en_US" data).toOption
   let list ← (elaborateComputationFieldFillList model ["Form"] targetGroup source).toOption
-  (list.computationSlots (checked.overlayCells hidden placements) outer).toOption
+  let document := checked.overlayCells hidden placements
+  let checkedSlots ← (list.computationSlots document outer).toOption
+  let sources ← list.computationSources.toOption
+  let resolved ← (sources.mapM fun (source : ComputationFillSource) => source.slots (document.computationCellAt document.read outer)
+    outer (some document.computationFillContext)).toOption
+  if resolved.flatten = checkedSlots then pure checkedSlots else none
 
 private def operators : List FieldFillQuantifier :=
   [.allFieldsFilled, .noFieldFilled, .atLeastOneFieldFilled, .moreThanOneFieldFilled,
@@ -259,5 +264,27 @@ example :
       instantiatedRows := [{ group := 10, path := [1] }]
       cells := [numberCell 1 [1] "1"] } = some [.filled, .uninstantiated] := by
   native_decide
+
+private def resolvedSource : ComputationFillSource :=
+  .expanded 1 [{ level := 10, repeatability := some 3 }] 0
+
+example :
+    slots (groupModel false) groupSource {
+      instantiatedRows := [{ group := 10, path := [1] }], cells := [] } [] []
+      [{ address := { field := 1, path := [1] }
+         cell := { rawPresent := true, parsed := none, findings := [.overRepetition] } }] =
+        some [.uninstantiated, .empty] := by native_decide
+
+example :
+    (match resolvedSource.slots (fun _ => malformedCheckedCell) [] none with
+      | .error .contextRequired => true | _ => false) = true := by native_decide
+
+example :
+    (resolvedSource.slots (fun _ => malformedCheckedCell) [] (some {
+      document := { rawCells := fun _ => none, instantiatedRows := [{ group := 10, path := [1] }, { group := 10, path := [2] }] }
+      read := fun environment _ => if environment == [(10, 1)] then
+        { rawPresent := true, parsed := some (.num 1), findings := [] }
+        else malformedCheckedCell })).toOption =
+      some [.filled, .poison .malformed, .uninstantiated] := by native_decide
 
 end A12Kernel.Conformance.ComputationFillQuantifier

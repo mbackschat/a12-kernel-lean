@@ -572,28 +572,44 @@ def flatContext (checked : CheckedDocument model) : FlatContext where
     | .ok cell => cell
     | .error _ => malformedCheckedCell
 
+/-- Expose immutable topology with the checked document's current overlay to addressed guards. -/
+def computationFillContext (checked : CheckedDocument model) : ComputationFillContext where
+  document := checked.source.toDocument
+  read environment field :=
+    let cell := do
+      let declaration ← (model.lookupUniqueId field).toOption
+      let path ← (environment.pathForScope declaration.repeatableScope).toOption
+      (checked.read { field, path }).toOption
+    cell.getD malformedCheckedCell
+
+/-- The checked document's complete computation context before a caller supplies its world. -/
+def computationContext (checked : CheckedDocument model) : ScalarComputationContext :=
+  { read := checked.flatContext.read, addressed := some checked.computationFillContext }
+
 /-- Project ordinary nonrepeatable computation reads under one explicit world. Heterogeneous computation runs share this immutable source boundary before adding their typed dependency overlay. -/
 def scalarComputationContext (checked : CheckedDocument model)
     (world : World) : ScalarComputationContext :=
-  { read := checked.flatContext.read, world := some world }
+  checked.computationContext.withWorld world
 
 /-- The sole checked context for String computation. Ordinary leaves retain the exact checked document cell; Number leaves replace only their parsed payload with the already-selected formal-read text. Presence and formal poison are therefore unchanged for guards. -/
 def stringComputationContext (checked : CheckedDocument model) :
-    StringComputationContext where
-  read field :=
-    match model.lookupUniqueId field with
-    | .ok declaration =>
-        match declaration.policy.kind with
-        | .number _ =>
-            match checked.readNumberFormalText { field, path := [] } with
-            | .ok cell => {
-                rawPresent := cell.rawPresent
-                parsed := cell.parsed.map Value.str
-                findings := cell.findings
-              }
-            | .error _ => malformedCheckedCell
-        | _ => checked.flatContext.read field
-    | .error _ => malformedCheckedCell
+    StringComputationContext :=
+  { checked.computationContext with
+    read := fun field =>
+      match model.lookupUniqueId field with
+      | .ok declaration =>
+          match declaration.policy.kind with
+          | .number _ =>
+              match checked.readNumberFormalText { field, path := [] } with
+              | .ok cell => {
+                  rawPresent := cell.rawPresent
+                  parsed := cell.parsed.map Value.str
+                  findings := cell.findings
+                }
+              | .error _ => malformedCheckedCell
+          | _ => checked.flatContext.read field
+      | .error _ => malformedCheckedCell
+  }
 
 /-- The cell a concrete date takes in the model zone, as the fragment read-back builds it, so a
 classifier-completed date is compared with an actual cell by instant and calendar basis as well as by

@@ -15,6 +15,17 @@ filtered row, `$` marking a read of the enclosing row (spec §9).
 
 namespace A12Kernel.Dm
 
+def fieldFillOp? : String → Option FieldFillQuantifier
+  | "AllFieldsFilled" => some .allFieldsFilled
+  | "NoFieldFilled" => some .noFieldFilled
+  | "AtLeastOneFieldFilled" => some .atLeastOneFieldFilled
+  | "MoreThanOneFieldFilled" => some .moreThanOneFieldFilled
+  | "NotAllFieldsFilled" => some .notAllFieldsFilled
+  | "NotExactlyOneFieldFilled" => some .notExactlyOneFieldFilled
+  | "FieldsNotCollectivelyFilled" => some .fieldsNotCollectivelyFilled
+  | _ => none
+
+
 /-- A filter operand's path without its `$`, and the origin the `$` selects. -/
 def Path.havingField? (path : Path) : Option (HavingOrigin × SurfaceFieldPath) := do
   let field ← { path with correlated := false }.toFieldPath?

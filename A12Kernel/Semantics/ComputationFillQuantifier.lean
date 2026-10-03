@@ -1,9 +1,11 @@
-import A12Kernel.Semantics.ComputationCondition
+import A12Kernel.Semantics.Condition
+import A12Kernel.Semantics.Observation
+import A12Kernel.Semantics.StarAddressing
 import A12Kernel.Semantics.FieldFillQuantifier
 
 /-! # Resolved computation field-fill quantifiers
 
-This capsule classifies reached computation observations and evaluates the seven field-fill quantifiers over an already-expanded ordered slot stream. It preserves the semantic difference between an instantiated empty cell and a declared-but-uninstantiated slot, and it stops at each operator's deciding cell so an unread invalid suffix cannot poison the computation. Path resolution, group expansion, repetition ordering, filtering, and validation-mode truth/polarity remain separate boundaries.
+This capsule classifies reached computation observations and evaluates the seven field-fill quantifiers over an already-expanded ordered slot stream. It preserves the semantic difference between an instantiated empty cell and a declared-but-uninstantiated slot, and it stops at each operator's deciding cell so an unread invalid suffix cannot poison the computation. Resolved declaration sources share the addressed extent resolver; authored path resolution, group expansion, filtering and validation-mode truth/polarity remain separate boundaries.
 -/
 
 namespace A12Kernel
@@ -14,6 +16,26 @@ inductive ComputationFillSlot where
   | empty
   | uninstantiated
   | poison (cause : FormalCause)
+  deriving Repr, DecidableEq
+
+/-- A resolved field occurrence in an ordered fill list. Group expansion preserves one entry
+per declaration; its bound depth retains exactly the axes above the operand. -/
+inductive ComputationFillSource where
+  | direct (field : FieldId)
+  | expanded (field : FieldId) (axes : List StarAxis) (boundCount : Nat)
+  deriving Repr, DecidableEq
+
+def ComputationFillSource.field : ComputationFillSource → FieldId
+  | .direct field | .expanded field _ _ => field
+
+/-- Topology and the current checked-cell overlay for addressed computation guards. -/
+structure ComputationFillContext where
+  document : Document
+  read : Env → FieldId → CheckedCell
+
+inductive ComputationFillError where
+  | contextRequired
+  | addressing (error : StarAddressingError)
   deriving Repr, DecidableEq
 
 namespace CellObservation
@@ -27,6 +49,24 @@ def asComputationFillSlot : CellObservation → ComputationFillSlot
   | .poison cause => .poison cause
 
 end CellObservation
+
+/-- Resolve all occurrences through the shared in-capacity extent. The per-declaration tail stays
+beside its cells, as required by `evalComputation_omittedRun`. -/
+def ComputationFillSource.slots (source : ComputationFillSource)
+    (read : FieldId → CheckedCell) (outer : Env) (addressed : Option ComputationFillContext) :
+    Except ComputationFillError (List ComputationFillSlot) := do
+  let observe (cell : CheckedCell) : Option ComputationFillSlot :=
+    if cell.findings.contains .overRepetition then none
+    else some (observeCell .computation cell).asComputationFillSlot
+  match source with
+  | .direct field =>
+      pure (observe (read field)).toList
+  | .expanded field axes boundCount =>
+      let some context := addressed | throw .contextRequired
+      let (environments, omitted) ←
+        (StarAxes.resolveOperandExtent axes context.document outer boundCount).mapError .addressing
+      pure ((environments.filterMap fun environment => observe (context.read environment field)) ++
+        if omitted then [.uninstantiated] else [])
 
 namespace FieldFillQuantifier
 

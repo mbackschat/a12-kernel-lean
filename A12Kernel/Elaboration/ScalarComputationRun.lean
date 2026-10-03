@@ -336,15 +336,17 @@ def targetFields (run : CheckedScalarComputationRun model) :
 /-- Project completed targets for String consumption, hide suffix-owned pending targets, and delegate ordinary reads to the String document context. A completion may belong to an earlier checked phase rather than to this run. -/
 def stringContext (run : CheckedScalarComputationRun model)
     (state : ScalarComputationRunState)
-    (input : CheckedDocument model) : StringComputationContext where
-  read field :=
-    match state.find? field with
-    | some completion => completion.stringCell
-    | none =>
-        if run.targetFields.contains field then
-          StringDependencyCell.empty.checked
-        else
-          input.stringComputationContext.read field
+    (input : CheckedDocument model) : StringComputationContext :=
+  { input.stringComputationContext with
+    read := fun field =>
+      match state.find? field with
+      | some completion => completion.stringCell
+      | none =>
+          if run.targetFields.contains field then
+            StringDependencyCell.empty.checked
+          else
+            input.stringComputationContext.read field
+  }
 
 /-- Project completed targets for Number consumption, hide suffix-owned pending targets, and delegate ordinary reads to the scalar document context under one unchanged world. A completion may belong to an earlier checked phase rather than to this run. -/
 def numberContext (run : CheckedScalarComputationRun model)

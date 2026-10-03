@@ -134,7 +134,7 @@ end DocumentTargetFamily
 back in. `targetNotReadable` fails closed where the checked target does not certify as an input field of
 its family, and the two read faults carry the classifier's own context error. -/
 inductive DocumentComputationStepFault where
-  | guardBinding (error : EnvBindingError)
+  | guardBinding (error : ComputationConditionError)
   | dateTimeDayShift (cause : DateTimeDayShiftComputationFault)
   | dateTimeSubdayShift (cause : DateTimeSubdayShiftComputationFault)
   | fullDate (cause : FullDateComputationFault)

@@ -302,7 +302,7 @@ private def coordinateGuard : ComputationCondition :=
 example :
     ([[], [(7, 0)], [(7, 1), (7, 2)], [(7, 2)]].map fun row =>
       coordinateGuard.evalChecked (numberContext .empty row)) =
-      [.error (.missingBinding 7), .error (.zeroBinding 7), .error (.duplicateBinding 7), .ok .holds] := by
+      [.error (.binding (.missingBinding 7)), .error (.binding (.zeroBinding 7)), .error (.binding (.duplicateBinding 7)), .ok .holds] := by
   native_decide
 
 example :
@@ -331,7 +331,15 @@ example :
 
 example : ComputationAlternative.selectFirstChecked
     [alternative coordinateGuard 1, { operation := 2 }]
-    (numberContext .empty) = .error (.missingBinding 7) := by
+    (numberContext .empty) = .error (.binding (.missingBinding 7)) := by
   native_decide
+
+private def missingFillContext : ComputationCondition :=
+  .leaf (.fieldFill .allFieldsFilled [.expanded 1 [{ level := 7, repeatability := some 2 }] 0])
+
+example :
+    missingFillContext.evalChecked (numberContext .empty) = .error (.fieldFill .contextRequired) ∧
+    (ComputationCondition.and (.fieldFilled 1) missingFillContext).evalChecked (numberContext .empty) =
+      .ok .notTrue := by native_decide
 
 end A12Kernel.Conformance.ComputationCondition

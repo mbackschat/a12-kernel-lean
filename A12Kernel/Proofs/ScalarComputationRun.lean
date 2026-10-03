@@ -81,6 +81,7 @@ theorem scalarComputationRun_numberRead_input
       input.flatContext.read field := by
   simp [CheckedScalarComputationRun.numberContext,
     CheckedDocument.scalarComputationContext, pending, ordinary]
+  rfl
 
 theorem scalarComputationRun_numberContext_world
     (run : CheckedScalarComputationRun model)
@@ -435,6 +436,6 @@ theorem scalarComputationRun_documentFor_read
         simp only [CheckedDocument.flatContext, same,
           CheckedScalarComputationRun.numberContext, found, target,
           CheckedDocument.scalarComputationContext]
-        simp
+        rfl
 
 end A12Kernel

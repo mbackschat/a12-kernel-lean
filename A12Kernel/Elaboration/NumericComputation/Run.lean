@@ -70,15 +70,17 @@ def targetFields (run : CheckedNumericComputationRun model) :
 /-- Expose every completed Number outcome, hide pending targets owned by this run, and delegate every other read to the checked document. A completed seed from an earlier checked phase therefore remains visible to this supplied-order suffix. -/
 def readPolicy (run : CheckedNumericComputationRun model)
     (state : NumericComputationRunState) (input : CheckedDocument model) :
-    ScalarComputationContext where
-  read field :=
-    match state.find? field with
-    | some completion =>
-        (NumericDependencyCell.ofOutcome completion.outcome).checked
-    | none =>
-      if run.targetFields.contains field then
-          (NumericDependencyCell.ofObservation .empty).checked
-      else input.flatContext.read field
+    ScalarComputationContext :=
+  { input.computationContext with
+    read := fun field =>
+      match state.find? field with
+      | some completion =>
+          (NumericDependencyCell.ofOutcome completion.outcome).checked
+      | none =>
+        if run.targetFields.contains field then
+            (NumericDependencyCell.ofObservation .empty).checked
+        else input.flatContext.read field
+  }
 
 /-- Evaluate one checked table through the current overlay and retain its complete target outcome. -/
 def evaluateTable (run : CheckedNumericComputationRun model)

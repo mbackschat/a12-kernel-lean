@@ -116,13 +116,15 @@ def documentFor (plan : CheckedMixedComputationPlan model compilePattern)
 /-- The String-family read of a fixed String table: a completed fixed target through its String
 cell, a pending one empty, as in the scalar plan. -/
 def stringContext (plan : CheckedMixedComputationPlan model compilePattern)
-    (state : MixedComputationState) (input : CheckedDocument model) : StringComputationContext where
-  read field :=
-    match state.fixed.find? (·.targetField == field) with
-    | some completion => completion.stringCell
-    | none =>
-        if plan.targetFields.contains field then StringDependencyCell.empty.checked
-        else input.stringComputationContext.read field
+    (state : MixedComputationState) (input : CheckedDocument model) : StringComputationContext :=
+  { (plan.documentFor state input).stringComputationContext with
+    read := fun field =>
+      match state.fixed.find? (·.targetField == field) with
+      | some completion => completion.stringCell
+      | none =>
+          if plan.targetFields.contains field then StringDependencyCell.empty.checked
+          else input.stringComputationContext.read field
+  }
 
 private def numberCompletion (outcome : SourcedNumericTargetOutcome CellAddr) :
     ScalarComputationCompletion :=
