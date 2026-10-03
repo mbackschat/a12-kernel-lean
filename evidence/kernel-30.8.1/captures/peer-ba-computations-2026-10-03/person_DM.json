@@ -1,0 +1,82 @@
+{
+  "header" : {
+    "id" : "person",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "person",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Person",
+        "name" : "Person",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Person/FirstName",
+            "name" : "FirstName",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Person/LastName",
+            "name" : "LastName",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Person/DisplayName",
+            "name" : "DisplayName",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Person/DisplayNameComp",
+            "name" : "DisplayNameComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DisplayName",
+              "computationAlternatives" : [ {
+                "operation" : "[/Person/FirstName] + \" \" + [/Person/LastName]",
+                "precondition" : "AllFieldsFilled(/Person/FirstName, /Person/LastName)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "DisplayName is the full name."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

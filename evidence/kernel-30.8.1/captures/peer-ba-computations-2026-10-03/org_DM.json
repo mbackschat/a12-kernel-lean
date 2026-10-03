@@ -1,0 +1,75 @@
+{
+  "header" : {
+    "id" : "org",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "org",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Org",
+        "name" : "Org",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Org/Roles",
+            "name" : "Roles",
+            "Group" : {
+              "repeatability" : 10,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Org/Roles/Title",
+                "name" : "Title",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Org/Roles/TitleComp",
+                "name" : "TitleComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Title",
+                  "computationAlternatives" : [ {
+                    "operation" : "\"LEAD\"",
+                    "precondition" : "GroupFilled(/Org/Roles) And CurrentRepetition(/Org/Roles) == 1"
+                  }, {
+                    "operation" : "\"DEPUTY\"",
+                    "precondition" : "GroupFilled(/Org/Roles) And CurrentRepetition(/Org/Roles) == 2"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Title follows the role row."
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

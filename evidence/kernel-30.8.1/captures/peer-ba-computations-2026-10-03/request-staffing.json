@@ -1,0 +1,107 @@
+{
+  "model": "staffing_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "reversed-keys",
+      "documentInline": {
+        "Staffing": {
+          "Demand": [
+            {
+              "Department": "A",
+              "Headcount": 10
+            },
+            {
+              "Department": "B",
+              "Headcount": 20
+            }
+          ],
+          "Supply": [
+            {
+              "Department": "B",
+              "Headcount": 2,
+              "Combined": 999
+            },
+            {
+              "Department": "A",
+              "Headcount": 1,
+              "Combined": 999
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unmatched-key",
+      "documentInline": {
+        "Staffing": {
+          "Demand": [
+            {
+              "Department": "A",
+              "Headcount": 10
+            }
+          ],
+          "Supply": [
+            {
+              "Department": "B",
+              "Headcount": 2,
+              "Combined": 999
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "missing-key",
+      "documentInline": {
+        "Staffing": {
+          "Demand": [
+            {
+              "Department": "A",
+              "Headcount": 10
+            }
+          ],
+          "Supply": [
+            {
+              "Headcount": 2,
+              "Combined": 999
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "invalid-demand",
+      "documentInline": {
+        "Staffing": {
+          "Demand": [
+            {
+              "Department": "A",
+              "Headcount": "bad"
+            }
+          ],
+          "Supply": [
+            {
+              "Department": "A",
+              "Headcount": 2,
+              "Combined": 999
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "Staffing": {
+          "Demand": [],
+          "Supply": []
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "header" : {
+    "id" : "order",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "order",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Order",
+        "name" : "Order",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Order/Subtotal",
+            "name" : "Subtotal",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Order/Discount",
+            "name" : "Discount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Order/DiscountComp",
+            "name" : "DiscountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Discount",
+              "computationAlternatives" : [ {
+                "operation" : "0",
+                "precondition" : "[/Order/Subtotal] < 100"
+              }, {
+                "operation" : "RoundUp([/Order/Subtotal] * 0.05)",
+                "precondition" : "[/Order/Subtotal] >= 100"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Discount is 5% above 100, rounded up."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

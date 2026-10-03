@@ -1,0 +1,73 @@
+{
+  "model": "address_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "full-address",
+      "documentInline": {
+        "Address": {
+          "StreetLine": "seed",
+          "Kind": "ADDRESS",
+          "Street": "Main",
+          "HouseNumber": "12"
+        }
+      }
+    },
+    {
+      "name": "no-house",
+      "documentInline": {
+        "Address": {
+          "StreetLine": "seed",
+          "Kind": "ADDRESS",
+          "Street": "Main"
+        }
+      }
+    },
+    {
+      "name": "other-kind",
+      "documentInline": {
+        "Address": {
+          "StreetLine": "seed",
+          "Kind": "POB",
+          "Street": "Main",
+          "HouseNumber": "12"
+        }
+      }
+    },
+    {
+      "name": "empty-kind",
+      "documentInline": {
+        "Address": {
+          "StreetLine": "seed",
+          "Street": "Main",
+          "HouseNumber": "12"
+        }
+      }
+    },
+    {
+      "name": "invalid-kind",
+      "documentInline": {
+        "Address": {
+          "StreetLine": "seed",
+          "Kind": "BAD",
+          "Street": "Main",
+          "HouseNumber": "12"
+        }
+      }
+    },
+    {
+      "name": "empty-street",
+      "documentInline": {
+        "Address": {
+          "StreetLine": "seed",
+          "Kind": "ADDRESS",
+          "HouseNumber": "12"
+        }
+      }
+    }
+  ]
+}

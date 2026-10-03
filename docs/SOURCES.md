@@ -1691,3 +1691,6 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 <a id="src-numeric-computation-guards"></a>
 - [Numeric computation guards read empty as zero and distinguish arithmetic failure from reached poison](sources/computation-scheduling-probes.md#src-numeric-computation-guards)
+
+<a id="src-peer-ba-computations-replay"></a>
+- [Six transferred peer computation models replay on 30 runtime documents](sources/evaluation-and-application-routes.md#src-peer-ba-computations-replay)

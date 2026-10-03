@@ -1,0 +1,102 @@
+{
+  "header" : {
+    "id" : "address",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "address",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Address",
+        "name" : "Address",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Address/Kind",
+            "name" : "Kind",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "ADDRESS"
+                  }, {
+                    "value" : "POB"
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Address/Street",
+            "name" : "Street",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Address/HouseNumber",
+            "name" : "HouseNumber",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Address/StreetLine",
+            "name" : "StreetLine",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Address/StreetLineComp",
+            "name" : "StreetLineComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../StreetLine",
+              "commonPrecondition" : "[/Address/Kind] == \"ADDRESS\"",
+              "computationAlternatives" : [ {
+                "operation" : "[/Address/Street] + \" \" + [/Address/HouseNumber]",
+                "precondition" : "FieldFilled(/Address/HouseNumber)"
+              }, {
+                "operation" : "[/Address/Street]",
+                "precondition" : "FieldNotFilled(/Address/HouseNumber)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "StreetLine joins street and house number when an address."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

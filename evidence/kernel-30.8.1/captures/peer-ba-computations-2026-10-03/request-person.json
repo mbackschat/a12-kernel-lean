@@ -1,0 +1,47 @@
+{
+  "model": "person_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "filled",
+      "documentInline": {
+        "Person": {
+          "FirstName": "Ada",
+          "LastName": "Lovelace",
+          "DisplayName": "seed"
+        }
+      }
+    },
+    {
+      "name": "missing-last",
+      "documentInline": {
+        "Person": {
+          "FirstName": "Ada",
+          "DisplayName": "seed"
+        }
+      }
+    },
+    {
+      "name": "empty-first",
+      "documentInline": {
+        "Person": {
+          "FirstName": "",
+          "LastName": "Lovelace",
+          "DisplayName": "seed"
+        }
+      }
+    },
+    {
+      "name": "all-empty",
+      "documentInline": {
+        "Person": {
+          "DisplayName": "seed"
+        }
+      }
+    }
+  ]
+}

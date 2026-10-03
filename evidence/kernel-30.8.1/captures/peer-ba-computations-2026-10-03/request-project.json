@@ -1,0 +1,58 @@
+{
+  "model": "project_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "positive",
+      "documentInline": {
+        "Project": {
+          "Total": 999,
+          "Labor": 101,
+          "TaxRate": 19
+        }
+      }
+    },
+    {
+      "name": "negative",
+      "documentInline": {
+        "Project": {
+          "Total": 999,
+          "Labor": -101,
+          "TaxRate": 19
+        }
+      }
+    },
+    {
+      "name": "empty-rate",
+      "documentInline": {
+        "Project": {
+          "Total": 999,
+          "Labor": 101
+        }
+      }
+    },
+    {
+      "name": "empty-labor",
+      "documentInline": {
+        "Project": {
+          "Total": 999,
+          "TaxRate": 19
+        }
+      }
+    },
+    {
+      "name": "invalid-rate",
+      "documentInline": {
+        "Project": {
+          "Total": 999,
+          "Labor": 101,
+          "TaxRate": "bad"
+        }
+      }
+    }
+  ]
+}
