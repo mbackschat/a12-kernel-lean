@@ -1,0 +1,776 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "rows_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "empty-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/Rows/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/AfterEmpty",
+                "Form/Rows/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/Rows[2]/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/AfterEmpty",
+                "Form/Rows[2]/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/Rows/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/AfterFilled",
+                "Form/Rows/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/Rows[2]/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/AfterFilled",
+                "Form/Rows[2]/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "EmptyComp",
+              "field" : "Form/Rows/Empty",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Empty",
+                "Form/Rows/Input/Value"
+              ],
+              "fillToFix" : [
+                "Form/Rows/Empty",
+                "Form/Rows/Input/Value"
+              ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Rows[2]/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Filled",
+                "Form/Rows[2]/Input/Value"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RowComp",
+              "field" : "Form/Rows/RowFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/AfterEmpty",
+                "Form/Rows/AfterFilled",
+                "Form/Rows/Empty",
+                "Form/Rows/Filled",
+                "Form/Rows/Input/Value",
+                "Form/Rows/RowFlag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RowComp",
+              "field" : "Form/Rows[2]/RowFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/AfterEmpty",
+                "Form/Rows[2]/AfterFilled",
+                "Form/Rows[2]/Empty",
+                "Form/Rows[2]/Filled",
+                "Form/Rows[2]/Input/Value",
+                "Form/Rows[2]/RowFlag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Rows/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows/Empty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows/Filled",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Rows/RowFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Rows[2]/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/RowFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/Rows/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/AfterEmpty",
+                "Form/Rows/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/Rows[2]/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/AfterEmpty",
+                "Form/Rows[2]/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/Rows/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/AfterFilled",
+                "Form/Rows/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/Rows[2]/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/AfterFilled",
+                "Form/Rows[2]/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "EmptyComp",
+              "field" : "Form/Rows/Empty",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Empty",
+                "Form/Rows/Input/Value"
+              ],
+              "fillToFix" : [
+                "Form/Rows/Empty",
+                "Form/Rows/Input/Value"
+              ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Rows[2]/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Filled",
+                "Form/Rows[2]/Input/Value"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RowComp",
+              "field" : "Form/Rows/RowFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/AfterEmpty",
+                "Form/Rows/AfterFilled",
+                "Form/Rows/Empty",
+                "Form/Rows/Filled",
+                "Form/Rows/Input/Value",
+                "Form/Rows/RowFlag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RowComp",
+              "field" : "Form/Rows[2]/RowFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/AfterEmpty",
+                "Form/Rows[2]/AfterFilled",
+                "Form/Rows[2]/Empty",
+                "Form/Rows[2]/Filled",
+                "Form/Rows[2]/Input/Value",
+                "Form/Rows[2]/RowFlag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Rows/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows/Empty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows/Filled",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Rows/RowFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Rows[2]/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/RowFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/Rows/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/AfterEmpty",
+                "Form/Rows/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/Rows[2]/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/AfterEmpty",
+                "Form/Rows[2]/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/Rows/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/AfterFilled",
+                "Form/Rows/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/Rows[2]/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/AfterFilled",
+                "Form/Rows[2]/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "EmptyComp",
+              "field" : "Form/Rows[2]/Empty",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Empty",
+                "Form/Rows[2]/Input/Value"
+              ],
+              "fillToFix" : [
+                "Form/Rows[2]/Empty",
+                "Form/Rows[2]/Input/Value"
+              ]
+            },
+            {
+              "code" : "RowComp",
+              "field" : "Form/Rows/RowFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/AfterEmpty",
+                "Form/Rows/AfterFilled",
+                "Form/Rows/Empty",
+                "Form/Rows/Filled",
+                "Form/Rows/Input/Value",
+                "Form/Rows/RowFlag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RowComp",
+              "field" : "Form/Rows[2]/RowFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/AfterEmpty",
+                "Form/Rows[2]/AfterFilled",
+                "Form/Rows[2]/Empty",
+                "Form/Rows[2]/Filled",
+                "Form/Rows[2]/Input/Value",
+                "Form/Rows[2]/RowFlag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Rows/Input/Value",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Input/Value"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Rows/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Rows/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows/RowFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/Empty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/Filled",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Rows[2]/RowFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Rows/Input/Value",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Input/Value"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/Rows/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/AfterEmpty",
+                "Form/Rows/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/Rows[2]/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/AfterEmpty",
+                "Form/Rows[2]/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/Rows/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/AfterFilled",
+                "Form/Rows/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/Rows[2]/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/AfterFilled",
+                "Form/Rows[2]/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "EmptyComp",
+              "field" : "Form/Rows[2]/Empty",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Empty",
+                "Form/Rows[2]/Input/Value"
+              ],
+              "fillToFix" : [
+                "Form/Rows[2]/Empty",
+                "Form/Rows[2]/Input/Value"
+              ]
+            },
+            {
+              "code" : "RowComp",
+              "field" : "Form/Rows/RowFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/AfterEmpty",
+                "Form/Rows/AfterFilled",
+                "Form/Rows/Empty",
+                "Form/Rows/Filled",
+                "Form/Rows/Input/Value",
+                "Form/Rows/RowFlag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RowComp",
+              "field" : "Form/Rows[2]/RowFlag",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/AfterEmpty",
+                "Form/Rows[2]/AfterFilled",
+                "Form/Rows[2]/Empty",
+                "Form/Rows[2]/Filled",
+                "Form/Rows[2]/Input/Value",
+                "Form/Rows[2]/RowFlag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Rows/Input/Value",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Input/Value"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Rows/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Rows/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows/RowFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/Empty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Rows[2]/Filled",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Rows[2]/RowFlag",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Rows/Input/Value",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Input/Value"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "no-rows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

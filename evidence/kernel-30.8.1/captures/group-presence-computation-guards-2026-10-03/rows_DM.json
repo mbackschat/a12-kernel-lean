@@ -1,0 +1,203 @@
+{
+  "header" : {
+    "id" : "rows_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "rows_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Rows/Input",
+                "name" : "Input",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Input/Value",
+                    "name" : "Value",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Filled",
+                "name" : "Filled",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterFilled",
+                "name" : "AfterFilled",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/FilledComp",
+                "name" : "FilledComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Filled",
+                  "commonPrecondition" : "GroupFilled(/Form/Rows/Input)",
+                  "computationAlternatives" : [ {
+                    "operation" : "1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "The target follows the group state."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterFilledComp",
+                "name" : "AfterFilledComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterFilled",
+                  "commonPrecondition" : "FieldFilled(/Form/Rows/Filled) Or FieldNotFilled(/Form/Rows/Filled)",
+                  "computationAlternatives" : [ {
+                    "operation" : "1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "The target follows the group state."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Empty",
+                "name" : "Empty",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterEmpty",
+                "name" : "AfterEmpty",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/EmptyComp",
+                "name" : "EmptyComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Empty",
+                  "commonPrecondition" : "GroupNotFilled(/Form/Rows/Input)",
+                  "computationAlternatives" : [ {
+                    "operation" : "1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "The target follows the group state."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterEmptyComp",
+                "name" : "AfterEmptyComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterEmpty",
+                  "commonPrecondition" : "FieldFilled(/Form/Rows/Empty) Or FieldNotFilled(/Form/Rows/Empty)",
+                  "computationAlternatives" : [ {
+                    "operation" : "1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "The target follows the group state."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/RowFlag",
+                "name" : "RowFlag",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/RowComp",
+                "name" : "RowComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../RowFlag",
+                  "commonPrecondition" : "GroupFilled(/Form/Rows)",
+                  "computationAlternatives" : [ {
+                    "operation" : "1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "The target follows the group state."
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

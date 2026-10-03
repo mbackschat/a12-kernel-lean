@@ -72,6 +72,10 @@ example : (observeCell .computation valid).presentForComputation = true := by na
 example : (observeCell .computation empty).presentForComputation = false := by native_decide
 example : (observeCell .computation malformed).presentForComputation = true := by native_decide
 
+example : groupPresentForComputation [.poison .computedDependency] = false := by native_decide
+example : numberOfFilledGroupsForComputation
+    [[.poison .computedDependency], [.value (.num 2)]] = 1 := by native_decide
+
 -- A required-and-empty cell is erroneous for validation yet absent for the computing
 -- instance, because computation does not read the validation-scoped required finding.
 example : (observeCell .validation (empty.withFinding .required)).asGroupListPresence =

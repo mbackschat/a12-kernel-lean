@@ -133,18 +133,19 @@ def asGroupListPresence : CellObservation → GroupListPresenceState
   | .value _ => .filled
   | .unknown _ | .poison _ => .unavailable
 
-/-- Computation-phase presence of one descendant cell. This is a coarsening of
-    `asGroupListPresence`, not its inverse: the two agree that a read value is present and
-    an absent read is absent, and differ only in that formal unavailability counts as
-    present here where validation keeps it in a third bucket. Only a cell the phase read
-    reports as absent is absent, which keeps the validation-scoped required finding out of
-    the computation count.
+/-- Computation-phase presence of one descendant cell. Malformed stored input supplies
+    content without a value read; a failed computed dependency supplies none. The latter
+    distinction is measured by the direct and ancestor counts at the
+    [cascade checkpoint](../../docs/sources/computation-scheduling-probes.md#src-group-presence-computation-guards).
+    Validation keeps both unavailable in `asGroupListPresence`. Required findings remain
+    outside the computation read.
 
-    The `.unknown` branch is unreachable from `observeCell .computation`, which yields
-    `.poison` for a finding; it is answered the same way to keep the function total. -/
+    The `.unknown` branch is unreachable from `observeCell .computation`; it follows the
+    same cause-sensitive projection to keep this function total. -/
 def presentForComputation : CellObservation → Bool
   | .empty => false
   | .value _ => true
+  | .unknown .computedDependency | .poison .computedDependency => false
   | .unknown _ => true
   | .poison _ => true
 
@@ -336,7 +337,7 @@ def groupPresenceUndecided (cells : List CellObservation) (rowInstantiated : Boo
 
 /-- The plain multi-group numeric count in the computation arm. Deliberately **not** a
     `FilledGroupCount`: unlike the validation projection above it cannot answer unknown,
-    because a formally invalid descendant makes its group count as filled instead of making
+    because an ordinary malformed stored descendant counts as content instead of making
     the count unavailable. Only a group with no compute-present descendant is skipped.
 
     The two projections must stay separate rather than share a phase flag. This one consumes

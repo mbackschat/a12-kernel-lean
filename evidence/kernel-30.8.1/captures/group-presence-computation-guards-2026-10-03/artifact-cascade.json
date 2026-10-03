@@ -1,0 +1,1354 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "cascade_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "fresh",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CountComp",
+              "field" : "Form/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "CountDetailComp",
+              "field" : "Form/CountDetail",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "EmptyComp",
+              "field" : "Form/Empty",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Empty"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Empty"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Box/Detail/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/Count",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/CountDetail",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CountComp",
+              "field" : "Form/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "CountDetailComp",
+              "field" : "Form/CountDetail",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "EmptyComp",
+              "field" : "Form/Empty",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Empty"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Empty"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Box/Detail/Produced",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/Count",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/CountDetail",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "stale-cleared",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CountComp",
+              "field" : "Form/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "CountDetailComp",
+              "field" : "Form/CountDetail",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Box/Detail/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Count",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/CountDetail",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CountComp",
+              "field" : "Form/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "CountDetailComp",
+              "field" : "Form/CountDetail",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Box/Detail/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Count",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/CountDetail",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "poisoned",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CountComp",
+              "field" : "Form/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "CountDetailComp",
+              "field" : "Form/CountDetail",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Trigger",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Trigger"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Box/Detail/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Count",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/CountDetail",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Trigger",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Trigger"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CountComp",
+              "field" : "Form/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "CountDetailComp",
+              "field" : "Form/CountDetail",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Trigger",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Trigger"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Box/Detail/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Count",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/CountDetail",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Trigger",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Trigger"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "poisoned-with-content",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CountComp",
+              "field" : "Form/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "CountDetailComp",
+              "field" : "Form/CountDetail",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Trigger",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Trigger"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Box/Detail/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Count",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/CountDetail",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Trigger",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Trigger"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CountComp",
+              "field" : "Form/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Count",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "CountDetailComp",
+              "field" : "Form/CountDetail",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/Box/Other",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Trigger",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Trigger"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Box/Detail/Produced",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Count",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/CountDetail",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Trigger",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Trigger"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed-stored",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CountDetailComp",
+              "field" : "Form/CountDetail",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Box/Other",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Other"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Count",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/CountDetail",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Box/Other",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Box/Other"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CountDetailComp",
+              "field" : "Form/CountDetail",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ],
+              "fillToFix" : [
+                "Form/Box/Detail/Produced",
+                "Form/CountDetail",
+                "Form/Spare/Value"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Box/Other",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Box/Other"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Count",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/CountDetail",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Box/Other",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Box/Other"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1214 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "presence_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "absent",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "EmptyComp",
+              "field" : "Form/Empty",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Empty",
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Empty",
+                "Form/Inputs/Value"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "EmptyComp",
+              "field" : "Form/Empty",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Empty",
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Empty",
+                "Form/Inputs/Value"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "EmptyComp",
+              "field" : "Form/Empty",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Empty",
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Empty",
+                "Form/Inputs/Value"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "EmptyComp",
+              "field" : "Form/Empty",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Empty",
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Empty",
+                "Form/Inputs/Value"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "value",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Filled",
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Filled",
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Inputs/Value",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Inputs/Value",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Inputs/Value"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Inputs/Value",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Inputs/Value",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Inputs/Value"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "row-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Filled",
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Filled",
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "row-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Filled",
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Inputs/Items/Value",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Inputs/Items/Value"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Inputs/Items/Value",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Inputs/Items/Value"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Filled",
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Inputs/Items/Value",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Inputs/Items/Value"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Inputs/Items/Value",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Inputs/Items/Value"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "over-limit-value",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Filled",
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Form/Inputs/Items[3]/Value",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Inputs/Items[3]/Value"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Form/Inputs/Items[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Inputs/Items[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Form/Inputs/Items[3]/Value",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Inputs/Items[3]/Value"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Form/Inputs/Items[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Inputs/Items[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterEmptyComp",
+              "field" : "Form/AfterEmpty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterEmpty",
+                "Form/Empty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterFilledComp",
+              "field" : "Form/AfterFilled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterFilled",
+                "Form/Filled"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FilledComp",
+              "field" : "Form/Filled",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Inputs[1]/Items[0]/Value",
+                "Form/Filled",
+                "Form/Inputs/Value"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseKontextnummer",
+              "field" : "Form/Inputs/Items[3]/Value",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Inputs/Items[3]/Value"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zuGrosseZeile",
+              "field" : "Form/Inputs/Items[3]",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Inputs/Items[3]"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterEmpty",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterFilled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Empty",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Filled",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zuGrosseKontextnummer",
+                "field" : "Form/Inputs/Items[3]/Value",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Inputs/Items[3]/Value"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zuGrosseZeile",
+                "field" : "Form/Inputs/Items[3]",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Inputs/Items[3]"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

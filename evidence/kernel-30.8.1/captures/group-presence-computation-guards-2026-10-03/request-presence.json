@@ -1,0 +1,115 @@
+{
+  "model": "presence_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "absent",
+      "documentInline": {
+        "Form": {
+          "Filled": 9,
+          "Empty": 9,
+          "AfterFilled": 9,
+          "AfterEmpty": 9
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "Form": {
+          "Filled": 9,
+          "Empty": 9,
+          "AfterFilled": 9,
+          "AfterEmpty": 9,
+          "Inputs": {}
+        }
+      }
+    },
+    {
+      "name": "value",
+      "documentInline": {
+        "Form": {
+          "Filled": 9,
+          "Empty": 9,
+          "AfterFilled": 9,
+          "AfterEmpty": 9,
+          "Inputs": {
+            "Value": 2
+          }
+        }
+      }
+    },
+    {
+      "name": "malformed",
+      "documentInline": {
+        "Form": {
+          "Filled": 9,
+          "Empty": 9,
+          "AfterFilled": 9,
+          "AfterEmpty": 9,
+          "Inputs": {
+            "Value": "bad"
+          }
+        }
+      }
+    },
+    {
+      "name": "row-empty",
+      "documentInline": {
+        "Form": {
+          "Filled": 9,
+          "Empty": 9,
+          "AfterFilled": 9,
+          "AfterEmpty": 9,
+          "Inputs": {
+            "Items": [
+              {}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "row-malformed",
+      "documentInline": {
+        "Form": {
+          "Filled": 9,
+          "Empty": 9,
+          "AfterFilled": 9,
+          "AfterEmpty": 9,
+          "Inputs": {
+            "Items": [
+              {
+                "Value": "bad"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "over-limit-value",
+      "documentInline": {
+        "Form": {
+          "Filled": 9,
+          "Empty": 9,
+          "AfterFilled": 9,
+          "AfterEmpty": 9,
+          "Inputs": {
+            "Items": [
+              {},
+              {},
+              {
+                "Value": 3
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "model": "rows_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "empty-filled",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Filled": 9,
+              "Empty": 9,
+              "AfterFilled": 9,
+              "AfterEmpty": 9,
+              "RowFlag": 9
+            },
+            {
+              "Filled": 9,
+              "Empty": 9,
+              "AfterFilled": 9,
+              "AfterEmpty": 9,
+              "RowFlag": 9,
+              "Input": {
+                "Value": 2
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "malformed-empty",
+      "documentInline": {
+        "Form": {
+          "Rows": [
+            {
+              "Filled": 9,
+              "Empty": 9,
+              "AfterFilled": 9,
+              "AfterEmpty": 9,
+              "RowFlag": 9,
+              "Input": {
+                "Value": "bad"
+              }
+            },
+            {
+              "Filled": 9,
+              "Empty": 9,
+              "AfterFilled": 9,
+              "AfterEmpty": 9,
+              "RowFlag": 9,
+              "Input": {}
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "Form": {
+          "Rows": []
+        }
+      }
+    }
+  ]
+}

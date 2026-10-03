@@ -116,13 +116,17 @@ theorem relativeRequiredness_uses_positivePresence (state : GroupPresenceState) 
 theorem admitsGroupContent_le_presentForComputation (cell : CheckedCell)
     (admits : cell.admitsGroupContent = true) :
     (observeCell .computation cell).presentForComputation = true := by
-  -- A present parsed value rules out the only absent branch of the phase read, whatever
-  -- finding that read selects, so no case analysis on the findings themselves is needed.
-  cases hParsed : cell.parsed with
-  | none => simp [CheckedCell.admitsGroupContent, hParsed] at admits
-  | some value =>
-      simp only [observeCell, hParsed]
-      split <;> simp_all [CellObservation.presentForComputation]
+  cases cell with
+  | mk rawPresent parsed findings =>
+      cases parsed with
+      | none => simp [CheckedCell.admitsGroupContent] at admits
+      | some value =>
+          cases findings with
+          | nil => rfl
+          | cons cause rest =>
+              cases cause <;>
+                simp_all [CheckedCell.admitsGroupContent, FormalCause.preservesGroupAdmission]
+              rfl
 
 /-- On a cell carrying no finding the two arms' cell-level presence projections coincide.
     Together with the monotonicity law above this confines the arms' disagreement to cells
