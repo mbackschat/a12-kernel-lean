@@ -97,19 +97,28 @@ private def timeComponents (model : FlatModel) (group : GroupPath) :
         (← timeComponent model group second))
   | _ => refuse "Time" "arity"
 
-partial def lowerScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
-    (expression : Expr) : Lowering SurfaceScalarTemporalExpression := do
+private inductive TemporalExpressionPosition where
+  | value
+  | source
+
+/-- Field spelling depends on the grammar position (spec/12 §3): value expressions use
+brackets, while temporal source slots take an entity. Keep that distinction until lowering. -/
+private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGroup : GroupPath)
+    (position : TemporalExpressionPosition) (expression : Expr) : Lowering SurfaceScalarTemporalExpression := do
   let lowerSourceSlot (source : Expr) : Lowering SurfaceScalarTemporalExpression :=
-    match source with
-    | .value _ => refuse "TemporalExpression" "bracketed read in temporal source slot"
-    | _ => lowerScalarTemporalExpression model rowGroup source
+    lowerScalarTemporalExpressionAt model rowGroup .source source
   match expression with
-  | .braces source => (.group ·) <$> lowerScalarTemporalExpression model rowGroup source
-  | .value { path, index := none, category := none }
+  | .braces source => (.group ·) <$> lowerScalarTemporalExpressionAt model rowGroup .value source
+  | .value { path, index := none, category := none } =>
+      match position, path.toFieldPath? with
+      | .value, some field => pure (.field field)
+      | .source, _ => refuse "TemporalExpression" "bracketed read in temporal source slot"
+      | _, none => refuse "TemporalExpression" "field path"
   | .entity { path, index := none, category := none } =>
-      match path.toFieldPath? with
-      | some field => pure (.field field)
-      | none => refuse "TemporalExpression" "field path"
+      match position, path.toFieldPath? with
+      | .source, some field => pure (.field field)
+      | .value, _ => refuse "TemporalExpression" "bare entity in temporal value expression"
+      | _, none => refuse "TemporalExpression" "field path"
   | .call "Time" arguments none none =>
       (.timeConstruction ·) <$> timeComponents model rowGroup arguments
   | .constant "Now" => pure .now
@@ -130,8 +139,8 @@ partial def lowerScalarTemporalExpression (model : FlatModel) (rowGroup : GroupP
       match name with
       | "Min" | "Max" =>
           pure (.combine (if name == "Min" then .minimum else .maximum)
-            (← lowerScalarTemporalExpression model rowGroup source)
-            (← lowerScalarTemporalExpression model rowGroup amount))
+            (← lowerScalarTemporalExpressionAt model rowGroup .value source)
+            (← lowerScalarTemporalExpressionAt model rowGroup .value amount))
       | "AddHours" | "AddMinutes" | "AddSeconds" =>
           let unit := if name == "AddHours" then DateTimeSubdayUnit.hours
             else if name == "AddMinutes" then .minutes else .seconds
@@ -148,6 +157,10 @@ partial def lowerScalarTemporalExpression (model : FlatModel) (rowGroup : GroupP
         | _ => refuse "TemporalExpression" name
       pure (.extremum operator (← lowerEntitySource model rowGroup operands))
   | expression => refuse "TemporalExpression" expression.construct
+
+def lowerScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
+    (expression : Expr) : Lowering SurfaceScalarTemporalExpression :=
+  lowerScalarTemporalExpressionAt model rowGroup .value expression
 
 private def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPath) :
     Expr → Lowering SurfaceTokenComparisonOperand

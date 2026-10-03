@@ -40,6 +40,29 @@ private def admitted (text : String) : Bool :=
   | .ok parsed => (lowerCondition model ["Order"] false parsed.body).toOption.isSome
   | .error _ => false
 
+private def operationAdmitted (text : String) : Bool :=
+  match parseText .english text, model.lookupUniqueId 7 with
+  | .ok parsed, .ok target =>
+      (lowerDocumentStep model ["Order"] target parsed.body).toOption.isSome
+  | _, _ => false
+
+example :
+    !admitted "Stamp == Now" ∧
+      !admitted "{Stamp} == Now" ∧
+      !admitted "Min(Stamp, Stamp2) == Now" ∧
+      !operationAdmitted "Stamp2" ∧
+      admitted "[Stamp] == Now" ∧
+      admitted "{[Stamp]} == Now" ∧
+      admitted "Min([Stamp], [Stamp2]) == Now" ∧
+      operationAdmitted "[Stamp2]" := by native_decide
+
+example :
+    !admitted "AddHours(Min(Now, [Stamp]), 1) == Now" ∧
+      !admitted "TimeFromDateTime(MinValue(Stamp, Stamp2)) == [Clock]" ∧
+      !admitted "TimeFromDateTime([Stamp]) == [Clock]" ∧
+      admitted "TimeFromDateTime(Stamp) == [Clock]" ∧
+      admitted "Min(Now, [Stamp]) == Now" := by native_decide
+
 private def stored (targetField : FieldId) (text : String) : Option String := do
   let parsed ← (parseText .english text).toOption
   let target ← (model.lookupUniqueId targetField).toOption
