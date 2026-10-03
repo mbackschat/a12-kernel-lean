@@ -569,7 +569,10 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   | .starHaving path having => do
       let source ← star path
       if fixedTargetGroup?.isNone then
-        if let some (path, unbound) := having.unboundOuterReference? model declaringGroup writtenGroup then
+        -- The error-field binding augments the declaring row without relocating filter names
+        -- (the reading-scope checkpoint and `ValidationBindingLocks`).
+        if let some (path, unbound) := having.unboundOuterReference? model declaringGroup writtenGroup
+            (model.repeatableScopeForGroupPath declaringGroup ++ scope) then
           throw (.resolve (.unboundOperandLevel path unbound))
       pure (.starHaving source having)
   | .group reference => do

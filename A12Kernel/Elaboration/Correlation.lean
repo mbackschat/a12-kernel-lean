@@ -217,7 +217,8 @@ end CorrelationElabError
     ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)).
     A reference that does not resolve is left to the filter's own resolution. -/
 def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
-    (declaringGroup writtenGroup : GroupPath) :
+    (declaringGroup writtenGroup : GroupPath)
+    (bound : List RepeatableLevel := model.repeatableScopeForGroupPath declaringGroup) :
     SurfaceCorrelatedHaving → Option (List String × UnboundOperandLevel)
   | .numeric _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
@@ -226,21 +227,21 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
   | .compareStrings _ reference _ => field reference.origin reference.field
   | .presence _ reference => field reference.origin reference.field
   | .and left right | .or left right =>
-      (left.unboundOuterReference? model declaringGroup writtenGroup).orElse fun _ =>
-        right.unboundOuterReference? model declaringGroup writtenGroup
+      (left.unboundOuterReference? model declaringGroup writtenGroup bound).orElse fun _ =>
+        right.unboundOuterReference? model declaringGroup writtenGroup bound
 where
   field (origin : HavingOrigin) (reference : SurfaceFieldPath) :
       Option (List String × UnboundOperandLevel) := do
     guard (origin == .outer)
     let declaration ← (model.resolveFieldDeclarationUnchecked declaringGroup reference).toOption
-    let unbound ← model.unboundReadLevel? declaringGroup writtenGroup declaration.repeatableScope
+    let unbound ← model.unboundReadLevel? declaringGroup writtenGroup declaration.repeatableScope bound
     pure (declaration.path, unbound)
   group (origin : HavingOrigin) (reference : SurfaceGroupReference) :
       Option (List String × UnboundOperandLevel) := do
     guard (origin == .outer)
     let resolved ← (reference.resolveAgainst declaringGroup).toOption
     let unbound ← model.unboundReadLevel? declaringGroup writtenGroup
-      (model.repeatableScopeForGroupPath resolved.path)
+      (model.repeatableScopeForGroupPath resolved.path) bound
     pure (resolved.path, unbound)
 
 /-- Refuse a filter whose marked reference the walk refuses. Callers ask it before the filter's own
@@ -568,13 +569,14 @@ private def FlatModel.resolveHavingRepetitionInEnvironment (model : FlatModel)
     | none => .fixed resolved.path
   pure { origin, source }
 
-/-- One filter resolved and certified against the exact candidate/captured environments of a checked star path. -/
+/-- One filter certified against the candidate path and captured binding group. Lexical resolution
+uses the separate declaring group passed to `elaborateStarHavingCore`. -/
 structure CheckedStarHaving (model : FlatModel)
-    (source : CheckedStarFieldPath model) (declaringGroup : GroupPath) where
+    (source : CheckedStarFieldPath model) (bindingGroup : GroupPath) where
   authored : CorrelatedHaving
   wellFormed : authored.wellFormedForEnvironments model
     (source.path.axes.map (·.level))
-    (model.repeatableScopeForGroupPath declaringGroup) = true
+    (model.repeatableScopeForGroupPath bindingGroup) = true
   reachesReopenedLevel : authored.reachesReopenedLevel model
     ((source.path.axes.map (·.level)).drop source.path.firstStar) = true
 
@@ -617,11 +619,12 @@ where
 
 /-- Lower the supported numeric-expression, String and presence filter tree against one validated star plan. The result retains the authored connectives and exact candidate/captured environment split established by the checked references. -/
 def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
-    (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving) :
-    Except CorrelationElabError (CheckedStarHaving model source declaringGroup) := do
+    (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
+    (bindingGroup : GroupPath := declaringGroup) :
+    Except CorrelationElabError (CheckedStarHaving model source bindingGroup) := do
   let candidateLevels := source.path.axes.map (·.level)
   let reopenedLevels := candidateLevels.drop source.path.firstStar
-  let outerLevels := model.repeatableScopeForGroupPath declaringGroup
+  let outerLevels := model.repeatableScopeForGroupPath bindingGroup
   let condition ← elaborateHavingCoreWith {
     number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels
     repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels

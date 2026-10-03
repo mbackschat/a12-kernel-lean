@@ -13,10 +13,12 @@ inductive CheckedDistinctCountSource (model : FlatModel) where
 /-- Select the existing typed carrier without erasing its identity projection. Preserve the
     validation expression carrier's Number refusal when no represented overload accepts. -/
 def elaborateDistinctCountSource (model : FlatModel) (declaringGroup : GroupPath)
-    (source : SurfaceFieldEntitySource) (fixedTargetGroup? : Option GroupPath := none) :
+    (source : SurfaceFieldEntitySource) (fixedTargetGroup? : Option GroupPath := none)
+    (bindingGroup? : Option GroupPath := none) :
     Except NumberEntityElabError (CheckedDistinctCountSource model) :=
   match elaborateNumberEntitySource model declaringGroup source
-      (fixedTargetGroup? := fixedTargetGroup?) with
+      (fixedTargetGroup? := fixedTargetGroup?)
+      (writtenGroup := bindingGroup?.getD declaringGroup) (bindingGroup? := bindingGroup?) with
   | .ok checked => pure (.number checked)
   | .error error =>
       match elaborateTokenDistinctCountSource model declaringGroup source

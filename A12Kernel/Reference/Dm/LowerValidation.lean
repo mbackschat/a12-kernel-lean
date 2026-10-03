@@ -292,11 +292,11 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
             let some numericOp := op.toNumeric? | refuse "Comparison" "operator"
             let atom := lowerComputationNumericAtom model rowGroup
             match elaborateEntityNumericComparison model rowGroup numericOp
-                (← lowerNumericExpr atom left) (← lowerNumericExpr atom right) suppress with
+                (← lowerNumericExpr atom left) (← lowerNumericExpr atom right) suppress bindingGroup with
             | .error .readsNoList => pure none
             | result => do
                 let checked ← elaborated "EntityComparison" result
-                some <$> elaborated "EntityComparison" (CheckedValidationCondition.fromOrderedNumeric checked)
+                some <$> elaborated "EntityComparison" (CheckedValidationCondition.fromOrderedNumeric checked rowGroup)
           : Lowering (Option (CheckedValidationCondition model))) with
         | .ok none => []
         | .ok (some checked) => [pure checked]

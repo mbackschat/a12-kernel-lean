@@ -410,7 +410,7 @@ private def certifyNumberEntityGroup (model : FlatModel)
         FlatFieldDecl.toNumberField?).isSome)
 
 private def certifyNumberEntityOperand (model : FlatModel)
-    (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
+    (declaringGroup bindingGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except NumberEntityElabError (CheckedNumberEntityOperand model)
   | .field declaration _ =>
       match hField : declaration.toNumberField? with
@@ -428,9 +428,9 @@ private def certifyNumberEntityOperand (model : FlatModel)
       pure (.star (← certifyStarNumber source))
   | .starHaving source having => do
       let numberSource ← certifyStarNumber source
-      let filter ← elaborateStarHavingCore model declaringGroup numberSource.source having
+      let filter ← elaborateStarHavingCore model declaringGroup numberSource.source having bindingGroup
         |>.mapError fun error => .star (.having error)
-      pure (.starHaving { source := numberSource, declaringGroup, filter })
+      pure (.starHaving { source := numberSource, declaringGroup, bindingGroup, filter })
   | .group reference => certifyNumberEntityGroup model (.fixed reference)
   | .starredGroup source => certifyNumberEntityGroup model (.starred source)
   | .starredGroupPresence source =>
@@ -446,22 +446,23 @@ private def atLaterOperand :
   | error => error
 
 private def certifyNumberEntityOperands (model : FlatModel)
-    (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
+    (declaringGroup bindingGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
       Except NumberEntityElabError (List (CheckedNumberEntityOperand model))
   | [] => pure []
   | operand :: remaining => do
-      pure ((← (certifyNumberEntityOperand model declaringGroup operand).mapError
+      pure ((← (certifyNumberEntityOperand model declaringGroup bindingGroup operand).mapError
           atLaterOperand) ::
-        (← certifyNumberEntityOperands model declaringGroup remaining))
+        (← certifyNumberEntityOperands model declaringGroup bindingGroup remaining))
 
 /-- Certify an already checked entity-list shape as Number-valued without resolving its authored
     references a second time. Consumer-specific whole-list gates run between shape and kind
     certification through this boundary. -/
 def certifyNumberEntityShape (model : FlatModel)
-    (declaringGroup : GroupPath) (shape : CheckedFieldEntityShape model) :
+    (declaringGroup : GroupPath) (shape : CheckedFieldEntityShape model)
+    (bindingGroup : GroupPath := declaringGroup) :
     Except NumberEntityElabError (CheckedNumberEntitySource model) := do
-  let first ← certifyNumberEntityOperand model declaringGroup shape.first
-  let rest ← certifyNumberEntityOperands model declaringGroup shape.rest
+  let first ← certifyNumberEntityOperand model declaringGroup bindingGroup shape.first
+  let rest ← certifyNumberEntityOperands model declaringGroup bindingGroup shape.rest
   if hMultiplicity : (shape.arity.allowsSole || first.isAlreadyMany || !rest.isEmpty) = true then
     match hDuplicate :
         firstDuplicateDirectNumberEntityField? (first :: rest) with
@@ -482,13 +483,15 @@ many-required default; entity-valued membership uses the sole-allowed rule
 def elaborateNumberEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumberEntitySource)
     (fixedTargetGroup? : Option GroupPath := none) (writtenGroup : GroupPath := declaringGroup)
-    (arity : EntityListArity := .manyRequired) :
+    (arity : EntityListArity := .manyRequired) (bindingGroup? : Option GroupPath := none) :
     Except NumberEntityElabError (CheckedNumberEntitySource model) := do
   let shape ←
-    elaborateFieldEntityShape model declaringGroup authored arity (fixedTargetGroup? := fixedTargetGroup?)
+    elaborateFieldEntityShapeIn model declaringGroup
+      (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD [])
+      authored arity (fixedTargetGroup? := fixedTargetGroup?)
       (writtenGroup := writtenGroup)
     |>.mapError NumberEntityElabError.shape
-  certifyNumberEntityShape model declaringGroup shape
+  certifyNumberEntityShape model declaringGroup shape (bindingGroup?.getD declaringGroup)
 
 /-- One authored Number operand resolved against the immutable checked input. The source retains declaration/filter metadata; the optional topology retains every canonical candidate environment, while `addressedCells` retains exactly the relevant or filter-selected cells that were read. -/
 structure ResolvedCheckedNumberEntityOperand (model : FlatModel) where
@@ -548,7 +551,7 @@ def resolveCheckedValidationOperand
       (ResolvedCheckedNumberEntityOperand model) :=
   match source with
   | .field direct => do
-      let core ← document.resolveCheckedDirectEntityOperandCore direct.field.id
+      let core ← document.resolveCheckedDirectEntityOperandCoreAt outer direct.field.id
       pure { source, core }
   | .star starSource => do
       let core ← starSource.source.resolveCheckedValidationEntityOperandCore
@@ -573,8 +576,8 @@ def resolveCheckedPartialValidationOperand
       (ResolvedCheckedNumberEntityOperand model) :=
   match source with
   | .field direct =>
-      if scope.coversCell model direct.declaration.path [] then do
-        let core ← document.resolveCheckedDirectEntityOperandCore direct.field.id
+      if scope.coversCell model direct.declaration.path outer then do
+        let core ← document.resolveCheckedDirectEntityOperandCoreAt outer direct.field.id
         pure { source, core }
       else
         pure { source, core := .nonRelevant }

@@ -73,4 +73,54 @@ example :
       group := ["Form", "Side"]
       errorEntityRelPath := "../../Rows/Qty" }).isOk = false := by native_decide
 
+example : run "FieldFilled(Rows/Qty) And [Rows/Qty] < MaxValue(Rows*/Qty Having CurrentRepetition(Rows) < CurrentRepetition($Rows))"
+    [row "3" "A", row "1" "B"] = some ["Form/Rows[2]/Qty"] ∧
+    run "FieldFilled(Rows/Qty) And [Rows/Qty] < MaxValue(Rows*/Qty Having CurrentRepetition(Rows) < CurrentRepetition($Rows))"
+    [row "3" "A", row "4" "B"] = some [] := by native_decide
+
+example : run "FieldFilled(Rows/Qty) And MaxValue(Rows*/Qty Having [Rows/Qty] == [$Rows/Qty] And CurrentRepetition(Rows) != CurrentRepetition($Rows)) > 0"
+    [row "5" "A", row "5" "B"] = some ["Form/Rows/Qty", "Form/Rows[2]/Qty"] ∧
+    run "FieldFilled(Rows/Qty) And MaxValue(Rows*/Qty Having [Rows/Qty] == [$Rows/Qty] And CurrentRepetition(Rows) != CurrentRepetition($Rows)) > 0"
+    [row "5" "A"] = some [] := by native_decide
+
+example : run "FieldFilled(Rows/Qty) And MaxValue(Rows*/Qty Having [Rows/Qty] > [Qty] And CurrentRepetition(Rows) != CurrentRepetition($Rows)) > 10"
+    [row "12" "A", row "5" "B"] = some ["Form/Rows[2]/Qty"] := by native_decide
+
+example : run "FieldFilled(Rows/Qty) And NumberOfDifferentValues(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows)) == 1"
+    [row "5" "A", row "5" "B"] = some ["Form/Rows/Qty", "Form/Rows[2]/Qty"] ∧
+    run "FieldFilled(Rows/Qty) And NumberOfDifferentValues(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows)) == 1"
+    [row "5" "A"] = some [] := by native_decide
+
+example : (checkRule dm .english {
+      (rule "FieldFilled(Qty) And MaxValue(Rows*/Qty Having [Rows/Qty] > 0) > 0") with
+      errorEntityRelPath := "../Qty" }).isOk = true ∧
+    (checkRule dm .english {
+      (rule "FieldFilled(Qty) And MaxValue(Rows*/Qty Having [Rows/Qty] == [$Rows/Qty]) > 0") with
+      errorEntityRelPath := "../Qty" }).isOk = false := by native_decide
+
+example : (do
+    let checked ← (checkRule dm .english (rule
+      "FieldFilled(Rows/Qty) And MaxValue(Rows*/Qty Having [Rows/Qty] > [Qty] And CurrentRepetition(Rows) != CurrentRepetition($Rows)) > 10")).toOption
+    pure (checked.condition.core.anyLeaf fun
+      | .orderedNumeric _ comparison => comparison.left.anyAtom fun
+          | .aggregate _ source => source.operands.any fun
+              | .starHaving filtered => filtered.declaringGroup == ["Form"] &&
+                  filtered.bindingGroup == ["Form", "Rows"] && filtered.having.fieldIds == [2, 1]
+              | _ => false
+          | _ => false
+      | _ => false)) = some true := by native_decide
+
+example : run "MaxValue(Rows/Qty, Rows*/Qty Having CurrentRepetition(Rows) == 1) > 5"
+    [row "1" "A", row "7" "B"] = some ["Form/Rows[2]/Qty"] := by native_decide
+
+example : run "FieldFilled(Rows/Qty) And Sum(Rows/Qty, Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows)) > 0"
+    [row "3" "A", row "1" "B"] = some ["Form/Rows/Qty", "Form/Rows[2]/Qty"] ∧
+    run "FieldFilled(Rows/Qty) And FirstFilledValue(Rows/Qty, Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows)) > 0"
+    [row "3" "A", row "1" "B"] = some ["Form/Rows/Qty", "Form/Rows[2]/Qty"] := by native_decide
+
+example : run "FieldFilled(Rows/Qty) And MaxValue(Rows*/Qty Having [Rows/Qty] == [$Rows/Qty] And CurrentRepetition(Rows) != CurrentRepetition($Rows)) > 0"
+    [row "5" "A", row "7" "B"] = some [] ∧
+    run "FieldFilled(Rows/Qty) And MaxValue(Rows*/Qty Having [Rows/Qty] == [Rows/Qty] And CurrentRepetition(Rows) != CurrentRepetition($Rows)) > 0"
+    [row "5" "A", row "7" "B"] = some ["Form/Rows/Qty", "Form/Rows[2]/Qty"] := by native_decide
+
 end A12Kernel.Dm.ValidationBindingLocks

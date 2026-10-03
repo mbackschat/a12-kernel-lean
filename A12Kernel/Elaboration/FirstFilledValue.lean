@@ -229,9 +229,9 @@ private def scanCheckedDocumentValidationOperand
       Except CheckedAddressingError
         (FirstFilledScanState ⊕ PartialValidationFirstFilledNumberResult)
   | .field source =>
-      if scope.coversCell model source.declaration.path [] then do
+      if scope.coversCell model source.declaration.path outer then do
         match state.step
-            (← document.numberValueListCellAt .validation [] source.field) with
+            (← document.numberValueListCellAt .validation outer source.field) with
         | .continue next => pure (.inl next)
         | .done result => pure (.inr (.evaluated result.asNumber))
       else

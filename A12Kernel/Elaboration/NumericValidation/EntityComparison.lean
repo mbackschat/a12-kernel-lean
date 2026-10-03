@@ -13,9 +13,9 @@ them, so a rule reaches them without a hand-assembled comparison.
 
 The authored operand surface is the one computations already use, `SurfaceNumericComputationAtom`,
 since the authoring forms are the same. What differs on this arm is the reading scope, and it is
-the entity-list elaborators' own: called with no target group they bind no level, which is how a
-rule reads an entity list (`elaborateNumberEntitySource`). Ordinary operands resolve as
-`elaborateRepeatableNumericComparison` resolves them.
+the entity-list elaborators' own: Number lists receive the rule's available row binding while
+paths still resolve at its lexical declaring group. The same split applies to ordinary numeric
+operands and to captured references in a filter; a descendant error field does not relocate names.
 
 Three forms keep the carriers that already own them, so none acquires a second representation. A
 comparison reading no entity list at all belongs to the ordinary numeric comparisons. A list of plain
@@ -60,28 +60,31 @@ private def SurfaceNumericAtom.ofEntityAtom? :
   | .dayDifference left right => some (.dayDifference left right)
   | .aggregate _ _ | .filledGroupCount _ => none
 
-private def resolveEntityAtom (model : FlatModel) (rowGroup : GroupPath) :
+private def resolveEntityAtom (model : FlatModel) (rowGroup bindingGroup : GroupPath) :
     SurfaceNumericComputationAtom →
       Except EntityNumericComparisonElabError (OrderedNumericValidationAtom model)
   | .numeric (.aggregate .distinctCount source) => do
-      match ← (elaborateDistinctCountSource model rowGroup source).mapError .numberSource with
+      match ← (elaborateDistinctCountSource model rowGroup source (bindingGroup? := some bindingGroup)).mapError .numberSource with
       | .number checked => pure (.aggregate .distinctCount checked)
       | .token checked => pure (.tokenDistinctCount checked)
       | .temporal run => pure (.temporalDistinctCount run)
   | .numeric (.aggregate op source) =>
-      (elaborateNumberEntitySource model rowGroup source).map (.aggregate op) |>.mapError .numberSource
+      (elaborateNumberEntitySource model rowGroup source
+        (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup)).map (.aggregate op) |>.mapError .numberSource
   | .numeric (.filledGroupCount _) => throw .groupCount
   | .numeric atom => match SurfaceNumericAtom.ofEntityAtom? atom with
       | some ordinary =>
-          (resolveAddressedNumericValidationAtom model rowGroup ordinary).map .ordinary
+          (resolveAddressedNumericValidationAtom model bindingGroup ordinary rowGroup).map .ordinary
             |>.mapError .ordinary
       | none => throw .incoherent
   | .filledFieldCount source =>
-      (elaborateFieldFillList model rowGroup source).map .filledFieldCount |>.mapError .fieldFillSource
+      (elaborateFieldFillList model rowGroup source bindingGroup).map .filledFieldCount |>.mapError .fieldFillSource
   | .firstFilled source =>
-      (elaborateNumberEntitySource model rowGroup source).map .firstFilled |>.mapError .numberSource
+      (elaborateNumberEntitySource model rowGroup source
+        (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup)).map .firstFilled |>.mapError .numberSource
   | .valueCount expected source =>
-      (elaborateNumberEntitySource model rowGroup source).map (.valueCount expected)
+      (elaborateNumberEntitySource model rowGroup source
+        (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup)).map (.valueCount expected)
         |>.mapError .numberSource
   | .tokenValueCount expected source =>
       (elaborateTokenValueCountSource model rowGroup expected source).map .tokenValueCount
@@ -99,7 +102,7 @@ private def resolveEntityAtom (model : FlatModel) (rowGroup : GroupPath) :
 /-- Elaborate a rule comparison whose operations read entity lists, at the rule group. -/
 def elaborateEntityNumericComparison (model : FlatModel) (rowGroup : GroupPath)
     (op : NumericValidationOp) (left right : AuthoredNumericExpr SurfaceNumericComputationAtom)
-    (suppressExactScaleWarning : Bool := false) :
+    (suppressExactScaleWarning : Bool := false) (bindingGroup : GroupPath := rowGroup) :
     Except EntityNumericComparisonElabError (CheckedOrderedNumericComparison model) :=
   match hModel : model.validate with
   | .error error => .error (.ordinary (.resolve error))
@@ -113,10 +116,10 @@ def elaborateEntityNumericComparison (model : FlatModel) (rowGroup : GroupPath)
       if !(left.anyAtom readsList || right.anyAtom readsList) then throw .readsNoList
       let core : OrderedNumericComparison model := {
         op, suppressExactScaleWarning
-        left := ← left.mapM (resolveEntityAtom model rowGroup)
-        right := ← right.mapM (resolveEntityAtom model rowGroup) }
-      if hCore : core.wellFormedInBool rowGroup .sameGroupAddressed = true then
-        pure { rowGroup, operandScope := .sameGroupAddressed, core
+        left := ← left.mapM (resolveEntityAtom model rowGroup bindingGroup)
+        right := ← right.mapM (resolveEntityAtom model rowGroup bindingGroup) }
+      if hCore : core.wellFormedInBool bindingGroup .sameGroupAddressed = true then
+        pure { rowGroup := bindingGroup, operandScope := .sameGroupAddressed, core
                modelWellFormed := by rw [hModel]; rfl, wellFormed := hCore }
       else throw .incoherent
 

@@ -398,9 +398,10 @@ def resolveNumericValidationAtom
 /-- Resolve one ordinary operand of an addressed comparison, the reading
 `elaborateRepeatableNumericComparison` gives each of its atoms. -/
 def resolveAddressedNumericValidationAtom
-    (model : FlatModel) (rowGroup : GroupPath) (surface : SurfaceNumericAtom) :
+    (model : FlatModel) (rowGroup : GroupPath) (surface : SurfaceNumericAtom)
+    (declaringGroup : GroupPath := rowGroup) :
     Except NumericValidationElabError NumericValidationAtom :=
-  resolveAddressedNumericAtom model rowGroup surface
+  resolveAddressedNumericAtomIn model declaringGroup rowGroup surface
 
 private def elaborateNumericValidationExpressionWith
     (model : FlatModel) (rowGroup : GroupPath)

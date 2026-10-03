@@ -17,11 +17,13 @@ structure CheckedStarNumberSource (model : FlatModel) where
   field : FlatNumberField
   fieldOwned : source.declaration.toNumberField? = some field
 
-/-- One checked nested Number star paired with a checked filter over the exact candidate and captured repetition environments available at its authoring site. -/
+/-- A checked Number star retains lexical origin separately from the captured row binding, as
+root-declared rules can capture a descendant error-field row (`ValidationBindingLocks`). -/
 structure CheckedStarNumberHavingSource (model : FlatModel) where
   source : CheckedStarNumberSource model
   declaringGroup : GroupPath
-  filter : CheckedStarHaving model source.source declaringGroup
+  bindingGroup : GroupPath := declaringGroup
+  filter : CheckedStarHaving model source.source bindingGroup
 
 def CheckedStarNumberHavingSource.having
     (checked : CheckedStarNumberHavingSource model) : CorrelatedHaving :=
@@ -29,7 +31,7 @@ def CheckedStarNumberHavingSource.having
 
 def CheckedStarNumberHavingSource.outerLevels
     (checked : CheckedStarNumberHavingSource model) : List RepeatableLevel :=
-  model.repeatableScopeForGroupPath checked.declaringGroup
+  model.repeatableScopeForGroupPath checked.bindingGroup
 
 /-- A checked all-rows Number-star source is either unavailable to partial validation as a whole or carries the ordinary resolved side unchanged. This is deliberately not the order-aware `FirstFilledValue` relevance result. -/
 inductive AllRowsValidationStarNumberSide where
