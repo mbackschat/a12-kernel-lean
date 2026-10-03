@@ -25,8 +25,8 @@ theorem conditionProtects_or (protectsLeaf : Leaf → Bool)
   cases left.evalBool (fun leaf => !protectsLeaf leaf) <;>
     cases right.evalBool (fun leaf => !protectsLeaf leaf) <;> rfl
 
-/-- Inserting an unconditional alternative anywhere leaves the profile unchanged, even though
-it can change first-match execution. This is the split-target grid's nearest non-law. -/
+/-- Without implicit guards, inserting an absent condition leaves the profile unchanged, even
+though it can change first-match execution. The fixed split-target grid separates these roles. -/
 theorem alternativesProtect_insert_absent (protectsLeaf : Leaf → Bool)
     (before after : List (Option (ConditionTree Leaf))) :
     alternativesProtect protectsLeaf (before ++ none :: after) =
@@ -37,10 +37,22 @@ theorem requiresProducer_of_ordinary (conditionalReference sameTarget producerPr
     requiresProducer true conditionalReference sameTarget producerProtected = true := by
   rfl
 
+/-- An implicit condition that misses the queried group prevents protection at that group,
+regardless of every explicit alternative around it. -/
+theorem alternativesProtect_insert_unprotected (protectsLeaf : Leaf → Bool)
+    (before after : List (Option (ConditionTree Leaf))) :
+    alternativesProtect protectsLeaf (before ++ none :: after) (some false) = false := by
+  simp [alternativesProtect, List.filterMap_append]
+
 theorem alternativesProtect_perm (protectsLeaf : Leaf → Bool)
-    {left right : List (Option (ConditionTree Leaf))} (permuted : left.Perm right) :
-    alternativesProtect protectsLeaf left = alternativesProtect protectsLeaf right := by
-  simp only [alternativesProtect, (permuted.filterMap id).isEmpty_eq, (permuted.filterMap id).all_eq]
+    {left right : List (Option (ConditionTree Leaf))} (permuted : left.Perm right)
+    (absentProtection : Option Bool := none) :
+    alternativesProtect protectsLeaf left absentProtection =
+      alternativesProtect protectsLeaf right absentProtection := by
+  have profiles := permuted.filterMap (fun condition =>
+    (condition.map (conditionProtects protectsLeaf)).or absentProtection)
+  dsimp only [alternativesProtect]
+  rw [profiles.isEmpty_eq, profiles.all_eq]
 
 end A12Kernel.ComputationGroupDependency
 
@@ -102,6 +114,6 @@ theorem computationProducerProtection_perm (model : FlatModel) (targetOf : Step 
   | error error => rfl
   | ok declaration =>
       simp only
-      rw [ComputationGroupDependency.alternativesProtect_perm _ conditionsPerm]
+      rw [ComputationGroupDependency.alternativesProtect_perm _ conditionsPerm _]
 
 end A12Kernel

@@ -1714,3 +1714,6 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 <a id="src-group-conditional-profiles"></a>
 - [Conditional group profiles across alternatives, common guards and target scopes](sources/computation-scheduling-probes.md#src-group-conditional-profiles)
+
+<a id="src-repeatable-group-profiles"></a>
+- [Implicit guards before repeatable target-profile assembly](sources/computation-scheduling-probes.md#src-repeatable-group-profiles)

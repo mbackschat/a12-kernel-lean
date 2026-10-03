@@ -1,0 +1,137 @@
+{
+  "header" : {
+    "id" : "common_guard_first_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "common_guard_first_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Rows/Box",
+                "name" : "Box",
+                "Group" : {
+                  "repeatability" : 1,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Box/Gate",
+                    "name" : "Gate",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Box/X",
+                    "name" : "X",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Box/Y",
+                    "name" : "Y",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Rows/Box/XComp",
+                    "name" : "XComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../X",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "GroupFilled(/Form/Rows/Box)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "The result follows the selected computation."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Rows/Box/YGuard",
+                    "name" : "YGuard",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../Y",
+                      "computationAlternatives" : [ {
+                        "operation" : "[/Form/Rows/Box/X]",
+                        "precondition" : "GroupFilled(/Form/Rows/Box)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "The result follows the selected computation."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Rows/Box/YPlain",
+                    "name" : "YPlain",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../Y",
+                      "commonPrecondition" : "GroupFilled(/Form/Rows/Box)",
+                      "computationAlternatives" : [ {
+                        "operation" : "2"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "The result follows the selected computation."
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

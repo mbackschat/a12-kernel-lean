@@ -587,6 +587,7 @@ run_cmd do
 #print axioms A12Kernel.ComputationGroupDependency.conditionProtects_and
 #print axioms A12Kernel.ComputationGroupDependency.conditionProtects_or
 #print axioms A12Kernel.ComputationGroupDependency.alternativesProtect_insert_absent
+#print axioms A12Kernel.ComputationGroupDependency.alternativesProtect_insert_unprotected
 #print axioms A12Kernel.ComputationGroupDependency.requiresProducer_of_ordinary
 #print axioms A12Kernel.negativeGroupRead_preservesOperandDependency
 #print axioms A12Kernel.positiveGroupRead_excludesOwnDependency

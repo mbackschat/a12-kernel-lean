@@ -131,6 +131,14 @@ example : boundProfile 2 root [some (.leaf (some (.filled, root))), none] = true
     boundProfile 2 root [some (.leaf (some (.filled, root))), some (.leaf none)] = false ∧
     boundProfile 4 child [some (.leaf (some (.filled, child)))] = true := by native_decide
 
+-- The repeatable-profile grid rejects both split-target orders below a fixed child; the
+-- containing row still protects its own level, and nonrepeatable omission remains unchanged.
+example : boundProfile 4 child [some (.leaf (some (.filled, child))), none] = false ∧
+    boundProfile 4 child [none, some (.leaf (some (.filled, child)))] = false ∧
+    boundProfile 4 rows [some (.leaf (some (.filled, child))), none] = true ∧
+    boundProfile 2 box [some (.leaf (some (.filled, box))), none] = true := by
+  native_decide
+
 example : (model.computationGroupSource root.path).fields.contains 3 = false ∧
     root.referencesField model 3 = true := by native_decide
 

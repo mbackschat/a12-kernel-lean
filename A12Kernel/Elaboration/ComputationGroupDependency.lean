@@ -33,8 +33,12 @@ def FlatModel.computationImplicitGroupProtection (model : FlatModel)
 
 /-- Query a resolved target's profile after common-precondition distribution and same-target
 assembly. The leaf selector retains operator and resolved group identity; ordinary leaves return
-none. Implicit row protection cannot be weakened by an explicit unprotected condition. Unknown
-targets or group paths establish no protection; this query does not replace static admission. -/
+none. Kernel dependency preparation supplies implicit row guards before target assembly
+(`src-repeatable-group-profiles`), so absence below that row is an unprotected condition rather
+than an omitted condition. Static admission permits absence only in a sole alternative
+(`src-repeatable-row-alternatives`), so this projection needs no authored-computation partition.
+Implicit protection of the row itself remains unconditional. Unknown targets or group paths
+establish no protection; this query does not replace static admission. -/
 def FlatModel.computationProtectsGroup (model : FlatModel) (target : FieldId)
     (queriedGroup : GroupPath)
     (groupLeaf : Leaf → Option (GroupPresenceOperator × ResolvedGroupReference))
@@ -42,12 +46,14 @@ def FlatModel.computationProtectsGroup (model : FlatModel) (target : FieldId)
   match model.lookupUniqueId target with
   | .error _ => false
   | .ok declaration =>
+      let implicitProtection := model.computationImplicitGroupProtection declaration.groupPath queriedGroup
+      let absentProtection := if declaration.repeatableScope.isEmpty then none else some implicitProtection
       model.hasGroupPath queriedGroup &&
-        (model.computationImplicitGroupProtection declaration.groupPath queriedGroup ||
+        (implicitProtection ||
           ComputationGroupDependency.alternativesProtect (fun leaf =>
             (groupLeaf leaf).any fun (operator, reference) =>
               model.hasGroupPath reference.path &&
-                reference.protectsComputationGroup operator declaration.groupPath queriedGroup) conditions)
+                reference.protectsComputationGroup operator declaration.groupPath queriedGroup) conditions absentProtection)
 
 /-- Positive reads of a containing group are exempt from the computed-target reference ban;
 negative reads retain it, as `spec/09` §5's paired group controls establish. -/
@@ -70,7 +76,7 @@ def ResolvedGroupReference.requiresComputationProducer (reference : ResolvedGrou
     (referenced && conditional) (consumer == producer) producerProtected
 
 /-- Assemble a producer's present conditions across every authored computation of that target.
-Callers supply common-expanded conditions; absent entries retain the measured omission semantics. -/
+Callers supply common-expanded conditions; the model-bound query accounts for implicit guards. -/
 def computationProducerProtection (model : FlatModel) (targetOf : Step → FieldId)
     (conditionsOf : Step → List (Option ComputationCondition)) (steps : List Step)
     (producer : FieldId) (reference : ResolvedGroupReference) : Bool :=

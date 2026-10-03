@@ -173,6 +173,54 @@ private def standaloneGroupPlans (stringTargets : Bool) : Option Bool := do
 
 example : standaloneGroupPlans false = some true ∧ standaloneGroupPlans true = some true := by native_decide
 
+private inductive RepeatableProfileShape where
+  | child | rows | common | fixed
+  deriving BEq
+
+private def repeatableProfilePlan (shape : RepeatableProfileShape) (plainFirst : Bool) :
+    Option Bool := do
+  let repeated := shape != .fixed
+  let scope := if repeated then [10] else []
+  let group := ["Form", "Rows", "Box"]
+  let model : FlatModel := {
+    fields := [
+    { id := 1, groupPath := group, name := "Gate", repeatableScope := scope,
+      policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 2, groupPath := group, name := "X", repeatableScope := scope,
+      policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 3, groupPath := group, name := "Y", repeatableScope := scope,
+      policy := { kind := .number { scale := 0, signed := true } } }]
+    repeatableGroups := if repeated then
+      [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 }] else [] }
+  let definition (name target operation : String) (guard : Option String)
+      (common : Bool := false) : DmComputation := {
+    group, name, targetRelPath := "../" ++ target
+    commonPrecondition := if common then guard else none
+    alternatives := [{ precondition := if common then none else guard, operation }]
+    errorCodesToSuppress := [] }
+  let first := definition "XComp" "X" "1" (some (if shape == .rows then
+    "GroupFilled(/Form/Rows)" else "GroupFilled(/Form/Rows/Box)"))
+  let guarded := definition "YGuard" "Y" "[/Form/Rows/Box/X]" (some "GroupFilled(/Form/Rows/Box)")
+  let plain := definition "YPlain" "Y" "2"
+    (if shape == .common then some "GroupFilled(/Form/Rows/Box)" else none) true
+  let authored := first :: (if plainFirst then [plain, guarded] else [guarded, plain])
+  let steps ← authored.mapM fun computation => do
+    let (_, lowered) ← (lowerComputation model .english computation).toOption
+    match lowered with
+    | .number table _ => some (MixedComputationStep.number (compilePattern := builtinStringPatternCompiler) table)
+    | _ => none
+  match certifyAuthoredMixedComputationPlan steps with
+  | .ok _ => some true
+  | .error (.cycle _ _) => some false
+  | .error _ => none
+
+example : repeatableProfilePlan .child false = some false ∧
+    repeatableProfilePlan .child true = some false := by native_decide
+
+example : [RepeatableProfileShape.rows, .common, .fixed].all (fun shape =>
+    repeatableProfilePlan shape false == some true &&
+      repeatableProfilePlan shape true == some true) = true := by native_decide
+
 private def standaloneGuardOverlay (stringTargets scalar stored filledList : Bool) :
     Option (Bool × Bool) := do
   let kind := if stringTargets then FieldKind.string else .number { scale := 0, signed := true }
