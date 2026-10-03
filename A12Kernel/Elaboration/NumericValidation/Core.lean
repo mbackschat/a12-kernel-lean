@@ -191,7 +191,7 @@ def temporalFieldPartDiagnostic? :
 
 end NumericValidationElabError
 
-/-- Static field-admission policy for one resolved numeric comparison. Ordinary rules keep their exact rule group; generated computation validation either retains the legacy nonrepeatable scope or carries a model-certified repeatable computation source. -/
+/-- Static field-admission policy for one resolved numeric comparison. Ordinary rules use exact-group or scope-bound reads; generated computation validation either retains the legacy nonrepeatable scope or carries a model-certified repeatable computation source. -/
 inductive NumericOperandScope where
   | sameGroup
   | sameGroupAddressed

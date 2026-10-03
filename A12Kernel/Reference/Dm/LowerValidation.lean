@@ -268,12 +268,24 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
             [do let checked ← elaborated "NumericComparison"
                   (elaborateRepeatableNumericComparison model rowGroup surface)
                 elaborated "NumericComparison" (CheckedValidationCondition.fromOrderedNumeric checked),
-             do let checked ← elaborated "NumericComparison"
-                  (elaborateNumericComparison model rowGroup surface)
-                elaborated "NumericComparison" (CheckedValidationCondition.fromNumeric checked)]
+             do
+                let scalar := do
+                  let checked ← elaborated "NumericComparison"
+                    (elaborateNumericComparison model rowGroup surface)
+                  elaborated "NumericComparison" (CheckedValidationCondition.fromNumeric checked)
+                match scalar with
+                | .ok checked => pure checked
+                | .error refusal =>
+                    -- A bound-scope extension contributes successful cases only; rejected shapes
+                    -- retain the scalar carrier's diagnostic (CrossRootValidationLocks).
+                    match elaborateBoundNumericComparison model rowGroup surface with
+                    | .ok checked =>
+                        elaborated "NumericComparison"
+                          (CheckedValidationCondition.fromOrderedNumeric checked)
+                    | .error _ => .error refusal]
         | .error refusal => [.error refusal])
-      -- A comparison reading no entity list is not offered to the entity carrier, so the scalar
-      -- carriers' own refusal, such as a second root's, is the one reported.
+      -- A comparison reading no entity list is not offered to the entity carrier, so the ordinary
+      -- numeric carriers' own refusal is the one reported.
       ++ (match (do
             let some numericOp := op.toNumeric? | refuse "Comparison" "operator"
             let atom := lowerComputationNumericAtom model rowGroup

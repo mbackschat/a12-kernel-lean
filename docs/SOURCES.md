@@ -250,7 +250,7 @@ The letter is the peer's `-2026-10-02`, delivered by its session and frozen at S
 
 **Classification.** Inbound and narrowing: [`spec/03`](../spec/03-empty-and-required.md) §2's "anywhere in either operation" no longer holds. This project's [rule-bucket grid](sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate) measures the remaining arms before the clause is restated.
 
-**Lean.** Diverged on the large-side row and did not count `NumberOfDifferentValues`, and its once plan gated a repeatable-root rule on the root's content; all three are corrected with that grid.
+**Lean.** Diverged on the large-side row and did not count `NumberOfDifferentValues`, and its once plan gated a repeatable-root rule on the root's content; all three are corrected with that grid. The [ordinary execution owner](implementation/validation-messages-and-custom.md#cap-ordinary-once-repeatable-execution) now records fixed cross-root numeric admission and its static content-gate projection. The same-root qualification in `spec/03` A.4 reconciles its field-only sentence with this already accepted second-root clause.
 
 ### Inbound 2026-10-01a handback
 

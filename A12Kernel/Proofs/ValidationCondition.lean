@@ -488,4 +488,19 @@ theorem checkedValidationCondition_coherent
       condition.core.wellFormedBool condition.rowGroup = true :=
   ⟨condition.modelWellFormed, condition.wellFormed⟩
 
+/-- A static cross-root dependency removes the full-validation content prerequisite, independently
+of the runtime context and without changing the connective evaluator. -/
+theorem validationCondition_evalFull_of_multipleRoots
+    (condition : ValidationCondition model) (context : ValidationEvaluationContext)
+    (hasContent : Bool) (spans : condition.referencesMultipleRoots = true) :
+    condition.evalFull context hasContent = condition.evalSelected context := by
+  simp [ValidationCondition.evalFull, ValidationCondition.canFireOnEmpty, spans]
+
+/-- The same root classification preserves the addressed evaluator's structural error channel. -/
+theorem validationCondition_evalAddressedFull_of_multipleRoots
+    (condition : ValidationCondition model) (context : AddressedValidationEvaluationContext model)
+    (hasContent : Bool) (spans : condition.referencesMultipleRoots = true) :
+    condition.evalAddressedFull context hasContent = condition.evalAddressed context := by
+  simp [ValidationCondition.evalAddressedFull, ValidationCondition.canFireOnEmpty, spans]
+
 end A12Kernel

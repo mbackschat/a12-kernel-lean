@@ -509,8 +509,9 @@ def elaborateNumericComparison (model : FlatModel) (rowGroup : GroupPath)
   elaborateNumericComparisonWith model rowGroup .sameGroup
     (resolveNumericAtom model rowGroup writtenGroup) surface
 
-/-- Admit ordinary addressed field operands through the existing ordered-numeric carrier. Each atom retains its typed declaration certificates while only repeatable reads change from scalar to addressed. -/
-def elaborateRepeatableNumericComparison
+/-- Resolve ordinary numeric operands at any scope bound by the rule group. Fixed fields in another
+subgroup or root use the same declaration certificates and evaluator as repeatable addressed reads. -/
+def elaborateBoundNumericComparison
     (model : FlatModel) (rowGroup : GroupPath)
     (surface : SurfaceNumericComparison) :
     Except NumericValidationElabError
@@ -522,8 +523,6 @@ def elaborateRepeatableNumericComparison
     left := checked.core.left.map .ordinary
     right := checked.core.right.map .ordinary
     suppressExactScaleWarning := checked.core.suppressExactScaleWarning }
-  if !core.requiresAddressedValidation then
-    throw .unsupportedExpression
   if hCore : core.wellFormedInBool rowGroup .sameGroupAddressed = true then
     pure {
       rowGroup
@@ -533,6 +532,15 @@ def elaborateRepeatableNumericComparison
       wellFormed := hCore }
   else
     throw .incoherentCore
+
+
+/-- Preserve the addressed-only entry point for consumers selecting a repeatable interpretation. -/
+def elaborateRepeatableNumericComparison
+    (model : FlatModel) (rowGroup : GroupPath) (surface : SurfaceNumericComparison) :
+    Except NumericValidationElabError (CheckedOrderedNumericComparison model) := do
+  let checked ← elaborateBoundNumericComparison model rowGroup surface
+  if !checked.core.requiresAddressedValidation then throw .unsupportedExpression
+  pure checked
 
 
 /-- Admit one filled-group count whose operand list carries at least one star, as a comparison

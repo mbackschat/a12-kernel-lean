@@ -266,12 +266,12 @@ example :
 
 /- `NumberOfDifferentValues` reaches the String/Enumeration and temporal carriers once the Number one
 refuses its list, a star-free group operand included, which lowers to the scalar surface first; a
-list mixing the families stays refused, and so does a plain second-root read, which the entity-list
-carrier must not answer for the scalar carriers that refuse it. -/
+list mixing the families stays refused. A plain second-root read belongs to the ordinary bound
+numeric carrier, without requiring an entity-list operand. -/
 example :
     [admitted "NumberOfDifferentValues(Ref, Head/Code) == 1", admitted "NumberOfDifferentValues(Rows*/Note) > 1",
      admitted "NumberOfDifferentValues(Head) > 0", admitted "NumberOfDifferentValues(Due1, Due2) == 1",
-     !admitted "NumberOfDifferentValues(Ref, Due1) == 1", !admitted "[/Other/O] + [Amt] < 5"].all id := by
+     !admitted "NumberOfDifferentValues(Ref, Due1) == 1", admitted "[/Other/O] + [Amt] < 5"].all id := by
   native_decide
 
 private def admittedSuppressed (text : String) : Bool :=
@@ -560,13 +560,14 @@ example :
       pure (messages.map fun message => renderPointer repeatableRoot message.errorAddress)) = some ["Rep/P"] := by
   native_decide
 
-/- A comparison reading no entity list is the scalar carriers' alone, so a second root's field is
-refused with their reason rather than the entity carrier's. -/
+/- A fixed second-root read retains its scope certificate without introducing an iteration;
+the content-gate reason is the static root pair (spec/03 A.4). -/
 example :
     (match parseText .english "[/Other/O] + [Amt] < 5" with
       | .ok parsed => match lowerCondition model ["Order"] false parsed.body with
-        | .error refusal => refusal.detail.startsWith "A12Kernel.NumericValidationElabError.fieldOutsideRowGroup"
-        | .ok _ => false
+        | .ok checked =>
+            checked.core.referencesMultipleRoots && !checked.core.requiresAddressedValidation
+        | .error _ => false
       | .error _ => false) = true := by
   native_decide
 

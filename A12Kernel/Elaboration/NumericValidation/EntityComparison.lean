@@ -18,9 +18,8 @@ rule reads an entity list (`elaborateNumberEntitySource`). Ordinary operands res
 `elaborateRepeatableNumericComparison` resolves them.
 
 Three forms keep the carriers that already own them, so none acquires a second representation. A
-comparison reading no entity list at all belongs to the scalar comparisons, including one they
-refuse, such as a read of a second root. A list of plain fields only belongs to the scalar
-comparison, and the addressed scope admits it in neither atom form, so it is refused as incoherent.
+comparison reading no entity list at all belongs to the ordinary numeric comparisons. A list of plain
+fields only belongs to the scalar comparison, and the addressed scope admits it in neither atom form, so it is refused as incoherent.
 The filled-group count belongs to `elaborateNumericComparison` and
 `elaborateMixedFilledGroupCountComparison`.
 
@@ -105,9 +104,8 @@ def elaborateEntityNumericComparison (model : FlatModel) (rowGroup : GroupPath)
   match hModel : model.validate with
   | .error error => .error (.ordinary (.resolve error))
   | .ok () => do
-      -- A comparison reading no entity list is the scalar carriers' even when they refuse it, such
-      -- as a second root's field, so this carrier never answers in their place. A group count passes
-      -- on to its own refusal, which names the carriers owning it.
+      -- A comparison reading no entity list belongs to the ordinary carriers, so this carrier never
+      -- answers in their place. A group count passes on to its own refusal, which names its carriers.
       let readsList : SurfaceNumericComputationAtom → Bool
         | .numeric (.aggregate _ _) | .numeric (.filledGroupCount _) => true
         | .numeric _ => false

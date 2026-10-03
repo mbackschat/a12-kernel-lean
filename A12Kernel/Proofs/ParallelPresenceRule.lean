@@ -25,9 +25,11 @@ theorem checkedParallelPresenceRule_wellFormed
           .filled rule.rightDeclaration) :=
   rule.conditionShape
 
-@[simp] theorem checkedParallelPresenceRule_cannotFireOnEmpty
+/-- Positive presence contributes no empty-case exception; the shared static root classification
+remains the only possible reason to lift the gate (spec/03 A.4). -/
+@[simp] theorem checkedParallelPresenceRule_emptyGate_eq_multipleRoots
     (rule : CheckedParallelPresenceRule model) :
-    rule.condition.core.canFireOnEmpty = false := by
+    rule.condition.core.canFireOnEmpty = rule.condition.core.referencesMultipleRoots := by
   rw [rule.conditionShape]
   rfl
 

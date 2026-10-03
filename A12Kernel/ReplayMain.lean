@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.CrossRootValidationLocks
 import A12Kernel.Reference.Dm.RowAlternativeLocks
 import A12Kernel.Reference.Dm.Replay
 import A12Kernel.Reference.Dm.Compute

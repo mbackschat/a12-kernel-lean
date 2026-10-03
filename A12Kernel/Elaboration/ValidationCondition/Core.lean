@@ -616,16 +616,55 @@ end ValidationConditionLeaf
 
 namespace ValidationCondition
 
-/-- Whether the rule is evaluated on an instance without admitted content under full validation:
-its presence leaves can hold there through `And` and `Or`, or a comparison anywhere in it lifts the
-gate. -/
-def canFireOnEmpty (condition : ValidationCondition model) : Bool :=
-  condition.evalBool ValidationConditionLeaf.canFireOnEmpty ||
-    condition.anyLeaf ValidationConditionLeaf.liftsEmptyGate
-
 def referencesField (condition : ValidationCondition model)
     (field : FieldId) : Bool :=
   condition.anyLeaf fun leaf => leaf.referencesField field
+
+private def numericStructuralGroups : NumericValidationAtom → List GroupPath
+  | .fixedCurrentRepetition reference => [reference.path]
+  | .boundCurrentRepetition source => [source.path]
+  | .filledGroupCount groups => groups.map (·.path)
+  | _ => []
+
+private def orderedNumericStructuralGroups : OrderedNumericValidationAtom model → List GroupPath
+  | .ordinary source => numericStructuralGroups source
+  | .filledGroupCountMixed operands => operands.map (·.groupPath)
+  | .filledFieldCount source => source.operands.map (·.groupPath)
+  | _ => []
+
+/-- Group-only sources retain root identity even when they read no field, as a repetition coordinate
+or an empty declared group does. Ordinary field sources are covered by the existing read inventory. -/
+private def structuralGroups : ValidationCondition model → List GroupPath
+  | .leaf (.numeric _ comparison) =>
+      (comparison.left.atoms ++ comparison.right.atoms).flatMap numericStructuralGroups
+  | .leaf (.orderedNumeric _ comparison) =>
+      (comparison.left.atoms ++ comparison.right.atoms).flatMap orderedNumericStructuralGroups
+  | .leaf (.groupPresence _ reference) => [reference.path]
+  | .leaf (.groupList _ operands) => operands.map (·.entityPath)
+  | .leaf (.guardedRootCurrentRepetition _ group _) => [group]
+  | .leaf (.guardedRepeatableCurrentRepetition _ source _) => [source.path]
+  | .leaf (.fieldFill _ source) => source.operands.map (·.groupPath)
+  | .leaf _ => []
+  | .and left right | .or left right => structuralGroups left ++ structuralGroups right
+
+/-- Roots named by the retained field inventory and structural group operands. This is static
+membership, including unreached connective branches, never a scan of document content. Explicit
+root-instance indices and reference forms omitted by a leaf's inventory are outside this projection. -/
+def referencedRoots (condition : ValidationCondition model) : List String :=
+  ((model.fields.filterMap fun declaration =>
+    if condition.referencesField declaration.id then declaration.groupPath.head? else none) ++
+    (structuralGroups condition).filterMap List.head?).eraseDups
+
+/-- A second referenced root lifts full validation's content gate (spec/03 A.4). Merely declaring or
+filling a second root does not: the projection reads the checked condition, not the document. -/
+def referencesMultipleRoots (condition : ValidationCondition model) : Bool :=
+  condition.referencedRoots.length > 1
+
+/-- Whether the rule is evaluated without admitted content under full validation: its presence
+leaves can hold there, a count lifts the gate, or its retained references span roots. -/
+def canFireOnEmpty (condition : ValidationCondition model) : Bool :=
+  condition.evalBool ValidationConditionLeaf.canFireOnEmpty ||
+    condition.anyLeaf ValidationConditionLeaf.liftsEmptyGate || condition.referencesMultipleRoots
 
 /-- Whether the condition references the rule's error field: a reference outside every filter body,
     or a `$`-marked one inside ([inbound](../../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
