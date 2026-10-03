@@ -529,9 +529,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
       match declaration.policy.kind with
       | .temporal kind components =>
           let comparison := op.toTemporal
-          if !components.hasTime then
-            throw (.temporalNowRequiresTime declaration.path)
-          else if !comparison.admitsNow model.hasBaseYear components then
+          if !comparison.admitsNow model.hasBaseYear components then
             match position with
             | .left =>
                 throw (.temporalFormatsIncompatible ["<Now>"] declaration.path)

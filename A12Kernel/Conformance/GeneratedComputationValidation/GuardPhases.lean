@@ -52,4 +52,50 @@ example : (do
     pure (selected, outcome)) = some (.poison .malformed, .fired (expectedMessage .value)) := by
   native_decide
 
+private def comparisonModel : FlatModel := { model with fields := model.fields ++ [
+  { id := 7, groupPath := ["Form"], name := "B1", policy := { kind := .boolean } },
+  { id := 8, groupPath := ["Form"], name := "B2", policy := { kind := .boolean } },
+  { id := 9, groupPath := ["Form"], name := "R1", policy := { kind := .dateRange },
+    dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } },
+  { id := 10, groupPath := ["Form"], name := "R2", policy := { kind := .dateRange },
+    dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } },
+  { id := 11, groupPath := ["Form"], name := "Z1", policy := { kind := .temporal .dateTime TemporalComponents.now },
+    temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } },
+  { id := 12, groupPath := ["Form"], name := "Z2", policy := { kind := .temporal .dateTime TemporalComponents.now },
+    temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } }] }
+
+private def comparisonPhases (predicate : SurfaceComputationPredicate) (bad : FieldId) (cause : BaseFormalCause) := do
+  let source := comparisonModel
+  let predicate ← (source.elaborateComputationPredicate ["Form"] ["Form"] predicate).toOption
+  let guard : CheckedComputationCondition source := .or (.leaf (.predicate predicate)) (.fieldFilled textGuard.id)
+  let operation ← (elaborateNumericComputationOperation source ["Form"] target.id
+    (.literal { value := 3, authoredScale := 0 })).toOption
+  let table : GeneratedComputationTable (CheckedNumericComputationOperation source) (CheckedComputationCondition source) := {
+    targetField := target.id, name := "computedTarget", commonPrecondition := some guard
+    alternatives := .singleton { operation }, messagePlan }
+  let rule ← (assembleGeneratedNumericOperationTableRule source table).toOption
+  let prepared ← (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler source).toOption
+  let document ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := [
+    { address := { field := bad, path := [] }, stored := "bad", raw := .rejected cause },
+    { address := { field := textGuard.id, path := [] }, stored := "A", raw := .parsed (.str "A") },
+    { address := { field := target.id, path := [] }, stored := "1", raw := .parsed (.num 1) }] }).toOption
+  let selected ← (guard.evalChecked (document.scalarComputationContext evaluationWorld)).toOption
+  let outcome ← (rule.evalAddressedFull {
+    scalar := {
+      fields := document.flatContext.withWorld evaluationWorld
+      groups := GroupPresenceContext.unavailable }
+    outer := [], input := .checked document } true).toOption
+  pure (selected, outcome)
+
+example :
+    comparisonPhases (.fieldComparison .equal
+      (absolutePath ["Form"] "B1") (absolutePath ["Form"] "B2")) 7 .booleanToken =
+        some (.poison .booleanToken, .fired (expectedMessage .value)) ∧
+    comparisonPhases (.fieldComparison .equal
+      (absolutePath ["Form"] "R1") (absolutePath ["Form"] "R2")) 9 .dateRangeSeparator =
+        some (.poison .dateRangeSeparator, .fired (expectedMessage .value)) ∧
+    comparisonPhases (.temporal .before
+      (.field (absolutePath ["Form"] "Z1")) (.field (absolutePath ["Form"] "Z2"))) 11 .malformed =
+        some (.poison .malformed, .fired (expectedMessage .value)) := by native_decide
+
 end A12Kernel.Conformance.GeneratedComputationValidation.GuardPhases

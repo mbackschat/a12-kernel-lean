@@ -66,15 +66,18 @@ private def lowerScalarMembership (operator : ValueListMembershipOp)
       let some fields := members.mapM guardTextField? | refuse "Guard/Membership" "bracketed members"
       pure (.scalarMembership operator subject (.fields fields))
 
-/-- Lower presence, numeric and text guards into the shared computation condition tree. Unsupported atoms remain explicit refusals during model resolution. -/
-partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool := false) : Expr → Lowering (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate)
-  | .parens body => lowerGuard model group suppress body
+/-- Lower typed guards into the shared computation condition tree. Unsupported atoms remain explicit refusals during model resolution. -/
+partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool := false)
+    (expression : Expr) (targetGroup? : Option GroupPath := none) :
+    Lowering (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) :=
+  match expression with
+  | .parens body => lowerGuard model group suppress body targetGroup?
   | .logic op (first :: rest) => do
       let join := match op with
         | .and => SurfaceComputationConditionOf.and
         | .or => SurfaceComputationConditionOf.or
-      let mut result ← lowerGuard model group suppress first
-      for part in rest do result := join result (← lowerGuard model group suppress part)
+      let mut result ← lowerGuard model group suppress first targetGroup?
+      for part in rest do result := join result (← lowerGuard model group suppress part targetGroup?)
       pure result
   | .call "FieldFilled" [.mk field none none] none none => match field.fieldEntity? with
       | some path => pure (.fieldFilled path)
@@ -103,6 +106,15 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
               | some operator => .groupFill operator <$> lowerEntitySource model group arguments
               | none => refuse ("Guard/" ++ id)
   | expression@(.compare op left right) =>
+      let scalarPair : Option (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) := do
+        let left ← left.fieldValue?
+        let right ← right.fieldValue?
+        let declaration ← (model.resolveFieldDeclarationUnchecked group left).toOption
+        let op ← op.toSurface?
+        match declaration.policy.kind with
+        | .boolean | .confirm | .dateRange => some (SurfaceComputationConditionOf.predicate
+            (.fieldComparison op left right))
+        | _ => none
       let textPair := do
         let left ← guardTextField? left
         let right ← guardTextField? right
@@ -111,7 +123,7 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
         if declaration.toTextFieldComparison?.isSome || left.projectionRef != EnumerationProjectionRef.stored then
           some (SurfaceComputationConditionOf.text op left (.inl right))
         else none
-      let textSurface := textPair.orElse fun _ => (lowerFlat model group expression).bind fun
+      let textSurface := (scalarPair.orElse (fun _ => textPair)).orElse fun _ => (lowerFlat model group expression).bind fun
         | .compare op field (.string expected) => some (.text op (.direct field) (.inr expected))
         | .compare op field (.boolean expected) => some (.boolean op field expected)
         | .compareEnumeration op field projection expected =>
@@ -126,7 +138,15 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
               some (.text op (.direct left) (.inl (.direct right)))
             else none
         | _ => none
-      match textSurface with
+      let temporalSurface := do
+        let operator ← op.toSurface?
+        let left ← (lowerScalarTemporalExpression model group left).toOption
+        let right ← (lowerScalarTemporalExpression model group right).toOption
+        match elaborateScalarTemporalComparison model group operator.toTemporal left right targetGroup? with
+        | .error (.nonTemporal _) | .error (.extremum (.firstNotTemporal _ _)) => none
+        | _ => some (SurfaceComputationConditionOf.predicate
+            (SurfaceComputationPredicate.temporal operator.toTemporal left right))
+      match textSurface.orElse (fun _ => temporalSurface) with
       | some surface => pure surface
       | none => do
           let some operator := op.toNumeric? | refuse "Comparison" "operator"
@@ -194,7 +214,7 @@ private def guards (language : Language) (model : FlatModel) (computation : DmCo
   let resolve (text : String) : Lowering (CheckedComputationCondition model) := do
     let guard := (← parsed language text).body
     if !guard.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
-    let surface ← lowerGuard model computation.group suppress guard
+    let surface ← lowerGuard model computation.group suppress guard (some target.groupPath)
     match elaborated "Guard" (model.elaborateCheckedComputationCondition computation.group target.groupPath surface) with
     | .ok guard => pure guard
     | .error refusal =>

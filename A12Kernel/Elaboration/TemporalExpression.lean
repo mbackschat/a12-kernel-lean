@@ -29,6 +29,7 @@ inductive SurfaceScalarTemporalExpression where
   | timeFromDateTime (source : SurfaceScalarTemporalExpression)
   | subdayShift (unit : DateTimeSubdayUnit) (source : SurfaceScalarTemporalExpression)
       (amount : AuthoredNumericExpr SurfaceNumericAtom)
+  deriving Repr, DecidableEq
 
 /-- Temporal source slots exclude the grouped comparison and extrema productions; each nested
 operation checks its own slot (spec/12 §3, grammar `datumAngabe`/`datumAngabe2`). -/
@@ -46,7 +47,7 @@ inductive ScalarTemporalExpressionError where
   | nonTemporal (path : List String)
   | unsupportedSource
   | incompatibleFormats
-  deriving Repr
+  deriving Repr, DecidableEq
 
 inductive ScalarTemporalValue where
   | date (value : FullDate)
@@ -107,6 +108,7 @@ structure CheckedScalarTemporalComparison (model : FlatModel) where
   left : CheckedScalarTemporalExpression model
   right : CheckedScalarTemporalExpression model
   operator : TemporalComparisonOp
+  comparisonZone? : Option ModelZone.ConcreteProfile := none
   modelWellFormed : model.validate.isOk = true
 
 private def scalarProfile (model : FlatModel) :
@@ -115,16 +117,19 @@ private def scalarProfile (model : FlatModel) :
   | some profile => pure profile
   | none => throw .unsupportedSource
 
-private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath) :
+private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
+    (targetGroup? : Option GroupPath) :
     SurfaceScalarTemporalExpression → Except ScalarTemporalExpressionError
       (ScalarTemporalExpression model × TemporalComponents)
   | .field reference => do
-      let declaration ← (model.resolveFieldValueRead rowGroup reference).mapError .read
+      let declaration ← (match targetGroup? with
+        | none => model.resolveFieldValueRead rowGroup reference
+        | some targetGroup => model.resolveComputationFieldValueRead rowGroup targetGroup reference).mapError .read
       let some field := declaration.toTemporalField? | throw (.nonTemporal declaration.path)
       if declaration.toTemporalTargetPolicy?.any (·.partialMode != .full) then
         throw .unsupportedSource
       pure (.atom (.field field), field.components.withBaseYear model.hasBaseYear)
-  | .group source => resolveScalarTemporalExpression model rowGroup source
+  | .group source => resolveScalarTemporalExpression model rowGroup targetGroup? source
   | .extremum operator operands => do
       let source ← (TemporalExtremumOperands.elaborate model rowGroup operands).mapError .extremum
       let fields ← source.shape.operands.mapM fun
@@ -136,8 +141,8 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       let first :: rest := fields | throw .unsupportedSource
       pure (.extremum operator first rest, source.components)
   | .combine operator left right => do
-      let (left, leftComponents) ← resolveScalarTemporalExpression model rowGroup left
-      let (right, rightComponents) ← resolveScalarTemporalExpression model rowGroup right
+      let (left, leftComponents) ← resolveScalarTemporalExpression model rowGroup targetGroup? left
+      let (right, rightComponents) ← resolveScalarTemporalExpression model rowGroup targetGroup? right
       if leftComponents != rightComponents then throw .incompatibleFormats
       pure (.extremum operator left [right], leftComponents)
   | .now => pure (.atom .now, TemporalComponents.now)
@@ -152,29 +157,29 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       pure (.atom (.timeConstruction components), TemporalComponents.time)
   | .dateFromDateTime source => do
       if !source.admittedSourceSlot then throw .unsupportedSource
-      let (source, components) ← resolveScalarTemporalExpression model rowGroup source
+      let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? source
       if !components.isFullDateTime then throw .incompatibleFormats
       pure (.transform (.dateFromDateTime (← scalarProfile model)) source, TemporalComponents.fullDate)
   | .timeFromDateTime source => do
       if !source.admittedSourceSlot then throw .unsupportedSource
-      let (source, components) ← resolveScalarTemporalExpression model rowGroup source
+      let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? source
       if !components.isFullDateTime then throw .incompatibleFormats
       pure (.transform (.timeFromDateTime (← scalarProfile model)) source, TemporalComponents.time)
   | .subdayShift unit source amount => do
       if !source.admittedSourceSlot then throw .unsupportedSource
-      let (source, components) ← resolveScalarTemporalExpression model rowGroup source
+      let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? source
       if !unit.admittedBy components || !components.isFullDateTime then throw .incompatibleFormats
       let profile ← scalarProfile model
       let amount ← (elaborateTemporalExpressionShiftAmount model rowGroup amount).mapError .amount
       pure (.transform (.subdayShift profile unit amount) source, components)
 
 def elaborateScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
-    (surface : SurfaceScalarTemporalExpression) :
+    (surface : SurfaceScalarTemporalExpression) (targetGroup? : Option GroupPath := none) :
     Except ScalarTemporalExpressionError (CheckedScalarTemporalExpression model) := do
   match h : model.validate with
   | .error error => throw (.model error)
   | .ok () =>
-      let (core, components) ← resolveScalarTemporalExpression model rowGroup surface
+      let (core, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? surface
       pure { core, components, modelWellFormed := by rw [h]; rfl }
 
 private def temporalConstant : SurfaceScalarTemporalExpression → Bool
@@ -186,22 +191,33 @@ private def ungroupedClock : SurfaceScalarTemporalExpression → Bool
   | .now | .today => true
   | _ => false
 
-/-- Mixed date/instant ordering retains its separate direct comparison boundary. -/
+private def nowOperand : SurfaceScalarTemporalExpression → Bool
+  | .now => true
+  | .group source => nowOperand source
+  | _ => false
+
+/-- Typed component admission is shared by scalar validation and target-bound computation guards. -/
 def elaborateScalarTemporalComparison (model : FlatModel) (rowGroup : GroupPath)
-    (operator : TemporalComparisonOp) (left right : SurfaceScalarTemporalExpression) :
+    (operator : TemporalComparisonOp) (left right : SurfaceScalarTemporalExpression)
+    (targetGroup? : Option GroupPath := none) :
     Except ScalarTemporalExpressionError (CheckedScalarTemporalComparison model) := do
   if temporalConstant left && temporalConstant right &&
       ungroupedClock left == ungroupedClock right then throw .unsupportedSource
-  let left ← elaborateScalarTemporalExpression model rowGroup left
-  let right ← elaborateScalarTemporalExpression model rowGroup right
+  let leftNow := nowOperand left
+  let rightNow := nowOperand right
+  let left ← elaborateScalarTemporalExpression model rowGroup left targetGroup?
+  let right ← elaborateScalarTemporalExpression model rowGroup right targetGroup?
+  if (leftNow && !operator.admitsNow model.hasBaseYear right.components) ||
+      (rightNow && !operator.admitsNow model.hasBaseYear left.components) then
+    throw .incompatibleFormats
   if !operator.admitsFormats model.hasBaseYear left.components right.components then
     throw .incompatibleFormats
-  if left.components.hasTime != right.components.hasTime then throw .unsupportedSource
-  if left.components.hasTime then
-    if !(left.components == TemporalComponents.now && right.components == TemporalComponents.now) &&
-        !(left.components == TemporalComponents.time && right.components == TemporalComponents.time) then
+  for components in [left.components, right.components] do
+    if components.hasTime && components != TemporalComponents.now && components != TemporalComponents.time then
       throw .unsupportedSource
-  pure { left, right, operator, modelWellFormed := left.modelWellFormed }
+  let comparisonZone? ← if left.components.hasTime != right.components.hasTime then
+      some <$> scalarProfile model else pure none
+  pure { left, right, operator, comparisonZone?, modelWellFormed := left.modelWellFormed }
 
 private def liftScalarTemporal (wrap : α → ScalarTemporalValue) :
     SimpleComparisonOperand α → SimpleComparisonOperand ScalarTemporalValue
@@ -342,13 +358,40 @@ def fieldIds (comparison : CheckedScalarTemporalComparison model) : List FieldId
 def referencesField (comparison : CheckedScalarTemporalComparison model) (field : FieldId) : Bool :=
   comparison.fieldIds.contains field
 
+/-- Mixed Date/DateTime ordering embeds the Date at model-zone midnight; same-family comparison
+keeps its existing identity domain (KF386 and the comparison-guard grid, 2026-10-04). -/
+private def readOperand (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
+    (context : FlatContext) (expression : CheckedScalarTemporalExpression model) :
+    Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
+  let operand ← expression.evalResult phase context
+  match comparison.comparisonZone?, operand with
+  | some profile, .value (.date date) given =>
+      match profile.resolveLocal? { date, time := { hour := 0, minute := 0, second := 0, valid := by decide } } with
+      | some instant => pure (.value (.instant instant) given)
+      | none => throw .dateTimeLabelUnresolved
+  | _, _ => pure operand
+
+/-- Temporal guards use the shared ordered computation comparison, preserving label failure as a
+runtime effect and aborting on a reached operand poison (comparison-guard grid, 2026-10-04). -/
+def evalComputation (comparison : CheckedScalarTemporalComparison model)
+    (context : FlatContext) : Except ScalarTemporalEvaluationFault ComputationConditionResult :=
+  evalComputationComparisonExcept (ScalarTemporalValue.holds comparison.operator)
+    (comparison.readOperand .computation context comparison.left)
+    (fun _ => comparison.readOperand .computation context comparison.right)
+
 /-- Retain runtime label failure outside the comparison verdict; the enclosing rule owns its
 value-error projection (temporal review grid, 2026-10-03). -/
 def evalResult (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
     (context : FlatContext) : Except ScalarTemporalEvaluationFault Verdict := do
-  let left ← comparison.left.evalResult phase context
-  let right ← comparison.right.evalResult phase context
-  pure (evalSymmetricComparison (ScalarTemporalValue.holds comparison.operator) left right)
+  match phase with
+  | .computation => pure (match ← comparison.evalComputation context with
+      | .holds => .fired .value
+      | .notTrue => .notFired
+      | .poison _ => .unknown)
+  | .validation =>
+      let left ← comparison.readOperand phase context comparison.left
+      let right ← comparison.readOperand phase context comparison.right
+      pure (evalSymmetricComparison (ScalarTemporalValue.holds comparison.operator) left right)
 
 def evalAt (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
     (context : FlatContext) : Verdict :=

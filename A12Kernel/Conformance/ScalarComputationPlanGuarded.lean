@@ -174,7 +174,8 @@ private def reported : List FieldId :=
 
 /-- A computed value, or `-` for one the Kernel reports cleared. -/
 private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
-  | .document _ (.valueError _) => none
+  | .document _ (.valueError _) | .document _ (.string .invalidNoValue)
+  | .document _ (.enumeration .invalidNoValue) | .document _ (.dateFragment .invalidNoValue) => none
   | .number target (.accepted value) => some (target, toString value.unscaled)
   | .number target .noValue | .number target (.inheritedPoison _) => some (target, "-")
   | .document target (.fullDate (.accepted stored)) => some (target, stored.text)

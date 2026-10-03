@@ -103,11 +103,12 @@ def evaluate (table : CheckedParallelNumericAlternativeTable model)
     (context : ScalarComputationContext) :
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
       NumericTargetOutcome := do
-  match ← (CheckedComputationAlternative.selectFirstChecked
-      table.selectableAlternatives context).mapError .guard with
-  | .noMatch => .ok .noValue
-  | .poison cause => .ok (.inheritedPoison cause)
-  | .selected operation => operation.evaluateSelected context
+  match CheckedComputationAlternative.selectFirstChecked table.selectableAlternatives context with
+  | .error (.predicate .valueFailure) => .ok (.invalidNoValue .calculationValue)
+  | .error error => throw (.guard error)
+  | .ok .noMatch => .ok .noValue
+  | .ok (.poison cause) => .ok (.inheritedPoison cause)
+  | .ok (.selected operation) => operation.evaluateSelected context
 
 def WellFormed
     (table : CheckedParallelNumericAlternativeTable model) : Prop :=

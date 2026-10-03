@@ -170,12 +170,17 @@ example :
             (.fieldValue { id := 11, kind := .dateTime, components := dateTimeComponents }))) := by
   native_decide
 
--- Locks this route's refusal, which the Kernel does not share: a Date ordered against `Now` is
--- admitted there (`kf82`), an over-refusal the temporal gap SG6 records.
+-- KF82 and spec/05 §1 distinguish ordering from equality for Date against Now.
 example :
-    errorOf (elaborate model ["Order"]
-      (compareNow .less .right "DispatchDate")) =
-        some (.temporalNowRequiresTime ["Order", "DispatchDate"]) := by
+    ([SurfaceComparisonOp.less, .lessEqual, .greater, .greaterEqual].all fun op =>
+      [SurfacePointInTimePosition.left, .right].all fun position =>
+        (elaborate model ["Order"] (compareNow op position "DispatchDate")).isOk) = true := by
+  native_decide
+
+example :
+    ([SurfaceComparisonOp.equal, .notEqual].all fun op =>
+      [SurfacePointInTimePosition.left, .right].all fun position =>
+        (errorOf (elaborate model ["Order"] (compareNow op position "DispatchDate"))).isSome) = true := by
   native_decide
 
 example :

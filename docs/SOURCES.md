@@ -1708,6 +1708,9 @@ Update this owner only when an authoritative locus, reusable drill route, source
 <a id="src-numeric-computation-guards"></a>
 - [Numeric computation guards read empty as zero and distinguish arithmetic failure from reached poison](sources/computation-scheduling-probes.md#src-numeric-computation-guards)
 
+<a id="src-comparison-computation-guards"></a>
+- [Typed comparison guards preserve ordered failures and model-zone identity](sources/computation-scheduling-probes.md#src-comparison-computation-guards)
+
 <a id="src-compositional-computation-guards"></a>
 - [Shared computation guards preserve typed reads, subject prefixes and group content](sources/computation-scheduling-probes.md#src-compositional-computation-guards)
 

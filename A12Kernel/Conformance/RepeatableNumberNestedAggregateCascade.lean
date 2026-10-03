@@ -109,6 +109,7 @@ private def invalidPrice : ClassifiedCellInput := {
 
 private inductive ObservedStringOutcome where
   | noValue
+  | invalidNoValue
   | accepted (text : String)
   | errored (attempted : String) (cause : StringTargetError)
   | poison (cause : FormalCause)
@@ -116,6 +117,7 @@ private inductive ObservedStringOutcome where
 
 private def observeString : StringTargetOutcome → ObservedStringOutcome
   | .noValue => .noValue
+  | .invalidNoValue => .invalidNoValue
   | .accepted value => .accepted value.text
   | .errored attempted cause => .errored attempted.text cause
   | .poison cause => .poison cause

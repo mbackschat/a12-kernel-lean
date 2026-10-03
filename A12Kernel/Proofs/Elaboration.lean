@@ -376,6 +376,9 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
       rcases List.mem_singleton.mp member with rfl
       simpa [FlatModel.admitsComparison, FlatComparison.fields,
         List.all_eq_true] using admitted
+  | booleanFields op left right =>
+      simp [FlatModel.admitsComparison, List.all_eq_true] at admitted
+      exact admitted.2 field member
   | string op target expected =>
       rcases List.mem_singleton.mp member with rfl
       apply directComparableProfile_admitsField model (.string target) .plainString

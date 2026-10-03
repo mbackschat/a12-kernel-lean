@@ -33,7 +33,7 @@ namespace StringTargetOutcome
 /-- Whether the runtime produced a nonempty computed-data instance. Target-rejected attempts count; clean no-value and inherited poison do not. -/
 def hasComputedInstance : StringTargetOutcome → Bool
   | .accepted _ | .errored _ _ => true
-  | .noValue | .poison _ => false
+  | .noValue | .invalidNoValue | .poison _ => false
 
 end StringTargetOutcome
 

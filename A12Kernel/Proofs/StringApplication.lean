@@ -10,6 +10,9 @@ namespace A12Kernel
 /-- Independent relational account of exact one-target String application. -/
 def StringTargetApplies : StringTargetOutcome → StringTargetState → StringTargetState → Prop
   | .accepted value, _, .presentValue applied => value = applied
+  | .invalidNoValue, .absent, .absent => True
+  | .invalidNoValue, .presentEmpty, .presentEmpty => True
+  | .invalidNoValue, .presentValue _, .presentEmpty => True
   | .noValue, .absent, .absent => True
   | .noValue, .presentEmpty, .presentEmpty => True
   | .noValue, .presentValue _, .presentEmpty => True

@@ -102,7 +102,7 @@ def DocumentTargetOutcome.storedText? : DocumentTargetOutcome → Option String
 The temporal review grid (2026-10-03) separates poisoned reads from empty substitution. -/
 def DocumentTargetOutcome.formalValueMessage? (pointer : MessagePointer) :
     DocumentTargetOutcome → Option (ComputationFormalMessage Unit)
-  | .valueError _ => some {
+  | .valueError _ | .string .invalidNoValue => some {
       pointer
       errorCode := berechnungsWertFehler
       messageType := .value
@@ -225,7 +225,7 @@ def time (model : FlatModel) (target : FieldId) :
 def enumeration (projection : CheckedEnumerationProjection) :
     StringTargetOutcome → CheckedCell
   | .noValue => empty
-  | .poison _ | .errored _ _ => poison
+  | .invalidNoValue | .poison _ | .errored _ _ => poison
   | .accepted stored => projection.declaration.checkRaw (.parsed (.enum stored.text))
 
 /-- A completed DateRange target, read back from its rendering as the document classifies a stored range. -/
@@ -275,7 +275,7 @@ fragment in a model declaring no Base Year is computed by the Kernel and complet
 def dateFragment (model : FlatModel) (target : FieldId) :
     StringTargetOutcome → Except DocumentComputationStepFault CheckedCell
   | .noValue => pure empty
-  | .poison _ | .errored _ _ => pure poison
+  | .invalidNoValue | .poison _ | .errored _ _ => pure poison
   | .accepted stored => omittingDateText model target stored.text
 
 /-- A completed String target, read back as the cell a String table's completion places, so a reader
@@ -763,10 +763,12 @@ def guarded (guard : CheckedComputationCondition model) (step : CheckedDocumentC
           rw [guardWellFormed, guardExcludesTarget, previousGuard.property.1, previousGuard.property.2]
           decide⟩
   run world matchers document := do
-    match ← (guard.evalChecked (document.scalarComputationContext world)).mapError .guardBinding with
-    | .holds => step.run world matchers document
-    | .notTrue => pure (step.family.noValue, DocumentComputationReadBack.empty)
-    | .poison cause => pure (step.family.poison cause, DocumentComputationReadBack.poison)
+    match guard.evalChecked (document.scalarComputationContext world) with
+    | .error (.predicate .valueFailure) => pure (.valueError step.family, DocumentComputationReadBack.poison)
+    | .error error => throw (.guardBinding error)
+    | .ok .holds => step.run world matchers document
+    | .ok .notTrue => pure (step.family.noValue, DocumentComputationReadBack.empty)
+    | .ok (.poison cause) => pure (step.family.poison cause, DocumentComputationReadBack.poison)
 
 /-- Guard a step, refusing a guard that names a field the model does not own, as a Number table's
 certifier does, or that violates the target-read ban. Positive containing-group guards retain the

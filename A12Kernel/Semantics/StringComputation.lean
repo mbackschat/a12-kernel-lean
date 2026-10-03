@@ -135,6 +135,9 @@ abbrev StringTargetError := StringFieldError
 
 /-- Result after the root write attempt has passed through the ordinary target policy. Target rejection is an ordinary payloadful result, not a computation fault or poison. -/
 inductive StringTargetOutcome where
+  /-- A reached guard runtime failure has no attempted text and poisons dependents; the retained
+  comparison grid distinguishes it from an inherited poison by its target value-error code. -/
+  | invalidNoValue
   | noValue
   | accepted (value : StoredString)
   | errored (attempted : StoredString) (cause : StringTargetError)
@@ -192,12 +195,12 @@ def projectDelta (result : StringTargetOutcome) (prior : PriorStringTarget) :
   match result with
   | .errored attempted cause => some (.errored attempted cause)
   | .accepted value => StringDelta.projectValue value prior
-  | .noValue | .poison _ => StringDelta.projectNoValue prior
+  | .noValue | .invalidNoValue | .poison _ => StringDelta.projectNoValue prior
 
 /-- Value-only view after applying a computation result. It deliberately does not claim whether the resulting empty target instance is absent or present-empty. -/
 def appliedValue : StringTargetOutcome → Option StoredString
   | .accepted value => some value
-  | .noValue | .errored _ _ | .poison _ => none
+  | .noValue | .invalidNoValue | .errored _ _ | .poison _ => none
 
 end StringTargetOutcome
 

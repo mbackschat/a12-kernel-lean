@@ -20,6 +20,8 @@ def CheckedComputationConditionError.toNumericFault :
     CheckedComputationConditionError → NumericComputationFault
   | .primitive error => .guardBinding error
   | .numeric error => error
+  | .predicate .valueFailure => .guardValueFailure
+  | .predicate (.fieldKindMismatch field) => .fieldKindMismatch field
   | .predicate .contextRequired => .repeatableContextRequired
   | .predicate (.addressing error) => .repeatableAddressing error
 

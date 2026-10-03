@@ -159,10 +159,12 @@ def execute (table : CheckedRowComputationTable model) (world : World)
       let context : ScalarComputationContext := {
         read := document.computationFillContext.read environment
         world := some world, row := environment, addressed := some document.computationFillContext }
-      match ← (CheckedComputationAlternative.selectFirstChecked table.alternatives context).mapError .guardBinding with
-      | .noMatch => atRow environment family.noValue DocumentComputationReadBack.empty
-      | .poison cause => atRow environment (family.poison cause) DocumentComputationReadBack.poison
-      | .selected operation =>
+      match CheckedComputationAlternative.selectFirstChecked table.alternatives context with
+      | .error (.predicate .valueFailure) => atRow environment (.valueError family) DocumentComputationReadBack.poison
+      | .error error => throw (.guardBinding error)
+      | .ok .noMatch => atRow environment family.noValue DocumentComputationReadBack.empty
+      | .ok (.poison cause) => atRow environment (family.poison cause) DocumentComputationReadBack.poison
+      | .ok (.selected operation) =>
           let (outcome, cell) ← operation.evaluateAt patterns document environment
           atRow environment outcome cell)
 

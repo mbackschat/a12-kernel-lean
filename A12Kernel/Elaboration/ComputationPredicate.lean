@@ -1,6 +1,8 @@
 import A12Kernel.Elaboration.ValueListCondition
 import A12Kernel.Elaboration.NumericAggregate.Entities
 import A12Kernel.Semantics.ComputationValueList
+import A12Kernel.Elaboration.ScalarFieldComparison
+import A12Kernel.Elaboration.TemporalExpression
 
 namespace A12Kernel
 
@@ -11,6 +13,8 @@ inductive SurfaceScalarMembershipMembers where
   deriving Repr, DecidableEq
 
 inductive SurfaceComputationPredicate where
+  | temporal (operator : TemporalComparisonOp) (left right : SurfaceScalarTemporalExpression)
+  | fieldComparison (operator : SurfaceComparisonOp) (left right : SurfaceFieldPath)
   | scalarMembership (operator : ValueListMembershipOp) (subject : SurfaceTextFieldOperand)
       (members : SurfaceScalarMembershipMembers)
   | entityValueList (source : SurfaceNumberEntityValueListSource)
@@ -18,6 +22,8 @@ inductive SurfaceComputationPredicate where
   deriving Repr, DecidableEq
 
 inductive ComputationPredicateElabError where
+  | temporal (error : ScalarTemporalExpressionError)
+  | comparison (error : ScalarFieldComparisonElabError)
   | read (error : ResolveError)
   | number (error : NumberEntityElabError)
   | emptyMembers
@@ -27,6 +33,10 @@ inductive ComputationPredicateElabError where
   deriving Repr, DecidableEq
 
 inductive ComputationPredicateError where
+  /-- Runtime failure at a reached guard becomes the target's calculation-value error, separately
+  from inherited operand poison (comparison-guard grid, 2026-10-04). -/
+  | valueFailure
+  | fieldKindMismatch (field : FieldId)
   | contextRequired
   | addressing (error : StarAddressingError)
   deriving Repr, DecidableEq
@@ -34,6 +44,8 @@ inductive ComputationPredicateError where
 /-- Retain typed source certificates and authored filters; computation traversal keeps reached
 errors distinct from validation's unknown verdict. -/
 inductive CheckedComputationPredicate (model : FlatModel) where
+  | temporal (source : CheckedScalarTemporalComparison model)
+  | fieldComparison (source : CheckedScalarFieldComparison model)
   | valueList (source : CheckedValueListCondition model)
   | scalarValueList (operator : ValueListMembershipOp) (source : CheckedValueListCondition model)
   | scalarNumberLiterals (operator : ValueListMembershipOp)
@@ -43,11 +55,16 @@ namespace CheckedComputationPredicate
 
 def referencesField (predicate : CheckedComputationPredicate model) (field : FieldId) : Bool :=
   match predicate with
+  | .temporal source => source.referencesField field
+  | .fieldComparison source => source.referencesField field
   | .valueList source | .scalarValueList _ source => source.referencesField field
   | .scalarNumberLiterals _ source _ => source.field.id == field
 
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
   match predicate with
+  | .temporal source => source.fieldIds.all fun field =>
+      (model.lookupUniqueId field).toOption.any (·.repeatableScope.isPrefixOf scope)
+  | .fieldComparison source => source.rowBoundBool scope
   | .valueList source | .scalarValueList _ source => source.bindingScopes.all (·.isPrefixOf scope)
   | .scalarNumberLiterals _ source _ => source.declaration.repeatableScope.isPrefixOf scope
 
@@ -165,6 +182,8 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   let filterRead := filterRead?.getD (fun row field =>
     (context.addressed.map (fun addressed => addressed.read row field)).getD (context.read field))
   match predicate with
+  | .temporal source => (source.evalComputation { read := context.read, world := context.world }).mapError (fun _ => .valueFailure)
+  | .fieldComparison source => (source.evalComputation { read := context.read, world := context.world }).mapError .fieldKindMismatch
   | .valueList source => evalValueList (.quantified source.quantifier) source context filterRead
   | .scalarValueList operator source => evalValueList (.scalar operator) source context filterRead
   | .scalarNumberLiterals operator source values =>
@@ -211,6 +230,10 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (surface : SurfaceComputationPredicate) :
     Except ComputationPredicateElabError (CheckedComputationPredicate model) := do
   match surface with
+  | .temporal op left right => .temporal <$>
+      (elaborateScalarTemporalComparison model declaringGroup op left right (some targetGroup)).mapError .temporal
+  | .fieldComparison op left right => .fieldComparison <$>
+      (elaborateScalarFieldComparison model declaringGroup targetGroup op left right).mapError .comparison
   | .entityValueList source => .valueList <$> elaborateEntityMembership model declaringGroup targetGroup source
   | .tokenLiteralValueList source =>
       (.valueList ∘ .literals) <$>

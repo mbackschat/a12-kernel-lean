@@ -137,6 +137,7 @@ private def checkedDocument (cells : List ClassifiedCellInput) :
 
 private inductive StringOutcomeSummary
   | noValue
+  | invalidNoValue
   | accepted (text : String)
   | errored (text : String) (cause : StringTargetError)
   | poison (cause : FormalCause)
@@ -145,6 +146,7 @@ private inductive StringOutcomeSummary
 private def StringOutcomeSummary.ofOutcome :
     StringTargetOutcome → StringOutcomeSummary
   | .noValue => .noValue
+  | .invalidNoValue => .invalidNoValue
   | .accepted stored => .accepted stored.text
   | .errored attempted cause => .errored attempted.text cause
   | .poison cause => .poison cause

@@ -172,9 +172,8 @@ example :
 /- Outside the measured shapes the projection answers nothing, though each arm below names a class
 on the measured ones. The Kernel draws `MVK_INVALID_TYPE_FOR_COMPARISON` for the first three under an
 ordering ([`kf270`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf270)), admits two Confirm fields
-under `!=` ([`kf383`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf383)) and a Date ordered against
-`Now` ([`spec/05`](../../spec/05-dates-and-time.md)), and answers a value list's undeclared literal and a String in a Number list with
-classes of their own. -/
+under `!=` ([`kf383`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf383)) and answers a value list's undeclared literal and a String in a Number list with
+classes of their own. Date ordering against `Now` is an admitted control (spec/05 §1; KF82). -/
 example :
     [classOf (.compare .greater (onOrder "Window") (.number 0)), classOf (.compare .greater (onOrder "Plain") (.number 0)),
       classOf (.compareFields .greater (onOrder "Qty") (onOrder "Signed")),
@@ -183,7 +182,7 @@ example :
       classOf (.enumerationValueList .atLeastOne [.direct (onOrder "Plain")] ["PENDING"]),
       classOf (.numberValueMembership .included (onOrder "Note") [1, 2])] =
       ["none:literalKindMismatch", "none:literalKindMismatch", "none:temporalOperandKindMismatch",
-        "none:temporalOperandKindMismatch", "none:temporalNowRequiresTime", "none:enumerationOperand",
+        "none:temporalOperandKindMismatch", "admitted", "none:enumerationOperand",
         "none:literalKindMismatch"] := by
   native_decide
 

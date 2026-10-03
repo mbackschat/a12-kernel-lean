@@ -1,0 +1,5275 @@
+{
+  "header" : {
+    "id" : "ComparisonGuards_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "ComparisonGuards_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/D1",
+            "name" : "D1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/D2",
+            "name" : "D2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/T1",
+            "name" : "T1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/T2",
+            "name" : "T2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Z1",
+            "name" : "Z1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Z2",
+            "name" : "Z2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F1",
+            "name" : "F1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F2",
+            "name" : "F2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "yyyy-MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Y1",
+            "name" : "Y1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Y2",
+            "name" : "Y2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/B1",
+            "name" : "B1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/B2",
+            "name" : "B2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C1",
+            "name" : "C1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "ConfirmType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C2",
+            "name" : "C2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "ConfirmType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/R1",
+            "name" : "R1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/R2",
+            "name" : "R2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/N",
+            "name" : "N",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Zero",
+            "name" : "Zero",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DEq",
+            "name" : "DEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DEqComp",
+            "name" : "DEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] == [D2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterDEq",
+            "name" : "AfterDEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterDEqComp",
+            "name" : "AfterDEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(DEq) Or FieldNotFilled(DEq)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DNe",
+            "name" : "DNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DNeComp",
+            "name" : "DNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] != [D2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterDNe",
+            "name" : "AfterDNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterDNeComp",
+            "name" : "AfterDNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(DNe) Or FieldNotFilled(DNe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DLt",
+            "name" : "DLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DLtComp",
+            "name" : "DLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] < [D2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterDLt",
+            "name" : "AfterDLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterDLtComp",
+            "name" : "AfterDLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(DLt) Or FieldNotFilled(DLt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DLe",
+            "name" : "DLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DLeComp",
+            "name" : "DLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] <= [D2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterDLe",
+            "name" : "AfterDLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterDLeComp",
+            "name" : "AfterDLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(DLe) Or FieldNotFilled(DLe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DGt",
+            "name" : "DGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DGtComp",
+            "name" : "DGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] > [D2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterDGt",
+            "name" : "AfterDGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterDGtComp",
+            "name" : "AfterDGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(DGt) Or FieldNotFilled(DGt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DGe",
+            "name" : "DGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DGeComp",
+            "name" : "DGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] >= [D2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterDGe",
+            "name" : "AfterDGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterDGeComp",
+            "name" : "AfterDGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(DGe) Or FieldNotFilled(DGe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TEq",
+            "name" : "TEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TEqComp",
+            "name" : "TEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[T1] == [T2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTEq",
+            "name" : "AfterTEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTEqComp",
+            "name" : "AfterTEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TEq) Or FieldNotFilled(TEq)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TNe",
+            "name" : "TNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TNeComp",
+            "name" : "TNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[T1] != [T2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTNe",
+            "name" : "AfterTNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTNeComp",
+            "name" : "AfterTNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TNe) Or FieldNotFilled(TNe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TLt",
+            "name" : "TLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TLtComp",
+            "name" : "TLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[T1] < [T2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTLt",
+            "name" : "AfterTLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTLtComp",
+            "name" : "AfterTLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TLt) Or FieldNotFilled(TLt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TLe",
+            "name" : "TLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TLeComp",
+            "name" : "TLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[T1] <= [T2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTLe",
+            "name" : "AfterTLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTLeComp",
+            "name" : "AfterTLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TLe) Or FieldNotFilled(TLe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TGt",
+            "name" : "TGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TGtComp",
+            "name" : "TGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[T1] > [T2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTGt",
+            "name" : "AfterTGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTGtComp",
+            "name" : "AfterTGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TGt) Or FieldNotFilled(TGt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TGe",
+            "name" : "TGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TGeComp",
+            "name" : "TGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[T1] >= [T2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTGe",
+            "name" : "AfterTGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTGeComp",
+            "name" : "AfterTGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TGe) Or FieldNotFilled(TGe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ZEq",
+            "name" : "ZEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ZEqComp",
+            "name" : "ZEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ZEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] == [Z2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterZEq",
+            "name" : "AfterZEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterZEqComp",
+            "name" : "AfterZEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterZEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(ZEq) Or FieldNotFilled(ZEq)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ZNe",
+            "name" : "ZNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ZNeComp",
+            "name" : "ZNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ZNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] != [Z2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterZNe",
+            "name" : "AfterZNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterZNeComp",
+            "name" : "AfterZNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterZNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(ZNe) Or FieldNotFilled(ZNe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ZLt",
+            "name" : "ZLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ZLtComp",
+            "name" : "ZLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ZLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] < [Z2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterZLt",
+            "name" : "AfterZLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterZLtComp",
+            "name" : "AfterZLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterZLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(ZLt) Or FieldNotFilled(ZLt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ZLe",
+            "name" : "ZLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ZLeComp",
+            "name" : "ZLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ZLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] <= [Z2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterZLe",
+            "name" : "AfterZLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterZLeComp",
+            "name" : "AfterZLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterZLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(ZLe) Or FieldNotFilled(ZLe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ZGt",
+            "name" : "ZGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ZGtComp",
+            "name" : "ZGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ZGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] > [Z2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterZGt",
+            "name" : "AfterZGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterZGtComp",
+            "name" : "AfterZGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterZGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(ZGt) Or FieldNotFilled(ZGt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ZGe",
+            "name" : "ZGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ZGeComp",
+            "name" : "ZGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ZGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] >= [Z2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterZGe",
+            "name" : "AfterZGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterZGeComp",
+            "name" : "AfterZGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterZGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(ZGe) Or FieldNotFilled(ZGe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FEq",
+            "name" : "FEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FEqComp",
+            "name" : "FEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[F1] == [F2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterFEq",
+            "name" : "AfterFEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterFEqComp",
+            "name" : "AfterFEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterFEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(FEq) Or FieldNotFilled(FEq)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FNe",
+            "name" : "FNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FNeComp",
+            "name" : "FNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[F1] != [F2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterFNe",
+            "name" : "AfterFNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterFNeComp",
+            "name" : "AfterFNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterFNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(FNe) Or FieldNotFilled(FNe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FLt",
+            "name" : "FLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FLtComp",
+            "name" : "FLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[F1] < [F2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterFLt",
+            "name" : "AfterFLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterFLtComp",
+            "name" : "AfterFLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterFLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(FLt) Or FieldNotFilled(FLt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FLe",
+            "name" : "FLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FLeComp",
+            "name" : "FLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[F1] <= [F2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterFLe",
+            "name" : "AfterFLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterFLeComp",
+            "name" : "AfterFLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterFLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(FLe) Or FieldNotFilled(FLe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FGt",
+            "name" : "FGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FGtComp",
+            "name" : "FGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[F1] > [F2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterFGt",
+            "name" : "AfterFGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterFGtComp",
+            "name" : "AfterFGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterFGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(FGt) Or FieldNotFilled(FGt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FGe",
+            "name" : "FGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FGeComp",
+            "name" : "FGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[F1] >= [F2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterFGe",
+            "name" : "AfterFGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterFGeComp",
+            "name" : "AfterFGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterFGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(FGe) Or FieldNotFilled(FGe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YEq",
+            "name" : "YEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/YEqComp",
+            "name" : "YEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../YEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Y1] == [Y2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterYEq",
+            "name" : "AfterYEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterYEqComp",
+            "name" : "AfterYEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterYEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(YEq) Or FieldNotFilled(YEq)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YNe",
+            "name" : "YNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/YNeComp",
+            "name" : "YNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../YNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Y1] != [Y2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterYNe",
+            "name" : "AfterYNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterYNeComp",
+            "name" : "AfterYNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterYNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(YNe) Or FieldNotFilled(YNe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YLt",
+            "name" : "YLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/YLtComp",
+            "name" : "YLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../YLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Y1] < [Y2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterYLt",
+            "name" : "AfterYLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterYLtComp",
+            "name" : "AfterYLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterYLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(YLt) Or FieldNotFilled(YLt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YLe",
+            "name" : "YLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/YLeComp",
+            "name" : "YLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../YLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Y1] <= [Y2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterYLe",
+            "name" : "AfterYLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterYLeComp",
+            "name" : "AfterYLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterYLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(YLe) Or FieldNotFilled(YLe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YGt",
+            "name" : "YGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/YGtComp",
+            "name" : "YGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../YGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Y1] > [Y2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterYGt",
+            "name" : "AfterYGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterYGtComp",
+            "name" : "AfterYGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterYGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(YGt) Or FieldNotFilled(YGt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YGe",
+            "name" : "YGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/YGeComp",
+            "name" : "YGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../YGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Y1] >= [Y2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterYGe",
+            "name" : "AfterYGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterYGeComp",
+            "name" : "AfterYGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterYGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(YGe) Or FieldNotFilled(YGe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BEq",
+            "name" : "BEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BEqComp",
+            "name" : "BEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[B1] == [B2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterBEq",
+            "name" : "AfterBEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterBEqComp",
+            "name" : "AfterBEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterBEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(BEq) Or FieldNotFilled(BEq)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BNe",
+            "name" : "BNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BNeComp",
+            "name" : "BNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[B1] != [B2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterBNe",
+            "name" : "AfterBNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterBNeComp",
+            "name" : "AfterBNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterBNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(BNe) Or FieldNotFilled(BNe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CNe",
+            "name" : "CNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CNeComp",
+            "name" : "CNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[C1] != [C2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterCNe",
+            "name" : "AfterCNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterCNeComp",
+            "name" : "AfterCNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterCNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(CNe) Or FieldNotFilled(CNe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/REq",
+            "name" : "REq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/REqComp",
+            "name" : "REqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../REq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[R1] == [R2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterREq",
+            "name" : "AfterREq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterREqComp",
+            "name" : "AfterREqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterREq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(REq) Or FieldNotFilled(REq)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RNe",
+            "name" : "RNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RNeComp",
+            "name" : "RNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[R1] != [R2]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterRNe",
+            "name" : "AfterRNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterRNeComp",
+            "name" : "AfterRNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterRNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(RNe) Or FieldNotFilled(RNe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TodayEq",
+            "name" : "TodayEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TodayEqComp",
+            "name" : "TodayEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TodayEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] == Today"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTodayEq",
+            "name" : "AfterTodayEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTodayEqComp",
+            "name" : "AfterTodayEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTodayEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TodayEq) Or FieldNotFilled(TodayEq)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NowEq",
+            "name" : "NowEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NowEqComp",
+            "name" : "NowEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NowEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] == Now"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNowEq",
+            "name" : "AfterNowEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNowEqComp",
+            "name" : "AfterNowEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNowEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NowEq) Or FieldNotFilled(NowEq)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TodayNe",
+            "name" : "TodayNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TodayNeComp",
+            "name" : "TodayNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TodayNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] != Today"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTodayNe",
+            "name" : "AfterTodayNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTodayNeComp",
+            "name" : "AfterTodayNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTodayNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TodayNe) Or FieldNotFilled(TodayNe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NowNe",
+            "name" : "NowNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NowNeComp",
+            "name" : "NowNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NowNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] != Now"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNowNe",
+            "name" : "AfterNowNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNowNeComp",
+            "name" : "AfterNowNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNowNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NowNe) Or FieldNotFilled(NowNe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TodayLt",
+            "name" : "TodayLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TodayLtComp",
+            "name" : "TodayLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TodayLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] < Today"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTodayLt",
+            "name" : "AfterTodayLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTodayLtComp",
+            "name" : "AfterTodayLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTodayLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TodayLt) Or FieldNotFilled(TodayLt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NowLt",
+            "name" : "NowLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NowLtComp",
+            "name" : "NowLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NowLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] < Now"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNowLt",
+            "name" : "AfterNowLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNowLtComp",
+            "name" : "AfterNowLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNowLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NowLt) Or FieldNotFilled(NowLt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TodayLe",
+            "name" : "TodayLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TodayLeComp",
+            "name" : "TodayLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TodayLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] <= Today"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTodayLe",
+            "name" : "AfterTodayLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTodayLeComp",
+            "name" : "AfterTodayLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTodayLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TodayLe) Or FieldNotFilled(TodayLe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NowLe",
+            "name" : "NowLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NowLeComp",
+            "name" : "NowLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NowLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] <= Now"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNowLe",
+            "name" : "AfterNowLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNowLeComp",
+            "name" : "AfterNowLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNowLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NowLe) Or FieldNotFilled(NowLe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TodayGt",
+            "name" : "TodayGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TodayGtComp",
+            "name" : "TodayGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TodayGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] > Today"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTodayGt",
+            "name" : "AfterTodayGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTodayGtComp",
+            "name" : "AfterTodayGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTodayGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TodayGt) Or FieldNotFilled(TodayGt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NowGt",
+            "name" : "NowGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NowGtComp",
+            "name" : "NowGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NowGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] > Now"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNowGt",
+            "name" : "AfterNowGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNowGtComp",
+            "name" : "AfterNowGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNowGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NowGt) Or FieldNotFilled(NowGt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TodayGe",
+            "name" : "TodayGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TodayGeComp",
+            "name" : "TodayGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TodayGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] >= Today"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTodayGe",
+            "name" : "AfterTodayGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTodayGeComp",
+            "name" : "AfterTodayGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTodayGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TodayGe) Or FieldNotFilled(TodayGe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NowGe",
+            "name" : "NowGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NowGeComp",
+            "name" : "NowGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NowGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] >= Now"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNowGe",
+            "name" : "AfterNowGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNowGeComp",
+            "name" : "AfterNowGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNowGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NowGe) Or FieldNotFilled(NowGe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MixedLt",
+            "name" : "MixedLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MixedLtComp",
+            "name" : "MixedLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MixedLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] < [Z1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterMixedLt",
+            "name" : "AfterMixedLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterMixedLtComp",
+            "name" : "AfterMixedLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMixedLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MixedLt) Or FieldNotFilled(MixedLt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MixedRevLt",
+            "name" : "MixedRevLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MixedRevLtComp",
+            "name" : "MixedRevLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MixedRevLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] < [D1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterMixedRevLt",
+            "name" : "AfterMixedRevLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterMixedRevLtComp",
+            "name" : "AfterMixedRevLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMixedRevLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MixedRevLt) Or FieldNotFilled(MixedRevLt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MixedLe",
+            "name" : "MixedLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MixedLeComp",
+            "name" : "MixedLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MixedLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] <= [Z1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterMixedLe",
+            "name" : "AfterMixedLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterMixedLeComp",
+            "name" : "AfterMixedLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMixedLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MixedLe) Or FieldNotFilled(MixedLe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MixedRevLe",
+            "name" : "MixedRevLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MixedRevLeComp",
+            "name" : "MixedRevLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MixedRevLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] <= [D1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterMixedRevLe",
+            "name" : "AfterMixedRevLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterMixedRevLeComp",
+            "name" : "AfterMixedRevLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMixedRevLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MixedRevLe) Or FieldNotFilled(MixedRevLe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MixedGt",
+            "name" : "MixedGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MixedGtComp",
+            "name" : "MixedGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MixedGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] > [Z1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterMixedGt",
+            "name" : "AfterMixedGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterMixedGtComp",
+            "name" : "AfterMixedGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMixedGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MixedGt) Or FieldNotFilled(MixedGt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MixedRevGt",
+            "name" : "MixedRevGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MixedRevGtComp",
+            "name" : "MixedRevGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MixedRevGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] > [D1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterMixedRevGt",
+            "name" : "AfterMixedRevGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterMixedRevGtComp",
+            "name" : "AfterMixedRevGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMixedRevGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MixedRevGt) Or FieldNotFilled(MixedRevGt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MixedGe",
+            "name" : "MixedGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MixedGeComp",
+            "name" : "MixedGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MixedGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] >= [Z1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterMixedGe",
+            "name" : "AfterMixedGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterMixedGeComp",
+            "name" : "AfterMixedGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMixedGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MixedGe) Or FieldNotFilled(MixedGe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MixedRevGe",
+            "name" : "MixedRevGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MixedRevGeComp",
+            "name" : "MixedRevGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MixedRevGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] >= [D1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterMixedRevGe",
+            "name" : "AfterMixedRevGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterMixedRevGeComp",
+            "name" : "AfterMixedRevGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMixedRevGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MixedRevGe) Or FieldNotFilled(MixedRevGe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Shift",
+            "name" : "Shift",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ShiftComp",
+            "name" : "ShiftComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Shift",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AddHours(Z1, 1) > [Z1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterShift",
+            "name" : "AfterShift",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterShiftComp",
+            "name" : "AfterShiftComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterShift",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(Shift) Or FieldNotFilled(Shift)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Project",
+            "name" : "Project",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ProjectComp",
+            "name" : "ProjectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Project",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "DateFromDateTime(Z1) == [D1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterProject",
+            "name" : "AfterProject",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterProjectComp",
+            "name" : "AfterProjectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterProject",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(Project) Or FieldNotFilled(Project)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ClockProject",
+            "name" : "ClockProject",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ClockProjectComp",
+            "name" : "ClockProjectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ClockProject",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "TimeFromDateTime(Z1) == [T1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterClockProject",
+            "name" : "AfterClockProject",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterClockProjectComp",
+            "name" : "AfterClockProjectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterClockProject",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(ClockProject) Or FieldNotFilled(ClockProject)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Minimum",
+            "name" : "Minimum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MinimumComp",
+            "name" : "MinimumComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Minimum",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "Min([Z1], [Z2]) == [Z1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterMinimum",
+            "name" : "AfterMinimum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterMinimumComp",
+            "name" : "AfterMinimumComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMinimum",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(Minimum) Or FieldNotFilled(Minimum)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DateLiteral",
+            "name" : "DateLiteral",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DateLiteralComp",
+            "name" : "DateLiteralComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DateLiteral",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] < \"01.04.2024\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterDateLiteral",
+            "name" : "AfterDateLiteral",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterDateLiteralComp",
+            "name" : "AfterDateLiteralComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDateLiteral",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(DateLiteral) Or FieldNotFilled(DateLiteral)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MirrorLiteral",
+            "name" : "MirrorLiteral",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MirrorLiteralComp",
+            "name" : "MirrorLiteralComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MirrorLiteral",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "\"01.04.2024\" > [D1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterMirrorLiteral",
+            "name" : "AfterMirrorLiteral",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterMirrorLiteralComp",
+            "name" : "AfterMirrorLiteralComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMirrorLiteral",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(MirrorLiteral) Or FieldNotFilled(MirrorLiteral)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GapRight",
+            "name" : "GapRight",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GapRightComp",
+            "name" : "GapRightComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GapRight",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] < \"31.03.2024T02:30:00\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterGapRight",
+            "name" : "AfterGapRight",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterGapRightComp",
+            "name" : "AfterGapRightComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterGapRight",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(GapRight) Or FieldNotFilled(GapRight)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GapLeft",
+            "name" : "GapLeft",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GapLeftComp",
+            "name" : "GapLeftComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GapLeft",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "\"31.03.2024T02:30:00\" < [Z1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterGapLeft",
+            "name" : "AfterGapLeft",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterGapLeftComp",
+            "name" : "AfterGapLeftComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterGapLeft",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(GapLeft) Or FieldNotFilled(GapLeft)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GapAndFalse",
+            "name" : "GapAndFalse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GapAndFalseComp",
+            "name" : "GapAndFalseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GapAndFalse",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Z1] < \"31.03.2024T02:30:00\" And [N] == 2"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterGapAndFalse",
+            "name" : "AfterGapAndFalse",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterGapAndFalseComp",
+            "name" : "AfterGapAndFalseComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterGapAndFalse",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(GapAndFalse) Or FieldNotFilled(GapAndFalse)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FalseAndGap",
+            "name" : "FalseAndGap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FalseAndGapComp",
+            "name" : "FalseAndGapComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FalseAndGap",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[N] == 2 And [Z1] < \"31.03.2024T02:30:00\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterFalseAndGap",
+            "name" : "AfterFalseAndGap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterFalseAndGapComp",
+            "name" : "AfterFalseAndGapComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterFalseAndGap",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(FalseAndGap) Or FieldNotFilled(FalseAndGap)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TrueOrGap",
+            "name" : "TrueOrGap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TrueOrGapComp",
+            "name" : "TrueOrGapComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TrueOrGap",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[N] == 1 Or [Z1] < \"31.03.2024T02:30:00\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterTrueOrGap",
+            "name" : "AfterTrueOrGap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterTrueOrGapComp",
+            "name" : "AfterTrueOrGapComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTrueOrGap",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(TrueOrGap) Or FieldNotFilled(TrueOrGap)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Division",
+            "name" : "Division",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DivisionComp",
+            "name" : "DivisionComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Division",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[N] / [Zero] > 0"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterDivision",
+            "name" : "AfterDivision",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterDivisionComp",
+            "name" : "AfterDivisionComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDivision",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(Division) Or FieldNotFilled(Division)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GapText",
+            "name" : "GapText",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GapTextComp",
+            "name" : "GapTextComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GapText",
+              "computationAlternatives" : [ {
+                "operation" : "\"ok\"",
+                "precondition" : "[Z1] < \"31.03.2024T02:30:00\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterGapText",
+            "name" : "AfterGapText",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterGapTextComp",
+            "name" : "AfterGapTextComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterGapText",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(GapText)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GapStamp",
+            "name" : "GapStamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GapStampComp",
+            "name" : "GapStampComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GapStamp",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024T12:30:00\"",
+                "precondition" : "[Z1] < \"31.03.2024T02:30:00\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterGapStamp",
+            "name" : "AfterGapStamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterGapStampComp",
+            "name" : "AfterGapStampComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterGapStamp",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(GapStamp)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check comparison."
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/D1",
+                "name" : "D1",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/D2",
+                "name" : "D2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Z1",
+                "name" : "Z1",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateTimeType",
+                    "DateTimeType" : {
+                      "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Z2",
+                "name" : "Z2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateTimeType",
+                    "DateTimeType" : {
+                      "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/B1",
+                "name" : "B1",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/B2",
+                "name" : "B2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/C1",
+                "name" : "C1",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/C2",
+                "name" : "C2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "ConfirmType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/R1",
+                "name" : "R1",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/R2",
+                "name" : "R2",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/ZEq",
+                "name" : "ZEq",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/ZEqComp",
+                "name" : "ZEqComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../ZEq",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[Z1] == [Z2]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterZEq",
+                "name" : "AfterZEq",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterZEqComp",
+                "name" : "AfterZEqComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterZEq",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(ZEq) Or FieldNotFilled(ZEq)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/ZNe",
+                "name" : "ZNe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/ZNeComp",
+                "name" : "ZNeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../ZNe",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[Z1] != [Z2]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterZNe",
+                "name" : "AfterZNe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterZNeComp",
+                "name" : "AfterZNeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterZNe",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(ZNe) Or FieldNotFilled(ZNe)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/ZLt",
+                "name" : "ZLt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/ZLtComp",
+                "name" : "ZLtComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../ZLt",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[Z1] < [Z2]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterZLt",
+                "name" : "AfterZLt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterZLtComp",
+                "name" : "AfterZLtComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterZLt",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(ZLt) Or FieldNotFilled(ZLt)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/ZLe",
+                "name" : "ZLe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/ZLeComp",
+                "name" : "ZLeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../ZLe",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[Z1] <= [Z2]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterZLe",
+                "name" : "AfterZLe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterZLeComp",
+                "name" : "AfterZLeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterZLe",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(ZLe) Or FieldNotFilled(ZLe)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/ZGt",
+                "name" : "ZGt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/ZGtComp",
+                "name" : "ZGtComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../ZGt",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[Z1] > [Z2]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterZGt",
+                "name" : "AfterZGt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterZGtComp",
+                "name" : "AfterZGtComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterZGt",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(ZGt) Or FieldNotFilled(ZGt)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/ZGe",
+                "name" : "ZGe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/ZGeComp",
+                "name" : "ZGeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../ZGe",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[Z1] >= [Z2]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterZGe",
+                "name" : "AfterZGe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterZGeComp",
+                "name" : "AfterZGeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterZGe",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(ZGe) Or FieldNotFilled(ZGe)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/BEq",
+                "name" : "BEq",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/BEqComp",
+                "name" : "BEqComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../BEq",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[B1] == [B2]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterBEq",
+                "name" : "AfterBEq",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterBEqComp",
+                "name" : "AfterBEqComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterBEq",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(BEq) Or FieldNotFilled(BEq)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/BNe",
+                "name" : "BNe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/BNeComp",
+                "name" : "BNeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../BNe",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[B1] != [B2]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterBNe",
+                "name" : "AfterBNe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterBNeComp",
+                "name" : "AfterBNeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterBNe",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(BNe) Or FieldNotFilled(BNe)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/CNe",
+                "name" : "CNe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/CNeComp",
+                "name" : "CNeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../CNe",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[C1] != [C2]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterCNe",
+                "name" : "AfterCNe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterCNeComp",
+                "name" : "AfterCNeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterCNe",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(CNe) Or FieldNotFilled(CNe)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/REq",
+                "name" : "REq",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/REqComp",
+                "name" : "REqComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../REq",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[R1] == [R2]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterREq",
+                "name" : "AfterREq",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterREqComp",
+                "name" : "AfterREqComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterREq",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(REq) Or FieldNotFilled(REq)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/RNe",
+                "name" : "RNe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/RNeComp",
+                "name" : "RNeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../RNe",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[R1] != [R2]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterRNe",
+                "name" : "AfterRNe",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterRNeComp",
+                "name" : "AfterRNeComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterRNe",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(RNe) Or FieldNotFilled(RNe)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/MixedLt",
+                "name" : "MixedLt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/MixedLtComp",
+                "name" : "MixedLtComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../MixedLt",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[D1] < [Z1]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterMixedLt",
+                "name" : "AfterMixedLt",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterMixedLtComp",
+                "name" : "AfterMixedLtComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterMixedLt",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(MixedLt) Or FieldNotFilled(MixedLt)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/GapRight",
+                "name" : "GapRight",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/GapRightComp",
+                "name" : "GapRightComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../GapRight",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "[Z1] < \"31.03.2024T02:30:00\""
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterGapRight",
+                "name" : "AfterGapRight",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterGapRightComp",
+                "name" : "AfterGapRightComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterGapRight",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(GapRight) Or FieldNotFilled(GapRight)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/GapLeft",
+                "name" : "GapLeft",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/GapLeftComp",
+                "name" : "GapLeftComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../GapLeft",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "\"31.03.2024T02:30:00\" < [Z1]"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/AfterGapLeft",
+                "name" : "AfterGapLeft",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/AfterGapLeftComp",
+                "name" : "AfterGapLeftComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../AfterGapLeft",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldFilled(GapLeft) Or FieldNotFilled(GapLeft)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Check row comparison."
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DateNowLt",
+            "name" : "DateNowLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DateNowLtComp",
+            "name" : "DateNowLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DateNowLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] < Now"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterDateNowLt",
+            "name" : "AfterDateNowLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterDateNowLtComp",
+            "name" : "AfterDateNowLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDateNowLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(DateNowLt) Or FieldNotFilled(DateNowLt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DateNowLe",
+            "name" : "DateNowLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DateNowLeComp",
+            "name" : "DateNowLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DateNowLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] <= Now"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterDateNowLe",
+            "name" : "AfterDateNowLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterDateNowLeComp",
+            "name" : "AfterDateNowLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDateNowLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(DateNowLe) Or FieldNotFilled(DateNowLe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DateNowGt",
+            "name" : "DateNowGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DateNowGtComp",
+            "name" : "DateNowGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DateNowGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] > Now"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterDateNowGt",
+            "name" : "AfterDateNowGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterDateNowGtComp",
+            "name" : "AfterDateNowGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDateNowGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(DateNowGt) Or FieldNotFilled(DateNowGt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DateNowGe",
+            "name" : "DateNowGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DateNowGeComp",
+            "name" : "DateNowGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DateNowGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[D1] >= Now"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterDateNowGe",
+            "name" : "AfterDateNowGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterDateNowGeComp",
+            "name" : "AfterDateNowGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDateNowGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(DateNowGe) Or FieldNotFilled(DateNowGe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NowDateLt",
+            "name" : "NowDateLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NowDateLtComp",
+            "name" : "NowDateLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NowDateLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "Now < [D1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNowDateLt",
+            "name" : "AfterNowDateLt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNowDateLtComp",
+            "name" : "AfterNowDateLtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNowDateLt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NowDateLt) Or FieldNotFilled(NowDateLt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NowDateLe",
+            "name" : "NowDateLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NowDateLeComp",
+            "name" : "NowDateLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NowDateLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "Now <= [D1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNowDateLe",
+            "name" : "AfterNowDateLe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNowDateLeComp",
+            "name" : "AfterNowDateLeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNowDateLe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NowDateLe) Or FieldNotFilled(NowDateLe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NowDateGt",
+            "name" : "NowDateGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NowDateGtComp",
+            "name" : "NowDateGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NowDateGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "Now > [D1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNowDateGt",
+            "name" : "AfterNowDateGt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNowDateGtComp",
+            "name" : "AfterNowDateGtComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNowDateGt",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NowDateGt) Or FieldNotFilled(NowDateGt)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NowDateGe",
+            "name" : "NowDateGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NowDateGeComp",
+            "name" : "NowDateGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NowDateGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "Now >= [D1]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNowDateGe",
+            "name" : "AfterNowDateGe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNowDateGeComp",
+            "name" : "AfterNowDateGeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNowDateGe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NowDateGe) Or FieldNotFilled(NowDateGe)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check clock comparison."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

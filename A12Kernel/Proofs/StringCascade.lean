@@ -105,6 +105,15 @@ theorem inheritedDependency_reads_computedDependencyPoison
       exact computation_observes_single_poison .computedDependency (by decide)]
     rfl
 
+/-- A guard's runtime value failure shares the cause-blind invalid-producer readback, while the
+rich outcome keeps it distinct from inherited poison (comparison-guard grid, 2026-10-04). -/
+theorem invalidNoValueDependency_reads_computedDependencyPoison
+    (context : StringComputationContext) (field : FieldId) :
+    (context.withDependencyOutcome field .invalidNoValue).map
+      (fun updated => updated.readTerm field) = .ok (.ok (.poison .computedDependency)) := by
+  simpa only [StringComputationContext.withDependencyOutcome, StringDependencyCell.ofOutcome] using
+    inheritedDependency_reads_computedDependencyPoison context field .computedDependency (by decide)
+
 /-- Validation-scoped requiredness is rejected rather than silently changing computation poison into absence. -/
 theorem requiredDependencyPoison_is_rejected
     (context : StringComputationContext) (field : FieldId) :

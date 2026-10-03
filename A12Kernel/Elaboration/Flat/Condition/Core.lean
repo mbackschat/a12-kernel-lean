@@ -143,6 +143,11 @@ def FlatModel.admitsTextComparisonIn (model : FlatModel) (scope : List Repeatabl
 
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
   match comparison with
+  | .booleanFields op left right =>
+      (match left, right with
+        | .boolean _, .boolean _ => true
+        | .confirm _, .confirm _ => op == .notEqual
+        | _, _ => false) && comparison.fields.all model.admitsField
   | .stringLength _ field _ => model.admitsStringValueField field
   | .string .. | .textFields .. | .enumeration .. => model.admitsTextComparisonIn [] comparison
   | _ => !comparison.fields.isEmpty && comparison.fields.all model.admitsField

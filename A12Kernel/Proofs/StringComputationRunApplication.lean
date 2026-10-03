@@ -38,7 +38,7 @@ theorem oneTargetStringResult_actionsOwned
               StringComputationRunView.computedError?,
               StringComputationRunView.shouldClear,
               StringTargetState.storedValue, same]
-  | noValue | errored _ _ | poison _ =>
+  | noValue | invalidNoValue | errored _ _ | poison _ =>
       cases source <;>
         simp [StringComputationRunView.actionTargets,
           StringComputationRunView.fromSourcedOutcomes,

@@ -83,7 +83,8 @@ private def seeds : List (String × String) :=
   [("CA", "AAA"), ("CF", "AAA"), ("KC", "99"), ("KNC", "99"), ("VC", "99")]
 
 private def valueOf? : ScalarComputationOutcome → Option (FieldId × String)
-  | .document _ (.valueError _) => none
+  | .document _ (.valueError _) | .document _ (.string .invalidNoValue)
+  | .document _ (.enumeration .invalidNoValue) | .document _ (.dateFragment .invalidNoValue) => none
   | .number target (.accepted value) => some (target, toString value.unscaled)
   | .number target .noValue | .number target (.inheritedPoison _) => some (target, "-")
   | .document target (.string (.accepted stored)) => some (target, stored.text)

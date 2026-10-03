@@ -8,7 +8,7 @@ These laws expose the certificate and erasure boundary used by the later checked
 
 namespace A12Kernel
 
-/-- Every present checked-row guard is a model-admitted direct-presence condition. -/
+/-- Every present checked-row guard is a model-admitted condition. -/
 theorem checkedStringComputationAlternative_guard_wellFormed
     (alternative : CheckedStringComputationAlternative model target) :
     alternative.precondition.all (·.wellFormedBool) = true :=
@@ -26,13 +26,16 @@ theorem checkedStringComputationAlternative_expression_excludes_target
     (alternative : CheckedStringComputationAlternative model target) : alternative.expression.core.referencesField target = false :=
   alternative.expressionExcludesTarget
 
-/-- Table evaluation erases certificates and delegates to the established resolved first-match evaluator without rebuilding selection. -/
+/-- Table evaluation erases certificates and projects a reached guard value failure to invalid no-value (spec/09 §3.2), without rebuilding selection. -/
 theorem checkedStringComputationTable_evaluateOutcome_erases
     (table : CheckedStringComputationTable model)
     (wholeValueMatches? : Option (String → Bool)) (context : StringComputationContext) (guardContext : ScalarComputationContext) :
     table.evaluateOutcomeWithPattern wholeValueMatches? context guardContext =
-      (table.toResolved .empty).evaluateOutcomeWithGuard
-        (fun condition => condition.evalChecked guardContext) .guard .operation wholeValueMatches? context := by
+      (match (table.toResolved .empty).evaluateOutcomeWithGuard
+          (fun condition => condition.evalChecked guardContext)
+          CheckedStringComputationFault.guard CheckedStringComputationFault.operation wholeValueMatches? context with
+        | .error (.guard (.predicate .valueFailure)) => .ok .invalidNoValue
+        | result => result) := by
   rfl
 
 end A12Kernel

@@ -33,6 +33,5 @@ theorem numericComputationTable_selected
       table.selectableAlternatives context = .ok (.selected operation)) :
     table.evaluate context = operation.evaluate context := by
   simp [CheckedNumericComputationTable.evaluate, selection]
-  rfl
 
 end A12Kernel

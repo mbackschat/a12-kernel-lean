@@ -161,8 +161,11 @@ def evaluateOutcomeWithPattern (table : CheckedStringComputationTable model)
     (wholeValueMatches? : Option (String → Bool)) (context : StringComputationContext)
     (guardContext : ScalarComputationContext) :
     Except CheckedStringComputationFault StringTargetOutcome :=
-  (table.toResolved .empty).evaluateOutcomeWithGuard
-    (fun condition => condition.evalChecked guardContext) .guard .operation wholeValueMatches? context
+  match (table.toResolved .empty).evaluateOutcomeWithGuard
+      (fun condition => condition.evalChecked guardContext)
+      CheckedStringComputationFault.guard CheckedStringComputationFault.operation wholeValueMatches? context with
+  | .error (.guard (.predicate .valueFailure)) => .ok .invalidNoValue
+  | result => result
 
 end CheckedStringComputationTable
 

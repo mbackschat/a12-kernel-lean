@@ -41,7 +41,7 @@ def poison (cause : FormalCause) : StringDependencyCell := {
 def ofOutcome : StringTargetOutcome → Except StringDependencyFault StringDependencyCell
   | .noValue => pure empty
   | .accepted stored => pure (value stored)
-  | .errored _ _ => pure (poison .computedDependency)
+  | .invalidNoValue | .errored _ _ => pure (poison .computedDependency)
   | .poison .required =>
       throw .validationScopedRequired
   | .poison _ => pure (poison .computedDependency)

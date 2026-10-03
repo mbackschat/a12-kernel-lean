@@ -137,10 +137,20 @@ def field : FlatTextFieldOperand → FlatField
 
 end FlatTextFieldOperand
 
+inductive FlatBooleanOperand where
+  | boolean (field : FlatBooleanField)
+  | confirm (field : FlatConfirmField)
+  deriving Repr, DecidableEq
+
+def FlatBooleanOperand.field : FlatBooleanOperand → FlatField
+  | .boolean field => .boolean field
+  | .confirm field => .confirm field
+
 inductive FlatComparison where
   | number (op : NumericValidationOp) (field : FlatNumberField) (expected : Rat)
   | boolean (op : EqualityOp) (field : FlatBooleanField) (expected : Bool)
   | confirm (op : EqualityOp) (field : FlatConfirmField)
+  | booleanFields (op : EqualityOp) (left right : FlatBooleanOperand)
   | string (op : EqualityOp) (field : FlatStringField) (expected : String)
   | stringLength (op : StringLengthComparisonOp) (field : FlatStringField) (expected : Rat)
   | enumeration (op : EqualityOp) (operand : FlatEnumerationOperand)
@@ -162,6 +172,7 @@ def fields : FlatComparison → List FlatField
   | .number _ field _ => [.number field]
   | .boolean _ field _ => [.boolean field]
   | .confirm _ field => [.confirm field]
+  | .booleanFields _ left right => [left.field, right.field]
   | .string _ field _ => [.string field]
   | .stringLength _ field _ => [.string field]
   | .enumeration _ operand _ => [.enumeration operand.field]
@@ -586,6 +597,12 @@ def FlatConditionLeaf.referencesField : FlatConditionLeaf → FieldId → Bool
 def FlatCondition.referencesField (condition : FlatCondition) (field : FieldId) : Bool :=
   condition.anyLeaf fun leaf => leaf.referencesField field
 
+def FlatBooleanOperand.resolveAt (operand : FlatBooleanOperand) (phase : Phase)
+    (context : FlatContext) : SimpleComparisonOperand Bool :=
+  match operand with
+  | .boolean field => context.resolveBooleanComparisonOperandAt phase field
+  | .confirm field => context.resolveConfirmComparisonOperandAt phase field
+
 def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : Verdict :=
   match comparison with
   | .number op field expected =>
@@ -594,6 +611,8 @@ def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : 
       op.evalSimple (· == ·) (context.resolveBooleanComparisonOperand field) expected
   | .confirm op field =>
       op.evalSimple (· == ·) (context.resolveConfirmComparisonOperand field) true
+  | .booleanFields op left right =>
+      op.evalSymmetric (· == ·) (left.resolveAt .validation context) (right.resolveAt .validation context)
   | .string op field expected =>
       (context.resolveDirectStringComparisonOperand field).evalDirectString op expected
   | .stringLength op field expected =>

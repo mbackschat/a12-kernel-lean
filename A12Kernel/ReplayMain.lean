@@ -12,6 +12,7 @@ import A12Kernel.Reference.Dm.NumericFieldFormLocks
 import A12Kernel.Reference.Dm.ComputationGuardLocks
 import A12Kernel.Reference.Dm.ComputationPredicateGuardLocks
 import A12Kernel.Reference.Dm.TemporalExpressionLocks
+import A12Kernel.Reference.Dm.ScalarFieldGuardLocks
 import A12Kernel.Reference.Dm.NumericCountLocks
 import A12Kernel.Reference.Dm.DistinctCountLocks
 import A12Kernel.Reference.Dm.DateLiteralLocks
@@ -133,6 +134,15 @@ private def pathEndsRead (language : Language) (text : String) : List String :=
 private def targetName (computation : DmComputation) : String :=
   ((computation.targetRelPath.splitOn "/").getLast?.getD "").dropWhile (· == '.') |>.toString
 
+/-- Replay keys retain declaration scope when a model repeats a local name; otherwise population
+comparisons silently merge root and row computations (comparison-guard capture, 2026-10-04). -/
+private def replayName (names : List String) (group : GroupPath) (name : String) : String :=
+  if (names.filter (· == name)).length > 1 then "/".intercalate (group ++ [name]) else name
+
+example : replayName ["Same", "Same", "Unique"] ["Form"] "Same" = "Form/Same" ∧
+    replayName ["Same", "Same", "Unique"] ["Form", "Rows"] "Same" = "Form/Rows/Same" ∧
+    replayName ["Same", "Same", "Unique"] ["Form"] "Unique" = "Unique" := by native_decide
+
 /-- Compare every computation of `model` on one checked document against the Kernel's outcomes,
 printing one line per computation through `line`. -/
 private def replayComputations (line : String → String → String → String → IO Unit)
@@ -145,7 +155,7 @@ private def replayComputations (line : String → String → String → String �
       else lowerComputation model.flat language computation)
   for (computation, attempt) in attempts do
     if let .error refusal := attempt then
-      line computation.name "compute" "tier2" s!"{refusal.construct}\t{oneLine refusal.detail}"
+      line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" "tier2" s!"{refusal.construct}\t{oneLine refusal.detail}"
   let admitted := attempts.filterMap fun (computation, attempt) =>
     attempt.toOption.map fun (target, lowered) => (computation, target, lowered)
   if admitted.isEmpty then return
@@ -168,7 +178,7 @@ private def replayComputations (line : String → String → String → String �
       -- A plan Lean certified and then failed to run is a fault; an uncertified plan is a refusal.
       let tier := if refusal.construct == "ComputationRun" then "fault" else "tier2"
       for (computation, _, _) in admitted do
-        line computation.name "compute" tier s!"{refusal.construct}\t{oneLine refusal.detail}"
+        line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" tier s!"{refusal.construct}\t{oneLine refusal.detail}"
   | .ok outcomes =>
       for (computation, target, _) in admitted do
         let path := "/".intercalate target.path
@@ -179,9 +189,9 @@ private def replayComputations (line : String → String → String → String �
         -- in either case. Shared-target identity is exact; the lexical read closure over-approximates.
         if hasRefusedComputationTarget language model.flat refused target.id ||
             reads fedTargets computation then
-          line computation.name "compute" "unattributed" s!"Fed\tlean={lean} kernel={expected}"
-        else if lean == expected then line computation.name "compute" "match" ""
-        else line computation.name "compute" "tier1" s!"Divergence\tlean={lean} kernel={expected}"
+          line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" "unattributed" s!"Fed\tlean={lean} kernel={expected}"
+        else if lean == expected then line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" "match" ""
+        else line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" "tier1" s!"Divergence\tlean={lean} kernel={expected}"
 
 private def replayRequest (requestPath : System.FilePath) : IO Unit := do
   let line (row rule code tier rest : String) :=
@@ -233,9 +243,9 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
         | .ok checked =>
             for verdict in replayRules model language world checked kernel do
               if clock?.isNone && readsClock language verdict.rule.condition then
-                line name verdict.rule.name verdict.rule.errorCode "tier2" "Clock\tthe request pins no clock"
+                line name (replayName (model.rules.map (·.name)) verdict.rule.group verdict.rule.name) verdict.rule.errorCode "tier2" "Clock\tthe request pins no clock"
               else
-                line name verdict.rule.name verdict.rule.errorCode verdict.status.tier
+                line name (replayName (model.rules.map (·.name)) verdict.rule.group verdict.rule.name) verdict.rule.errorCode verdict.status.tier
                   verdict.status.detail
             if let some computed := observedRow.bind kernelComputations then
               replayComputations (line name) clock?.isSome model language world prepared checked computed

@@ -47,7 +47,7 @@ namespace StringTargetOutcome
 /-- Apply one checked outcome to an exact target state. Accepted values create or overwrite the target; every outcome without an applied value clears an existing target in place and leaves an absent target absent. -/
 def applyTo : StringTargetOutcome → StringTargetState → StringTargetState
   | .accepted value, _ => .presentValue value
-  | .noValue, prior => prior.clearValue
+  | .noValue, prior | .invalidNoValue, prior => prior.clearValue
   | .errored _ _, prior => prior.clearValue
   | .poison _, prior => prior.clearValue
 

@@ -1,0 +1,18 @@
+id	arm	operation	condition	target	admitted	codes
+booleanEq	computation	1	[B1] == [B2]	/Form/AdmissionTarget	true	-
+booleanOrder	computation	1	[B1] < [B2]	/Form/AdmissionTarget	false	MVK_INVALID_TYPE_FOR_COMPARISON
+confirmEq	computation	1	[C1] == [C2]	/Form/AdmissionTarget	false	MVK_INVALID_COMPARE_TO_YES
+confirmNe	computation	1	[C1] != [C2]	/Form/AdmissionTarget	true	-
+mixedBooleanConfirm	computation	1	[B1] != [C1]	/Form/AdmissionTarget	false	MVK_INVALID_COMPARE_TO_YES
+mixedConfirmBoolean	computation	1	[C1] != [B1]	/Form/AdmissionTarget	false	MVK_INVALID_COMPARE_TO_YES
+rangeEq	computation	1	[R1] == [R2]	/Form/AdmissionTarget	true	-
+rangeOrder	computation	1	[R1] < [R2]	/Form/AdmissionTarget	false	MVK_INVALID_TYPE_FOR_COMPARISON
+rangeComponents	computation	1	[R1] == [RMonth]	/Form/AdmissionTarget	false	MVK_INVALID_COMPARE_TO_DATE_RANGE
+dateDateTimeEq	computation	1	[D1] == [Z1]	/Form/AdmissionTarget	false	MVK_INVALID_COMPARE_TO_DATE
+dateDateTimeOrder	computation	1	[D1] < [Z1]	/Form/AdmissionTarget	true	-
+dateFragmentComponents	computation	1	[D1] == [F1]	/Form/AdmissionTarget	true	-
+bareField	computation	1	Z1 < Now	/Form/AdmissionTarget	false	MVK_UNEXPECTED_TOKEN
+unbound	computation	1	[/Form/Rows/Z1] < [/Form/Rows/Z2]	/Form/AdmissionTarget	false	MVK_NO_WILDCARD
+minFields	computation	1	Min([Z1],[Z2]) == [Z1]	/Form/AdmissionTarget	true	-
+minSourceSlot	computation	1	AddHours(Min([Z1],[Z2]),1) == [Z1]	/Form/AdmissionTarget	false	MVK_UNEXPECTED_TOKEN
+gap	computation	1	"[Z1] < ""31.03.2024T02:30:00"""	/Form/AdmissionTarget	true	-

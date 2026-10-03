@@ -221,10 +221,10 @@ def TemporalComparisonOp.admitsFormats (op : TemporalComparisonOp)
     (left.hasDate == right.hasDate) &&
     (!op.requiresSameTimePresence || (left.hasTime == right.hasTime))
 
-/-- `Now` obeys ordinary direct-comparison compatibility and the additional generated-code restriction that the other operand expose a time component. -/
+/-- `Now` uses ordinary format compatibility: equality requires matching time presence, ordering does not (spec/05 §1; peer KF82). -/
 def TemporalComparisonOp.admitsNow (op : TemporalComparisonOp)
     (hasBaseYear : Bool) (other : TemporalComponents) : Bool :=
-  other.hasTime && op.admitsFormats hasBaseYear other TemporalComponents.now
+  op.admitsFormats hasBaseYear other TemporalComponents.now
 
 /-- `Today` is admitted exactly as a complete date-shaped operand through the ordinary direct-comparison gate. -/
 def TemporalComparisonOp.admitsToday (op : TemporalComparisonOp)

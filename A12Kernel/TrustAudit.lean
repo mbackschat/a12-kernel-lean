@@ -56,6 +56,9 @@ run_cmd do
 #print axioms A12Kernel.evalSymmetricComparison_missing_firing
 #print axioms A12Kernel.evalSymmetricComparison_swapped
 #print axioms A12Kernel.EqualityOp.evalSymmetric_swapped
+#print axioms A12Kernel.computationComparisonExcept_leftPoison
+#print axioms A12Kernel.computationComparisonExcept_emptyLeft_error
+#print axioms A12Kernel.computationComparisonExcept_pure
 
 #print axioms A12Kernel.dateParts_real_iff
 #print axioms A12Kernel.civilDate_ofParts_isSome_iff
@@ -2193,6 +2196,7 @@ run_cmd do
 #print axioms A12Kernel.acceptedDependency_reads_value
 #print axioms A12Kernel.erroredDependency_reads_computedDependencyPoison
 #print axioms A12Kernel.inheritedDependency_reads_computedDependencyPoison
+#print axioms A12Kernel.invalidNoValueDependency_reads_computedDependencyPoison
 #print axioms A12Kernel.requiredDependencyPoison_is_rejected
 #print axioms A12Kernel.erroredDependency_does_not_expose_attempt
 #print axioms A12Kernel.acceptedNumericDependency_readsStoredText

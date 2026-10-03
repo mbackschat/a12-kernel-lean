@@ -161,6 +161,27 @@ example :
     berlinTemporalResult (.combine .minimum .now (.dateTimeLiteral berlinGap)) =
       some (some .dateTimeLabelUnresolved) := by native_decide
 
+private def berlinComparisonResult (left right : SurfaceScalarTemporalExpression)
+    (badSource : Bool) (phase : Phase := .computation) : Option (Sum ScalarTemporalEvaluationFault Verdict) := do
+  let checked ← (elaborateScalarTemporalComparison
+    { plainModel with timeZoneId := "Europe/Berlin" } ["Probe"] .before left right).toOption
+  pure (match checked.evalResult phase {
+    read := fun _ => if badSource then
+      { rawPresent := true, parsed := none, findings := [.malformed] }
+      else { rawPresent := false, parsed := none, findings := [] } } with
+    | .ok result => .inr result | .error fault => .inl fault)
+
+example :
+    let field := SurfaceScalarTemporalExpression.field
+      { base := .relative 0, groups := [], field := "Stamp" }
+    berlinComparisonResult field (.dateTimeLiteral berlinGap) true = some (.inr .unknown) ∧
+      berlinComparisonResult (.dateTimeLiteral berlinGap) field true =
+        some (.inl .dateTimeLabelUnresolved) ∧
+      berlinComparisonResult field (.dateTimeLiteral berlinGap) false =
+        some (.inl .dateTimeLabelUnresolved) ∧
+      berlinComparisonResult field (.dateTimeLiteral berlinGap) true .validation =
+        some (.inl .dateTimeLabelUnresolved) := by native_decide
+
 /-- A repeatable row carrying a full-date field and a numeric guard, plus a **non**-repeatable `Sub`
     beneath it. `Sub` is what makes the starred-group *presence* form reachable from the surface:
     a starred group resolves to the presence source exactly when its terminal is not itself a

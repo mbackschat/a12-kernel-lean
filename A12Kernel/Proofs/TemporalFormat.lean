@@ -42,14 +42,16 @@ theorem temporalEqualFormats_implies_beforeFormats
     TemporalComparisonOp.requiresSameTimePresence] at compatible ⊢
   exact compatible.1
 
-/-- Every statically admitted `Now` comparison has the additional time-bearing operand required by generated code. -/
+/-- Equality-style `Now` admission requires a time-bearing counterpart; ordering admits Date operands. -/
 theorem temporalComparison_admitsNow_hasTime
     (op : TemporalComparisonOp) (hasBaseYear : Bool)
     (other : TemporalComponents)
+    (sameTime : op.requiresSameTimePresence = true)
     (admitted : op.admitsNow hasBaseYear other = true) :
     other.hasTime = true := by
-  simp [TemporalComparisonOp.admitsNow] at admitted
-  exact admitted.left
+  simp [TemporalComparisonOp.admitsNow, TemporalComparisonOp.admitsFormats,
+    sameTime, TemporalComponents.now, TemporalComponents.hasTime] at admitted
+  simpa [TemporalComponents.hasTime] using admitted.2
 
 /-- `Now` admission never bypasses the ordinary direct-comparison format gate. -/
 theorem temporalComparison_admitsNow_admitsFormats
@@ -57,8 +59,7 @@ theorem temporalComparison_admitsNow_admitsFormats
     (other : TemporalComponents)
     (admitted : op.admitsNow hasBaseYear other = true) :
     op.admitsFormats hasBaseYear other TemporalComponents.now = true := by
-  simp [TemporalComparisonOp.admitsNow] at admitted
-  exact admitted.right
+  exact admitted
 
 /-- `Today` admission is exactly ordinary date-shaped direct-comparison admission. -/
 theorem temporalComparison_admitsToday_admitsFormats

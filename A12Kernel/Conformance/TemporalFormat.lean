@@ -97,10 +97,10 @@ example :
       TemporalComparisonOp.before.admitsFormats true fullDate hoursMinutes = false := by
   decide
 
-/- `Now` adds a time-component requirement beyond ordinary directional format admission. -/
+/- `Now` preserves ordinary directional format admission, including Date operands (KF82). -/
 example :
     TemporalComparisonOp.before.admitsFormats false fullDate TemporalComponents.now = true ∧
-      TemporalComparisonOp.before.admitsNow false fullDate = false ∧
+      TemporalComparisonOp.before.admitsNow false fullDate = true ∧
       TemporalComparisonOp.before.admitsNow false fullDateTime = true := by
   decide
 

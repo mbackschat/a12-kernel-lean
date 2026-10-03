@@ -1,8 +1,9 @@
 import A12Kernel.Cell
+import A12Kernel.Semantics.Condition
 
 /-! # Shared scalar equality and inequality
 
-This module owns the small comparison seam shared by direct flat scalar validation and resolved Enumeration projection. It models only an already-classified operand, exact caller-supplied equivalence, and VALUE/OMISSION polarity. Consuming clauses remain responsible for their own empty substitution or not-evaluated rule.
+This module owns classified scalar comparison shared by validation, Enumeration projection and computation guards. Validation retains VALUE/OMISSION polarity; computation retains ordered poison and runtime failure. Consuming clauses remain responsible for typed reads and their empty substitution or not-evaluated rule.
 -/
 
 namespace A12Kernel
@@ -44,6 +45,27 @@ def evalSymmetricComparison (holds : α → α → Bool)
         if leftGiven && rightGiven then .fired .value else .fired .omission
       else
         .notFired
+
+/-- Computation comparisons preserve reached poison before empty suppression; missing provenance
+only affects validation polarity (spec/02 §A.3 and the comparison-guard grid, 2026-10-04). -/
+def evalComputationComparison (holds : α → α → Bool)
+    (left right : SimpleComparisonOperand α) : ComputationConditionResult :=
+  match left, right with
+  | .unknown cause, _ | _, .unknown cause => .poison cause
+  | .notEvaluated, _ | _, .notEvaluated => .notTrue
+  | .value left _, .value right _ => if holds left right then .holds else .notTrue
+
+/-- Read in authored order. A reached left poison aborts before a right runtime failure; an empty
+left still reaches the right. The caller retains runtime failure separately from operand poison
+(comparison-guard grid, 2026-10-04). -/
+def evalComputationComparisonExcept (holds : α → α → Bool)
+    (left : Except Error (SimpleComparisonOperand α))
+    (right : Unit → Except Error (SimpleComparisonOperand α)) :
+    Except Error ComputationConditionResult := do
+  let left ← left
+  match left with
+  | .unknown cause => pure (.poison cause)
+  | _ => pure (evalComputationComparison holds left (← right ()))
 
 /-- The other equality operator, the complement rule negation uses. -/
 def EqualityOp.complement : EqualityOp → EqualityOp

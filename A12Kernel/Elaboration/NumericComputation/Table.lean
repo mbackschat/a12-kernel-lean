@@ -134,6 +134,9 @@ per occurrence are not counted. -/
 def diagnostic? : NumericComputationTableElabError → Option KernelStaticDiagnostic
   | .precondition _ (.primitive (.resolve error)) => error.diagnostic?
   | .precondition _ (.numeric error) => error.diagnostic?
+  | .precondition _ (.predicate (.comparison (.read error))) => error.diagnostic?
+  | .precondition _ (.predicate (.comparison (.admission diagnostic))) => some diagnostic
+  | .precondition _ (.predicate (.comparison (.range error))) => error.diagnostic?
   | .precondition _ _ => none
   | .operation _ error => error.diagnostic?
   | .table error => error.diagnostic?
@@ -291,22 +294,24 @@ def declaringGroups (table : CheckedNumericComputationTable model) : List GroupP
 def evaluate (table : CheckedNumericComputationTable model)
     (context : ScalarComputationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
-  match ← (CheckedComputationAlternative.selectFirstChecked
-      table.selectableAlternatives context).mapError CheckedComputationConditionError.toNumericFault with
-  | .noMatch => pure (.supported .noValue)
-  | .poison cause => pure (.supported (.inheritedPoison cause))
-  | .selected operation => operation.evaluate context
+  match CheckedComputationAlternative.selectFirstChecked table.selectableAlternatives context with
+  | .error (.predicate .valueFailure) => pure (.supported (.invalidNoValue .calculationValue))
+  | .error error => throw error.toNumericFault
+  | .ok .noMatch => pure (.supported .noValue)
+  | .ok (.poison cause) => pure (.supported (.inheritedPoison cause))
+  | .ok (.selected operation) => operation.evaluate context
 
 /-- Select first through the context's scalar guards, then evaluate only that operation with its
 repeatable reads, so a selected aggregate reads its rows through the context's star view. -/
 def evaluateIn (table : CheckedNumericComputationTable model)
     (context : NumericComputationEvaluationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
-  match ← (CheckedComputationAlternative.selectFirstCheckedIn
-      table.selectableAlternatives context).mapError CheckedComputationConditionError.toNumericFault with
-  | .noMatch => pure (.supported .noValue)
-  | .poison cause => pure (.supported (.inheritedPoison cause))
-  | .selected operation => operation.evaluateIn context
+  match CheckedComputationAlternative.selectFirstCheckedIn table.selectableAlternatives context with
+  | .error (.predicate .valueFailure) => pure (.supported (.invalidNoValue .calculationValue))
+  | .error error => throw error.toNumericFault
+  | .ok .noMatch => pure (.supported .noValue)
+  | .ok (.poison cause) => pure (.supported (.inheritedPoison cause))
+  | .ok (.selected operation) => operation.evaluateIn context
 
 end CheckedNumericComputationTable
 

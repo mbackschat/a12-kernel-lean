@@ -266,10 +266,7 @@ def evalFieldFilled (context : ScalarComputationContext)
 empty comparison suppression, shared by token and Boolean/Confirm comparisons. -/
 def evalSimpleEquality [BEq α] (op : EqualityOp)
     (left right : SimpleComparisonOperand α) : ComputationConditionResult :=
-  match left, right with
-  | .unknown cause, _ | _, .unknown cause => .poison cause
-  | .notEvaluated, _ | _, .notEvaluated => .notTrue
-  | .value left _, .value right _ => if op.holds (left == right) then .holds else .notTrue
+  evalComputationComparison (fun left right => op.holds (left == right)) left right
 
 /-- Boolean and Confirm guards use computation observations; the owning readers retain Boolean's
 suppressed empty comparison and Confirm's false substitution (`spec/02` §A.3). -/

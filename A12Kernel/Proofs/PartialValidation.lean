@@ -398,6 +398,18 @@ theorem partialSelected_agreesOn
               simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
                 FlatComparison.fields, FlatField.id] using relevant)
             simp_all [FlatComparison.eval, FlatContext.observeValidationAt]
+        | booleanFields op leftOperand rightOperand =>
+            have bothRelevant :
+                isRelevant leftOperand.field.id = true ∧
+                isRelevant rightOperand.field.id = true := by
+              simpa [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatField.id] using relevant
+            have leftEq := agreement leftOperand.field.id bothRelevant.1
+            have rightEq := agreement rightOperand.field.id bothRelevant.2
+            cases leftOperand <;> cases rightOperand <;>
+              simp_all [FlatComparison.eval, FlatBooleanOperand.resolveAt, FlatBooleanOperand.field,
+                FlatField.id, FlatContext.resolveBooleanComparisonOperandAt,
+                FlatContext.resolveConfirmComparisonOperandAt]
         | textFields op leftOperand rightOperand =>
             have bothRelevant :
                 isRelevant leftOperand.field.id = true ∧

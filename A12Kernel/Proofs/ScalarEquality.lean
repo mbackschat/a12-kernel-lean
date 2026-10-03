@@ -58,4 +58,23 @@ theorem evalSymmetric_swapped (op : EqualityOp)
 
 end EqualityOp
 
+/-- A reached formal error suppresses the entire right read, including its runtime failure. -/
+theorem computationComparisonExcept_leftPoison
+    (holds : α → α → Bool) (cause : FormalCause)
+    (right : Unit → Except Error (SimpleComparisonOperand α)) :
+    evalComputationComparisonExcept holds (.ok (.unknown cause)) right = .ok (.poison cause) := rfl
+
+/-- Empty is not an abort: the right reader can still fail. -/
+theorem computationComparisonExcept_emptyLeft_error
+    (holds : α → α → Bool) (error : Error) :
+    evalComputationComparisonExcept holds (.ok .notEvaluated)
+      (fun _ => .error error) = .error error := rfl
+
+/-- Successful reads reduce to the same pure comparison used by Boolean and token guards. -/
+theorem computationComparisonExcept_pure
+    (holds : α → α → Bool) (left right : SimpleComparisonOperand α) :
+    evalComputationComparisonExcept (Error := Error) holds (.ok left) (fun _ => .ok right) =
+      .ok (evalComputationComparison holds left right) := by
+  cases left <;> rfl
+
 end A12Kernel
