@@ -35,6 +35,19 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-03-02"></a>
+### `SPEC-2026-10-03-02` — containing-group guards distinguish operands from producer dependencies
+
+- `status`: pending
+- `origin`: the group-guard consumer readback could not recover conditional scheduling from the canonical clause; the retained dependency and profile grids already settle its separating cases.
+- `clause`: [spec/09 §1.1](../spec/09-computations.md#11-group-derived-scheduling-dependencies).
+- `delta`: positive containing-group reads omit self and group-protected producers from the schedule while retaining complete operands. For nonrepeatable producers, present conditions determine the syntactic profile across common-expanded alternatives; absent conditions are omitted. Ordinary reads survive even in unselectable alternatives.
+- `evidence`: the [dependency grid](sources/computation-scheduling-probes.md#src-group-presence-conditional-dependencies) and [profile grid](sources/computation-scheduling-probes.md#src-group-conditional-profiles) retain Kernel `30.8.1` verdicts and both-strategy runtime controls. The checkpoints pin the source mechanism separately from the measured scope.
+- `redundancy`: the peer's KF334 owns ordinary cycle admission and KF459 owns the computed overlay. Neither states the conditional-group profile; heading-first inspection and searches for its visitor, profile and retained split-target forms found no matching finding.
+- `surfaces`: KF334's field-read graph account, the portable cycle checker and any interpreter scheduling implementation that expands every group member into an edge.
+- `acceptance`: reconcile protected pairs, the unconditional-producer control, `And` versus bypassing `Or`, both split-target orders, and the unselectable ordinary back edge against the retained grids; provide contrary evidence for any disagreement. This excludes profile assembly below a repeatable ancestor and does not claim nested/keyed or cross-kind runtime calibration.
+- `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-03-01"></a>
 ### `SPEC-2026-10-03-01` — numeric computation guards substitute zero for empty operands
 

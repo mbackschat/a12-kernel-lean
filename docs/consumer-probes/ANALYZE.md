@@ -25,6 +25,28 @@ The checked scalar numeric-table profile derives its cycle graph from each table
 
 The mixed String/Number successor starts from individually checked steps before run certification. Its projection preserves target, target family, and every raw dependency in candidate order, letting a consumer distinguish a genuine three-target cycle from an acyclic chain merely supplied in reverse dependency order. External guard fields remain in the raw lists but do not become computed graph nodes. This does not make graph reconstruction family-neutral: only the exact finite String/Number carrier is Lean-owned here.
 
+<a id="group-guard-dependency-readback"></a>
+## Group-guard dependency and execution readback
+
+Analyze the static producer graph and execute the bounded guard decisions from the canonical clauses alone. The consumer allowlist is this task, [spec/09 §1.1](../../spec/09-computations.md#11-group-derived-scheduling-dependencies), its directly relevant computation clauses (§1, §3.1–3.3 and §5), and [spec/07 §5](../../spec/07-repetition-and-iteration.md#5-groupfilled-and-the-other-repetition-rules). No Lean, checkpoints, evidence, sibling source, project plans, prior consumer results, Git history, external access or implementation task is supplied. Return the answer in the terminal, without an artifact. Contributor instructions supply process only, not additional semantic authority.
+
+In each independent case, fixed root `Form` contains scale-0 Numbers `Gate`, `X` and `Y`; a field is computed only when that case names a computation for it; all constants fit. `GF(G)` means `GroupFilled(G)` and `FF(F)` means `FieldFilled(F)`. An arrow in a computation below separates its guard from its operation, not a scheduling edge. The seed-only input holds `X=9,Y=9` without Gate; the control adds `Gate=3`. Report complete operand inventories, forbidden own-target references, required producer edges, static admission and resulting values separately. Mark any undetermined result as insufficient information rather than inventing an outcome.
+
+| Case | Authored computations or question |
+|---|---|
+| C1 | `X: GF(Form) => 1`; `Y: GF(Form) => 2`. |
+| C2 | `X: GF(Form) => 1`; then unconditional `Y:=2`. |
+| C3 | Both constants guarded by `GF(Form) Or FF(Gate)`; contrast both guarded by `GF(Form) And FieldNotFilled(Gate)`. |
+| C4 | `X: GF(Form) => 1`; Y has separate `GF(Form) => [X]` and unconditional `2` computations, in both authored orders. Assess whether the profile guarantees filled-only execution. |
+| C5 | Unconditional `X:=[Y]`; unconditional `Y:=2`; then a separate `Y: FF(Gate) => [X]`. |
+| C6 | One X computation, guarded by `GroupNotFilled(Form)` or by `GF(Form)`, operation `1`. Use only stored X=9, then add Gate=3. Compare static legality with runtime emptiness. |
+| C7 | Form additionally contains repeatable `Rows/Deep`. Compare complete GF operand membership with its runtime content slice and classify `CurrentRepetition(Rows)` dependencies. Name nested/keyed and missing-binding limits. |
+| C8 | Only X is computed and only stored X=9 exists under `X: GF(Form) => 1`; contrast empty input with unconditional Y:=2 completed before X. |
+
+Root reconciliation uses the committed [model/profile matrix](../../A12Kernel/Conformance/ComputationGroupDependency.lean), [reader and overlay locks](../../A12Kernel/Reference/Dm/ComputationGuardLocks.lean), [dependency/profile laws](../../A12Kernel/Proofs/ComputationGroupDependency.lean) and [overlay coherence laws](../../A12Kernel/Proofs/ComputationCondition.lean). These remain hidden from the consumer. The eight-case acceptance boundary is unchanged by the exploratory review that motivated the canonical clause.
+
+Wrong accounts equate complete membership with scheduling edges, exempt negative containing-group guards, erase ordinary reads beside protected group reads, treat absent conditions as unprotected alternatives, replace syntactic profiles with runtime guarantees, erase unselectable ordinary reads, reorder same-target alternatives, retain stale computed seeds, lose completed producer values, or expand structural coordinates into descendant reads. Exclusions are a consumer implementation, arbitrary nested/keyed group execution, cross-kind Kernel correspondence, validation or generated-validation equivalence, application, protocol, shipment and general compatibility. Commit this task and the corrected clause before a qualifying run, capture its exact basis and timing, and qualify only the finite decisions reconciled by the root.
+
 ## Generated-phase alias probe
 
 Analyze whether one scalar-target generated computation may alias its immutable execution source with the later applied-destination validation snapshot. The bounded artifact contains one unfiltered repeatable Number sum and one correlated repeatable Number `FirstFilledValue`, with source and destination rows chosen so both the result and, for `FirstFilledValue`, the selected row differ between phases. The consumer must separate dependency roles, source execution, source-relative action classification, destination application, target-filled gating, and destination recomputation, then produce a concrete counterexample to snapshot aliasing.
