@@ -9,7 +9,7 @@ the authored list at the rule group and builds either the quantifier leaf or a c
 against a literal threshold. General numeric expressions reuse the same count atom through
 `NumericValidation/EntityComparison`.
 
-A filtered operand and a category read are not represented here.
+Filtered quantifiers retain their checked filter. Counts and category reads keep their own boundary.
 -/
 
 namespace A12Kernel
@@ -29,7 +29,7 @@ def fromFieldFill (model : FlatModel) (rowGroup : GroupPath) (operator : FieldFi
   match hModel : model.validate with
   | .error error => .error (.invalidModel error)
   | .ok () => do
-      let source ← (elaborateFieldFillList model rowGroup authored bindingGroup).mapError .source
+      let source ← (elaborateFieldFillList model rowGroup authored bindingGroup .quantifier).mapError .source
       (checkCore model bindingGroup (.leaf (.fieldFill operator source)) (by rw [hModel]; rfl) rowGroup)
         |>.mapError fun _ => .incoherent
 

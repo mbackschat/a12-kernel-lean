@@ -50,6 +50,11 @@ example : run "AllFieldsFilled(Rows/Qty, Rows/Key)"
       some ["Form/Rows[2]/Qty"] ∧
     run "AllFieldsFilled(Rows/Qty, Rows/Key)" [] = some [] := by native_decide
 
+example : run "AtLeastOneFieldFilled(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows))"
+    [row "5" "A", row "7" "B"] = some ["Form/Rows/Qty", "Form/Rows[2]/Qty"] ∧
+    run "AtLeastOneFieldFilled(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows))"
+    [row "5" "A"] = some [] := by native_decide
+
 example : (do
     let checked ← (checkRule dm .english
       (rule "FieldFilled(Rows/Qty) And CurrentRepetition(Rows) > 1")).toOption
@@ -122,5 +127,30 @@ example : run "FieldFilled(Rows/Qty) And MaxValue(Rows*/Qty Having [Rows/Qty] ==
     [row "5" "A", row "7" "B"] = some [] ∧
     run "FieldFilled(Rows/Qty) And MaxValue(Rows*/Qty Having [Rows/Qty] == [Rows/Qty] And CurrentRepetition(Rows) != CurrentRepetition($Rows)) > 0"
     [row "5" "A", row "7" "B"] = some ["Form/Rows/Qty", "Form/Rows[2]/Qty"] := by native_decide
+
+example : run "FieldFilled(Rows/Qty) And AtLeastOneFieldFilled(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows) And [Rows/Qty] == [$Rows/Qty])"
+    [row "5" "A", row "5" "B"] = some ["Form/Rows/Qty", "Form/Rows[2]/Qty"] ∧
+    run "FieldFilled(Rows/Qty) And AtLeastOneFieldFilled(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows) And [Rows/Qty] == [$Rows/Qty])"
+    [row "5" "A", row "7" "B"] = some [] ∧
+    run "FieldFilled(Rows/Qty) And AtLeastOneFieldFilled(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows) And [Rows/Qty] == [$Rows/Qty])"
+    [row "5" "A"] = some [] := by native_decide
+
+example : (do
+    let checked ← (checkRule dm .english
+      (rule "FieldFilled(Rows/Qty) And AtLeastOneFieldFilled(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows))")).toOption
+    let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+      ("Rows", Json.arr [row "5" "A", row "5" "B"].toArray)])])).toOption
+    let world : World := { now := { epochMillis := 0 } }
+    let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+    let document ← (checkDocument prepared "en_US" input.data).toOption
+    let partialResult ← (checked.evalOrdinaryRepeatablePartial document .full).toOption
+    pure (checked.hasHaving, partialResult)) = some (true, .skipped) := by native_decide
+
+example : (do
+    let checked ← (checkRule dm .english {
+      (rule "FieldFilled(Qty) And AtLeastOneFieldFilled(Rows*/Qty Having [Rows/Qty] > [Side/SideQty])") with
+      errorEntityRelPath := "../Qty" }).toOption
+    pure (checked.condition.core.referencesField 4, checked.condition.core.referencesErrorField 4,
+      checked.condition.core.referencesField 2)) = some (true, false, true) := by native_decide
 
 end A12Kernel.Dm.ValidationBindingLocks

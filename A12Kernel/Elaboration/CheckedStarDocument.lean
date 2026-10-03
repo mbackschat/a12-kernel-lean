@@ -22,6 +22,7 @@ inductive CheckedAddressingError where
   | checkedDocumentRequired (path : GroupPath)
   | repetitionNotUniqueResult (row : Env)
   | partialUnavailable (row : Env) (field : FieldId)
+  | filteredFieldFillComputation
   /-- A certified operand's stored payload contradicted the declaration that certified it. No
   checked certificate can produce one, so this class exists to be *reported* rather than skipped:
   a family whose standalone evaluation names such a payload and whose condition-leaf evaluation
@@ -340,6 +341,31 @@ def resolveCheckedField (source : CheckedStarFieldPath model)
     (checked : CheckedDocument model) (outer : Env) :
     Except CheckedStarDocumentError ResolvedCheckedStarField :=
   source.resolveCheckedFieldWithRead checked checked.read outer
+
+/-- A captured or bound environment denotes physical rows. Declared-slot selection may reopen
+missing candidates, but must not manufacture the caller's row. -/
+def _root_.A12Kernel.CheckedDocument.requireInstantiatedEnvironment
+    (checked : CheckedDocument model) (scope : List RepeatableLevel) (environment : Env) :
+    Except CheckedAddressingError Unit := do
+  let coordinates ← (environment.pathForScope scope).mapError .environment
+  for row in repeatableAncestorRowsFor scope coordinates do
+    if !checked.source.instantiatedRows.contains row then throw (.document (.missingRow row))
+
+/-- Enumerate the finite declared slots under the bound prefix. `none` preserves missing capacity
+as unavailable information. The filtered field-fill grid (2026-10-03) separates this domain from
+instantiated topology; ordinary aggregates continue using `resolveInCapacity`. -/
+def declaredEnvironments? (source : CheckedStarFieldPath model)
+    (checked : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError (Option (List Env)) := do
+  let bound ← source.path.boundEnvironment outer |>.mapError .addressing
+  checked.requireInstantiatedEnvironment source.bindingScope outer
+  if StarAxes.environmentOverLimit source.path.axes bound then return some []
+  let mut environments := [bound]
+  for axis in source.path.axes.drop source.path.firstStar do
+    let some capacity := axis.repeatability | return none
+    environments := environments.flatMap fun parent =>
+      (List.range capacity).map fun index => parent ++ [(axis.level, index + 1)]
+  pure (some environments)
 
 /-- Resolve one full-validation starred entity-list occurrence. Optional checked-filter ownership remains with the typed caller; this function owns the common filter-before-addressing projection and preserves reached failures structurally. -/
 def resolveCheckedValidationEntityOperandCore

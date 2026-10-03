@@ -383,6 +383,7 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
           (·.flatten) <$> source.fields.operands.mapM
             (CheckedTokenEntityOperand.referencePointers environment)
   | .fieldFill _ source =>
+      if source.hasHaving then .error .filteredStarOperand else
       sievedFieldPointers model
         (fun declaration => source.declarations.any (·.id == declaration.id)) environment
   | _ => .error .unclassifiedLeaf

@@ -514,7 +514,7 @@ theorem checkedDocument_overlay_read_found
         (fun candidate => candidate.address == address) = some placement) :
     (checked.overlayNonrepeatableCells placements).read address = .ok placement.cell := by
   obtain ⟨cell, read⟩ := valid
-  unfold CheckedDocument.read at read ⊢
+  unfold CheckedDocument.read CheckedDocument.readValidatedAddress at read ⊢
   rw [found]
   simp only [CheckedDocument.overlayNonrepeatableCells] at read ⊢
   revert read
@@ -532,7 +532,7 @@ theorem checkedDocument_overlay_read_absent
     (checked.overlayNonrepeatableCells placements).read { field, path := [] } =
       .ok (checkAdmittedRawCell .empty) := by
   obtain ⟨cell, read⟩ := valid
-  unfold CheckedDocument.read at read ⊢
+  unfold CheckedDocument.read CheckedDocument.readValidatedAddress at read ⊢
   rw [absent]
   simp only [CheckedDocument.overlayNonrepeatableCells] at read ⊢
   revert read
@@ -606,7 +606,7 @@ theorem checkedDocument_overlay_read_congr
         (fun candidate => candidate.address == address) =
       checked.checkedCells.find? (fun candidate => candidate.address == address)) :
     (checked.overlayNonrepeatableCells placements).read address = checked.read address := by
-  unfold CheckedDocument.read
+  unfold CheckedDocument.read CheckedDocument.readValidatedAddress
   rw [same]
   rfl
 

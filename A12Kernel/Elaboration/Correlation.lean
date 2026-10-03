@@ -247,9 +247,10 @@ where
 /-- Refuse a filter whose marked reference the walk refuses. Callers ask it before the filter's own
     checks; no row measures a filter failing both, so that order is this project's choice. -/
 def SurfaceCorrelatedHaving.requireOuterReferencesBound (model : FlatModel)
-    (declaringGroup writtenGroup : GroupPath) (having : SurfaceCorrelatedHaving) :
+    (declaringGroup writtenGroup : GroupPath) (having : SurfaceCorrelatedHaving)
+    (bound : List RepeatableLevel := model.repeatableScopeForGroupPath declaringGroup) :
     Except CorrelationElabError Unit :=
-  match having.unboundOuterReference? model declaringGroup writtenGroup with
+  match having.unboundOuterReference? model declaringGroup writtenGroup bound with
   | some (path, unbound) => throw (.outerLevelUnbound path unbound)
   | none => pure ()
 
@@ -568,6 +569,51 @@ private def FlatModel.resolveHavingRepetitionInEnvironment (model : FlatModel)
     | some group => HavingRepetitionSource.repeatable group.level
     | none => .fixed resolved.path
   pure { origin, source }
+
+/-- An outer filter reference contributes its declaration's scope whatever the reference's kind, so
+    this reads the origin and the field id rather than a kind-specific reference type. -/
+private def outerHavingFieldIterationScope
+    (model : FlatModel) (origin : HavingOrigin) (fieldId : FieldId) :
+    Option (List RepeatableLevel) :=
+  match origin with
+  | .inner => none
+  | .outer =>
+      match model.lookupUniqueId fieldId with
+      | .error _ => none
+      | .ok declaration =>
+          if declaration.repeatableScope.isEmpty then
+            none
+          else
+            some declaration.repeatableScope
+
+private def outerHavingNumberIterationScope
+    (model : FlatModel) (reference : HavingNumberRef) :
+    Option (List RepeatableLevel) :=
+  outerHavingFieldIterationScope model reference.origin reference.field.id
+
+private def outerHavingRepetitionIterationScope
+    (model : FlatModel)
+    (reference : HavingRepetitionRef) :
+    Option (List RepeatableLevel) :=
+  match reference.origin with
+  | .inner => none
+  | .outer => (reference.scope? model).bind fun scope =>
+      if scope.isEmpty then none else some scope
+
+def CorrelatedHaving.outerIterationScopes
+    (model : FlatModel) :
+    CorrelatedHaving → List (Option (List RepeatableLevel))
+  | .leaf (.numeric comparison) =>
+      (comparison.left.atoms ++ comparison.right.atoms).map fun
+        | .field reference => outerHavingNumberIterationScope model reference
+        | .repetition reference => outerHavingRepetitionIterationScope model reference
+  | .leaf (.compareStringLiteral _ reference _) =>
+      [outerHavingFieldIterationScope model reference.origin reference.field.id]
+  | .leaf (.presence _ reference) =>
+      [outerHavingFieldIterationScope model reference.origin reference.field]
+  | .and left right | .or left right =>
+      CorrelatedHaving.outerIterationScopes model left ++
+        CorrelatedHaving.outerIterationScopes model right
 
 /-- One filter certified against the candidate path and captured binding group. Lexical resolution
 uses the separate declaring group passed to `elaborateStarHavingCore`. -/

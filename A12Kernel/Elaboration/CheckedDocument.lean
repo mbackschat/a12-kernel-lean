@@ -189,7 +189,7 @@ where
         { group := level, path } :: go levels remaining path
     | _, _, _ => []
 
-private def validateCellAddress (model : FlatModel) (rows : List RowAddr)
+private def validateCellAddressShape (model : FlatModel)
     (address : CellAddr) : Except CheckedDocumentError FlatFieldDecl := do
   let declaration ←
     (model.lookupUniqueId address.field).mapError (.fieldAddress address)
@@ -197,6 +197,11 @@ private def validateCellAddress (model : FlatModel) (rows : List RowAddr)
     throw (.invalidCellDepth address declaration.repeatableScope.length)
   if address.path.any (· == 0) then
     throw (.zeroCellIndex address)
+  pure declaration
+
+private def validateCellAddress (model : FlatModel) (rows : List RowAddr)
+    (address : CellAddr) : Except CheckedDocumentError FlatFieldDecl := do
+  let declaration ← validateCellAddressShape model address
   for row in repeatableAncestorRowsFor
       declaration.repeatableScope address.path do
     if !rows.contains row then throw (.missingRow row)
@@ -502,10 +507,10 @@ def overlayCells (checked : CheckedDocument model) (hidden : List FieldId)
         !hidden.contains placement.address.field &&
           !placements.any (·.address == placement.address)) ++ placements }
 
-/-- Query one model-legal address. In-cap absence is a clean empty checked cell, over-limit ancestry is unavailable, and malformed addressing remains an explicit structural error. -/
-def read (checked : CheckedDocument model) (address : CellAddr) :
-    Except CheckedDocumentError CheckedCell := do
-  let declaration ← validateCellAddress model checked.source.instantiatedRows address
+/-- Read a placement using the address declaration supplied by the validation gate. This common
+body is exposed so overlay laws can unfold the lookup without duplicating the two read views. -/
+def readValidatedAddress (checked : CheckedDocument model) (declaration : FlatFieldDecl)
+    (address : CellAddr) : Except CheckedDocumentError CheckedCell := do
   let overLimit ← match model.addressOverLimit?
       declaration.repeatableScope address.path with
     | some overLimit => pure overLimit
@@ -513,6 +518,18 @@ def read (checked : CheckedDocument model) (address : CellAddr) :
   match checked.checkedCells.find? fun placement => placement.address == address with
   | some placement => pure placement.cell
   | none => pure ((checkAdmittedRawCell .empty).withOverRepetitionIf overLimit)
+
+/-- Query one model-legal instantiated address. Absence of a cell is empty, but absence of its
+physical ancestor rows is an addressing failure. -/
+def read (checked : CheckedDocument model) (address : CellAddr) :
+    Except CheckedDocumentError CheckedCell := do
+  checked.readValidatedAddress (← validateCellAddress model checked.source.instantiatedRows address) address
+
+/-- Read a declared slot even when its row is absent. The field-fill grid (2026-10-03) requires a
+filter to read an absent declared cell as empty; this view leaves physical topology unchanged. -/
+def readDeclared (checked : CheckedDocument model) (address : CellAddr) :
+    Except CheckedDocumentError CheckedCell := do
+  checked.readValidatedAddress (← validateCellAddressShape model address) address
 
 /-- The stored text placed at one address, read from the placement that owns it, so an overlaid
 target reads its rendering; `none` where no placement or no text is placed. -/

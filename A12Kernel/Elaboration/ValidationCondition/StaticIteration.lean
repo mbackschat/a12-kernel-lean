@@ -47,56 +47,11 @@ def ResolvedGroupListOperands.iterationScope
   mergeIterationScopeList
     (operands.map ResolvedGroupListOperand.iterationScope)
 
-/-- An outer filter reference contributes its declaration's scope whatever the reference's kind, so
-    this reads the origin and the field id rather than a kind-specific reference type. -/
-private def outerHavingFieldIterationScope
-    (model : FlatModel) (origin : HavingOrigin) (fieldId : FieldId) :
-    Option (List RepeatableLevel) :=
-  match origin with
-  | .inner => none
-  | .outer =>
-      match model.lookupUniqueId fieldId with
-      | .error _ => none
-      | .ok declaration =>
-          if declaration.repeatableScope.isEmpty then
-            none
-          else
-            some declaration.repeatableScope
-
-private def outerHavingNumberIterationScope
-    (model : FlatModel) (reference : HavingNumberRef) :
-    Option (List RepeatableLevel) :=
-  outerHavingFieldIterationScope model reference.origin reference.field.id
-
-private def outerHavingRepetitionIterationScope
-    (model : FlatModel)
-    (reference : HavingRepetitionRef) :
-    Option (List RepeatableLevel) :=
-  match reference.origin with
-  | .inner => none
-  | .outer => (reference.scope? model).bind fun scope =>
-      if scope.isEmpty then none else some scope
-
-private def correlatedHavingOuterIterationScopes
-    (model : FlatModel) :
-    CorrelatedHaving → List (Option (List RepeatableLevel))
-  | .leaf (.numeric comparison) =>
-      (comparison.left.atoms ++ comparison.right.atoms).map fun
-        | .field reference => outerHavingNumberIterationScope model reference
-        | .repetition reference => outerHavingRepetitionIterationScope model reference
-  | .leaf (.compareStringLiteral _ reference _) =>
-      [outerHavingFieldIterationScope model reference.origin reference.field.id]
-  | .leaf (.presence _ reference) =>
-      [outerHavingFieldIterationScope model reference.origin reference.field]
-  | .and left right | .or left right =>
-      correlatedHavingOuterIterationScopes model left ++
-        correlatedHavingOuterIterationScopes model right
-
 private def checkedHavingOuterIterationScope
     (checked : CheckedStarHaving model source declaringGroup) :
     Except RuleIterationScopeError (Option (List RepeatableLevel)) :=
   mergeIterationScopeList
-    (correlatedHavingOuterIterationScopes model checked.condition)
+    (CorrelatedHaving.outerIterationScopes model checked.condition)
 
 private def checkedNumberOperandIterationScope :
     CheckedNumberEntityOperand model →
@@ -305,7 +260,7 @@ private def orderedNumericAtomIterationScope :
         | .slot (.star path _ none) => pure (checkedStarBindingScope path)
         | .slot (.star path _ (some filter)) => do
             mergeIterationScopes (checkedStarBindingScope path)
-              (← mergeIterationScopeList (correlatedHavingOuterIterationScopes model filter))
+              (← mergeIterationScopeList (CorrelatedHaving.outerIterationScopes model filter))
         | .slot (.group source) => pure (groupScope source.source)
         | .group source => pure (groupScope source.source))
   | .booleanValueCount source =>
@@ -363,9 +318,8 @@ def ordinaryIterationScope :
   | .leaf (.groupList _ operands) =>
       ResolvedGroupListOperands.iterationScope operands
   | .leaf (.fieldFill _ source) =>
-      source.operands.foldlM
-        (fun scope operand => mergeIterationScopes scope
-          (if operand.bindingScope.isEmpty then none else some operand.bindingScope)) none
+      mergeIterationScopeList (source.operands.flatMap fun operand =>
+        operand.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
   | .leaf (.valueList source) =>
       source.bindingScopes.foldlM
         (fun scope next => mergeIterationScopes scope (if next.isEmpty then none else some next)) none

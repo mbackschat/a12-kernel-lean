@@ -507,13 +507,13 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
       condition.operandDeclarations.any fun declaration =>
         declaration.id == field
   | .customFieldValidity leaf, field => leaf.operand.source == field
-  | .fieldFill _ source, field => source.declarations.any (·.id == field)
+  | .fieldFill _ source, field => source.referencesField field
   | .stringPattern leaf, field => leaf.condition.referencesField field
 
-/-- Whether a leaf reaches `field` for the rule's error-field gates. The ordered numeric carrier
-    and the DateRange overlap leaves own filters, and there a body's unmarked reads do not count
-    while its marked ones do; every other leaf reads as `referencesField` does. -/
+/-- Whether a leaf reaches `field` for the rule's error-field gates. Filter-owning sources count
+    marked body reads but exclude unmarked candidate reads, following the shared correlation gate. -/
 def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
+  | .fieldFill _ source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .valuesNotUnique source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .valueList source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .orderedNumeric _ comparison, field => comparison.referencesErrorField field
@@ -523,12 +523,14 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | leaf@(.repetitionNotUnique _), field | leaf@(.guardedRootCurrentRepetition _ _ _), field
   | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field
   | leaf@(.constructedDateValidity _ _), field
-  | leaf@(.customFieldValidity _), field | leaf@(.fieldFill _ _), field
+  | leaf@(.customFieldValidity _), field
   | leaf@(.stringPattern _), field | leaf@(.scalarTemporal _), field =>
       leaf.referencesField field
 
-/-- Whether a leaf retains any `Having` filter in its checked source. Ordered numeric, DateRange overlap and value-list leaves retain their owning sources’ filters; scalar leaves cannot manufacture the marker. -/
+/-- Whether the checked source retains a `Having` filter, which makes whole-rule partial validation
+    skip before evaluation (spec/10 §5). Scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
+  | .fieldFill _ source => source.hasHaving
   | .constructedDateValidity _ _ => false
   | .scalarTemporal _ => false
   | .valuesNotUnique source => source.hasHaving
@@ -539,7 +541,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
   | .repeatableFieldPresence _ _ | .repetitionNotUnique _
   | .guardedRootCurrentRepetition _ _ _
   | .guardedRepeatableCurrentRepetition _ _ _
-  | .customFieldValidity _ | .fieldFill _ _ | .stringPattern _ => false
+  | .customFieldValidity _ | .stringPattern _ => false
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool

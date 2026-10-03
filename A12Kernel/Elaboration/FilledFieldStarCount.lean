@@ -1,10 +1,13 @@
 import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.Correlation
-import A12Kernel.Semantics.FieldFillQuantifier
+import A12Kernel.Semantics.ValidationFillQuantifier
 
-/-! # Checked plain- and filtered-star filled-field counts
+/-! # Checked filled-field star sources and counts
 
 This boundary admits one starred field, plain or carrying a row-local `Having`, as the complete `NumberOfFilledFields` operand. Its evaluation domain excludes checked cells beneath declared-capacity violations, matching the exact single-level Kernel row, while in-cap emptiness and formal invalidity retain the existing validation count semantics. A filter selects candidates before any counted cell is read, so a non-true row drops and the count answers over the survivors instead of becoming unavailable.
+
+Field-fill quantifier lists reuse the same source certificate and selected-missing-slot query; the
+list owner supplies their distinct declared-range fold and admission contract.
 
 The partial-validation route applies the local reduced-universal account that matches the measured outcome pattern. A **filtered** count is skipped there unconditionally, which is measured rather than carried from the token family's rule: three relevance sets over one document — the counted field alone, the filter's own operand fields as well, and the whole root group — all skip it, so the gate is a property of carrying a filter and not of its operands being covered. Nested capacity, filtered capacity interaction, and nested partial relevance are internally executable or open accounts with external correspondence pending. Direct lists, group operands, computation, comparison movement, and raw-document execution remain outside.
 -/
@@ -69,14 +72,15 @@ inductive FilledFieldStarCountElabError where
   | having (error : CorrelationElabError)
   deriving Repr, DecidableEq
 
-/-- One checked `NumberOfFilledFields` star operand: the plain star plus an optional row-local
-    filter. The filter type is indexed by this exact source and declaring group, so a checked filter
+/-- One checked filled-field star operand: the plain star plus an optional row-local
+    filter. The filter type is indexed by this exact source and captured binding group, so a checked filter
     cannot be paired with another star or lifted to a different rule scope. -/
 structure CheckedFilledFieldStarSource (model : FlatModel) where
   private mk ::
   declaringGroup : GroupPath
   source : CheckedStarFieldPath model
-  filter : Option (CheckedStarHaving model source declaringGroup)
+  bindingGroup : GroupPath := declaringGroup
+  filter : Option (CheckedStarHaving model source bindingGroup)
 
 namespace CheckedFilledFieldStarSource
 
@@ -85,23 +89,32 @@ namespace CheckedFilledFieldStarSource
 def hasHaving (checked : CheckedFilledFieldStarSource model) : Bool :=
   checked.filter.isSome
 
-/-- Elaborate one starred filled-field operand, with or without a filter, reusing the established
-    star-path gates and the shared star `Having` fragment. -/
+/-- A plain source has no captured filter environment. -/
+def plain (declaringGroup : GroupPath) (source : CheckedStarFieldPath model) :
+    CheckedFilledFieldStarSource model := { declaringGroup, source, filter := none }
+
+/-- Certify a filter against a resolved star without resolving its path a second time. The lexical
+origin and the available captured binding remain distinct, as on the Number entity-list route. -/
+def withHaving (model : FlatModel) (declaringGroup bindingGroup : GroupPath)
+    (source : CheckedStarFieldPath model) (having : SurfaceCorrelatedHaving)
+    (writtenGroup : GroupPath := bindingGroup) :
+    Except CorrelationElabError (CheckedFilledFieldStarSource model) := do
+  having.requireOuterReferencesBound model declaringGroup writtenGroup
+    (model.repeatableScopeForGroupPath bindingGroup)
+  let filter ← elaborateStarHavingCore model declaringGroup source having bindingGroup
+  pure { declaringGroup, bindingGroup, source, filter := some filter }
+
+/-- Elaborate one starred filled-field operand with the shared path and filter gates. -/
 def elaborate (model : FlatModel) (declaringGroup : GroupPath)
     (authored : SurfaceStarFieldPath) (having : Option SurfaceCorrelatedHaving)
     (writtenGroup : GroupPath := declaringGroup) :
     Except FilledFieldStarCountElabError (CheckedFilledFieldStarSource model) := do
   let source ←
-    (elaborateFilledFieldStarValidationSource model declaringGroup authored writtenGroup).mapError
-      .path
+    (elaborateFilledFieldStarValidationSource model declaringGroup authored writtenGroup).mapError .path
   match having with
-  | none => pure { declaringGroup, source, filter := none }
-  | some authoredHaving =>
-      authoredHaving.requireOuterReferencesBound model declaringGroup writtenGroup
-        |>.mapError .having
-      let filter ←
-        (elaborateStarHavingCore model declaringGroup source authoredHaving).mapError .having
-      pure { declaringGroup, source, filter := some filter }
+  | none => pure (plain declaringGroup source)
+  | some having =>
+      (withHaving model declaringGroup declaringGroup source having writtenGroup).mapError .having
 
 /-- Count one capacity-bounded starred field extent in full validation. A filter selects candidate
     rows before any counted cell is read, so a row whose condition is not true drops with its cells
@@ -125,6 +138,26 @@ def evaluatePartialFilledFieldCountValidation
     pure .skippedHaving
   else
     checked.source.evaluatePartialFilledFieldCountValidation document outer scope
+
+/-- A filtered star's selected missing slots. Only the missing candidates use the declared read
+view; physical candidates retain the ordinary checked-document resolver. Captured reads and the
+star's bound prefix must denote instantiated rows before missing candidate slots may be explored. -/
+def selectedMissingCount? (checked : CheckedFilledFieldStarSource model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError (Option Nat) := do
+  let some candidates ← checked.source.declaredEnvironments? document outer | return none
+  let scope := checked.source.declaration.repeatableScope
+  let missing ← candidates.filterM fun environment => do
+    let path ← (environment.pathForScope scope).mapError .environment
+    pure (!(repeatableAncestorRowsFor scope path).all document.source.instantiatedRows.contains)
+  match checked.filter with
+  | none => pure (some missing.length)
+  | some filter =>
+      for scope in (CorrelatedHaving.outerIterationScopes model filter.condition).filterMap id do
+        document.requireInstantiatedEnvironment scope outer
+      let selected ← filter.condition.selectEnvironmentsResolving
+        (document.resolvingCorrelationContextWithRead document.readDeclared) outer missing
+      pure (some selected.length)
 
 end CheckedFilledFieldStarSource
 

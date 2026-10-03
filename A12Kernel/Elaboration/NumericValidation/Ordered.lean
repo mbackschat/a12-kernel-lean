@@ -158,7 +158,9 @@ def admitted (atom : OrderedNumericValidationAtom model)
         scope == .sameGroupAddressed) &&
         CheckedGroupCountOperand.admittedArity operands &&
         !operands.any CheckedGroupCountOperand.isRoot
-  | .filledFieldCount _ | .tokenDistinctCount _ | .temporalDistinctCount _ =>
+  | .filledFieldCount source =>
+      !source.hasHaving && (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed)
+  | .tokenDistinctCount _ | .temporalDistinctCount _ =>
       scope == .modelWideCheckedComputation || scope == .sameGroupAddressed
 
 def referencesField (atom : OrderedNumericValidationAtom model)
