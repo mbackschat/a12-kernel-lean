@@ -1,0 +1,854 @@
+{
+  "header" : {
+    "id" : "TextGuards",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "TextGuards",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/G",
+        "name" : "G",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/G/S",
+            "name" : "S",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 3
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/T",
+            "name" : "T",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 3
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/E",
+            "name" : "E",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "A",
+                    "label" : [ {
+                      "locale" : "en_US",
+                      "text" : "Alpha"
+                    } ]
+                  }, {
+                    "value" : "B",
+                    "label" : [ {
+                      "locale" : "en_US",
+                      "text" : "Beta"
+                    } ]
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/F",
+            "name" : "F",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "A",
+                    "label" : [ {
+                      "locale" : "en_US",
+                      "text" : "Alpha"
+                    } ]
+                  }, {
+                    "value" : "B",
+                    "label" : [ {
+                      "locale" : "en_US",
+                      "text" : "Beta"
+                    } ]
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/StringEq",
+            "name" : "StringEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/StringEqComp",
+            "name" : "StringEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../StringEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[S] == \"A\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/StringNe",
+            "name" : "StringNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/StringNeComp",
+            "name" : "StringNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../StringNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[S] != \"A\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/LiteralFirst",
+            "name" : "LiteralFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/LiteralFirstComp",
+            "name" : "LiteralFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../LiteralFirst",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "\"A\" == [S]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/EnumEq",
+            "name" : "EnumEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/EnumEqComp",
+            "name" : "EnumEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EnumEq",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[E] == \"A\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/EnumNe",
+            "name" : "EnumNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/EnumNeComp",
+            "name" : "EnumNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EnumNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[E] != \"A\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/EnumFirst",
+            "name" : "EnumFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/EnumFirstComp",
+            "name" : "EnumFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EnumFirst",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "\"A\" != [E]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/StringPair",
+            "name" : "StringPair",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/StringPairComp",
+            "name" : "StringPairComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../StringPair",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[S] == [T]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/EnumPair",
+            "name" : "EnumPair",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/EnumPairComp",
+            "name" : "EnumPairComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EnumPair",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[E] == [F]"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/EmptyLiteral",
+            "name" : "EmptyLiteral",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/EmptyLiteralComp",
+            "name" : "EmptyLiteralComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EmptyLiteral",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[S] == \"\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/EmptyNe",
+            "name" : "EmptyNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/EmptyNeComp",
+            "name" : "EmptyNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EmptyNe",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[S] != \"\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/FalseAnd",
+            "name" : "FalseAnd",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/FalseAndComp",
+            "name" : "FalseAndComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FalseAnd",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[S] == \"A\" And [E] == \"A\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/TrueOr",
+            "name" : "TrueOr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/TrueOrComp",
+            "name" : "TrueOrComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TrueOr",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[S] == \"A\" Or [E] == \"A\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/EnumFirstAnd",
+            "name" : "EnumFirstAnd",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/EnumFirstAndComp",
+            "name" : "EnumFirstAndComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EnumFirstAnd",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[E] == \"A\" And [S] == \"A\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/EnumFirstOr",
+            "name" : "EnumFirstOr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/EnumFirstOrComp",
+            "name" : "EnumFirstOrComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EnumFirstOr",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[E] == \"A\" Or [S] == \"A\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Guard selected a different value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterStringEq",
+            "name" : "AfterStringEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterStringEqComp",
+            "name" : "AfterStringEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterStringEq",
+              "computationAlternatives" : [ {
+                "operation" : "[StringEq] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterStringNe",
+            "name" : "AfterStringNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterStringNeComp",
+            "name" : "AfterStringNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterStringNe",
+              "computationAlternatives" : [ {
+                "operation" : "[StringNe] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterLiteralFirst",
+            "name" : "AfterLiteralFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterLiteralFirstComp",
+            "name" : "AfterLiteralFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterLiteralFirst",
+              "computationAlternatives" : [ {
+                "operation" : "[LiteralFirst] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterEnumEq",
+            "name" : "AfterEnumEq",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterEnumEqComp",
+            "name" : "AfterEnumEqComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterEnumEq",
+              "computationAlternatives" : [ {
+                "operation" : "[EnumEq] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterEnumNe",
+            "name" : "AfterEnumNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterEnumNeComp",
+            "name" : "AfterEnumNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterEnumNe",
+              "computationAlternatives" : [ {
+                "operation" : "[EnumNe] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterEnumFirst",
+            "name" : "AfterEnumFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterEnumFirstComp",
+            "name" : "AfterEnumFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterEnumFirst",
+              "computationAlternatives" : [ {
+                "operation" : "[EnumFirst] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterStringPair",
+            "name" : "AfterStringPair",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterStringPairComp",
+            "name" : "AfterStringPairComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterStringPair",
+              "computationAlternatives" : [ {
+                "operation" : "[StringPair] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterEnumPair",
+            "name" : "AfterEnumPair",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterEnumPairComp",
+            "name" : "AfterEnumPairComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterEnumPair",
+              "computationAlternatives" : [ {
+                "operation" : "[EnumPair] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterEmptyLiteral",
+            "name" : "AfterEmptyLiteral",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterEmptyLiteralComp",
+            "name" : "AfterEmptyLiteralComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterEmptyLiteral",
+              "computationAlternatives" : [ {
+                "operation" : "[EmptyLiteral] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterEmptyNe",
+            "name" : "AfterEmptyNe",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterEmptyNeComp",
+            "name" : "AfterEmptyNeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterEmptyNe",
+              "computationAlternatives" : [ {
+                "operation" : "[EmptyNe] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterFalseAnd",
+            "name" : "AfterFalseAnd",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterFalseAndComp",
+            "name" : "AfterFalseAndComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterFalseAnd",
+              "computationAlternatives" : [ {
+                "operation" : "[FalseAnd] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterTrueOr",
+            "name" : "AfterTrueOr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterTrueOrComp",
+            "name" : "AfterTrueOrComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterTrueOr",
+              "computationAlternatives" : [ {
+                "operation" : "[TrueOr] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterEnumFirstAnd",
+            "name" : "AfterEnumFirstAnd",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterEnumFirstAndComp",
+            "name" : "AfterEnumFirstAndComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterEnumFirstAnd",
+              "computationAlternatives" : [ {
+                "operation" : "[EnumFirstAnd] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterEnumFirstOr",
+            "name" : "AfterEnumFirstOr",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterEnumFirstOrComp",
+            "name" : "AfterEnumFirstOrComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterEnumFirstOr",
+              "computationAlternatives" : [ {
+                "operation" : "[EnumFirstOr] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Dependent differs from its computed value."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

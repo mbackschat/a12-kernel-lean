@@ -1694,3 +1694,6 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 <a id="src-peer-ba-computations-replay"></a>
 - [Six transferred peer computation models replay on 30 runtime documents](sources/evaluation-and-application-routes.md#src-peer-ba-computations-replay)
+
+<a id="src-text-computation-guards"></a>
+- [String and Enumeration computation guards suppress empty operands and poison on reached invalid reads](sources/computation-scheduling-probes.md#src-text-computation-guards)
