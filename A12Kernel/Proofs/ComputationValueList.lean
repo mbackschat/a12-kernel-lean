@@ -42,6 +42,36 @@ theorem anyComputation_emptyCells (predicate : ValueListAtom kind → Bool)
 
 end ValueListCell
 
+namespace ComputationValueListOperator
+
+/-- The actual streaming evaluator skips every subject callback when AtLeastOne collects
+no present members, including callbacks that would fail structurally or formally. -/
+theorem atLeastOne_emptyCollection
+    (collect : Unit → Except error (Except FormalCause (List (ValueListAtom kind))))
+    (anySubject : (ValueListAtom kind → Bool) → Except error (Except FormalCause Bool))
+    (emptyMembers : collect () = .ok (.ok [])) :
+    evalUsing (.quantified .atLeastOne) collect anySubject = .ok .notTrue := by
+  simp [evalUsing, emptyMembers, bind, Except.bind, pure, Except.pure]
+
+/-- NotAll's empty-subject prepass excludes every member failure from the streaming path. -/
+theorem notAll_emptySubjects
+    (collect : Unit → Except error (Except FormalCause (List (ValueListAtom kind))))
+    (anySubject : (ValueListAtom kind → Bool) → Except error (Except FormalCause Bool))
+    (emptySubjects : anySubject (fun _ => true) = .ok (.ok false)) :
+    evalUsing (.quantified .notAll) collect anySubject = .ok .notTrue := by
+  simp [evalUsing, emptySubjects, bind, Except.bind, pure, Except.pure]
+
+/-- Scalar membership never hides a reached invalid member, regardless of its subject. -/
+theorem scalar_memberPoison
+    (operator : ValueListMembershipOp) (cause : FormalCause)
+    (collect : Unit → Except error (Except FormalCause (List (ValueListAtom kind))))
+    (anySubject : (ValueListAtom kind → Bool) → Except error (Except FormalCause Bool))
+    (poisonedMembers : collect () = .ok (.error cause)) :
+    evalUsing (.scalar operator) collect anySubject = .ok (.poison cause) := by
+  cases operator <;> simp [evalUsing, poisonedMembers, bind, Except.bind, pure, Except.pure]
+
+end ComputationValueListOperator
+
 namespace ValueListQuantifier
 
 /-- Member operands containing only empty cells leave the collector unchanged. -/
@@ -79,8 +109,8 @@ theorem atLeastOne_emptyMemberCells
     (fields : List field) (values : List value)
     (emptyMembers : ∀ v ∈ values, ∃ side, resolveValue v = .ok side ∧ ∀ c ∈ side.cells, c = .empty) :
     ValueListQuantifier.atLeastOne.evalComputationWith resolveField resolveValue fields values = .ok .notTrue := by
-  simp [evalComputationWith, collectOperands_emptyCells resolveValue values [] emptyMembers,
-    bind, Except.bind, pure, Except.pure]
+  exact ComputationValueListOperator.atLeastOne_emptyCollection _ _
+    (collectOperands_emptyCells resolveValue values [] emptyMembers)
 
 /-- NotAll's presence prepass skips the member side when all subject cells are empty. -/
 theorem notAll_emptySubjectCells
@@ -89,8 +119,8 @@ theorem notAll_emptySubjectCells
     (fields : List field) (values : List value)
     (emptyFields : ∀ f ∈ fields, ∃ side, resolveField f = .ok side ∧ ∀ c ∈ side.cells, c = .empty) :
     ValueListQuantifier.notAll.evalComputationWith resolveField resolveValue fields values = .ok .notTrue := by
-  simp [evalComputationWith, anyOperands_emptyCells resolveField (fun _ => true) fields emptyFields,
-    bind, Except.bind, pure, Except.pure]
+  exact ComputationValueListOperator.notAll_emptySubjects _ _
+    (anyOperands_emptyCells resolveField (fun _ => true) fields emptyFields)
 
 /-- An empty member side decides AtLeastOne before any field is read. -/
 theorem atLeastOne_empty_members

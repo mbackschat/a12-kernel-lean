@@ -1,0 +1,2010 @@
+{
+  "header" : {
+    "id" : "MembershipFamily_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "MembershipFamily_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 4,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/S",
+                "name" : "S",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 1
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/E",
+                "name" : "E",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "x"
+                      }, {
+                        "value" : "y"
+                      }, {
+                        "value" : "z"
+                      } ]
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Keep",
+                "name" : "Keep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 1
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NSubject",
+            "name" : "NSubject",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NFirst",
+            "name" : "NFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NLast",
+            "name" : "NLast",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SSubject",
+            "name" : "SSubject",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SFirst",
+            "name" : "SFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SLast",
+            "name" : "SLast",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ESubject",
+            "name" : "ESubject",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "x"
+                  }, {
+                    "value" : "y"
+                  }, {
+                    "value" : "z"
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/EFirst",
+            "name" : "EFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "x"
+                  }, {
+                    "value" : "y"
+                  }, {
+                    "value" : "z"
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ELast",
+            "name" : "ELast",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "x"
+                  }, {
+                    "value" : "y"
+                  }, {
+                    "value" : "z"
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NInFields",
+            "name" : "NInFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNInFields",
+            "name" : "AfterNInFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NInLiterals",
+            "name" : "NInLiterals",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNInLiterals",
+            "name" : "AfterNInLiterals",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NNotInFields",
+            "name" : "NNotInFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNNotInFields",
+            "name" : "AfterNNotInFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NNotInLiterals",
+            "name" : "NNotInLiterals",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNNotInLiterals",
+            "name" : "AfterNNotInLiterals",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NAnyFields",
+            "name" : "NAnyFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNAnyFields",
+            "name" : "AfterNAnyFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NAnyFilteredSubjects",
+            "name" : "NAnyFilteredSubjects",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNAnyFilteredSubjects",
+            "name" : "AfterNAnyFilteredSubjects",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NAnyFilteredMembers",
+            "name" : "NAnyFilteredMembers",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNAnyFilteredMembers",
+            "name" : "AfterNAnyFilteredMembers",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NNoFields",
+            "name" : "NNoFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNNoFields",
+            "name" : "AfterNNoFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NNoFilteredSubjects",
+            "name" : "NNoFilteredSubjects",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNNoFilteredSubjects",
+            "name" : "AfterNNoFilteredSubjects",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NNoFilteredMembers",
+            "name" : "NNoFilteredMembers",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNNoFilteredMembers",
+            "name" : "AfterNNoFilteredMembers",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NNotAllFields",
+            "name" : "NNotAllFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNNotAllFields",
+            "name" : "AfterNNotAllFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NNotAllFilteredSubjects",
+            "name" : "NNotAllFilteredSubjects",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNNotAllFilteredSubjects",
+            "name" : "AfterNNotAllFilteredSubjects",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NNotAllFilteredMembers",
+            "name" : "NNotAllFilteredMembers",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNNotAllFilteredMembers",
+            "name" : "AfterNNotAllFilteredMembers",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SInFields",
+            "name" : "SInFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSInFields",
+            "name" : "AfterSInFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SInLiterals",
+            "name" : "SInLiterals",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSInLiterals",
+            "name" : "AfterSInLiterals",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SNotInFields",
+            "name" : "SNotInFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSNotInFields",
+            "name" : "AfterSNotInFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SNotInLiterals",
+            "name" : "SNotInLiterals",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSNotInLiterals",
+            "name" : "AfterSNotInLiterals",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SAnyFields",
+            "name" : "SAnyFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSAnyFields",
+            "name" : "AfterSAnyFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SAnyFilteredSubjects",
+            "name" : "SAnyFilteredSubjects",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSAnyFilteredSubjects",
+            "name" : "AfterSAnyFilteredSubjects",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SAnyFilteredMembers",
+            "name" : "SAnyFilteredMembers",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSAnyFilteredMembers",
+            "name" : "AfterSAnyFilteredMembers",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SNoFields",
+            "name" : "SNoFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSNoFields",
+            "name" : "AfterSNoFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SNoFilteredSubjects",
+            "name" : "SNoFilteredSubjects",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSNoFilteredSubjects",
+            "name" : "AfterSNoFilteredSubjects",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SNoFilteredMembers",
+            "name" : "SNoFilteredMembers",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSNoFilteredMembers",
+            "name" : "AfterSNoFilteredMembers",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SNotAllFields",
+            "name" : "SNotAllFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSNotAllFields",
+            "name" : "AfterSNotAllFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SNotAllFilteredSubjects",
+            "name" : "SNotAllFilteredSubjects",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSNotAllFilteredSubjects",
+            "name" : "AfterSNotAllFilteredSubjects",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SNotAllFilteredMembers",
+            "name" : "SNotAllFilteredMembers",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterSNotAllFilteredMembers",
+            "name" : "AfterSNotAllFilteredMembers",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/EInFields",
+            "name" : "EInFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterEInFields",
+            "name" : "AfterEInFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/EInLiterals",
+            "name" : "EInLiterals",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterEInLiterals",
+            "name" : "AfterEInLiterals",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ENotInFields",
+            "name" : "ENotInFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterENotInFields",
+            "name" : "AfterENotInFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ENotInLiterals",
+            "name" : "ENotInLiterals",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterENotInLiterals",
+            "name" : "AfterENotInLiterals",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/EAnyFields",
+            "name" : "EAnyFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterEAnyFields",
+            "name" : "AfterEAnyFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ENoFields",
+            "name" : "ENoFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterENoFields",
+            "name" : "AfterENoFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ENotAllFields",
+            "name" : "ENotAllFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterENotAllFields",
+            "name" : "AfterENotAllFields",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NInFieldsComp",
+            "name" : "NInFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NInFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueIncludedInValueList(NSubject, [NFirst], [NLast])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNInFieldsComp",
+            "name" : "AfterNInFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNInFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NInFields) Or FieldNotFilled(NInFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NInLiteralsComp",
+            "name" : "NInLiteralsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NInLiterals",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueIncludedInValueList(NSubject, 0, 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNInLiteralsComp",
+            "name" : "AfterNInLiteralsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNInLiterals",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NInLiterals) Or FieldNotFilled(NInLiterals)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NNotInFieldsComp",
+            "name" : "NNotInFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NNotInFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueNotIncludedInValueList(NSubject, [NFirst], [NLast])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNNotInFieldsComp",
+            "name" : "AfterNNotInFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNNotInFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NNotInFields) Or FieldNotFilled(NNotInFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NNotInLiteralsComp",
+            "name" : "NNotInLiteralsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NNotInLiterals",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueNotIncludedInValueList(NSubject, 0, 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNNotInLiteralsComp",
+            "name" : "AfterNNotInLiteralsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNNotInLiterals",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NNotInLiterals) Or FieldNotFilled(NNotInLiterals)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NAnyFieldsComp",
+            "name" : "NAnyFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NAnyFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldValueIncludedInValueList(NSubject In NFirst, NLast)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNAnyFieldsComp",
+            "name" : "AfterNAnyFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNAnyFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NAnyFields) Or FieldNotFilled(NAnyFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NAnyFilteredSubjectsComp",
+            "name" : "NAnyFilteredSubjectsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NAnyFilteredSubjects",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldValueIncludedInValueList(Rows*/N Having ([Rows/Keep] == \"y\") In NFirst)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNAnyFilteredSubjectsComp",
+            "name" : "AfterNAnyFilteredSubjectsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNAnyFilteredSubjects",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NAnyFilteredSubjects) Or FieldNotFilled(NAnyFilteredSubjects)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NAnyFilteredMembersComp",
+            "name" : "NAnyFilteredMembersComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NAnyFilteredMembers",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldValueIncludedInValueList(NSubject In Rows*/N Having ([Rows/Keep] == \"y\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNAnyFilteredMembersComp",
+            "name" : "AfterNAnyFilteredMembersComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNAnyFilteredMembers",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NAnyFilteredMembers) Or FieldNotFilled(NAnyFilteredMembers)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NNoFieldsComp",
+            "name" : "NNoFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NNoFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldValueIncludedInValueList(NSubject In NFirst, NLast)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNNoFieldsComp",
+            "name" : "AfterNNoFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNNoFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NNoFields) Or FieldNotFilled(NNoFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NNoFilteredSubjectsComp",
+            "name" : "NNoFilteredSubjectsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NNoFilteredSubjects",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldValueIncludedInValueList(Rows*/N Having ([Rows/Keep] == \"y\") In NFirst)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNNoFilteredSubjectsComp",
+            "name" : "AfterNNoFilteredSubjectsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNNoFilteredSubjects",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NNoFilteredSubjects) Or FieldNotFilled(NNoFilteredSubjects)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NNoFilteredMembersComp",
+            "name" : "NNoFilteredMembersComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NNoFilteredMembers",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldValueIncludedInValueList(NSubject In Rows*/N Having ([Rows/Keep] == \"y\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNNoFilteredMembersComp",
+            "name" : "AfterNNoFilteredMembersComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNNoFilteredMembers",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NNoFilteredMembers) Or FieldNotFilled(NNoFilteredMembers)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NNotAllFieldsComp",
+            "name" : "NNotAllFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NNotAllFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldValuesIncludedInValueList(NSubject In NFirst, NLast)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNNotAllFieldsComp",
+            "name" : "AfterNNotAllFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNNotAllFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NNotAllFields) Or FieldNotFilled(NNotAllFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NNotAllFilteredSubjectsComp",
+            "name" : "NNotAllFilteredSubjectsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NNotAllFilteredSubjects",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldValuesIncludedInValueList(Rows*/N Having ([Rows/Keep] == \"y\") In NFirst)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNNotAllFilteredSubjectsComp",
+            "name" : "AfterNNotAllFilteredSubjectsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNNotAllFilteredSubjects",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NNotAllFilteredSubjects) Or FieldNotFilled(NNotAllFilteredSubjects)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NNotAllFilteredMembersComp",
+            "name" : "NNotAllFilteredMembersComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NNotAllFilteredMembers",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldValuesIncludedInValueList(NSubject In Rows*/N Having ([Rows/Keep] == \"y\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNNotAllFilteredMembersComp",
+            "name" : "AfterNNotAllFilteredMembersComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNNotAllFilteredMembers",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(NNotAllFilteredMembers) Or FieldNotFilled(NNotAllFilteredMembers)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SInFieldsComp",
+            "name" : "SInFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SInFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueIncludedInValueList(SSubject, [SFirst], [SLast])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSInFieldsComp",
+            "name" : "AfterSInFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSInFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SInFields) Or FieldNotFilled(SInFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SInLiteralsComp",
+            "name" : "SInLiteralsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SInLiterals",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueIncludedInValueList(SSubject, \"x\", \"y\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSInLiteralsComp",
+            "name" : "AfterSInLiteralsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSInLiterals",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SInLiterals) Or FieldNotFilled(SInLiterals)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SNotInFieldsComp",
+            "name" : "SNotInFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SNotInFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueNotIncludedInValueList(SSubject, [SFirst], [SLast])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSNotInFieldsComp",
+            "name" : "AfterSNotInFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSNotInFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SNotInFields) Or FieldNotFilled(SNotInFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SNotInLiteralsComp",
+            "name" : "SNotInLiteralsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SNotInLiterals",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueNotIncludedInValueList(SSubject, \"x\", \"y\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSNotInLiteralsComp",
+            "name" : "AfterSNotInLiteralsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSNotInLiterals",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SNotInLiterals) Or FieldNotFilled(SNotInLiterals)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SAnyFieldsComp",
+            "name" : "SAnyFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SAnyFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldValueIncludedInValueList(SSubject In SFirst, SLast)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSAnyFieldsComp",
+            "name" : "AfterSAnyFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSAnyFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SAnyFields) Or FieldNotFilled(SAnyFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SAnyFilteredSubjectsComp",
+            "name" : "SAnyFilteredSubjectsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SAnyFilteredSubjects",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldValueIncludedInValueList(Rows*/S Having ([Rows/Keep] == \"y\") In SFirst)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSAnyFilteredSubjectsComp",
+            "name" : "AfterSAnyFilteredSubjectsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSAnyFilteredSubjects",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SAnyFilteredSubjects) Or FieldNotFilled(SAnyFilteredSubjects)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SAnyFilteredMembersComp",
+            "name" : "SAnyFilteredMembersComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SAnyFilteredMembers",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldValueIncludedInValueList(SSubject In Rows*/S Having ([Rows/Keep] == \"y\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSAnyFilteredMembersComp",
+            "name" : "AfterSAnyFilteredMembersComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSAnyFilteredMembers",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SAnyFilteredMembers) Or FieldNotFilled(SAnyFilteredMembers)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SNoFieldsComp",
+            "name" : "SNoFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SNoFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldValueIncludedInValueList(SSubject In SFirst, SLast)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSNoFieldsComp",
+            "name" : "AfterSNoFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSNoFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SNoFields) Or FieldNotFilled(SNoFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SNoFilteredSubjectsComp",
+            "name" : "SNoFilteredSubjectsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SNoFilteredSubjects",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldValueIncludedInValueList(Rows*/S Having ([Rows/Keep] == \"y\") In SFirst)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSNoFilteredSubjectsComp",
+            "name" : "AfterSNoFilteredSubjectsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSNoFilteredSubjects",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SNoFilteredSubjects) Or FieldNotFilled(SNoFilteredSubjects)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SNoFilteredMembersComp",
+            "name" : "SNoFilteredMembersComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SNoFilteredMembers",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldValueIncludedInValueList(SSubject In Rows*/S Having ([Rows/Keep] == \"y\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSNoFilteredMembersComp",
+            "name" : "AfterSNoFilteredMembersComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSNoFilteredMembers",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SNoFilteredMembers) Or FieldNotFilled(SNoFilteredMembers)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SNotAllFieldsComp",
+            "name" : "SNotAllFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SNotAllFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldValuesIncludedInValueList(SSubject In SFirst, SLast)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSNotAllFieldsComp",
+            "name" : "AfterSNotAllFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSNotAllFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SNotAllFields) Or FieldNotFilled(SNotAllFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SNotAllFilteredSubjectsComp",
+            "name" : "SNotAllFilteredSubjectsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SNotAllFilteredSubjects",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldValuesIncludedInValueList(Rows*/S Having ([Rows/Keep] == \"y\") In SFirst)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSNotAllFilteredSubjectsComp",
+            "name" : "AfterSNotAllFilteredSubjectsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSNotAllFilteredSubjects",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SNotAllFilteredSubjects) Or FieldNotFilled(SNotAllFilteredSubjects)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SNotAllFilteredMembersComp",
+            "name" : "SNotAllFilteredMembersComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SNotAllFilteredMembers",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldValuesIncludedInValueList(SSubject In Rows*/S Having ([Rows/Keep] == \"y\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterSNotAllFilteredMembersComp",
+            "name" : "AfterSNotAllFilteredMembersComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSNotAllFilteredMembers",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(SNotAllFilteredMembers) Or FieldNotFilled(SNotAllFilteredMembers)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/EInFieldsComp",
+            "name" : "EInFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EInFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueIncludedInValueList(ESubject, [EFirst], [ELast])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterEInFieldsComp",
+            "name" : "AfterEInFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterEInFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(EInFields) Or FieldNotFilled(EInFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/EInLiteralsComp",
+            "name" : "EInLiteralsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EInLiterals",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueIncludedInValueList(ESubject, \"x\", \"y\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterEInLiteralsComp",
+            "name" : "AfterEInLiteralsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterEInLiterals",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(EInLiterals) Or FieldNotFilled(EInLiterals)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ENotInFieldsComp",
+            "name" : "ENotInFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ENotInFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueNotIncludedInValueList(ESubject, [EFirst], [ELast])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterENotInFieldsComp",
+            "name" : "AfterENotInFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterENotInFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(ENotInFields) Or FieldNotFilled(ENotInFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ENotInLiteralsComp",
+            "name" : "ENotInLiteralsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ENotInLiterals",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValueNotIncludedInValueList(ESubject, \"x\", \"y\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterENotInLiteralsComp",
+            "name" : "AfterENotInLiteralsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterENotInLiterals",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(ENotInLiterals) Or FieldNotFilled(ENotInLiterals)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/EAnyFieldsComp",
+            "name" : "EAnyFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../EAnyFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldValueIncludedInValueList(ESubject In EFirst, ELast)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterEAnyFieldsComp",
+            "name" : "AfterEAnyFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterEAnyFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(EAnyFields) Or FieldNotFilled(EAnyFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ENoFieldsComp",
+            "name" : "ENoFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ENoFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldValueIncludedInValueList(ESubject In EFirst, ELast)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterENoFieldsComp",
+            "name" : "AfterENoFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterENoFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(ENoFields) Or FieldNotFilled(ENoFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ENotAllFieldsComp",
+            "name" : "ENotAllFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ENotAllFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldValuesIncludedInValueList(ESubject In EFirst, ELast)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterENotAllFieldsComp",
+            "name" : "AfterENotAllFieldsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterENotAllFields",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(ENotAllFields) Or FieldNotFilled(ENotAllFields)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Check result."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

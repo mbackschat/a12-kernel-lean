@@ -2955,3 +2955,7 @@ run_cmd do
 #print axioms A12Kernel.ValueListQuantifier.notAll_emptySubjectCells
 
 #print axioms A12Kernel.conditionTree_evalVerdictExcept_embed
+
+#print axioms A12Kernel.ComputationValueListOperator.atLeastOne_emptyCollection
+#print axioms A12Kernel.ComputationValueListOperator.notAll_emptySubjects
+#print axioms A12Kernel.ComputationValueListOperator.scalar_memberPoison

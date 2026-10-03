@@ -4,100 +4,241 @@ import A12Kernel.Semantics.ComputationValueList
 
 namespace A12Kernel
 
+inductive SurfaceScalarMembershipMembers where
+  | fields (members : List SurfaceTextFieldOperand)
+  | numbers (members : List Int)
+  | tokens (members : List String)
+  deriving Repr, DecidableEq
+
 inductive SurfaceComputationPredicate where
+  | scalarMembership (operator : ValueListMembershipOp) (subject : SurfaceTextFieldOperand)
+      (members : SurfaceScalarMembershipMembers)
   | entityValueList (source : SurfaceNumberEntityValueListSource)
   | tokenLiteralValueList (source : SurfaceTokenEntityStringLiteralValueListSource)
   deriving Repr, DecidableEq
 
 inductive ComputationPredicateElabError where
+  | read (error : ResolveError)
+  | number (error : NumberEntityElabError)
+  | emptyMembers
+  | incoherent
   | token (error : TokenEntityValueListElabError)
   | literals (error : TokenEntityStringLiteralValueListElabError)
-  | filteredSource
   deriving Repr, DecidableEq
 
 inductive ComputationPredicateError where
   | contextRequired
-  | filteredSource
   | addressing (error : StarAddressingError)
   deriving Repr, DecidableEq
 
-/-- Retain the existing typed source certificate instead of erasing membership into a validation
-verdict. Filtered sources need a continuation-aware reader and are excluded by admission. -/
+/-- Retain typed source certificates and authored filters; computation traversal keeps reached
+errors distinct from validation's unknown verdict. -/
 inductive CheckedComputationPredicate (model : FlatModel) where
   | valueList (source : CheckedValueListCondition model)
+  | scalarValueList (operator : ValueListMembershipOp) (source : CheckedValueListCondition model)
+  | scalarNumberLiterals (operator : ValueListMembershipOp)
+      (subject : CheckedNumberEntityField model) (values : List Int)
 
 namespace CheckedComputationPredicate
 
 def referencesField (predicate : CheckedComputationPredicate model) (field : FieldId) : Bool :=
   match predicate with
-  | .valueList source => source.referencesField field
+  | .valueList source | .scalarValueList _ source => source.referencesField field
+  | .scalarNumberLiterals _ source _ => source.field.id == field
 
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
   match predicate with
-  | .valueList source => !source.hasHaving && source.bindingScopes.all (·.isPrefixOf scope)
+  | .valueList source | .scalarValueList _ source => source.bindingScopes.all (·.isPrefixOf scope)
+  | .scalarNumberLiterals _ source _ => source.declaration.repeatableScope.isPrefixOf scope
 
 private def addressed (context : ScalarComputationContext) : Except ComputationPredicateError ComputationFillContext :=
   match context.addressed with
   | some addressed => pure addressed
   | none => throw .contextRequired
 
-private def resolveNumber (context : ScalarComputationContext) :
-    CheckedNumberEntityOperand model → Except ComputationPredicateError (ResolvedValueListSide .number)
-  | .field source => pure (source.resolvedAggregateSideAt .computation { read := context.read })
-  | .star source => do
+private def scanCells (consume : State → ValueListCell kind → State ⊕ Result) :
+    List (ValueListCell kind) → State → ComputationHavingScanResult State Result
+  | [], state => .exhausted state
+  | cell :: rest, state => match consume state cell with
+      | .inl next => scanCells consume rest next
+      | .inr result => .terminated result
+
+private def scanNumber (context : ScalarComputationContext)
+    (filterRead : Env → FieldId → CheckedCell)
+    (consume : State → ValueListCell .number → State ⊕ Result)
+    (source : CheckedNumberEntityOperand model) (state : State) :
+    Except ComputationPredicateError (ComputationHavingScanResult State Result) := do
+  match source with
+  | .field source => pure (scanCells consume
+      (source.resolvedAggregateSideAt .computation { read := context.read }).cells state)
+  | .star source =>
       let addressed ← addressed context
       let resolved ← (source.source.path.resolveInCapacity addressed.document context.row).mapError .addressing
-      pure (resolved.toResolvedSide (source.checkedValueListCellAt .computation addressed.read))
-  | .group source => do
+      pure (scanCells consume
+        (resolved.toResolvedSide (source.checkedValueListCellAt .computation addressed.read)).cells state)
+  | .group source =>
       let addressed ← addressed context
-      (source.resolvedSideIn .computation addressed.document context.row addressed.read).mapError .addressing
-  | .starHaving _ => throw .filteredSource
+      let side ← (source.resolvedSideIn .computation addressed.document context.row addressed.read).mapError .addressing
+      pure (scanCells consume side.cells state)
+  | .starHaving source =>
+      let addressed ← addressed context
+      let resolved ← (source.source.source.path.resolveInCapacity addressed.document context.row).mapError .addressing
+      pure (source.having.scanComputation { read := filterRead } context.row
+        (fun state environment => consume state
+          (source.source.checkedValueListCellAt .computation addressed.read environment))
+        resolved.environments state)
 
-private def resolveToken (context : ScalarComputationContext) :
-    CheckedTokenEntityOperand model → Except ComputationPredicateError (ResolvedValueListSide .token)
-  | .field source => pure (source.resolvedSideAt .computation context.read)
-  | .star source => do
+private def scanToken (context : ScalarComputationContext)
+    (filterRead : Env → FieldId → CheckedCell)
+    (consume : State → ValueListCell .token → State ⊕ Result)
+    (source : CheckedTokenEntityOperand model) (state : State) :
+    Except ComputationPredicateError (ComputationHavingScanResult State Result) := do
+  match source with
+  | .field source => pure (scanCells consume (source.resolvedSideAt .computation context.read).cells state)
+  | .group source =>
       let addressed ← addressed context
-      if source.filter.isSome then throw .filteredSource
+      let side ← (source.resolvedSideIn .computation addressed.document context.row addressed.read).mapError .addressing
+      pure (scanCells consume side.cells state)
+  | .star source =>
+      let addressed ← addressed context
       let resolved ← (source.source.path.resolveInCapacity addressed.document context.row).mapError .addressing
-      pure (resolved.toResolvedSide (source.valueListCellAt .computation addressed.read))
-  | .group source => do
-      let addressed ← addressed context
-      (source.resolvedSideIn .computation addressed.document context.row addressed.read).mapError .addressing
+      match source.filter with
+      | none => pure (scanCells consume
+          (resolved.toResolvedSide (source.valueListCellAt .computation addressed.read)).cells state)
+      | some having => pure (having.condition.scanComputation { read := filterRead } context.row
+          (fun state environment => consume state
+            (source.valueListCellAt .computation addressed.read environment)) resolved.environments state)
 
+private def scanOperands
+    (scan : operand → State → Except error (ComputationHavingScanResult State Result)) :
+    List operand → State → Except error (ComputationHavingScanResult State Result)
+  | [], state => pure (.exhausted state)
+  | source :: rest, state => do
+      match ← scan source state with
+      | .exhausted next => scanOperands scan rest next
+      | .terminated result => pure (.terminated result)
+      | .poison cause => pure (.poison cause)
+
+private def collectStep (values : List (ValueListAtom kind)) :
+    ValueListCell kind → List (ValueListAtom kind) ⊕ FormalCause
+  | .empty => .inl values
+  | .present value => .inl (value :: values)
+  | .unknown cause => .inr cause
+
+private def anyStep (predicate : ValueListAtom kind → Bool) (_ : Unit) :
+    ValueListCell kind → Unit ⊕ Except FormalCause Bool
+  | .empty => .inl ()
+  | .present value => if predicate value then .inr (.ok true) else .inl ()
+  | .unknown cause => .inr (.error cause)
+
+private def collectResult : ComputationHavingScanResult (List (ValueListAtom kind)) FormalCause →
+    Except FormalCause (List (ValueListAtom kind))
+  | .exhausted values => .ok values
+  | .terminated cause | .poison cause => .error cause
+
+private def anyResult : ComputationHavingScanResult Unit (Except FormalCause Bool) → Except FormalCause Bool
+  | .exhausted _ => .ok false
+  | .terminated result => result
+  | .poison cause => .error cause
+
+private def evalValueList (operator : ComputationValueListOperator)
+    (source : CheckedValueListCondition model) (context : ScalarComputationContext)
+    (filterRead : Env → FieldId → CheckedCell) :
+    Except ComputationPredicateError ComputationConditionResult :=
+  match source with
+  | .number source => operator.evalUsing
+      (fun _ => collectResult <$> scanOperands (scanNumber context filterRead collectStep) source.values.operands [])
+      (fun test => anyResult <$> scanOperands (scanNumber context filterRead (anyStep test)) source.fields.operands ())
+  | .token source => operator.evalUsing
+      (fun _ => collectResult <$> scanOperands (scanToken context filterRead collectStep) source.values.operands [])
+      (fun test => anyResult <$> scanOperands (scanToken context filterRead (anyStep test)) source.fields.operands ())
+  | .literals source => operator.evalUsing (kind := .token)
+      (fun _ => pure (.ok (source.firstValue :: source.restValues)))
+      (fun test => anyResult <$> scanOperands (scanToken context filterRead (anyStep test)) source.fields.operands ())
+
+/-- One phase selector serves typed Number and token streams. A filtered operand is scanned with
+its consumer continuation, so a deciding subject avoids the suffix beyond its prefetched successor. -/
 def evalChecked (predicate : CheckedComputationPredicate model)
-    (context : ScalarComputationContext) : Except ComputationPredicateError ComputationConditionResult := do
+    (context : ScalarComputationContext)
+    (filterRead? : Option (Env → FieldId → CheckedCell) := none) :
+    Except ComputationPredicateError ComputationConditionResult :=
+  let filterRead := filterRead?.getD (fun row field =>
+    (context.addressed.map (fun addressed => addressed.read row field)).getD (context.read field))
   match predicate with
-  | .valueList (.number source) =>
-      source.quantifier.evalComputationWith (resolveNumber context) (resolveNumber context)
-        source.fields.operands source.values.operands
-  | .valueList (.token source) =>
-      source.quantifier.evalComputationWith (resolveToken context) (resolveToken context)
-        source.fields.operands source.values.operands
-  | .valueList (.literals source) =>
-      source.quantifier.evalComputationWith (resolveToken context)
-        (fun value => pure ({ cells := [.present value], hasUninstantiatedTail := false, hasHaving := false } :
-          ResolvedValueListSide .token)) source.fields.operands (source.firstValue :: source.restValues)
+  | .valueList source => evalValueList (.quantified source.quantifier) source context filterRead
+  | .scalarValueList operator source => evalValueList (.scalar operator) source context filterRead
+  | .scalarNumberLiterals operator source values =>
+      (ComputationValueListOperator.scalar operator).evalUsing (kind := .number)
+        (fun _ => pure (.ok (values.map Rat.ofInt)))
+        (fun test => pure (ValueListCell.anyComputation test
+          [source.field.valueListCellAt .computation { read := context.read }]))
 
 end CheckedComputationPredicate
+
+private def scalarEntity (operand : SurfaceTextFieldOperand) : SurfaceFieldEntityOperand :=
+  .field operand.reference (match operand.projectionRef with
+    | .stored => .stored | .category category => .projected category)
+
+/-- A computation binds the same scalar read gates from its target group. Bracketed members
+are checked before the construct's subject kind, including when the subject names a fixed group
+(spec/12 §3 and the field-value-read predictions checkpoint). -/
+private def scalarRead (model : FlatModel) (declaringGroup targetGroup : GroupPath)
+    (bracketed : Bool) (operand : SurfaceTextFieldOperand) : Except ResolveError FlatFieldDecl := do
+  let declaration ← model.resolveComputationEntityRead declaringGroup targetGroup operand.reference
+  let refusal := match operand.projectionRef with
+    | .stored => if bracketed then declaration.fieldValueReadRefusal? else none
+    | .category _ => declaration.categoryReadRefusal?
+  if let some error := refusal then throw error
+  pure declaration
+
+private def scalarMemberReads (model : FlatModel) (declaringGroup targetGroup : GroupPath)
+    (subject : SurfaceTextFieldOperand) (members : List SurfaceTextFieldOperand) :
+    Except ComputationPredicateElabError Unit :=
+  (checkScalarMembershipReads (scalarRead model declaringGroup targetGroup false)
+    (scalarRead model declaringGroup targetGroup true) subject members).mapError .read
+
+private def elaborateEntityMembership (model : FlatModel) (declaringGroup targetGroup : GroupPath)
+    (source : SurfaceNumberEntityValueListSource) :
+    Except ComputationPredicateElabError (CheckedValueListCondition model) :=
+  match elaborateNumberEntityValueListSource model declaringGroup source (some targetGroup) with
+  | .ok checked => pure (.number checked)
+  | .error _ => CheckedValueListCondition.token <$>
+      (elaborateTokenEntityValueListSource model declaringGroup
+        { quantifier := source.quantifier, fields := source.fields, values := source.values }
+        (targetGroup? := some targetGroup)).mapError .token
 
 def FlatModel.elaborateComputationPredicate (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (surface : SurfaceComputationPredicate) :
     Except ComputationPredicateElabError (CheckedComputationPredicate model) := do
-  let checked ← match surface with
-    | .entityValueList source =>
-        match elaborateNumberEntityValueListSource model declaringGroup source (some targetGroup) with
-        | .ok checked => pure (CheckedValueListCondition.number checked)
-        | .error _ =>
-            CheckedValueListCondition.token <$>
-              (elaborateTokenEntityValueListSource model declaringGroup
-                { quantifier := source.quantifier, fields := source.fields, values := source.values }
-                (targetGroup? := some targetGroup)).mapError .token
-    | .tokenLiteralValueList source =>
-        CheckedValueListCondition.literals <$>
-          (elaborateTokenEntityStringLiteralValueListSource model declaringGroup source
-            (targetGroup? := some targetGroup)).mapError .literals
-  if checked.hasHaving then throw .filteredSource
-  pure (.valueList checked)
+  match surface with
+  | .entityValueList source => .valueList <$> elaborateEntityMembership model declaringGroup targetGroup source
+  | .tokenLiteralValueList source =>
+      (.valueList ∘ .literals) <$>
+        (elaborateTokenEntityStringLiteralValueListSource model declaringGroup source
+          (targetGroup? := some targetGroup)).mapError .literals
+  | .scalarMembership operator subject members =>
+      let fields : SurfaceFieldEntitySource := { first := scalarEntity subject, rest := [] }
+      match members with
+      | .fields members =>
+          scalarMemberReads model declaringGroup targetGroup subject members
+          let first :: rest := members | throw .emptyMembers
+          .scalarValueList operator <$> elaborateEntityMembership model declaringGroup targetGroup {
+            quantifier := operator.quantifier, fields
+            values := { first := scalarEntity first, rest := rest.map scalarEntity } }
+      | .tokens values =>
+          discard <| (scalarRead model declaringGroup targetGroup false subject).mapError .read
+          (.scalarValueList operator ∘ .literals) <$>
+            (elaborateTokenEntityStringLiteralValueListSource model declaringGroup
+              { quantifier := operator.quantifier, fields, values }
+              (targetGroup? := some targetGroup)).mapError .literals
+      | .numbers values =>
+          discard <| (scalarRead model declaringGroup targetGroup false subject).mapError .read
+          let source ← (elaborateNumberEntitySource model declaringGroup fields
+            (fixedTargetGroup? := some targetGroup) (writtenGroup := targetGroup)
+            (arity := .soleAllowed) (bindingGroup? := some targetGroup)).mapError .number
+          if values.isEmpty then throw .emptyMembers
+          match source.operands with
+          | [.field field] => pure (.scalarNumberLiterals operator field values)
+          | _ => throw .incoherent
 
 end A12Kernel

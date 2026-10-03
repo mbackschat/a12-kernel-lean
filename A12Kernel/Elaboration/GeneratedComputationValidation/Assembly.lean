@@ -519,6 +519,15 @@ private def generatedGuardCondition (model : FlatModel) (target : FieldId)
         (if resolved.requiresAddressedValidation then .modelWideCheckedComputation else .modelWideNonrepeatable)
         resolved)
   | .leaf (.predicate (.valueList source)) => pure (.leaf (.valueList source))
+  | .leaf (.predicate (.scalarValueList operator source)) =>
+      let source := match source with
+        | .number source => .number { source with quantifier := operator.quantifier }
+        | .token source => .token { source with quantifier := operator.quantifier }
+        | .literals source => .literals { source with quantifier := operator.quantifier }
+      pure (.leaf (.valueList source))
+  | .leaf (.predicate (.scalarNumberLiterals operator source values)) =>
+      pure (ValidationCondition.flat (.numberValueList operator.quantifier [source.field]
+        (.literals (values.map Rat.ofInt))))
   | .leaf (.fieldFilled field) => pure (ValidationCondition.flat
       (.fieldFilled (← model.resolveGeneratedGuardField field)))
   | .leaf (.fieldNotFilled field) => pure (ValidationCondition.flat

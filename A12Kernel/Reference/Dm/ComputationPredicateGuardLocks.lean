@@ -83,4 +83,23 @@ example : run "AtLeastOneFieldValueIncludedInValueList(Left/A In Flag)" numericK
     (.rejected .malformed) (.parsed (.num 1)) .empty true "1" = some ["value 1", "value 2"] := by
   native_decide
 
+/-- Scalar membership is calibrated on the same family grid as plural membership, but keeps
+its eager member reads even with an empty subject. -/
+example : run "FieldValueIncludedInValueList(Flag, 1, 2)" numericKind (.parsed (.num 1)) =
+    some ["value 2"] ∧
+    run "FieldValueNotIncludedInValueList(Flag, 1, 2)" numericKind (.parsed (.num 3)) =
+      some ["value 2"] ∧
+    run "FieldValueIncludedInValueList(Flag, [Left/A], [Right/B])" numericKind
+      (.parsed (.num 1)) (.parsed (.num 1)) (.rejected .malformed) = some ["cleared"] ∧
+    run "FieldValueNotIncludedInValueList(Flag, [Left/A])" numericKind
+      .empty (.rejected .malformed) = some ["cleared"] ∧
+    run "FieldValueIncludedInValueList(Flag, \"x\", \"y\")" .string (.parsed (.str "x")) =
+      some ["value 2"] := by native_decide
+
+example : run "FieldValueIncludedInValueList([Flag], 1)" numericKind (.parsed (.num 1)) = none ∧
+    run "FieldValueIncludedInValueList(Flag, Left/A)" numericKind (.parsed (.num 1)) = none ∧
+    run "FieldValueIncludedInValueList(Flag, 1.0)" numericKind (.parsed (.num 1)) = none ∧
+    run "FieldValueIncludedInValueList(Flag, [Flag])" numericKind (.parsed (.num 1)) = none := by
+  native_decide
+
 end A12Kernel.Dm.ComputationPredicateGuardLocks

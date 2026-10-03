@@ -30,4 +30,26 @@ example :
         some (.poison .malformed, .fired (expectedMessage .value)) := by
   native_decide
 
+/-- A scalar Number membership's computation poison becomes validation UNKNOWN; the healthy
+Or branch still exposes the generated mismatch. This is an internal phase-preservation lock. -/
+example : (do
+    let predicate ← (model.elaborateComputationPredicate ["Form"] ["Form"]
+      (.scalarMembership .included (.direct (absolutePath ["Form"] "Gate")) (.numbers [1]))).toOption
+    let guard : CheckedComputationCondition model := .or (.leaf (.predicate predicate)) (.fieldFilled textGuard.id)
+    let operation ← (elaborateNumericComputationOperation model ["Form"] target.id
+      (.literal { value := 3, authoredScale := 0 })).toOption
+    let table : GeneratedComputationTable (CheckedNumericComputationOperation model) (CheckedComputationCondition model) := {
+      targetField := target.id, name := "computedTarget", commonPrecondition := some guard
+      alternatives := .singleton { operation }, messagePlan }
+    let rule ← (assembleGeneratedNumericOperationTableRule model table).toOption
+    let prepared ← (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler model).toOption
+    let raw : RawFlatContext := { read := fun field =>
+      if field == gate.id then .rejected .malformed
+      else if field == textGuard.id then .parsed (.str "A")
+      else if field == target.id then .parsed (.num 1) else .empty }
+    let selected ← (guard.evalChecked { read := (model.checkContext raw).read }).toOption
+    let outcome ← (rule.evalFull prepared "en_US" raw GroupPresenceContext.unavailable true).toOption
+    pure (selected, outcome)) = some (.poison .malformed, .fired (expectedMessage .value)) := by
+  native_decide
+
 end A12Kernel.Conformance.GeneratedComputationValidation.GuardPhases

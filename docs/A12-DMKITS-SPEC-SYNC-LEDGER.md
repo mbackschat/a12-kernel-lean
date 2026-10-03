@@ -65,11 +65,11 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `status`: pending
 - `origin`: this entry records local measurements and was created after the owner's 2026-10-03 ledger handoff; it was not part of that transfer.
 - `clause`: [spec/06 §B.5](../spec/06-strings-and-enumerations.md#b5-computation-preconditions-preserve-reached-errors-and-traversal-order).
-- `delta`: computation membership retains member-first collection, `NotAll`'s presence prepass and restarted subject scan, deciding subject prefixes and the distinct empty-member behavior of `AtLeastOne` and `No`. Reached formal errors poison the guarded computation.
-- `evidence`: the [compositional guard grid](sources/computation-scheduling-probes.md#src-compositional-computation-guards) retains Kernel `30.8.1` outcomes on both strategies and the source route. Its fixed String field-list controls separate the traversal claims; Number, repeated and filtered membership remain outside this runtime calibration.
+- `delta`: computation membership retains member-first collection, `NotAll`'s presence prepass and restarted subject scan, deciding subject prefixes and the distinct empty-member behavior of `AtLeastOne` and `No`. Reached formal errors poison the guarded computation. Scalar membership has neither plural prepass; filtered membership retains one-kept-successor lookahead.
+- `evidence`: the [compositional guard grid](sources/computation-scheduling-probes.md#src-compositional-computation-guards) retains Kernel `30.8.1` outcomes on both strategies and the source route. Its membership-family extension calibrates fixed Number/String/Enumeration scalar and plural forms plus Number/String filtered stars. Category/indexed/correlated forms remain outside this runtime calibration.
 - `redundancy`: peer KF49 and KF109 own membership outcomes, KF68 owns validation's field-list/optimized emission routes, and KF397/KF398 own static admission. The new checkpoint distinguishes computation-phase reached poison and cites the calculation route separately from validation optimization.
 - `surfaces`: interpreter computation preconditions and phase-sensitive membership evaluation; do not replace validation's existing unknown/omission account.
-- `acceptance`: reconcile the retained subject-order, member-poison, empty-subject and empty-member controls, or supply contrary Kernel evidence for these exact computation forms.
+- `acceptance`: reconcile the retained scalar/plural subject-order, member-poison, empty-side and filtered-successor controls, or supply contrary Kernel evidence for these exact computation forms.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
 
 <a id="spec-2026-10-03-03"></a>

@@ -37,6 +37,35 @@ private def guardTextField? : Expr → Option SurfaceTextFieldOperand
       pure (match category with | none => .direct field | some name => .category field name)
   | _ => none
 
+private def scalarMembershipOp? : String → Option ValueListMembershipOp
+  | "FieldValueIncludedInValueList" => some .included
+  | "FieldValueNotIncludedInValueList" => some .notIncluded
+  | _ => none
+
+private def scalarMembershipSubject? : Expr → Option SurfaceTextFieldOperand
+  | .entity { path, index := none, category } => do
+      let field ← path.toFieldPath?
+      pure (match category with | none => .direct field | some name => .category field name)
+  | _ => none
+
+private def lowerScalarMembership (operator : ValueListMembershipOp)
+    (arguments : List Argument) : Lowering SurfaceComputationPredicate := do
+  let .mk subject none none :: members := arguments | refuse "Guard/Membership" "subject"
+  let some subject := scalarMembershipSubject? subject | refuse "Guard/Membership" "bare subject"
+  let some members := members.mapM (fun | .mk expr none none => some expr | _ => none)
+    | refuse "Guard/Membership" "members"
+  let numbers := members.mapM fun
+    | .number text => (decodeNumber? text).bind fun literal =>
+        if literal.authoredScale == 0 then some literal.value.num else none
+    | _ => none
+  let tokens := members.mapM fun | .string text => some text | _ => none
+  match numbers, tokens with
+  | some values, _ => pure (.scalarMembership operator subject (.numbers values))
+  | _, some values => pure (.scalarMembership operator subject (.tokens values))
+  | _, _ =>
+      let some fields := members.mapM guardTextField? | refuse "Guard/Membership" "bracketed members"
+      pure (.scalarMembership operator subject (.fields fields))
+
 /-- Lower presence, numeric and text guards into the shared computation condition tree. Unsupported atoms remain explicit refusals during model resolution. -/
 partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool := false) : Expr → Lowering (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate)
   | .parens body => lowerGuard model group suppress body
@@ -66,11 +95,13 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
       | some literals => pure (.predicate (.tokenLiteralValueList { quantifier, fields, values := literals }))
       | none => pure (.predicate (.entityValueList {
           quantifier, fields, values := ← lowerEntitySource model group values }))
-  | .call id arguments none none => match fieldFillOp? id with
-      | some operator => .fieldFill operator <$> lowerEntitySource model group arguments
-      | none => match groupQuantifier? id with
-          | some operator => .groupFill operator <$> lowerEntitySource model group arguments
-          | none => refuse ("Guard/" ++ id)
+  | .call id arguments none none => match scalarMembershipOp? id with
+      | some operator => .predicate <$> lowerScalarMembership operator arguments
+      | none => match fieldFillOp? id with
+          | some operator => .fieldFill operator <$> lowerEntitySource model group arguments
+          | none => match groupQuantifier? id with
+              | some operator => .groupFill operator <$> lowerEntitySource model group arguments
+              | none => refuse ("Guard/" ++ id)
   | expression@(.compare op left right) =>
       let textPair := do
         let left ← guardTextField? left

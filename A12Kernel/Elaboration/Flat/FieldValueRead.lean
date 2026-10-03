@@ -153,4 +153,18 @@ def FlatModel.resolveComputationEntityRead (model : FlatModel)
     (model.resolveComputationOperandUnchecked declaringGroup targetGroup reference)
     (model.computationGroupRead declaringGroup targetGroup reference)
 
+/-- Scalar membership reads its subject first but defers a bare fixed-group refusal until all
+bracketed members have passed their read gates. Both rule and computation callers specialize
+this order with their own binding resolver (spec/12 §3; field-value-read predictions checkpoint). -/
+def checkScalarMembershipReads
+    (readSubject readMember : SurfaceTextFieldOperand → Except ResolveError FlatFieldDecl)
+    (subject : SurfaceTextFieldOperand) (members : List SurfaceTextFieldOperand) :
+    Except ResolveError Unit := do
+  let deferred ← match subject, readSubject subject with
+    | .direct _, .error error@(.groupInFieldValueRead _ none _) => pure (some error)
+    | _, .error error => throw error
+    | _, .ok _ => pure none
+  for member in members do discard <| readMember member
+  if let some error := deferred then throw error
+
 end A12Kernel

@@ -103,4 +103,59 @@ example : run number false noSource (context number (.rejected .malformed) .empt
     some .notTrue := by
   native_decide
 
+private def scalarSource (op : ValueListMembershipOp) : SurfaceComputationPredicate :=
+  .scalarMembership op (.direct (path "A")) (.fields [.direct (path "B")])
+
+example : [false, true].all (fun repeated =>
+    run number repeated (scalarSource .included)
+      (context number (.parsed (.num 3)) (.parsed (.num 3))) == some .holds &&
+    run number repeated (scalarSource .included)
+      (context number (.rejected .malformed) .empty) == some (.poison .malformed) &&
+    run .string repeated (scalarSource .notIncluded)
+      (context .string .empty (.rejected .malformed)) == some (.poison .malformed)) := by
+  native_decide
+
+private def filteredRun (kind : FieldKind) (operator : ValueListQuantifier)
+    (badFilter : Nat) (membersFiltered : Bool := false) : Option ComputationConditionResult := do
+  let model : FlatModel := {
+    fields := [
+      { id := 3, name := "Member", groupPath := ["Form"], policy := { kind } },
+      { id := 1, name := "A", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind } },
+      { id := 2, name := "Keep", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } }]
+    repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
+  let starredPath : SurfaceStarFieldPath := {
+    base := .absolute, groups := [{ name := "Form" }, { name := "Rows", starred := true }], field := "A" }
+  let filtered : SurfaceFieldEntitySource := {
+    first := .starHaving starredPath (.compareStrings .equal { origin := .inner, field := path "Keep" } "y")
+    rest := [] }
+  let member : SurfaceFieldEntitySource := {
+    first := .field { base := .absolute, groups := ["Form"], field := "Member" }, rest := [] }
+  let checked ← (model.elaborateComputationPredicate ["Form"] ["Form"] (.entityValueList {
+    quantifier := operator, fields := if membersFiltered then member else filtered,
+    values := if membersFiltered then filtered else member })).toOption
+  let read := fun environment field =>
+    if field == 2 then formalCheck { kind := .string } (.parsed (.str "n"))
+    else formalCheck { kind } (if field == 3 then memberValue kind true
+      else if environment.contains (10, 3) then .rejected .malformed
+      else memberValue kind (environment.contains (10, 1)))
+  let context : ScalarComputationContext := {
+    read := read []
+    addressed := some {
+      document := {
+        rawCells := fun _ => none
+        instantiatedRows := [1, 2, 3].map fun row => { group := 10, path := [row] } }
+      read } }
+  let filterRead := fun environment _ => formalCheck { kind := .string }
+    (if environment.contains (10, badFilter) then .rejected .declaredConstraint else .parsed (.str "y"))
+  (checked.evalChecked context (some filterRead)).toOption
+
+/-- Kernel membership grid: the prefetched successor is reached, its later filter is not;
+member collection remains exhaustive and uses a different continuation from subject search. -/
+example : [number, FieldKind.string].all (fun kind =>
+    filteredRun kind .atLeastOne 3 == some .holds &&
+    filteredRun kind .atLeastOne 2 == some (.poison .declaredConstraint) &&
+    filteredRun kind .notAll 0 == some .holds &&
+    filteredRun kind .notAll 3 == some (.poison .declaredConstraint) &&
+    filteredRun kind .atLeastOne 0 true == some (.poison .malformed)) := by native_decide
+
 end A12Kernel.Conformance.ComputationPredicate

@@ -22,7 +22,6 @@ def CheckedComputationConditionError.toNumericFault :
   | .numeric error => error
   | .predicate .contextRequired => .repeatableContextRequired
   | .predicate (.addressing error) => .repeatableAddressing error
-  | .predicate .filteredSource => .unsupportedGuardPredicate
 
 inductive CheckedComputationConditionElabError where
   | primitive (error : ComputationConditionElabError)
@@ -81,7 +80,7 @@ def evalCheckedIn (condition : CheckedComputationCondition model)
     addressed := some { document := context.document, read := context.starRead } }
   ComputationConditionOf.evalCheckedWith condition scalar CheckedComputationConditionError.primitive
     (fun atom => (context.readCheckedNumericComputationAtom atom).mapError .numeric)
-    (fun source => (source.evalChecked scalar).mapError .predicate)
+    (fun source => (source.evalChecked scalar (some context.filterRead)).mapError .predicate)
 
 /-- The addressed overlay carries completed producers into aggregate and filtered reads too.
 The numeric operation reader owns empty substitution, reached poison and every atom's fold. -/

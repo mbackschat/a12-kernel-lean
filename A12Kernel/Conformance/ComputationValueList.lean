@@ -39,4 +39,13 @@ example : ValueListQuantifier.atLeastOne.evalComputationWith resolve resolve [fa
 example : ValueListQuantifier.atLeastOne.evalComputationWith resolve resolve [true] [] =
     .ok .notTrue := by decide
 
+/-- The scalar pair evaluates members and subject even where plural prepasses skip one side. -/
+example : ValueListMembershipOp.included.evalComputation [side [.unknown .malformed]] [side [.empty]] =
+    .poison .malformed ∧
+    ValueListMembershipOp.notIncluded.evalComputation [side [.empty]] [side [.unknown .declaredConstraint]] =
+    .poison .declaredConstraint := by decide
+
+example : [ValueListMembershipOp.included, .notIncluded].all (fun op =>
+    op.evalComputation [side [.empty]] [side [.present "x"]] == .notTrue) := by decide
+
 end A12Kernel.Conformance.ComputationValueList

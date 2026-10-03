@@ -96,6 +96,32 @@ example : filterResult = some .holds ∧
     filterTableResult = some (.supported (.accepted { unscaled := 2, scale := 0 })) := by
   native_decide
 
+private def membershipTableResult (filteredMembers : Bool) : Option NumericTargetCheckResult := do
+  let filtered : SurfaceFieldEntitySource := {
+    first := .starHaving repeatedStarPath (repeatedAggregateHaving "Source"), rest := [] }
+  let fixed : SurfaceFieldEntitySource := {
+    first := .field (surfacePath ["Root"] "Later"), rest := [] }
+  let guard ← (A12Kernel.Conformance.NumericComputation.Support.model.elaborateCheckedComputationCondition
+    ["Root"] ["Root"] (.predicate (.entityValueList {
+      quantifier := .atLeastOne
+      fields := if filteredMembers then fixed else filtered
+      values := if filteredMembers then filtered else fixed }))).toOption
+  let operation ← (elaborateNumericTargetComputationOperation
+    A12Kernel.Conformance.NumericComputation.Support.model ["Root"] targetId
+    (.literal { value := 2, authoredScale := 0 })).toOption
+  let table ← (certifyNumericComputationTable [{ precondition := guard, operation }]).toOption
+  let input := firstFilledContext (checkedNumber (.parsed (.num 1)))
+    (numberCells3 (.parsed (.num 1)) .empty .empty)
+    (numberCells3 (.parsed (.num 5)) .empty .empty)
+    (checkedNumber (.parsed (.num 5)))
+  (table.evaluateIn input).toOption
+
+/-- The table must forward its filter reader into membership as well as numeric atoms;
+using the selected-value view drops the only matching row on either membership side. -/
+example : membershipTableResult false = some (.supported (.accepted { unscaled := 2, scale := 0 })) ∧
+    membershipTableResult true = some (.supported (.accepted { unscaled := 2, scale := 0 })) := by
+  native_decide
+
 end Addressed
 
 end A12Kernel.Conformance.ComputationNumericGuard

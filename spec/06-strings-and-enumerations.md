@@ -146,13 +146,17 @@ The subject and member list admit only the String, Enumeration, and Number famil
 
 Runtime equality follows the family's ordinary value boundary: normalized evaluated text for String, the selected stored/category token for Enumeration, and numeric equality after the ordinary scale-19 normalization for Number. Empty numeric member fields contribute no zero atom.
 
-> **Non-normative implementation note.** Reuse the resolved value-list quantifiers: `Included → AtLeastOne`, `NotIncluded → NotAll`. Do not introduce Boolean negation or a second membership evaluator; those shortcuts lose the empty-subject and UNKNOWN-member asymmetries.
+> **Non-normative implementation note.** For validation, reuse the resolved value-list quantifiers: `Included → AtLeastOne`, `NotIncluded → NotAll`. Do not introduce Boolean negation or a second membership evaluator; those shortcuts lose the empty-subject and UNKNOWN-member asymmetries.
 
 ### B.5 Computation preconditions preserve reached errors and traversal order
 
 Computation preconditions use computation-phase reads: a reached formally invalid operand poisons the computation rather than becoming validation's skipped or unknown operand. For field-valued member lists, `AtLeastOneFieldValueIncludedInValueList` and `NoFieldValueIncludedInValueList` collect the members before scanning the subjects. The subject scan stops on its deciding match. `AtLeastOne` with no present members returns not-true without reading the subjects; `No` still scans them. `NotAllFieldValuesIncludedInValueList` first searches for a present subject, then collects the members, then restarts the subject scan and stops at the first present value outside the member set. If the presence search finds none, it returns not-true without reading the members.
 
-The [computation guard grid](../docs/sources/computation-scheduling-probes.md#src-compositional-computation-guards) separates these orders on fixed String fields: a matching subject before an invalid subject decides `AtLeastOne` and `No`, an outside subject before an invalid subject decides `NotAll`, and an invalid member after a matching member still poisons. Empty subjects skip invalid members only under `NotAll`; empty members skip an invalid subject only under `AtLeastOne`. The checkpoint supplies the runtime/code-generation mechanism and bounds the external calibration; it does not establish filtered, repeated, category-projected or Number membership correspondence.
+Scalar `FieldValueIncludedInValueList` and `FieldValueNotIncludedInValueList` collect their members before reading the subject. Both return not-true for an empty subject, but neither inherits a plural prepass: an invalid member poisons even when the subject is empty, and an invalid subject poisons even when every member is empty. A present subject selects `Included` on a match and `NotIncluded` on no match. An empty Number member is absent, not zero.
+
+Filtered computation streams retain the iterator's one-kept-successor lookahead: before consuming a selected subject, they search for its next selected successor. A failure in that search poisons before the pending subject can decide; after a deciding subject, filters beyond that prefetched successor remain unread. Member collection still exhausts its selected stream and reaches later invalid members. Excluded candidates do not contribute target reads.
+
+The [computation membership grids](../docs/sources/computation-scheduling-probes.md#src-compositional-computation-guards) retain the separating controls across stored Number, String and Enumeration fields, scalar literals and field-valued members, and Number/String filtered stars. Category-projected runtime behavior, indexed/correlated compositions and generated-validation messages remain outside these runtime measurements.
 
 ---
 

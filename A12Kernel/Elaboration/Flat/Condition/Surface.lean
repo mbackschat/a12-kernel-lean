@@ -292,16 +292,10 @@ private def FlatModel.scalarSubjectRead (model : FlatModel) (declaringGroup writ
     [checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 private def checkScalarMemberReads (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (subject : SurfaceTextFieldOperand) (members : List SurfaceTextFieldOperand) :
-    Except ElabError Unit := do
-  let groupSubject ← match subject, model.scalarSubjectRead declaringGroup writtenGroup subject with
-    | .direct _, .error error@(.groupInFieldValueRead _ none _) => pure (some error)
-    | _, .error error => throw (.resolve error)
-    | _, .ok _ => pure none
-  for member in members do
-    discard <| (model.resolveProjectedFieldValueRead declaringGroup member.reference member.projectionRef
-      writtenGroup).mapError .resolve
-  if let some error := groupSubject then
-    throw (.resolve error)
+    Except ElabError Unit :=
+  (checkScalarMembershipReads (model.scalarSubjectRead declaringGroup writtenGroup)
+    (fun member => model.resolveProjectedFieldValueRead declaringGroup member.reference member.projectionRef writtenGroup)
+    subject members).mapError .resolve
 
 /-- A scalar membership against literals has no members to wait for, so its subject's group gate
     answers first: a fixed group or a root draws the group class and an unstarred repeatable group the
