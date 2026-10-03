@@ -338,6 +338,9 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
         operands.mapM (ResolvedGroupListOperand.referencePointers environment)
   | .repeatableFieldPresence _ declaration =>
       (concreteFieldPointer declaration environment).map ([·])
+  | .scalarTemporal comparison =>
+      sievedFieldPointers model
+        (fun declaration => comparison.referencesField declaration.id) environment
   | .flat condition =>
       sievedFieldPointers model
         (fun declaration => condition.referencesField declaration.id) environment

@@ -855,6 +855,7 @@ run_cmd do
 #print axioms A12Kernel.exactNumericScaleComparisonAllowed_unknown_right
 #print axioms A12Kernel.exactNumericScaleComparisonAllowedWithSuppression_true
 #print axioms A12Kernel.exactNumericScaleComparisonAllowedWithSuppression_false
+#print axioms A12Kernel.temporalExpression_evalWith_congr
 #print axioms A12Kernel.authoredNumericSummary_group
 #print axioms A12Kernel.authoredNumericGroup_not_simple_constant
 #print axioms A12Kernel.authoredNumericLower_group

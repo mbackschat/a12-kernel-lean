@@ -13,7 +13,7 @@ document into the stream, so the extrema were admissible and unevaluable.
 **The element type is the operands' own family, not one universal domain.** That was the open
 representation question, and it is settled by measurement rather than chosen here: an extremum's
 result is refused against a field of a different temporal family exactly as a plain field of its
-own family would be, so a domain that erased the family would admit comparisons the Kernel refuses
+own family would be, so a domain that erased the family would accept comparisons the Kernel refuses
 ([checkpoint](../../docs/SOURCES.md#src-extrema-operand-family-is-positional)). The fold was already
 parametric in that type, so nothing about it changes; what this module supplies is the projection
 into one family's domain.

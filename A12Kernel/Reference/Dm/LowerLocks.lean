@@ -36,6 +36,104 @@ private def admitted (text : String) : Bool :=
   | .error _ => false
 
 example :
+    [admitted "FieldFilled(Ref) And MinValue(Due1, Due2) == [Due1]",
+     admitted "[Due2] >= MaxValue(Due1, Due2)",
+     admitted "MinValue(Due1, Due2) <= MaxValue(Due1, Due2)",
+     !admitted "MinValue(Due1, Due2) == [Amt]",
+     !admitted "MinValue(Due1) == [Due1]"].all id := by
+  native_decide
+
+
+private def temporalReferences : Option (Bool × List FieldId) := do
+  let source ← model.fields[5]?
+  let third := { source with id := 11, name := "Due3" }
+  let dm := { model with fields := model.fields ++ [third] }
+  let parsed ← (parseText .english "MinValue(Due1, Due2) == [Due3]").toOption
+  let condition ← (lowerCondition dm ["Order"] false parsed.body).toOption
+  let pointers ← (condition.core.referencePointers []).toOption
+  pure (condition.core.referencesErrorField 11, pointers.map (·.field))
+
+example : temporalReferences = some (true, [5, 6, 11]) := by
+  native_decide
+
+example :
+    (do
+      let source ← model.fields[5]?
+      let partialField := { source with
+        id := 11
+        name := "Partial"
+        temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .dayOptional } }
+      let dm := { model with fields := model.fields ++ [partialField] }
+      let parsed ← (parseText .english "MinValue(Due1, Due2) == [Partial]").toOption
+      pure (!(lowerCondition dm ["Order"] false parsed.body).isOk)) = some true := by
+  native_decide
+
+private def temporalCell (value : Value) : CheckedCell :=
+  { rawPresent := true, parsed := some value, findings := [] }
+
+private def temporalDate (month : Nat) : CheckedCell :=
+  temporalCell (.temporal (.date {
+    instant := { epochMillis := 0 }, parts := { year := 2024, month, day := 1 },
+    basis := .storedGregorian }))
+
+private def temporalEval (dm : FlatModel) (text : String)
+    (first second : CheckedCell) : Option Verdict := do
+  let parsed ← (parseText .english text).toOption
+  let condition ← (lowerCondition dm ["Order"] false parsed.body).toOption
+  pure (condition.core.evalSelected { fields := {
+    read := fun id => if id == 5 then first else if id == 6 then second else
+      { rawPresent := false, parsed := none, findings := [] } }, groups := fun _ => none })
+
+example :
+    ["==", "!=", "<", "<=", ">", ">="].map
+      (fun op => temporalEval model s!"MinValue(Due1, Due2) {op} [Due2]"
+        (temporalDate 1) (temporalDate 2)) =
+      [some .notFired, some (.fired .value), some (.fired .value),
+       some (.fired .value), some .notFired, some .notFired] := by
+  native_decide
+
+example :
+    temporalEval model "MinValue(Due1, Due2) == [Due2]"
+      { rawPresent := false, parsed := none, findings := [] } (temporalDate 2) =
+        some (.fired .omission) ∧
+    temporalEval model "MinValue(Due1, Due2) == [Due2]"
+      { rawPresent := true, parsed := none, findings := [.dateFormat] } (temporalDate 2) =
+        some .unknown ∧
+    temporalEval model "MinValue(Due1, Due2) == MaxValue(Due1, Due2)"
+      { rawPresent := false, parsed := none, findings := [] }
+      { rawPresent := false, parsed := none, findings := [] } = some .notFired := by
+  native_decide
+
+private def temporalProfile (kind : TemporalKind) (components : TemporalComponents)
+    (format : String) : FlatModel :=
+  { model with fields := model.fields.map fun field =>
+      if field.id == 5 || field.id == 6 then
+        { field with
+          policy := { kind := .temporal kind components }
+          temporalTargetPolicy := some { format } }
+      else field }
+
+private def clockValue : TimeOfDay := ⟨12, 30, 0, by decide, by decide, by decide⟩
+
+private def temporalStamp (instant : Int) : CheckedCell :=
+  temporalCell (.temporal (.dateTime { epochMillis := instant }
+    { year := 2024, month := 10, day := 27 } clockValue .storedGregorian))
+
+example :
+    temporalEval (temporalProfile .time TemporalComponents.time "HH:mm:ss")
+      "MinValue(Due1, Due2) == [Due2]"
+      (temporalCell (.temporal (.time { epochMillis := 1 } clockValue)))
+      (temporalCell (.temporal (.time { epochMillis := 2 } clockValue))) =
+        some (.fired .value) ∧
+    temporalEval (temporalProfile .dateTime TemporalComponents.now "yyyy-MM-dd'T'HH:mm:ss")
+      "MaxValue(Due1, Due2) == [Due2]" (temporalStamp 1) (temporalStamp 2) =
+        some (.fired .value) ∧
+    temporalEval (temporalProfile .dateTime TemporalComponents.now "yyyy-MM-dd'T'HH:mm:ss")
+      "MinValue(Due1, Due2) == [Due2]" (temporalStamp 1) (temporalStamp 2) =
+        some .notFired := by
+  native_decide
+
+example :
     [admitted "Valid(Ref, \"NoSuchType\")",
      admitted "Invalid(Ref, \"NoSuchType\") Or FieldFilled(Amt)",
      !admitted "Valid(Amt, \"NoSuchType\")",

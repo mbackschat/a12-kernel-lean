@@ -282,7 +282,7 @@ private def ValidationConditionLeaf.iterationGuardAt
   -- The explicit validity operand is nonrepeatable by its own well-formedness, so it references no
   -- level and reads like a flat leaf here.
   | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
-  | .customFieldValidity _ | .stringPattern _ =>
+  | .customFieldValidity _ | .stringPattern _ | .scalarTemporal _ =>
       .noReference
   | .guardedRepeatableCurrentRepetition guard _ _ =>
       if guard.repeatableScope.contains level then .guarded else .noReference

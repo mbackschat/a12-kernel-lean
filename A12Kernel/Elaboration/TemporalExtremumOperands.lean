@@ -62,7 +62,7 @@ inductive TemporalExtremumOperandElabError where
   /-- Two operands' component sets differ after the Base Year is supplied to both. -/
   | incompatibleComponents (path : List String)
       (found expected : TemporalComponents)
-  /-- The list's **first** operand is not temporal, so it is not this family's list at all. **No class is claimed**: the extrema admit Number, whose operands the Number entity list owns, and that list draws its own code. -/
+  /-- The list's **first** operand is not temporal, so it is not this family's list at all. **No class is claimed**: the extrema accept Number, whose operands the Number entity list owns, and that list draws its own code. -/
   | firstNotTemporal (path : List String) (actual : SurfaceScalarKind)
   /-- A **later** operand is not temporal after a temporal first one. This is the Kernel's own refusal, `MVK_DATE_AND_NONDATE`, and its text states the positional rule outright. -/
   | laterNotTemporal (path : List String) (actual : SurfaceScalarKind)

@@ -196,6 +196,7 @@ import A12Kernel.Proofs.NumericComputationRunResult
 import A12Kernel.Proofs.NumericComputationTable
 import A12Kernel.Proofs.NumericDependency
 import A12Kernel.Proofs.NumericExpression
+import A12Kernel.Proofs.TemporalExpression
 import A12Kernel.Proofs.NumericFillability
 import A12Kernel.Proofs.NumericInput
 import A12Kernel.Proofs.NumericRounding

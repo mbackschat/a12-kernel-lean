@@ -9,7 +9,7 @@ import A12Kernel.Elaboration.StringContext
 
 A condition whose every leaf has a flat form is elaborated whole by the flat carrier. Otherwise its
 connectives are kept and each leaf is offered, in a fixed order, to the carriers that exist for it:
-the flat leaf, repeatable field presence, group presence, the group-list quantifiers, the filled-group
+the flat leaf, scalar temporal expression comparison, repeatable field presence, group presence, the group-list quantifiers, the filled-group
 numeric comparison, scalar, then addressed, then over entity lists, the starred filled-group count
 against a literal, the field-fill quantifiers and `NumberOfFilledFields` over an entity list,
 typed entity-valued or token-literal value lists, the three checked uniqueness overloads, and named-type validity with the caller’s registry. The first carrier that admits a leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
@@ -79,6 +79,20 @@ def lowerNumericComparison (op : CompareOp) (left right : Expr) (suppress : Bool
          right := ← lowerNumericExpr lowerValidationNumericAtom right
          suppressExactScaleWarning := suppress }
 
+private def lowerScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath) :
+    Expr → Lowering SurfaceScalarTemporalExpression
+  | .value { path, index := none, category := none } =>
+      match path.toFieldPath? with
+      | some field => pure (.field field)
+      | none => refuse "TemporalExpression" "field path"
+  | .call name operands none none => do
+      let operator ← match name with
+        | "MinValue" => pure TemporalExtremumOp.minimum
+        | "MaxValue" => pure TemporalExtremumOp.maximum
+        | _ => refuse "TemporalExpression" name
+      pure (.extremum operator (← lowerEntitySource model rowGroup operands))
+  | expression => refuse "TemporalExpression" expression.construct
+
 /-- The carriers tried for one leaf, in order; the first to admit it answers. -/
 private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : World)
     (suppress : Bool) (leaf : Expr) :
@@ -88,6 +102,19 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         let checked ← elaborated "Flat" (elaborate model rowGroup surface)
         elaborated "Flat" (CheckedValidationCondition.fromFlat checked)]
     | none => []
+  let temporal := match leaf with
+    | .compare operator left right =>
+        match operator.toSurface?, lowerScalarTemporalExpression model rowGroup left,
+            lowerScalarTemporalExpression model rowGroup right with
+        | some operator, .ok left, .ok right =>
+            match elaborateScalarTemporalComparison model rowGroup operator.toTemporal left right with
+            | .error (.nonTemporal _) | .error (.extremum (.firstNotTemporal _ _)) => []
+            | result => [do
+                let comparison ← elaborated "TemporalComparison" result
+                elaborated "TemporalComparison"
+                  (CheckedValidationCondition.fromScalarTemporal rowGroup comparison)]
+        | _, _, _ => []
+    | _ => []
   let validity := match leaf with
     | .call id [.mk field none none, .mk (.string name) none none] none none =>
         let operation := match id with
@@ -239,7 +266,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
               { op := .violated, field, source })]
         | _, _ => []
     | _ => []
-  flat ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity
+  flat ++ temporal ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :

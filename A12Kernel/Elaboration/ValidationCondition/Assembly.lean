@@ -117,6 +117,11 @@ def fromStringPattern (model : FlatModel) (rowGroup : GroupPath)
       checkCore model rowGroup (.leaf (.stringPattern { compilePattern, condition }))
         (by rw [hModel]; rfl)
 
+/-- Join a sealed scalar temporal comparison to the existing connective tree. -/
+def fromScalarTemporal (rowGroup : GroupPath) (comparison : CheckedScalarTemporalComparison model) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  checkCore model rowGroup (.leaf (.scalarTemporal comparison)) comparison.modelWellFormed
+
 /-- Compose the owning uniqueness certificate without changing its operand order or identity. -/
 def fromValuesNotUnique (rowGroup : GroupPath) (source : CheckedValuesNotUniqueCondition model) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
