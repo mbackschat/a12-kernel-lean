@@ -98,8 +98,8 @@ def DocumentTargetOutcome.storedText? : DocumentTargetOutcome → Option String
   | .dateTime _ | .fullDate _ | .time _ | .enumeration _ | .dateRange _ | .boolean _
   | .dateFragment _ | .string _ | .valueError _ => none
 
-/-- A runtime value failure clears its target without poisoning a dependent read. Its message stays
-at that target, as measured by the temporal disposition grid (2026-10-03). -/
+/-- A runtime value failure poisons dependent reads while its own message stays at the target.
+The temporal review grid (2026-10-03) separates poisoned reads from empty substitution. -/
 def DocumentTargetOutcome.formalValueMessage? (pointer : MessagePointer) :
     DocumentTargetOutcome → Option (ComputationFormalMessage Unit)
   | .valueError _ => some {
@@ -328,7 +328,7 @@ def ofScalarTemporalExpression? (expression : CheckedScalarTemporalExpression mo
         run world _ document := do
           let result ← match expression.evalResult .computation (document.flatContext.withWorld world) with
             | .ok result => pure result
-            | .error _ => return (.valueError .time, DocumentComputationReadBack.empty)
+            | .error _ => return (.valueError .time, DocumentComputationReadBack.poison)
           let outcome := target.evaluate (match result with
             | .value (.time value) _ => .value value
             | .notEvaluated => .noValue
@@ -347,7 +347,7 @@ def ofScalarTemporalExpression? (expression : CheckedScalarTemporalExpression mo
         run world _ document := do
           let result ← match expression.evalResult .computation (document.flatContext.withWorld world) with
             | .ok result => pure result
-            | .error _ => return (.valueError .dateTime, DocumentComputationReadBack.empty)
+            | .error _ => return (.valueError .dateTime, DocumentComputationReadBack.poison)
           let outcome ← (target.evaluate (match result with
             | .value (.instant value) _ => .value value
             | .notEvaluated => .noValue
@@ -366,7 +366,7 @@ def ofScalarTemporalExpression? (expression : CheckedScalarTemporalExpression mo
         run world _ document := do
           let result ← match expression.evalResult .computation (document.flatContext.withWorld world) with
             | .ok result => pure result
-            | .error _ => return (.valueError .fullDate, DocumentComputationReadBack.empty)
+            | .error _ => return (.valueError .fullDate, DocumentComputationReadBack.poison)
           let outcome := match result with
             | .value (.date value) _ => target.evaluateCivil value.civil
             | .notEvaluated => .noValue

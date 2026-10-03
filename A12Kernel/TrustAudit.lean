@@ -2934,3 +2934,24 @@ run_cmd do
 #print axioms A12Kernel.validationMessageTemplate_repertoireFailure_refused
 
 #print axioms A12Kernel.textComputationComparison_readsOnlyFields
+
+#print axioms A12Kernel.selectFirstWith_withCommon_holds
+#print axioms A12Kernel.selectFirstWith_withCommon_notTrue
+#print axioms A12Kernel.selectFirstWith_withCommon_poison
+#print axioms A12Kernel.selectFirstWith_withCommon_error
+#print axioms A12Kernel.modelBoundAlternativeSelection_holds
+#print axioms A12Kernel.modelBoundAlternativeSelection_notTrue
+#print axioms A12Kernel.modelBoundAlternativeSelection_poison
+#print axioms A12Kernel.modelBoundAlternativeSelection_error
+#print axioms A12Kernel.modelBoundAlternativeSelectionIn_holds
+#print axioms A12Kernel.modelBoundAlternativeSelectionIn_notTrue
+#print axioms A12Kernel.modelBoundAlternativeSelectionIn_poison
+#print axioms A12Kernel.modelBoundAlternativeSelectionIn_error
+#print axioms A12Kernel.ValueListCell.scanPresent_emptyCells
+#print axioms A12Kernel.ValueListCell.anyComputation_emptyCells
+#print axioms A12Kernel.ValueListQuantifier.collectOperands_emptyCells
+#print axioms A12Kernel.ValueListQuantifier.anyOperands_emptyCells
+#print axioms A12Kernel.ValueListQuantifier.atLeastOne_emptyMemberCells
+#print axioms A12Kernel.ValueListQuantifier.notAll_emptySubjectCells
+
+#print axioms A12Kernel.conditionTree_evalVerdictExcept_embed

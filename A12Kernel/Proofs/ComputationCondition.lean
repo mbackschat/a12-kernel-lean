@@ -1,5 +1,6 @@
 import A12Kernel.Proofs.Observation
 import A12Kernel.Semantics.ComputationCondition
+import A12Kernel.Elaboration.ComputationNumericGuard
 
 /-! # A12Kernel.Proofs.ComputationCondition — ordered computation-control laws
 
@@ -387,6 +388,80 @@ theorem alternativeSelection_poisonedCommon_aborts
           ComputationAlternative.selectFirst_cons, ComputationCondition.eval_and,
           commonPoison]
 
+/-- Common guards use the same effectful tree and first-match scan for every leaf family. -/
+theorem selectFirstWith_withCommon_holds
+    (evalLeaf : ComputationConditionLeaf Atom Predicate → Except Error ComputationConditionResult)
+    (common : ComputationConditionOf Atom Predicate)
+    (alternatives : List (ComputationAlternative Op (ComputationConditionOf Atom Predicate)))
+    (holds : common.evalComputationExcept evalLeaf = .ok .holds) :
+    ComputationAlternative.selectFirstWith (·.evalComputationExcept evalLeaf)
+        (alternatives.map fun a =>
+          { a with precondition := ComputationConditionOf.withCommon (some common) a.precondition }) =
+      ComputationAlternative.selectFirstWith (·.evalComputationExcept evalLeaf) alternatives := by
+  induction alternatives with
+  | nil => rfl
+  | cons head tail ih =>
+      cases head with
+      | mk precondition operation =>
+          cases precondition with
+          | none => simp [ComputationAlternative.selectFirstWith, ComputationConditionOf.withCommon, holds, bind, Except.bind, pure, Except.pure]
+          | some own =>
+              simp only [List.map_cons, ComputationConditionOf.withCommon,
+                ComputationAlternative.selectFirstWith, ConditionTree.evalComputationExcept, holds,
+                bind, Except.bind, pure, Except.pure]
+              cases h : own.evalComputationExcept evalLeaf with
+              | error error => rfl
+              | ok result => cases result <;> simp_all [ComputationConditionOf.withCommon]
+
+/-- A false common guard skips all own guards and operations, including structural failures. -/
+theorem selectFirstWith_withCommon_notTrue
+    (evalLeaf : ComputationConditionLeaf Atom Predicate → Except Error ComputationConditionResult)
+    (common : ComputationConditionOf Atom Predicate)
+    (alternatives : List (ComputationAlternative Op (ComputationConditionOf Atom Predicate)))
+    (notTrue : common.evalComputationExcept evalLeaf = .ok .notTrue) :
+    ComputationAlternative.selectFirstWith (·.evalComputationExcept evalLeaf)
+        (alternatives.map fun a =>
+          { a with precondition := ComputationConditionOf.withCommon (some common) a.precondition }) =
+      .ok .noMatch := by
+  induction alternatives with
+  | nil => rfl
+  | cons head tail ih =>
+      cases head with
+      | mk precondition operation =>
+          cases precondition <;>
+            simpa [ComputationAlternative.selectFirstWith, ComputationConditionOf.withCommon,
+              ConditionTree.evalComputationExcept, notTrue, bind, Except.bind, pure, Except.pure] using ih
+
+/-- Common poison is reached before any own guard in a nonempty table. -/
+theorem selectFirstWith_withCommon_poison
+    (evalLeaf : ComputationConditionLeaf Atom Predicate → Except Error ComputationConditionResult)
+    (common : ComputationConditionOf Atom Predicate)
+    (head : ComputationAlternative Op (ComputationConditionOf Atom Predicate)) (tail : List _)
+    (cause : FormalCause) (poison : common.evalComputationExcept evalLeaf = .ok (.poison cause)) :
+    ComputationAlternative.selectFirstWith (·.evalComputationExcept evalLeaf)
+        ((head :: tail).map fun a =>
+          { a with precondition := ComputationConditionOf.withCommon (some common) a.precondition }) =
+      .ok (.poison cause) := by
+  cases head with
+  | mk precondition operation =>
+      cases precondition <;> simp [ComputationAlternative.selectFirstWith,
+        ComputationConditionOf.withCommon, ConditionTree.evalComputationExcept, poison, bind, Except.bind, pure, Except.pure]
+
+/-- A structural common-guard failure is preserved before any own guard in a nonempty table. -/
+theorem selectFirstWith_withCommon_error
+    (evalLeaf : ComputationConditionLeaf Atom Predicate → Except Error ComputationConditionResult)
+    (common : ComputationConditionOf Atom Predicate)
+    (head : ComputationAlternative Op (ComputationConditionOf Atom Predicate)) (tail : List _)
+    (error : Error) (failed : common.evalComputationExcept evalLeaf = .error error) :
+    ComputationAlternative.selectFirstWith (·.evalComputationExcept evalLeaf)
+        ((head :: tail).map fun a =>
+          { a with precondition := ComputationConditionOf.withCommon (some common) a.precondition }) =
+      .error error := by
+  cases head with
+  | mk precondition operation =>
+      cases precondition <;> simp [ComputationAlternative.selectFirstWith,
+        ComputationConditionOf.withCommon, ConditionTree.evalComputationExcept, failed, bind, Except.bind]
+
 /-- Successful checked common guards preserve the shared scan, including structural failures. -/
 theorem checkedAlternativeSelection_holdingCommon_preserves
     (context : ScalarComputationContext) (common : ComputationCondition)
@@ -395,22 +470,10 @@ theorem checkedAlternativeSelection_holdingCommon_preserves
     ComputationAlternative.selectFirstChecked
       (ComputationAlternative.expandCommonPrecondition (some common) alternatives) context =
       ComputationAlternative.selectFirstChecked alternatives context := by
-  induction alternatives with
-  | nil => rfl
-  | cons head tail ih =>
-      cases head with
-      | mk precondition operation =>
-          cases precondition with
-          | none => simp [ComputationAlternative.expandCommonPrecondition,
-              ComputationCondition.withCommon, ComputationConditionOf.withCommon, ComputationAlternative.selectFirstChecked_cons, commonHolds]
-          | some guard =>
-              simp only [ComputationAlternative.expandCommonPrecondition, List.map_cons,
-                ComputationCondition.withCommon, ComputationConditionOf.withCommon, ComputationAlternative.selectFirstChecked_cons,
-                ComputationCondition.evalChecked_and, commonHolds]
-              cases h : guard.evalChecked context with
-              | error error => rfl
-              | ok result =>
-                  cases result <;> simp_all [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon]
+  simp only [ComputationAlternative.expandCommonPrecondition, ComputationAlternative.selectFirstChecked,
+    ComputationCondition.withCommon, ComputationCondition.evalChecked,
+    ComputationConditionOf.evalCheckedWith] at commonHolds ⊢
+  exact selectFirstWith_withCommon_holds _ common alternatives commonHolds
 
 /-- A checked false common guard prevents every alternative guard from being read. -/
 theorem checkedAlternativeSelection_notTrueCommon_noMatch
@@ -419,15 +482,10 @@ theorem checkedAlternativeSelection_notTrueCommon_noMatch
     (commonNotTrue : common.evalChecked context = .ok .notTrue) :
     ComputationAlternative.selectFirstChecked
       (ComputationAlternative.expandCommonPrecondition (some common) alternatives) context = .ok .noMatch := by
-  induction alternatives with
-  | nil => rfl
-  | cons head tail ih =>
-      cases head with
-      | mk precondition operation =>
-          cases precondition <;>
-            simpa [ComputationAlternative.expandCommonPrecondition, ComputationCondition.withCommon, ComputationConditionOf.withCommon,
-              ComputationAlternative.selectFirstChecked_cons, ComputationCondition.evalChecked_and,
-              commonNotTrue] using ih
+  simp only [ComputationAlternative.expandCommonPrecondition, ComputationAlternative.selectFirstChecked,
+    ComputationCondition.withCommon, ComputationCondition.evalChecked,
+    ComputationConditionOf.evalCheckedWith] at commonNotTrue ⊢
+  exact selectFirstWith_withCommon_notTrue _ common alternatives commonNotTrue
 
 /-- Checked common poison aborts before every alternative-specific read. -/
 theorem checkedAlternativeSelection_poisonedCommon_aborts
@@ -437,10 +495,126 @@ theorem checkedAlternativeSelection_poisonedCommon_aborts
     ComputationAlternative.selectFirstChecked
       (ComputationAlternative.expandCommonPrecondition (some common) (head :: tail)) context =
       .ok (.poison cause) := by
-  cases head with
-  | mk precondition operation =>
-      cases precondition <;> simp [ComputationAlternative.expandCommonPrecondition,
-        ComputationCondition.withCommon, ComputationConditionOf.withCommon, ComputationAlternative.selectFirstChecked_cons,
-        ComputationCondition.evalChecked_and, commonPoison]
+  simp only [ComputationAlternative.expandCommonPrecondition, ComputationAlternative.selectFirstChecked,
+    ComputationCondition.withCommon, ComputationCondition.evalChecked,
+    ComputationConditionOf.evalCheckedWith] at commonPoison ⊢
+  exact selectFirstWith_withCommon_poison _ common head tail cause commonPoison
+
+
+/-- The model-bound holds case specializes the shared selection law on its running evaluator. -/
+theorem modelBoundAlternativeSelection_holds
+    (context : ScalarComputationContext) (common : CheckedComputationCondition model)
+    (alternatives : List (CheckedComputationAlternative model Op))
+    (commonResult : common.evalChecked context = .ok .holds) :
+    CheckedComputationAlternative.selectFirstChecked
+      (CheckedComputationAlternative.expandCommonPrecondition (some common) alternatives) context =
+      CheckedComputationAlternative.selectFirstChecked alternatives context := by
+  simp only [CheckedComputationAlternative.selectFirstChecked, CheckedComputationAlternative.expandCommonPrecondition,
+    CheckedComputationCondition.withCommon]
+  cases addressed : context.addressed <;>
+    simp only [CheckedComputationCondition.evalChecked, addressed, CheckedComputationCondition.evalCheckedIn,
+      ComputationConditionOf.evalCheckedWith] at commonResult ⊢
+  all_goals exact selectFirstWith_withCommon_holds _ common alternatives commonResult
+
+/-- The model-bound notTrue case specializes the shared selection law on its running evaluator. -/
+theorem modelBoundAlternativeSelection_notTrue
+    (context : ScalarComputationContext) (common : CheckedComputationCondition model)
+    (alternatives : List (CheckedComputationAlternative model Op))
+    (commonResult : common.evalChecked context = .ok .notTrue) :
+    CheckedComputationAlternative.selectFirstChecked
+      (CheckedComputationAlternative.expandCommonPrecondition (some common) alternatives) context =
+      .ok .noMatch := by
+  simp only [CheckedComputationAlternative.selectFirstChecked, CheckedComputationAlternative.expandCommonPrecondition,
+    CheckedComputationCondition.withCommon]
+  cases addressed : context.addressed <;>
+    simp only [CheckedComputationCondition.evalChecked, addressed, CheckedComputationCondition.evalCheckedIn,
+      ComputationConditionOf.evalCheckedWith] at commonResult ⊢
+  all_goals exact selectFirstWith_withCommon_notTrue _ common alternatives commonResult
+
+/-- The model-bound poison case specializes the shared selection law on its running evaluator. -/
+theorem modelBoundAlternativeSelection_poison
+    (context : ScalarComputationContext) (common : CheckedComputationCondition model)
+    (head : CheckedComputationAlternative model Op) (tail : List (CheckedComputationAlternative model Op))
+    (cause : FormalCause)
+    (commonResult : common.evalChecked context = .ok (.poison cause)) :
+    CheckedComputationAlternative.selectFirstChecked
+      (CheckedComputationAlternative.expandCommonPrecondition (some common) (head :: tail)) context =
+      .ok (.poison cause) := by
+  simp only [CheckedComputationAlternative.selectFirstChecked, CheckedComputationAlternative.expandCommonPrecondition,
+    CheckedComputationCondition.withCommon]
+  cases addressed : context.addressed <;>
+    simp only [CheckedComputationCondition.evalChecked, addressed, CheckedComputationCondition.evalCheckedIn,
+      ComputationConditionOf.evalCheckedWith] at commonResult ⊢
+  all_goals exact selectFirstWith_withCommon_poison _ common head tail cause commonResult
+
+/-- The model-bound error case specializes the shared selection law on its running evaluator. -/
+theorem modelBoundAlternativeSelection_error
+    (context : ScalarComputationContext) (common : CheckedComputationCondition model)
+    (head : CheckedComputationAlternative model Op) (tail : List (CheckedComputationAlternative model Op))
+    (error : CheckedComputationConditionError)
+    (commonResult : common.evalChecked context = .error error) :
+    CheckedComputationAlternative.selectFirstChecked
+      (CheckedComputationAlternative.expandCommonPrecondition (some common) (head :: tail)) context =
+      .error error := by
+  simp only [CheckedComputationAlternative.selectFirstChecked, CheckedComputationAlternative.expandCommonPrecondition,
+    CheckedComputationCondition.withCommon]
+  cases addressed : context.addressed <;>
+    simp only [CheckedComputationCondition.evalChecked, addressed, CheckedComputationCondition.evalCheckedIn,
+      ComputationConditionOf.evalCheckedWith] at commonResult ⊢
+  all_goals exact selectFirstWith_withCommon_error _ common head tail error commonResult
+
+/-- The model-bound holds case specializes the shared selection law on its running evaluator. -/
+theorem modelBoundAlternativeSelectionIn_holds
+    (context : NumericComputationEvaluationContext) (common : CheckedComputationCondition model)
+    (alternatives : List (CheckedComputationAlternative model Op))
+    (commonResult : common.evalCheckedIn context = .ok .holds) :
+    CheckedComputationAlternative.selectFirstCheckedIn
+      (CheckedComputationAlternative.expandCommonPrecondition (some common) alternatives) context =
+      CheckedComputationAlternative.selectFirstCheckedIn alternatives context := by
+  simp only [CheckedComputationAlternative.selectFirstCheckedIn, CheckedComputationAlternative.expandCommonPrecondition,
+    CheckedComputationCondition.withCommon]
+  simp only [CheckedComputationCondition.evalCheckedIn, ComputationConditionOf.evalCheckedWith] at commonResult ⊢
+  all_goals exact selectFirstWith_withCommon_holds _ common alternatives commonResult
+
+/-- The model-bound notTrue case specializes the shared selection law on its running evaluator. -/
+theorem modelBoundAlternativeSelectionIn_notTrue
+    (context : NumericComputationEvaluationContext) (common : CheckedComputationCondition model)
+    (alternatives : List (CheckedComputationAlternative model Op))
+    (commonResult : common.evalCheckedIn context = .ok .notTrue) :
+    CheckedComputationAlternative.selectFirstCheckedIn
+      (CheckedComputationAlternative.expandCommonPrecondition (some common) alternatives) context =
+      .ok .noMatch := by
+  simp only [CheckedComputationAlternative.selectFirstCheckedIn, CheckedComputationAlternative.expandCommonPrecondition,
+    CheckedComputationCondition.withCommon]
+  simp only [CheckedComputationCondition.evalCheckedIn, ComputationConditionOf.evalCheckedWith] at commonResult ⊢
+  all_goals exact selectFirstWith_withCommon_notTrue _ common alternatives commonResult
+
+/-- The model-bound poison case specializes the shared selection law on its running evaluator. -/
+theorem modelBoundAlternativeSelectionIn_poison
+    (context : NumericComputationEvaluationContext) (common : CheckedComputationCondition model)
+    (head : CheckedComputationAlternative model Op) (tail : List (CheckedComputationAlternative model Op))
+    (cause : FormalCause)
+    (commonResult : common.evalCheckedIn context = .ok (.poison cause)) :
+    CheckedComputationAlternative.selectFirstCheckedIn
+      (CheckedComputationAlternative.expandCommonPrecondition (some common) (head :: tail)) context =
+      .ok (.poison cause) := by
+  simp only [CheckedComputationAlternative.selectFirstCheckedIn, CheckedComputationAlternative.expandCommonPrecondition,
+    CheckedComputationCondition.withCommon]
+  simp only [CheckedComputationCondition.evalCheckedIn, ComputationConditionOf.evalCheckedWith] at commonResult ⊢
+  all_goals exact selectFirstWith_withCommon_poison _ common head tail cause commonResult
+
+/-- The model-bound error case specializes the shared selection law on its running evaluator. -/
+theorem modelBoundAlternativeSelectionIn_error
+    (context : NumericComputationEvaluationContext) (common : CheckedComputationCondition model)
+    (head : CheckedComputationAlternative model Op) (tail : List (CheckedComputationAlternative model Op))
+    (error : CheckedComputationConditionError)
+    (commonResult : common.evalCheckedIn context = .error error) :
+    CheckedComputationAlternative.selectFirstCheckedIn
+      (CheckedComputationAlternative.expandCommonPrecondition (some common) (head :: tail)) context =
+      .error error := by
+  simp only [CheckedComputationAlternative.selectFirstCheckedIn, CheckedComputationAlternative.expandCommonPrecondition,
+    CheckedComputationCondition.withCommon]
+  simp only [CheckedComputationCondition.evalCheckedIn, ComputationConditionOf.evalCheckedWith] at commonResult ⊢
+  all_goals exact selectFirstWith_withCommon_error _ common head tail error commonResult
 
 end A12Kernel

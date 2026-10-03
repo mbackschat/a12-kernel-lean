@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.ValidationCondition
 import A12Kernel.Proofs.GroupPresence
+import A12Kernel.Proofs.ConditionTree
 
 /-! # Shared validation-condition laws
 
@@ -142,8 +143,11 @@ theorem validationCondition_flat_evalSelected
     (ValidationCondition.flat (model := model) condition).evalSelected
         context isRelevant =
       condition.evalSelected context.fields isRelevant := by
-  simp [ValidationCondition.flat, ValidationCondition.evalSelected,
-    FlatCondition.evalSelected, ValidationConditionLeaf.evalSelected]
+  unfold ValidationCondition.evalSelected ValidationCondition.evalWithTemporalResult ValidationCondition.flat
+  rw [conditionTree_evalVerdictExcept_embed condition ValidationConditionLeaf.flat _
+    (fun leaf => (ValidationConditionLeaf.flat leaf).evalSelected context isRelevant) _ (fun _ => rfl)]
+  rfl
+
 
 /-- The mixed tree's reference traversal preserves every reference in an embedded flat condition. -/
 @[simp]
@@ -193,7 +197,8 @@ theorem validationCondition_numeric_evalSelected_of_relevant
     (ValidationCondition.numeric (model := model) comparison).evalSelected
         context isRelevant =
       comparison.evalSelectedWithGroups context := by
-  simp [ValidationCondition.numeric, ValidationCondition.evalSelected,
+  simp [ValidationCondition.numeric, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult,
+    ConditionTree.evalVerdictExcept, Except.mapError, pure, Except.pure,
     ValidationConditionLeaf.evalSelected, relevant]
 
 /-- A reached resolved group leaf delegates exactly to the established product-state operator. -/
@@ -207,7 +212,8 @@ theorem validationCondition_groupPresence_evalSelected
     (ValidationCondition.groupPresence (model := model)
         operator reference).evalSelected
         context isRelevant = operator.eval state := by
-  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected,
+  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult,
+    ConditionTree.evalVerdictExcept, Except.mapError, pure, Except.pure,
     ValidationConditionLeaf.evalSelected, resolved]
 
 /-- Missing checked-document group state is explicit semantic unavailability. -/
@@ -221,7 +227,8 @@ theorem validationCondition_groupPresence_missing_isUnknown
     (ValidationCondition.groupPresence (model := model)
         operator reference).evalSelected
         context isRelevant = .unknown := by
-  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected,
+  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult,
+    ConditionTree.evalVerdictExcept, Except.mapError, pure, Except.pure,
     ValidationConditionLeaf.evalSelected, missing]
 
 /-- A group reference contributes exactly its model-owned repeatable ancestry to ordinary rule iteration, and the same fact selects the addressed evaluator. -/
@@ -264,7 +271,11 @@ theorem validationCondition_groupPresence_evalAddressed_checked
         ((document.groupPresenceInput reference.path outer
           .fullyRelevant false).mapError CheckedAddressingError.group).map
             fun input => operator.eval input.derive := by
-  rfl
+  cases h : document.groupPresenceInput reference.path outer .fullyRelevant false <;>
+    simp [ValidationCondition.groupPresence, ValidationCondition.evalAddressed,
+      ValidationCondition.evalWithTemporalResult, ConditionTree.evalVerdictExcept,
+      ValidationConditionLeaf.evalAddressed, h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
+
 
 /-- A structural group-slice failure remains in the addressed error channel and cannot become semantic UNKNOWN. -/
 theorem validationCondition_groupPresence_addressError
@@ -330,7 +341,11 @@ theorem validationCondition_repeatablePresence_evalAddressed
       operator declaration).evalAddressed context =
       (context.readCell context.outer declaration.id).map fun cell =>
         operator.eval (observeCell .validation cell) := by
-  rfl
+  cases h : context.readCell context.outer declaration.id <;>
+    simp [ValidationCondition.repeatableFieldPresence, ValidationCondition.evalAddressed,
+      ValidationCondition.evalWithTemporalResult, ConditionTree.evalVerdictExcept,
+      ValidationConditionLeaf.evalAddressed, h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
+
 
 /-- One non-starred repeatable field declaration is the sole source of its ordinary rule-iteration scope. -/
 @[simp]
@@ -407,7 +422,8 @@ theorem validationCondition_repetitionNotUnique_preparedResult
         .error (.repetitionNotUniqueResult context.outer) := by
   by_cases sameRow : result.row = context.outer <;>
     simp [ValidationCondition.repetitionNotUnique,
-    ValidationCondition.evalAddressedWithRepetitionNotUnique,
+    ValidationCondition.evalAddressedWithRepetitionNotUnique, ValidationCondition.evalWithTemporalResult,
+    Except.mapError, pure, Except.pure,
     ValidationConditionLeaf.evalAddressedWithRepetitionNotUnique,
     ConditionTree.evalVerdictExcept, sameRow]
 

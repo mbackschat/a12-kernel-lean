@@ -94,8 +94,8 @@ theorem computationConditionOf_requires_own (condition : ComputationConditionOf 
   | leaf leaf =>
       cases leaf with
       | groupPresence operator source =>
-          cases operator <;>
-            simp [ComputationConditionOf.requiresProducerWith,
+          cases kind : source.dependencyKind <;> cases operator <;>
+            simp [ComputationConditionOf.requiresProducerWith, kind,
               ComputationConditionOf.forbidsTargetWith,
               ComputationConditionOf.referencesFieldWith, ConditionTree.anyLeaf,
               ComputationGroupDependency.requiresProducer]

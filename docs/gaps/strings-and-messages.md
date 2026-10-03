@@ -101,6 +101,8 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 <a id="gap-sg8"></a>
 ### SG8 — Enumeration and value-list completion
 
+- `remaining`: computation membership’s Number-to-token fallback discards a Number elaboration failure before trying token admission. Diagnostic precedence for unresolved names and unbound levels remains unverified (adjacent review A1). Settle those competing admission paths before changing the reported class; this is outside the completed guard/temporal review matrix.
+
 - `state`: open
 - `missing`: open, dynamic, and partial declarations, remaining repeatable projections, computation filters, RNU authoring, and overloaded value-list consumers must reuse the typed projection and quantifier core without erasing declaration domains.
 - `baseline`: [§8](../IMPLEMENTATION-MAP.md#8--enumerations-and-value-lists) and [String/Enumeration aggregate counts](../IMPLEMENTATION-MAP.md#stringenumeration-aggregate-counts) own the implemented surface.

@@ -97,7 +97,10 @@ theorem validationCondition_groupList_evalAddressed
       (ResolvedGroupListOperands.evalAddressedTally context operands).map
         fun tally =>
           (operator.evalTally tally).asConservativeVerdict := by
-  rfl
+  cases result : ResolvedGroupListOperands.evalAddressedTally context operands <;>
+    simp [ValidationCondition.groupList, ValidationCondition.evalAddressed,
+      ValidationCondition.evalWithTemporalResult, ConditionTree.evalVerdictExcept,
+      ValidationConditionLeaf.evalAddressed, result, Functor.map, Except.map, Except.mapError]
 
 /-- A reached topology or document failure stays in the structural error channel and cannot become semantic UNKNOWN. -/
 theorem validationCondition_groupList_addressing_failure

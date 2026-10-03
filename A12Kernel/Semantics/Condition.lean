@@ -61,24 +61,28 @@ def allLeaves (predicate : Leaf → Bool) : ConditionTree Leaf → Bool
       | .fired .value => .fired .value
       | _ => Verdict.disj leftVerdict (right.evalVerdict evalLeaf)
 
-/-- Evaluate the same verdict algebra while preserving a caller-owned structural failure channel. Decisive left branches retain the exact ordinary short-circuit boundary and therefore do not sample an unreachable effectful leaf. -/
-def evalVerdictExcept (evalLeaf : Leaf → Except Error Verdict) :
+/-- Preserve the verdict algebra with a caller-owned failure channel. The optional right-And
+failure handler separates structural failure from validation runtime failure: a non-holding
+unknown prefix masks the latter (temporal review grid, 2026-10-03), while pure verdicts still
+retain their strong-Kleene distinction. -/
+def evalVerdictExcept (evalLeaf : Leaf → Except Error Verdict)
+    (onAndError : Verdict → Error → Except Error Verdict := fun _ error => .error error) :
     ConditionTree Leaf → Except Error Verdict
   | .leaf value => evalLeaf value
   | .and left right => do
-      let leftVerdict ← left.evalVerdictExcept evalLeaf
+      let leftVerdict ← left.evalVerdictExcept evalLeaf onAndError
       match leftVerdict with
       | .notFired => pure .notFired
-      | _ =>
-          pure (Verdict.conj leftVerdict
-            (← right.evalVerdictExcept evalLeaf))
+      | _ => match right.evalVerdictExcept evalLeaf onAndError with
+          | .ok rightVerdict => pure (Verdict.conj leftVerdict rightVerdict)
+          | .error error => onAndError leftVerdict error
   | .or left right => do
-      let leftVerdict ← left.evalVerdictExcept evalLeaf
+      let leftVerdict ← left.evalVerdictExcept evalLeaf onAndError
       match leftVerdict with
       | .fired .value => pure (.fired .value)
       | _ =>
           pure (Verdict.disj leftVerdict
-            (← right.evalVerdictExcept evalLeaf))
+            (← right.evalVerdictExcept evalLeaf onAndError))
 
 /-- Evaluate leaves under the shared strong-Kleene connective algebra. This is the filter counterpart of `evalVerdict`; leaf families still own their observation and comparison rules. -/
 @[simp] def evalK (evalLeaf : Leaf → K) : ConditionTree Leaf → K

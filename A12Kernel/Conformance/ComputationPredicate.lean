@@ -92,4 +92,15 @@ private def footprint : Option (Bool × Bool × Bool × Bool) := do
 
 example : footprint = some (true, true, false, true) := by native_decide
 
+private def noSource : SurfaceComputationPredicate := .entityValueList {
+  quantifier := .no, fields := { first := .field (path "A"), rest := [] },
+  values := { first := .field (path "B"), rest := [] } }
+
+/-- The retained no-members-invalid-subject row separates No from AtLeastOne's empty-member prepass. -/
+example : run number false noSource (context number (.rejected .malformed) .empty) =
+    some (.poison .malformed) ∧
+    run number false numberSource (context number (.rejected .malformed) .empty) =
+    some .notTrue := by
+  native_decide
+
 end A12Kernel.Conformance.ComputationPredicate

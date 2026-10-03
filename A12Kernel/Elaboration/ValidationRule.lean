@@ -366,7 +366,7 @@ private def evalOrdinaryPartialAdmittedAt
     scope.coversField model field environment
   let resolveGroup (groupPath : GroupPath) (current : Env) :=
     (preliminary.groupPresenceInput groupPath current false).mapError .group
-  let verdict ← rule.condition.core.evalVerdictExcept fun leaf =>
+  let verdict ← rule.condition.core.evalWithTemporalResult context.scalar isRelevant fun leaf =>
     match leaf.evalAddressedPartial? context scope isRelevant resolveGroup
         repetitionNotUniqueResult? with
     | some result => result.mapError .conditionAddressing

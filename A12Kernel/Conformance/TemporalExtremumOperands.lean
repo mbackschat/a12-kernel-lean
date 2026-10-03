@@ -107,7 +107,7 @@ private def temporalExpressionOutcome (source : SurfaceScalarTemporalExpression)
     (read : FieldId → CheckedCell) : Option (SimpleComparisonOperand ScalarTemporalValue) := do
   let checked ← (elaborateScalarTemporalExpression plainModel ["Probe"] source).toOption
   let context : FlatContext := { read, world := some { now := { epochMillis := 0 } } }
-  pure (checked.eval .computation context)
+  (checked.evalResult .computation context).toOption
 
 example :
     let amount : AuthoredNumericExpr SurfaceNumericAtom :=

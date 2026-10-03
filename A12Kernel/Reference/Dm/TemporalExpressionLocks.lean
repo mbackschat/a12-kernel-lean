@@ -1,4 +1,6 @@
-import A12Kernel.Reference.Dm.LowerDocument
+import A12Kernel.Reference.Dm.Compute
+import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.LowerValidation
 import A12Kernel.Reference.Dm.Parser
 
@@ -57,11 +59,11 @@ example :
       operationAdmitted "[Stamp2]" := by native_decide
 
 example :
-    !admitted "AddHours(Min(Now, [Stamp]), 1) == Now" ∧
+    !admitted "AddHours(Min([Stamp], [Stamp2]), 1) == Now" ∧
       !admitted "TimeFromDateTime(MinValue(Stamp, Stamp2)) == [Clock]" ∧
       !admitted "TimeFromDateTime([Stamp]) == [Clock]" ∧
       admitted "TimeFromDateTime(Stamp) == [Clock]" ∧
-      admitted "Min(Now, [Stamp]) == Now" := by native_decide
+      admitted "Min([Stamp], [Stamp2]) == Now" := by native_decide
 
 private def stored (targetField : FieldId) (text : String) : Option String := do
   let parsed ← (parseText .english text).toOption
@@ -101,7 +103,7 @@ example :
       admitted "DateFromDateTime(AddHours(Now, 25)) == Today" ∧
       admitted "AddHours(AddSeconds(Now, 1), 1) == Now" := by native_decide
 
-private def gapResult (targetField : FieldId) (text : String) :
+private def gapResult (targetField : FieldId) (text : String) (badSource : Bool := false) :
     Option (DocumentTargetOutcome × CheckedCell) := do
   let berlin := { model with timeZoneId := "Europe/Berlin" }
   let parsed ← (parseText .english text).toOption
@@ -109,18 +111,19 @@ private def gapResult (targetField : FieldId) (text : String) :
   let step ← (lowerDocumentStep berlin ["Order"] target parsed.body).toOption
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler berlin).toOption
-  let document ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := [] }).toOption
+  let document ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := if badSource then
+      [{ address := { field := 8, path := [] }, stored := "bad", raw := .rejected .malformed }] else [] }).toOption
   (step.run world (fun _ => none) document).toOption
 
 example :
     gapResult 7 "\"31.03.2024T02:30:00\"" =
-        some (.valueError .dateTime, DocumentComputationReadBack.empty) ∧
+        some (.valueError .dateTime, DocumentComputationReadBack.poison) ∧
       gapResult 7 "AddSeconds(\"31.03.2024T02:30:00\", 1)" =
-        some (.valueError .dateTime, DocumentComputationReadBack.empty) ∧
+        some (.valueError .dateTime, DocumentComputationReadBack.poison) ∧
       gapResult 5 "DateFromDateTime(\"31.03.2024T02:30:00\")" =
-        some (.valueError .fullDate, DocumentComputationReadBack.empty) ∧
+        some (.valueError .fullDate, DocumentComputationReadBack.poison) ∧
       gapResult 6 "TimeFromDateTime(\"31.03.2024T02:30:00\")" =
-        some (.valueError .time, DocumentComputationReadBack.empty) := by native_decide
+        some (.valueError .time, DocumentComputationReadBack.poison) := by native_decide
 
 example :
     (DocumentTargetOutcome.valueError .dateTime).storedText? = none ∧
@@ -130,8 +133,79 @@ example :
           pointer := MessagePointer.ofCellAddr { field := 7, path := [] }
           errorCode := berechnungsWertFehler
           messageType := .value
-          payload := () } ∧
-      (DocumentTargetOutcome.dateTime .noValue).formalValueMessage?
-          (MessagePointer.ofCellAddr { field := 8, path := [] }) = none := by native_decide
+          payload := () } := by native_decide
+
+example : (match gapResult 7 "Min([Stamp2], \"31.03.2024T02:30:00\")" true with
+    | some (.dateTime (.poison _), _) => true | _ => false) = true ∧
+    (match gapResult 7 "Max([Stamp2], \"31.03.2024T02:30:00\")" true with
+    | some (.dateTime (.poison _), _) => true | _ => false) = true ∧
+    (match gapResult 7 "Min(\"31.03.2024T02:30:00\", [Stamp2])" true with
+    | some (.valueError .dateTime, _) => true | _ => false) = true := by native_decide
+
+private def runtimeModel : FlatModel := { model with
+  timeZoneId := "Europe/Berlin"
+  fields := model.fields ++ [(9, "Shift"), (10, "First"), (11, "Guard")].map fun (id, name) => {
+    id, name, groupPath := ["Order"]
+    policy := { kind := .temporal .dateTime TemporalComponents.now }
+    temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } } }
+
+private def runtimeInput (stamp : String) (seed : Bool) : Lean.Json :=
+  Lean.Json.mkObj [("Order", Lean.Json.mkObj (
+    [("Stamp", Lean.Json.str stamp)] ++
+    if seed then ["Stamp2", "Shift", "First", "Guard"].map
+      (fun name => (name, Lean.Json.str "2020-01-01T00:00:00")) else []))]
+
+private def dependentRun (label : String) (seed : Bool) : Option (List String) := do
+  let dm : DmModel := {
+    flat := runtimeModel, computations := [], rules := []
+    conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (runtimeInput "2020-01-01T00:00:00" seed)).toOption
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler runtimeModel).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let definitions : List (String × String × Option String) := [
+    ("First", "FirstFilledValue(Stamp,Stamp2)", none),
+    ("Guard", "\"05.03.2024T12:30:00\"", some "FieldNotFilled(Stamp)"),
+    ("Shift", "AddSeconds(Stamp,1)", none),
+    ("Stamp", "\"" ++ label ++ "\"", none),
+    ("Stamp2", "\"05.03.2024T12:30:00\"", none)]
+  let steps ← definitions.mapM fun (name, operation, precondition) =>
+    (lowerComputation runtimeModel .english {
+      group := ["Order"], name := name ++ "Comp"
+      targetRelPath := "../" ++ name, commonPrecondition := precondition
+      alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).toOption.map (·.2)
+  pure ((← (runComputations world prepared checked steps).toOption).map
+    (fun result => result.pointer ++ ":" ++ result.outcome)).mergeSort
+
+example : dependentRun "31.03.2024T02:30:00" true = some [
+    "Order/First:cleared", "Order/Guard:cleared", "Order/Shift:cleared", "Order/Stamp2:value 2024-03-05T12:30:00",
+    "Order/Stamp:cleared"] := by native_decide
+
+private def validationRun (condition stamp : String) : Option (List Polarity) := do
+  let dm : DmModel := {
+    flat := runtimeModel, computations := [], rules := []
+    conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (runtimeInput stamp true)).toOption
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler runtimeModel).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let rule ← (checkRule dm .english {
+    group := ["Order"], name := "Check", errorEntityRelPath := "../Stamp"
+    errorCode := "Check", condition, severity := "ERROR" } world).toOption
+  pure ((← (runRule world checked rule).toOption).map (·.messageType))
+
+example : ["", "bad", "2024-03-31T01:00:00", "2024-03-31T04:00:00"].all
+    (fun stamp => validationRun "[Stamp] < \"31.03.2024T02:30:00\"" stamp == some [.value]) := by native_decide
+
+example : validationRun "[Stamp] < \"31.03.2024T02:30:00\" And FieldNotFilled(Stamp)"
+      "2024-03-31T01:00:00" = some [.value] ∧
+    validationRun "FieldNotFilled(Stamp) And [Stamp] < \"31.03.2024T02:30:00\""
+      "2024-03-31T01:00:00" = some [] ∧
+    validationRun "[Stamp] < \"31.03.2024T01:30:00\"" "2024-03-31T01:00:00" = some [.value] ∧
+    validationRun "[Stamp] < \"31.03.2024T01:30:00\"" "2024-03-31T04:00:00" = some [] := by native_decide
+
+example : validationRun "FieldNotFilled(Stamp) And [Stamp] < \"31.03.2024T02:30:00\""
+    "bad" = some [] := by native_decide
+
 
 end A12Kernel.Dm.TemporalExpressionLocks

@@ -1,0 +1,2261 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "TemporalReview_DM.json",
+    "locale": "en_US",
+    "clock": "2026-10-02T00:00:00Z"
+  },
+  "rows": [
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GapComp",
+              "field": "G/Gap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapComp",
+              "field": "G/MaxGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapDepComp",
+              "field": "G/MaxGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MaxGap",
+                "G/MaxGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapComp",
+              "field": "G/MinGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapDepComp",
+              "field": "G/MinGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGap",
+                "G/MinGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstComp",
+              "field": "G/MinGapFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstDepComp",
+              "field": "G/MinGapFirstDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGapFirst",
+                "G/MinGapFirstDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinOrdinaryComp",
+              "field": "G/MinOrdinary",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/Stamp"
+              ],
+              "fillToFix": [
+                "G/MinOrdinary",
+                "G/Stamp"
+              ]
+            },
+            {
+              "code": "MinOrdinaryDepComp",
+              "field": "G/MinOrdinaryDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/MinOrdinaryDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OrdinaryComp",
+              "field": "G/Ordinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ordinary"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "falseThenGap",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "gapRule",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "gapThenFalse",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/FirstDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/GuardDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirstDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinOrdinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:01"
+              },
+              {
+                "field": "G/Ordinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Gap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Gap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MaxGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MaxGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGapFirst",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGapFirst"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "G/MinOrdinary",
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "value": "2024-03-31T01:30:01"
+              },
+              {
+                "field": "G/Ordinary",
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "G": {
+                "FirstDependent": null,
+                "Gap": null,
+                "GuardDependent": null,
+                "MaxGap": null,
+                "MaxGapDep": null,
+                "MinGap": null,
+                "MinGapDep": null,
+                "MinGapFirst": null,
+                "MinGapFirstDep": null,
+                "MinOrdinary": "2024-03-31T01:30:00",
+                "MinOrdinaryDep": "2024-03-31T01:30:01",
+                "Ordinary": "2024-03-05T12:30:00"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GapComp",
+              "field": "G/Gap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapComp",
+              "field": "G/MaxGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapDepComp",
+              "field": "G/MaxGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MaxGap",
+                "G/MaxGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapComp",
+              "field": "G/MinGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapDepComp",
+              "field": "G/MinGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGap",
+                "G/MinGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstComp",
+              "field": "G/MinGapFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstDepComp",
+              "field": "G/MinGapFirstDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGapFirst",
+                "G/MinGapFirstDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinOrdinaryComp",
+              "field": "G/MinOrdinary",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/Stamp"
+              ],
+              "fillToFix": [
+                "G/MinOrdinary",
+                "G/Stamp"
+              ]
+            },
+            {
+              "code": "MinOrdinaryDepComp",
+              "field": "G/MinOrdinaryDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/MinOrdinaryDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OrdinaryComp",
+              "field": "G/Ordinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ordinary"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "falseThenGap",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "gapRule",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "gapThenFalse",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/FirstDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/GuardDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirstDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinOrdinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:01"
+              },
+              {
+                "field": "G/Ordinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Gap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Gap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MaxGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MaxGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGapFirst",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGapFirst"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "G/MinOrdinary",
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "value": "2024-03-31T01:30:01"
+              },
+              {
+                "field": "G/Ordinary",
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "G": {
+                "FirstDependent": null,
+                "Gap": null,
+                "GuardDependent": null,
+                "MaxGap": null,
+                "MaxGapDep": null,
+                "MinGap": null,
+                "MinGapDep": null,
+                "MinGapFirst": null,
+                "MinGapFirstDep": null,
+                "MinOrdinary": "2024-03-31T01:30:00",
+                "MinOrdinaryDep": "2024-03-31T01:30:01",
+                "Ordinary": "2024-03-05T12:30:00"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "malformed",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GapComp",
+              "field": "G/Gap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapComp",
+              "field": "G/MaxGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapDepComp",
+              "field": "G/MaxGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MaxGap",
+                "G/MaxGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapComp",
+              "field": "G/MinGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapDepComp",
+              "field": "G/MinGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGap",
+                "G/MinGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstComp",
+              "field": "G/MinGapFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstDepComp",
+              "field": "G/MinGapFirstDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGapFirst",
+                "G/MinGapFirstDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinOrdinaryDepComp",
+              "field": "G/MinOrdinaryDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/MinOrdinaryDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OrdinaryComp",
+              "field": "G/Ordinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ordinary"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gapRule",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "gapThenFalse",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/FirstDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/GuardDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirstDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinOrdinary",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ordinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Gap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Gap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGapFirst",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGapFirst"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Stamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Stamp"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "G/Ordinary",
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "G": {
+                "FirstDependent": null,
+                "Gap": null,
+                "GuardDependent": null,
+                "MaxGap": null,
+                "MaxGapDep": null,
+                "MinGap": null,
+                "MinGapDep": null,
+                "MinGapFirst": null,
+                "MinGapFirstDep": null,
+                "MinOrdinary": null,
+                "MinOrdinaryDep": null,
+                "Ordinary": "2024-03-05T12:30:00",
+                "Stamp": "bad"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GapComp",
+              "field": "G/Gap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapComp",
+              "field": "G/MaxGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapDepComp",
+              "field": "G/MaxGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MaxGap",
+                "G/MaxGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapComp",
+              "field": "G/MinGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapDepComp",
+              "field": "G/MinGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGap",
+                "G/MinGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstComp",
+              "field": "G/MinGapFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstDepComp",
+              "field": "G/MinGapFirstDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGapFirst",
+                "G/MinGapFirstDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinOrdinaryDepComp",
+              "field": "G/MinOrdinaryDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/MinOrdinaryDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OrdinaryComp",
+              "field": "G/Ordinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ordinary"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gapRule",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "gapThenFalse",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/FirstDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/GuardDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirstDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinOrdinary",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Ordinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Gap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Gap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGapFirst",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGapFirst"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Stamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Stamp"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "G/Ordinary",
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "G": {
+                "FirstDependent": null,
+                "Gap": null,
+                "GuardDependent": null,
+                "MaxGap": null,
+                "MaxGapDep": null,
+                "MinGap": null,
+                "MinGapDep": null,
+                "MinGapFirst": null,
+                "MinGapFirstDep": null,
+                "MinOrdinary": null,
+                "MinOrdinaryDep": null,
+                "Ordinary": "2024-03-05T12:30:00",
+                "Stamp": "bad"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "before",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GapComp",
+              "field": "G/Gap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapComp",
+              "field": "G/MaxGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapDepComp",
+              "field": "G/MaxGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MaxGap",
+                "G/MaxGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapComp",
+              "field": "G/MinGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapDepComp",
+              "field": "G/MinGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGap",
+                "G/MinGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstComp",
+              "field": "G/MinGapFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstDepComp",
+              "field": "G/MinGapFirstDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGapFirst",
+                "G/MinGapFirstDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinOrdinaryComp",
+              "field": "G/MinOrdinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinOrdinaryDepComp",
+              "field": "G/MinOrdinaryDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/MinOrdinaryDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OrdinaryComp",
+              "field": "G/Ordinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ordinary"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gapRule",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "gapThenFalse",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ordinaryRule",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Stamp"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/FirstDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/GuardDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirstDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinOrdinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:00:00"
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:00:01"
+              },
+              {
+                "field": "G/Ordinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Gap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Gap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MaxGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MaxGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGapFirst",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGapFirst"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "G/MinOrdinary",
+                "value": "2024-03-31T01:00:00"
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "value": "2024-03-31T01:00:01"
+              },
+              {
+                "field": "G/Ordinary",
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "G": {
+                "FirstDependent": null,
+                "Gap": null,
+                "GuardDependent": null,
+                "MaxGap": null,
+                "MaxGapDep": null,
+                "MinGap": null,
+                "MinGapDep": null,
+                "MinGapFirst": null,
+                "MinGapFirstDep": null,
+                "MinOrdinary": "2024-03-31T01:00:00",
+                "MinOrdinaryDep": "2024-03-31T01:00:01",
+                "Ordinary": "2024-03-05T12:30:00",
+                "Stamp": "2024-03-31T01:00:00"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GapComp",
+              "field": "G/Gap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapComp",
+              "field": "G/MaxGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapDepComp",
+              "field": "G/MaxGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MaxGap",
+                "G/MaxGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapComp",
+              "field": "G/MinGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapDepComp",
+              "field": "G/MinGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGap",
+                "G/MinGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstComp",
+              "field": "G/MinGapFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstDepComp",
+              "field": "G/MinGapFirstDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGapFirst",
+                "G/MinGapFirstDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinOrdinaryComp",
+              "field": "G/MinOrdinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinOrdinaryDepComp",
+              "field": "G/MinOrdinaryDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/MinOrdinaryDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OrdinaryComp",
+              "field": "G/Ordinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ordinary"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gapRule",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "gapThenFalse",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "ordinaryRule",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Stamp"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/FirstDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/GuardDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirstDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinOrdinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:00:00"
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:00:01"
+              },
+              {
+                "field": "G/Ordinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Gap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Gap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MaxGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MaxGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGapFirst",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGapFirst"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "G/MinOrdinary",
+                "value": "2024-03-31T01:00:00"
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "value": "2024-03-31T01:00:01"
+              },
+              {
+                "field": "G/Ordinary",
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "G": {
+                "FirstDependent": null,
+                "Gap": null,
+                "GuardDependent": null,
+                "MaxGap": null,
+                "MaxGapDep": null,
+                "MinGap": null,
+                "MinGapDep": null,
+                "MinGapFirst": null,
+                "MinGapFirstDep": null,
+                "MinOrdinary": "2024-03-31T01:00:00",
+                "MinOrdinaryDep": "2024-03-31T01:00:01",
+                "Ordinary": "2024-03-05T12:30:00",
+                "Stamp": "2024-03-31T01:00:00"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "after",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GapComp",
+              "field": "G/Gap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapComp",
+              "field": "G/MaxGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapDepComp",
+              "field": "G/MaxGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MaxGap",
+                "G/MaxGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapComp",
+              "field": "G/MinGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapDepComp",
+              "field": "G/MinGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGap",
+                "G/MinGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstComp",
+              "field": "G/MinGapFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstDepComp",
+              "field": "G/MinGapFirstDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGapFirst",
+                "G/MinGapFirstDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinOrdinaryComp",
+              "field": "G/MinOrdinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinOrdinaryDepComp",
+              "field": "G/MinOrdinaryDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/MinOrdinaryDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OrdinaryComp",
+              "field": "G/Ordinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ordinary"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gapRule",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "gapThenFalse",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/FirstDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/GuardDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirstDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinOrdinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:01"
+              },
+              {
+                "field": "G/Ordinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Gap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Gap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MaxGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MaxGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGapFirst",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGapFirst"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "G/MinOrdinary",
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "value": "2024-03-31T01:30:01"
+              },
+              {
+                "field": "G/Ordinary",
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "G": {
+                "FirstDependent": null,
+                "Gap": null,
+                "GuardDependent": null,
+                "MaxGap": null,
+                "MaxGapDep": null,
+                "MinGap": null,
+                "MinGapDep": null,
+                "MinGapFirst": null,
+                "MinGapFirstDep": null,
+                "MinOrdinary": "2024-03-31T01:30:00",
+                "MinOrdinaryDep": "2024-03-31T01:30:01",
+                "Ordinary": "2024-03-05T12:30:00",
+                "Stamp": "2024-03-31T04:00:00"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GapComp",
+              "field": "G/Gap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapComp",
+              "field": "G/MaxGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGapDepComp",
+              "field": "G/MaxGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MaxGap",
+                "G/MaxGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapComp",
+              "field": "G/MinGap",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapDepComp",
+              "field": "G/MinGapDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGap",
+                "G/MinGapDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstComp",
+              "field": "G/MinGapFirst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGapFirstDepComp",
+              "field": "G/MinGapFirstDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinGapFirst",
+                "G/MinGapFirstDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinOrdinaryComp",
+              "field": "G/MinOrdinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/Stamp"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinOrdinaryDepComp",
+              "field": "G/MinOrdinaryDep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/MinOrdinary",
+                "G/MinOrdinaryDep"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OrdinaryComp",
+              "field": "G/Ordinary",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "G/Ordinary"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gapRule",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "gapThenFalse",
+              "field": "G/Stamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/FirstDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Gap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/GuardDependent",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGap",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirst",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGapFirstDep",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinOrdinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-31T01:30:01"
+              },
+              {
+                "field": "G/Ordinary",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Gap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/Gap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MaxGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MaxGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGap",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGap"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/MinGapFirst",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "G/MinGapFirst"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "G/MinOrdinary",
+                "value": "2024-03-31T01:30:00"
+              },
+              {
+                "field": "G/MinOrdinaryDep",
+                "value": "2024-03-31T01:30:01"
+              },
+              {
+                "field": "G/Ordinary",
+                "value": "2024-03-05T12:30:00"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "G": {
+                "FirstDependent": null,
+                "Gap": null,
+                "GuardDependent": null,
+                "MaxGap": null,
+                "MaxGapDep": null,
+                "MinGap": null,
+                "MinGapDep": null,
+                "MinGapFirst": null,
+                "MinGapFirstDep": null,
+                "MinOrdinary": "2024-03-31T01:30:00",
+                "MinOrdinaryDep": "2024-03-31T01:30:01",
+                "Ordinary": "2024-03-05T12:30:00",
+                "Stamp": "2024-03-31T04:00:00"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

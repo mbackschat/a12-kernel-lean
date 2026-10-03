@@ -75,6 +75,13 @@ def ComputationNumericAtom.read (context : ScalarComputationContext) :
   | .repetition source => do pure (.value (← source.coordinateAt context.row))
   | .baseYear year => pure (.value year)
 
+/-- Singular presence and an ordinary group-list operand can read the same content but have
+separate target and scheduling rules (spec/09, containing-group review grid 2026-10-03). -/
+inductive ComputationGroupDependencyKind where
+  | conditionalPresence
+  | ordinaryList
+  deriving Repr, DecidableEq
+
 /-- A group guard preserves authored identity and complete operand membership separately from
 its runtime content slice. Elaboration certifies all three against the same model. -/
 structure ComputationGroupOperand where
@@ -82,6 +89,7 @@ structure ComputationGroupOperand where
   content : ResolvedComputationGroupSource
   members : List FieldId
   starPath : Option StarPath := none
+  dependencyKind : ComputationGroupDependencyKind := .conditionalPresence
   deriving Repr, DecidableEq
 
 /-- Atomic leaves of the parser-independent computation-condition fragment. -/
@@ -100,7 +108,9 @@ inductive ComputationConditionLeaf (Atom : Type := ComputationNumericAtom) (Pred
 
 def ComputationConditionLeaf.groupReference? :
     ComputationConditionLeaf Atom Predicate → Option (GroupPresenceOperator × ResolvedGroupReference)
-  | .groupPresence operator source => some (operator, source.reference)
+  | .groupPresence operator source => match source.dependencyKind with
+      | .conditionalPresence => some (operator, source.reference)
+      | .ordinaryList => none
   | _ => none
 
 /-- Computation control reuses the common checked connective tree; its phase-specific leaves and result projection differ from validation. -/
@@ -148,7 +158,10 @@ def forbidsTargetWith (condition : ComputationConditionOf Atom Predicate)
     (references : Atom → FieldId → Bool) (predicateReferences : Predicate → FieldId → Bool)
     (target : FieldId) : Bool :=
   match condition with
-  | .leaf (.groupPresence .filled _) => false
+  | .leaf (.groupPresence .filled source) =>
+      match source.dependencyKind with
+      | .conditionalPresence => false
+      | .ordinaryList => source.members.contains target
   | .and left right | .or left right =>
       forbidsTargetWith left references predicateReferences target || forbidsTargetWith right references predicateReferences target
   | leaf => referencesFieldWith leaf references predicateReferences target
@@ -160,7 +173,8 @@ def requiresProducerWith (condition : ComputationConditionOf Atom Predicate)
   match condition with
   | .leaf (.groupPresence operator source) =>
       let member := source.members.contains producer
-      let conditional := operator == .filled && source.members.contains consumer
+      let conditional := source.dependencyKind == .conditionalPresence &&
+        operator == .filled && source.members.contains consumer
       ComputationGroupDependency.requiresProducer (member && !conditional)
         (member && conditional) (consumer == producer) (producerProtected source.reference)
   | .and left right | .or left right =>
@@ -186,7 +200,8 @@ abbrev or (left right : ComputationCondition) : ComputationCondition :=
 
 /-- Group-list predicates compose each entity's own positive and negative presence tests.
 The source expansion uses the same structure (`ExpandService.expandAndCreate`); retaining the
-leaves also preserves conditional group dependencies instead of flattening them to field reads. -/
+leaves preserves runtime content reads; each leaf separately retains whether its authored
+shape permits conditional dependencies, since target checking precedes this expansion. -/
 def ofGroupList (operator : GroupFillQuantifier)
     (first : ComputationCondition × ComputationCondition)
     (rest : List (ComputationCondition × ComputationCondition)) : ComputationCondition :=

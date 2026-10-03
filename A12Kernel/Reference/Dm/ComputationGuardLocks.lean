@@ -337,4 +337,25 @@ example : numericExpressionGuardRun "[B] > 0 And FieldValueAsNumber(Text) > 0" f
     numericExpressionGuardRun "[B] == 0 Or FieldValueAsNumber(Text) > 0" true =
     some ["value ready", "value 1"] := by native_decide
 
+private def containingListAdmitted (guard : String) (target : String := "../C/N") : Bool :=
+  let model : FlatModel := {
+    fields := [(["G"], "N", 1, []), (["G", "C"], "N", 2, []),
+      (["G", "H"], "N", 3, []), (["G", "R"], "N", 4, [10])].map
+      fun (group, name, id, scope) => {
+        id, name, groupPath := group, repeatableScope := scope
+        policy := { kind := .number { scale := 0, signed := true } } }
+    repeatableGroups := [{ level := 10, path := ["G", "R"], repeatability := some 5 }] }
+  (lowerComputation model .english {
+    group := ["G"], name := "Guarded", targetRelPath := target, commonPrecondition := some guard
+    alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := [] }).isOk
+
+example : containingListAdmitted "GroupFilled(/G/C)" ∧
+    containingListAdmitted "AtLeastOneGroupFilled(/G)" "../N" ∧
+    !containingListAdmitted "AtLeastOneGroupFilled(/G/C)" ∧
+    !containingListAdmitted "AtLeastOneGroupFilled(/G/C,/G/H)" ∧
+    !containingListAdmitted "AllGroupsFilled(/G/C,/G/H)" ∧
+    !containingListAdmitted "NoGroupFilled(/G/C)" ∧
+    !containingListAdmitted "AtLeastOneGroupFilled(/G/R*)" "../R/N" ∧
+    containingListAdmitted "AtLeastOneGroupFilled(/G/H)" := by native_decide
+
 end A12Kernel.Dm.ComputationGuardLocks

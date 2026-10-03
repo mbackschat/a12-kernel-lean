@@ -35,6 +35,30 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-03-06"></a>
+### `SPEC-2026-10-03-06` — temporal failures preserve operand order and the validation rule boundary
+
+- `status`: pending
+- `clause`: [spec/09 §3.2](../spec/09-computations.md#32-an-invalidity-clear-poisons).
+- `delta`: temporal operand-list Min/Max stop at an earlier malformed operand before converting a later gap literal. Reversing Min operands reaches the literal error first. In validation, a reached gap-label comparison produces the authored rule’s VALUE_ERROR; a later false And cannot suppress it, while an earlier false or unknown prefix skips it.
+- `evidence`: the [temporal disposition checkpoint](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-disposition) retains four documents, both strategies, ordinary-label and dependent controls, exact producer identity and artifact hashes.
+- `redundancy`: heading-first peer-findings inspection at the [receipt revision](SOURCES.md#inbound-2026-10-03), followed by gap-label searches, found KF231’s zone split and existing bare-constant clear. IF326 already owns poisoned dependents; that is corroboration, not a new outbound cascade request. The retained order and validation-connective discriminators are the delta.
+- `surfaces`: temporal expression evaluation and validation exception handling; keep formal operand poison distinct from runtime value failure at the producer, while retaining cause-blind invalid reads downstream.
+- `acceptance`: reconcile malformed-first versus gap-first Min, the Max sibling, and both validation And orders against the retained rows, or provide contrary evidence. No claim about other discontinuities, repeated targets or arbitrary nesting.
+- `introducing commit`: resolve with the ledger contract’s `git log --reverse -S` recipe.
+
+<a id="spec-2026-10-03-05"></a>
+### `SPEC-2026-10-03-05` — group-list expansion does not inherit singular containing-group exemptions
+
+- `status`: pending
+- `clause`: [spec/09 §1.1](../spec/09-computations.md#11-group-derived-scheduling-dependencies) and §5.
+- `delta`: positive singular GroupFilled and the admitted positive fixed-root AtLeastOneGroupFilled form retain their special target/dependency treatment. Ordinary containing-group lists, including a sole non-root AtLeastOneGroupFilled and starred Any/No controls, draw MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD; Boolean expansion must preserve the authored dependency kind.
+- `evidence`: the [guard checkpoint](sources/computation-scheduling-probes.md#src-compositional-computation-guards) owns the eighteen-row shared static capture and the source owners that inspect unexpanded condition shapes. The corresponding temporal runtime rows make no additional scheduling claim for refused group-list shapes.
+- `redundancy`: peer KF511 and SPEC-2026-10-03-02 cover singular guards and producer profiles. Heading-first inspection of group-list findings and searches for the new containing-group forms did not find these exemption discriminators. KF326 owns root-list admission, not the containing-target distinction.
+- `surfaces`: computation target-reference admission, protected producer dependencies and group-list lowering. This narrows list composition without reopening the accepted singular-guard profile account.
+- `acceptance`: reconcile the GroupFilled/non-root Any/multi-All/multi-Any/root-Any and starred controls in `static.tsv`, or retain contrary kernel observations. Wider root repetition and keyed shapes remain outside this grid.
+- `introducing commit`: resolve with the ledger contract’s `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-03-04"></a>
 ### `SPEC-2026-10-03-04` — computation membership preserves reached poison and deciding prefixes
 
@@ -51,8 +75,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-03-03"></a>
 ### `SPEC-2026-10-03-03` — filtered field-fill declared slots and deciding-prefix polarity
 
-- `status`: handed-off
-- `handoff`: owner reports sending this ledger to a12-dmkits on 2026-10-03; peer disposition remains pending.
+- `status`: accepted at a12-dmkits `35ad604468360640f9f5bd9fcdc2cc6922b0b685` ([verified receipt](SOURCES.md#inbound-2026-10-03)); within this entry’s stated acceptance scope.
+- `handoff`: owner transferred this entry on 2026-10-03; the dated peer response is reconciled against the committed implementation, tests and retained evidence in the receipt above.
 - `clause`: [spec/02 §A.4](../spec/02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges).
 - `delta`: filtered field-fill lists retain selected missing declared slots; positive thresholds take polarity from the filled witnesses before their decision, not from filter presence anywhere in the list.
 - `evidence`: the [49-rule, nine-document grid](sources/group-list-and-capacity-probes.md#src-filtered-field-fill-ranges) pins Kernel 30.8.1 full/partial results on both strategies and the independent source mechanism.
@@ -64,8 +88,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-03-02"></a>
 ### `SPEC-2026-10-03-02` — containing-group guards distinguish operands from producer dependencies
 
-- `status`: handed-off
-- `handoff`: owner reports sending this ledger to a12-dmkits on 2026-10-03; peer disposition remains pending.
+- `status`: accepted at a12-dmkits `35ad604468360640f9f5bd9fcdc2cc6922b0b685` ([verified receipt](SOURCES.md#inbound-2026-10-03)); within this entry’s stated acceptance scope.
+- `handoff`: owner transferred this entry on 2026-10-03; the dated peer response is reconciled against the committed implementation, tests and retained evidence in the receipt above.
 - `origin`: the group-guard consumer readback could not recover conditional scheduling from the canonical clause; the retained dependency and profile grids already settle its separating cases.
 - `clause`: [spec/09 §1.1](../spec/09-computations.md#11-group-derived-scheduling-dependencies).
 - `delta`: positive containing-group reads omit self and group-protected producers from the schedule while retaining complete operands. For nonrepeatable producers, present conditions determine the syntactic profile across common-expanded alternatives; absent conditions are omitted. At repeatable targets, implicit guards are supplied before assembling the target profile, so absence below the row becomes a nonprotecting condition. Ordinary reads survive even in unselectable alternatives.
@@ -78,8 +102,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-03-01"></a>
 ### `SPEC-2026-10-03-01` — numeric computation guards substitute zero for empty operands
 
-- `status`: handed-off
-- `handoff`: owner reports sending this ledger to a12-dmkits on 2026-10-03; peer disposition remains pending.
+- `status`: accepted at a12-dmkits `35ad604468360640f9f5bd9fcdc2cc6922b0b685` ([verified receipt](SOURCES.md#inbound-2026-10-03)); within this entry’s stated acceptance scope.
+- `handoff`: owner transferred this entry on 2026-10-03; the dated peer response is reconciled against the committed implementation, tests and retained evidence in the receipt above.
 - `origin`: locally measured while closing the shared numeric computation guard; the peer's KF20 empty-operand claim has no empty document in its linked differential test.
 - `clause`: [spec/09 §2](../spec/09-computations.md#2-separate-operations-and-the-three-outcomes), the Number-comparison precondition paragraph.
 - `delta`: empty and explicit zero select identically for the six measured Number comparisons and both arithmetic orders. Division-domain failure and reached formal poison remain distinct; the clause states the downstream discriminator.
@@ -91,8 +115,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-02-08"></a>
 ### `SPEC-2026-10-02-08` — a filter's Number field takes every ordinary operator against a literal on either side, and the literal scale gate binds `==` and `!=` alone
 
-- `status`: handed-off
-- `handoff`: owner reports sending this ledger to a12-dmkits on 2026-10-03; peer disposition remains pending.
+- `status`: accepted at a12-dmkits `35ad604468360640f9f5bd9fcdc2cc6922b0b685` ([verified receipt](SOURCES.md#inbound-2026-10-03)); within this entry’s stated acceptance scope.
+- `handoff`: owner transferred this entry on 2026-10-03; the dated peer response is reconciled against the committed implementation, tests and retained evidence in the receipt above.
 - `origin`: locally originated. `spec/07` §3 listed a Number `!=` as the filter's measured Number comparison; this grid measures the rest of the operator and literal surface.
 - `clause`: [`07`](../spec/07-repetition-and-iteration.md) §3, the bullet that the filter's condition is the ordinary condition production.
 - `delta`: inside `Sum(Rows*/V Having <leaf>)` all six operators are admitted between a Number field and an integer literal, and all six with the literal first; on a scale-0 field `== 1.5`, `== 1.0`, `== 1.50`, `!= 1.5`, `!= 1.0`, `1.5 == [Rows/V]` and `1.5 != [Rows/V]` draw `MVK_INVALID_COMPARE_DEC_PLACES` while `<`, `<=`, `>` and `>=` against `1.5` and `1.5 > [Rows/V]` are admitted, on a scale-2 field `== 1.505` draws it and `< 1.505` is admitted, and `==` and `!=` between `[Rows/V]` and `[Rows/W]` across scales 0 and 2 draw it while `<`, `<=`, `>` and `>=` are admitted; `1 < 2` draws `MVK_INVALID_COMPARE_TO_CONST`, `[Rows/V] == "6"`, `[Rows/S] == 6` and `[Rows/S] != 6` `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING`, `[Rows/S] < 6` `MVK_INVALID_TYPE_FOR_COMPARISON`, and `[Rows/V] + 1 < 6` and `CurrentRepetition(Rows)` against a literal are admitted.

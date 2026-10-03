@@ -278,7 +278,8 @@ def FlatModel.elaborateComputationGroupList (model : FlatModel)
       reference := { reference with boundRepeatableScope := model.repeatableScopeForGroupPath reference.path }
       content := model.computationGroupSource reference.path
       members := (model.groupSubtreeFields reference.path).map (·.id)
-      starPath }
+      starPath
+      dependencyKind := if reference.isRoot && starPath.isNone then .conditionalPresence else .ordinaryList }
     (ConditionTree.leaf (.groupPresence .filled source), ConditionTree.leaf (.groupPresence .notFilled source))
   let conditions ← operands.mapM fun operand => match operand with
     | .field declaration .stored => pure (ComputationCondition.fieldFilled declaration.id,

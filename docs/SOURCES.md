@@ -196,6 +196,16 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 <a id="inbound-2026-09-06a"></a>
 - Reported 2026-09-06a — the operand/target binding relation transfers from the computation carrier to the rule carrier unchanged
 
+<a id="inbound-2026-10-03"></a>
+#### Reviewed 2026-10-03 peer handback
+
+- `revision`: a12-dmkits `35ad604468360640f9f5bd9fcdc2cc6922b0b685`, verified as the clean peer HEAD on 2026-10-03. The received letter has SHA-256 `e0f175e2c9d1e43baae3c7aa56e1cd52bde5961b407585ab2af30bdbe2bc6ecc`.
+- `verification`: inspected the pinned implementations, differential tests and fixtures against this project’s retained grids. Peer suites were not rerun here; executed gates are the letter’s report.
+- `numeric`: KF510 / `FilterNumberComparisonAgreementTest` cover the 59 scale/direction rows; KF509 / `NumericComputationGuardDiffTest` cover 128 producer/dependent results. These reconcile SPEC-08 and SPEC-01.
+- `dependencies`: KF511’s dependency implementations and tests pin 21 static cases and 14 root observations in [the fixture](../../a12-rulekit/adapter/src/test/resources/checker-near-miss/containing-group-profiles.json). SPEC-02 acceptance covers singular GroupFilled, not ordinary lists.
+- `filtered-fill`: KF512’s fill implementations and differential/replay tests check [the eighteen document/arm rows](../../a12-rulekit/adapter/src/test/resources/filtered-fill-decisions.json), 441 full plus 441 whole-root partial signatures. These reconcile SPEC-03.
+- `limits`: finite single-level Number fields and fixed-root runtime scheduling; no new CLI or protocol. Wider scopes/kinds remain outside. SPEC-04 was excluded and remains pending.
+
 ### Inbound 2026-10-02c handback
 
 <a id="inbound-2026-10-02c"></a>

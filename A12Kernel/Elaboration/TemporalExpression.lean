@@ -317,16 +317,20 @@ def referencesField (expression : CheckedScalarTemporalExpression model) (field 
 missingness and operand poison (the DateTime constant zone-split checkpoint, spec/09). -/
 def evalResult (expression : CheckedScalarTemporalExpression model) (phase : Phase) (context : FlatContext) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
-  expression.core.evalWithResult ScalarTemporalValue.select
-    (readScalarTemporalAtom model phase context)
-    (fun operation source => pure (applyScalarTemporalTransform phase context operation source))
-
-/-- The comparison projection suppresses runtime value failures; computations retain `evalResult`. -/
-def eval (expression : CheckedScalarTemporalExpression model) (phase : Phase) (context : FlatContext) :
-    SimpleComparisonOperand ScalarTemporalValue :=
-  match expression.evalResult phase context with
-  | .ok result => result
-  | .error _ => .unknown .malformed
+  let reached (operand : SimpleComparisonOperand ScalarTemporalValue) :
+      Except (Sum FormalCause ScalarTemporalEvaluationFault) (SimpleComparisonOperand ScalarTemporalValue) :=
+    match phase, operand with
+    | .computation, .unknown cause => .error (.inl cause)
+    | _, operand => .ok operand
+  let result := expression.core.evalWithResult ScalarTemporalValue.select
+    (fun atom => do
+      let operand ← (readScalarTemporalAtom model phase context atom).mapError Sum.inr
+      reached operand)
+    (fun operation source => reached (applyScalarTemporalTransform phase context operation source))
+  match result with
+  | .ok operand => .ok operand
+  | .error (.inl cause) => .ok (.unknown cause)
+  | .error (.inr fault) => .error fault
 
 end CheckedScalarTemporalExpression
 
@@ -338,10 +342,19 @@ def fieldIds (comparison : CheckedScalarTemporalComparison model) : List FieldId
 def referencesField (comparison : CheckedScalarTemporalComparison model) (field : FieldId) : Bool :=
   comparison.fieldIds.contains field
 
+/-- Retain runtime label failure outside the comparison verdict; the enclosing rule owns its
+value-error projection (temporal review grid, 2026-10-03). -/
+def evalResult (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
+    (context : FlatContext) : Except ScalarTemporalEvaluationFault Verdict := do
+  let left ← comparison.left.evalResult phase context
+  let right ← comparison.right.evalResult phase context
+  pure (evalSymmetricComparison (ScalarTemporalValue.holds comparison.operator) left right)
+
 def evalAt (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
     (context : FlatContext) : Verdict :=
-  evalSymmetricComparison (ScalarTemporalValue.holds comparison.operator)
-    (comparison.left.eval phase context) (comparison.right.eval phase context)
+  match comparison.evalResult phase context with
+  | .ok verdict => verdict
+  | .error _ => .fired .value
 
 def eval (comparison : CheckedScalarTemporalComparison model) (context : FlatContext) : Verdict :=
   comparison.evalAt .validation context

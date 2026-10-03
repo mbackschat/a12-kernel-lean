@@ -76,4 +76,21 @@ example :
       (.unknown, .notFired) := by
   decide
 
+/-- An embedding whose leaves return pure verdicts preserves the ordinary connective fold. -/
+theorem conditionTree_evalVerdictExcept_embed
+    (tree : ConditionTree Source) (embed : Source → Target)
+    (evaluate : Target → Except Error Verdict) (plain : Source → Verdict)
+    (onAndError : Verdict → Error → Except Error Verdict)
+    (agrees : ∀ source, evaluate (embed source) = .ok (plain source)) :
+    (tree.map embed).evalVerdictExcept evaluate onAndError = .ok (tree.evalVerdict plain) := by
+  induction tree with
+  | leaf source => exact agrees source
+  | and left right leftIH rightIH | or left right leftIH rightIH =>
+      simp only [ConditionTree.map, ConditionTree.evalVerdictExcept, ConditionTree.evalVerdict,
+        leftIH, rightIH, bind, Except.bind]
+      cases left.evalVerdict plain with
+      | notFired => rfl
+      | unknown => rfl
+      | fired polarity => cases polarity <;> rfl
+
 end A12Kernel

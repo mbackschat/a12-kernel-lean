@@ -439,11 +439,35 @@ def wellFormedBool (condition : ValidationCondition model)
   condition.repetitionNotUniqueSources.length < 2 &&
     condition.allLeaves fun leaf => leaf.wellFormedBool rowGroup
 
+/-- Reached temporal runtime failure aborts the enclosing rule, rather than entering the
+truth algebra as an ordinary fired leaf (temporal review grid, 2026-10-03). Structural failures
+remain in the caller's error domain. -/
+def evalWithTemporalResult (condition : ValidationCondition model)
+    (context : ValidationEvaluationContext) (isRelevant : FlatRelevance)
+    (evaluate : ValidationConditionLeaf model → Except Error Verdict) : Except Error Verdict :=
+  let result : Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
+    condition.evalVerdictExcept (fun leaf => match leaf with
+      | .scalarTemporal comparison =>
+          if comparison.fieldIds.all isRelevant then
+            (comparison.evalResult .validation context.fields).mapError Sum.inr
+          else pure .unknown
+      | leaf => (evaluate leaf).mapError Sum.inl)
+      (fun left error => match left, error with
+        | .unknown, .inr _ => .ok .unknown
+        | _, error => .error error)
+  match result with
+  | .ok verdict => .ok verdict
+  | .error (.inl error) => .error error
+  | .error (.inr _) => .ok (.fired .value)
+
 /-- Evaluate a row-selected mixed tree through the sole connective evaluator. -/
 def evalSelected (condition : ValidationCondition model)
     (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance := fun _ => true) : Verdict :=
-  condition.evalVerdict fun leaf => leaf.evalSelected context isRelevant
+  match condition.evalWithTemporalResult context isRelevant
+      (fun leaf => Except.ok (ε := Empty) (leaf.evalSelected context isRelevant)) with
+  | .ok verdict => verdict
+  | .error impossible => nomatch impossible
 
 /-- Apply the ordinary full-validation content gate to a mixed resolved tree. -/
 def evalFull (condition : ValidationCondition model)
@@ -456,7 +480,7 @@ def evalFull (condition : ValidationCondition model)
 def evalAddressed (condition : ValidationCondition model)
     (context : AddressedValidationEvaluationContext model) :
     Except CheckedAddressingError Verdict :=
-  condition.evalVerdictExcept fun leaf => leaf.evalAddressed context
+  condition.evalWithTemporalResult context.scalar context.directRelevant fun leaf => leaf.evalAddressed context
 
 /-- Evaluate the same connective tree with one already-prepared current-row RNU result. Duplicate construction remains outside and branch-independent. -/
 def evalAddressedWithRepetitionNotUnique
@@ -464,7 +488,7 @@ def evalAddressedWithRepetitionNotUnique
     (context : AddressedValidationEvaluationContext model)
     (result? : Option RepetitionNotUniqueResult) :
     Except CheckedAddressingError Verdict :=
-  condition.evalVerdictExcept fun leaf =>
+  condition.evalWithTemporalResult context.scalar context.directRelevant fun leaf =>
     leaf.evalAddressedWithRepetitionNotUnique context result?
 
 /-- Apply the ordinary full-validation content gate to the addressed tree without sampling any repeatable source on an ineligible empty row. -/

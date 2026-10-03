@@ -19,7 +19,8 @@ end ValueListCell
 
 namespace ValueListQuantifier
 
-private def anyOperands {operand error : Type} {kind : ValueListKind}
+/-- Resolve only the operands reached before an existential decision. -/
+def anyOperands {operand error : Type} {kind : ValueListKind}
     (resolve : operand → Except error (ResolvedValueListSide kind))
     (predicate : ValueListAtom kind → Bool) : List operand → Except error (Except FormalCause Bool)
   | [] => pure (.ok false)
@@ -30,7 +31,8 @@ private def anyOperands {operand error : Type} {kind : ValueListKind}
       | .ok true => pure (.ok true)
       | .ok false => anyOperands resolve predicate rest
 
-private def collectOperands {operand error : Type} {kind : ValueListKind}
+/-- Collect every member value in operand order, preserving reached failures. -/
+def collectOperands {operand error : Type} {kind : ValueListKind}
     (resolve : operand → Except error (ResolvedValueListSide kind)) :
     List operand → List (ValueListAtom kind) → Except error (Except FormalCause (List (ValueListAtom kind)))
   | [], accumulated => pure (.ok accumulated)

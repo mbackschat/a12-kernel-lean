@@ -1,0 +1,19 @@
+id	arm	operation	condition	target	admitted	codes
+minGap	computation	Min([Stamp], "31.03.2024T02:30:00")		/G/Target	true	
+minGapFirst	computation	Min("31.03.2024T02:30:00", [Stamp])		/G/Target	true	
+maxGap	computation	Max([Stamp], "31.03.2024T02:30:00")		/G/Target	true	
+minOrdinary	computation	Min([Stamp], "31.03.2024T01:30:00")		/G/Target	true	
+gapRule	rule		[Stamp] < "31.03.2024T02:30:00"	/G/Stamp	true	
+ordinaryRule	rule		[Stamp] < "31.03.2024T01:30:00"	/G/Stamp	true	
+group0	computation	1	GroupFilled(/G/C)	/G/C/N	true	
+group1	computation	1	AllGroupsFilled(/G/C,/G/H)	/G/C/N	false	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+group2	computation	1	AtLeastOneGroupFilled(/G/C,/G/H)	/G/C/N	false	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+group3	computation	1	NoGroupFilled(/G/C,/G/H)	/G/C/N	false	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+group4	computation	1	NotAllGroupsFilled(/G/C,/G/H)	/G/C/N	false	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+rootGroup	computation	1	AtLeastOneGroupFilled(/G)	/G/N	true	
+singleC	computation	1	AtLeastOneGroupFilled(/G/C)	/G/C/N	false	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+singleNoC	computation	1	NoGroupFilled(/G/C)	/G/C/N	false	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+starAny	computation	1	AtLeastOneGroupFilled(/G/R*)	/G/R/N	false	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+starNo	computation	1	NoGroupFilled(/G/R*)	/G/R/N	false	MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD
+nestedMin	computation	AddHours(Min([Stamp],[Other]),1)		/G/Target	false	MVK_UNEXPECTED_TOKEN
+rootMin	computation	Min([Stamp],[Other])		/G/Target	true	

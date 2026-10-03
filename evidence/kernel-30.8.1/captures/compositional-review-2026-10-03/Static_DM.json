@@ -1,0 +1,212 @@
+{
+  "header": {
+    "id": "TemporalDisposition",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "TemporalDisposition",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/G",
+          "name": "G",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/G/Stamp",
+                "name": "Stamp",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/Target",
+                "name": "Target",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/N",
+                "name": "N",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxIntegerDigits": 9,
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/G/C",
+                "name": "C",
+                "Group": {
+                  "repeatability": 1,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/G/C/N",
+                      "name": "N",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxIntegerDigits": 9,
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/G/C/M",
+                      "name": "M",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxIntegerDigits": 9,
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/G/H",
+                "name": "H",
+                "Group": {
+                  "repeatability": 1,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/G/H/N",
+                      "name": "N",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxIntegerDigits": 9,
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/G/H/M",
+                      "name": "M",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxIntegerDigits": 9,
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/G/R",
+                "name": "R",
+                "Group": {
+                  "repeatability": 5,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/G/R/N",
+                      "name": "N",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxIntegerDigits": 9,
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/G/R/M",
+                      "name": "M",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxIntegerDigits": 9,
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/G/Other",
+                "name": "Other",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

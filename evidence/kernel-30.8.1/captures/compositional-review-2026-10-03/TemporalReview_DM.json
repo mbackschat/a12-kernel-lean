@@ -1,0 +1,421 @@
+{
+  "header" : {
+    "id" : "TemporalDisposition",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "TemporalDisposition",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/G",
+        "name" : "G",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/G/Stamp",
+            "name" : "Stamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MinGap",
+            "name" : "MinGap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MinGapComp",
+            "name" : "MinGapComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MinGap",
+              "computationAlternatives" : [ {
+                "operation" : "Min([Stamp], \"31.03.2024T02:30:00\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MinGapDep",
+            "name" : "MinGapDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MinGapDepComp",
+            "name" : "MinGapDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MinGapDep",
+              "computationAlternatives" : [ {
+                "operation" : "AddSeconds(MinGap,1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MinGapFirst",
+            "name" : "MinGapFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MinGapFirstComp",
+            "name" : "MinGapFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MinGapFirst",
+              "computationAlternatives" : [ {
+                "operation" : "Min(\"31.03.2024T02:30:00\", [Stamp])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MinGapFirstDep",
+            "name" : "MinGapFirstDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MinGapFirstDepComp",
+            "name" : "MinGapFirstDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MinGapFirstDep",
+              "computationAlternatives" : [ {
+                "operation" : "AddSeconds(MinGapFirst,1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MaxGap",
+            "name" : "MaxGap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MaxGapComp",
+            "name" : "MaxGapComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MaxGap",
+              "computationAlternatives" : [ {
+                "operation" : "Max([Stamp], \"31.03.2024T02:30:00\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MaxGapDep",
+            "name" : "MaxGapDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MaxGapDepComp",
+            "name" : "MaxGapDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MaxGapDep",
+              "computationAlternatives" : [ {
+                "operation" : "AddSeconds(MaxGap,1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MinOrdinary",
+            "name" : "MinOrdinary",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MinOrdinaryComp",
+            "name" : "MinOrdinaryComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MinOrdinary",
+              "computationAlternatives" : [ {
+                "operation" : "Min([Stamp], \"31.03.2024T01:30:00\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MinOrdinaryDep",
+            "name" : "MinOrdinaryDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MinOrdinaryDepComp",
+            "name" : "MinOrdinaryDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MinOrdinaryDep",
+              "computationAlternatives" : [ {
+                "operation" : "AddSeconds(MinOrdinary,1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/gapRule",
+            "name" : "gapRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Stamp",
+              "errorCode" : "gapRule",
+              "errorCondition" : "[Stamp] < \"31.03.2024T02:30:00\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Comparison holds."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/ordinaryRule",
+            "name" : "ordinaryRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Stamp",
+              "errorCode" : "ordinaryRule",
+              "errorCondition" : "[Stamp] < \"31.03.2024T01:30:00\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Comparison holds."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Gap",
+            "name" : "Gap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/GapComp",
+            "name" : "GapComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Gap",
+              "computationAlternatives" : [ {
+                "operation" : "\"31.03.2024T02:30:00\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Ordinary",
+            "name" : "Ordinary",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/OrdinaryComp",
+            "name" : "OrdinaryComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Ordinary",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024T12:30:00\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/FirstDependent",
+            "name" : "FirstDependent",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/FirstDependentComp",
+            "name" : "FirstDependentComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FirstDependent",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Gap,Ordinary)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/GuardDependent",
+            "name" : "GuardDependent",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/GuardDependentComp",
+            "name" : "GuardDependentComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GuardDependent",
+              "computationAlternatives" : [ {
+                "operation" : "\"05.03.2024T12:30:00\"",
+                "precondition" : "FieldNotFilled(Gap)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Computed value differs."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/gapThenFalse",
+            "name" : "gapThenFalse",
+            "Rule" : {
+              "errorEntityRelPath" : "../Stamp",
+              "errorCode" : "gapThenFalse",
+              "errorCondition" : "[Stamp] < \"31.03.2024T02:30:00\" And FieldNotFilled(Stamp)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Comparison holds."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/G/falseThenGap",
+            "name" : "falseThenGap",
+            "Rule" : {
+              "errorEntityRelPath" : "../Stamp",
+              "errorCode" : "falseThenGap",
+              "errorCondition" : "FieldNotFilled(Stamp) And [Stamp] < \"31.03.2024T02:30:00\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Comparison holds."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
