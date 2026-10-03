@@ -108,6 +108,45 @@ def evalComputation (operator : FieldFillQuantifier)
           | .exhausted => .notTrue
           | .poison cause => .poison cause
 
+private theorem scanAnyFilled_omittedRun (before suffix : List ComputationFillSlot) (count : Nat) :
+    scanAnyFilled (before ++ List.replicate count .uninstantiated ++ suffix) =
+      scanAnyFilled (before ++ suffix) := by
+  induction before with
+  | nil =>
+      induction count with
+      | zero => rfl
+      | succ count ih => simpa [scanAnyFilled, List.replicate_succ] using ih
+  | cons head rest ih => cases head <;> simp_all [scanAnyFilled]
+
+private theorem scanAnyDeclaredEmpty_omittedRun (before suffix : List ComputationFillSlot)
+    (count : Nat) :
+    scanAnyDeclaredEmpty (before ++ List.replicate (count + 1) .uninstantiated ++ suffix) =
+      scanAnyDeclaredEmpty (before ++ [.uninstantiated] ++ suffix) := by
+  induction before with
+  | nil => simp [scanAnyDeclaredEmpty, List.replicate_succ]
+  | cons head rest ih => cases head <;> simp_all [scanAnyDeclaredEmpty]
+
+private theorem scanSecondFilled_omittedRun (before suffix : List ComputationFillSlot)
+    (count : Nat) (seen : Bool) :
+    scanSecondFilled (before ++ List.replicate count .uninstantiated ++ suffix) seen =
+      scanSecondFilled (before ++ suffix) seen := by
+  induction before generalizing seen with
+  | nil =>
+      induction count with
+      | zero => rfl
+      | succ count ih => simpa [scanSecondFilled, List.replicate_succ] using ih
+  | cons head rest ih => cases head <;> cases seen <;> simp_all [scanSecondFilled]
+
+/-- Every nonempty run of declared omissions has the same meaning as one marker at that exact
+position. This permits the checked operand core's open-tail bit to supply all seven scans. -/
+theorem evalComputation_omittedRun (operator : FieldFillQuantifier)
+    (before suffix : List ComputationFillSlot) (count : Nat) :
+    operator.evalComputation (before ++ List.replicate (count + 1) .uninstantiated ++ suffix) =
+      operator.evalComputation (before ++ [.uninstantiated] ++ suffix) := by
+  have one : [.uninstantiated] = List.replicate 1 (ComputationFillSlot.uninstantiated) := rfl
+  cases operator <;> simp only [evalComputation, scanAnyDeclaredEmpty_omittedRun] <;>
+    rw [one] <;> simp only [scanAnyFilled_omittedRun, scanSecondFilled_omittedRun]
+
 end FieldFillQuantifier
 
 end A12Kernel

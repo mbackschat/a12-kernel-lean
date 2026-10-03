@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.ComputationFillQuantifier
 import A12Kernel.Elaboration.FilledFieldGroupCount
 import A12Kernel.Elaboration.FilledFieldStarCount
 
@@ -14,6 +15,12 @@ Each operand also contributes its declared slots: a direct field one, a starred 
 the maxima its star reopens, a group its subtree's capacity. The declared-range quantifiers read the
 list's missing tail from their sum, and the count's movement runs against it. A filtered operand and
 a category read are refused here.
+
+The computation projection reads the same checked addresses with computation observations and places
+one open-tail marker after each declaration. `FieldFillQuantifier.evalComputation_omittedRun` proves
+that one marker represents any nonempty omitted run; moving it behind another declaration is not
+valid, as the retained field-fill guard grid separates. Guard authoring and scheduling are consumers
+of this projection, not responsibilities of the list.
 -/
 
 namespace A12Kernel
@@ -73,6 +80,29 @@ def countCapacity? : CheckedFieldFillOperand model → Option Nat
   | .group source => source.countCapacity?
   | operand => operand.fillCapacity?
 
+/-- Computation observes each addressed cell in order and records an open declared tail once.
+The seven scans cannot distinguish adjacent omitted slots (`evalComputation_omittedRun`). -/
+private def computationCoreSlots (core : ResolvedCheckedEntityOperandCore) :
+    List ComputationFillSlot :=
+  (core.inCapacityAddressedCells.map fun addressed =>
+    (observeCell .computation addressed.cell).asComputationFillSlot) ++
+      if core.hasUninstantiatedTail then [.uninstantiated] else []
+
+/-- Preserve each field's missing tail before visiting the next declaration, as separated by
+[the guard grid](../../docs/sources/computation-scheduling-probes.md#src-field-fill-computation-guards);
+the validation tally's total tail cannot preserve this order. -/
+def computationSlots (document : CheckedDocument model) (outer : Env) :
+    CheckedFieldFillOperand model → Except CheckedAddressingError (List ComputationFillSlot)
+  | .field declaration =>
+      computationCoreSlots <$> document.resolveCheckedDirectEntityOperandCoreAt outer declaration.id
+  | .star source =>
+      computationCoreSlots <$> source.resolveCheckedValidationEntityOperandCore document outer none
+  | .group source => do
+      let declarations ← source.declarations.mapM fun declaration =>
+        computationCoreSlots <$> document.resolveCheckedGroupEntityOperandCore outer
+          source.source.boundLevelCount [declaration]
+      pure declarations.flatten
+
 end CheckedFieldFillOperand
 
 namespace CheckedFieldFillList
@@ -97,6 +127,11 @@ def countCapacity? (list : CheckedFieldFillList model) : Option Nat :=
 def observations (list : CheckedFieldFillList model) (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (List CellObservation) :=
   (·.flatten) <$> list.operands.mapM (·.observations document outer)
+
+/-- Resolve computation slots in authored operand and declaration order. -/
+def computationSlots (list : CheckedFieldFillList model) (document : CheckedDocument model)
+    (outer : Env) : Except CheckedAddressingError (List ComputationFillSlot) :=
+  (·.flatten) <$> list.operands.mapM (·.computationSlots document outer)
 
 /-- The extensional validation tally of the list's in-capacity extent.
 
