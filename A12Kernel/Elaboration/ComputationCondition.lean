@@ -2,10 +2,11 @@ import A12Kernel.Elaboration.Flat.ComputationBinding
 import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Elaboration.NumericValidation.Core
 import A12Kernel.Elaboration.Flat.FieldValueRead
+import A12Kernel.Elaboration.Flat.Condition.Surface
 
 /-! # Model-certified computation conditions
 
-Presence guards accept every scalar declaration the target's row binds, a nonrepeatable one for a fixed target. Numeric guards retain Number declarations and structural coordinates through the shared numeric comparison admission. Value-kind restrictions remain absent from presence.
+Presence guards accept every scalar declaration the target's row binds, a nonrepeatable one for a fixed target. Numeric guards retain Number declarations and structural coordinates through the shared numeric comparison admission. Text guards reuse validation's checked String/Enumeration projections and comparison gate at the target's scope. Value-kind restrictions remain absent from presence.
 -/
 
 namespace A12Kernel
@@ -37,6 +38,7 @@ def wellFormedBool (condition : ComputationCondition) (model : FlatModel) : Bool
       match model.lookupUniqueId field with
       | .ok declaration => declaration.repeatableScope.isEmpty
       | .error _ => false
+  | .leaf (.text comparison) => model.admitsTextComparisonIn [] comparison
   | .leaf (.numeric comparison) => computationNumericGuardAdmitted comparison model []
   | .and left right | .or left right =>
       left.wellFormedBool model && right.wellFormedBool model
@@ -49,6 +51,7 @@ def rowBoundBool (condition : ComputationCondition) (model : FlatModel)
       match model.lookupUniqueId field with
       | .ok declaration => declaration.repeatableScope.isPrefixOf scope
       | .error _ => false
+  | .leaf (.text comparison) => model.admitsTextComparisonIn scope comparison
   | .leaf (.numeric comparison) => computationNumericGuardAdmitted comparison model scope
   | .and left right | .or left right =>
       left.rowBoundBool model scope && right.rowBoundBool model scope
@@ -62,10 +65,77 @@ end ComputationCondition
 inductive SurfaceComputationCondition where
   | fieldFilled (field : SurfaceFieldPath)
   | fieldNotFilled (field : SurfaceFieldPath)
+  | text (op : SurfaceComparisonOp) (left : SurfaceTextFieldOperand)
+      (right : Sum SurfaceTextFieldOperand String)
   | numeric (comparison : SurfaceNumericComparison)
   | and (left right : SurfaceComputationCondition)
   | or (left right : SurfaceComputationCondition)
   deriving Repr, DecidableEq
+
+/-- Guard errors retain the owning predicate family's admission failure. -/
+inductive ComputationConditionElabError where
+  | resolve (error : ResolveError)
+  | numeric (error : NumericValidationElabError)
+  | text (error : ElabError)
+  deriving DecidableEq
+
+instance : Repr ComputationConditionElabError where
+  reprPrec error precedence := match error with
+    | .resolve error => reprPrec (NumericValidationElabError.resolve error) precedence
+    | .numeric error => reprPrec error precedence
+    | .text error => reprPrec error precedence
+
+private def numericGuardError : NumericValidationElabError → ComputationConditionElabError
+  | .resolve error => .resolve error
+  | error => .numeric error
+
+private def textGuardError : ElabError → ComputationConditionElabError
+  | .resolve error => .resolve error
+  | error => .text error
+
+private def FlatModel.resolveComputationTextOperand (model : FlatModel)
+    (declaringGroup targetGroup : GroupPath) (surface : SurfaceTextFieldOperand) :
+    Except ElabError (FlatFieldDecl × FlatTextFieldOperand × DirectComparableField) := do
+  let declaration ← (do
+    let declaration ← displaceGroupRead
+      (model.resolveComputationOperandUnchecked declaringGroup targetGroup surface.reference)
+      (model.computationGroupRead declaringGroup targetGroup surface.reference)
+    if let some error := declaration.projectedReadRefusal? surface.projectionRef then throw error
+    pure declaration).mapError ElabError.resolve
+  let resolved := match surface.projectionRef with
+    | .stored => declaration.toTextFieldComparison?
+    | projection => declaration.toEnumerationTextFieldComparison? projection
+  let some (operand, profile) := resolved
+    | throw (.textFieldOperandKindMismatch declaration.path declaration.policy.kind.surfaceKind)
+  pure (declaration, operand, profile)
+
+private def FlatModel.elaborateComputationTextGuard (model : FlatModel)
+    (declaringGroup targetGroup : GroupPath) (op : SurfaceComparisonOp)
+    (left : SurfaceTextFieldOperand) (right : Sum SurfaceTextFieldOperand String) :
+    Except ElabError ComputationCondition := do
+  let (declaration, leftOperand, leftProfile) ←
+    model.resolveComputationTextOperand declaringGroup targetGroup left
+  let right : Sum (FlatFieldDecl × FlatTextFieldOperand × DirectComparableField) String ←
+    match right with
+    | .inl operand => Sum.inl <$> model.resolveComputationTextOperand declaringGroup targetGroup operand
+    | .inr literal => pure (.inr literal)
+  let some equality := op.toEquality? | throw (.unsupportedOperator op)
+  let comparison ← match right with
+    | .inl (rightDeclaration, rightOperand, rightProfile) =>
+        match classifyDirectFieldComparison leftProfile rightProfile with
+        | .accepted => pure (FlatComparison.textFields equality leftOperand rightOperand)
+        | .rejected error => throw (.enumerationComparability declaration.path rightDeclaration.path error)
+    | .inr expected => match leftOperand with
+        | .string field => pure (.string equality field expected)
+        | .enumeration operand =>
+            let some source := declaration.enumeration | throw .incoherentCore
+            let .ok checked := elaborateEnumeration source | throw .incoherentCore
+            match classifyEnumerationLiteral checked operand.projectionRef equality expected with
+            | .rejected error => throw (.enumerationOperand declaration.path error)
+            | .accepted projection => pure (.enumeration equality { operand with projection } expected)
+  if model.admitsTextComparisonIn (model.repeatableScopeForGroupPath targetGroup) comparison then
+    pure (.leaf (.text comparison))
+  else throw .incoherentCore
 
 /-- Resolve one presence leaf's field as a computation operand, bound by the target's scope rather
 than the declaring group's, a name reaching a group taking the group slot's class: a fixed group draws
@@ -112,12 +182,15 @@ private def FlatModel.elaborateComputationNumericGuard (model : FlatModel)
 name is the one reported. -/
 def FlatModel.elaborateComputationCondition (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) :
-    SurfaceComputationCondition → Except NumericValidationElabError ComputationCondition
+    SurfaceComputationCondition → Except ComputationConditionElabError ComputationCondition
   | .fieldFilled reference =>
       (.leaf ∘ .fieldFilled) <$> (model.resolveComputationPresence declaringGroup targetGroup reference).mapError .resolve
   | .fieldNotFilled reference =>
       (.leaf ∘ .fieldNotFilled) <$> (model.resolveComputationPresence declaringGroup targetGroup reference).mapError .resolve
-  | .numeric comparison => model.elaborateComputationNumericGuard declaringGroup targetGroup comparison
+  | .text op left right =>
+      (model.elaborateComputationTextGuard declaringGroup targetGroup op left right).mapError textGuardError
+  | .numeric comparison =>
+      (model.elaborateComputationNumericGuard declaringGroup targetGroup comparison).mapError numericGuardError
   | .and left right => do
       let left ← model.elaborateComputationCondition declaringGroup targetGroup left
       pure (.and left (← model.elaborateComputationCondition declaringGroup targetGroup right))

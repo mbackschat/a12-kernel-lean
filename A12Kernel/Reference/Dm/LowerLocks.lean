@@ -365,6 +365,83 @@ example :
      (lowerComputation model .english (computation "[Amt2] > 1.50")).toOption.isSome].all id := by
   native_decide
 
+example :
+    let computation (guard : String) : DmComputation :=
+      { group := ["Order"], name := "C", targetRelPath := "../Amt", commonPrecondition := some guard
+        alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := [] }
+    ["[Ref] == \"A\"", "\"A\" != [Ref]", "[Ref] == [Head/Code]",
+      "[Ref] != \"\" Or FieldFilled(Head/Code)"].all (fun guard =>
+        (lowerComputation model .english (computation guard)).toOption.isSome) := by
+  native_decide
+
+private def textGuard (text : String) : Option ComputationCondition := do
+  let parsed ← (parseText .english text).toOption
+  let surface ← (lowerGuard model ["Order"] false parsed.body).toOption
+  (model.elaborateComputationCondition ["Order"] ["Order"] surface).toOption
+
+private def textGuardEval (text : String) (first second : CheckedCell) :
+    Option ComputationConditionResult := do
+  let guard ← textGuard text
+  pure (guard.eval { read := fun id => if id == 1 then first else second })
+
+private def textEmpty : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
+private def textBad : CheckedCell := formalCheck { kind := .string } (.rejected .malformed)
+
+example :
+    let good := temporalCell (.str "A")
+    [textGuardEval "[Ref] == [Head/Code]" textEmpty textBad,
+     textGuardEval "[Ref] == \"\"" textBad good,
+     textGuardEval "[Ref] == \"\"" good good,
+     textGuardEval "[Ref] != \"A\"" textEmpty good,
+     textGuardEval "[Ref] != \"A\" And [Head/Code] == \"A\"" good textBad,
+     textGuardEval "[Ref] == \"A\" Or [Head/Code] == \"A\"" good textBad] =
+      [some (.poison .malformed), some (.poison .malformed), some .notTrue,
+       some .notTrue, some .notTrue, some .holds] := by
+  native_decide
+
+example :
+    (textGuard "[Ref] == [Head/Code]").map (fun guard =>
+      (guard.referencesField 1, guard.referencesField 3, guard.referencesField 4)) =
+        some (true, true, false) ∧
+    !(ComputationCondition.wellFormedBool (.leaf (.text (.number (.ordinary .equal)
+      { id := 4, info := { scale := 0, signed := true } } 1))) model) := by
+  native_decide
+
+private def enumGuardModel : FlatModel :=
+  { model with fields := model.fields ++ [{ id := 11, groupPath := ["Order"], name := "E", policy := { kind := .enumeration }, enumeration := some { storedTokens := ["A", "B"], categories := [{ name := "Kind", tokens := ["X", "Y"] }] } }] }
+
+private def enumGuardEval (text : String) : Option ComputationConditionResult := do
+  let parsed ← (parseText .english text).toOption
+  let surface ← (lowerGuard enumGuardModel ["Order"] false parsed.body).toOption
+  let guard ← (enumGuardModel.elaborateComputationCondition ["Order"] ["Order"] surface).toOption
+  pure (guard.eval { read := fun field =>
+    if field == 11 then temporalCell (.enum "A") else temporalCell (.str "X") })
+
+example :
+    [enumGuardEval "[E] == \"A\"", enumGuardEval "\"B\" != [E]",
+     enumGuardEval "[E -> Kind] == \"X\"", enumGuardEval "[E -> Kind] == [Ref]",
+     enumGuardEval "[Ref] == [E -> Kind]", enumGuardEval "[E] == \"BAD\"",
+     enumGuardEval "[E] == \"\"", enumGuardEval "[E] > \"A\""] =
+      [some .holds, some .holds, some .holds, some .holds, some .holds, none, none, none] := by
+  native_decide
+
+private def textReadDiagnostic (field : String) : Option KernelStaticDiagnostic :=
+  let rawModel := { model with fields := model.fields.map fun declaration =>
+    if declaration.id == 1 then
+      { declaration with
+        stringValueMode := .raw
+        stringPolicy := { lineBreaksPermitted := true } }
+    else declaration }
+  match elaborateNumericTargetComputationTableFromSurface rawModel ["Order"] 4
+      [(some (.text .equal (.direct { base := .relative 0, groups := [], field }) (.inr "A")),
+        .literal { value := 1, authoredScale := 0 })] with
+  | .ok _ => none
+  | .error error => error.diagnostic?
+
+example : [textReadDiagnostic "Ref", textReadDiagnostic "Head"] =
+    [some .rawTypeOperandInvalid, some .noGroupsAllowed] := by
+  native_decide
+
 private def rowModel : FlatModel :=
   { fields := [
       { id := 1, groupPath := ["Order", "Rows"], name := "Due", policy := { kind := .temporal .date TemporalComponents.fullDate },
@@ -374,6 +451,18 @@ private def rowModel : FlatModel :=
         repeatableScope := [10] },
       { id := 4, groupPath := ["Order", "Rows"], name := "Text", policy := { kind := .string }, repeatableScope := [10] }]
     repeatableGroups := [{ level := 10, path := ["Order", "Rows"], repeatability := some 5 }] }
+
+example :
+    let row : DmComputation :=
+      { group := ["Order", "Rows"], name := "C", targetRelPath := "../Amt",
+        commonPrecondition := some "[Text] == \"A\"",
+        alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := [] }
+    (lowerComputation rowModel .english row).isOk ∧
+    (do
+      let parsed ← (parseText .english "[Rows/Note] == \"A\"").toOption
+      let surface ← (lowerGuard model ["Order"] false parsed.body).toOption
+      pure (!(model.elaborateComputationCondition ["Order"] ["Order"] surface).isOk)) = some true := by
+  native_decide
 
 /- A row target of a kind other than Number lowers onto the row step its operation names: a Date
 literal, `True` and `FieldValueAsString` each admit, and an operation no row carrier names is refused. -/

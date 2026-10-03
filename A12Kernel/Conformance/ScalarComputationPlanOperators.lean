@@ -233,4 +233,21 @@ example : numericGuardResult (numberCell base1Id 7) = some "2" ∧
     numericGuardResult (malformedNumberCell base1Id) = some "-" := by
   native_decide
 
+private def textGuardJoinResult (source : String) : Option String := do
+  let guard ← (model.elaborateComputationCondition ["Join"] ["Join"]
+    (.text .equal (.direct (bare "Gate2")) (.inr "A"))).toOption
+  let consumer ← numberStep? hId (some guard) (read "Base3")
+  let producer ← (elaborateStringComputationOperation model ["Join"] gate2Id
+    (.field (bare "Gate1"))).toOption
+  let table ← (certifyStringComputationTable [{ operation := producer }]).toOption
+  let checkedPlan ← (certifyScalarComputationPlan [consumer, .string table]).toOption
+  let input ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := seeds ++ [stringCell gate1Id source, stringCell gate2Id "A", numberCell base3Id 2] }).toOption
+  let outcomes ← (checkedPlan.execute world prepared.patterns input).toOption
+  ((outcomes.filterMap valueOf?).find? (·.1 == hId)).map (·.2)
+
+/- These internal composition locks force the guard to read its producer's fresh value rather than
+its stored seed, through the dependency law owned by the shared condition. -/
+example : textGuardJoinResult "A" = some "2" ∧ textGuardJoinResult "B" = some "-" := by
+  native_decide
+
 end A12Kernel.Conformance.ScalarComputationPlanOperators

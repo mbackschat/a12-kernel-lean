@@ -121,7 +121,7 @@ def certifyNumericComputationTable
 /-- Why a whole Number computation is refused: one alternative's authored guard or operation, numbered
 from 1, or the table assembled from the checked operations. -/
 inductive NumericComputationTableElabError where
-  | precondition (alternative : Nat) (error : NumericValidationElabError)
+  | precondition (alternative : Nat) (error : ComputationConditionElabError)
   | operation (alternative : Nat) (error : NumericComputationElabError)
   | table (error : NumericComputationTableError)
   deriving Repr, DecidableEq
@@ -157,7 +157,7 @@ at the first alternative judged. Warning suppression is the whole computation's 
 scale gate. -/
 private def elaborateNumericTargetComputationTableWith (model : FlatModel) (declaringGroup : GroupPath)
     (target : FieldId)
-    (alternatives : List (Except NumericValidationElabError (Option ComputationCondition) ×
+    (alternatives : List (Except ComputationConditionElabError (Option ComputationCondition) ×
       AuthoredNumericExpr SurfaceNumericComputationAtom))
     (suppressExactScaleWarning : Bool) (targetScope : ComputationTargetScope)
     (commonPrecondition : Option ComputationCondition) :

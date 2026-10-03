@@ -29,16 +29,21 @@ def FlatModel.admitsStringValueField (model : FlatModel)
   | .error _ => false
 
 /-- Re-derive one direct textual operand's static profile from the exact model declaration retained by checked core admission. -/
-def FlatModel.directComparableFor? (model : FlatModel)
+def FlatModel.directComparableIn? (model : FlatModel) (scope : List RepeatableLevel)
     (operand : FlatTextFieldOperand) : Option DirectComparableField :=
   match model.lookupUniqueId operand.field.id with
   | .error _ => none
   | .ok declaration =>
-      if declaration.repeatableScope.isEmpty &&
+      if declaration.repetitionBoundBy scope &&
           operand.field.matchesDecl declaration then
         declaration.textComparisonProfileFor? operand
       else
         none
+
+/-- The nonrepeatable instance of direct textual comparison admission. -/
+def FlatModel.directComparableFor? (model : FlatModel)
+    (operand : FlatTextFieldOperand) : Option DirectComparableField :=
+  model.directComparableIn? [] operand
 
 /-- Reconstruct the proof-bearing Enumeration projection retained by an operand whose reading scope binds every repeatable level of the exact model declaration. -/
 def FlatModel.checkedEnumerationOperandIn? (model : FlatModel)
@@ -121,20 +126,25 @@ def FlatModel.admitsNumberOperandList (model : FlatModel)
   !operands.isEmpty && !numberOperandListHasDuplicate operands &&
     operands.all fun operand => model.admitsField (.number operand)
 
+/-- Text comparisons share one gate across fixed validation and target-bound computation guards.
+Other comparison families have no admission through this gate. -/
+def FlatModel.admitsTextComparisonIn (model : FlatModel) (scope : List RepeatableLevel) :
+    FlatComparison → Bool
+  | .string _ field _ => model.directComparableIn? scope (.string field) == some .plainString
+  | .enumeration _ operand expected =>
+      match model.checkedEnumerationOperandIn? scope operand with
+      | some checked => checked.declaration.literalAllowed checked.projection expected
+      | none => false
+  | .textFields _ left right =>
+      match model.directComparableIn? scope left, model.directComparableIn? scope right with
+      | some leftProfile, some rightProfile => directFieldComparisonAllowed leftProfile rightProfile
+      | _, _ => false
+  | _ => false
+
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
   match comparison with
-  | .string _ field _ | .stringLength _ field _ =>
-      model.admitsStringValueField field
-  | .textFields _ left right =>
-      match model.directComparableFor? left, model.directComparableFor? right with
-      | some leftProfile, some rightProfile =>
-          directFieldComparisonAllowed leftProfile rightProfile
-      | _, _ => false
-  | .enumeration _ operand expected =>
-      match model.checkedEnumerationOperand? operand with
-      | some checked =>
-          checked.declaration.literalAllowed checked.projection expected
-      | none => false
+  | .stringLength _ field _ => model.admitsStringValueField field
+  | .string .. | .textFields .. | .enumeration .. => model.admitsTextComparisonIn [] comparison
   | _ => !comparison.fields.isEmpty && comparison.fields.all model.admitsField
 
 def FlatConditionLeaf.wellFormedBool (condition : FlatConditionLeaf) (model : FlatModel) : Bool :=

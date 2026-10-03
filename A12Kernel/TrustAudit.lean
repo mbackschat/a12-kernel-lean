@@ -2899,3 +2899,5 @@ run_cmd do
 #print axioms A12Kernel.withMessageRepertoire_repertoirePass
 #print axioms A12Kernel.withMessageRepertoire_repertoireFailure_refused
 #print axioms A12Kernel.validationMessageTemplate_repertoireFailure_refused
+
+#print axioms A12Kernel.textComputationComparison_readsOnlyFields

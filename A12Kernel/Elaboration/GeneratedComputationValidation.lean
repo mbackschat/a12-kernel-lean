@@ -224,6 +224,7 @@ private def lowerForGeneratedValidationUnchecked (model : FlatModel) :
       pure (.fieldFilled (← model.resolveGeneratedGuardField field))
   | .leaf (.fieldNotFilled field) => do
       pure (.fieldNotFilled (← model.resolveGeneratedGuardField field))
+  | .leaf (.text comparison) => pure (.compare comparison)
   | .leaf (.numeric _) => throw .numericGuardRequiresConditionTree
   | .and left right => do
       pure (.and

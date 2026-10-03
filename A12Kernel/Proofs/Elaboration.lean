@@ -310,9 +310,13 @@ theorem directComparableProfile_admitsField (model : FlatModel)
     (operand : FlatTextFieldOperand) (profile : DirectComparableField)
     (resolved : model.directComparableFor? operand = some profile) :
     model.admitsField operand.field = true := by
-  unfold FlatModel.directComparableFor? at resolved
+  unfold FlatModel.directComparableFor? FlatModel.directComparableIn? at resolved
   unfold FlatModel.admitsField
-  split at resolved <;> simp_all
+  split at resolved <;> simp_all [FlatFieldDecl.repetitionBoundBy]
+  rename_i lookup declaration lookupEq
+  cases scope : declaration.repeatableScope <;> simp_all
+  rename_i head tail
+  exact (resolved.1.1 head).1 rfl
 
 /-- A reconstructed checked Enumeration operand necessarily passes the shared typed-field gate. -/
 theorem checkedEnumerationOperand_admitsField (model : FlatModel)
@@ -374,8 +378,9 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
         List.all_eq_true] using admitted
   | string op target expected =>
       rcases List.mem_singleton.mp member with rfl
-      exact admitsStringValueField_admitsField model target (by
-        simpa [FlatModel.admitsComparison] using admitted)
+      apply directComparableProfile_admitsField model (.string target) .plainString
+      simpa [FlatModel.admitsComparison, FlatModel.admitsTextComparisonIn,
+        FlatModel.directComparableFor?] using admitted
   | stringLength op target expected =>
       rcases List.mem_singleton.mp member with rfl
       exact admitsStringValueField_admitsField model target (by
@@ -386,14 +391,18 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
         List.all_eq_true] using admitted
   | enumeration op operand expected =>
       rcases List.mem_singleton.mp member with rfl
-      unfold FlatModel.admitsComparison at admitted
+      change (match model.checkedEnumerationOperand? operand with
+        | some checked => checked.declaration.literalAllowed checked.projection expected
+        | none => false) = true at admitted
       generalize resolved : model.checkedEnumerationOperand? operand = checked at admitted
       cases checked with
       | none => simp [resolved] at admitted
       | some checked =>
           exact checkedEnumerationOperand_admitsField model operand checked resolved
   | textFields op left right =>
-      unfold FlatModel.admitsComparison at admitted
+      change (match model.directComparableFor? left, model.directComparableFor? right with
+        | some leftProfile, some rightProfile => directFieldComparisonAllowed leftProfile rightProfile
+        | _, _ => false) = true at admitted
       generalize leftEq : model.directComparableFor? left = leftProfile at admitted
       generalize rightEq : model.directComparableFor? right = rightProfile at admitted
       cases leftProfile <;> cases rightProfile <;> simp_all

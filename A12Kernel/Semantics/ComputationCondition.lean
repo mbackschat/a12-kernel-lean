@@ -6,7 +6,7 @@ import A12Kernel.Semantics.Observation
 
 /-! # A12Kernel.Semantics.ComputationCondition — checked computation control
 
-This module admits resolved field presence and numeric comparisons over shared arithmetic trees, ordered `And`/`Or`, common-precondition expansion and first-match selection at one target instance. An absent row precondition selects directly; model-level certification keeps that source shape to a sole alternative even though composed tables may later contain it beside other rows. The selector separates clean not-true and no-match from an invalid cell actually read as poison. Numeric atoms retain field metadata or structural row bindings; checked consumers propagate a reached binding error outside semantic poison. Other predicate families, operation evaluation and model-level alternative legality remain separate clauses.
+This module admits resolved field presence, text equality and numeric comparisons over shared arithmetic trees, ordered `And`/`Or`, common-precondition expansion and first-match selection at one target instance. An absent row precondition selects directly; model-level certification keeps that source shape to a sole alternative even though composed tables may later contain it beside other rows. The selector separates clean not-true and no-match from an invalid cell actually read as poison. Numeric atoms retain field metadata or structural row bindings; checked consumers propagate a reached binding error outside semantic poison. Other predicate families, operation evaluation and model-level alternative legality remain separate clauses.
 -/
 
 namespace A12Kernel
@@ -56,6 +56,8 @@ inductive ComputationConditionLeaf where
   | fieldFilled (field : FieldId)
   | fieldNotFilled (field : FieldId)
   | numeric (comparison : NumericComparisonOf ComputationNumericAtom)
+  /-- The certifier restricts this shared comparison carrier to String/Enumeration forms. -/
+  | text (comparison : FlatComparison)
   deriving Repr, DecidableEq
 
 /-- Computation control reuses the common checked connective tree; only its phase-specific leaves and result projection differ from validation. -/
@@ -99,6 +101,7 @@ abbrev or (left right : ComputationCondition) : ComputationCondition :=
 def referencesField (condition : ComputationCondition) (target : FieldId) : Bool :=
   match condition with
   | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) => field == target
+  | .leaf (.text comparison) => comparison.fieldIds.contains target
   | .leaf (.numeric comparison) =>
       comparison.left.anyAtom (·.referencesField target) ||
         comparison.right.anyAtom (·.referencesField target)
@@ -110,12 +113,34 @@ def evalFieldFilled (context : ScalarComputationContext)
     (field : FieldId) : ComputationConditionResult :=
   (observeCell .computation (context.read field)).evalComputationFilled
 
+/-- Text guards reuse declaration-checked projections. Formal unavailability dominates an empty
+partner, as measured by the empty-before-invalid rows in `src-text-computation-guards`. -/
+def evalTextComparison (comparison : FlatComparison)
+    (context : ScalarComputationContext) : ComputationConditionResult :=
+  let read (operand : FlatTextFieldOperand) : SimpleComparisonOperand String :=
+    match operand.checkedValueListCellAt .computation (context.read operand.field.id) with
+    | .empty => .notEvaluated
+    | .present value => .value value true
+    | .unknown cause => .unknown cause
+  let compare (op : EqualityOp) (left right : SimpleComparisonOperand String) :=
+    match left, right with
+    | .unknown cause, _ | _, .unknown cause => ComputationConditionResult.poison cause
+    | .notEvaluated, _ | _, .notEvaluated => .notTrue
+    | .value left _, .value right _ => if op.holds (left == right) then .holds else .notTrue
+  match comparison with
+  | .string op field expected => compare op (read (.string field))
+      (if expected.isEmpty then .notEvaluated else .value expected true)
+  | .enumeration op operand expected => compare op (read (.enumeration operand)) (.value expected true)
+  | .textFields op left right => compare op (read left) (read right)
+  | _ => .notTrue
+
 /-- Evaluate a resolved leaf through computation-phase reads; the pure compatibility entry assumes its row context is complete. -/
 def ComputationConditionLeaf.eval (context : ScalarComputationContext) :
     ComputationConditionLeaf → ComputationConditionResult
   | .fieldFilled field => evalFieldFilled context field
   | .fieldNotFilled field =>
       (observeCell .computation (context.read field)).evalComputationNotFilled
+  | .text comparison => evalTextComparison comparison context
   | .numeric comparison =>
       (comparison.evalComputationWith (ComputationNumericAtom.read context)).toOption.getD .notTrue
 

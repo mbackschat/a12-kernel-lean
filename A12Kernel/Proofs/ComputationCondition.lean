@@ -3,10 +3,30 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # A12Kernel.Proofs.ComputationCondition — ordered computation-control laws
 
-These laws characterize presence after computation-phase observation, the complete left-to-right decision table for the admitted `And`/`Or` fragment, optional common-precondition expansion, and operation-neutral first-match alternative selection. They do not claim that the external kernel exposes the internal `poison` cause or that this fragment covers comparison or quantifier leaves, checked paths, operation evaluation, or model-level alternative legality.
+These laws characterize presence after computation-phase observation, the complete left-to-right decision table for the admitted `And`/`Or` fragment, optional common-precondition expansion, and operation-neutral first-match alternative selection. They do not claim that the external kernel exposes the internal `poison` cause or that these laws establish kernel correspondence for every comparison or quantifier leaf, checked paths, operation evaluation, or model-level alternative legality.
 -/
 
 namespace A12Kernel
+
+/-- Replacing the context outside the comparison's declared field dependencies cannot change a
+text guard's computation outcome, including its first poison cause. -/
+theorem textComputationComparison_readsOnlyFields (comparison : FlatComparison)
+    (left right : ScalarComputationContext)
+    (agree : ∀ field ∈ comparison.fieldIds, left.read field = right.read field) :
+    ComputationCondition.evalTextComparison comparison left =
+      ComputationCondition.evalTextComparison comparison right := by
+  cases comparison with
+  | string op field expected =>
+      have same := agree field.id (by simp [FlatComparison.fieldIds, FlatComparison.fields, FlatField.id])
+      simp only [ComputationCondition.evalTextComparison, FlatTextFieldOperand.field, FlatField.id, same]
+  | enumeration op operand expected =>
+      have same := agree operand.field.id (by simp [FlatComparison.fieldIds, FlatComparison.fields, FlatField.id])
+      simp only [ComputationCondition.evalTextComparison, FlatTextFieldOperand.field, FlatField.id, same]
+  | textFields op first second =>
+      have firstSame := agree first.field.id (by simp [FlatComparison.fieldIds, FlatComparison.fields])
+      have secondSame := agree second.field.id (by simp [FlatComparison.fieldIds, FlatComparison.fields])
+      simp only [ComputationCondition.evalTextComparison, firstSame, secondSame]
+  | _ => rfl
 
 /-- A clean empty computation read does not satisfy `FieldFilled`. -/
 theorem fieldFilled_observedEmpty_notTrue

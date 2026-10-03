@@ -30,15 +30,21 @@ structure ComputedOutcome where
 instance : ToString ComputedOutcome where
   toString computed := s!"{computed.pointer}={computed.outcome}"
 
-/-- Lower presence and numeric guards into the shared computation condition tree. Unsupported atoms remain explicit refusals during model resolution. -/
-partial def lowerGuard (suppress : Bool := false) : Expr → Lowering SurfaceComputationCondition
-  | .parens body => lowerGuard suppress body
+private def guardTextField? : Expr → Option SurfaceTextFieldOperand
+  | .value { path, index := none, category } => do
+      let field ← path.toFieldPath?
+      pure (match category with | none => .direct field | some name => .category field name)
+  | _ => none
+
+/-- Lower presence, numeric and text guards into the shared computation condition tree. Unsupported atoms remain explicit refusals during model resolution. -/
+partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool := false) : Expr → Lowering SurfaceComputationCondition
+  | .parens body => lowerGuard model group suppress body
   | .logic op (first :: rest) => do
       let join := match op with
         | .and => SurfaceComputationCondition.and
         | .or => SurfaceComputationCondition.or
-      let mut result ← lowerGuard suppress first
-      for part in rest do result := join result (← lowerGuard suppress part)
+      let mut result ← lowerGuard model group suppress first
+      for part in rest do result := join result (← lowerGuard model group suppress part)
       pure result
   | .call "FieldFilled" [.mk field none none] none none => match field.fieldEntity? with
       | some path => pure (.fieldFilled path)
@@ -46,7 +52,32 @@ partial def lowerGuard (suppress : Bool := false) : Expr → Lowering SurfaceCom
   | .call "FieldNotFilled" [.mk field none none] none none => match field.fieldEntity? with
       | some path => pure (.fieldNotFilled path)
       | none => refuse "Guard" "FieldNotFilled operand"
-  | .compare op left right => .numeric <$> lowerNumericComparison op left right suppress
+  | expression@(.compare op left right) =>
+      let textPair := do
+        let left ← guardTextField? left
+        let right ← guardTextField? right
+        let op ← op.toSurface?
+        let declaration ← (model.resolveFieldDeclarationUnchecked group left.reference).toOption
+        if declaration.toTextFieldComparison?.isSome || left.projectionRef != EnumerationProjectionRef.stored then
+          some (SurfaceComputationCondition.text op left (.inl right))
+        else none
+      let textSurface := textPair.orElse fun _ => (lowerFlat model group expression).bind fun
+        | .compare op field (.string expected) => some (.text op (.direct field) (.inr expected))
+        | .compareEnumeration op field projection expected =>
+            let source := match projection with
+              | .stored => SurfaceTextFieldOperand.direct field
+              | .category name => .category field name
+            some (.text op source (.inr expected))
+        | .compareTextFields op left right => some (.text op left (.inl right))
+        | .compareFields op left right =>
+            if ((model.resolveFieldDeclarationUnchecked group left).toOption.bind
+                FlatFieldDecl.toTextFieldComparison?).isSome then
+              some (.text op (.direct left) (.inl (.direct right)))
+            else none
+        | _ => none
+      match textSurface with
+      | some surface => pure surface
+      | none => .numeric <$> lowerNumericComparison op left right suppress
   | other => refuse ("Guard/" ++ other.construct)
 
 /-- A String computation's operation: field reads, literals, `FieldValueAsString`, `RangeAsString`
@@ -98,7 +129,7 @@ private def guards (language : Language) (model : FlatModel) (computation : DmCo
   let resolve (text : String) : Lowering ComputationCondition := do
     let guard := (← parsed language text).body
     if !guard.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
-    let surface ← lowerGuard suppress guard
+    let surface ← lowerGuard model computation.group suppress guard
     elaborated "Guard" (model.elaborateComputationCondition computation.group target.groupPath surface)
   let common ← computation.commonPrecondition.mapM resolve
   let own ← computation.alternatives.mapM (·.precondition.mapM resolve)
