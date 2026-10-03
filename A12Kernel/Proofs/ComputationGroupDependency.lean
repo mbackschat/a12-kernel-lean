@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.ComputationGroupDependency
+import A12Kernel.Elaboration.ComputationGroupDependency
 
 /-! # Syntactic group-protection laws
 
@@ -37,3 +38,32 @@ theorem requiresProducer_of_ordinary (conditionalReference sameTarget producerPr
   rfl
 
 end A12Kernel.ComputationGroupDependency
+
+namespace A12Kernel
+
+theorem negativeGroupRead_preservesOperandDependency (reference : ResolvedGroupReference)
+    (model : FlatModel) (consumer producer : FieldId) (producerProtected : Bool) :
+    reference.requiresComputationProducer .notFilled model consumer producer producerProtected =
+      reference.referencesField model producer := by
+  simp [ResolvedGroupReference.requiresComputationProducer,
+    ComputationGroupDependency.requiresProducer]
+
+theorem positiveGroupRead_excludesOwnDependency (reference : ResolvedGroupReference)
+    (model : FlatModel) (target : FieldId) (producerProtected : Bool) :
+    reference.requiresComputationProducer .filled model target target producerProtected = false := by
+  cases member : reference.referencesField model target <;>
+    simp [ResolvedGroupReference.requiresComputationProducer,
+      ComputationGroupDependency.requiresProducer, member]
+
+theorem implicitGroupProtection_preserved (model : FlatModel) (target : FieldId)
+    (declaration : FlatFieldDecl)
+    (queriedGroup : GroupPath)
+    (groupLeaf : Leaf → Option (GroupPresenceOperator × ResolvedGroupReference))
+    (conditions : List (Option (ConditionTree Leaf)))
+    (resolved : model.lookupUniqueId target = .ok declaration)
+    (ownedGroup : model.hasGroupPath queriedGroup = true)
+    (implicitProtection : model.computationImplicitGroupProtection declaration.groupPath queriedGroup = true) :
+    model.computationProtectsGroup target queriedGroup groupLeaf conditions = true := by
+  simp [FlatModel.computationProtectsGroup, resolved, ownedGroup, implicitProtection]
+
+end A12Kernel

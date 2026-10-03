@@ -1,11 +1,14 @@
 import A12Kernel.Semantics.ComputationGroupDependency
 import A12Kernel.Elaboration.ComputationRunPlan
+import A12Kernel.Elaboration.ComputationGroupDependency
+import A12Kernel.Elaboration.CheckedGroupPresence
 
 /-! # Conditional dependency separators
 
 Leaf annotations answer one already-resolved ancestor-group query. The static controls and split
 target outcomes in `src-group-conditional-profiles` distinguish these profiles from runtime truth.
-Model/path resolution and computation scheduling are separate consumers of this algebra.
+The binding section uses a validated model and resolved group references. Full guard admission and
+checked-plan integration remain separate from these bounded queries through the existing scheduler.
 -/
 
 namespace A12Kernel.ComputationGroupDependencyConformance
@@ -30,7 +33,8 @@ example : alternativesProtect id [some groupGuard, some unrelated] = false ∧
 private def protectsGroup (targetGroup queriedGroup : List String)
     (positiveGroup : Option (List String)) : Bool :=
   positiveGroup.any fun group =>
-    group.isPrefixOf targetGroup && queriedGroup.isPrefixOf group
+    ({ path := group, origin := .path } : ResolvedGroupReference).protectsComputationGroup
+      .filled targetGroup queriedGroup
 
 private def rootGuard : ConditionTree (Option (List String)) := .leaf (some ["Form"])
 private def boxGuard : ConditionTree (Option (List String)) := .leaf (some ["Form", "Box"])
@@ -77,3 +81,74 @@ example :
   native_decide
 
 end A12Kernel.ComputationGroupDependencyConformance
+
+namespace A12Kernel.ComputationGroupDependencyBindingConformance
+
+private def model : FlatModel := {
+  fields := [
+    { id := 1, groupPath := ["Form"], name := "X", policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 2, groupPath := ["Form", "Box"], name := "Y", policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 3, groupPath := ["Form", "Rows"], name := "Y", policy := { kind := .number { scale := 0, signed := true } }, repeatableScope := [10] },
+    { id := 4, groupPath := ["Form", "Rows", "Child"], name := "Z", policy := { kind := .number { scale := 0, signed := true } }, repeatableScope := [10] },
+    { id := 5, groupPath := ["Other"], name := "Y", policy := { kind := .number { scale := 0, signed := true } } }]
+  repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
+
+private def root : ResolvedGroupReference := { path := ["Form"], origin := .path }
+private def box : ResolvedGroupReference := { path := ["Form", "Box"], origin := .path }
+private def rows : ResolvedGroupReference := { path := ["Form", "Rows"], origin := .path }
+private def child : ResolvedGroupReference := { path := ["Form", "Rows", "Child"], origin := .path }
+
+private def boundProfile (target : FieldId) (query : ResolvedGroupReference)
+    (conditions : List (Option (ConditionTree (Option (GroupPresenceOperator × ResolvedGroupReference))))) :
+    Bool :=
+  model.computationProtectsGroup target query.path id conditions
+
+example : model.validate.isOk = true := by native_decide
+
+example : boundProfile 1 root [] = false ∧
+    boundProfile 3 root [] = true ∧
+    boundProfile 4 rows [some (.leaf none)] = true ∧
+    boundProfile 4 child [] = false := by native_decide
+
+example : boundProfile 2 root [some (.leaf (some (.filled, box)))] = true ∧
+    boundProfile 2 box [some (.leaf (some (.filled, root)))] = false ∧
+    boundProfile 2 root [some (.leaf (some (.notFilled, box)))] = false ∧
+    boundProfile 5 root [some (.leaf (some (.filled, root)))] = false := by native_decide
+
+example : root.referencesField model 3 = true ∧
+    root.computationForbidsTarget .filled model 3 = false ∧
+    root.computationForbidsTarget .notFilled model 3 = true ∧
+    root.requiresComputationProducer .filled model 1 3 true = false ∧
+    root.requiresComputationProducer .filled model 1 3 false = true ∧
+    root.requiresComputationProducer .filled model 5 3 true = true := by native_decide
+
+example : root.requiresComputationProducer .filled model 1 1 false = false ∧
+    root.requiresComputationProducer .notFilled model 1 1 true = true ∧
+    root.referencesField model 5 = false := by native_decide
+
+example : boundProfile 2 root [some (.leaf (some (.filled, root))), none] = true ∧
+    boundProfile 2 root [some (.leaf (some (.filled, root))), some (.leaf none)] = false ∧
+    boundProfile 4 child [some (.leaf (some (.filled, child)))] = true := by native_decide
+
+example : (model.computationGroupSource root.path).fields.contains 3 = false ∧
+    root.referencesField model 3 = true := by native_decide
+
+example : boundProfile 99 root [some (.leaf (some (.filled, root)))] = false ∧
+    boundProfile 3 { path := [], origin := .path } [] = false := by native_decide
+
+private def rootCycle (guard : ConditionTree (Option (GroupPresenceOperator × ResolvedGroupReference))) :
+    Option (FieldId × FieldId) :=
+  let reads (consumer producer : FieldId) :=
+    root.requiresComputationProducer .filled model consumer producer
+      (model.computationProtectsGroup producer root.path id [some guard])
+  firstForwardComputationDependency? id reads (computationAuthoredOrder id reads 2 [1, 2])
+
+example :
+    let positive := ConditionTree.leaf (some (GroupPresenceOperator.filled, root))
+    rootCycle positive = none ∧ rootCycle (.or positive (.leaf none)) = some (1, 2) := by
+  native_decide
+
+example : root.computationForbidsTarget .notFilled model 5 = false ∧
+    root.requiresComputationProducer .filled model 1 5 false = false := by native_decide
+
+end A12Kernel.ComputationGroupDependencyBindingConformance
