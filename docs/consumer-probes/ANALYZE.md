@@ -64,6 +64,23 @@ Wrong accounts equate complete membership with scheduling edges, exempt negative
 - `questions-and-guesses`: no semantic guess. C7's concrete group contents, exact runtime slice, binding result and wider nested/keyed behavior remained insufficient information. The consumer also declined to certify the root-owned run metadata it had not been given; that does not affect the captured metadata above.
 - `exclusions`: consumer implementation, arbitrary nested/keyed group execution, cross-kind Kernel correspondence, validation or generated-validation equivalence, application, protocol, shipment, and general compatibility. Repair the canonical runtime-slice handover before a new clean-basis run; do not change this result to green retrospectively.
 
+<a id="run-group-guard-dependency-02"></a>
+### Group-guard dependency and execution readback — `group-guard-dependency-02`
+
+- `task`: [Group-guard dependency and execution readback](#group-guard-dependency-readback)
+- `status`: green
+- `started-at`: 2026-10-03T10:35:54+02:00
+- `finished-at`: 2026-10-03T10:37:38+02:00
+- `duration-seconds`: 104
+- `semantic-basis`: `e00efbf8558135c44ed69e4a208083524820cd66`
+- `oracle`: root reconciled all eight cases against the committed [model/profile matrix](../../A12Kernel/Conformance/ComputationGroupDependency.lean), [reader and overlay locks](../../A12Kernel/Reference/Dm/ComputationGuardLocks.lean), [dependency/profile laws](../../A12Kernel/Proofs/ComputationGroupDependency.lean), and [overlay coherence laws](../../A12Kernel/Proofs/ComputationCondition.lean). C7 now recovers [computationGroupSource](../../A12Kernel/Elaboration/CheckedGroupPresence.lean)'s field/row partition and [ResolvedComputationGroupSource.read](../../A12Kernel/Semantics/GroupPresence.lean)'s prefix and binding boundary. Reconciliation passed.
+- `consumer-access`: fresh isolated context received the unchanged frozen task and the same allowed canonical sections, now including the reviewed non-normative content note. No tool calls, repository or sibling inspection, followed links, Lean, checkpoints, evidence, plans, prior results, history, network, or produced code. Root captured the clean basis and both boundary timestamps independently.
+- `cost`: 104 seconds; zero implementation or test-source lines, dependencies, or retained consumer machinery. Root used the existing compiled cases and laws plus read-only inspection; no additional build or Kernel measurement.
+- `result`: inventories, target bans, producer edges, admission and bounded values agree for the fixed-target cases, including both same-target orders and pending/completed values. C7 separates same-scope cell inputs from physical descendant-row witnesses without converting either into scheduling edges. Missing binding remains a failure to construct the content input, not an empty-group result.
+- `wrong-accounts`: all ten named wrong accounts were rejected. The previously unanswered inventory-versus-content-slice distinction is now recovered; the result establishes transport of that representation, not a claim about physical Kernel scan order.
+- `questions-and-guesses`: no semantic guess. Concrete undeclared descendant fields, unsupplied row coordinates and arbitrary nested/keyed runtime results remain insufficient information as required. The consumer did not claim to verify root-owned revision or timing metadata it was not given.
+- `exclusions`: consumer implementation, arbitrary nested/keyed group execution, cross-kind Kernel correspondence, validation or generated-validation equivalence, application, protocol, shipment, and general compatibility. The [prior red run](#run-group-guard-dependency-01) remains the comparator for the repaired handover.
+
 ## Generated-phase alias probe
 
 Analyze whether one scalar-target generated computation may alias its immutable execution source with the later applied-destination validation snapshot. The bounded artifact contains one unfiltered repeatable Number sum and one correlated repeatable Number `FirstFilledValue`, with source and destination rows chosen so both the result and, for `FirstFilledValue`, the selected row differ between phases. The consumer must separate dependency roles, source execution, source-relative action classification, destination application, target-filled gating, and destination recomputation, then produce a concrete counterexample to snapshot aliasing.
