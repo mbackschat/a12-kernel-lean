@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.StringComputationRunRelation
 import A12Kernel.Proofs.ComputationRunPlan
+import A12Kernel.Proofs.ComputationGroupDependency
 import A12Kernel.Proofs.StringComputationRun
 import A12Kernel.Proofs.FieldId
 
@@ -11,15 +12,15 @@ The proof spine derives fixed-order trace soundness from the checked plan's two 
 namespace A12Kernel
 
 theorem checkedStringComputationTable_excludes_target
-    (table : CheckedStringComputationTable model) :
-    table.referencesField table.targetField = false := by
-  simp only [CheckedStringComputationTable.referencesField,
-    CheckedStringComputationAlternative.referencesField,
+    (table : CheckedStringComputationTable model)
+    (producerProtected : FieldId → ResolvedGroupReference → Bool) :
+    table.requiresProducer producerProtected table.targetField = false := by
+  simp only [CheckedStringComputationTable.requiresProducer, computationCondition_requires_own,
     List.any_eq_false]
   intro alternative member
   have guardExcludes :
       alternative.precondition.any
-        (·.referencesField table.targetField) = false := by
+        (·.forbidsTarget table.targetField) = false := by
     cases guard : alternative.precondition with
     | none => rfl
     | some condition =>
@@ -92,27 +93,17 @@ private theorem stringComputationRun_table_ready
     · subst dependency
       rw [checkedStringComputationTable_excludes_target] at referenced
       contradiction
-    · have orderedSuffix :
-          firstForwardStringDependency? (table :: remaining) = none :=
-        by
-          have generic :=
-            firstForwardComputationDependency_none_suffix
-              (fun candidate : CheckedStringComputationTable model =>
-                candidate.targetField)
-              (fun candidate field =>
-                candidate.referencesField field)
-              earlier (table :: remaining) (by
-                simpa [firstForwardStringDependency?, split]
-                  using run.dependenciesOrdered)
-          simpa [firstForwardStringDependency?] using generic
+    · have orderedSuffix :=
+        firstForwardComputationDependency_none_suffix
+          (fun candidate : CheckedStringComputationTable model => candidate.targetField)
+          (fun candidate field => candidate.requiresProducer (stringComputationProducerProtection run.tables) field)
+          earlier (table :: remaining) (by
+            simpa only [firstForwardStringDependency?, split] using run.dependenciesOrdered)
       have notReferenced :=
         firstForwardComputationDependency_none_head
-          (fun candidate : CheckedStringComputationTable model =>
-            candidate.targetField)
-          (fun candidate field => candidate.referencesField field)
-          table remaining (by
-            simpa [firstForwardStringDependency?] using orderedSuffix)
-          dependency inRemaining
+          (fun candidate : CheckedStringComputationTable model => candidate.targetField)
+          (fun candidate field => candidate.requiresProducer (stringComputationProducerProtection run.tables) field)
+          table remaining orderedSuffix dependency inRemaining
       rw [notReferenced] at referenced
       contradiction
 

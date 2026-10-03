@@ -76,4 +76,160 @@ private def refusedTargetIdentity (target : FieldId) : Bool :=
 
 example : refusedTargetIdentity 1 = true ∧ refusedTargetIdentity 2 = false := by native_decide
 
+private inductive GroupGuardKind where
+  | number | string | boolean
+
+private inductive GroupGuardShape where
+  | paired | bypass | ordinaryCycle | splitGuardFirst | splitPlainFirst | unconditionalProducer
+
+private inductive GroupGuardResult where
+  | cycle
+  | outcomes (values : List String)
+  deriving Repr, DecidableEq
+
+private def groupGuardRun (seed : Bool) (kind : GroupGuardKind := .number)
+    (shape : GroupGuardShape := .paired) : Option GroupGuardResult := do
+  let model : FlatModel := { fields := [
+    { id := 1, groupPath := ["Form"], name := "Gate", policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 2, groupPath := ["Form"], name := "X", policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 3, groupPath := ["Form"], name := "Y", policy := { kind := match kind with
+      | .number => .number { scale := 0, signed := true } | .string => .string | .boolean => .boolean } }] }
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := [{ address := { field := 2, path := [] }, stored := "bad", raw := .rejected .malformed }] ++
+      (if seed then [{ address := { field := 1, path := [] }, stored := "3", raw := .parsed (.num 3) }] else []) }).toOption
+  let condition := match shape with
+    | .bypass => "GroupFilled(/Form) Or FieldFilled(Gate)"
+    | _ => "GroupFilled(/Form)"
+  let first : DmComputation := {
+    group := ["Form"], name := "First", targetRelPath := "../X", commonPrecondition := some condition
+    alternatives := [{ precondition := none, operation := match shape with | .ordinaryCycle => "[Y]" | _ => "1" }]
+    errorCodesToSuppress := [] }
+  let second : DmComputation := {
+    group := ["Form"], name := "Second", targetRelPath := "../Y"
+    commonPrecondition := match shape with | .unconditionalProducer => none | _ => some condition
+    alternatives := [{ precondition := none, operation := match kind, shape with
+      | .number, .ordinaryCycle | .number, .splitGuardFirst | .number, .splitPlainFirst => "[X]"
+      | .number, _ => "2" | .string, _ => "\"ready\"" | .boolean, _ => "True" }]
+    errorCodesToSuppress := [] }
+  let plain : DmComputation := { second with
+    commonPrecondition := none
+    alternatives := [{ precondition := none, operation := match kind with
+      | .number => "2" | .string => "\"fallback\"" | .boolean => "False" }] }
+  let authored := match shape with
+    | .splitGuardFirst => [first, second, plain]
+    | .splitPlainFirst => [plain, first, second]
+    | _ => [first, second]
+  let lowered ← authored.mapM fun computation => (lowerComputation model .english computation).toOption
+  let steps : List (MixedComputationStep model builtinStringPatternCompiler) := lowered.map fun (_, step) =>
+    match step with
+    | .number table _ => .number table | .string table => .string table
+    | .document step => .document step | .rows step => .rows (step builtinStringPatternCompiler)
+  match certifyAuthoredMixedComputationPlan steps with
+  | .error (.cycle _ _) => pure .cycle
+  | .error _ => none
+  | .ok _ =>
+      let outcomes ← (runComputations world prepared checked (lowered.map (·.2))).toOption
+      pure (.outcomes (outcomes.map (·.outcome)))
+
+example : groupGuardRun false = some (.outcomes ["cleared"]) ∧
+    groupGuardRun true = some (.outcomes ["value 1", "value 2"]) := by native_decide
+example : groupGuardRun true .string = some (.outcomes ["value 1", "value ready"]) ∧
+    groupGuardRun true .boolean = some (.outcomes ["value 1", "value true"]) := by native_decide
+example : groupGuardRun false .number .bypass = some .cycle ∧
+    groupGuardRun false .number .ordinaryCycle = some .cycle := by native_decide
+example : groupGuardRun false .number .unconditionalProducer =
+    some (.outcomes ["value 2", "value 1"]) := by native_decide
+example : groupGuardRun false .number .splitGuardFirst = some (.outcomes ["cleared", "value 2"]) ∧
+    groupGuardRun false .number .splitPlainFirst = some (.outcomes ["cleared", "value 2"]) ∧
+    groupGuardRun true .number .splitGuardFirst = some (.outcomes ["value 1", "value 1"]) ∧
+    groupGuardRun true .number .splitPlainFirst = some (.outcomes ["value 1", "value 2"]) := by native_decide
+example : groupGuardRun true .string .splitGuardFirst = some (.outcomes ["value 1", "value ready"]) ∧
+    groupGuardRun true .string .splitPlainFirst = some (.outcomes ["value fallback", "value 1"]) := by native_decide
+
+private def standaloneGroupPlans (stringTargets : Bool) : Option Bool := do
+  let kind := if stringTargets then FieldKind.string else .number { scale := 0, signed := true }
+  let model : FlatModel := { fields := [
+    { id := 1, groupPath := ["Form"], name := "X", policy := { kind } },
+    { id := 2, groupPath := ["Form"], name := "Y", policy := { kind } }] }
+  let definition (name : String) : DmComputation := {
+    group := ["Form"], name, targetRelPath := "../" ++ name
+    commonPrecondition := some "GroupFilled(/Form)"
+    alternatives := [{ precondition := none, operation := if stringTargets then "\"ready\"" else "1" }]
+    errorCodesToSuppress := [] }
+  let (_, first) ← (lowerComputation model .english (definition "X")).toOption
+  let (_, second) ← (lowerComputation model .english (definition "Y")).toOption
+  match first, second with
+  | .number first _, .number second _ => pure (
+      (certifyNumericComputationRun [first, second]).isOk &&
+      (certifyRepeatableNumberPlan [first, second]).isOk &&
+      (certifyScalarComputationPlan [.number first, .number second]).isOk)
+  | .string first, .string second => pure (
+      (certifyStringComputationRun [first, second]).isOk &&
+      (certifyScalarComputationPlan [.string first, .string second]).isOk)
+  | _, _ => none
+
+example : standaloneGroupPlans false = some true ∧ standaloneGroupPlans true = some true := by native_decide
+
+private def standaloneGuardOverlay (stringTargets scalar stored filledList : Bool) :
+    Option (Bool × Bool) := do
+  let kind := if stringTargets then FieldKind.string else .number { scale := 0, signed := true }
+  let model : FlatModel := { fields := [
+    { id := 1, groupPath := ["Form"], name := "X", policy := { kind } },
+    { id := 2, groupPath := if filledList then ["Form", "Inputs"] else ["Form"], name := "Y", policy := { kind } }] }
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" {
+    instantiatedRows := []
+    cells := if stored then [{
+      address := { field := if filledList then 2 else 1, path := [] }
+      stored := if stringTargets then "old" else "9"
+      raw := .parsed (if stringTargets then .str "old" else .num 9) }] else [] }).toOption
+  let definition (name target : String) (guard : Option String) : DmComputation := {
+    group := ["Form"], name, targetRelPath := "../" ++ target, commonPrecondition := guard
+    alternatives := [{ precondition := none, operation := if stringTargets then "\"fresh\"" else "2" }]
+    errorCodesToSuppress := [] }
+  let (_, producer) ← (lowerComputation model .english
+    (definition "Producer" (if filledList then "Inputs/Y" else "Y") none)).toOption
+  let (_, consumer) ← (lowerComputation model .english
+    (definition "Consumer" "X" (some (if filledList then "AllFieldsFilled(/Form/Inputs)" else "GroupFilled(/Form)")))).toOption
+  let holds (guard : ComputationCondition) (context : ScalarComputationContext) :=
+    (guard.evalChecked context).toOption == some .holds
+  match producer, consumer with
+  | .number producer _, .number consumer _ => do
+      let guard ← consumer.first.precondition
+      if scalar then
+        let run ← (certifyScalarComputationRun [.number producer, .number consumer]).toOption
+        let completed ← (run.evaluateStep world prepared.patterns checked {} (.number producer)).toOption
+        pure (holds guard (run.numberContext world {} checked),
+          holds guard (run.numberContext world { completed := [completed] } checked))
+      else
+        let run ← (certifyNumericComputationRun [producer, consumer]).toOption
+        let completed ← (run.evaluateTable world checked {} producer).toOption
+        pure (holds guard (run.readPolicy {} checked),
+          holds guard (run.readPolicy { completed := [completed] } checked))
+  | .string producer, .string consumer => do
+      let guard ← consumer.first.precondition
+      if scalar then
+        let run ← (certifyScalarComputationRun [.string producer, .string consumer]).toOption
+        let completed ← (run.evaluateStep world prepared.patterns checked {} (.string producer)).toOption
+        pure (holds guard (run.stringContext {} checked),
+          holds guard (run.stringContext { completed := [completed] } checked))
+      else
+        let run ← (certifyStringComputationRun [producer, consumer]).toOption
+        let completed ← (run.evaluateTable prepared.patterns checked {} producer).toOption
+        pure (holds guard (run.readPolicy {} checked),
+          holds guard (run.readPolicy { completed := [completed] } checked))
+  | _, _ => none
+
+example : [false, true].all (fun strings => [false, true].all fun scalar =>
+    [false, true].all fun stored => standaloneGuardOverlay strings scalar stored false == some (false, true)) = true := by
+  native_decide
+
+example : [false, true].all (fun strings => [false, true].all fun scalar =>
+    [false, true].all fun stored => standaloneGuardOverlay strings scalar stored true == some (false, true)) = true := by
+  native_decide
+
 end A12Kernel.Dm.ComputationGuardLocks

@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.NumericComputation.Run
 
 /-! # Dependency-enabled checked Number-run relation
 
-This capsule permits any pending scalar Number table whose statically referenced computed targets have completed under one caller-supplied `World`. It reuses the run's atomic evaluator and labels a successful step only with the target and rich outcome, so the relation can permit independent schedules beyond the fixed executor without introducing a generic scheduler or read trace. -/
+This capsule permits any pending scalar Number table whose required computed dependencies have completed under one caller-supplied `World`. It reuses the run's atomic evaluator and labels a successful step only with the target and rich outcome, so the relation can permit independent schedules beyond the fixed executor without introducing a generic scheduler or read trace. -/
 
 namespace A12Kernel
 
@@ -21,7 +21,7 @@ def NumericComputationDependenciesEnabled
     (table : CheckedNumericComputationTable model)
     (state : NumericComputationRunState) : Prop :=
   ∀ dependency ∈ run.tables,
-    table.referencesField dependency.targetField = true →
+    table.requiresProducer (numericComputationProducerProtection run.tables) dependency.targetField = true →
       dependency.targetField ∈ state.targetFields
 
 inductive NumericComputationRunStep

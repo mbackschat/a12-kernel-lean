@@ -46,7 +46,7 @@ where
   referencesOnly : ComputationCondition → Bool
     | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) =>
         routes.any fun route => route.admitsGuardField field
-    | .leaf (.numeric _) | .leaf (.text _) | .leaf (.fieldFill _ _) => false
+    | .leaf (.numeric _) | .leaf (.text _) | .leaf (.fieldFill _ _) | .leaf (.groupPresence _ _) => false
     | .and left right | .or left right =>
         referencesOnly left && referencesOnly right
 
@@ -57,7 +57,7 @@ private def parallelNumericGuardFields :
 where
   fields : ComputationCondition → List FieldId
     | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) => [field]
-    | .leaf (.numeric _) | .leaf (.text _) | .leaf (.fieldFill _ _) => []
+    | .leaf (.numeric _) | .leaf (.text _) | .leaf (.fieldFill _ _) | .leaf (.groupPresence _ _) => []
     | .and left right | .or left right => fields left ++ fields right
 
 /-- Admit one expression field exactly when it is a model-owned Number declaration addressable from the route's observed-group environment. Nested nonrepeatable groups remain legal; another repeatable or indexed scope does not. -/

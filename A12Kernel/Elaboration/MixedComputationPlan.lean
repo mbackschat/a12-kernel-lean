@@ -10,7 +10,7 @@ kind needs both at once, so this plan composes them rather than choosing one: ev
 checked family and evaluator, and the plan owns only the order and what a step reads.
 
 **The order** is the shared authored-order rule (`computationAuthoredOrder`), so a step runs after
-every step whose target it reads, independent steps in authored order.
+its required producer dependencies, with independent steps in authored order.
 
 **What a step reads** is one overlay, the rule both component plans already apply: a completed
 target at its exact address through the cell its outcome reads back as, every other address of a
@@ -48,7 +48,28 @@ def referencesField : MixedComputationStep model compilePattern → FieldId → 
   | .document step => step.referencesField
   | .rows step => step.referencesField
 
+def protectionConditions : MixedComputationStep model compilePattern → List (Option ComputationCondition)
+  | .number table => table.protectionConditions
+  | .string table => table.protectionConditions
+  | .document step => step.protectionConditions
+  | .rows _ => [none]
+
+def requiresProducer (producerProtected : FieldId → ResolvedGroupReference → Bool) :
+    MixedComputationStep model compilePattern → FieldId → Bool
+  | .number table => table.requiresProducer producerProtected
+  | .string table => table.requiresProducer producerProtected
+  | .document step => step.requiresProducer producerProtected
+  | .rows step => step.referencesField
+
 end MixedComputationStep
+
+def mixedComputationProducerProtection (steps : List (MixedComputationStep model compilePattern)) :=
+  computationProducerProtection model MixedComputationStep.targetField MixedComputationStep.protectionConditions steps
+
+def mixedComputationDependencies (steps : List (MixedComputationStep model compilePattern)) :
+    MixedComputationStep model compilePattern → FieldId → Bool :=
+  MixedComputationStep.requiresProducer (mixedComputationProducerProtection steps)
+
 
 /-- One reported outcome. A Number keeps its sourced change projection; a String and a whole-document
 target keep their family outcome at their address. -/
@@ -61,6 +82,7 @@ inductive MixedComputationOutcome where
 inductive MixedComputationPlanError where
   | empty
   | duplicateTarget (target : FieldId)
+  | conflictingTargetPolicy (target : FieldId)
   | cycle (step reads : FieldId)
   deriving Repr, DecidableEq
 
@@ -77,10 +99,10 @@ structure CheckedMixedComputationPlan (model : FlatModel) (compilePattern : Stri
   authored : List (MixedComputationStep model compilePattern)
   execution : List (MixedComputationStep model compilePattern)
   executionOrdered : execution = computationAuthoredOrder MixedComputationStep.targetField
-    MixedComputationStep.referencesField authored.length authored
+    (mixedComputationDependencies authored) authored.length authored
   uniqueTargets : FieldId.firstDuplicate? (authored.map (·.targetField)) = none
   dependenciesOrdered : firstForwardComputationDependency? MixedComputationStep.targetField
-    MixedComputationStep.referencesField execution = none
+    (mixedComputationDependencies authored) execution = none
 
 def certifyMixedComputationPlan (steps : List (MixedComputationStep model compilePattern)) :
     Except MixedComputationPlanError (CheckedMixedComputationPlan model compilePattern) :=
@@ -89,12 +111,38 @@ def certifyMixedComputationPlan (steps : List (MixedComputationStep model compil
   | some target => .error (.duplicateTarget target)
   | none =>
       match hForward : firstForwardComputationDependency? MixedComputationStep.targetField
-          MixedComputationStep.referencesField
+          (mixedComputationDependencies steps)
           (computationAuthoredOrder MixedComputationStep.targetField
-            MixedComputationStep.referencesField steps.length steps) with
+            (mixedComputationDependencies steps) steps.length steps) with
       | some (step, reads) => .error (.cycle step reads)
       | none => .ok { authored := steps, execution := _, executionOrdered := rfl
                       uniqueTargets := hDuplicate, dependenciesOrdered := hForward }
+
+/-- Consolidate Number and String tables at their first target position using their existing
+checked append operations. Other step families have no alternative-table carrier here. -/
+private def insertMixedComputationStep (incoming : MixedComputationStep model compilePattern) :
+    List (MixedComputationStep model compilePattern) →
+      Except MixedComputationPlanError (List (MixedComputationStep model compilePattern))
+  | [] => pure [incoming]
+  | current :: rest => do
+      if same : incoming.targetField = current.targetField then
+        match incoming, current, same with
+        | .number incoming, .number current, same =>
+            if policy : incoming.targetPolicy = current.targetPolicy then
+              pure (.number (current.appendSameTarget incoming same policy) :: rest)
+            else throw (.conflictingTargetPolicy current.targetField)
+        | .string incoming, .string current, same =>
+            if policy : incoming.targetPolicy = current.targetPolicy then
+              pure (.string (current.appendSameTarget incoming same policy) :: rest)
+            else throw (.conflictingTargetPolicy current.targetField)
+        | _, _, _ => throw (.duplicateTarget current.targetField)
+      else pure (current :: (← insertMixedComputationStep incoming rest))
+
+/-- Preserve authored alternative order before certifying one execution step per target. -/
+def certifyAuthoredMixedComputationPlan (steps : List (MixedComputationStep model compilePattern)) :
+    Except MixedComputationPlanError (CheckedMixedComputationPlan model compilePattern) := do
+  let grouped ← steps.foldlM (fun grouped incoming => insertMixedComputationStep incoming grouped) []
+  certifyMixedComputationPlan grouped
 
 /-- What the plan has completed: fixed targets through the scalar plan's completion, which owns each
 family's String and Number read cells and its placement, and row targets as placements. -/

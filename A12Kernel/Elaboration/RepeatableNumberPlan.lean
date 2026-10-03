@@ -48,11 +48,13 @@ structure CheckedRepeatableNumberPlan (model : FlatModel) where
   authored : List (CheckedNumericComputationTable model)
   execution : List (CheckedNumericComputationTable model)
   executionOrdered : execution = computationAuthoredOrder
-    CheckedNumericComputationTable.targetField CheckedNumericComputationTable.referencesField
+    CheckedNumericComputationTable.targetField
+    (fun table => table.requiresProducer (numericComputationProducerProtection authored))
     authored.length authored
   uniqueTargets : FieldId.firstDuplicate? (authored.map (·.targetField)) = none
   dependenciesOrdered : firstForwardComputationDependency?
-    CheckedNumericComputationTable.targetField CheckedNumericComputationTable.referencesField
+    CheckedNumericComputationTable.targetField
+    (fun table => table.requiresProducer (numericComputationProducerProtection authored))
     execution = none
 
 /-- Certify an authored plan by ordering it. A forward read left after ordering can only wait on or
@@ -65,9 +67,9 @@ def certifyRepeatableNumberPlan (steps : List (CheckedNumericComputationTable mo
   | none =>
       match hForward : firstForwardComputationDependency?
           CheckedNumericComputationTable.targetField
-          CheckedNumericComputationTable.referencesField
+          (fun table => table.requiresProducer (numericComputationProducerProtection steps))
           (computationAuthoredOrder CheckedNumericComputationTable.targetField
-            CheckedNumericComputationTable.referencesField steps.length steps) with
+            (fun table => table.requiresProducer (numericComputationProducerProtection steps)) steps.length steps) with
       | some (step, reads) => .error (.cycle step reads)
       | none => .ok {
           authored := steps

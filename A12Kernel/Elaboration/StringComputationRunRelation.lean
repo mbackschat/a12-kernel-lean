@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.StringComputationRun
 
 /-! # Dependency-enabled checked String-run relation
 
-This capsule gives the checked String run an independently meaningful successful-step relation. A step may choose any plan table whose target is still pending and whose statically referenced computed targets are complete. Its label is only the target and rich outcome already observable from that atomic computation. The relation therefore admits independent schedules the fixed executor does not choose without adding a read trace or a generic state-machine framework.
+This capsule gives the checked String run an independently meaningful successful-step relation. A step may choose any plan table whose target is still pending and whose required computed dependencies are complete. Its label is only the target and rich outcome already observable from that atomic computation. The relation therefore admits independent schedules the fixed executor does not choose without adding a read trace or a generic state-machine framework.
 -/
 
 namespace A12Kernel
@@ -16,12 +16,12 @@ def targetFields (state : StringComputationRunState) : List FieldId :=
 
 end StringComputationRunState
 
-/-- Every computed target structurally referenced by this table has already completed. The plan graph orders even a reference that runtime short-circuiting may not reach. -/
+/-- Every computed dependency required by this table has already completed. The plan graph orders even a reference that runtime short-circuiting may not reach. -/
 def StringComputationDependenciesEnabled (run : CheckedStringComputationRun model)
     (table : CheckedStringComputationTable model)
     (state : StringComputationRunState) : Prop :=
   ∀ dependency ∈ run.tables,
-    table.referencesField dependency.targetField = true →
+    table.requiresProducer (stringComputationProducerProtection run.tables) dependency.targetField = true →
       dependency.targetField ∈ state.targetFields
 
 /-- One successful atomic table evaluation chosen independently of the fixed executor's list fold. -/

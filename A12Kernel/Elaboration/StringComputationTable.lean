@@ -19,7 +19,7 @@ structure CheckedStringComputationAlternative (model : FlatModel) (target : Fiel
   declaringGroupValid : GroupPath.isValid declaringGroup = true
   guardWellFormed : precondition.all (·.wellFormedBool model) = true
   guardExcludesTarget : precondition.all
-    (fun guard => !guard.referencesField target) = true
+    (fun guard => !guard.forbidsTarget target) = true
   expressionExcludesTarget : expression.core.referencesField target = false
 
 namespace CheckedStringComputationAlternative
@@ -73,7 +73,7 @@ private def certifyStringComputationAlternative
   if hSameTarget : alternative.operation.targetField = target then
     if hGuard : alternative.precondition.all (·.wellFormedBool model) = true then
       if hTarget : alternative.precondition.all
-          (fun guard => !guard.referencesField target) = true then
+          (fun guard => !guard.forbidsTarget target) = true then
         pure {
           declaringGroup := alternative.operation.declaringGroup
           precondition := alternative.precondition

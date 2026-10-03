@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.StringComputationTable
 
 /-! # Checked nonrepeatable String computation run plans
 
-This capsule certifies a finite supplied-order list of checked String tables. The low-level certifier requires unique targets. The authored-table entry point first flattens repeated targets into the first target occurrence while preserving every row's encounter order, then applies the same dependency check. A table may read another computed target only after that target's consolidated table. Ordinary input reads are not part of the scheduling graph.
+This capsule certifies a finite supplied-order list of checked String tables. The low-level certifier requires unique targets. The authored-table entry point first flattens repeated targets into the first target occurrence while preserving every row's encounter order, then applies the same dependency check. A table runs after its required producers' consolidated tables; protected group reads can omit an ordering edge. Ordinary input reads are not part of the scheduling graph.
 -/
 
 namespace A12Kernel
@@ -24,6 +24,15 @@ namespace CheckedStringComputationTable
 def referencesField (table : CheckedStringComputationTable model)
     (field : FieldId) : Bool :=
   table.selectableAlternatives.any (·.referencesField field)
+
+def protectionConditions (table : CheckedStringComputationTable model) : List (Option ComputationCondition) :=
+  table.selectableAlternatives.map (·.precondition)
+
+def requiresProducer (table : CheckedStringComputationTable model)
+    (producerProtected : FieldId → ResolvedGroupReference → Bool) (field : FieldId) : Bool :=
+  table.selectableAlternatives.any fun alternative =>
+    alternative.precondition.any (·.requiresProducer table.targetField field (producerProtected field)) ||
+      alternative.expression.core.referencesField field
 
 end CheckedStringComputationTable
 
@@ -95,11 +104,15 @@ def flattenStringComputationTables
   flattenStringComputationTablesFrom [] tables
 
 /-- Specialize the shared supplied-order dependency check to checked String tables. -/
+def stringComputationProducerProtection (tables : List (CheckedStringComputationTable model)) :=
+  computationProducerProtection model CheckedStringComputationTable.targetField
+    CheckedStringComputationTable.protectionConditions tables
+
 def firstForwardStringDependency?
     (tables : List (CheckedStringComputationTable model)) :
     Option (FieldId × FieldId) :=
   firstForwardComputationDependency?
-    (·.targetField) (·.referencesField ·) tables
+    (·.targetField) (fun table => table.requiresProducer (stringComputationProducerProtection tables)) tables
 
 /-- A nonempty finite String run whose target is unique per step and whose computed dependencies precede every consumer. -/
 structure CheckedStringComputationRun (model : FlatModel) where

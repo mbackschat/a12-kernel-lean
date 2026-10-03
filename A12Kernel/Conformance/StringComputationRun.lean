@@ -291,12 +291,12 @@ private theorem producerEnabled (state : StringComputationRunState) :
   simp [independentRun] at member
   rcases member with rfl | rfl
   · have notReferenced :
-        producerTable.referencesField producerTable.targetField = false := by
+        producerTable.requiresProducer (stringComputationProducerProtection independentRun.tables) producerTable.targetField = false := by
       native_decide
     rw [notReferenced] at referenced
     contradiction
   · have notReferenced :
-        producerTable.referencesField independentConsumerTable.targetField = false := by
+        producerTable.requiresProducer (stringComputationProducerProtection independentRun.tables) independentConsumerTable.targetField = false := by
       native_decide
     rw [notReferenced] at referenced
     contradiction
@@ -307,12 +307,12 @@ private theorem consumerEnabled (state : StringComputationRunState) :
   simp [independentRun] at member
   rcases member with rfl | rfl
   · have notReferenced :
-        independentConsumerTable.referencesField producerTable.targetField = false := by
+        independentConsumerTable.requiresProducer (stringComputationProducerProtection independentRun.tables) producerTable.targetField = false := by
       native_decide
     rw [notReferenced] at referenced
     contradiction
   · have notReferenced :
-        independentConsumerTable.referencesField
+        independentConsumerTable.requiresProducer (stringComputationProducerProtection independentRun.tables)
           independentConsumerTable.targetField = false := by
       native_decide
     rw [notReferenced] at referenced

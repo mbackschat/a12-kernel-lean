@@ -17,7 +17,7 @@ structure CheckedNumericComputationAlternative (model : FlatModel)
   policyMatches : operation.policy = policy
   guardRowBound : precondition.all (·.rowBoundBool model (model.fieldRepeatableScope target)) = true
   guardExcludesTarget : precondition.all
-    (fun guard => !guard.referencesField target) = true
+    (fun guard => !guard.forbidsTarget target) = true
 
 namespace CheckedNumericComputationAlternative
 
@@ -71,7 +71,7 @@ private def certifyNumericComputationAlternative
       if guardRequired && alternative.precondition.isNone then
         throw (.unguardedAlternative alternativeIndex)
       else if hGuardTarget : alternative.precondition.all
-          (fun guard => !guard.referencesField target) = true then
+          (fun guard => !guard.forbidsTarget target) = true then
         pure {
           precondition := alternative.precondition
           operation := alternative.operation
@@ -186,7 +186,7 @@ private def elaborateNumericTargetComputationTableWith (model : FlatModel) (decl
     match guard with
     | .ok own => judged own
     | .error _ => true
-  let commonReadsTarget := commonPrecondition.any (·.referencesField target)
+  let commonReadsTarget := commonPrecondition.any (·.forbidsTarget target)
   let alternativeRefusal? := elaborated.findSome? fun (index, guard, result) =>
     let commonRefusal :=
       if commonReadsTarget && firstJudged.map (·.1) == some index then
@@ -200,7 +200,7 @@ private def elaborateNumericTargetComputationTableWith (model : FlatModel) (decl
           | .ok _ => none
     | .ok (some precondition) =>
         commonRefusal <|>
-          if precondition.referencesField target then some (.table (.guardTargetReference index)) else
+          if precondition.forbidsTarget target then some (.table (.guardTargetReference index)) else
             match result with
             | .error error => some (.operation index error)
             | .ok _ => none

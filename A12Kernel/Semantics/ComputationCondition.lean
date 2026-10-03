@@ -4,10 +4,13 @@ import A12Kernel.Semantics.FlatValidation
 import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.ComputationFillQuantifier
 import A12Kernel.Semantics.Observation
+import A12Kernel.Semantics.GroupPresence
+import A12Kernel.Semantics.GroupReference
+import A12Kernel.Semantics.ComputationGroupDependency
 
 /-! # A12Kernel.Semantics.ComputationCondition — checked computation control
 
-This module admits resolved field presence, ordered field-fill lists, text equality and numeric comparisons over shared arithmetic trees, ordered `And`/`Or`, common-precondition expansion and first-match selection at one target instance. An absent row precondition selects directly; model-level certification keeps that source shape to a sole alternative even though composed tables may later contain it beside other rows. The selector separates clean not-true and no-match from an invalid cell actually read as poison. Numeric atoms retain field metadata or structural row bindings; checked consumers propagate a reached binding error outside semantic poison. Other predicate families, operation evaluation and model-level alternative legality remain separate clauses.
+This module admits resolved field and group presence, ordered field-fill lists, text equality and numeric comparisons over shared arithmetic trees, ordered `And`/`Or`, common-precondition expansion and first-match selection at one target instance. An absent row precondition selects directly; model-level certification keeps that source shape to a sole alternative even though composed tables may later contain it beside other rows. The selector separates clean not-true and no-match from an invalid cell actually read as poison. Numeric atoms retain field metadata or structural row bindings; checked consumers propagate a reached binding error outside semantic poison. Other predicate families, operation evaluation and model-level alternative legality remain separate clauses.
 -/
 
 namespace A12Kernel
@@ -21,6 +24,18 @@ structure ScalarComputationContext where
   row : Env := []
   addressed : Option ComputationFillContext := none
 
+/-- Apply fixed-target overrides to both read channels. Group guards and expanded fill lists
+use addressed reads, so they must share the pending/completed policy of direct operands;
+ordinary fields retain their original environment-sensitive reader. -/
+def ScalarComputationContext.withFixedOverlay
+    (context : ScalarComputationContext) (overlay : FieldId → Option CheckedCell) :
+    ScalarComputationContext :=
+  { context with
+    read := fun field => (overlay field).getD (context.read field)
+    addressed := context.addressed.map fun addressed =>
+      { addressed with
+        read := fun row field => (overlay field).getD (addressed.read row field) } }
+
 /-- Supply the explicit evaluation world without changing the checked-cell read policy. -/
 def ScalarComputationContext.withWorld
     (context : ScalarComputationContext) (world : World) :
@@ -31,6 +46,7 @@ def ScalarComputationContext.withWorld
 inductive ComputationConditionError where
   | binding (error : EnvBindingError)
   | fieldFill (error : ComputationFillError)
+  | groupContextRequired
   deriving Repr, DecidableEq
 
 /-- Scalar Number reads and structural coordinates share the ordinary arithmetic tree in guards. -/
@@ -59,6 +75,14 @@ def ComputationNumericAtom.read (context : ScalarComputationContext) :
   | .repetition source => do pure (.value (← source.coordinateAt context.row))
   | .baseYear year => pure (.value year)
 
+/-- A group guard preserves authored identity and complete operand membership separately from
+its runtime content slice. Elaboration certifies all three against the same model. -/
+structure ComputationGroupOperand where
+  reference : ResolvedGroupReference
+  content : ResolvedComputationGroupSource
+  members : List FieldId
+  deriving Repr, DecidableEq
+
 /-- Atomic leaves of the parser-independent computation-condition fragment. -/
 inductive ComputationConditionLeaf where
   | fieldFilled (field : FieldId)
@@ -67,7 +91,13 @@ inductive ComputationConditionLeaf where
   /-- The certifier restricts this shared comparison carrier to String/Enumeration forms. -/
   | text (comparison : FlatComparison)
   | fieldFill (operator : FieldFillQuantifier) (sources : List ComputationFillSource)
+  | groupPresence (operator : GroupPresenceOperator) (source : ComputationGroupOperand)
   deriving Repr, DecidableEq
+
+def ComputationConditionLeaf.groupReference? :
+    ComputationConditionLeaf → Option (GroupPresenceOperator × ResolvedGroupReference)
+  | .groupPresence operator source => some (operator, source.reference)
+  | _ => none
 
 /-- Computation control reuses the common checked connective tree; its phase-specific leaves and result projection differ from validation. -/
 abbrev ComputationCondition := ConditionTree ComputationConditionLeaf
@@ -106,17 +136,54 @@ abbrev and (left right : ComputationCondition) : ComputationCondition :=
 abbrev or (left right : ComputationCondition) : ComputationCondition :=
   ConditionTree.or left right
 
-/-- Whether the resolved condition mentions one exact field. This structural query is shared by checked table construction and generated-validation lowering. -/
+/-- Complete operand membership, including a target contained by its positive group guard.
+Static target bans and conditional scheduling use separate queries. -/
 def referencesField (condition : ComputationCondition) (target : FieldId) : Bool :=
   match condition with
   | .leaf (.fieldFilled field) | .leaf (.fieldNotFilled field) => field == target
   | .leaf (.fieldFill _ sources) => sources.any (·.field == target)
+  | .leaf (.groupPresence _ source) => source.members.contains target
   | .leaf (.text comparison) => comparison.fieldIds.contains target
   | .leaf (.numeric comparison) =>
       comparison.left.anyAtom (·.referencesField target) ||
         comparison.right.anyAtom (·.referencesField target)
   | .and left right | .or left right =>
       left.referencesField target || right.referencesField target
+
+/-- The positive ancestor-group carve-out changes the target ban, not operand membership
+([`spec/09`](../../spec/09-computations.md) §5). Other reads keep their complete structural inventory. -/
+def forbidsTarget (condition : ComputationCondition) (target : FieldId) : Bool :=
+  match condition with
+  | .leaf (.groupPresence .filled _) => false
+  | .and left right | .or left right => left.forbidsTarget target || right.forbidsTarget target
+  | leaf => leaf.referencesField target
+
+/-- Preserve ordinary dependencies while consulting the producer profile only for a positive
+containing-group read. The complete operand inventory remains available in `referencesField`. -/
+def requiresProducer (condition : ComputationCondition) (consumer producer : FieldId)
+    (producerProtected : ResolvedGroupReference → Bool) : Bool :=
+  match condition with
+  | .leaf (.groupPresence operator source) =>
+      let member := source.members.contains producer
+      let conditional := operator == .filled && source.members.contains consumer
+      ComputationGroupDependency.requiresProducer (member && !conditional)
+        (member && conditional) (consumer == producer) (producerProtected source.reference)
+  | .and left right | .or left right =>
+      left.requiresProducer consumer producer producerProtected || right.requiresProducer consumer producer producerProtected
+  | leaf => leaf.referencesField producer
+
+/-- Group content uses the addressed overlay whenever topology is needed. A missing overlay is
+structural failure, never evidence that no descendant row exists. -/
+def evalGroupPresence (operator : GroupPresenceOperator) (source : ComputationGroupOperand)
+    (context : ScalarComputationContext) : Except ComputationConditionError ComputationConditionResult :=
+  match context.addressed with
+  | some addressed =>
+      (source.content.eval operator addressed.document addressed.read context.row).mapError .binding
+  | none =>
+      if source.content.rowLevels.isEmpty then
+        (source.content.eval operator { instantiatedRows := [], rawCells := fun _ => none }
+          (fun _ => context.read) context.row).mapError .binding
+      else .error .groupContextRequired
 
 /-- Evaluate `FieldFilled` for one resolved checked field. A clean value counts as filled regardless of its scalar value; ordinary formal invalidity is poison rather than filled or empty. -/
 def evalFieldFilled (context : ScalarComputationContext)
@@ -157,6 +224,8 @@ def ComputationConditionLeaf.eval (context : ScalarComputationContext) :
   | .fieldNotFilled field =>
       (observeCell .computation (context.read field)).evalComputationNotFilled
   | .text comparison => evalTextComparison comparison context
+  | .groupPresence operator source =>
+      (evalGroupPresence operator source context).toOption.getD .notTrue
   | .fieldFill operator sources =>
       (evalFieldFill operator sources context).toOption.getD .notTrue
   | .numeric comparison =>
@@ -175,6 +244,7 @@ def evalChecked (condition : ComputationCondition) (context : ScalarComputationC
     | .numeric comparison =>
         (comparison.evalComputationWith (ComputationNumericAtom.read context)).mapError .binding
     | .fieldFill operator sources => (evalFieldFill operator sources context).mapError .fieldFill
+    | .groupPresence operator source => evalGroupPresence operator source context
     | leaf => pure (ComputationConditionLeaf.eval context leaf)
 
 theorem evalChecked_and (context : ScalarComputationContext) (left right : ComputationCondition) :

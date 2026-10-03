@@ -21,7 +21,7 @@ theorem certifyRepeatableNumberPlan_cycle_readClosed
     (steps : List (CheckedNumericComputationTable model)) (step reads : FieldId)
     (refused : certifyRepeatableNumberPlan steps = .error (.cycle step reads)) :
     ∃ stuck, ComputationStepsReadClosed CheckedNumericComputationTable.targetField
-        CheckedNumericComputationTable.referencesField stuck ∧
+        (fun table => table.requiresProducer (numericComputationProducerProtection steps)) stuck ∧
       ∀ member ∈ stuck, member ∈ steps := by
   unfold certifyRepeatableNumberPlan at refused
   split at refused
@@ -41,7 +41,7 @@ theorem certifyRepeatableNumberPlan_cycle_readClosed
 theorem repeatableNumberPlan_not_readClosed (plan : CheckedRepeatableNumberPlan model)
     (stuck : List (CheckedNumericComputationTable model))
     (closed : ComputationStepsReadClosed CheckedNumericComputationTable.targetField
-      CheckedNumericComputationTable.referencesField stuck) :
+      (fun table => table.requiresProducer (numericComputationProducerProtection plan.authored)) stuck) :
     ¬ ∀ member ∈ stuck, member ∈ plan.authored := fun within =>
   computationSteps_not_readClosed _ _ plan.execution stuck plan.dependenciesOrdered closed
     fun member memberStuck =>

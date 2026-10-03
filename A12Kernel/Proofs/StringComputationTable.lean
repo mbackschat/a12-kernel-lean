@@ -18,7 +18,7 @@ theorem checkedStringComputationAlternative_guard_wellFormed
 theorem checkedStringComputationAlternative_excludes_target
     (alternative : CheckedStringComputationAlternative model target) :
     alternative.precondition.all
-      (fun guard => !guard.referencesField target) = true :=
+      (fun guard => !guard.forbidsTarget target) = true :=
   alternative.guardExcludesTarget
 
 /-- Every checked row also retains operation-side target exclusion after target consolidation. -/

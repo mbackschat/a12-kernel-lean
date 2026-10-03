@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.Flat.Context
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.Iteration
+import A12Kernel.Semantics.GroupReference
 
 /-! # Shared checked group-reference and one-group Number boundaries -/
 
@@ -47,20 +48,6 @@ def SurfaceGroupCountOperand.firstStarred? :
   | [] => none
   | .starred reference :: _ => some reference
   | .fixed _ :: rest => firstStarred? rest
-
-inductive GroupReferenceOrigin where
-  | path
-  | ruleGroup
-  deriving Repr, DecidableEq
-
-/-- A resolved group keeps authored origin for stable Transform/Explain consumers instead of erasing
-`RuleGroup` into an ordinary path. An ordinary fixed child below repeatable ancestry also retains the
-exact scope already bound by its declaring rule; an empty scope is the established scalar case. -/
-structure ResolvedGroupReference where
-  path : GroupPath
-  origin : GroupReferenceOrigin
-  boundRepeatableScope : List RepeatableLevel := []
-  deriving Repr, DecidableEq
 
 /-- A direct-child field path with exactly one explicitly identified starred group segment. -/
 structure SurfaceSingleStarFieldPath where

@@ -71,16 +71,14 @@ def targetFields (run : CheckedNumericComputationRun model) :
 def readPolicy (run : CheckedNumericComputationRun model)
     (state : NumericComputationRunState) (input : CheckedDocument model) :
     ScalarComputationContext :=
-  { input.computationContext with
-    read := fun field =>
-      match state.find? field with
-      | some completion =>
-          (NumericDependencyCell.ofOutcome completion.outcome).checked
-      | none =>
+  input.computationContext.withFixedOverlay fun field =>
+    match state.find? field with
+    | some completion =>
+        some (NumericDependencyCell.ofOutcome completion.outcome).checked
+    | none =>
         if run.targetFields.contains field then
-            (NumericDependencyCell.ofObservation .empty).checked
-        else input.flatContext.read field
-  }
+          some (NumericDependencyCell.ofObservation .empty).checked
+        else none
 
 /-- Evaluate one checked table through the current overlay and retain its complete target outcome. -/
 def evaluateTable (run : CheckedNumericComputationRun model)

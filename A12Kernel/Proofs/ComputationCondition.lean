@@ -8,6 +8,28 @@ These laws characterize presence after computation-phase observation, the comple
 
 namespace A12Kernel
 
+/-- A fixed override is the same observation through direct and addressed reads, independently
+of the addressed row. This is the coherence boundary used by fixed computation runs. -/
+theorem scalarComputationContext_fixedOverlay_reads
+    (context : ScalarComputationContext) (overlay : FieldId → Option CheckedCell)
+    (field : FieldId) (cell : CheckedCell) (row : Env)
+    (found : overlay field = some cell) :
+    (context.withFixedOverlay overlay).read field = cell ∧
+      (context.withFixedOverlay overlay).addressed.map (fun addressed => addressed.read row field) =
+        context.addressed.map (fun _ => cell) := by
+  cases addressed : context.addressed <;>
+    simp [ScalarComputationContext.withFixedOverlay, found, addressed]
+
+/-- Ordinary inputs retain both original read policies, including the addressed row choice. -/
+theorem scalarComputationContext_fixedOverlay_fallback
+    (context : ScalarComputationContext) (overlay : FieldId → Option CheckedCell)
+    (field : FieldId) (row : Env) (ordinary : overlay field = none) :
+    (context.withFixedOverlay overlay).read field = context.read field ∧
+      (context.withFixedOverlay overlay).addressed.map (fun addressed => addressed.read row field) =
+        context.addressed.map (fun addressed => addressed.read row field) := by
+  cases addressed : context.addressed <;>
+    simp [ScalarComputationContext.withFixedOverlay, ordinary, addressed]
+
 /-- Replacing the context outside the comparison's declared field dependencies cannot change a
 text guard's computation outcome, including its first poison cause. -/
 theorem textComputationComparison_readsOnlyFields (comparison : FlatComparison)

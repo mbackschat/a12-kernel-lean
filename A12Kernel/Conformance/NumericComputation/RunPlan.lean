@@ -209,13 +209,13 @@ private theorem sourceEnabled (state : NumericComputationRunState) :
   simp [independentRun] at member
   rcases member with rfl | rfl
   · have notReferenced :
-        independentSourceTable.referencesField
+        independentSourceTable.requiresProducer (numericComputationProducerProtection independentRun.tables)
           independentSourceTable.targetField = false := by
       native_decide
     rw [notReferenced] at referenced
     contradiction
   · have notReferenced :
-        independentSourceTable.referencesField
+        independentSourceTable.requiresProducer (numericComputationProducerProtection independentRun.tables)
           independentTargetTable.targetField = false := by
       native_decide
     rw [notReferenced] at referenced
@@ -228,13 +228,13 @@ private theorem targetEnabled (state : NumericComputationRunState) :
   simp [independentRun] at member
   rcases member with rfl | rfl
   · have notReferenced :
-        independentTargetTable.referencesField
+        independentTargetTable.requiresProducer (numericComputationProducerProtection independentRun.tables)
           independentSourceTable.targetField = false := by
       native_decide
     rw [notReferenced] at referenced
     contradiction
   · have notReferenced :
-        independentTargetTable.referencesField
+        independentTargetTable.requiresProducer (numericComputationProducerProtection independentRun.tables)
           independentTargetTable.targetField = false := by
       native_decide
     rw [notReferenced] at referenced

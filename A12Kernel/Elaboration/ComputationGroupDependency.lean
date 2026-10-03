@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Semantics.GroupPresence
 import A12Kernel.Semantics.ComputationGroupDependency
+import A12Kernel.Semantics.ComputationCondition
 
 /-! # Model-bound computation group dependencies
 
@@ -67,5 +68,13 @@ def ResolvedGroupReference.requiresComputationProducer (reference : ResolvedGrou
     | .notFilled => false
   ComputationGroupDependency.requiresProducer (referenced && !conditional)
     (referenced && conditional) (consumer == producer) producerProtected
+
+/-- Assemble a producer's present conditions across every authored computation of that target.
+Callers supply common-expanded conditions; absent entries retain the measured omission semantics. -/
+def computationProducerProtection (model : FlatModel) (targetOf : Step → FieldId)
+    (conditionsOf : Step → List (Option ComputationCondition)) (steps : List Step)
+    (producer : FieldId) (reference : ResolvedGroupReference) : Bool :=
+  model.computationProtectsGroup producer reference.path ComputationConditionLeaf.groupReference?
+    ((steps.filter (fun step => targetOf step == producer)).flatMap conditionsOf)
 
 end A12Kernel

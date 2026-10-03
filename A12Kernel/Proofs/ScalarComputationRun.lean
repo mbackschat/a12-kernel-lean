@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.ScalarComputationRun
 import A12Kernel.Proofs.CheckedDocument
 import A12Kernel.Proofs.ComputationRunPlan
+import A12Kernel.Proofs.ComputationGroupDependency
 import A12Kernel.Proofs.FieldId
 import A12Kernel.Proofs.NumericComputationRun
 import A12Kernel.Proofs.StringComputationRun
@@ -21,7 +22,7 @@ theorem scalarComputationRun_stringRead_pending
     (pending : state.find? field = none) :
     (run.stringContext state input).read field =
       StringDependencyCell.empty.checked := by
-  simp [CheckedScalarComputationRun.stringContext, target, pending]
+  simp [CheckedScalarComputationRun.stringContext, ScalarComputationContext.withFixedOverlay, target, pending]
 
 theorem scalarComputationRun_stringRead_completed
     (run : CheckedScalarComputationRun model)
@@ -32,7 +33,7 @@ theorem scalarComputationRun_stringRead_completed
     (found : state.find? field = some completion) :
     (run.stringContext state input).read field =
       completion.stringCell := by
-  simp [CheckedScalarComputationRun.stringContext, found]
+  simp [CheckedScalarComputationRun.stringContext, ScalarComputationContext.withFixedOverlay, found]
 
 theorem scalarComputationRun_stringRead_input
     (run : CheckedScalarComputationRun model)
@@ -43,7 +44,7 @@ theorem scalarComputationRun_stringRead_input
     (ordinary : field ∉ run.targetFields) :
     (run.stringContext state input).read field =
       input.stringComputationContext.read field := by
-  simp [CheckedScalarComputationRun.stringContext, pending, ordinary]
+  simp [CheckedScalarComputationRun.stringContext, ScalarComputationContext.withFixedOverlay, pending, ordinary]
 
 theorem scalarComputationRun_numberRead_pending
     (run : CheckedScalarComputationRun model)
@@ -55,7 +56,7 @@ theorem scalarComputationRun_numberRead_pending
     (pending : state.find? field = none) :
     (run.numberContext world state input).read field =
       (NumericDependencyCell.ofObservation .empty).checked := by
-  simp [CheckedScalarComputationRun.numberContext, target, pending]
+  simp [CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay, target, pending]
 
 theorem scalarComputationRun_numberRead_completed
     (run : CheckedScalarComputationRun model)
@@ -67,7 +68,7 @@ theorem scalarComputationRun_numberRead_completed
     (found : state.find? field = some completion) :
     (run.numberContext world state input).read field =
       completion.numberCell := by
-  simp [CheckedScalarComputationRun.numberContext, found]
+  simp [CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay, found]
 
 theorem scalarComputationRun_numberRead_input
     (run : CheckedScalarComputationRun model)
@@ -79,7 +80,7 @@ theorem scalarComputationRun_numberRead_input
     (ordinary : field ∉ run.targetFields) :
     (run.numberContext world state input).read field =
       input.flatContext.read field := by
-  simp [CheckedScalarComputationRun.numberContext,
+  simp [CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay,
     CheckedDocument.scalarComputationContext, pending, ordinary]
   rfl
 
@@ -263,12 +264,20 @@ theorem certifyScalarComputationRunWithSteps_forwardDependency
           exact ⟨noDuplicate, forward⟩
         · simp at refused
 
+private theorem scalarComputationDependencies_perm
+    {left right : List (CheckedScalarComputationStep model)} (permuted : left.Perm right) :
+    scalarComputationDependencies left = scalarComputationDependencies right := by
+  unfold scalarComputationDependencies
+  apply congrArg CheckedScalarComputationStep.requiresProducer
+  funext producer reference
+  exact computationProducerProtection_perm model _ _ permuted producer reference
+
 /-- A plan refused as a cycle has read-closed steps: the refusal never falls on an acyclic plan. -/
 theorem certifyScalarComputationPlan_cycle_readClosed
     (steps : List (CheckedScalarComputationStep model)) (step reads : FieldId)
     (refused : certifyScalarComputationPlan steps = .error (.cycle step reads)) :
     ∃ stuck, ComputationStepsReadClosed CheckedScalarComputationStep.targetField
-        CheckedScalarComputationStep.referencesField stuck ∧
+        (scalarComputationDependencies steps) stuck ∧
       ∀ member ∈ stuck, member ∈ steps := by
   unfold certifyScalarComputationPlan at refused
   split at refused
@@ -281,13 +290,13 @@ theorem certifyScalarComputationPlan_cycle_readClosed
     obtain ⟨noDuplicate, forward⟩ :=
       certifyScalarComputationRunWithSteps_forwardDependency _ step' reads' certified
     have orderPerm := computationAuthoredOrder_perm CheckedScalarComputationStep.targetField
-      CheckedScalarComputationStep.referencesField steps.length steps
+      (scalarComputationDependencies steps) steps.length steps
     have unique : (steps.map (·.targetField)).Nodup :=
       (orderPerm.map _).nodup_iff.mp ((fieldId_firstDuplicate_none_iff_nodup _).mp noDuplicate)
     exact computationAuthoredOrder_forward_readClosed _ _ steps.length steps
       (Nat.le_refl _) unique (by
-        unfold scalarComputationAuthoredExecutionSteps firstForwardScalarComputationDependency?
-          at forward
+        unfold firstForwardScalarComputationDependency? scalarComputationAuthoredExecutionSteps at forward
+        rw [scalarComputationDependencies_perm orderPerm] at forward
         rw [forward]
         simp)
   · simp at refused
@@ -297,10 +306,13 @@ theorem scalarComputationPlan_not_readClosed
     (plan : CheckedScalarComputationPlan model)
     (stuck : List (CheckedScalarComputationStep model))
     (closed : ComputationStepsReadClosed CheckedScalarComputationStep.targetField
-      CheckedScalarComputationStep.referencesField stuck) :
-    ¬ ∀ member ∈ stuck, member ∈ plan.authored := fun within =>
-  computationSteps_not_readClosed _ _ plan.execution.steps stuck
-    plan.execution.dependenciesOrdered closed fun member memberStuck =>
+      (scalarComputationDependencies plan.authored) stuck) :
+    ¬ ∀ member ∈ stuck, member ∈ plan.authored := by
+  have ordered := plan.execution.dependenciesOrdered
+  unfold firstForwardScalarComputationDependency? at ordered
+  rw [scalarComputationDependencies_perm (scalarComputationPlan_executionSteps_perm plan)] at ordered
+  exact fun within => computationSteps_not_readClosed _ _ plan.execution.steps stuck
+    ordered closed fun member memberStuck =>
       (scalarComputationPlan_executionSteps_perm plan).mem_iff.mpr (within member memberStuck)
 
 /-- Plan execution is exactly the established typed mixed-run execution. -/
@@ -403,7 +415,7 @@ theorem scalarComputationRun_documentFor_read
       unfold CheckedScalarComputationRun.documentFor at find ⊢
       simp only [CheckedDocument.flatContext,
         checkedDocument_overlay_read_found input _ _ _ valid find,
-        CheckedScalarComputationRun.numberContext, found]
+        CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay, found]
       rfl
   | none =>
       by_cases target : run.targetFields.contains field = true
@@ -413,7 +425,7 @@ theorem scalarComputationRun_documentFor_read
         unfold CheckedScalarComputationRun.documentFor at find ⊢
         simp only [CheckedDocument.flatContext,
           checkedDocument_overlay_read_absent input _ _ valid find,
-          CheckedScalarComputationRun.numberContext, found, target]
+          CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay, found, target]
         rfl
       · have unlisted :
             ((state.completed.map fun completion =>
@@ -434,7 +446,7 @@ theorem scalarComputationRun_documentFor_read
           (checkedDocument_overlay_find_unlisted input _ { field, path := [] } unlisted)
         unfold CheckedScalarComputationRun.documentFor
         simp only [CheckedDocument.flatContext, same,
-          CheckedScalarComputationRun.numberContext, found, target,
+          CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay, found, target,
           CheckedDocument.scalarComputationContext]
         rfl
 

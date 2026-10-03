@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.GroupReference
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.FlatValidation
 import A12Kernel.Semantics.TemporalFormat
@@ -15,8 +16,6 @@ This capsule starts from structured, parser-independent surface paths and condit
 /-! This focused module owns the parser-independent surface syntax, checked model declarations, and diagnostic types. -/
 
 namespace A12Kernel
-
-abbrev GroupPath := List String
 
 namespace FieldId
 

@@ -2,6 +2,7 @@ import A12Kernel.Semantics.ComputationGroupDependency
 import A12Kernel.Elaboration.ComputationRunPlan
 import A12Kernel.Elaboration.ComputationGroupDependency
 import A12Kernel.Elaboration.CheckedGroupPresence
+import A12Kernel.Elaboration.ComputationCondition
 
 /-! # Conditional dependency separators
 
@@ -150,5 +151,36 @@ example :
 
 example : root.computationForbidsTarget .notFilled model 5 = false ∧
     root.requiresComputationProducer .filled model 1 5 false = false := by native_decide
+
+private def rootCondition : Except ComputationConditionElabError ComputationCondition :=
+  model.elaborateComputationCondition ["Form"] ["Form"]
+    (.groupPresence .filled (.path { base := .absolute, groups := ["Form"] }))
+
+example : rootCondition.toOption.map (fun guard =>
+    (guard.referencesField 1, guard.referencesField 3, guard.forbidsTarget 1)) = some (true, true, false) := by native_decide
+
+example : rootCondition.toOption.map (fun guard => match guard.evalChecked {
+    read := fun _ => { rawPresent := false, parsed := none, findings := [] } } with
+    | .error .groupContextRequired => true | _ => false) = some true := by native_decide
+
+example : rootCondition.toOption.map (fun guard => match guard.evalChecked {
+    read := fun _ => { rawPresent := false, parsed := none, findings := [] }
+    addressed := some {
+      document := { instantiatedRows := [], rawCells := fun _ => none }
+      read := fun _ _ => { rawPresent := true, parsed := none, findings := [.computedDependency] } } } with
+    | .ok .notTrue => true | _ => false) = some true := by native_decide
+
+example : rootCondition.toOption.map (fun guard => match guard with
+    | .leaf (.groupPresence operator source) =>
+        (!ComputationCondition.wellFormedBool (.leaf (.groupPresence operator { source with members := [] })) model) &&
+        (!ComputationCondition.wellFormedBool (.leaf (.groupPresence operator
+          { source with reference := { source.reference with boundRepeatableScope := [10] } })) model)
+    | _ => false) = some true := by native_decide
+
+example : (model.elaborateComputationCondition ["Form", "Rows"] ["Form", "Rows"]
+    (.groupPresence .filled (.ruleGroup false))).toOption.map (fun guard => match guard with
+    | .leaf (.groupPresence _ source) =>
+        source.reference.origin == .ruleGroup && source.reference.boundRepeatableScope == [10]
+    | _ => false) = some true := by native_decide
 
 end A12Kernel.ComputationGroupDependencyBindingConformance

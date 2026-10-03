@@ -99,13 +99,29 @@ theorem scalarComputationRun_evaluateStep_target
           cases evaluated
           rfl
 
+/-- Every guard retained by the shared whole-document step is admitted by its own model. -/
+theorem checkedDocumentComputationStep_guard_wellFormed
+    (step : CheckedDocumentComputationStep model) :
+    step.precondition.all (fun guard => guard.val.wellFormedBool model) = true := by
+  cases step.precondition with
+  | none => rfl
+  | some guard => exact guard.property.1
+
 private theorem checkedScalarComputationStep_excludes_target
-    (step : CheckedScalarComputationStep model) :
-    step.referencesField step.targetField = false := by
+    (step : CheckedScalarComputationStep model)
+    (producerProtected : FieldId → ResolvedGroupReference → Bool) :
+    step.requiresProducer producerProtected step.targetField = false := by
   cases step with
-  | string table => exact checkedStringComputationTable_excludes_target table
-  | number table => exact checkedNumericComputationTable_excludes_target table
-  | document step => exact step.excludesTarget
+  | string table => exact checkedStringComputationTable_excludes_target table producerProtected
+  | number table => exact checkedNumericComputationTable_excludes_target table producerProtected
+  | document step =>
+      simp only [CheckedScalarComputationStep.targetField, CheckedScalarComputationStep.requiresProducer,
+        CheckedDocumentComputationStep.requiresProducer, computationCondition_requires_own]
+      have guardExcludes : step.precondition.any (·.val.forbidsTarget step.target) = false := by
+        cases step.precondition with
+        | none => rfl
+        | some guard => simpa using guard.property.2
+      simp [guardExcludes, step.excludesTarget]
 
 private theorem scalarComputationRun_step_ready_after_seed
     (run : CheckedScalarComputationRun model)
@@ -152,23 +168,20 @@ private theorem scalarComputationRun_step_ready_after_seed
     · rw [stateTargets]
       exact List.mem_append_right seedTargets inEarlier
     · subst dependency
+      change step.requiresProducer _ step.targetField = true at referenced
       rw [checkedScalarComputationStep_excludes_target] at referenced
       contradiction
     · obtain ⟨dependencyStep, dependencyStepMember, rfl⟩ :=
         List.mem_map.mp inRemaining
-      have orderedSuffix :
-          firstForwardScalarComputationDependency? (step :: remaining) = none :=
+      have orderedSuffix :=
         firstForwardComputationDependency_none_suffix
-          CheckedScalarComputationStep.targetField
-          CheckedScalarComputationStep.referencesField
+          CheckedScalarComputationStep.targetField (scalarComputationDependencies run.steps)
           earlier (step :: remaining) (by
-            simpa [firstForwardScalarComputationDependency?, split]
-              using run.dependenciesOrdered)
+            simpa only [firstForwardScalarComputationDependency?, split] using run.dependenciesOrdered)
       have notReferenced :=
-        firstForwardComputationDependency_none_head
-          CheckedScalarComputationStep.targetField
-          CheckedScalarComputationStep.referencesField
-          step remaining orderedSuffix dependencyStep dependencyStepMember
+        firstForwardComputationDependency_none_head CheckedScalarComputationStep.targetField
+          (scalarComputationDependencies run.steps) step remaining orderedSuffix
+          dependencyStep dependencyStepMember
       rw [notReferenced] at referenced
       contradiction
 

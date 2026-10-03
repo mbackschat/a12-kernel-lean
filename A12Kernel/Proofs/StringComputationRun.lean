@@ -15,7 +15,7 @@ theorem stringComputationRun_read_pending
     (pending : state.find? field = none) :
     (run.readPolicy state input).read field =
       StringDependencyCell.empty.checked := by
-  simp [CheckedStringComputationRun.readPolicy, target, pending]
+  simp [CheckedStringComputationRun.readPolicy, ScalarComputationContext.withFixedOverlay, target, pending]
 
 theorem stringComputationRun_read_completed
     (run : CheckedStringComputationRun model)
@@ -25,7 +25,7 @@ theorem stringComputationRun_read_completed
     (found : state.find? field = some completion) :
     (run.readPolicy state input).read field =
       completion.dependencyCell.checked := by
-  simp [CheckedStringComputationRun.readPolicy, target, found]
+  simp [CheckedStringComputationRun.readPolicy, ScalarComputationContext.withFixedOverlay, target, found]
 
 theorem stringComputationRun_read_input
     (run : CheckedStringComputationRun model)
@@ -34,7 +34,7 @@ theorem stringComputationRun_read_input
     (ordinary : field ∉ run.targetFields) :
     (run.readPolicy state input).read field =
       input.stringComputationContext.read field := by
-  simp [CheckedStringComputationRun.readPolicy, ordinary]
+  simp [CheckedStringComputationRun.readPolicy, ScalarComputationContext.withFixedOverlay, ordinary]
 
 /-- Atomic String evaluation attributes either structural fault to the checked table it evaluated. -/
 theorem stringComputationTable_evaluateCompletion_faultTarget

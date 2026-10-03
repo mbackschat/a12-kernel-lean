@@ -738,8 +738,8 @@ private theorem stringAfterNumber_evaluated :
 private theorem independent_enabled
     (step : CheckedScalarComputationStep model)
     (state : ScalarComputationRunState)
-    (notString : step.referencesField firstStringId = false)
-    (notNumber : step.referencesField firstNumberId = false) :
+    (notString : scalarComputationDependencies independentRun.steps step firstStringId = false)
+    (notNumber : scalarComputationDependencies independentRun.steps step firstNumberId = false) :
     ScalarComputationDependenciesEnabled independentRun step state := by
   intro dependency member referenced
   have targets :
@@ -827,7 +827,7 @@ example :
     rcases member with rfl | rfl
     · native_decide
     · have selfExcluded :
-          CheckedScalarComputationStep.referencesField
+          scalarComputationDependencies dependentRun.steps
             (.number firstNumberUnreadString) firstNumberId = false := by
         native_decide
       rw [selfExcluded] at referenced
@@ -869,7 +869,7 @@ example :
     simp at dependencyMember
     subst dependency
     have selfExcluded :
-        CheckedScalarComputationStep.referencesField
+        scalarComputationDependencies failingStringRun.steps
           (.string firstStringValue) firstStringId = false := by
       native_decide
     rw [selfExcluded] at referenced

@@ -37,6 +37,11 @@ theorem requiresProducer_of_ordinary (conditionalReference sameTarget producerPr
     requiresProducer true conditionalReference sameTarget producerProtected = true := by
   rfl
 
+theorem alternativesProtect_perm (protectsLeaf : Leaf → Bool)
+    {left right : List (Option (ConditionTree Leaf))} (permuted : left.Perm right) :
+    alternativesProtect protectsLeaf left = alternativesProtect protectsLeaf right := by
+  simp only [alternativesProtect, (permuted.filterMap id).isEmpty_eq, (permuted.filterMap id).all_eq]
+
 end A12Kernel.ComputationGroupDependency
 
 namespace A12Kernel
@@ -65,5 +70,38 @@ theorem implicitGroupProtection_preserved (model : FlatModel) (target : FieldId)
     (implicitProtection : model.computationImplicitGroupProtection declaration.groupPath queriedGroup = true) :
     model.computationProtectsGroup target queriedGroup groupLeaf conditions = true := by
   simp [FlatModel.computationProtectsGroup, resolved, ownedGroup, implicitProtection]
+
+/-- Self-dependency is exactly the static target ban, independently of producer protection. -/
+@[simp] theorem computationCondition_requires_own (condition : ComputationCondition)
+    (target : FieldId) (producerProtected : ResolvedGroupReference → Bool) :
+    condition.requiresProducer target target producerProtected = condition.forbidsTarget target := by
+  induction condition with
+  | leaf leaf =>
+      cases leaf with
+      | groupPresence operator source =>
+          cases operator with
+          | filled =>
+              simp [ComputationCondition.requiresProducer, ComputationCondition.forbidsTarget,
+                ComputationGroupDependency.requiresProducer]
+          | notFilled =>
+              simp [ComputationCondition.requiresProducer, ComputationCondition.forbidsTarget,
+                ComputationCondition.referencesField, ComputationGroupDependency.requiresProducer]
+      | _ => rfl
+  | and left right leftIH rightIH | or left right leftIH rightIH =>
+      simp [ComputationCondition.requiresProducer, ComputationCondition.forbidsTarget, leftIH, rightIH]
+
+/-- Reordering computations cannot change a producer's syntactic group profile. -/
+theorem computationProducerProtection_perm (model : FlatModel) (targetOf : Step → FieldId)
+    (conditionsOf : Step → List (Option ComputationCondition)) {left right : List Step}
+    (permuted : left.Perm right) (producer : FieldId) (reference : ResolvedGroupReference) :
+    computationProducerProtection model targetOf conditionsOf left producer reference =
+      computationProducerProtection model targetOf conditionsOf right producer reference := by
+  unfold computationProducerProtection FlatModel.computationProtectsGroup
+  have conditionsPerm := (permuted.filter (fun step => targetOf step == producer)).flatMap_right conditionsOf
+  cases resolution : model.lookupUniqueId producer with
+  | error error => rfl
+  | ok declaration =>
+      simp only
+      rw [ComputationGroupDependency.alternativesProtect_perm _ conditionsPerm]
 
 end A12Kernel

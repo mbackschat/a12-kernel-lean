@@ -1,3 +1,5 @@
+import A12Kernel.Elaboration.CheckedGroupPresence
+import A12Kernel.Elaboration.ComputationGroupDependency
 import A12Kernel.Elaboration.FieldFillList
 import A12Kernel.Elaboration.Flat.ComputationBinding
 import A12Kernel.Semantics.ComputationCondition
@@ -7,7 +9,7 @@ import A12Kernel.Elaboration.Flat.Condition.Surface
 
 /-! # Model-certified computation conditions
 
-Presence guards accept every scalar declaration the target's row binds, a nonrepeatable one for a fixed target. Numeric guards retain Number declarations and structural coordinates through the shared numeric comparison admission. Text guards reuse validation's checked String/Enumeration projections and comparison gate at the target's scope. Value-kind restrictions remain absent from presence.
+Presence guards accept every scalar declaration the target's row binds, a nonrepeatable one for a fixed target. Numeric guards retain Number declarations and structural coordinates through the shared numeric comparison admission. Text guards reuse validation's checked String/Enumeration projections and comparison gate at the target's scope. Value-kind restrictions remain absent from presence. Group guards retain exact subtree membership, the addressed content slice and the target-bound group identity; their target ban differs from operand membership.
 -/
 
 namespace A12Kernel
@@ -41,6 +43,15 @@ def ComputationFillSource.admitted (model : FlatModel) (scope : List RepeatableL
           boundCount ≤ axes.length && ((axes.take boundCount).map (·.level)).isPrefixOf scope
       | .error _ => false
 
+/-- Retain exact model-derived membership and content while binding the operand to the target row. -/
+def ComputationGroupOperand.admitted (source : ComputationGroupOperand)
+    (model : FlatModel) (scope : List RepeatableLevel) : Bool :=
+  model.hasGroupPath source.reference.path &&
+    source.content == model.computationGroupSource source.reference.path &&
+    source.members == (model.groupSubtreeFields source.reference.path).map (·.id) &&
+    source.reference.boundRepeatableScope == source.content.scope &&
+    source.content.scope.isPrefixOf scope
+
 namespace ComputationCondition
 
 /-- Check model ownership and fixed-target admission for every guard leaf. -/
@@ -51,6 +62,7 @@ def wellFormedBool (condition : ComputationCondition) (model : FlatModel) : Bool
       | .ok declaration => declaration.repeatableScope.isEmpty
       | .error _ => false
   | .leaf (.fieldFill _ sources) => !sources.isEmpty && sources.all (·.admitted model [])
+  | .leaf (.groupPresence _ source) => source.admitted model []
   | .leaf (.text comparison) => model.admitsTextComparisonIn [] comparison
   | .leaf (.numeric comparison) => computationNumericGuardAdmitted comparison model []
   | .and left right | .or left right =>
@@ -65,6 +77,7 @@ def rowBoundBool (condition : ComputationCondition) (model : FlatModel)
       | .ok declaration => declaration.repeatableScope.isPrefixOf scope
       | .error _ => false
   | .leaf (.fieldFill _ sources) => !sources.isEmpty && sources.all (·.admitted model scope)
+  | .leaf (.groupPresence _ source) => source.admitted model scope
   | .leaf (.text comparison) => model.admitsTextComparisonIn scope comparison
   | .leaf (.numeric comparison) => computationNumericGuardAdmitted comparison model scope
   | .and left right | .or left right =>
@@ -83,6 +96,7 @@ inductive SurfaceComputationCondition where
       (right : Sum SurfaceTextFieldOperand String)
   | numeric (comparison : SurfaceNumericComparison)
   | fieldFill (operator : FieldFillQuantifier) (source : SurfaceFieldEntitySource)
+  | groupPresence (operator : GroupPresenceOperator) (source : SurfaceGroupReference)
   | and (left right : SurfaceComputationCondition)
   | or (left right : SurfaceComputationCondition)
   deriving Repr, DecidableEq
@@ -93,6 +107,7 @@ inductive ComputationConditionElabError where
   | numeric (error : NumericValidationElabError)
   | text (error : ElabError)
   | fieldFill (error : FieldFillListElabError)
+  | groupPresence (error : FixedGroupReferenceError)
   deriving DecidableEq
 
 instance : Repr ComputationConditionElabError where
@@ -101,6 +116,7 @@ instance : Repr ComputationConditionElabError where
     | .numeric error => reprPrec error precedence
     | .text error => reprPrec error precedence
     | .fieldFill error => reprPrec error precedence
+    | .groupPresence error => reprPrec error precedence
 
 private def numericGuardError : NumericValidationElabError → ComputationConditionElabError
   | .resolve error => .resolve error
@@ -200,6 +216,15 @@ name is the one reported. -/
 def FlatModel.elaborateComputationCondition (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) :
     SurfaceComputationCondition → Except ComputationConditionElabError ComputationCondition
+  | .groupPresence operator surface => do
+      let reference ← (model.resolveFixedTargetGroupReference declaringGroup targetGroup surface).mapError .groupPresence
+      let source : ComputationGroupOperand := {
+        reference := { reference with boundRepeatableScope := model.repeatableScopeForGroupPath reference.path }
+        content := model.computationGroupSource reference.path
+        members := (model.groupSubtreeFields reference.path).map (·.id) }
+      if !(source.admitted model (model.repeatableScopeForGroupPath targetGroup)) then
+        throw (.groupPresence (.repeatableGroupRequiresAddress reference.path))
+      pure (.leaf (.groupPresence operator source))
   | .fieldFill operator source => do
       let checked ← (elaborateComputationFieldFillList model declaringGroup targetGroup source).mapError .fieldFill
       let sources ← checked.computationSources.mapError .fieldFill

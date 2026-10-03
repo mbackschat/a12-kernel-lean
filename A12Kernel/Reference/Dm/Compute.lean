@@ -52,6 +52,12 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
   | .call "FieldNotFilled" [.mk field none none] none none => match field.fieldEntity? with
       | some path => pure (.fieldNotFilled path)
       | none => refuse "Guard" "FieldNotFilled operand"
+  | .call "GroupFilled" [.mk group none none] none none => match group.groupReference? with
+      | some reference => pure (.groupPresence .filled reference)
+      | none => refuse "Guard/GroupFilled" "group operand"
+  | .call "GroupNotFilled" [.mk group none none] none none => match group.groupReference? with
+      | some reference => pure (.groupPresence .notFilled reference)
+      | none => refuse "Guard/GroupNotFilled" "group operand"
   | .call id arguments none none => match fieldFillOp? id with
       | some operator => .fieldFill operator <$> lowerEntitySource model group arguments
       | none => refuse ("Guard/" ++ id)
@@ -175,11 +181,15 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
     refuse "SuppressWarning" other
   let suppress := suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"
   let row := !target.repeatableScope.isEmpty
-  -- A whole-document step carries one operation and no precondition.
+  -- The checked step already owns guard evaluation; the reader preserves its single-operation boundary.
   let document : Lowering (FlatFieldDecl × LoweredComputation model) := do
-    let (none, [none], [operation]) := (common, guards, operations)
-      | refuse "DocumentStep" "precondition or alternatives"
-    pure (target, .document (← lowerDocumentStep model computation.group target operation))
+    let ([own], [operation]) := (guards, operations)
+      | refuse "DocumentStep" "alternatives"
+    let step ← lowerDocumentStep model computation.group target operation
+    let step ← match ComputationCondition.withCommon common own with
+      | none => pure step
+      | some guard => (step.guard? guard).getDM (refuse "DocumentStep" "guard admission")
+    pure (target, .document step)
   match target.policy.kind with
   | .number _ => do
       let expressions ← operations.mapM
@@ -252,7 +262,7 @@ def runComputations (world : World) (prepared : PreparedFlatStringContext model 
     | .string table => .string table
     | .document step => .document step
     | .rows step => .rows (step compilePattern)
-  let plan ← elaborated "ComputationPlan" (certifyMixedComputationPlan steps)
+  let plan ← elaborated "ComputationPlan" (certifyAuthoredMixedComputationPlan steps)
   let outcomes ← elaborated "ComputationRun" (plan.execute world prepared.patterns checked)
   pure (outcomes.filterMap fun
     | .number entry => numberOutcome model entry

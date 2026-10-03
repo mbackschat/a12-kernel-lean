@@ -77,15 +77,12 @@ def targetFields (run : CheckedStringComputationRun model) : List FieldId :=
 def readPolicy (run : CheckedStringComputationRun model)
     (state : StringComputationRunState) (input : CheckedDocument model) :
     StringComputationContext :=
-  { input.stringComputationContext with
-    read := fun field =>
-      if run.targetFields.contains field then
-        match state.find? field with
+  input.stringComputationContext.withFixedOverlay fun field =>
+    if run.targetFields.contains field then
+      some (match state.find? field with
         | some completion => completion.dependencyCell.checked
-        | none => StringDependencyCell.empty.checked
-      else
-        input.stringComputationContext.read field
-  }
+        | none => StringDependencyCell.empty.checked)
+    else none
 
 /-- Evaluate one checked table through the current run overlay and retain the exact dependency cell required by a later step. This is the shared atomic step for fixed execution and the independent relation. -/
 def evaluateTable (run : CheckedStringComputationRun model)

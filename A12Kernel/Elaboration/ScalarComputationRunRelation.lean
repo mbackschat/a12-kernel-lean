@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.ScalarComputationRun
 
 /-! # Dependency-enabled mixed scalar run relation
 
-This relation permits any pending String or Number step whose statically referenced computed targets have completed. It reuses the mixed run's atomic evaluator and rich family-tagged outcome, so independent schedules can be analyzed without exposing a scheduler or public trace order.
+This relation permits any pending String or Number step whose required computed dependencies have completed. It reuses the mixed run's atomic evaluator and rich family-tagged outcome, so independent schedules can be analyzed without exposing a scheduler or public trace order.
 -/
 
 namespace A12Kernel
@@ -14,13 +14,13 @@ def targetFields (state : ScalarComputationRunState) : List FieldId :=
 
 end ScalarComputationRunState
 
-/-- Every computed target structurally referenced by this step has completed. Runtime selection may still leave a reference unread. -/
+/-- Every computed dependency required by this step has completed. Runtime selection may still leave a reference unread. -/
 def ScalarComputationDependenciesEnabled
     (run : CheckedScalarComputationRun model)
     (step : CheckedScalarComputationStep model)
     (state : ScalarComputationRunState) : Prop :=
   ∀ dependency ∈ run.targetFields,
-    step.referencesField dependency = true →
+    scalarComputationDependencies run.steps step dependency = true →
       dependency ∈ state.targetFields
 
 /-- One independently chosen successful mixed scalar transition. -/

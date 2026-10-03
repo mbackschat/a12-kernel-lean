@@ -11,7 +11,7 @@ theorem numericComputationRun_read_pending
     (pending : state.find? field = none) :
     (run.readPolicy state input).read field =
       (NumericDependencyCell.ofObservation .empty).checked := by
-  simp [CheckedNumericComputationRun.readPolicy, target, pending]
+  simp [CheckedNumericComputationRun.readPolicy, ScalarComputationContext.withFixedOverlay, target, pending]
 
 theorem numericComputationRun_read_completed
     (run : CheckedNumericComputationRun model)
@@ -20,7 +20,7 @@ theorem numericComputationRun_read_completed
     (found : state.find? field = some completion) :
     (run.readPolicy state input).read field =
       (NumericDependencyCell.ofOutcome completion.outcome).checked := by
-  simp [CheckedNumericComputationRun.readPolicy, found]
+  simp [CheckedNumericComputationRun.readPolicy, ScalarComputationContext.withFixedOverlay, found]
 
 theorem numericComputationRun_read_input
     (run : CheckedNumericComputationRun model)
@@ -29,7 +29,8 @@ theorem numericComputationRun_read_input
     (pending : state.find? field = none) :
     (run.readPolicy state input).read field =
       input.flatContext.read field := by
-  simp [CheckedNumericComputationRun.readPolicy, ordinary, pending]
+  simp [CheckedNumericComputationRun.readPolicy, ScalarComputationContext.withFixedOverlay,
+    CheckedDocument.computationContext, ordinary, pending]
 
 /-- Atomic Number-table evaluation attributes either structural fault to the checked target independently of the surrounding run policy. -/
 theorem numericComputationTable_evaluateCompletion_faultTarget

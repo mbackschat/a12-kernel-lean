@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.NumericComputation.RunRelation
 import A12Kernel.Proofs.ComputationRunPlan
+import A12Kernel.Proofs.ComputationGroupDependency
 import A12Kernel.Proofs.NumericComputationRun
 import A12Kernel.Proofs.FieldId
 
@@ -38,7 +39,7 @@ private theorem checkedNumericComputationOperation_excludes_target
 private theorem checkedNumericComputationAlternative_excludes_target
     (alternative :
       CheckedNumericComputationAlternative model target policy) :
-    (alternative.toSelectable.precondition.any (·.referencesField target) ||
+    (alternative.toSelectable.precondition.any (·.forbidsTarget target) ||
         alternative.toSelectable.operation.referencesField target) = false := by
   have operationExcludes :
       alternative.operation.referencesField target = false := by
@@ -53,7 +54,7 @@ private theorem checkedNumericComputationAlternative_excludes_target
           alternative.operation
   rw [Bool.or_eq_false_iff]
   constructor
-  · change alternative.precondition.any (·.referencesField target) = false
+  · change alternative.precondition.any (·.forbidsTarget target) = false
     cases guard : alternative.precondition with
     | none => rfl
     | some condition =>
@@ -62,9 +63,10 @@ private theorem checkedNumericComputationAlternative_excludes_target
       operationExcludes
 
 theorem checkedNumericComputationTable_excludes_target
-    (table : CheckedNumericComputationTable model) :
-    table.referencesField table.targetField = false := by
-  simp [CheckedNumericComputationTable.referencesField,
+    (table : CheckedNumericComputationTable model)
+    (producerProtected : FieldId → ResolvedGroupReference → Bool) :
+    table.requiresProducer producerProtected table.targetField = false := by
+  simp [CheckedNumericComputationTable.requiresProducer, computationCondition_requires_own,
     CheckedNumericComputationTable.selectableAlternatives,
     CheckedNumericComputationTable.checkedAlternatives,
     checkedNumericComputationAlternative_excludes_target]
@@ -113,27 +115,17 @@ private theorem numericComputationRun_table_ready_after_seed
     · subst dependency
       rw [checkedNumericComputationTable_excludes_target] at referenced
       contradiction
-    · have orderedSuffix :
-          firstForwardNumericDependency? (table :: remaining) = none :=
-        by
-          have generic :=
-            firstForwardComputationDependency_none_suffix
-              (fun candidate : CheckedNumericComputationTable model =>
-                candidate.targetField)
-              (fun candidate field =>
-                candidate.referencesField field)
-              earlier (table :: remaining) (by
-                simpa [firstForwardNumericDependency?, split]
-                  using run.dependenciesOrdered)
-          simpa [firstForwardNumericDependency?] using generic
+    · have orderedSuffix :=
+        firstForwardComputationDependency_none_suffix
+          (fun candidate : CheckedNumericComputationTable model => candidate.targetField)
+          (fun candidate field => candidate.requiresProducer (numericComputationProducerProtection run.tables) field)
+          earlier (table :: remaining) (by
+            simpa only [firstForwardNumericDependency?, split] using run.dependenciesOrdered)
       have notReferenced :=
         firstForwardComputationDependency_none_head
-          (fun candidate : CheckedNumericComputationTable model =>
-            candidate.targetField)
-          (fun candidate field => candidate.referencesField field)
-          table remaining (by
-            simpa [firstForwardNumericDependency?] using orderedSuffix)
-          dependency inRemaining
+          (fun candidate : CheckedNumericComputationTable model => candidate.targetField)
+          (fun candidate field => candidate.requiresProducer (numericComputationProducerProtection run.tables) field)
+          table remaining orderedSuffix dependency inRemaining
       rw [notReferenced] at referenced
       contradiction
 

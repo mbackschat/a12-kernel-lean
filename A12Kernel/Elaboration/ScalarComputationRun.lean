@@ -19,7 +19,8 @@ inductive CheckedScalarComputationStep (model : FlatModel) where
   | number (table : CheckedNumericComputationTable model)
   | document (step : CheckedDocumentComputationStep model)
 
-/-- One checked mixed scalar step projected for pre-schedule analysis without requiring or choosing a run order. -/
+/-- Complete operand inventory before scheduling. Group operands may include exempt targets;
+`scalarComputationDependencies` answers the distinct scheduling query. -/
 structure ScalarComputationStepDependency where
   targetField : FieldId
   targetKind : SurfaceScalarKind
@@ -51,7 +52,7 @@ def fieldDependencies (step : CheckedScalarComputationStep model) :
   (model.fields.filter fun declaration =>
     step.referencesField declaration.id).map (·.id)
 
-/-- Retain one checked step's family and complete raw dependency set before any run-order certificate exists. -/
+/-- Retain the family and complete operand inventory, without applying scheduling exemptions. -/
 def dependencyAnalysis (step : CheckedScalarComputationStep model) :
     ScalarComputationStepDependency := {
   targetField := step.targetField
@@ -63,7 +64,26 @@ def supportsScalarEvaluation : CheckedScalarComputationStep model → Bool
   | .string _ | .document _ => true
   | .number table => table.supportsScalarEvaluation
 
+def protectionConditions : CheckedScalarComputationStep model → List (Option ComputationCondition)
+  | .number table => table.protectionConditions
+  | .string table => table.protectionConditions
+  | .document step => step.protectionConditions
+
+def requiresProducer (producerProtected : FieldId → ResolvedGroupReference → Bool) :
+    CheckedScalarComputationStep model → FieldId → Bool
+  | .number table => table.requiresProducer producerProtected
+  | .string table => table.requiresProducer producerProtected
+  | .document step => step.requiresProducer producerProtected
+
 end CheckedScalarComputationStep
+
+def scalarComputationProducerProtection (steps : List (CheckedScalarComputationStep model)) :=
+  computationProducerProtection model CheckedScalarComputationStep.targetField CheckedScalarComputationStep.protectionConditions steps
+
+def scalarComputationDependencies (steps : List (CheckedScalarComputationStep model)) :
+    CheckedScalarComputationStep model → FieldId → Bool :=
+  CheckedScalarComputationStep.requiresProducer (scalarComputationProducerProtection steps)
+
 
 /-- Project a finite candidate step list for analysis without constructing a graph or accepting a schedule. -/
 def analyzeScalarComputationSteps
@@ -85,7 +105,7 @@ def firstForwardScalarComputationDependency?
     Option (FieldId × FieldId) :=
   firstForwardComputationDependency?
     CheckedScalarComputationStep.targetField
-    CheckedScalarComputationStep.referencesField steps
+    (scalarComputationDependencies steps) steps
 
 inductive ScalarComputationRunPlanError where
   | empty
@@ -151,7 +171,7 @@ def scalarComputationAuthoredExecutionSteps
     (steps : List (CheckedScalarComputationStep model)) :
     List (CheckedScalarComputationStep model) :=
   computationAuthoredOrder CheckedScalarComputationStep.targetField
-    CheckedScalarComputationStep.referencesField steps.length steps
+    (scalarComputationDependencies steps) steps.length steps
 
 /-- Why an authored plan is refused. It shares the run's structural gates, but a plan has no order
 error: after ordering, a step still reads a later target only where some of its steps are
@@ -337,32 +357,25 @@ def targetFields (run : CheckedScalarComputationRun model) :
 def stringContext (run : CheckedScalarComputationRun model)
     (state : ScalarComputationRunState)
     (input : CheckedDocument model) : StringComputationContext :=
-  { input.stringComputationContext with
-    read := fun field =>
-      match state.find? field with
-      | some completion => completion.stringCell
-      | none =>
-          if run.targetFields.contains field then
-            StringDependencyCell.empty.checked
-          else
-            input.stringComputationContext.read field
-  }
+  input.stringComputationContext.withFixedOverlay fun field =>
+    match state.find? field with
+    | some completion => some completion.stringCell
+    | none =>
+        if run.targetFields.contains field then
+          some StringDependencyCell.empty.checked
+        else none
 
 /-- Project completed targets for Number consumption, hide suffix-owned pending targets, and delegate ordinary reads to the scalar document context under one unchanged world. A completion may belong to an earlier checked phase rather than to this run. -/
 def numberContext (run : CheckedScalarComputationRun model)
     (world : World) (state : ScalarComputationRunState)
     (input : CheckedDocument model) : ScalarComputationContext :=
-  let source := input.scalarComputationContext world
-  { source with
-    read := fun field =>
-      match state.find? field with
-      | some completion => completion.numberCell
-      | none =>
-          if run.targetFields.contains field then
-            (NumericDependencyCell.ofObservation .empty).checked
-          else
-            source.read field
-  }
+  (input.scalarComputationContext world).withFixedOverlay fun field =>
+    match state.find? field with
+    | some completion => some completion.numberCell
+    | none =>
+        if run.targetFields.contains field then
+          some (NumericDependencyCell.ofObservation .empty).checked
+        else none
 
 /-- The whole document a whole-document step reads: each completed target through its Number-family
 cell and formal-read text, each pending one empty. -/

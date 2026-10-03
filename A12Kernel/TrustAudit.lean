@@ -591,6 +591,10 @@ run_cmd do
 #print axioms A12Kernel.negativeGroupRead_preservesOperandDependency
 #print axioms A12Kernel.positiveGroupRead_excludesOwnDependency
 #print axioms A12Kernel.implicitGroupProtection_preserved
+#print axioms A12Kernel.ComputationGroupDependency.alternativesProtect_perm
+#print axioms A12Kernel.computationCondition_requires_own
+#print axioms A12Kernel.computationProducerProtection_perm
+#print axioms A12Kernel.checkedDocumentComputationStep_guard_wellFormed
 #print axioms A12Kernel.FieldFillQuantifier.allFieldsFilled_complement_regions
 #print axioms A12Kernel.FieldFillQuantifier.atLeastOneFieldFilled_complement_regions
 #print axioms A12Kernel.FieldFillQuantifier.fieldsNotCollectivelyFilled_excludes_complement
@@ -675,6 +679,8 @@ run_cmd do
 #print axioms A12Kernel.partialFilteredRule_skipped
 #print axioms A12Kernel.partialRule_fired_implies_fullWithContent_fired_of_agreesOn
 
+#print axioms A12Kernel.scalarComputationContext_fixedOverlay_reads
+#print axioms A12Kernel.scalarComputationContext_fixedOverlay_fallback
 #print axioms A12Kernel.fieldFilled_observedEmpty_notTrue
 #print axioms A12Kernel.fieldNotFilled_observedEmpty_holds
 #print axioms A12Kernel.fieldFilled_observedValue_holds

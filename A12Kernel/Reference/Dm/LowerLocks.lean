@@ -839,7 +839,9 @@ example :
     let computation := fixedBooleanDefinition "True"
     let guarded := { computation with commonPrecondition := some "FieldFilled(Fallback)" }
     !(lowerComputation (fixedBooleanModel .string) .english computation).isOk ∧
-      !(lowerComputation fixedBooleanModel .english guarded).isOk := by
+      (lowerComputation fixedBooleanModel .english guarded).isOk ∧
+      !(lowerComputation fixedBooleanModel .english
+        { guarded with commonPrecondition := some "FieldFilled(Flag)" }).isOk := by
   native_decide
 
 example :

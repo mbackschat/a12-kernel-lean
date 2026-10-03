@@ -70,6 +70,15 @@ def referencesField (table : CheckedNumericComputationTable model)
     alternative.precondition.any (·.referencesField field) ||
       alternative.operation.referencesField field
 
+def protectionConditions (table : CheckedNumericComputationTable model) : List (Option ComputationCondition) :=
+  table.selectableAlternatives.map (·.precondition)
+
+def requiresProducer (table : CheckedNumericComputationTable model)
+    (producerProtected : FieldId → ResolvedGroupReference → Bool) (field : FieldId) : Bool :=
+  table.selectableAlternatives.any fun alternative =>
+    alternative.precondition.any (·.requiresProducer table.targetField field (producerProtected field)) ||
+      alternative.operation.referencesField field
+
 end CheckedNumericComputationTable
 
 def firstNonScalarNumericTable? :
@@ -82,11 +91,15 @@ def firstNonScalarNumericTable? :
         some table.targetField
 
 /-- Specialize the shared supplied-order dependency check to checked Number tables. -/
+def numericComputationProducerProtection (tables : List (CheckedNumericComputationTable model)) :=
+  computationProducerProtection model CheckedNumericComputationTable.targetField
+    CheckedNumericComputationTable.protectionConditions tables
+
 def firstForwardNumericDependency?
     (tables : List (CheckedNumericComputationTable model)) :
     Option (FieldId × FieldId) :=
   firstForwardComputationDependency?
-    (·.targetField) (·.referencesField ·) tables
+    (·.targetField) (fun table => table.requiresProducer (numericComputationProducerProtection tables)) tables
 
 inductive NumericComputationRunPlanError where
   | empty

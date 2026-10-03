@@ -166,6 +166,7 @@ inductive GeneratedComputationValidationError where
   | resolve (error : ResolveError)
   | numericGuardRequiresConditionTree
   | fieldFillGuardRequiresConditionTree
+  | groupGuardRequiresConditionTree
   | targetNotNumber (field : FieldId)
   | targetSelfReference (guard : GeneratedComputationGuardPosition)
   | operationScaleMismatch (alternative : Nat)
@@ -228,6 +229,7 @@ private def lowerForGeneratedValidationUnchecked (model : FlatModel) :
   | .leaf (.text comparison) => pure (.compare comparison)
   | .leaf (.numeric _) => throw .numericGuardRequiresConditionTree
   | .leaf (.fieldFill _ _) => throw .fieldFillGuardRequiresConditionTree
+  | .leaf (.groupPresence _ _) => throw .groupGuardRequiresConditionTree
   | .and left right => do
       pure (.and
         (← left.lowerForGeneratedValidationUnchecked model)
