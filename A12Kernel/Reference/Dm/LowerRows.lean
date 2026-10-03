@@ -32,11 +32,12 @@ def rowConstant (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
   | .constant "True" => boolean true
   | .constant "False" => boolean false
   | .string literal =>
-      match civilDateConstant? literal, timeConstant? literal, dateTimeConstant? literal with
+      match authoredDateLiteral? literal, timeConstant? literal, dateTimeConstant? literal with
       | some date, _, _ => do
           let operation ← elaborated "DateComputation"
-            (checkRepeatableDateConstantComputation model group target.id date)
-          pure fun _ => .ofRepeatableDateConstant operation
+            (checkDateLiteralComputation model group target.id date)
+          (CheckedRowComputationStep.ofDateLiteral? operation).getDM
+            (refuse "DateComputation" "fixed target")
       | _, some time, _ => do
           let operation ← elaborated "TimeComputation"
             (checkRepeatableTimeConstantComputation model group target.id time)
@@ -48,8 +49,6 @@ def rowConstant (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
           if operation.outcome?.isNone then refuse "DateTimeComputation" "label in a zone gap"
           pure fun _ => .ofRepeatableDateTimeConstant operation
       | none, none, none => do
-          -- An omitted-year date has no row carrier, and is no String constant.
-          if isTemporalConstant literal then refuse "DateComputation" "omitted-year constant"
           let operation ← elaborated "StringComputation"
             (checkRepeatableStringConstantComputation model group target.id literal)
           pure fun _ => .ofRepeatableStringConstant operation

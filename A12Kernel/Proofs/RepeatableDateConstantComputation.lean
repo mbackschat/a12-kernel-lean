@@ -1,5 +1,6 @@
 import A12Kernel.Proofs.CheckedDocument
 import A12Kernel.Elaboration.RepeatableDateConstantComputation
+import A12Kernel.Proofs.DateConstantTarget
 
 /-! # Repeatable Date constant laws -/
 
@@ -62,25 +63,7 @@ theorem checkedRepeatableDateConstantComputation_accepted_rendersInTargetFormat
     (stored : StoredDate)
     (accepted : operation.outcome = .accepted stored) :
     stored = operation.dateTarget.renderCivil operation.constant := by
-  simp only [CheckedRepeatableDateConstantComputation.outcome] at accepted
-  cases hTarget : operation.dateTarget with
-  | complete target =>
-      simp only [hTarget, CheckedDateConstantTarget.evaluateCivil,
-        CheckedDateFormatTarget.evaluateCivil] at accepted
-      simp only [CheckedDateConstantTarget.renderCivil]
-      split at accepted
-      · exact absurd accepted (by simp)
-      · split at accepted
-        · exact absurd accepted (by simp)
-        · exact (FullDateTargetOutcome.accepted.inj accepted).symm
-  | omittedComponent target =>
-      simp only [hTarget, CheckedDateConstantTarget.evaluateCivil,
-        CheckedOmittedComponentDateTarget.evaluateCivil] at accepted
-      simp only [CheckedDateConstantTarget.renderCivil]
-      split at accepted
-      · exact absurd accepted (by simp)
-      · split at accepted
-        · exact absurd accepted (by simp)
-        · exact (FullDateTargetOutcome.accepted.inj accepted).symm
+  exact checkedDateConstantTarget_accepted_rendersInTargetFormat
+    operation.dateTarget operation.constant stored accepted
 
 end A12Kernel

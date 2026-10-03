@@ -3,6 +3,7 @@ import A12Kernel.Elaboration.Flat.Condition.Surface
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.FullDateInput
 import A12Kernel.Elaboration.NumericExpression
+import A12Kernel.Elaboration.NumericSource
 
 /-! # Lowering parse trees: the shared vocabulary
 
@@ -131,6 +132,13 @@ def yearlessDateConstant? (text : String) : Option (Nat × Nat) := do
   -- 2023 stands for every common year, whose month lengths are all the check reads.
   let _ ← CivilDate.ofYmd? 2023 month day
   pure (month, day)
+
+/-- Preserve a date literal's written year presence for arithmetic and assignment alike. -/
+def authoredDateLiteral? (text : String) : Option AuthoredDateLiteral :=
+  match civilDateConstant? text, yearlessDateConstant? text with
+  | some date, _ => some { year := some date.parts.year, month := date.parts.month, day := date.parts.day }
+  | _, some (month, day) => some { year := none, month, day }
+  | _, _ => none
 
 /-- Whether a quoted literal is typed as a temporal constant rather than a string, by its content
 alone: a date with or without its year, a clock, or a date and a clock joined by `T`. The typing

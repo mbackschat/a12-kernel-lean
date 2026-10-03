@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.AddressedRepeatableTarget
-import A12Kernel.Elaboration.TemporalTargetPolicy
+import A12Kernel.Elaboration.DateConstantTarget
 import A12Kernel.Elaboration.NumericComputation.RunResult
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.StaticDiagnostic
@@ -38,6 +38,7 @@ namespace A12Kernel
 
 inductive RepeatableDateConstantComputationElabError where
   | target (cause : AddressedRepeatableTargetElabError)
+  | yearDisagreement
   /-- Neither the complete nor the component-omitting refinement admitted the target. Both causes are
   retained because they refuse for different reasons and a consumer cannot recover one from the
   other: a yearless format without a Base Year fails both, and so does a non-Date kind. -/
@@ -57,6 +58,7 @@ A target this project simply cannot **render** still claims no class, and that g
 kind of thing: the Kernel admits those, so there is no refusal to name. -/
 def diagnostic? :
     RepeatableDateConstantComputationElabError → Option KernelStaticDiagnostic
+  | .yearDisagreement => some .invalidCompareToDate
   | .target (.targetOutsideDeclaringGroup _ _) => some .fieldNotInRuleGroup
   | .target (.targetIsIndexField _) => some .errorIndexAsCalculatedField
   | .targetNotRenderableDate _ (.yearlessWithoutBaseYear _ _) => some .invalidCompareToDate
@@ -66,34 +68,6 @@ def diagnostic? :
   | .targetNotRenderableDate _ _ => none
 
 end RepeatableDateConstantComputationElabError
-
-/-- The two renderable Date target shapes, dispatched on the declared format exactly as the Kernel
-does. They share one outcome domain because they differ only in which components the store keeps. -/
-inductive CheckedDateConstantTarget (model : FlatModel) where
-  | complete (target : CheckedDateFormatTarget model)
-  | omittedComponent (target : CheckedOmittedComponentDateTarget model)
-
-namespace CheckedDateConstantTarget
-
-def field : CheckedDateConstantTarget model → FieldId
-  | .complete target => target.checked.target.id
-  | .omittedComponent target => target.checked.target.id
-
-/-- The exact stored text this target gives one literal date, before its own gates judge it. -/
-def renderCivil (target : CheckedDateConstantTarget model)
-    (date : CivilDate) : StoredDate :=
-  match target with
-  | .complete target => target.format.renderCivil date
-  | .omittedComponent target => target.format.renderCivil date
-
-/-- Render and check one literal date against whichever shape the declaration selected. -/
-def evaluateCivil (target : CheckedDateConstantTarget model)
-    (date : CivilDate) : FullDateTargetOutcome :=
-  match target with
-  | .complete target => target.evaluateCivil date
-  | .omittedComponent target => target.evaluateCivil date
-
-end CheckedDateConstantTarget
 
 /-- One repeatable renderable Date target, contained in its declaring group, and the
 already-classified calendar date every one of its physical rows receives. Target refinement has
@@ -119,13 +93,9 @@ def checkRepeatableDateConstantComputation
     checkAddressedRepeatableTarget model declaringGroup targetField
       |>.mapError .target
   let scope := checkedTarget.declaration.repeatableScope
-  let dateTarget ←
-    match elaborateDateFormatTargetIn model scope targetField with
-    | .ok target => pure (CheckedDateConstantTarget.complete target)
-    | .error complete =>
-        match elaborateOmittedComponentDateTargetIn model scope targetField with
-        | .ok target => pure (CheckedDateConstantTarget.omittedComponent target)
-        | .error omitting => throw (.targetNotRenderableDate complete omitting)
+  let dateTarget ← (elaborateDateConstantTargetIn model scope targetField).mapError fun
+    | .yearDisagreement => .yearDisagreement
+    | .notRenderable complete omitting => .targetNotRenderableDate complete omitting
   if hSame : dateTarget.field = checkedTarget.targetField then
     pure { checkedTarget, dateTarget, sameTarget := hSame, constant }
   else

@@ -289,6 +289,7 @@ inductive OmittedComponentDateTargetElabError where
   rather than a narrower local one: the same target admits the constant once a Base Year is
   declared. -/
   | yearlessWithoutBaseYear (target : FieldId) (source : String)
+  | yearBearingWithoutBaseYear (target : FieldId) (source : String)
   deriving Repr, DecidableEq
 
 /-- One checked Date target whose declared format names fewer components than a calendar date has.
@@ -300,62 +301,52 @@ inductive OmittedComponentDateTargetElabError where
     precision here would refuse a declaration the Kernel accepts — and the same holds of the kind,
     which the [carrier-invariance checkpoint](../../docs/SOURCES.md#src-computed-target-gate-is-carrier-invariant)
     closes for every carrier rather than one at a time. -/
-structure CheckedOmittedComponentDateTarget (model : FlatModel) where
+structure CheckedOmittedComponentDateTarget (model : FlatModel) (sourceCarriesYear : Bool := true) where
   checked : CheckedTemporalTargetPolicy model
   format : OmittingDateFormat
   formatMatches :
     OmittingDateFormat.ofSource? checked.policy.format = some format
-  /-- A yearless target exists only in a model that declares a Base Year, so no consumer can build
-  one the Kernel would refuse. "Yearless" is `carriesYear` failing — the Base Year requirement *is*
-  year-absence, not a second classification of it. The Base Year is consumed **here and nowhere
-  else**: it gates this certificate and reaches no part of the rendering.
-
-  Read the direction precisely, because the converse is false. The Kernel's rule is symmetric over
-  the **pair**: a Base Year is required exactly when the constant and the target disagree about
-  carrying a year, so a *yearless* constant reaches a yearless target with no Base Year declared —
-  measured, admitted, storing the month alone
-  ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-temporal-format-gate-not-component-sets)).
-  This field states the requirement on the target alone, which is sound only because every constant
-  reaching it is year-bearing by construction: `DateParts.year` is an `Int`, not an option, so the
-  yearless literal is unrepresentable as a Date constant here. A carrier that gains a yearless
-  constant must move the requirement onto the pair rather than reuse this field, which would refuse
-  a declaration the Kernel accepts. -/
-  baseYearWhenYearless :
-    (!format.carriesYear && !model.hasBaseYear) = false
+  /-- Year agreement belongs to the authored literal/target pair. The default retains the
+  year-bearing source contract of existing carriers; a yearless literal may instead pair with a
+  yearless target without a Base Year (the format-gate checkpoint in spec/05). -/
+  yearAgreement :
+    (sourceCarriesYear != format.carriesYear && !model.hasBaseYear) = false
 
 namespace CheckedTemporalTargetPolicy
 
-/-- Refine a checked temporal target to the renderable component-omitting Date subset. The yearless
-`MM` and `MM-dd` formats are inside it exactly when the model declares a Base Year, which is the
-Kernel's own gate and the Base Year's only effect: the store that follows keeps no year either way
-([checkpoint](../../docs/SOURCES.md#src-base-year-yearless-store)). -/
+/-- Refine a component-omitting Date target against the source's written year presence. A Base Year
+bridges a disagreement; rendering still keeps only the target's components
+([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-base-year-yearless-store)). -/
 def toOmittedComponentDateTarget
-    (checked : CheckedTemporalTargetPolicy model) :
+    (checked : CheckedTemporalTargetPolicy model) (sourceCarriesYear : Bool := true) :
     Except OmittedComponentDateTargetElabError
-      (CheckedOmittedComponentDateTarget model) := do
+      (CheckedOmittedComponentDateTarget model sourceCarriesYear) := do
   match hFormat :
       OmittingDateFormat.ofSource? checked.policy.format with
   | none =>
       throw (.unsupportedFormat checked.target.id checked.policy.format)
   | some format =>
-      if hBase : (!format.carriesYear && !model.hasBaseYear) = false then
+      if hBase : (sourceCarriesYear != format.carriesYear && !model.hasBaseYear) = false then
         pure { checked, format, formatMatches := hFormat,
-               baseYearWhenYearless := hBase }
-      else
+               yearAgreement := hBase }
+      else if sourceCarriesYear then
         throw (.yearlessWithoutBaseYear checked.target.id checked.policy.format)
+      else
+        throw (.yearBearingWithoutBaseYear checked.target.id checked.policy.format)
 
 end CheckedTemporalTargetPolicy
 
 /-- Resolve and refine one model-owned component-omitting Date target whose repetition scope is bound
 by the caller. -/
 def elaborateOmittedComponentDateTargetIn
-    (model : FlatModel) (scope : List RepeatableLevel) (targetField : FieldId) :
+    (model : FlatModel) (scope : List RepeatableLevel) (targetField : FieldId)
+    (sourceCarriesYear : Bool := true) :
     Except OmittedComponentDateTargetElabError
-      (CheckedOmittedComponentDateTarget model) := do
+      (CheckedOmittedComponentDateTarget model sourceCarriesYear) := do
   let checked ←
     elaborateTemporalTargetPolicyIn model scope targetField
       |>.mapError .targetPolicy
-  checked.toOmittedComponentDateTarget
+  checked.toOmittedComponentDateTarget sourceCarriesYear
 
 namespace CheckedOmittedComponentDateTarget
 
@@ -367,7 +358,7 @@ declaration's **own** ordered additional-check and floor gates.
     the pre-1900 check does with a 1899 constant is unobserved. The gates are declaration-owned and
     the flag sits on the policy whatever the format, which is why they are applied rather than
     dropped; the exclusion is recorded beside the carrier's coverage entry. -/
-def evaluateCivil (target : CheckedOmittedComponentDateTarget model)
+def evaluateCivil (target : CheckedOmittedComponentDateTarget model sourceCarriesYear)
     (date : CivilDate) : FullDateTargetOutcome :=
   let stored := target.format.renderCivil date
   if target.checked.policy.youngerThan1900Check &&

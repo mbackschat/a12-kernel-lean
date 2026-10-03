@@ -7,6 +7,7 @@ import A12Kernel.Reference.Dm.LowerLocks
 import A12Kernel.Reference.Dm.ComputationGuardLocks
 import A12Kernel.Reference.Dm.NumericCountLocks
 import A12Kernel.Reference.Dm.DistinctCountLocks
+import A12Kernel.Reference.Dm.DateLiteralLocks
 import A12Kernel.Elaboration.StringContext
 
 /-! # A12Kernel.ReplayMain — replay retained `kernelProbe` requests through Lean

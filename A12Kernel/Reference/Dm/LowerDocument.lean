@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.DocumentComputationStep
 
 A computation whose target is neither a Number nor a String table's carrier, or a String
 `FirstFilledValue`, is lowered onto the whole-document step its operation names: `FirstFilledValue`
-by its target's kind, Boolean/Confirm constants, the `Time(...)` construction, `DateFromDateTime` and `TimeFromDateTime`. A
+by its target's kind, date literals with or without a year, Boolean/Confirm constants, the `Time(...)` construction, `DateFromDateTime` and `TimeFromDateTime`. A
 step carries one operation; the computation reader attaches checked guards, while a multi-alternative computation is
 refused here, as is every operation no step admits.
 -/
@@ -110,6 +110,11 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
 /-- One unguarded operation onto its whole-document step, or a refusal naming its construct. -/
 def lowerDocumentStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) :
     Expr → Lowering (CheckedDocumentComputationStep model)
+  | .string text => do
+      let source ← (authoredDateLiteral? text).getDM (refuse "StringLiteral")
+      let operation ← elaborated "DateComputation" (checkDateLiteralComputation model group target.id source)
+      (CheckedDocumentComputationStep.ofDateLiteral? operation).getDM
+        (refuse "DateComputation" "row target")
   | .constant "True" => boolean true
   | .constant "False" => boolean false
   | .call "FirstFilledValue" arguments none none => firstFilledStep model group target arguments

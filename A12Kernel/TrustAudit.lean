@@ -260,6 +260,8 @@ run_cmd do
 #print axioms A12Kernel.checkedTemporalTargetPolicy_timeZoneId
 #print axioms A12Kernel.omittingDateFormat_yearless_renderCivilText_yearIrrelevant
 #print axioms A12Kernel.checkedOmittedComponentDateTarget_yearless_hasBaseYear
+#print axioms A12Kernel.checkedDateConstantTarget_yearAgreement
+#print axioms A12Kernel.checkedDateConstantTarget_accepted_rendersInTargetFormat
 #print axioms A12Kernel.timeConstructionResult_value
 #print axioms A12Kernel.timeConstructionResult_unavailable
 #print axioms A12Kernel.timeTarget_evaluate_value

@@ -16,6 +16,7 @@ import A12Kernel.Elaboration.EnumerationComputation
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Elaboration.FullDateComputation
+import A12Kernel.Elaboration.DateLiteralComputation
 import A12Kernel.Elaboration.FullDateFirstFilledComputation
 import A12Kernel.Elaboration.OmittingDateInput
 import A12Kernel.Elaboration.TimeComputation
@@ -238,13 +239,15 @@ def omittingDateText (model : FlatModel) (target : FieldId) (text : String) :
     (throw .targetNotReadable)
   let profile ← (ModelZone.ConcreteProfile.ofId? model.timeZoneId).getDM
     (throw .targetNotReadable)
-  let earliest : Option CivilDate :=
-    match field.classifyStoredForModel model.baseYear text with
-    | .admitted value => value.earliestCivil? model.baseYearOrDefault
-    | .presentEmpty | .rejected _ => none
-  let date ← earliest.getDM (throw .targetNotReadable)
-  let value ← (profile.resolveStoredDate? date).getDM (throw .targetNotReadable)
-  pure (checkAdmittedRawCell (.parsed (.temporal (.date value))))
+  -- As in `CheckedDocument.canonicalTemporalCell?`, a classified text failure is a cell,
+  -- not a plan fault: a leap literal may lose its year under a common Base Year.
+  match field.classifyStoredForModel model.baseYear text with
+  | .presentEmpty => pure (checkAdmittedRawCell .presentEmpty)
+  | .rejected cause => pure (checkAdmittedRawCell (.rejected cause))
+  | .admitted stored =>
+      let date ← (stored.earliestCivil? model.baseYearOrDefault).getDM (throw .targetNotReadable)
+      let value ← (profile.resolveStoredDate? date).getDM (throw .targetNotReadable)
+      pure (checkAdmittedRawCell (.parsed (.temporal (.date value))))
 
 /-- A completed DateFragment target, read as the earliest date it denotes, which is how the Kernel
 completes a fragment at runtime: missing month and day become `01` and a missing year the Base Year,
@@ -264,6 +267,14 @@ def dateFragment (model : FlatModel) (target : FieldId) :
 cannot tell a String `FirstFilledValue` from any other computed String. -/
 def string (outcome : StringTargetOutcome) : Except DocumentComputationStepFault CheckedCell :=
   (StringDependencyCell.ofOutcome outcome).map (·.checked) |>.mapError .stringRead
+
+/-- A component-omitting assignment is read from its stored precision, as for the existing row
+constant carrier; a complete Date uses its stored Date classifier. -/
+def dateConstant (target : CheckedDateConstantTarget model sourceCarriesYear)
+    (outcome : FullDateTargetOutcome) : Except DocumentComputationStepFault CheckedCell :=
+  match target, outcome with
+  | .omittedComponent _, .accepted stored => omittingDateText model target.field stored.text
+  | _, outcome => fullDate model target.field outcome
 
 end DocumentComputationReadBack
 
@@ -339,6 +350,22 @@ def ofDateTimeSubdayShift (operation : CheckedDateTimeSubdayShiftComputation mod
     let outcome ← (operation.evaluateOutcome document).mapError .dateTimeSubdayShift
     let cell ← DocumentComputationReadBack.dateTime model operation.target.checked.target.id outcome
     pure (.dateTime outcome, cell)
+
+/-- A literal has no field reads. Fixed placement is required because a whole-document step writes
+one address; repeatable literals use the row step and its shared capacity traversal. -/
+def ofDateLiteral? (operation : CheckedDateLiteralComputation model) :
+    Option (CheckedDocumentComputationStep model) :=
+  if operation.target.repeatableScope.isEmpty then
+    some {
+      target := operation.target.id
+      family := .fullDate
+      operationReferencesField _ := false
+      excludesTarget := rfl
+      run _ _ _ := do
+        let outcome := operation.outcome
+        let cell ← DocumentComputationReadBack.dateConstant operation.dateTarget outcome
+        pure (.fullDate outcome, cell) }
+  else none
 
 /-- A full-Date computation over a field, `Today`, or the Base Year. -/
 def ofFullDate (operation : CheckedFullDateComputation model) :

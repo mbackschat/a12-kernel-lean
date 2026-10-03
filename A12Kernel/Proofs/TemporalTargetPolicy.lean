@@ -86,14 +86,13 @@ theorem omittingDateFormat_yearless_renderCivilText_yearIrrelevant
   cases format <;> simp_all [OmittingDateFormat.carriesYear,
     OmittingDateFormat.renderCivilText]
 
-/-- The Base Year is consumed by the certificate and nowhere else: a checked component-omitting
-target can exist for a yearless format only in a model that declares one. Stated as the contrapositive
-a consumer actually needs — no Base Year, no yearless target. -/
+/-- For the year-bearing-source specialization, a yearless target requires a Base Year. The
+yearless-source specialization instead uses the literal/target pair agreement. -/
 theorem checkedOmittedComponentDateTarget_yearless_hasBaseYear
     {model : FlatModel} (target : CheckedOmittedComponentDateTarget model)
     (yearless : target.format.carriesYear = false) :
     model.hasBaseYear = true := by
-  have := target.baseYearWhenYearless
+  have := target.yearAgreement
   simp [yearless] at this
   exact this
 

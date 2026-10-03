@@ -94,13 +94,29 @@ def ofRepeatableDateConstant (operation : CheckedRepeatableDateConstantComputati
   run _ _ document := do
     let outcomes ← (operation.execute document).mapError .dateConstant
     outcomes.mapM fun entry => do
-      let field := entry.targetField.field
-      -- A component-omitting target reads back as the earliest date its rendering denotes.
-      let cell ← (match operation.dateTarget, entry.outcome with
-        | .omittedComponent _, .accepted stored =>
-            DocumentComputationReadBack.omittingDateText model field stored.text
-        | _, outcome => DocumentComputationReadBack.fullDate model field outcome).mapError .readBack
+      let cell ← (DocumentComputationReadBack.dateConstant operation.dateTarget entry.outcome).mapError .readBack
       pure (entry.targetField, .fullDate entry.outcome, cell)
+
+/-- Date literals share target rendering with fixed assignments and the established row-capacity
+walk with the other constants; source year presence is retained by the checked operation. -/
+def ofDateLiteral? (operation : CheckedDateLiteralComputation model) :
+    Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
+  if operation.target.repeatableScope.isEmpty then none else
+    some fun _ => {
+      target := operation.target.id
+      family := .fullDate
+      referencesField _ := false
+      excludesTarget := rfl
+      run _ _ document := do
+        let scope := operation.target.repeatableScope
+        let atRow := fun outcome environment => do
+          let path ← (environment.pathForScope scope).mapError
+            (RowComputationStepFault.dateConstant ∘ RepeatableDateConstantComputationFault.targetEnvironment)
+          let cell ← (DocumentComputationReadBack.dateConstant operation.dateTarget outcome).mapError .readBack
+          pure ({ field := operation.target.id, path }, DocumentTargetOutcome.fullDate outcome, cell)
+        document.computationRowOutcomes scope
+          (RowComputationStepFault.dateConstant ∘ RepeatableDateConstantComputationFault.targetRows)
+          (atRow .noValue) (atRow operation.outcome) }
 
 /-- A Time constant written into every row of a repeatable Time target. -/
 def ofRepeatableTimeConstant (operation : CheckedRepeatableTimeConstantComputation model) :
