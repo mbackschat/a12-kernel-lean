@@ -467,6 +467,8 @@ Then tell the user what is queued and where. A live peer only shortens the laten
 
 **Close explicitly.** When both sides report nothing pending, the thread is closed. Reopening needs a new measurement, a contradiction, or a request — never commentary on the exchange itself. **State no ratios or tallies in a message.** Three were corrected in one session, every one from a mismatched denominator, and a denominator is only enforceable in a document with a reviewer; if a pattern is worth keeping it goes in [`LEAN-FINDINGS.md`](LEAN-FINDINGS.md) once, with what it counts.
 
+**Revalidate peer deficits before reporting them.** A PLAN entry or handback identifies a claim to check, not a current missing capability. Inspect the current peer checkout's revision, worktree state, owning implementation, tests and relevant history before reporting a deficit or requesting a fix. Distinguish that checkout from the pinned measurement revision; a source inspection establishes implementation presence, not a fresh runtime result. Reconcile stale local records instead of re-requesting completed work.
+
 **A capability claim about the peer's running tools needs execution.** It is a reachability claim under the discharge table, settled by running the binary and never by reading the source that feeds it — a stale launcher serves the old catalog while the source shows the new one. Both projects made this error in the same session, in opposite directions.
 
 **When no peer is reachable, nothing changes about what gets written.** Check the live sessions before relying on the channel, and never let a message be the only place a claim exists — with pointer discipline it never is. Concretely:
