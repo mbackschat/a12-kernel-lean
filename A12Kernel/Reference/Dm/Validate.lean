@@ -53,8 +53,10 @@ def errorFieldOf (language : Language) (model : FlatModel) (rule : DmRule) : Low
   let declaration ← elaborated "ErrorEntity" (model.resolveFieldDeclarationUnchecked rule.group field)
   pure declaration.id
 
-/-- Parse, lower and assemble one rule. -/
-def checkRule (model : DmModel) (language : Language) (rule : DmRule) :
+/-- Parse, lower and assemble one rule, retaining named-type validity resolution from the supplied
+world. Replay supplies the same registry used to prepare and evaluate the document. -/
+def checkRule (model : DmModel) (language : Language) (rule : DmRule)
+    (world : World := { now := { epochMillis := 0 } }) :
     Lowering (CheckedResolvedValidationRule model.flat) := do
   let text ← match parseText language rule.condition with
     | .ok text => pure text
@@ -64,7 +66,7 @@ def checkRule (model : DmModel) (language : Language) (rule : DmRule) :
   if let some other := text.suppressed.find? (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
     refuse "SuppressWarning" other
   let suppress := text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"
-  let condition ← lowerCondition model.flat rule.group suppress text.body
+  let condition ← lowerCondition model.flat rule.group suppress text.body world
   let errorField ← errorFieldOf language model.flat rule
   let some severity := severity? rule.severity | refuse "Severity" rule.severity
   elaborated "RuleAssembly"

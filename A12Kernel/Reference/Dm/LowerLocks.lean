@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Parser
+import A12Kernel.Reference.Dm.Replay
 
 /-! # Locks for the leaf carrier dispatch
 
@@ -33,6 +34,41 @@ private def admitted (text : String) : Bool :=
   match parseText .english text with
   | .ok parsed => (lowerCondition model ["Order"] false parsed.body).toOption.isSome
   | .error _ => false
+
+example :
+    [admitted "Valid(Ref, \"NoSuchType\")",
+     admitted "Invalid(Ref, \"NoSuchType\") Or FieldFilled(Amt)",
+     !admitted "Valid(Amt, \"NoSuchType\")",
+     !admitted "Valid(Ref, \"\")",
+     !admitted "Valid(Rows*/Note, \"NoSuchType\")"].all id := by
+  native_decide
+
+private def validityReplay (registered : Bool) (value : String)
+    (expectedCodes : List String) : Option (List String) := do
+  let world : World := {
+    now := { epochMillis := 0 }
+    customFieldValidator? := fun name => if registered && name == "Code" then
+      some (fun value _ => if value == "ok" then none else some { projectCode := "bad" })
+      else none }
+  let rule (code operation : String) : DmRule := {
+    group := ["Order"], name := code, errorEntityRelPath := "../Ref", errorCode := code
+    condition := s!"FieldFilled(Ref) And ({operation}(Ref, \"Code\"))", severity := "ERROR" }
+  let dm : DmModel := {
+    flat := model, rules := [rule "V" "Valid", rule "I" "Invalid"]
+    computations := [], conditionLanguage := "en_US", refusals := [] }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := if value.isEmpty then [] else [
+    { address := { field := 1, path := [] }, stored := value, raw := .parsed (.str value) }] }).toOption
+  let expected := expectedCodes.map fun code =>
+    { code, pointer := "Order/Ref", messageType := "VALUE_ERROR", severity := "ERROR" }
+  pure ((replayRules dm .english world document expected).map (·.status.tier))
+
+
+example : validityReplay true "ok" ["V"] = some ["match", "match"] ∧
+    validityReplay true "bad" ["I"] = some ["match", "match"] ∧
+    validityReplay false "ok" ["V", "I"] = some ["match", "match"] ∧
+    validityReplay false "" [] = some ["match", "match"] := by
+  native_decide
 
 example :
     [admitted "FieldValuesNotUnique(Amt, Amt2) And FieldFilled(Ref)",

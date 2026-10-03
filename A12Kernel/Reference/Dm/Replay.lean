@@ -45,7 +45,7 @@ def replayRules (model : DmModel) (language : Language) (world : World)
     -- Messages are attributed by code, so a code two rules share cannot be told apart.
     let shared := (model.rules.filter (·.errorCode == rule.errorCode)).length > 1
     let status := if shared then .refused { construct := "ErrorCode", detail := s!"{rule.errorCode} is shared" }
-      else match checkRule model language rule with
+      else match checkRule model language rule world with
       | .error refusal => .refused refusal
       | .ok checked' =>
           match runRule world checked checked' with

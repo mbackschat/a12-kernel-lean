@@ -12,7 +12,7 @@ connectives are kept and each leaf is offered, in a fixed order, to the carriers
 the flat leaf, repeatable field presence, group presence, the group-list quantifiers, the filled-group
 numeric comparison, scalar, then addressed, then over entity lists, the starred filled-group count
 against a literal, the field-fill quantifiers and `NumberOfFilledFields` over an entity list,
-typed entity-valued or token-literal value lists, and the three checked uniqueness overloads. The first carrier that admits a leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
+typed entity-valued or token-literal value lists, the three checked uniqueness overloads, and named-type validity with the caller’s registry. The first carrier that admits a leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
 key; when an elaborator itself refused, its error is kept as the detail.
 
 Only public elaboration entry points are reached. A construct with a semantic evaluator but no rule
@@ -80,13 +80,27 @@ def lowerNumericComparison (op : CompareOp) (left right : Expr) (suppress : Bool
          suppressExactScaleWarning := suppress }
 
 /-- The carriers tried for one leaf, in order; the first to admit it answers. -/
-private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : Bool) (leaf : Expr) :
+private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : World)
+    (suppress : Bool) (leaf : Expr) :
     List (Lowering (CheckedValidationCondition model)) :=
   let flat := match lowerFlat model rowGroup leaf with
     | some surface => [do
         let checked ← elaborated "Flat" (elaborate model rowGroup surface)
         elaborated "Flat" (CheckedValidationCondition.fromFlat checked)]
     | none => []
+  let validity := match leaf with
+    | .call id [.mk field none none, .mk (.string name) none none] none none =>
+        let operation := match id with
+          | "Valid" => some CustomFieldValidityOp.valid
+          | "Invalid" => some .invalid
+          | _ => none
+        match operation, field.fieldEntity? with
+        | some operation, some path => [do
+            let declaration ← elaborated id (model.resolveFieldDeclarationUnchecked rowGroup path)
+            elaborated id (CheckedValidationCondition.fromCustomFieldValidity
+              model rowGroup world declaration.id name operation)]
+        | _, _ => []
+    | _ => []
   let uniqueness := match leaf with
     | .call "FieldValuesNotUnique" arguments none none =>
         let operands := lowerEntitySource model rowGroup arguments
@@ -225,7 +239,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (suppress : 
               { op := .violated, field, source })]
         | _, _ => []
     | _ => []
-  flat ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness
+  flat ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :
@@ -255,7 +269,8 @@ private partial def scaleRefusal? (model : FlatModel) (rowGroup : GroupPath) (su
   | _ => none
 
 /-- Lower a rule condition at its rule group. `suppress` is the `@SuppressWarning` preamble. -/
-partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress : Bool) (condition : Expr) :
+partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress : Bool) (condition : Expr)
+    (world : World := { now := { epochMillis := 0 } }) :
     Lowering (CheckedValidationCondition model) :=
   match scaleRefusal? model rowGroup suppress condition with
   | some refusal => .error refusal
@@ -265,19 +280,19 @@ partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress 
       (CheckedValidationCondition.fromFlat checked).toOption
   match whole, condition with
   | some checked, _ => pure checked
-  | none, .parens body => lowerCondition model rowGroup suppress body
+  | none, .parens body => lowerCondition model rowGroup suppress body world
   | none, .logic op (first :: rest) => do
       let join := match op with
         | .and => CheckedValidationCondition.and
         | .or => CheckedValidationCondition.or
-      let mut result ← lowerCondition model rowGroup suppress first
+      let mut result ← lowerCondition model rowGroup suppress first world
       for part in rest do
-        result ← elaborated "Connective" (join result (← lowerCondition model rowGroup suppress part))
+        result ← elaborated "Connective" (join result (← lowerCondition model rowGroup suppress part world))
       pure result
   | none, leaf =>
       let construct := match leaf with
         | .compare _ _ _ => (leaf.leadingCall?.map ("Comparison/" ++ ·)).getD leaf.construct
         | _ => leaf.construct
-      firstAdmitted construct (leafCarriers model rowGroup suppress leaf)
+      firstAdmitted construct (leafCarriers model rowGroup world suppress leaf)
 
 end A12Kernel.Dm
