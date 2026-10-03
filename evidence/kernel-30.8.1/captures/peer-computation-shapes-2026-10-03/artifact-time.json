@@ -1,0 +1,278 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "time_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "ClockTimeComp",
+              "field": "Invoice/ClockTime",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/ClockIn",
+                "Invoice/ClockTime"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/ClockTime",
+                "cleared": false,
+                "errored": false,
+                "value": "07:08:09"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "ClockTimeComp",
+              "field": "Invoice/ClockTime",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/ClockIn",
+                "Invoice/ClockTime"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/ClockTime",
+                "cleared": false,
+                "errored": false,
+                "value": "07:08:09"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "unchanged",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-input",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/ClockTime",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/ClockTime",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid-input",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Invoice/ClockIn",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/ClockIn"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/ClockTime",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Invoice/ClockIn",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/ClockIn"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Invoice/ClockIn",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/ClockIn"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/ClockTime",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Invoice/ClockIn",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/ClockIn"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "absent-target",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/ClockTime",
+                "cleared": false,
+                "errored": false,
+                "value": "07:08:09"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/ClockTime",
+                "cleared": false,
+                "errored": false,
+                "value": "07:08:09"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-document",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    }
+  ]
+}

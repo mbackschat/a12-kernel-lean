@@ -1,0 +1,534 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "enum_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "first-filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "TopStatusComp",
+              "field": "Invoice/TopStatus",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Status",
+                "Invoice/TopStatus"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": false,
+                "errored": false,
+                "value": "OPEN"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "TopStatusComp",
+              "field": "Invoice/TopStatus",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Status",
+                "Invoice/TopStatus"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": false,
+                "errored": false,
+                "value": "OPEN"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "leading-empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "TopStatusComp",
+              "field": "Invoice/TopStatus",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Status",
+                "Invoice/TopStatus"
+              ],
+              "fillToFix": [
+                "/Invoice[1]/Lines[0]/Status",
+                "Invoice/TopStatus"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": false,
+                "errored": false,
+                "value": "CLOSED"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "TopStatusComp",
+              "field": "Invoice/TopStatus",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Status",
+                "Invoice/TopStatus"
+              ],
+              "fillToFix": [
+                "/Invoice[1]/Lines[0]/Status",
+                "Invoice/TopStatus"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": false,
+                "errored": false,
+                "value": "CLOSED"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "all-empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "no-rows",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid-before-filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "stringFalschesMuster",
+              "field": "Invoice/Lines/Status",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines/Status"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Invoice/Lines/Status",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines/Status"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "stringFalschesMuster",
+              "field": "Invoice/Lines/Status",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines/Status"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Invoice/Lines/Status",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines/Status"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "filled-before-invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "TopStatusComp",
+              "field": "Invoice/TopStatus",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Status",
+                "Invoice/TopStatus"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Invoice/Lines[2]/Status",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines[2]/Status"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": false,
+                "errored": false,
+                "value": "OPEN"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Invoice/Lines[2]/Status",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines[2]/Status"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "TopStatusComp",
+              "field": "Invoice/TopStatus",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Status",
+                "Invoice/TopStatus"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Invoice/Lines[2]/Status",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines[2]/Status"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": false,
+                "errored": false,
+                "value": "OPEN"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Invoice/Lines[2]/Status",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines[2]/Status"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "over-limit",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Invoice/Lines[51]/Status",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines[51]/Status"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Invoice/Lines[51]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines[51]"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Invoice/Lines[51]/Status",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines[51]/Status"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseZeile",
+                "field": "Invoice/Lines[51]",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines[51]"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Invoice/Lines[51]/Status",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines[51]/Status"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Invoice/Lines[51]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines[51]"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/TopStatus",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Invoice/Lines[51]/Status",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines[51]/Status"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseZeile",
+                "field": "Invoice/Lines[51]",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines[51]"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "model": "time_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "filled",
+      "documentInline": {
+        "Invoice": {
+          "ClockIn": "2026-05-06T07:08:09",
+          "ClockTime": "00:00:00"
+        }
+      }
+    },
+    {
+      "name": "unchanged",
+      "documentInline": {
+        "Invoice": {
+          "ClockIn": "2026-05-06T07:08:09",
+          "ClockTime": "07:08:09"
+        }
+      }
+    },
+    {
+      "name": "empty-input",
+      "documentInline": {
+        "Invoice": {
+          "ClockTime": "00:00:00"
+        }
+      }
+    },
+    {
+      "name": "invalid-input",
+      "documentInline": {
+        "Invoice": {
+          "ClockIn": "bad",
+          "ClockTime": "00:00:00"
+        }
+      }
+    },
+    {
+      "name": "absent-target",
+      "documentInline": {
+        "Invoice": {
+          "ClockIn": "2026-05-06T07:08:09"
+        }
+      }
+    },
+    {
+      "name": "empty-document",
+      "documentInline": {
+        "Invoice": {}
+      }
+    }
+  ]
+}

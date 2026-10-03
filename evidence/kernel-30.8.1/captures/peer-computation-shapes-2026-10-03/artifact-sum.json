@@ -1,0 +1,486 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "sum_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "SubtotalComp",
+              "field": "Invoice/Subtotal",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ],
+              "fillToFix": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Subtotal",
+                "cleared": false,
+                "errored": false,
+                "value": "3.75"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "SubtotalComp",
+              "field": "Invoice/Subtotal",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ],
+              "fillToFix": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Subtotal",
+                "cleared": false,
+                "errored": false,
+                "value": "3.75"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "unchanged",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "leading-empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "SubtotalComp",
+              "field": "Invoice/Subtotal",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ],
+              "fillToFix": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Subtotal",
+                "cleared": false,
+                "errored": false,
+                "value": "2.5"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "SubtotalComp",
+              "field": "Invoice/Subtotal",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ],
+              "fillToFix": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Subtotal",
+                "cleared": false,
+                "errored": false,
+                "value": "2.5"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid-input",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Invoice/Lines/Amount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines/Amount"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Subtotal",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Invoice/Lines/Amount",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines/Amount"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Invoice/Lines/Amount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines/Amount"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Subtotal",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Invoice/Lines/Amount",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines/Amount"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "no-rows",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "SubtotalComp",
+              "field": "Invoice/Subtotal",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ],
+              "fillToFix": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Subtotal",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "SubtotalComp",
+              "field": "Invoice/Subtotal",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ],
+              "fillToFix": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Subtotal",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "over-limit",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "SubtotalComp",
+              "field": "Invoice/Subtotal",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ],
+              "fillToFix": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ]
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Invoice/Lines[51]/Amount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines[51]/Amount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Invoice/Lines[51]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines[51]"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Subtotal",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Invoice/Lines[51]/Amount",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines[51]/Amount"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseZeile",
+                "field": "Invoice/Lines[51]",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines[51]"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "SubtotalComp",
+              "field": "Invoice/Subtotal",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ],
+              "fillToFix": [
+                "/Invoice[1]/Lines[0]/Amount",
+                "Invoice/Subtotal"
+              ]
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Invoice/Lines[51]/Amount",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines[51]/Amount"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Invoice/Lines[51]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Lines[51]"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Subtotal",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zuGrosseKontextnummer",
+                "field": "Invoice/Lines[51]/Amount",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines[51]/Amount"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zuGrosseZeile",
+                "field": "Invoice/Lines[51]",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Invoice/Lines[51]"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

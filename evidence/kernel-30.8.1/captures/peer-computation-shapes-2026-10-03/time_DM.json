@@ -1,0 +1,169 @@
+{
+  "header" : {
+    "id" : "invoice",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "invoice",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Invoice",
+        "name" : "Invoice",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Invoice/CustomerName",
+            "name" : "CustomerName",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Invoice/Subtotal",
+            "name" : "Subtotal",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Invoice/Note",
+            "name" : "Note",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Invoice/Flagged",
+            "name" : "Flagged",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Invoice/ClockIn",
+            "name" : "ClockIn",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Invoice/ClockTime",
+            "name" : "ClockTime",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Invoice/TopStatus",
+            "name" : "TopStatus",
+            "Field" : {
+              "fieldType" : {
+                "type" : "EnumerationType",
+                "EnumerationType" : {
+                  "values" : [ {
+                    "value" : "OPEN"
+                  }, {
+                    "value" : "CLOSED"
+                  } ]
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Invoice/Lines",
+            "name" : "Lines",
+            "Group" : {
+              "repeatability" : 50,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Invoice/Lines/Amount",
+                "name" : "Amount",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Invoice/Lines/Status",
+                "name" : "Status",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "OPEN"
+                      }, {
+                        "value" : "CLOSED"
+                      } ]
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Invoice/ClockTimeComp",
+            "name" : "ClockTimeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ClockTime",
+              "computationAlternatives" : [ {
+                "operation" : "TimeFromDateTime(/Invoice/ClockIn)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "ClockTime is the time-of-day part of ClockIn."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

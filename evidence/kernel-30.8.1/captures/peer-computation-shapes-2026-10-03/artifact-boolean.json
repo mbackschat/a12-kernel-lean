@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "boolean_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "changed",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FlaggedComp",
+              "field": "Invoice/Flagged",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Flagged"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Flagged",
+                "cleared": false,
+                "errored": false,
+                "value": "true"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FlaggedComp",
+              "field": "Invoice/Flagged",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Flagged"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Flagged",
+                "cleared": false,
+                "errored": false,
+                "value": "true"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "unchanged",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "absent",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Flagged",
+                "cleared": false,
+                "errored": false,
+                "value": "true"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Flagged",
+                "cleared": false,
+                "errored": false,
+                "value": "true"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid-target",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "feldJaNeinFalsch",
+              "field": "Invoice/Flagged",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Flagged"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Flagged",
+                "cleared": false,
+                "errored": false,
+                "value": "true"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "feldJaNeinFalsch",
+              "field": "Invoice/Flagged",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Invoice/Flagged"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Invoice/Flagged",
+                "cleared": false,
+                "errored": false,
+                "value": "true"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    }
+  ]
+}
