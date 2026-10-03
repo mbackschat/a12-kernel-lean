@@ -584,6 +584,10 @@ run_cmd do
 #print axioms A12Kernel.GroupPresenceState.groupFilled_complement_regions
 #print axioms A12Kernel.GroupPresenceOperator.evalComputation_holds_iff_count
 #print axioms A12Kernel.GroupPresenceOperator.evalComputation_ne_poison
+#print axioms A12Kernel.ComputationGroupDependency.conditionProtects_and
+#print axioms A12Kernel.ComputationGroupDependency.conditionProtects_or
+#print axioms A12Kernel.ComputationGroupDependency.alternativesProtect_insert_absent
+#print axioms A12Kernel.ComputationGroupDependency.requiresProducer_of_ordinary
 #print axioms A12Kernel.FieldFillQuantifier.allFieldsFilled_complement_regions
 #print axioms A12Kernel.FieldFillQuantifier.atLeastOneFieldFilled_complement_regions
 #print axioms A12Kernel.FieldFillQuantifier.fieldsNotCollectivelyFilled_excludes_complement

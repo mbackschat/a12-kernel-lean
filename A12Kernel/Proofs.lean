@@ -46,6 +46,7 @@ import A12Kernel.Proofs.CheckedIndexColumn
 import A12Kernel.Proofs.CheckedIndexPreliminary
 import A12Kernel.Proofs.CheckedStarDocument
 import A12Kernel.Proofs.ComputationCondition
+import A12Kernel.Proofs.ComputationGroupDependency
 import A12Kernel.Proofs.ComputationFillQuantifier
 import A12Kernel.Proofs.ComputationFormalInput
 import A12Kernel.Proofs.ComputationMessage
