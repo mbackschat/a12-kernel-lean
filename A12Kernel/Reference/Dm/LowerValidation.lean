@@ -11,7 +11,7 @@ A condition whose every leaf has a flat form is elaborated whole by the flat car
 connectives are kept and each leaf is offered, in a fixed order, to the carriers that exist for it:
 the flat leaf, scalar temporal expression comparison, repeatable field presence, group presence, the group-list quantifiers, the filled-group
 numeric comparison, scalar, then addressed, then over entity lists, the starred filled-group count
-against a literal, the field-fill quantifiers and `NumberOfFilledFields` over an entity list,
+against a literal, the field-fill quantifiers (filled-field counts use the shared numeric expression carrier),
 typed entity-valued or token-literal value lists, the three checked uniqueness overloads, and named-type validity with the caller’s registry. The first carrier that admits a leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
 key; when an elaborator itself refused, its error is kept as the detail.
 
@@ -174,16 +174,6 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
             let source ← lowerEntitySource model rowGroup arguments
             elaborated id (CheckedValidationCondition.fromFieldFill model rowGroup operator source)]
         | none => []
-    | .compare op (.call "NumberOfFilledFields" arguments none none) (.number threshold) =>
-        [do
-          let some (.ordinary numericOp) := op.toNumeric? | refuse "Comparison" "operator"
-          let some threshold := decodeNumber? threshold | refuse "NumberOfFilledFields" "threshold"
-          -- A count compared with a fractional literal is unmeasured; the carrier takes an integral one.
-          if threshold.authoredScale != 0 then refuse "NumberOfFilledFields" "fractional threshold"
-          let source ← lowerEntitySource model rowGroup arguments
-          let checked ← elaborated "NumberOfFilledFields"
-            (elaborateFilledFieldCountComparison model rowGroup source numericOp threshold.value.num)
-          elaborated "NumberOfFilledFields" (CheckedValidationCondition.fromOrderedNumeric checked)]
     | _ => []
   let groupCount := match leaf with
     | .compare op (.call "NumberOfFilledGroups" arguments none none) (.number threshold) => [do

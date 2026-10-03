@@ -145,4 +145,40 @@ theorem computationFillQuantifier_readOrderObservable
   intro impossible
   cases impossible
 
+/-- Joining count operands preserves their order and the first cause, adding only successful counts. -/
+theorem filledFieldComputationCount_append (left right : List ComputationFillSlot) :
+    numberOfFilledFieldsForComputation (left ++ right) =
+      (do let first ← numberOfFilledFieldsForComputation left
+          let second ← numberOfFilledFieldsForComputation right
+          pure (first + second)) := by
+  induction left with
+  | nil =>
+      simp only [List.nil_append]
+      cases numberOfFilledFieldsForComputation right <;>
+        simp [numberOfFilledFieldsForComputation, Bind.bind, Except.bind, Pure.pure, Except.pure]
+  | cons head rest ih =>
+      cases head <;> simp only [List.cons_append, numberOfFilledFieldsForComputation]
+      · rw [ih]
+        cases numberOfFilledFieldsForComputation rest <;>
+          cases numberOfFilledFieldsForComputation right <;> simp [Bind.bind, Except.bind, Functor.map, Except.map, Pure.pure, Except.pure, Nat.add_right_comm]
+      · exact ih
+      · exact ih
+      · rfl
+
+/-- The validation count forgets the first cause but agrees on every successful count. This
+relates result domains over supplied observations, not validation and computation cell projection. -/
+theorem filledFieldCount_validationProjection (cells : List CellObservation) :
+    numberOfFilledFields cells =
+      match numberOfFilledFieldsForComputation (cells.map CellObservation.asComputationFillSlot) with
+      | .ok count => .value count
+      | .error _ => .unknown := by
+  induction cells with
+  | nil => rfl
+  | cons head rest ih =>
+      cases outcome : numberOfFilledFieldsForComputation (rest.map CellObservation.asComputationFillSlot) <;>
+        cases head <;>
+        simp_all [numberOfFilledFields, numberOfFilledFieldsForComputation,
+          CellObservation.asComputationFillSlot, Functor.map, Except.map] <;>
+        split at ih <;> simp_all
+
 end A12Kernel

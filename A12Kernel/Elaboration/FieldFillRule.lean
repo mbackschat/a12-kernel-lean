@@ -6,9 +6,10 @@ The field-fill list in `FieldFillList` answers the count and all seven field-fil
 entity list of direct fields, starred fields and groups, and the checked validation leaf and ordered
 numeric atom read it on the addressed route. This module is their surface entry point: it elaborates
 the authored list at the rule group and builds either the quantifier leaf or a count comparison
-against a literal threshold, the one comparison shape the retained observations cover.
+against a literal threshold. General numeric expressions reuse the same count atom through
+`NumericValidation/EntityComparison`.
 
-A filtered operand, a category read, and the count inside arithmetic are not represented here.
+A filtered operand and a category read are not represented here.
 -/
 
 namespace A12Kernel

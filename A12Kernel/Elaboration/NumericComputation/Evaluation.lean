@@ -9,6 +9,18 @@ def NumericOperand.toComputationResult : NumericOperand → NumericComputationRe
   | .value amount _ => .value amount
   | .unknown cause => .poison cause
 
+/-- Read the existing field-fill sources through the current computation overlay, then count
+all instantiated content. Resolution faults remain separate from a reached operand's poison. -/
+def CheckedFieldFillList.evaluateComputationCount (source : CheckedFieldFillList model)
+    (context : ScalarComputationContext) : Except NumericComputationFault NumericComputationResult := do
+  let sources ← source.computationSources.mapError NumericComputationFault.fieldFillSource
+  let slots ← (sources.mapM fun (operand : ComputationFillSource) =>
+    operand.slots context.read context.row context.addressed).mapError
+    (NumericComputationFault.guardBinding ∘ ComputationConditionError.fieldFill)
+  pure (match numberOfFilledFieldsForComputation slots.flatten with
+    | .ok count => .value count
+    | .error cause => .poison cause)
+
 namespace CheckedNumericProductAggregate
 
 /-- Project the checked paired-row fold through computation-phase reads. Required-only emptiness remains numeric zero; every other reached formal invalidity becomes poison. -/
@@ -212,6 +224,7 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
 def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
     CheckedNumericComputationAtom model →
       Except NumericComputationFault NumericComputationResult
+  | .filledFieldCount source => source.evaluateComputationCount context
   | .firstFilled source =>
       match source.evaluateDirectComputationFirstFilled? context.read with
       | some result => pure result.asComputationResult
@@ -427,6 +440,10 @@ def readCheckedNumericComputationAtom
     (context : NumericComputationEvaluationContext) :
     CheckedNumericComputationAtom model →
       Except NumericComputationFault NumericComputationResult
+  | .filledFieldCount source =>
+      source.evaluateComputationCount { context.scalar with
+        row := context.outer
+        addressed := some { document := context.document, read := context.starRead } }
   | .firstFilled source => do
       let result ←
         (source.evaluateComputationFirstFilled context.document context.outer
@@ -534,6 +551,9 @@ def fixedGroupCountOperandFault? (model : FlatModel) (reference : ResolvedGroupR
 
 def CheckedNumericComputationAtom.numericComputationFault? :
     CheckedNumericComputationAtom model → Option NumericComputationFault
+  | .filledFieldCount source => match source.computationSources with
+      | .ok _ => none
+      | .error error => some (.fieldFillSource error)
   | .firstFilled _ => none
   | .valueCount _ _ => none
   | .tokenValueCount _ => none

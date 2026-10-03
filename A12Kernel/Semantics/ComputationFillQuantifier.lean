@@ -68,6 +68,15 @@ def ComputationFillSource.slots (source : ComputationFillSource)
       pure ((environments.filterMap fun environment => observe (context.read environment field)) ++
         if omitted then [.uninstantiated] else [])
 
+/-- Count every filled instantiated slot, preserving the first failed operand. Unlike a deciding
+field-fill quantifier, the count cannot discard an invalid suffix after finding filled content
+(`spec/09` §3.2); declared omissions contribute zero without a cell read. -/
+def numberOfFilledFieldsForComputation : List ComputationFillSlot → Except FormalCause Nat
+  | [] => .ok 0
+  | .filled :: remaining => Nat.succ <$> numberOfFilledFieldsForComputation remaining
+  | .empty :: remaining | .uninstantiated :: remaining => numberOfFilledFieldsForComputation remaining
+  | .poison cause :: _ => .error cause
+
 namespace FieldFillQuantifier
 
 private inductive ScanResult where

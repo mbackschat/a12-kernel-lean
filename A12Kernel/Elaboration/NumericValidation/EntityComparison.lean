@@ -36,6 +36,7 @@ inductive EntityNumericComparisonElabError where
   | tokenSource (error : TokenValueCountElabError)
   | booleanSource (error : BooleanValueCountElabError)
   | productSource (error : NumericProductAggregateElabError)
+  | fieldFillSource (error : FieldFillListElabError)
   /-- A filled-group count, which its own carriers own. -/
   | groupCount
   /-- A comparison reading no entity list, which the scalar carriers own. -/
@@ -85,6 +86,8 @@ private def resolveEntityAtom (model : FlatModel) (rowGroup : GroupPath) :
           (resolveAddressedNumericValidationAtom model rowGroup ordinary).map .ordinary
             |>.mapError .ordinary
       | none => throw .incoherent
+  | .filledFieldCount source =>
+      (elaborateFieldFillList model rowGroup source).map .filledFieldCount |>.mapError .fieldFillSource
   | .firstFilled source =>
       (elaborateNumberEntitySource model rowGroup source).map .firstFilled |>.mapError .numberSource
   | .valueCount expected source =>

@@ -287,4 +287,12 @@ example :
         else malformedCheckedCell })).toOption =
       some [.filled, .poison .malformed, .uninstantiated] := by native_decide
 
+example : numberOfFilledFieldsForComputation [] = .ok 0 ∧
+    numberOfFilledFieldsForComputation [.empty, .uninstantiated, .filled, .filled] = .ok 2 ∧
+    numberOfFilledFieldsForComputation [.filled, .poison .malformed] = .error .malformed ∧
+    numberOfFilledFieldsForComputation [.uninstantiated, .poison .malformed] = .error .malformed ∧
+    numberOfFilledFieldsForComputation [.poison .malformed, .poison .computedDependency] = .error .malformed ∧
+    numberOfFilledFieldsForComputation [.poison .computedDependency, .poison .malformed] = .error .computedDependency := by
+  exact ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
+
 end A12Kernel.Conformance.ComputationFillQuantifier

@@ -61,12 +61,10 @@ what keeps the count *growable*, so a comparison it satisfies still types OMISSI
 A `poison` observation is the computation face of the same invalidity and cannot reach this arm; it is
 folded into `unknown` so a misrouted observation fails closed rather than counting as filled.
 
-**There is no computation arm, and that is measured rather than deferred.** The group count needs two
-arms because an invalid *descendant* leaves its group operand present, so the group count must decide
-what to do with it. A field count's invalid operand is the operand itself, so the general
-operand-poison rule fires first: measured, the target is CLEARED and its dependents poisoned before any
-count is evaluated, which is [`spec/09` §3.2](../../spec/09-computations.md)'s existing rule and not this
-operator's to restate. -/
+The computation-side scan retains the first formal cause in
+`numberOfFilledFieldsForComputation`; this validation result deliberately forgets that cause.
+A filled prefix cannot make the count ignore a later invalid operand, unlike a deciding-prefix
+field-fill quantifier (the computation poison rule in [`spec/09` §3.2](../../spec/09-computations.md)). -/
 def numberOfFilledFields (cells : List CellObservation) : FilledFieldCount :=
   if cells.any fun cell =>
       match cell with

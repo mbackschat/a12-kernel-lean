@@ -746,6 +746,8 @@ run_cmd do
 #print axioms A12Kernel.validationNotExactlyOne_unknown_zeroTwo_separator
 #print axioms A12Kernel.validationNotCollectively_isNot_notAll
 #print axioms A12Kernel.validationComputationFillQuantifier_unknownPoison_separator
+#print axioms A12Kernel.filledFieldComputationCount_append
+#print axioms A12Kernel.filledFieldCount_validationProjection
 #print axioms A12Kernel.stringAlternatives_noMatch_evaluates_noValue
 #print axioms A12Kernel.stringAlternatives_selectionPoison_preserves
 #print axioms A12Kernel.stringAlternatives_selected_delegates

@@ -256,10 +256,12 @@ example :
     [admitted "AtLeastOneFieldFilled(Head)", !admitted "AtLeastOneFieldFilled(Head -> Code)"].all id := by
   native_decide
 
-/- A count compared with a fractional threshold is refused, where the carrier would read `1.5` as an
-integral literal. -/
+/- The count-expression grid admits fractional ordering on both sides while equality retains
+its scale gate. The arithmetic route must preserve the literal instead of truncating it. -/
 example :
-    [admitted "NumberOfFilledFields(Head) < 2", !admitted "NumberOfFilledFields(Head) < 1.5"].all id := by
+    [admitted "NumberOfFilledFields(Head) < 2", admitted "NumberOfFilledFields(Head) < 1.5",
+     admitted "1.5 > NumberOfFilledFields(Head)", admitted "NumberOfFilledFields(Head) + 1 < 1.5",
+     !admitted "NumberOfFilledFields(Head) == 1.0", !admitted "1.5 != NumberOfFilledFields(Head)"].all id := by
   native_decide
 
 /- `NumberOfDifferentValues` reaches the String/Enumeration and temporal carriers once the Number one

@@ -5,6 +5,7 @@ import A12Kernel.Reference.Dm.ReaderLocks
 import A12Kernel.Reference.Dm.NegateLocks
 import A12Kernel.Reference.Dm.LowerLocks
 import A12Kernel.Reference.Dm.ComputationGuardLocks
+import A12Kernel.Reference.Dm.NumericCountLocks
 import A12Kernel.Elaboration.StringContext
 
 /-! # A12Kernel.ReplayMain — replay retained `kernelProbe` requests through Lean

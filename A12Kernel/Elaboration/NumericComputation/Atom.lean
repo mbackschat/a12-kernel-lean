@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.DateRangeBoundComponent
+import A12Kernel.Elaboration.FieldFillList
 import A12Kernel.Elaboration.FirstFilledValue
 import A12Kernel.Elaboration.NumericAggregate
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
@@ -22,6 +23,7 @@ abbrev NumericComputationAtom := ResolvedNumericAtom FlatFieldDecl
 /-- The complete computation surface keeps ordinary numeric atoms in their shared representation and adds distinct prefix-selecting and row-aligned aggregate atoms without creating another arithmetic tree. -/
 inductive SurfaceNumericComputationAtom where
   | numeric (source : SurfaceNumericAtom SurfaceNumberEntitySource)
+  | filledFieldCount (source : SurfaceFieldEntitySource)
   | firstFilled (source : SurfaceNumberEntitySource)
   | valueCount (expected : Rat) (source : SurfaceNumberEntitySource)
   | tokenValueCount (expected : String) (source : SurfaceTokenValueCountSource)
@@ -38,6 +40,7 @@ inductive CheckedNumericComputationAtom (model : FlatModel) where
   | numeric
       (source : ResolvedNumericAtom FlatFieldDecl
         (CheckedNumberEntitySource model))
+  | filledFieldCount (source : CheckedFieldFillList model)
   | firstFilled (source : CheckedNumberEntitySource model)
   | valueCount (expected : Rat) (source : CheckedNumberEntitySource model)
   | tokenValueCount (source : CheckedTokenValueCountSource model)
@@ -51,6 +54,7 @@ inductive CheckedNumericComputationAtom (model : FlatModel) where
 /-- Fail-closed faults outside the admitted numeric computation-expression fragment. -/
 inductive NumericComputationFault where
   | guardBinding (error : ComputationConditionError)
+  | fieldFillSource (error : FieldFillListElabError)
   | fieldKindMismatch (field : FieldId)
   | unsupportedDateCalendar
   | unsupportedDateTimeDifferenceOperand
@@ -100,6 +104,7 @@ inductive NumericComputationElabError where
   | incompatibleDateDifference
   | unsupportedCalendarProfile (zoneId : String)
   | baseYearNotDeclared
+  | fieldFill (error : FieldFillListElabError)
   | aggregate (error : NumberEntityElabError)
   | tokenValueCount (error : TokenValueCountElabError)
   | booleanValueCount (error : BooleanValueCountElabError)

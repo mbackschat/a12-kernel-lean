@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation.Atom
+import A12Kernel.Elaboration.ComputationCondition
 
 /-! # Numeric computation-expression outcomes
 
@@ -42,6 +43,9 @@ private def FlatModel.admitsTemporalComputationOperand
 
 def FlatModel.admitsNumericComputationOperand
     (model : FlatModel) (scope : List RepeatableLevel) : CheckedNumericComputationAtom model → Bool
+  | .filledFieldCount source =>
+      source.computationSources.toOption.any fun sources =>
+        !sources.isEmpty && sources.all (·.admitted model scope)
   | .firstFilled source | .valueCount _ source =>
       model.directFieldsBoundBy scope (source.operands.filterMap (·.directField?.map (·.id)))
   | .tokenValueCount source =>
@@ -139,7 +143,7 @@ def CheckedNumericComputationAtom.numericScaleSummary
       source.summaryWith FlatFieldDecl.numericScaleSummary
         CheckedNumberEntitySource.aggregateScaleSummary
   | .firstFilled source => source.scaleSummary
-  | .valueCount _ _ => NumericScaleSummary.field 0
+  | .valueCount _ _ | .filledFieldCount _ => NumericScaleSummary.field 0
   | .tokenValueCount source => source.scaleSummary
   | .booleanValueCount source => source.scaleSummary
   | .sumOfProducts source => source.scaleSummary
@@ -181,6 +185,7 @@ def NumericComputationAtom.referencesField (model : FlatModel) (field : FieldId)
 def CheckedNumericComputationAtom.references
     (model : FlatModel) (field : FieldId) :
     CheckedNumericComputationAtom model → Bool
+  | .filledFieldCount source => source.declarations.any (·.id == field)
   | .firstFilled source => source.referencesField field
   | .valueCount _ source => source.referencesField field
   | .tokenValueCount source => source.referencesField field
@@ -308,6 +313,9 @@ private def FlatModel.elaborateNumericComputationAtom
     (model : FlatModel) (declaringGroup targetGroup : GroupPath) :
     SurfaceNumericComputationAtom →
       Except NumericComputationElabError (CheckedNumericComputationAtom model)
+    | .filledFieldCount source =>
+        (elaborateComputationFieldFillList model declaringGroup targetGroup source).map .filledFieldCount
+          |>.mapError .fieldFill
     | .firstFilled source => do
         let checked ←
           (elaborateNumberEntitySource model declaringGroup source (fixedTargetGroup? := some targetGroup)).mapError

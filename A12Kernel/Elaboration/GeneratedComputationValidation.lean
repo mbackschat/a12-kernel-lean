@@ -405,6 +405,7 @@ def CheckedNumericComputationAtom.toValidationAtom :
     CheckedNumericComputationAtom model →
       Except GeneratedComputationValidationError
         (OrderedNumericValidationAtom model)
+  | .filledFieldCount source => pure (.filledFieldCount source)
   | .firstFilled source =>
       pure (.firstFilled source)
   | .valueCount expected source =>

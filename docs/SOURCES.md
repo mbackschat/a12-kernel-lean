@@ -1717,3 +1717,6 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 <a id="src-repeatable-group-profiles"></a>
 - [Implicit guards before repeatable target-profile assembly](sources/computation-scheduling-probes.md#src-repeatable-group-profiles)
+
+<a id="src-filled-field-count-expressions"></a>
+- [Filled-field count expression admission, 2026-10-03](sources/group-list-and-capacity-probes.md#src-filled-field-count-expressions)

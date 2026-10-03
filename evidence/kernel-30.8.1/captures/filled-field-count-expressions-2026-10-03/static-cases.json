@@ -1,0 +1,1193 @@
+{
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "cases": [
+    {
+      "id": "rule1",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) == 1",
+        "--code",
+        "rule1",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule2",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1 == NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule2",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule3",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) == 1.0",
+        "--code",
+        "rule3",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 1,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_DEC_PLACES"
+      ]
+    },
+    {
+      "id": "rule4",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1.0 == NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule4",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 1,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_DEC_PLACES"
+      ]
+    },
+    {
+      "id": "rule5",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) == 1.5",
+        "--code",
+        "rule5",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 1,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_DEC_PLACES"
+      ]
+    },
+    {
+      "id": "rule6",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1.5 == NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule6",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 1,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_DEC_PLACES"
+      ]
+    },
+    {
+      "id": "rule7",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) != 1",
+        "--code",
+        "rule7",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule8",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1 != NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule8",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule9",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) != 1.0",
+        "--code",
+        "rule9",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 1,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_DEC_PLACES"
+      ]
+    },
+    {
+      "id": "rule10",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1.0 != NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule10",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 1,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_DEC_PLACES"
+      ]
+    },
+    {
+      "id": "rule11",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) != 1.5",
+        "--code",
+        "rule11",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 1,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_DEC_PLACES"
+      ]
+    },
+    {
+      "id": "rule12",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1.5 != NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule12",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 1,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_DEC_PLACES"
+      ]
+    },
+    {
+      "id": "rule13",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) > 1",
+        "--code",
+        "rule13",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule14",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1 > NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule14",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule15",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) > 1.0",
+        "--code",
+        "rule15",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule16",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1.0 > NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule16",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule17",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) > 1.5",
+        "--code",
+        "rule17",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule18",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1.5 > NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule18",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule19",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) >= 1",
+        "--code",
+        "rule19",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule20",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1 >= NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule20",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule21",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) >= 1.0",
+        "--code",
+        "rule21",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule22",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1.0 >= NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule22",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule23",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) >= 1.5",
+        "--code",
+        "rule23",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule24",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1.5 >= NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule24",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule25",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) < 1",
+        "--code",
+        "rule25",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule26",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1 < NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule26",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule27",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) < 1.0",
+        "--code",
+        "rule27",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule28",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1.0 < NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule28",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule29",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) < 1.5",
+        "--code",
+        "rule29",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule30",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1.5 < NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule30",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule31",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) <= 1",
+        "--code",
+        "rule31",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule32",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1 <= NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule32",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule33",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) <= 1.0",
+        "--code",
+        "rule33",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule34",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1.0 <= NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule34",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule35",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) <= 1.5",
+        "--code",
+        "rule35",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule36",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1.5 <= NumberOfFilledFields(/Form/Inputs)",
+        "--code",
+        "rule36",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule37",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) + 1 > 1",
+        "--code",
+        "rule37",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule38",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "1 < NumberOfFilledFields(/Form/Inputs) + 1",
+        "--code",
+        "rule38",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule39",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) + 1 < 1.5",
+        "--code",
+        "rule39",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule40",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) + [/Form/Inputs/A] >= 0",
+        "--code",
+        "rule40",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule41",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "Abs(NumberOfFilledFields(/Form/Inputs)) == 0",
+        "--code",
+        "rule41",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "rule42",
+      "model": "Count_DM.json",
+      "command": [
+        "rule",
+        "check",
+        "--field",
+        "/Form/Inputs/A",
+        "--condition",
+        "NumberOfFilledFields(/Form/Inputs) + NumberOfFilledFields(/Form/Inputs) >= 0",
+        "--code",
+        "rule42",
+        "-m",
+        "Count_DM.json"
+      ],
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "valid": true,
+      "codes": []
+    },
+    {
+      "id": "calc43",
+      "model": "Count_DM.json",
+      "command": [
+        "computation",
+        "add",
+        "<spec>",
+        "--dry-run"
+      ],
+      "spec": {
+        "name": "calc43",
+        "computedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "NumberOfFilledFields(Inputs)"
+          }
+        ],
+        "messages": [
+          {
+            "locale": "en_US",
+            "text": "The count determines the result."
+          }
+        ]
+      },
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "outcome": "preview",
+      "ok": true,
+      "codes": [],
+      "persistedRead": {
+        "computation": "/Form/calc43",
+        "group": "/Form",
+        "calculatedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "NumberOfFilledFields(Inputs)"
+          }
+        ]
+      },
+      "persistedModelCheck": {
+        "exit": 0,
+        "valid": true,
+        "verification": "KERNEL_CONFIRMED",
+        "codes": []
+      }
+    },
+    {
+      "id": "calc44",
+      "model": "Count_DM.json",
+      "command": [
+        "computation",
+        "add",
+        "<spec>",
+        "--dry-run"
+      ],
+      "spec": {
+        "name": "calc44",
+        "computedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "NumberOfFilledFields(Inputs) + 1"
+          }
+        ],
+        "messages": [
+          {
+            "locale": "en_US",
+            "text": "The count determines the result."
+          }
+        ]
+      },
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "outcome": "preview",
+      "ok": true,
+      "codes": [],
+      "persistedRead": {
+        "computation": "/Form/calc44",
+        "group": "/Form",
+        "calculatedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "NumberOfFilledFields(Inputs) + 1"
+          }
+        ]
+      },
+      "persistedModelCheck": {
+        "exit": 0,
+        "valid": true,
+        "verification": "KERNEL_CONFIRMED",
+        "codes": []
+      }
+    },
+    {
+      "id": "calc45",
+      "model": "Count_DM.json",
+      "command": [
+        "computation",
+        "add",
+        "<spec>",
+        "--dry-run"
+      ],
+      "spec": {
+        "name": "calc45",
+        "computedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "1 + NumberOfFilledFields(Inputs)"
+          }
+        ],
+        "messages": [
+          {
+            "locale": "en_US",
+            "text": "The count determines the result."
+          }
+        ]
+      },
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "outcome": "preview",
+      "ok": true,
+      "codes": [],
+      "persistedRead": {
+        "computation": "/Form/calc45",
+        "group": "/Form",
+        "calculatedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "1 + NumberOfFilledFields(Inputs)"
+          }
+        ]
+      },
+      "persistedModelCheck": {
+        "exit": 0,
+        "valid": true,
+        "verification": "KERNEL_CONFIRMED",
+        "codes": []
+      }
+    },
+    {
+      "id": "calc46",
+      "model": "Count_DM.json",
+      "command": [
+        "computation",
+        "add",
+        "<spec>",
+        "--dry-run"
+      ],
+      "spec": {
+        "name": "calc46",
+        "computedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "NumberOfFilledFields(Inputs) * 2"
+          }
+        ],
+        "messages": [
+          {
+            "locale": "en_US",
+            "text": "The count determines the result."
+          }
+        ]
+      },
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "outcome": "preview",
+      "ok": true,
+      "codes": [],
+      "persistedRead": {
+        "computation": "/Form/calc46",
+        "group": "/Form",
+        "calculatedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "NumberOfFilledFields(Inputs) * 2"
+          }
+        ]
+      },
+      "persistedModelCheck": {
+        "exit": 0,
+        "valid": true,
+        "verification": "KERNEL_CONFIRMED",
+        "codes": []
+      }
+    },
+    {
+      "id": "calc47",
+      "model": "Count_DM.json",
+      "command": [
+        "computation",
+        "add",
+        "<spec>",
+        "--dry-run"
+      ],
+      "spec": {
+        "name": "calc47",
+        "computedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "Abs(NumberOfFilledFields(Inputs))"
+          }
+        ],
+        "messages": [
+          {
+            "locale": "en_US",
+            "text": "The count determines the result."
+          }
+        ]
+      },
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "outcome": "preview",
+      "ok": true,
+      "codes": [],
+      "persistedRead": {
+        "computation": "/Form/calc47",
+        "group": "/Form",
+        "calculatedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "Abs(NumberOfFilledFields(Inputs))"
+          }
+        ]
+      },
+      "persistedModelCheck": {
+        "exit": 0,
+        "valid": true,
+        "verification": "KERNEL_CONFIRMED",
+        "codes": []
+      }
+    },
+    {
+      "id": "calc48",
+      "model": "Count_DM.json",
+      "command": [
+        "computation",
+        "add",
+        "<spec>",
+        "--dry-run"
+      ],
+      "spec": {
+        "name": "calc48",
+        "computedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "NumberOfFilledFields(Inputs) + NumberOfFilledFields(Inputs)"
+          }
+        ],
+        "messages": [
+          {
+            "locale": "en_US",
+            "text": "The count determines the result."
+          }
+        ]
+      },
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "outcome": "preview",
+      "ok": true,
+      "codes": [],
+      "persistedRead": {
+        "computation": "/Form/calc48",
+        "group": "/Form",
+        "calculatedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "NumberOfFilledFields(Inputs) + NumberOfFilledFields(Inputs)"
+          }
+        ]
+      },
+      "persistedModelCheck": {
+        "exit": 0,
+        "valid": true,
+        "verification": "KERNEL_CONFIRMED",
+        "codes": []
+      }
+    },
+    {
+      "id": "calc49",
+      "model": "Count_DM.json",
+      "command": [
+        "computation",
+        "add",
+        "<spec>",
+        "--dry-run"
+      ],
+      "spec": {
+        "name": "calc49",
+        "computedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "NumberOfFilledFields(Inputs) + [Inputs/A]"
+          }
+        ],
+        "messages": [
+          {
+            "locale": "en_US",
+            "text": "The count determines the result."
+          }
+        ]
+      },
+      "exit": 0,
+      "verification": "KERNEL_CONFIRMED",
+      "outcome": "preview",
+      "ok": true,
+      "codes": [],
+      "persistedRead": {
+        "computation": "/Form/calc49",
+        "group": "/Form",
+        "calculatedField": "/Form/Out",
+        "alternatives": [
+          {
+            "operation": "NumberOfFilledFields(Inputs) + [Inputs/A]"
+          }
+        ]
+      },
+      "persistedModelCheck": {
+        "exit": 0,
+        "valid": true,
+        "verification": "KERNEL_CONFIRMED",
+        "codes": []
+      }
+    }
+  ]
+}
