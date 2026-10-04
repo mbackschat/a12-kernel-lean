@@ -1,0 +1,448 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Kinds_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "present",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "EnumConcatComp",
+              "field": "Form/EnumConcat",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/E",
+                "Form/EnumConcat"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EnumCopyComp",
+              "field": "Form/EnumCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/E",
+                "Form/EnumCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Kinds0",
+              "field": "Form/T",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/E",
+                "Form/T"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/EnumConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "abx"
+              },
+              {
+                "field": "Form/EnumCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "ab"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/EnumConcat",
+                "value": "abx"
+              },
+              {
+                "field": "Form/EnumCopy",
+                "value": "ab"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "E": "ab",
+                "EnumConcat": "abx",
+                "EnumCopy": "ab",
+                "S": "ab",
+                "T": "abx"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "EnumConcatComp",
+              "field": "Form/EnumConcat",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/E",
+                "Form/EnumConcat"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EnumCopyComp",
+              "field": "Form/EnumCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/E",
+                "Form/EnumCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Kinds0",
+              "field": "Form/T",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/E",
+                "Form/T"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/EnumConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "abx"
+              },
+              {
+                "field": "Form/EnumCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "ab"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/EnumConcat",
+                "value": "abx"
+              },
+              {
+                "field": "Form/EnumCopy",
+                "value": "ab"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "E": "ab",
+                "EnumConcat": "abx",
+                "EnumCopy": "ab",
+                "S": "ab",
+                "T": "abx"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "EnumConcatComp",
+              "field": "Form/EnumConcat",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/E",
+                "Form/EnumConcat"
+              ],
+              "fillToFix": [
+                "Form/E",
+                "Form/EnumConcat"
+              ]
+            },
+            {
+              "code": "Kinds0",
+              "field": "Form/T",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/E",
+                "Form/T"
+              ],
+              "fillToFix": [
+                "Form/E",
+                "Form/T"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/EnumConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/EnumCopy",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/EnumConcat",
+                "value": "x"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "E": "",
+                "EnumConcat": "x",
+                "EnumCopy": null,
+                "S": "",
+                "T": "x"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "EnumConcatComp",
+              "field": "Form/EnumConcat",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/E",
+                "Form/EnumConcat"
+              ],
+              "fillToFix": [
+                "Form/E",
+                "Form/EnumConcat"
+              ]
+            },
+            {
+              "code": "Kinds0",
+              "field": "Form/T",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/E",
+                "Form/T"
+              ],
+              "fillToFix": [
+                "Form/E",
+                "Form/T"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/EnumConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/EnumCopy",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/EnumConcat",
+                "value": "x"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "E": "",
+                "EnumConcat": "x",
+                "EnumCopy": null,
+                "S": "",
+                "T": "x"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/E",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/E"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/EnumConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumCopy",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/E",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/E"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "E": "bad",
+                "EnumConcat": null,
+                "EnumCopy": null,
+                "S": "ab",
+                "T": "abx"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/E",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/E"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/EnumConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/EnumCopy",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringFalschesMuster",
+                "field": "Form/E",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/E"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "E": "bad",
+                "EnumConcat": null,
+                "EnumCopy": null,
+                "S": "ab",
+                "T": "abx"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

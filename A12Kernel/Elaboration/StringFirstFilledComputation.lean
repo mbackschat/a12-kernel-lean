@@ -21,12 +21,6 @@ must not be an index field, while a fixed target is unrestricted until an operan
 
 namespace A12Kernel
 
-/-- The declaration-local ordinary evaluated-String carrier of a String first-filled target. -/
-def FlatFieldDecl.isOrdinaryStringComputationCarrier
-    (declaration : FlatFieldDecl) : Bool :=
-  declaration.policy.kind == .string &&
-    declaration.stringValueMode == .evaluated &&
-    declaration.customType.isNone && declaration.enumeration.isNone
 
 namespace CheckedTokenEntityOperand
 

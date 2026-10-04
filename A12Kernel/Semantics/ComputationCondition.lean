@@ -19,6 +19,8 @@ namespace A12Kernel
 structure ScalarComputationContext where
   read : FieldId → CheckedCell
   storedText : FieldId → Option String := fun _ => none
+  /-- Regime-selected Number text for String coercion; supplied by the checked document. -/
+  numberText : FieldId → Option String := fun _ => none
   world : Option World := none
   /-- The repeatable target row being computed, empty for a fixed target. Only a structural
   `CurrentRepetition` operand reads it; every field read is already addressed by `read`. -/
@@ -35,6 +37,7 @@ def ScalarComputationContext.withFixedOverlay
   { context with
     read := fun field => (overlay field).getD (context.read field)
     storedText := fun field => if (overlay field).isSome then stored field else context.storedText field
+    numberText := fun field => if (overlay field).isSome then stored field else context.numberText field
     addressed := context.addressed.map fun addressed =>
       { addressed with
         read := fun row field => (overlay field).getD (addressed.read row field) } }

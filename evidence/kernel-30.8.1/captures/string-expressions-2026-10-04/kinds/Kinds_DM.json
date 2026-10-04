@@ -1,0 +1,217 @@
+{
+  "header": {
+    "id": "StringExpressions_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "StringExpressions_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "UTC",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/S",
+                "name": "S",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 6,
+                      "minLength": 2
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/T",
+                "name": "T",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 20
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/N",
+                "name": "N",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 2,
+                      "positivesOnly": false
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Out",
+                "name": "Out",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 40
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/E",
+                "name": "E",
+                "Field": {
+                  "fieldType": {
+                    "type": "EnumerationType",
+                    "EnumerationType": {
+                      "values": [
+                        {
+                          "value": "ab"
+                        },
+                        {
+                          "value": "x"
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Kinds0",
+                "name": "Kinds0",
+                "Rule": {
+                  "errorEntityRelPath": "../T",
+                  "errorCode": "Kinds0",
+                  "errorCondition": "[E] + \"x\" == [T]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "String expression check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Kinds3",
+                "name": "Kinds3",
+                "Rule": {
+                  "errorEntityRelPath": "../S",
+                  "errorCode": "Kinds3",
+                  "errorCondition": "[S] + \"x\" == [E]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "String expression check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/EnumConcat",
+                "name": "EnumConcat",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 20
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/EnumConcatComp",
+                "name": "EnumConcatComp",
+                "Computation": {
+                  "computedFieldRelPath": "../EnumConcat",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[E] + \"x\""
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "String expression check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/EnumCopy",
+                "name": "EnumCopy",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 20
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/EnumCopyComp",
+                "name": "EnumCopyComp",
+                "Computation": {
+                  "computedFieldRelPath": "../EnumCopy",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[E]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "String expression check."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

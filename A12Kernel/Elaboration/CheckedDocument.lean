@@ -328,6 +328,8 @@ private def checkPlacedCell
       checkAdmittedRawCell input.raw
     else
       (prepared.checkContext locale raw).read input.address.field
+  let base := if overLimit || model.legalCharset.accepts input.stored then base
+    else base.withFinding .unsupportedCharacter
   let numericInput := match declaration.policy.kind with
     | .number _ =>
         if input.stored.isEmpty then none
@@ -612,12 +614,17 @@ def computationContextAt (checked : CheckedDocument model) (environment : Env) :
     let declaration ← (model.lookupUniqueId field).toOption
     let path ← (environment.pathForScope declaration.repeatableScope).toOption
     checked.storedTextAt { field, path }
+  numberText field := do
+    let declaration ← (model.lookupUniqueId field).toOption
+    let path ← (environment.pathForScope declaration.repeatableScope).toOption
+    (← (checked.readNumberFormalText { field, path }).toOption).parsed
   row := environment
   addressed := some checked.computationFillContext
 
 /-- The checked document's complete computation context before a caller supplies its world. -/
 def computationContext (checked : CheckedDocument model) : ScalarComputationContext :=
   { read := checked.flatContext.read, storedText := checked.flatContext.storedText,
+    numberText := fun field => ((checked.readNumberFormalText { field, path := [] }).toOption).bind (·.parsed)
     addressed := some checked.computationFillContext }
 
 /-- Project ordinary nonrepeatable computation reads under one explicit world. Heterogeneous computation runs share this immutable source boundary before adding their typed dependency overlay. -/

@@ -5,31 +5,35 @@ import A12Kernel.Elaboration.ComputationNumericGuard
 
 /-! # Checked alternatives at a repeatable non-Number target
 
-Selection belongs to one target row. The existing constant and Enumeration operations keep their
-certificates and evaluators; this table adds no token semantics or alternative-selection algorithm.
+Selection belongs to one target row. Bound String expressions, constants and Enumeration operations
+keep their certificates and evaluators; this table adds no token semantics or selection algorithm.
 -/
 
 namespace A12Kernel
 
 inductive CheckedRowComputationOperation (model : FlatModel) where
+  | stringExpression (operation : CheckedRowStringExpression model)
   | stringConstant (operation : CheckedRepeatableStringConstantComputation model)
   | enumeration (operation : CheckedAddressedEnumerationComputation model)
 
 namespace CheckedRowComputationOperation
 
 def target : CheckedRowComputationOperation model → FieldId
+  | .stringExpression operation => operation.target.targetField
   | .stringConstant operation => operation.checkedTarget.targetField
   | .enumeration operation => operation.target.field
 
 def scope : CheckedRowComputationOperation model → List RepeatableLevel
+  | .stringExpression operation => operation.target.declaration.repeatableScope
   | .stringConstant operation => operation.checkedTarget.declaration.repeatableScope
   | .enumeration operation => operation.target.declaration.repeatableScope
 
 def family : CheckedRowComputationOperation model → DocumentTargetFamily
-  | .stringConstant _ => .string
+  | .stringExpression _ | .stringConstant _ => .string
   | .enumeration _ => .enumeration
 
 def referencesField : CheckedRowComputationOperation model → FieldId → Bool
+  | .stringExpression operation, field => operation.expression.referencesField field
   | .stringConstant _, _ => false
   | .enumeration operation, field => operation.source.referencesField field
 
@@ -104,6 +108,7 @@ def certifyRowComputationTable
   pure { target, scope, family, first, remaining }
 
 inductive RowComputationTableFault where
+  | stringExpression (error : StringComputationFault)
   | rows (cause : ActualRowEnvironmentError)
   | environment (cause : EnvBindingError)
   | guardBinding (cause : CheckedComputationConditionError)
@@ -119,6 +124,14 @@ def evaluateAt (operation : CheckedRowComputationOperation model)
     (patterns : PreparedFlatStringPatterns model compilePattern) (document : CheckedDocument model)
     (environment : Env) : Except RowComputationTableFault (DocumentTargetOutcome × CheckedCell) := do
   match operation with
+  | .stringExpression operation =>
+      let field := operation.target.targetField
+      let some matcher := patterns.targetMatcher? field | throw (.targetPatternUnavailable field)
+      let context := document.computationContextAt environment
+      let result ← (operation.expression.eval .computation { read := context.read } context.numberText).mapError .stringExpression
+      let term := StringTerm.ofOperand result
+      let outcome := operation.target.declaration.stringPolicy.checkTargetWithPattern matcher term.store
+      pure (.string outcome, ← (DocumentComputationReadBack.string outcome).mapError .readBack)
   | .stringConstant operation =>
       let some matcher := patterns.targetMatcher? operation.checkedTarget.targetField
         | throw (.targetPatternUnavailable operation.checkedTarget.targetField)

@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.LowerString
 import A12Kernel.Reference.Dm.LowerCore
 import A12Kernel.Reference.Dm.LowerEntity
 import A12Kernel.Reference.Dm.Parser
@@ -59,16 +60,22 @@ where
       (checkRepeatableBooleanConstantComputation model group target.id value)
     pure fun _ => .ofRepeatableBooleanConstant operation
 
-/-- Only ordinary quoted tokens and Enumeration field reads belong to this row table; temporal
-literal classification stays with `rowConstant`, whose family gate precedes the target kind. -/
-def isRowAlternativeOperation (target : FlatFieldDecl) : Expr → Bool
+/-- Ordinary String expressions and Enumeration reads share row-local alternative selection.
+Temporal literal classification stays with `rowConstant`, whose family gate precedes the target kind. -/
+def isRowAlternativeOperation (target : FlatFieldDecl) (expression : Expr) : Bool :=
+  if target.policy.kind == .string && (lowerStringExpr expression).isOk then true else
+  match expression with
   | .string text => !isTemporalConstant text
   | .value { index := none, .. } => target.policy.kind == .enumeration
   | _ => false
 
-/-- Reuse the checked literal/direct/category operations before certifying row-local selection. -/
-def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) :
-    Expr → Lowering (CheckedRowComputationOperation model)
+/-- Reuse bound String expressions and checked Enumeration operations before certifying row-local selection. -/
+def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
+    (expression : Expr) : Lowering (CheckedRowComputationOperation model) := do
+  if target.policy.kind == .string then
+    return .stringExpression (← elaborated "StringExpression"
+      (elaborateRowStringExpression model group target.id (← lowerStringExpr expression)))
+  match expression with
   | .string text => do
       if isTemporalConstant text then refuse "RowComputation" "temporal literal"
       if target.policy.kind == .enumeration then

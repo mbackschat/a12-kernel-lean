@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.StringExpressionLocks
 import A12Kernel.Reference.Dm.CalendarExpressionLocks
 import A12Kernel.Reference.Dm.RangeExpressionLocks
 import A12Kernel.Reference.Dm.StampConstructionLocks

@@ -1,0 +1,39 @@
+id	arm	expression	admitted	codes
+ConcatEq	rule	[S] + [T] == "x"	true	
+ConcatNe	rule	[S] + [T] != "x"	true	
+ConcatComp	computation	[S] + [T]	true	
+SuffixEq	rule	[S] + "x" == "x"	true	
+SuffixNe	rule	[S] + "x" != "x"	true	
+SuffixComp	computation	[S] + "x"	true	
+PrefixEq	rule	"x" + [S] == "x"	true	
+PrefixNe	rule	"x" + [S] != "x"	true	
+PrefixComp	computation	"x" + [S]	true	
+RangeEq	rule	RangeAsString(S,1,2) == "x"	true	
+RangeNe	rule	RangeAsString(S,1,2) != "x"	true	
+RangeComp	computation	RangeAsString(S,1,2)	true	
+OvershootEq	rule	RangeAsString(S,1,6) == "x"	true	
+OvershootNe	rule	RangeAsString(S,1,6) != "x"	true	
+OvershootComp	computation	RangeAsString(S,1,6)	true	
+RangeSuffixEq	rule	RangeAsString(S,1,6) + "x" == "x"	true	
+RangeSuffixNe	rule	RangeAsString(S,1,6) + "x" != "x"	true	
+RangeSuffixComp	computation	RangeAsString(S,1,6) + "x"	true	
+CoerceEq	rule	FieldValueAsString(N) == "x"	true	
+CoerceNe	rule	FieldValueAsString(N) != "x"	true	
+CoerceComp	computation	FieldValueAsString(N)	true	
+CoerceSuffixEq	rule	FieldValueAsString(N) + "x" == "x"	true	
+CoerceSuffixNe	rule	FieldValueAsString(N) + "x" != "x"	true	
+CoerceSuffixComp	computation	FieldValueAsString(N) + "x"	true	
+MixedEq	rule	RangeAsString(S,1,2) + FieldValueAsString(N) == "x"	true	
+MixedNe	rule	RangeAsString(S,1,2) + FieldValueAsString(N) != "x"	true	
+MixedComp	computation	RangeAsString(S,1,2) + FieldValueAsString(N)	true	
+BracesEq	rule	{[S] + "x"} + [T] == "x"	true	
+BracesNe	rule	{[S] + "x"} + [T] != "x"	true	
+BracesComp	computation	{[S] + "x"} + [T]	true	
+Gate0	rule	[S] + "x" < [T]	false	MVK_INVALID_TYPE_FOR_COMPARISON
+Gate1	rule	RangeAsString(N,1,2) == "x"	false	MVK_INVALID_TYPE
+Gate2	rule	FieldValueAsString(S) == "x"	false	MVK_NO_NUMBER
+Gate3	rule	RangeAsString([S],1,2) == "x"	false	MVK_UNEXPECTED_TOKEN
+Gate4	rule	S + "x" == [T]	false	MVK_UNEXPECTED_TOKEN
+Gate5	rule	RangeAsString(S,0,2) == "x"	false	MVK_INVALID_INTERVAL
+Gate6	rule	[S] + [N] == "x"	false	MVK_NO_STRING_OR_NUMBER_FOR_ADD
+Gate7	rule	[S] + "x" == ""	true	

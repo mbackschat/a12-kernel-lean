@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.StringExpression
 import A12Kernel.Elaboration.ValueListCondition
 import A12Kernel.Elaboration.NumericAggregate.Entities
 import A12Kernel.Semantics.ComputationValueList
@@ -13,6 +14,7 @@ inductive SurfaceScalarMembershipMembers where
   deriving Repr, DecidableEq
 
 inductive SurfaceComputationPredicate where
+  | stringExpression (operator : EqualityOp) (left right : StringExpr SurfaceFieldPath)
   | temporal (operator : TemporalComparisonOp) (left right : SurfaceScalarTemporalExpression)
   | fieldComparison (operator : SurfaceComparisonOp) (left right : SurfaceFieldPath)
   | scalarMembership (operator : ValueListMembershipOp) (subject : SurfaceTextFieldOperand)
@@ -22,6 +24,7 @@ inductive SurfaceComputationPredicate where
   deriving Repr, DecidableEq
 
 inductive ComputationPredicateElabError where
+  | stringExpression (error : StringComputationElabError)
   | temporal (error : ScalarTemporalExpressionError)
   | comparison (error : ScalarFieldComparisonElabError)
   | read (error : ResolveError)
@@ -33,6 +36,7 @@ inductive ComputationPredicateElabError where
   deriving Repr, DecidableEq
 
 inductive ComputationPredicateError where
+  | stringExpression (error : StringComputationFault)
   /-- Runtime failure at a reached guard becomes the target's calculation-value error, separately
   from inherited operand poison (comparison-guard grid, 2026-10-04). -/
   | valueFailure
@@ -45,6 +49,7 @@ inductive ComputationPredicateError where
 /-- Retain typed source certificates and authored filters; computation traversal keeps reached
 errors distinct from validation's unknown verdict. -/
 inductive CheckedComputationPredicate (model : FlatModel) where
+  | stringExpression (source : CheckedStringExpressionComparison model)
   | temporal (source : CheckedScalarTemporalComparison model)
   | fieldComparison (source : CheckedScalarFieldComparison model)
   | valueList (source : CheckedValueListCondition model)
@@ -56,6 +61,7 @@ namespace CheckedComputationPredicate
 
 def referencesField (predicate : CheckedComputationPredicate model) (field : FieldId) : Bool :=
   match predicate with
+  | .stringExpression source => source.referencesField field
   | .temporal source => source.referencesField field
   | .fieldComparison source => source.referencesField field
   | .valueList source | .scalarValueList _ source => source.referencesField field
@@ -63,6 +69,7 @@ def referencesField (predicate : CheckedComputationPredicate model) (field : Fie
 
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
   match predicate with
+  | .stringExpression source => source.declarations.all (·.repeatableScope.isPrefixOf scope)
   | .temporal source => source.fieldIds.all fun field =>
       (model.lookupUniqueId field).toOption.any (·.repeatableScope.isPrefixOf scope)
   | .fieldComparison source => source.rowBoundBool scope
@@ -183,6 +190,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   let filterRead := filterRead?.getD (fun row field =>
     (context.addressed.map (fun addressed => addressed.read row field)).getD (context.read field))
   match predicate with
+  | .stringExpression source => (source.evalComputation { read := context.read } context.numberText).mapError .stringExpression
   | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError (fun
       | .dateTimeLabelUnresolved => .valueFailure
       | .calendarUnavailable => .temporalUnavailable)
@@ -233,6 +241,8 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (surface : SurfaceComputationPredicate) :
     Except ComputationPredicateElabError (CheckedComputationPredicate model) := do
   match surface with
+  | .stringExpression op left right => .stringExpression <$>
+      (elaborateStringExpressionComparison model declaringGroup targetGroup op left right).mapError .stringExpression
   | .temporal op left right => .temporal <$>
       (elaborateScalarTemporalComparison model declaringGroup op left right (some targetGroup)).mapError .temporal
   | .fieldComparison op left right => .fieldComparison <$>

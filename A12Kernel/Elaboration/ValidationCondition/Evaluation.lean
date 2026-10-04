@@ -57,7 +57,7 @@ def evalSelected (context : ValidationEvaluationContext)
   | .stringPattern leaf =>
       if isRelevant leaf.condition.field.id then leaf.condition.evalSelected context.fields
       else .unknown
-  | .tokenComparison _ | .constructedDateValidity _ _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => .unknown
+  | .stringExpression _ | .tokenComparison _ | .constructedDateValidity _ _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => .unknown
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
@@ -199,6 +199,19 @@ def evalAddressedPartial?
 /-- Evaluate one addressed leaf through the same relevance rules. Ordered numeric and starred group-list sources preserve structural addressing failures; direct scalar/group leaves remain the exact pure evaluator lifted into that channel. -/
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
     ValidationConditionLeaf model → Except CheckedAddressingError Verdict
+  | .stringExpression comparison =>
+      match context.input with
+      | .checked document => do
+          let cells ← comparison.declarations.mapM fun field => do
+            pure (field.id, ← context.readCell context.outer field.id)
+          let fields : FlatContext := { context.scalar.fields with
+            read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell }
+          let numberText field := do
+            let declaration ← (model.lookupUniqueId field).toOption
+            let path ← (context.outer.pathForScope declaration.repeatableScope).toOption
+            (← (document.readNumberFormalText { field, path }).toOption).parsed
+          (comparison.eval fields numberText).mapError .stringExpression
+      | .legacy _ _ | .partialView _ _ => .error (.checkedDocumentRequired [])
   | .tokenComparison comparison =>
       match context.input with
       | .checked document => comparison.evaluateFull document context.outer

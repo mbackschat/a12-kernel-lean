@@ -1,0 +1,5 @@
+id	arm	expression	admitted	codes
+Kinds0	rule	[E] + "x" == [T]	true	
+Kinds1	rule	RangeAsString(E,1,2) == [T]	false	MVK_INVALID_TYPE
+Kinds2	rule	FieldValueAsString(E) == [T]	false	MVK_NO_NUMBER
+Kinds3	rule	[S] + "x" == [E]	true	

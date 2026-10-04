@@ -291,6 +291,8 @@ private def ValidationConditionLeaf.iterationGuardAt
   -- No guard rule is measured for a field-fill operand at a level its binding scope reaches.
   | .fieldFill _ source =>
       if source.bindingScope.contains level then .unclassified else .noReference
+  | .stringExpression comparison =>
+      if comparison.declarations.any (·.repeatableScope.contains level) then .unclassified else .noReference
   | .tokenComparison comparison =>
       if comparison.bindingScopes.flatten.contains level then .unclassified else .noReference
   | .valueList source =>
@@ -394,6 +396,8 @@ def ordinaryRepeatableFields (condition : ValidationCondition model) :
     List FlatFieldDecl :=
   match condition with
   | .leaf (.repeatableFieldPresence _ declaration) => [declaration]
+  | .leaf (.stringExpression comparison) =>
+      comparison.declarations.filter fun field => !field.repeatableScope.isEmpty
   | .leaf (.orderedNumeric _ comparison) =>
       authoredNumericRepeatableFields
           (ordinaryNumericAtomRepeatableFields model) comparison.left ++
@@ -422,7 +426,7 @@ def supportsOrdinaryIteration
     -- A nonrepeatable operand read is environment-insensitive, exactly as a flat leaf's is, so the
     -- default `false` here would narrow the fragment without a reason.
     | .constructedDateValidity _ _ | .customFieldValidity _ | .stringPattern _ => true
-    | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => true
+    | .stringExpression _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => true
     | _ => false
 
 /-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/

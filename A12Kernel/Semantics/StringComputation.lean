@@ -72,31 +72,62 @@ inductive StringExpr (Atom : Type := FieldId) where
   | concat (left right : StringExpr Atom)
   deriving Repr, DecidableEq
 
+/-- Storage forgets comparison provenance while preserving formal poison, for fixed and row targets. -/
+def StringTerm.ofOperand : SimpleComparisonOperand String → StringTerm
+  | .notEvaluated => .noValue
+  | .value value _ => .text value
+  | .unknown cause => .poison cause
+
 namespace StringExpr
 
-/-- Evaluate without deciding whether the resulting text can be stored. The right operand is not consulted after a left poison. -/
-def eval (context : StringComputationContext) : StringExpr FieldId → Except StringComputationFault StringTerm
-  | StringExpr.field fieldId => context.readTerm fieldId
-  | StringExpr.fieldValueAsString fieldId => context.readTerm fieldId
-  | StringExpr.literal value => pure (.text value)
-  | StringExpr.range fieldId start finish => do
-      if !validStringRange start finish then
-        throw (.invalidRange start finish)
-      match ← context.readTerm fieldId with
-      | .noValue => pure (.text "")
-      | .poison cause => pure (.poison cause)
-      | .text value =>
-          if utf16CodeUnitLength value < finish then
-            pure (.text "")
-          else
-            match utf16CodeUnitSlice? value (start - 1) finish with
-            | some selected => pure (.text selected)
+/-- A String read keeps omission provenance independently of its text. Validation and computation
+share the operand domain; computation alone stops at a reached formal cause (String grid, 2026-10-04). -/
+def readOperandAt (phase : Phase) (read : FieldId → CheckedCell) (fieldId : FieldId) :
+    Except StringComputationFault (SimpleComparisonOperand String) :=
+  match observeCell phase (read fieldId) with
+  | .empty => pure .notEvaluated
+  | .value (.str text) => if text.isEmpty then pure .notEvaluated else pure (.value text true)
+  | .value _ => throw (.fieldKindMismatch fieldId)
+  | .poison cause | .unknown cause => pure (.unknown cause)
+
+/-- Absence contributes empty text without becoming fixed provenance; formal unavailability keeps
+its cause. The range and concatenation runtime grid separates these from empty comparison results. -/
+def concatOperands : SimpleComparisonOperand String → SimpleComparisonOperand String →
+    SimpleComparisonOperand String
+  | .unknown cause, _ | _, .unknown cause => .unknown cause
+  | .notEvaluated, .notEvaluated => .value "" false
+  | .notEvaluated, .value right _ => .value right false
+  | .value left _, .notEvaluated => .value left false
+  | .value left leftGiven, .value right rightGiven => .value (left ++ right) (leftGiven && rightGiven)
+
+/-- One ordered String evaluator serves validation, guards and stores. The caller provides already
+classified String or Number-text reads, so storage-regime selection remains with the document. -/
+def evalOperandWith (phase : Phase)
+    (read : FieldId → Except StringComputationFault (SimpleComparisonOperand String)) :
+    StringExpr FieldId → Except StringComputationFault (SimpleComparisonOperand String)
+  | .field fieldId | .fieldValueAsString fieldId => read fieldId
+  | .literal value => pure (.value value true)
+  | .range fieldId start finish => do
+      if !validStringRange start finish then throw (.invalidRange start finish)
+      match ← read fieldId with
+      | .notEvaluated => pure (.value "" false)
+      | .unknown cause => pure (.unknown cause)
+      | .value value given =>
+          if utf16CodeUnitLength value < finish then pure (.value "" given)
+          else match utf16CodeUnitSlice? value (start - 1) finish with
+            | some selected => pure (.value selected given)
             | none => throw (.unalignedUtf16Range fieldId start finish)
-  | StringExpr.concat left right => do
-      let leftResult ← left.eval context
-      match leftResult with
-      | .poison cause => pure (.poison cause)
-      | _ => pure (StringTerm.concat leftResult (← right.eval context))
+  | .concat left right => do
+      let left ← left.evalOperandWith phase read
+      match phase, left with
+      | .computation, .unknown cause => pure (.unknown cause)
+      | _, _ => pure (concatOperands left (← right.evalOperandWith phase read))
+
+/-- Root storage consumes the same expression result without needing validation's omission flag. -/
+def eval (context : StringComputationContext) (expression : StringExpr FieldId) :
+    Except StringComputationFault StringTerm := do
+  pure (StringTerm.ofOperand (← expression.evalOperandWith .computation
+    (readOperandAt .computation context.read)))
 
 end StringExpr
 

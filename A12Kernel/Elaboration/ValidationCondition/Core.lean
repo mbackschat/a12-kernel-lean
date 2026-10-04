@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.StringExpression
 import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.RepetitionNotUnique
@@ -266,6 +267,7 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   | valueList (source : CheckedValueListCondition model)
   | valuesNotUnique (source : CheckedValuesNotUniqueCondition model)
   | tokenComparison (comparison : CheckedTokenComparison model)
+  | stringExpression (comparison : CheckedStringExpressionComparison model)
   | scalarTemporal (comparison : CheckedScalarTemporalComparison model)
   | constructedDateValidity (operation : ConstructedDateValidityOp)
       (source : CheckedConstructedDateComponents model)
@@ -464,7 +466,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .constructedDateValidity operation source =>
       operation == .invalid || source.fields.isEmpty
   | .tokenComparison _ => false
-  | .scalarTemporal _ => false
+  | .stringExpression _ | .scalarTemporal _ => false
   | .valuesNotUnique _ => false
   | .valueList source => source.quantifier.canFireOnEmpty
   | .flat condition => condition.canFireOnEmpty
@@ -489,6 +491,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .constructedDateValidity _ source, field => source.fields.contains field
   | .tokenComparison comparison, field => comparison.referencesField field
+  | .stringExpression comparison, field => comparison.referencesField field
   | .scalarTemporal comparison, field => comparison.referencesField field
   | .valuesNotUnique source, field => source.referencesField field
   | .valueList source, field => source.referencesField field
@@ -529,7 +532,7 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field
   | leaf@(.constructedDateValidity _ _), field
   | leaf@(.customFieldValidity _), field
-  | leaf@(.stringPattern _), field | leaf@(.scalarTemporal _), field =>
+  | leaf@(.stringPattern _), field | leaf@(.scalarTemporal _), field | leaf@(.stringExpression _), field =>
       leaf.referencesField field
 
 /-- Whether the checked source retains a `Having` filter, which makes whole-rule partial validation
@@ -538,7 +541,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
   | .tokenComparison comparison => comparison.hasHaving
   | .fieldFill _ source => source.hasHaving
   | .constructedDateValidity _ _ => false
-  | .scalarTemporal _ => false
+  | .stringExpression _ | .scalarTemporal _ => false
   | .valuesNotUnique source => source.hasHaving
   | .valueList source => source.hasHaving
   | .orderedNumeric _ comparison => comparison.hasHaving
@@ -551,7 +554,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
-  | .constructedDateValidity _ _ => true
+  | .constructedDateValidity _ _ | .stringExpression _ => true
   | .tokenComparison _ | .valueList _ | .valuesNotUnique _ => true
   | .orderedNumeric _ comparison =>
       comparison.requiresAddressedValidation
@@ -574,6 +577,8 @@ def wellFormedBool (rowGroup : GroupPath) :
   | .constructedDateValidity _ _ => true
   | .tokenComparison comparison => comparison.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains
+  | .stringExpression comparison => comparison.declarations.all fun field =>
+      field.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
   | .scalarTemporal _ => true
   | .valuesNotUnique source => source.admittedMultiplicity && source.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains

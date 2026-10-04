@@ -84,7 +84,7 @@ private def input? (secondCode : Option ClassifiedCellInput) :
       { group := 10, path := [1] },
       { group := 10, path := [2] }]
     cells := [
-      stringCell 1 "A😀12B" (.parsed (.str "A😀12B")),
+      stringCell 1 "Auv12B" (.parsed (.str "Auv12B")),
       numberCell produced.id [1] 99,
       numberCell produced.id [2] 88,
       numberCell total.id [] 77
@@ -129,10 +129,10 @@ example :
     cascade?.map producerMetadataMatches = some true := by
   native_decide
 
-/- UTF-16 positions 4..5 select the two digits after one emoji and replace stale rows before aggregation. -/
+/- UTF-16 positions 4..5 select the two digits after three BMP characters and replace stale rows before aggregation. -/
 example :
     snapshot? (input? (some
-      (stringCell 2 "Z😀34Q" (.parsed (.str "Z😀34Q"))))) = some {
+      (stringCell 2 "Zuv34Q" (.parsed (.str "Zuv34Q"))))) = some {
       rows := [accepted 12, accepted 34]
       aggregate := accepted 46
     } ∧

@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.LegalCharset
 import A12Kernel.Semantics.GroupReference
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.FlatValidation
@@ -383,6 +384,8 @@ structure FlatModel where
   group's own fields in depth-first order. -/
   fields : List FlatFieldDecl
   repeatableGroups : List RepeatableGroupDecl := []
+  /-- Admitted full-input charset; computed target checks omit this baseline (spec/06 §A.2). -/
+  legalCharset : LegalCharset := .defaultBmp
   fieldRefByShortNameAllowed : Bool := false
   baseYear : Option Int := none
   /-- Exact legacy zone id already admitted by the upstream model checker. Absent model configuration is normalized to UTC. -/

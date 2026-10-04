@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.LowerString
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.LowerNumeric
 import A12Kernel.Reference.Dm.LowerDocument
@@ -138,6 +139,13 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
               some (.text op (.direct left) (.inl (.direct right)))
             else none
         | _ => none
+      let stringSurface : Option (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) := do
+        let operator ← match op with | .eq => some EqualityOp.equal | .ne => some EqualityOp.notEqual | _ => none
+        let left ← (lowerStringExpr left).toOption
+        let right ← (lowerStringExpr right).toOption
+        if isCompoundStringExpression left || isCompoundStringExpression right then
+          some (SurfaceComputationConditionOf.predicate (.stringExpression operator left right))
+        else none
       let temporalSurface := do
         let operator ← op.toSurface?
         let left ← (lowerScalarTemporalExpression model group left).toOption
@@ -146,7 +154,7 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
         | .error (.nonTemporal _) | .error (.extremum (.firstNotTemporal _ _)) => none
         | _ => some (SurfaceComputationConditionOf.predicate
             (SurfaceComputationPredicate.temporal operator.toTemporal left right))
-      match textSurface.orElse (fun _ => temporalSurface) with
+      match (textSurface.orElse (fun _ => stringSurface)).orElse (fun _ => temporalSurface) with
       | some surface => pure surface
       | none => do
           let some operator := op.toNumeric? | refuse "Comparison" "operator"
@@ -157,26 +165,6 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
             suppressExactScaleWarning := suppress })
   | other => refuse ("Guard/" ++ other.construct)
 
-/-- A String computation's operation: field reads, literals, `FieldValueAsString`, `RangeAsString`
-and `+` concatenation. -/
-partial def lowerStringExpr : Expr → Lowering (StringExpr SurfaceFieldPath)
-  | .string text =>
-      if isTemporalConstant text then refuse "StringOperation" "temporal constant"
-      else pure (.literal text)
-  | .value { path, index := none, category := none } => match path.toFieldPath? with
-      | some field => pure (.field field)
-      | none => refuse "StringOperand" "path"
-  | .call "FieldValueAsString" [.mk field none none] none none => match field.fieldEntity? with
-      | some path => pure (.fieldValueAsString path)
-      | none => refuse "FieldValueAsString" "operand"
-  | .call "RangeAsString" [.mk field none none, .mk (.number start) none none,
-      .mk (.number finish) none none] none none =>
-      match field.fieldEntity?, start.toNat?, finish.toNat? with
-      | some path, some start, some finish => pure (.range path start finish)
-      | _, _, _ => refuse "RangeAsString" "operand"
-  | .arith .add left right => do pure (.concat (← lowerStringExpr left) (← lowerStringExpr right))
-  | .braces body => lowerStringExpr body
-  | other => refuse ("StringOperation/" ++ other.construct)
 
 private def parsed (language : Language) (text : String) : Lowering Text :=
   match parseText language text with

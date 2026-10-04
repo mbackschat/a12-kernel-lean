@@ -20,6 +20,7 @@ def CheckedComputationConditionError.toNumericFault :
     CheckedComputationConditionError → NumericComputationFault
   | .primitive error => .guardBinding error
   | .numeric error => error
+  | .predicate (.stringExpression error) => .stringExpression error
   | .predicate .valueFailure => .guardValueFailure
   | .predicate .temporalUnavailable => .unsupportedDateCalendar
   | .predicate (.fieldKindMismatch field) => .fieldKindMismatch field

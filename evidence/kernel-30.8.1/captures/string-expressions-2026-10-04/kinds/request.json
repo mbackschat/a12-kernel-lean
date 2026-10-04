@@ -1,0 +1,47 @@
+{
+  "model": "Kinds_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "present",
+      "documentInline": {
+        "Form": {
+          "E": "ab",
+          "S": "ab",
+          "T": "abx",
+          "EnumConcat": "old",
+          "EnumCopy": "old"
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "Form": {
+          "E": "",
+          "S": "",
+          "T": "x",
+          "EnumConcat": "old",
+          "EnumCopy": "old"
+        }
+      }
+    },
+    {
+      "name": "invalid",
+      "documentInline": {
+        "Form": {
+          "E": "bad",
+          "S": "ab",
+          "T": "abx",
+          "EnumConcat": "old",
+          "EnumCopy": "old"
+        }
+      }
+    }
+  ]
+}

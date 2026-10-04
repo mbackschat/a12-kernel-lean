@@ -237,6 +237,12 @@ def readModel (json : Json) : Except String DmModel := do
         | .ok year => pure (some year)
         | .error _ => throw "baseYear is no integer"
   let mut refusals := state.refusals.toList
+  match config.getObjVal? "supportedCharacters" with
+  | .error _ | .ok .null => pure ()
+  | .ok (.arr entries) =>
+      if !entries.isEmpty then
+        refusals := refusals ++ [([], "restricted supportedCharacters requires an admitted charset")]
+  | .ok _ => throw "supportedCharacters is not an array"
   let mut groups := []
   for group in state.groups.toList do
     match state.indexFields.find? (·.1 == group.level) with

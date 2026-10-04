@@ -250,7 +250,7 @@ example : (do
 example : (do
     let fresh ← document? [row 10 [1], row 20 [1, 1], row 20 [1, 2]] [
       cell limit [1] "2" (.parsed (.num 2)),
-      cell text [1, 1] "😀" (.parsed (.str "😀")),
+      cell text [1, 1] "uv" (.parsed (.str "uv")),
       cell text [1, 2] "X" (.parsed (.str "X")),
       cell computedGate [1, 1] "0" (.parsed (.num 0)),
       cell computedGate [1, 2] "2" (.parsed (.num 2)),

@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.LowerString
 import A12Kernel.Reference.Dm.LowerFlat
 import A12Kernel.Reference.Dm.LowerNumeric
 import A12Kernel.Elaboration.ValidationRule
@@ -257,6 +258,16 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
                   (CheckedValidationCondition.fromScalarTemporal rowGroup comparison)]
         | _, _, _ => []
     | _ => []
+  let stringExpression := match leaf with
+    | .compare op left right =>
+        let equality := match op with | .eq => some EqualityOp.equal | .ne => some .notEqual | _ => none
+        match equality, lowerStringExpr left, lowerStringExpr right with
+        | some op, .ok left, .ok right =>
+            if isCompoundStringExpression left || isCompoundStringExpression right then [do
+              let comparison ← elaborated "StringExpression" (elaborateStringExpressionComparison model rowGroup rowGroup op left right)
+              elaborated "StringExpression" (CheckedValidationCondition.fromStringExpression rowGroup comparison)] else []
+        | _, _, _ => []
+    | _ => []
   let token := match leaf with
     | .compare op left right =>
         let equality := match op with
@@ -431,7 +442,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
               { op := .violated, field, source })]
         | _, _ => []
     | _ => []
-  flat ++ temporal ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity
+  flat ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :

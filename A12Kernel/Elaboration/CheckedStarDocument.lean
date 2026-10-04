@@ -12,6 +12,7 @@ This boundary joins the immutable checked input to the existing checked star pat
 namespace A12Kernel
 
 inductive CheckedAddressingError where
+  | stringExpression (cause : StringComputationFault)
   | temporalUnavailable
   | constructedDate (cause : ConstructedDateEvaluationFault)
   | addressing (cause : StarAddressingError)

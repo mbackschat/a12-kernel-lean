@@ -1,0 +1,4642 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Rows_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "two-rows",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BracesComp",
+              "field": "Form/Rows/OutBraces",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/OutBraces",
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BracesComp",
+              "field": "Form/Rows[2]/OutBraces",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutBraces",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutBraces",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "BracesPeerNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BracesPeerNe",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "BracesXNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BracesXNe",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "CoerceComp",
+              "field": "Form/Rows/OutCoerce",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/OutCoerce"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoercePeerNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceSuffixComp",
+              "field": "Form/Rows/OutCoerceSuffix",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/OutCoerceSuffix"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceSuffixComp",
+              "field": "Form/Rows[2]/OutCoerceSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/N",
+                "Form/Rows[2]/OutCoerceSuffix"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/N",
+                "Form/Rows[2]/OutCoerceSuffix"
+              ]
+            },
+            {
+              "code": "CoerceSuffixPeerEq",
+              "field": "Form/Rows[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/N",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/N",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "CoerceSuffixPeerNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceSuffixXEq",
+              "field": "Form/Rows[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/N"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/N"
+              ]
+            },
+            {
+              "code": "CoerceSuffixXNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceXNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ConcatComp",
+              "field": "Form/Rows/OutConcat",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/OutConcat",
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ConcatComp",
+              "field": "Form/Rows[2]/OutConcat",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "ConcatPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "ConcatPeerNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ConcatXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "ConcatXNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardCoerceSuffixComp",
+              "field": "Form/Rows[2]/GuardCoerceSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardCoerceSuffix",
+                "Form/Rows[2]/N"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardCoerceSuffix",
+                "Form/Rows[2]/N"
+              ]
+            },
+            {
+              "code": "GuardConcatComp",
+              "field": "Form/Rows[2]/GuardConcat",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "GuardPrefixComp",
+              "field": "Form/Rows[2]/GuardPrefix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardPrefix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardPrefix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "GuardRangeSuffixComp",
+              "field": "Form/Rows/GuardRangeSuffix",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/GuardRangeSuffix",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardRangeSuffixComp",
+              "field": "Form/Rows[2]/GuardRangeSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardRangeSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardRangeSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "GuardSuffixComp",
+              "field": "Form/Rows[2]/GuardSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "MixedComp",
+              "field": "Form/Rows/OutMixed",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/OutMixed",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedPeerNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedXNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OuterComp",
+              "field": "Form/Rows/Outer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Global",
+                "Form/Rows/Outer",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OuterComp",
+              "field": "Form/Rows[2]/Outer",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Global",
+                "Form/Rows[2]/Outer",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Global",
+                "Form/Rows[2]/Outer",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "PrefixComp",
+              "field": "Form/Rows/OutPrefix",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/OutPrefix",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PrefixComp",
+              "field": "Form/Rows[2]/OutPrefix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutPrefix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutPrefix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "PrefixPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "PrefixPeerNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PrefixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "PrefixXNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeComp",
+              "field": "Form/Rows/OutRange",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/OutRange",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangePeerNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeSuffixComp",
+              "field": "Form/Rows/OutRangeSuffix",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/OutRangeSuffix",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeSuffixComp",
+              "field": "Form/Rows[2]/OutRangeSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutRangeSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutRangeSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "RangeSuffixPeerEq",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeSuffixPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "RangeSuffixXEq",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeSuffixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "RangeXNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SuffixComp",
+              "field": "Form/Rows/OutSuffix",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/OutSuffix",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SuffixComp",
+              "field": "Form/Rows[2]/OutSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "SuffixPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "SuffixPeerNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SuffixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "SuffixXNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Rows/AfterBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterOvershoot",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows/AfterPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterRangeSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardRangeSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows/GuardSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutBraces",
+                "cleared": false,
+                "errored": false,
+                "value": "abxx"
+              },
+              {
+                "field": "Form/Rows/OutCoerce",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/Rows/OutCoerceSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5x"
+              },
+              {
+                "field": "Form/Rows/OutConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "abx"
+              },
+              {
+                "field": "Form/Rows/OutMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "ab1.5"
+              },
+              {
+                "field": "Form/Rows/OutOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutPrefix",
+                "cleared": false,
+                "errored": false,
+                "value": "xab"
+              },
+              {
+                "field": "Form/Rows/OutRange",
+                "cleared": false,
+                "errored": false,
+                "value": "ab"
+              },
+              {
+                "field": "Form/Rows/OutRangeSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows/OutSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "abx"
+              },
+              {
+                "field": "Form/Rows/Outer",
+                "cleared": false,
+                "errored": false,
+                "value": "gab"
+              },
+              {
+                "field": "Form/Rows[2]/AfterBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterCoerce",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterOvershoot",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterRange",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterRangeSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardCoerceSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardPrefix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardRangeSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/OutBraces",
+                "cleared": false,
+                "errored": false,
+                "value": "xx"
+              },
+              {
+                "field": "Form/Rows[2]/OutCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutCoerceSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutPrefix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutRangeSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/Outer",
+                "cleared": false,
+                "errored": false,
+                "value": "g"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Rows/AfterOvershoot",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows/GuardRangeSuffix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows/OutBraces",
+                "value": "abxx"
+              },
+              {
+                "field": "Form/Rows/OutCoerce",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/Rows/OutCoerceSuffix",
+                "value": "1.5x"
+              },
+              {
+                "field": "Form/Rows/OutConcat",
+                "value": "abx"
+              },
+              {
+                "field": "Form/Rows/OutMixed",
+                "value": "ab1.5"
+              },
+              {
+                "field": "Form/Rows/OutPrefix",
+                "value": "xab"
+              },
+              {
+                "field": "Form/Rows/OutRange",
+                "value": "ab"
+              },
+              {
+                "field": "Form/Rows/OutRangeSuffix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows/OutSuffix",
+                "value": "abx"
+              },
+              {
+                "field": "Form/Rows/Outer",
+                "value": "gab"
+              },
+              {
+                "field": "Form/Rows[2]/AfterCoerce",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterMixed",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterOvershoot",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterRange",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/GuardCoerceSuffix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardConcat",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardPrefix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardRangeSuffix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardSuffix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/OutBraces",
+                "value": "xx"
+              },
+              {
+                "field": "Form/Rows[2]/OutCoerceSuffix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutConcat",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutPrefix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutRangeSuffix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutSuffix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/Outer",
+                "value": "g"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Global": "g",
+                "Rows": [
+                  {
+                    "AfterBraces": null,
+                    "AfterCoerce": null,
+                    "AfterCoerceSuffix": null,
+                    "AfterConcat": null,
+                    "AfterMixed": null,
+                    "AfterOvershoot": 1,
+                    "AfterPrefix": null,
+                    "AfterRange": null,
+                    "AfterRangeSuffix": null,
+                    "AfterSuffix": null,
+                    "Count": 9,
+                    "GuardBraces": null,
+                    "GuardCoerce": null,
+                    "GuardCoerceSuffix": null,
+                    "GuardConcat": null,
+                    "GuardMixed": null,
+                    "GuardOvershoot": null,
+                    "GuardPrefix": null,
+                    "GuardRange": null,
+                    "GuardRangeSuffix": "yes",
+                    "GuardSuffix": null,
+                    "N": 1.5,
+                    "Out": "old",
+                    "OutBraces": "abxx",
+                    "OutCoerce": "1.5",
+                    "OutCoerceSuffix": "1.5x",
+                    "OutConcat": "abx",
+                    "OutMixed": "ab1.5",
+                    "OutOvershoot": null,
+                    "OutPrefix": "xab",
+                    "OutRange": "ab",
+                    "OutRangeSuffix": "x",
+                    "OutSuffix": "abx",
+                    "Outer": "gab",
+                    "S": "ab",
+                    "T": "x"
+                  },
+                  {
+                    "AfterBraces": null,
+                    "AfterCoerce": 1,
+                    "AfterCoerceSuffix": null,
+                    "AfterConcat": null,
+                    "AfterMixed": 1,
+                    "AfterOvershoot": 1,
+                    "AfterPrefix": null,
+                    "AfterRange": 1,
+                    "AfterRangeSuffix": null,
+                    "AfterSuffix": null,
+                    "Count": 9,
+                    "GuardBraces": null,
+                    "GuardCoerce": null,
+                    "GuardCoerceSuffix": "yes",
+                    "GuardConcat": "yes",
+                    "GuardMixed": null,
+                    "GuardOvershoot": null,
+                    "GuardPrefix": "yes",
+                    "GuardRange": null,
+                    "GuardRangeSuffix": "yes",
+                    "GuardSuffix": "yes",
+                    "N": null,
+                    "Out": "old",
+                    "OutBraces": "xx",
+                    "OutCoerce": null,
+                    "OutCoerceSuffix": "x",
+                    "OutConcat": "x",
+                    "OutMixed": null,
+                    "OutOvershoot": null,
+                    "OutPrefix": "x",
+                    "OutRange": null,
+                    "OutRangeSuffix": "x",
+                    "OutSuffix": "x",
+                    "Outer": "g",
+                    "S": "",
+                    "T": "x"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BracesComp",
+              "field": "Form/Rows/OutBraces",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/OutBraces",
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BracesComp",
+              "field": "Form/Rows[2]/OutBraces",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutBraces",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutBraces",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "BracesPeerNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BracesPeerNe",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "BracesXNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "BracesXNe",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "CoerceComp",
+              "field": "Form/Rows/OutCoerce",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/OutCoerce"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoercePeerNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceSuffixComp",
+              "field": "Form/Rows/OutCoerceSuffix",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/OutCoerceSuffix"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceSuffixComp",
+              "field": "Form/Rows[2]/OutCoerceSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/N",
+                "Form/Rows[2]/OutCoerceSuffix"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/N",
+                "Form/Rows[2]/OutCoerceSuffix"
+              ]
+            },
+            {
+              "code": "CoerceSuffixPeerEq",
+              "field": "Form/Rows[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/N",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/N",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "CoerceSuffixPeerNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceSuffixXEq",
+              "field": "Form/Rows[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/N"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/N"
+              ]
+            },
+            {
+              "code": "CoerceSuffixXNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceXNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ConcatComp",
+              "field": "Form/Rows/OutConcat",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/OutConcat",
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ConcatComp",
+              "field": "Form/Rows[2]/OutConcat",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "ConcatPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "ConcatPeerNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ConcatXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "ConcatXNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardCoerceSuffixComp",
+              "field": "Form/Rows[2]/GuardCoerceSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardCoerceSuffix",
+                "Form/Rows[2]/N"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardCoerceSuffix",
+                "Form/Rows[2]/N"
+              ]
+            },
+            {
+              "code": "GuardConcatComp",
+              "field": "Form/Rows[2]/GuardConcat",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "GuardPrefixComp",
+              "field": "Form/Rows[2]/GuardPrefix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardPrefix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardPrefix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "GuardRangeSuffixComp",
+              "field": "Form/Rows/GuardRangeSuffix",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/GuardRangeSuffix",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GuardRangeSuffixComp",
+              "field": "Form/Rows[2]/GuardRangeSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardRangeSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardRangeSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "GuardSuffixComp",
+              "field": "Form/Rows[2]/GuardSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "MixedComp",
+              "field": "Form/Rows/OutMixed",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/OutMixed",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedPeerNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MixedXNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OuterComp",
+              "field": "Form/Rows/Outer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Global",
+                "Form/Rows/Outer",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OuterComp",
+              "field": "Form/Rows[2]/Outer",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Global",
+                "Form/Rows[2]/Outer",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Global",
+                "Form/Rows[2]/Outer",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "PrefixComp",
+              "field": "Form/Rows/OutPrefix",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/OutPrefix",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PrefixComp",
+              "field": "Form/Rows[2]/OutPrefix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutPrefix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutPrefix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "PrefixPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "PrefixPeerNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PrefixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "PrefixXNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeComp",
+              "field": "Form/Rows/OutRange",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/OutRange",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangePeerNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeSuffixComp",
+              "field": "Form/Rows/OutRangeSuffix",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/OutRangeSuffix",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeSuffixComp",
+              "field": "Form/Rows[2]/OutRangeSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutRangeSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutRangeSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "RangeSuffixPeerEq",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeSuffixPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "RangeSuffixXEq",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeSuffixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "RangeXNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SuffixComp",
+              "field": "Form/Rows/OutSuffix",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/OutSuffix",
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SuffixComp",
+              "field": "Form/Rows[2]/OutSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "SuffixPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "SuffixPeerNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SuffixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "SuffixXNe",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Rows/AfterBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterOvershoot",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows/AfterPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterRangeSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardRangeSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows/GuardSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutBraces",
+                "cleared": false,
+                "errored": false,
+                "value": "abxx"
+              },
+              {
+                "field": "Form/Rows/OutCoerce",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/Rows/OutCoerceSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5x"
+              },
+              {
+                "field": "Form/Rows/OutConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "abx"
+              },
+              {
+                "field": "Form/Rows/OutMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "ab1.5"
+              },
+              {
+                "field": "Form/Rows/OutOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutPrefix",
+                "cleared": false,
+                "errored": false,
+                "value": "xab"
+              },
+              {
+                "field": "Form/Rows/OutRange",
+                "cleared": false,
+                "errored": false,
+                "value": "ab"
+              },
+              {
+                "field": "Form/Rows/OutRangeSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows/OutSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "abx"
+              },
+              {
+                "field": "Form/Rows/Outer",
+                "cleared": false,
+                "errored": false,
+                "value": "gab"
+              },
+              {
+                "field": "Form/Rows[2]/AfterBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterCoerce",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterOvershoot",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterRange",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterRangeSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardCoerceSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardPrefix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardRangeSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/OutBraces",
+                "cleared": false,
+                "errored": false,
+                "value": "xx"
+              },
+              {
+                "field": "Form/Rows[2]/OutCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutCoerceSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutPrefix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutRangeSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/Outer",
+                "cleared": false,
+                "errored": false,
+                "value": "g"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Rows/AfterOvershoot",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows/GuardRangeSuffix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows/OutBraces",
+                "value": "abxx"
+              },
+              {
+                "field": "Form/Rows/OutCoerce",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/Rows/OutCoerceSuffix",
+                "value": "1.5x"
+              },
+              {
+                "field": "Form/Rows/OutConcat",
+                "value": "abx"
+              },
+              {
+                "field": "Form/Rows/OutMixed",
+                "value": "ab1.5"
+              },
+              {
+                "field": "Form/Rows/OutPrefix",
+                "value": "xab"
+              },
+              {
+                "field": "Form/Rows/OutRange",
+                "value": "ab"
+              },
+              {
+                "field": "Form/Rows/OutRangeSuffix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows/OutSuffix",
+                "value": "abx"
+              },
+              {
+                "field": "Form/Rows/Outer",
+                "value": "gab"
+              },
+              {
+                "field": "Form/Rows[2]/AfterCoerce",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterMixed",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterOvershoot",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterRange",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/GuardCoerceSuffix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardConcat",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardPrefix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardRangeSuffix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardSuffix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/OutBraces",
+                "value": "xx"
+              },
+              {
+                "field": "Form/Rows[2]/OutCoerceSuffix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutConcat",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutPrefix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutRangeSuffix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutSuffix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/Outer",
+                "value": "g"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Global": "g",
+                "Rows": [
+                  {
+                    "AfterBraces": null,
+                    "AfterCoerce": null,
+                    "AfterCoerceSuffix": null,
+                    "AfterConcat": null,
+                    "AfterMixed": null,
+                    "AfterOvershoot": 1,
+                    "AfterPrefix": null,
+                    "AfterRange": null,
+                    "AfterRangeSuffix": null,
+                    "AfterSuffix": null,
+                    "Count": 9,
+                    "GuardBraces": null,
+                    "GuardCoerce": null,
+                    "GuardCoerceSuffix": null,
+                    "GuardConcat": null,
+                    "GuardMixed": null,
+                    "GuardOvershoot": null,
+                    "GuardPrefix": null,
+                    "GuardRange": null,
+                    "GuardRangeSuffix": "yes",
+                    "GuardSuffix": null,
+                    "N": 1.5,
+                    "Out": "old",
+                    "OutBraces": "abxx",
+                    "OutCoerce": "1.5",
+                    "OutCoerceSuffix": "1.5x",
+                    "OutConcat": "abx",
+                    "OutMixed": "ab1.5",
+                    "OutOvershoot": null,
+                    "OutPrefix": "xab",
+                    "OutRange": "ab",
+                    "OutRangeSuffix": "x",
+                    "OutSuffix": "abx",
+                    "Outer": "gab",
+                    "S": "ab",
+                    "T": "x"
+                  },
+                  {
+                    "AfterBraces": null,
+                    "AfterCoerce": 1,
+                    "AfterCoerceSuffix": null,
+                    "AfterConcat": null,
+                    "AfterMixed": 1,
+                    "AfterOvershoot": 1,
+                    "AfterPrefix": null,
+                    "AfterRange": 1,
+                    "AfterRangeSuffix": null,
+                    "AfterSuffix": null,
+                    "Count": 9,
+                    "GuardBraces": null,
+                    "GuardCoerce": null,
+                    "GuardCoerceSuffix": "yes",
+                    "GuardConcat": "yes",
+                    "GuardMixed": null,
+                    "GuardOvershoot": null,
+                    "GuardPrefix": "yes",
+                    "GuardRange": null,
+                    "GuardRangeSuffix": "yes",
+                    "GuardSuffix": "yes",
+                    "N": null,
+                    "Out": "old",
+                    "OutBraces": "xx",
+                    "OutCoerce": null,
+                    "OutCoerceSuffix": "x",
+                    "OutConcat": "x",
+                    "OutMixed": null,
+                    "OutOvershoot": null,
+                    "OutPrefix": "x",
+                    "OutRange": null,
+                    "OutRangeSuffix": "x",
+                    "OutSuffix": "x",
+                    "Outer": "g",
+                    "S": "",
+                    "T": "x"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid-row",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BracesComp",
+              "field": "Form/Rows[2]/OutBraces",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutBraces",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutBraces",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "BracesPeerNe",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "BracesXNe",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "CoerceComp",
+              "field": "Form/Rows/OutCoerce",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/OutCoerce"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoercePeerNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceSuffixComp",
+              "field": "Form/Rows/OutCoerceSuffix",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/OutCoerceSuffix"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceSuffixPeerNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceSuffixXNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceXNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ConcatComp",
+              "field": "Form/Rows[2]/OutConcat",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "ConcatPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "ConcatXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "GuardConcatComp",
+              "field": "Form/Rows[2]/GuardConcat",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "GuardPrefixComp",
+              "field": "Form/Rows[2]/GuardPrefix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardPrefix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardPrefix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "GuardRangeSuffixComp",
+              "field": "Form/Rows[2]/GuardRangeSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardRangeSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardRangeSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "GuardSuffixComp",
+              "field": "Form/Rows[2]/GuardSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "OuterComp",
+              "field": "Form/Rows[2]/Outer",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Global",
+                "Form/Rows[2]/Outer",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Global",
+                "Form/Rows[2]/Outer",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "PrefixComp",
+              "field": "Form/Rows[2]/OutPrefix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutPrefix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutPrefix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "PrefixPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "PrefixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "RangeSuffixComp",
+              "field": "Form/Rows[2]/OutRangeSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutRangeSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutRangeSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "RangeSuffixPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "RangeSuffixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "SuffixComp",
+              "field": "Form/Rows[2]/OutSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "SuffixPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "SuffixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "stringZuKurz",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Rows[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/N"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Rows/AfterBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterRangeSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardRangeSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutCoerce",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/Rows/OutCoerceSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5x"
+              },
+              {
+                "field": "Form/Rows/OutConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutRangeSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Outer",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterOvershoot",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterRange",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterRangeSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardPrefix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardRangeSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/OutBraces",
+                "cleared": false,
+                "errored": false,
+                "value": "xx"
+              },
+              {
+                "field": "Form/Rows[2]/OutCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutPrefix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutRangeSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/Outer",
+                "cleared": false,
+                "errored": false,
+                "value": "g"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringZuKurz",
+                "field": "Form/Rows/S",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/S"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Rows[2]/N",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows[2]/N"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Rows/OutCoerce",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/Rows/OutCoerceSuffix",
+                "value": "1.5x"
+              },
+              {
+                "field": "Form/Rows[2]/AfterOvershoot",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterRange",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/GuardConcat",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardPrefix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardRangeSuffix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardSuffix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/OutBraces",
+                "value": "xx"
+              },
+              {
+                "field": "Form/Rows[2]/OutConcat",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutPrefix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutRangeSuffix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutSuffix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/Outer",
+                "value": "g"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Global": "g",
+                "Rows": [
+                  {
+                    "AfterBraces": null,
+                    "AfterCoerce": null,
+                    "AfterCoerceSuffix": null,
+                    "AfterConcat": null,
+                    "AfterMixed": null,
+                    "AfterOvershoot": null,
+                    "AfterPrefix": null,
+                    "AfterRange": null,
+                    "AfterRangeSuffix": null,
+                    "AfterSuffix": null,
+                    "Count": 9,
+                    "GuardBraces": null,
+                    "GuardCoerce": null,
+                    "GuardCoerceSuffix": null,
+                    "GuardConcat": null,
+                    "GuardMixed": null,
+                    "GuardOvershoot": null,
+                    "GuardPrefix": null,
+                    "GuardRange": null,
+                    "GuardRangeSuffix": null,
+                    "GuardSuffix": null,
+                    "N": 1.5,
+                    "Out": "old",
+                    "OutBraces": null,
+                    "OutCoerce": "1.5",
+                    "OutCoerceSuffix": "1.5x",
+                    "OutConcat": null,
+                    "OutMixed": null,
+                    "OutOvershoot": null,
+                    "OutPrefix": null,
+                    "OutRange": null,
+                    "OutRangeSuffix": null,
+                    "OutSuffix": null,
+                    "Outer": null,
+                    "S": "a",
+                    "T": "x"
+                  },
+                  {
+                    "AfterBraces": null,
+                    "AfterCoerce": null,
+                    "AfterCoerceSuffix": null,
+                    "AfterConcat": null,
+                    "AfterMixed": null,
+                    "AfterOvershoot": 1,
+                    "AfterPrefix": null,
+                    "AfterRange": 1,
+                    "AfterRangeSuffix": null,
+                    "AfterSuffix": null,
+                    "Count": 9,
+                    "GuardBraces": null,
+                    "GuardCoerce": null,
+                    "GuardCoerceSuffix": null,
+                    "GuardConcat": "yes",
+                    "GuardMixed": null,
+                    "GuardOvershoot": null,
+                    "GuardPrefix": "yes",
+                    "GuardRange": null,
+                    "GuardRangeSuffix": "yes",
+                    "GuardSuffix": "yes",
+                    "N": "bad",
+                    "Out": "old",
+                    "OutBraces": "xx",
+                    "OutCoerce": null,
+                    "OutCoerceSuffix": null,
+                    "OutConcat": "x",
+                    "OutMixed": null,
+                    "OutOvershoot": null,
+                    "OutPrefix": "x",
+                    "OutRange": null,
+                    "OutRangeSuffix": "x",
+                    "OutSuffix": "x",
+                    "Outer": "g",
+                    "S": "",
+                    "T": "x"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BracesComp",
+              "field": "Form/Rows[2]/OutBraces",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutBraces",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutBraces",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "BracesPeerNe",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "BracesXNe",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "CoerceComp",
+              "field": "Form/Rows/OutCoerce",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/OutCoerce"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoercePeerNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceSuffixComp",
+              "field": "Form/Rows/OutCoerceSuffix",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/OutCoerceSuffix"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceSuffixPeerNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N",
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceSuffixXNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CoerceXNe",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ConcatComp",
+              "field": "Form/Rows[2]/OutConcat",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "ConcatPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "ConcatXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "GuardConcatComp",
+              "field": "Form/Rows[2]/GuardConcat",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardConcat",
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "GuardPrefixComp",
+              "field": "Form/Rows[2]/GuardPrefix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardPrefix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardPrefix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "GuardRangeSuffixComp",
+              "field": "Form/Rows[2]/GuardRangeSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardRangeSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardRangeSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "GuardSuffixComp",
+              "field": "Form/Rows[2]/GuardSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/GuardSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/GuardSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "OuterComp",
+              "field": "Form/Rows[2]/Outer",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Global",
+                "Form/Rows[2]/Outer",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Global",
+                "Form/Rows[2]/Outer",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "PrefixComp",
+              "field": "Form/Rows[2]/OutPrefix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutPrefix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutPrefix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "PrefixPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "PrefixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "RangeSuffixComp",
+              "field": "Form/Rows[2]/OutRangeSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutRangeSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutRangeSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "RangeSuffixPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "RangeSuffixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "SuffixComp",
+              "field": "Form/Rows[2]/OutSuffix",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/OutSuffix",
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/OutSuffix",
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "SuffixPeerEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "SuffixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "stringZuKurz",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Rows[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/N"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Rows/AfterBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterRangeSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/AfterSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardRangeSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/GuardSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutCoerce",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5"
+              },
+              {
+                "field": "Form/Rows/OutCoerceSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "1.5x"
+              },
+              {
+                "field": "Form/Rows/OutConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutRangeSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/OutSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/Outer",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterConcat",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterOvershoot",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterPrefix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterRange",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterRangeSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/AfterSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardBraces",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardPrefix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/GuardRangeSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/OutBraces",
+                "cleared": false,
+                "errored": false,
+                "value": "xx"
+              },
+              {
+                "field": "Form/Rows[2]/OutCoerce",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutCoerceSuffix",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutConcat",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutOvershoot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutPrefix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutRange",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/OutRangeSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutSuffix",
+                "cleared": false,
+                "errored": false,
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/Outer",
+                "cleared": false,
+                "errored": false,
+                "value": "g"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringZuKurz",
+                "field": "Form/Rows/S",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/S"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Form/Rows[2]/N",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows[2]/N"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/Rows/OutCoerce",
+                "value": "1.5"
+              },
+              {
+                "field": "Form/Rows/OutCoerceSuffix",
+                "value": "1.5x"
+              },
+              {
+                "field": "Form/Rows[2]/AfterOvershoot",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/AfterRange",
+                "value": "1"
+              },
+              {
+                "field": "Form/Rows[2]/GuardConcat",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardPrefix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardRangeSuffix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/GuardSuffix",
+                "value": "yes"
+              },
+              {
+                "field": "Form/Rows[2]/OutBraces",
+                "value": "xx"
+              },
+              {
+                "field": "Form/Rows[2]/OutConcat",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutPrefix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutRangeSuffix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/OutSuffix",
+                "value": "x"
+              },
+              {
+                "field": "Form/Rows[2]/Outer",
+                "value": "g"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Global": "g",
+                "Rows": [
+                  {
+                    "AfterBraces": null,
+                    "AfterCoerce": null,
+                    "AfterCoerceSuffix": null,
+                    "AfterConcat": null,
+                    "AfterMixed": null,
+                    "AfterOvershoot": null,
+                    "AfterPrefix": null,
+                    "AfterRange": null,
+                    "AfterRangeSuffix": null,
+                    "AfterSuffix": null,
+                    "Count": 9,
+                    "GuardBraces": null,
+                    "GuardCoerce": null,
+                    "GuardCoerceSuffix": null,
+                    "GuardConcat": null,
+                    "GuardMixed": null,
+                    "GuardOvershoot": null,
+                    "GuardPrefix": null,
+                    "GuardRange": null,
+                    "GuardRangeSuffix": null,
+                    "GuardSuffix": null,
+                    "N": 1.5,
+                    "Out": "old",
+                    "OutBraces": null,
+                    "OutCoerce": "1.5",
+                    "OutCoerceSuffix": "1.5x",
+                    "OutConcat": null,
+                    "OutMixed": null,
+                    "OutOvershoot": null,
+                    "OutPrefix": null,
+                    "OutRange": null,
+                    "OutRangeSuffix": null,
+                    "OutSuffix": null,
+                    "Outer": null,
+                    "S": "a",
+                    "T": "x"
+                  },
+                  {
+                    "AfterBraces": null,
+                    "AfterCoerce": null,
+                    "AfterCoerceSuffix": null,
+                    "AfterConcat": null,
+                    "AfterMixed": null,
+                    "AfterOvershoot": 1,
+                    "AfterPrefix": null,
+                    "AfterRange": 1,
+                    "AfterRangeSuffix": null,
+                    "AfterSuffix": null,
+                    "Count": 9,
+                    "GuardBraces": null,
+                    "GuardCoerce": null,
+                    "GuardCoerceSuffix": null,
+                    "GuardConcat": "yes",
+                    "GuardMixed": null,
+                    "GuardOvershoot": null,
+                    "GuardPrefix": "yes",
+                    "GuardRange": null,
+                    "GuardRangeSuffix": "yes",
+                    "GuardSuffix": "yes",
+                    "N": "bad",
+                    "Out": "old",
+                    "OutBraces": "xx",
+                    "OutCoerce": null,
+                    "OutCoerceSuffix": null,
+                    "OutConcat": "x",
+                    "OutMixed": null,
+                    "OutOvershoot": null,
+                    "OutPrefix": "x",
+                    "OutRange": null,
+                    "OutRangeSuffix": "x",
+                    "OutSuffix": "x",
+                    "Outer": "g",
+                    "S": "",
+                    "T": "x"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "no-rows",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "BracesXEq",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ]
+            },
+            {
+              "code": "BracesXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "CoerceSuffixXEq",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N"
+              ],
+              "fillToFix": [
+                "Form/Rows/N"
+              ]
+            },
+            {
+              "code": "CoerceSuffixXEq",
+              "field": "Form/Rows[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/N"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/N"
+              ]
+            },
+            {
+              "code": "PrefixXEq",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": [
+                "Form/Rows/S"
+              ]
+            },
+            {
+              "code": "PrefixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "RangeSuffixXEq",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": [
+                "Form/Rows/S"
+              ]
+            },
+            {
+              "code": "RangeSuffixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "SuffixXEq",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": [
+                "Form/Rows/S"
+              ]
+            },
+            {
+              "code": "SuffixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Global": "g"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "BracesXEq",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ],
+              "fillToFix": [
+                "Form/Rows/S",
+                "Form/Rows/T"
+              ]
+            },
+            {
+              "code": "BracesXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S",
+                "Form/Rows[2]/T"
+              ]
+            },
+            {
+              "code": "CoerceSuffixXEq",
+              "field": "Form/Rows/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/N"
+              ],
+              "fillToFix": [
+                "Form/Rows/N"
+              ]
+            },
+            {
+              "code": "CoerceSuffixXEq",
+              "field": "Form/Rows[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/N"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/N"
+              ]
+            },
+            {
+              "code": "PrefixXEq",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": [
+                "Form/Rows/S"
+              ]
+            },
+            {
+              "code": "PrefixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "RangeSuffixXEq",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": [
+                "Form/Rows/S"
+              ]
+            },
+            {
+              "code": "RangeSuffixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            },
+            {
+              "code": "SuffixXEq",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": [
+                "Form/Rows/S"
+              ]
+            },
+            {
+              "code": "SuffixXEq",
+              "field": "Form/Rows[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/S"
+              ],
+              "fillToFix": [
+                "Form/Rows[2]/S"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Global": "g"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

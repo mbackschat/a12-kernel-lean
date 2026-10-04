@@ -1,0 +1,192 @@
+{
+  "model": "Rows_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "two-rows",
+      "documentInline": {
+        "Form": {
+          "Global": "g",
+          "Rows": [
+            {
+              "S": "ab",
+              "T": "x",
+              "N": "1.50",
+              "Out": "old",
+              "Count": "9",
+              "OutConcat": "old",
+              "AfterConcat": "9",
+              "GuardConcat": "old",
+              "OutSuffix": "old",
+              "AfterSuffix": "9",
+              "GuardSuffix": "old",
+              "OutPrefix": "old",
+              "AfterPrefix": "9",
+              "GuardPrefix": "old",
+              "OutRange": "old",
+              "AfterRange": "9",
+              "GuardRange": "old",
+              "OutOvershoot": "old",
+              "AfterOvershoot": "9",
+              "GuardOvershoot": "old",
+              "OutRangeSuffix": "old",
+              "AfterRangeSuffix": "9",
+              "GuardRangeSuffix": "old",
+              "OutCoerce": "old",
+              "AfterCoerce": "9",
+              "GuardCoerce": "old",
+              "OutCoerceSuffix": "old",
+              "AfterCoerceSuffix": "9",
+              "GuardCoerceSuffix": "old",
+              "OutMixed": "old",
+              "AfterMixed": "9",
+              "GuardMixed": "old",
+              "OutBraces": "old",
+              "AfterBraces": "9",
+              "GuardBraces": "old",
+              "Outer": "old"
+            },
+            {
+              "S": "",
+              "T": "x",
+              "N": "",
+              "Out": "old",
+              "Count": "9",
+              "OutConcat": "old",
+              "AfterConcat": "9",
+              "GuardConcat": "old",
+              "OutSuffix": "old",
+              "AfterSuffix": "9",
+              "GuardSuffix": "old",
+              "OutPrefix": "old",
+              "AfterPrefix": "9",
+              "GuardPrefix": "old",
+              "OutRange": "old",
+              "AfterRange": "9",
+              "GuardRange": "old",
+              "OutOvershoot": "old",
+              "AfterOvershoot": "9",
+              "GuardOvershoot": "old",
+              "OutRangeSuffix": "old",
+              "AfterRangeSuffix": "9",
+              "GuardRangeSuffix": "old",
+              "OutCoerce": "old",
+              "AfterCoerce": "9",
+              "GuardCoerce": "old",
+              "OutCoerceSuffix": "old",
+              "AfterCoerceSuffix": "9",
+              "GuardCoerceSuffix": "old",
+              "OutMixed": "old",
+              "AfterMixed": "9",
+              "GuardMixed": "old",
+              "OutBraces": "old",
+              "AfterBraces": "9",
+              "GuardBraces": "old",
+              "Outer": "old"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "invalid-row",
+      "documentInline": {
+        "Form": {
+          "Global": "g",
+          "Rows": [
+            {
+              "S": "a",
+              "T": "x",
+              "N": "1.50",
+              "Out": "old",
+              "Count": "9",
+              "OutConcat": "old",
+              "AfterConcat": "9",
+              "GuardConcat": "old",
+              "OutSuffix": "old",
+              "AfterSuffix": "9",
+              "GuardSuffix": "old",
+              "OutPrefix": "old",
+              "AfterPrefix": "9",
+              "GuardPrefix": "old",
+              "OutRange": "old",
+              "AfterRange": "9",
+              "GuardRange": "old",
+              "OutOvershoot": "old",
+              "AfterOvershoot": "9",
+              "GuardOvershoot": "old",
+              "OutRangeSuffix": "old",
+              "AfterRangeSuffix": "9",
+              "GuardRangeSuffix": "old",
+              "OutCoerce": "old",
+              "AfterCoerce": "9",
+              "GuardCoerce": "old",
+              "OutCoerceSuffix": "old",
+              "AfterCoerceSuffix": "9",
+              "GuardCoerceSuffix": "old",
+              "OutMixed": "old",
+              "AfterMixed": "9",
+              "GuardMixed": "old",
+              "OutBraces": "old",
+              "AfterBraces": "9",
+              "GuardBraces": "old",
+              "Outer": "old"
+            },
+            {
+              "S": "",
+              "T": "x",
+              "N": "bad",
+              "Out": "old",
+              "Count": "9",
+              "OutConcat": "old",
+              "AfterConcat": "9",
+              "GuardConcat": "old",
+              "OutSuffix": "old",
+              "AfterSuffix": "9",
+              "GuardSuffix": "old",
+              "OutPrefix": "old",
+              "AfterPrefix": "9",
+              "GuardPrefix": "old",
+              "OutRange": "old",
+              "AfterRange": "9",
+              "GuardRange": "old",
+              "OutOvershoot": "old",
+              "AfterOvershoot": "9",
+              "GuardOvershoot": "old",
+              "OutRangeSuffix": "old",
+              "AfterRangeSuffix": "9",
+              "GuardRangeSuffix": "old",
+              "OutCoerce": "old",
+              "AfterCoerce": "9",
+              "GuardCoerce": "old",
+              "OutCoerceSuffix": "old",
+              "AfterCoerceSuffix": "9",
+              "GuardCoerceSuffix": "old",
+              "OutMixed": "old",
+              "AfterMixed": "9",
+              "GuardMixed": "old",
+              "OutBraces": "old",
+              "AfterBraces": "9",
+              "GuardBraces": "old",
+              "Outer": "old"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "Form": {
+          "Global": "g",
+          "Rows": []
+        }
+      }
+    }
+  ]
+}

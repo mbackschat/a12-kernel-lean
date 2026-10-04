@@ -1,0 +1,2167 @@
+{
+  "header": {
+    "id": "StringExpressions_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "StringExpressions_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "UTC",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/Global",
+                "name": "Global",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 10
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Form/Rows",
+                "name": "Rows",
+                "Group": {
+                  "repeatability": 2,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/S",
+                      "name": "S",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 6,
+                            "minLength": 2
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/T",
+                      "name": "T",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 20
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/N",
+                      "name": "N",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 2,
+                            "positivesOnly": false
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Out",
+                      "name": "Out",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 40
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Count",
+                      "name": "Count",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ConcatXEq",
+                      "name": "ConcatXEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "ConcatXEq",
+                        "errorCondition": "[S] + [T] == \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ConcatXNe",
+                      "name": "ConcatXNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "ConcatXNe",
+                        "errorCondition": "[S] + [T] != \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ConcatEmptyEq",
+                      "name": "ConcatEmptyEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "ConcatEmptyEq",
+                        "errorCondition": "[S] + [T] == \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ConcatEmptyNe",
+                      "name": "ConcatEmptyNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "ConcatEmptyNe",
+                        "errorCondition": "[S] + [T] != \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ConcatPeerEq",
+                      "name": "ConcatPeerEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "ConcatPeerEq",
+                        "errorCondition": "[S] + [T] == [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ConcatPeerNe",
+                      "name": "ConcatPeerNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "ConcatPeerNe",
+                        "errorCondition": "[S] + [T] != [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutConcat",
+                      "name": "OutConcat",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 40
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/ConcatComp",
+                      "name": "ConcatComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../OutConcat",
+                        "computationAlternatives": [
+                          {
+                            "operation": "[S] + [T]"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterConcat",
+                      "name": "AfterConcat",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/AfterConcatComp",
+                      "name": "AfterConcatComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../AfterConcat",
+                        "computationAlternatives": [
+                          {
+                            "operation": "1"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "FieldNotFilled(OutConcat)"
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/GuardConcat",
+                      "name": "GuardConcat",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 5
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/GuardConcatComp",
+                      "name": "GuardConcatComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../GuardConcat",
+                        "computationAlternatives": [
+                          {
+                            "operation": "\"yes\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "[S] + [T] == \"x\""
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/SuffixXEq",
+                      "name": "SuffixXEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "SuffixXEq",
+                        "errorCondition": "[S] + \"x\" == \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/SuffixXNe",
+                      "name": "SuffixXNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "SuffixXNe",
+                        "errorCondition": "[S] + \"x\" != \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/SuffixEmptyEq",
+                      "name": "SuffixEmptyEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "SuffixEmptyEq",
+                        "errorCondition": "[S] + \"x\" == \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/SuffixEmptyNe",
+                      "name": "SuffixEmptyNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "SuffixEmptyNe",
+                        "errorCondition": "[S] + \"x\" != \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/SuffixPeerEq",
+                      "name": "SuffixPeerEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "SuffixPeerEq",
+                        "errorCondition": "[S] + \"x\" == [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/SuffixPeerNe",
+                      "name": "SuffixPeerNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "SuffixPeerNe",
+                        "errorCondition": "[S] + \"x\" != [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutSuffix",
+                      "name": "OutSuffix",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 40
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/SuffixComp",
+                      "name": "SuffixComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../OutSuffix",
+                        "computationAlternatives": [
+                          {
+                            "operation": "[S] + \"x\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterSuffix",
+                      "name": "AfterSuffix",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/AfterSuffixComp",
+                      "name": "AfterSuffixComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../AfterSuffix",
+                        "computationAlternatives": [
+                          {
+                            "operation": "1"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "FieldNotFilled(OutSuffix)"
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/GuardSuffix",
+                      "name": "GuardSuffix",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 5
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/GuardSuffixComp",
+                      "name": "GuardSuffixComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../GuardSuffix",
+                        "computationAlternatives": [
+                          {
+                            "operation": "\"yes\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "[S] + \"x\" == \"x\""
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PrefixXEq",
+                      "name": "PrefixXEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "PrefixXEq",
+                        "errorCondition": "\"x\" + [S] == \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PrefixXNe",
+                      "name": "PrefixXNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "PrefixXNe",
+                        "errorCondition": "\"x\" + [S] != \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PrefixEmptyEq",
+                      "name": "PrefixEmptyEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "PrefixEmptyEq",
+                        "errorCondition": "\"x\" + [S] == \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PrefixEmptyNe",
+                      "name": "PrefixEmptyNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "PrefixEmptyNe",
+                        "errorCondition": "\"x\" + [S] != \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PrefixPeerEq",
+                      "name": "PrefixPeerEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "PrefixPeerEq",
+                        "errorCondition": "\"x\" + [S] == [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PrefixPeerNe",
+                      "name": "PrefixPeerNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "PrefixPeerNe",
+                        "errorCondition": "\"x\" + [S] != [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutPrefix",
+                      "name": "OutPrefix",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 40
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/PrefixComp",
+                      "name": "PrefixComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../OutPrefix",
+                        "computationAlternatives": [
+                          {
+                            "operation": "\"x\" + [S]"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterPrefix",
+                      "name": "AfterPrefix",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/AfterPrefixComp",
+                      "name": "AfterPrefixComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../AfterPrefix",
+                        "computationAlternatives": [
+                          {
+                            "operation": "1"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "FieldNotFilled(OutPrefix)"
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/GuardPrefix",
+                      "name": "GuardPrefix",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 5
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/GuardPrefixComp",
+                      "name": "GuardPrefixComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../GuardPrefix",
+                        "computationAlternatives": [
+                          {
+                            "operation": "\"yes\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "\"x\" + [S] == \"x\""
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangeXEq",
+                      "name": "RangeXEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "RangeXEq",
+                        "errorCondition": "RangeAsString(S,1,2) == \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangeXNe",
+                      "name": "RangeXNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "RangeXNe",
+                        "errorCondition": "RangeAsString(S,1,2) != \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangeEmptyEq",
+                      "name": "RangeEmptyEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "RangeEmptyEq",
+                        "errorCondition": "RangeAsString(S,1,2) == \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangeEmptyNe",
+                      "name": "RangeEmptyNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "RangeEmptyNe",
+                        "errorCondition": "RangeAsString(S,1,2) != \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangePeerEq",
+                      "name": "RangePeerEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "RangePeerEq",
+                        "errorCondition": "RangeAsString(S,1,2) == [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangePeerNe",
+                      "name": "RangePeerNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "RangePeerNe",
+                        "errorCondition": "RangeAsString(S,1,2) != [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutRange",
+                      "name": "OutRange",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 40
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/RangeComp",
+                      "name": "RangeComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../OutRange",
+                        "computationAlternatives": [
+                          {
+                            "operation": "RangeAsString(S,1,2)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterRange",
+                      "name": "AfterRange",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/AfterRangeComp",
+                      "name": "AfterRangeComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../AfterRange",
+                        "computationAlternatives": [
+                          {
+                            "operation": "1"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "FieldNotFilled(OutRange)"
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/GuardRange",
+                      "name": "GuardRange",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 5
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/GuardRangeComp",
+                      "name": "GuardRangeComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../GuardRange",
+                        "computationAlternatives": [
+                          {
+                            "operation": "\"yes\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "RangeAsString(S,1,2) == \"x\""
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/OvershootXEq",
+                      "name": "OvershootXEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "OvershootXEq",
+                        "errorCondition": "RangeAsString(S,1,6) == \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/OvershootXNe",
+                      "name": "OvershootXNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "OvershootXNe",
+                        "errorCondition": "RangeAsString(S,1,6) != \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/OvershootEmptyEq",
+                      "name": "OvershootEmptyEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "OvershootEmptyEq",
+                        "errorCondition": "RangeAsString(S,1,6) == \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/OvershootEmptyNe",
+                      "name": "OvershootEmptyNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "OvershootEmptyNe",
+                        "errorCondition": "RangeAsString(S,1,6) != \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/OvershootPeerEq",
+                      "name": "OvershootPeerEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "OvershootPeerEq",
+                        "errorCondition": "RangeAsString(S,1,6) == [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/OvershootPeerNe",
+                      "name": "OvershootPeerNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "OvershootPeerNe",
+                        "errorCondition": "RangeAsString(S,1,6) != [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutOvershoot",
+                      "name": "OutOvershoot",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 40
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/OvershootComp",
+                      "name": "OvershootComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../OutOvershoot",
+                        "computationAlternatives": [
+                          {
+                            "operation": "RangeAsString(S,1,6)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterOvershoot",
+                      "name": "AfterOvershoot",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/AfterOvershootComp",
+                      "name": "AfterOvershootComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../AfterOvershoot",
+                        "computationAlternatives": [
+                          {
+                            "operation": "1"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "FieldNotFilled(OutOvershoot)"
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/GuardOvershoot",
+                      "name": "GuardOvershoot",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 5
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/GuardOvershootComp",
+                      "name": "GuardOvershootComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../GuardOvershoot",
+                        "computationAlternatives": [
+                          {
+                            "operation": "\"yes\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "RangeAsString(S,1,6) == \"x\""
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangeSuffixXEq",
+                      "name": "RangeSuffixXEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "RangeSuffixXEq",
+                        "errorCondition": "RangeAsString(S,1,6) + \"x\" == \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangeSuffixXNe",
+                      "name": "RangeSuffixXNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "RangeSuffixXNe",
+                        "errorCondition": "RangeAsString(S,1,6) + \"x\" != \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangeSuffixEmptyEq",
+                      "name": "RangeSuffixEmptyEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "RangeSuffixEmptyEq",
+                        "errorCondition": "RangeAsString(S,1,6) + \"x\" == \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangeSuffixEmptyNe",
+                      "name": "RangeSuffixEmptyNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "RangeSuffixEmptyNe",
+                        "errorCondition": "RangeAsString(S,1,6) + \"x\" != \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangeSuffixPeerEq",
+                      "name": "RangeSuffixPeerEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "RangeSuffixPeerEq",
+                        "errorCondition": "RangeAsString(S,1,6) + \"x\" == [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangeSuffixPeerNe",
+                      "name": "RangeSuffixPeerNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "RangeSuffixPeerNe",
+                        "errorCondition": "RangeAsString(S,1,6) + \"x\" != [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutRangeSuffix",
+                      "name": "OutRangeSuffix",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 40
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/RangeSuffixComp",
+                      "name": "RangeSuffixComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../OutRangeSuffix",
+                        "computationAlternatives": [
+                          {
+                            "operation": "RangeAsString(S,1,6) + \"x\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterRangeSuffix",
+                      "name": "AfterRangeSuffix",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/AfterRangeSuffixComp",
+                      "name": "AfterRangeSuffixComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../AfterRangeSuffix",
+                        "computationAlternatives": [
+                          {
+                            "operation": "1"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "FieldNotFilled(OutRangeSuffix)"
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/GuardRangeSuffix",
+                      "name": "GuardRangeSuffix",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 5
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/GuardRangeSuffixComp",
+                      "name": "GuardRangeSuffixComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../GuardRangeSuffix",
+                        "computationAlternatives": [
+                          {
+                            "operation": "\"yes\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "RangeAsString(S,1,6) + \"x\" == \"x\""
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/CoerceXEq",
+                      "name": "CoerceXEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../N",
+                        "errorCode": "CoerceXEq",
+                        "errorCondition": "FieldValueAsString(N) == \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/CoerceXNe",
+                      "name": "CoerceXNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../N",
+                        "errorCode": "CoerceXNe",
+                        "errorCondition": "FieldValueAsString(N) != \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/CoerceEmptyEq",
+                      "name": "CoerceEmptyEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../N",
+                        "errorCode": "CoerceEmptyEq",
+                        "errorCondition": "FieldValueAsString(N) == \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/CoerceEmptyNe",
+                      "name": "CoerceEmptyNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../N",
+                        "errorCode": "CoerceEmptyNe",
+                        "errorCondition": "FieldValueAsString(N) != \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/CoercePeerEq",
+                      "name": "CoercePeerEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../N",
+                        "errorCode": "CoercePeerEq",
+                        "errorCondition": "FieldValueAsString(N) == [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/CoercePeerNe",
+                      "name": "CoercePeerNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../N",
+                        "errorCode": "CoercePeerNe",
+                        "errorCondition": "FieldValueAsString(N) != [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutCoerce",
+                      "name": "OutCoerce",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 40
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/CoerceComp",
+                      "name": "CoerceComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../OutCoerce",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FieldValueAsString(N)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterCoerce",
+                      "name": "AfterCoerce",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/AfterCoerceComp",
+                      "name": "AfterCoerceComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../AfterCoerce",
+                        "computationAlternatives": [
+                          {
+                            "operation": "1"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "FieldNotFilled(OutCoerce)"
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/GuardCoerce",
+                      "name": "GuardCoerce",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 5
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/GuardCoerceComp",
+                      "name": "GuardCoerceComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../GuardCoerce",
+                        "computationAlternatives": [
+                          {
+                            "operation": "\"yes\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "FieldValueAsString(N) == \"x\""
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/CoerceSuffixXEq",
+                      "name": "CoerceSuffixXEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../N",
+                        "errorCode": "CoerceSuffixXEq",
+                        "errorCondition": "FieldValueAsString(N) + \"x\" == \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/CoerceSuffixXNe",
+                      "name": "CoerceSuffixXNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../N",
+                        "errorCode": "CoerceSuffixXNe",
+                        "errorCondition": "FieldValueAsString(N) + \"x\" != \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/CoerceSuffixEmptyEq",
+                      "name": "CoerceSuffixEmptyEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../N",
+                        "errorCode": "CoerceSuffixEmptyEq",
+                        "errorCondition": "FieldValueAsString(N) + \"x\" == \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/CoerceSuffixEmptyNe",
+                      "name": "CoerceSuffixEmptyNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../N",
+                        "errorCode": "CoerceSuffixEmptyNe",
+                        "errorCondition": "FieldValueAsString(N) + \"x\" != \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/CoerceSuffixPeerEq",
+                      "name": "CoerceSuffixPeerEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../N",
+                        "errorCode": "CoerceSuffixPeerEq",
+                        "errorCondition": "FieldValueAsString(N) + \"x\" == [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/CoerceSuffixPeerNe",
+                      "name": "CoerceSuffixPeerNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../N",
+                        "errorCode": "CoerceSuffixPeerNe",
+                        "errorCondition": "FieldValueAsString(N) + \"x\" != [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutCoerceSuffix",
+                      "name": "OutCoerceSuffix",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 40
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/CoerceSuffixComp",
+                      "name": "CoerceSuffixComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../OutCoerceSuffix",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FieldValueAsString(N) + \"x\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterCoerceSuffix",
+                      "name": "AfterCoerceSuffix",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/AfterCoerceSuffixComp",
+                      "name": "AfterCoerceSuffixComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../AfterCoerceSuffix",
+                        "computationAlternatives": [
+                          {
+                            "operation": "1"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "FieldNotFilled(OutCoerceSuffix)"
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/GuardCoerceSuffix",
+                      "name": "GuardCoerceSuffix",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 5
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/GuardCoerceSuffixComp",
+                      "name": "GuardCoerceSuffixComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../GuardCoerceSuffix",
+                        "computationAlternatives": [
+                          {
+                            "operation": "\"yes\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "FieldValueAsString(N) + \"x\" == \"x\""
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/MixedXEq",
+                      "name": "MixedXEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "MixedXEq",
+                        "errorCondition": "RangeAsString(S,1,2) + FieldValueAsString(N) == \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/MixedXNe",
+                      "name": "MixedXNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "MixedXNe",
+                        "errorCondition": "RangeAsString(S,1,2) + FieldValueAsString(N) != \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/MixedEmptyEq",
+                      "name": "MixedEmptyEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "MixedEmptyEq",
+                        "errorCondition": "RangeAsString(S,1,2) + FieldValueAsString(N) == \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/MixedEmptyNe",
+                      "name": "MixedEmptyNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "MixedEmptyNe",
+                        "errorCondition": "RangeAsString(S,1,2) + FieldValueAsString(N) != \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/MixedPeerEq",
+                      "name": "MixedPeerEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "MixedPeerEq",
+                        "errorCondition": "RangeAsString(S,1,2) + FieldValueAsString(N) == [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/MixedPeerNe",
+                      "name": "MixedPeerNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "MixedPeerNe",
+                        "errorCondition": "RangeAsString(S,1,2) + FieldValueAsString(N) != [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutMixed",
+                      "name": "OutMixed",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 40
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/MixedComp",
+                      "name": "MixedComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../OutMixed",
+                        "computationAlternatives": [
+                          {
+                            "operation": "RangeAsString(S,1,2) + FieldValueAsString(N)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterMixed",
+                      "name": "AfterMixed",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/AfterMixedComp",
+                      "name": "AfterMixedComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../AfterMixed",
+                        "computationAlternatives": [
+                          {
+                            "operation": "1"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "FieldNotFilled(OutMixed)"
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/GuardMixed",
+                      "name": "GuardMixed",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 5
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/GuardMixedComp",
+                      "name": "GuardMixedComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../GuardMixed",
+                        "computationAlternatives": [
+                          {
+                            "operation": "\"yes\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "RangeAsString(S,1,2) + FieldValueAsString(N) == \"x\""
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/BracesXEq",
+                      "name": "BracesXEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "BracesXEq",
+                        "errorCondition": "{[S] + \"x\"} + [T] == \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/BracesXNe",
+                      "name": "BracesXNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "BracesXNe",
+                        "errorCondition": "{[S] + \"x\"} + [T] != \"x\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/BracesEmptyEq",
+                      "name": "BracesEmptyEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "BracesEmptyEq",
+                        "errorCondition": "{[S] + \"x\"} + [T] == \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/BracesEmptyNe",
+                      "name": "BracesEmptyNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "BracesEmptyNe",
+                        "errorCondition": "{[S] + \"x\"} + [T] != \"\"",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/BracesPeerEq",
+                      "name": "BracesPeerEq",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "BracesPeerEq",
+                        "errorCondition": "{[S] + \"x\"} + [T] == [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/BracesPeerNe",
+                      "name": "BracesPeerNe",
+                      "Rule": {
+                        "errorEntityRelPath": "../S",
+                        "errorCode": "BracesPeerNe",
+                        "errorCondition": "{[S] + \"x\"} + [T] != [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutBraces",
+                      "name": "OutBraces",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 40
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/BracesComp",
+                      "name": "BracesComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../OutBraces",
+                        "computationAlternatives": [
+                          {
+                            "operation": "{[S] + \"x\"} + [T]"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterBraces",
+                      "name": "AfterBraces",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/AfterBracesComp",
+                      "name": "AfterBracesComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../AfterBraces",
+                        "computationAlternatives": [
+                          {
+                            "operation": "1"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "FieldNotFilled(OutBraces)"
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/GuardBraces",
+                      "name": "GuardBraces",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 5
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/GuardBracesComp",
+                      "name": "GuardBracesComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../GuardBraces",
+                        "computationAlternatives": [
+                          {
+                            "operation": "\"yes\""
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ],
+                        "commonPrecondition": "{[S] + \"x\"} + [T] == \"x\""
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Outer",
+                      "name": "Outer",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 40
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/OuterComp",
+                      "name": "OuterComp",
+                      "Computation": {
+                        "computedFieldRelPath": "../Outer",
+                        "computationAlternatives": [
+                          {
+                            "operation": "[../Global] + [S]"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "String expression check."
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

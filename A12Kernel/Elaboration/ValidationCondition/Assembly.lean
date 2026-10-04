@@ -6,6 +6,7 @@ namespace A12Kernel
 
 inductive ValidationConditionAssemblyError where
   | invalidModel (error : ResolveError)
+  | stringIterationDomainUnsupported
   | groupReference (error : FixedGroupReferenceError)
   | fieldReference (error : ResolveError)
   | starredGroup (error : StarredGroupElabError)
@@ -65,7 +66,7 @@ def groupListDiagnostic? :
   | .fieldReference error => error.diagnostic?
   -- Named rather than wildcarded, so a new refusal must be classified rather than absorbed. None of
   -- these is measured as its own class through this projection.
-  | .invalidModel _ | .repeatableFieldRequired _ | .emptyGroupList | .rowGroupMismatch _ _
+  | .stringIterationDomainUnsupported | .invalidModel _ | .repeatableFieldRequired _ | .emptyGroupList | .rowGroupMismatch _ _
   | .declaringGroupMismatch _ _
   | .repetitionNotUnique _ | .iteratedDateRange _ | .multipleRepetitionNotUnique
   | .constructedDate _ | .stringPattern _ | .incoherentCore => none
@@ -144,6 +145,15 @@ def fromStringPattern (model : FlatModel) (rowGroup : GroupPath)
 def fromTokenComparison (rowGroup : GroupPath) (comparison : CheckedTokenComparison model) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   checkCore model rowGroup (.leaf (.tokenComparison comparison)) comparison.modelWellFormed
+
+/-- Fixed validation uses the common expression account. Repeatable rule execution needs the
+declared-slot/optimized-domain boundary measured in the String family grid (2026-10-04). -/
+def fromStringExpression (rowGroup : GroupPath) (comparison : CheckedStringExpressionComparison model) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  if !(model.repeatableScopeForGroupPath rowGroup).isEmpty ||
+      comparison.declarations.any (fun field => !field.repeatableScope.isEmpty) then
+    .error .stringIterationDomainUnsupported
+  else checkCore model rowGroup (.leaf (.stringExpression comparison)) comparison.left.modelWellFormed
 
 /-- Join a sealed scalar temporal comparison to the existing connective tree. -/
 def fromScalarTemporal (rowGroup : GroupPath) (comparison : CheckedScalarTemporalComparison model) :

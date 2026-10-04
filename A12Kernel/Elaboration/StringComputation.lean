@@ -4,10 +4,18 @@ import A12Kernel.Semantics.StringComputation
 
 /-! # Checked String-computation expression lowering
 
-This capsule resolves parser-independent field paths in copy/Number-`FieldValueAsString`/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. It accepts only nonrepeatable declarations of the exact kind required by each leaf. `RangeAsString` preserves the kernel's static gate order: resolve the nonrepeatable field shape, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/pattern/minimum/maximum policy and rejects direct target self-reference before evaluation. A read of the target, at the root or inside a concatenation, projects the one measured Kernel class, and a raw target is refused with its read's class. Alternatives, concrete syntax, repeatable reads, indexed coercion, custom targets, computing into a raw target, and scheduling remain outside.
+This capsule resolves parser-independent field paths in copy/Number-`FieldValueAsString`/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. The expression binder accepts declarations at the target scope, while the fixed-operation certificate retains its nonrepeatable boundary. Ordinary String reads, ranges, and Number coercion keep their distinct kind gates. `RangeAsString` preserves the kernel's static gate order: resolve the entity source at the consumer scope, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/pattern/minimum/maximum policy and rejects direct target self-reference before evaluation. A read of the target, at the root or inside a concatenation, projects the one measured Kernel class, and a raw target is refused with its read's class. Alternatives, concrete syntax and scheduling are assembled by their existing owners. Indexed coercion and custom/raw targets remain outside this binder.
 -/
 
 namespace A12Kernel
+
+/-- The declaration-local ordinary evaluated-String carrier shared by expression and first-filled targets. -/
+def FlatFieldDecl.isOrdinaryStringComputationCarrier
+    (declaration : FlatFieldDecl) : Bool :=
+  declaration.policy.kind == .string &&
+    declaration.stringValueMode == .evaluated &&
+    declaration.customType.isNone && declaration.enumeration.isNone
+
 
 /-- Fail-closed errors owned by checked String-computation expression lowering. Keeping this domain local avoids widening validation or public reference diagnostics. -/
 inductive StringComputationElabError where
@@ -46,7 +54,7 @@ def targetDiagnostic? :
 
 end StringComputationElabError
 
-/-- Admit one already-resolved nonrepeatable declaration as a String-value computation leaf. -/
+/-- Admit one already-resolved declaration as a String-value computation leaf. -/
 def admitStringComputationValueField
     (declaration : FlatFieldDecl) : Except StringComputationElabError FieldId :=
   match declaration.toStringValueField? with
@@ -57,7 +65,7 @@ def admitStringComputationValueField
       else
         throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)
 
-/-- Resolve one legal nonrepeatable String-value field for scalar String computation syntax. The
+/-- Resolve one legal String-value field at its target scope. The
 copied field is a field-value read, so its gates refuse a raw String ahead of this carrier's own
 refusal. -/
 def elaborateStringValueField (model : FlatModel) (declaringGroup targetGroup : GroupPath)
@@ -66,14 +74,14 @@ def elaborateStringValueField (model : FlatModel) (declaringGroup targetGroup : 
     (model.resolveComputationFieldValueRead declaringGroup targetGroup reference).mapError .resolve
   admitStringComputationValueField declaration
 
-/-- Admit one already-resolved nonrepeatable Number declaration as a `FieldValueAsString` operand. -/
+/-- Admit one already-resolved Number declaration as a `FieldValueAsString` operand. -/
 def admitNumberAsStringField
     (declaration : FlatFieldDecl) : Except StringComputationElabError FieldId :=
   match declaration.policy.kind with
   | .number _ => pure declaration.id
   | actual => throw (.fieldKindMismatch declaration.path actual.surfaceKind)
 
-/-- Resolve one legal nonrepeatable Number field for `FieldValueAsString`, a parameter asking the group
+/-- Resolve one legal Number field at its target scope for `FieldValueAsString`, a parameter asking the group
     gate alone: its raw String draws the conversion's Number class rather than the raw one
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
 def elaborateNumberAsStringField (model : FlatModel)
@@ -114,7 +122,8 @@ def wellFormedBool (model : FlatModel) : StringExpr FieldId → Bool
   | StringExpr.literal _ => true
   | StringExpr.range fieldId start finish =>
       validStringRange start finish &&
-        model.admitsStringComputationOperand fieldId
+        (model.lookupUniqueId fieldId).toOption.any (fun field =>
+          field.repeatableScope.isEmpty && field.toStringValueField?.isSome)
   | StringExpr.concat left right =>
       left.wellFormedBool model && right.wellFormedBool model
 
@@ -162,7 +171,7 @@ structure CheckedStringComputationOperation (model : FlatModel) where
   targetAdmitted : model.admitsStringComputationTarget targetField targetPolicy = true
   targetNotReferenced : expression.core.referencesField targetField = false
 
-/-- Resolve one authored String-expression tree without evaluating or reordering it. The caller supplies a validated model; each field still passes through the shared nonrepeatable path resolver. -/
+/-- Resolve one authored String-expression tree without evaluating or reordering it. The caller supplies a validated model; each field still passes through the shared target-scope path resolver. -/
 def elaborateStringExprCore (model : FlatModel) (declaringGroup targetGroup : GroupPath) :
     StringExpr SurfaceFieldPath →
       Except StringComputationElabError (StringExpr FieldId)

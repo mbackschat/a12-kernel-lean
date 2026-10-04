@@ -153,7 +153,7 @@ example :
       | none => false) = true := by
   native_decide
 
-/- Empty placement is real zero. The supplementary character distinguishes UTF-16 length 4 from scalar length 3, while normalized CRLF distinguishes 5 from raw length 6 and reaches the target gate. -/
+/- Empty placement is real zero. Stored supplementary characters fail the default charset (spec/06 §A.2); normalized CRLF distinguishes length 5 from raw length 6 and reaches the target gate. -/
 example :
     [(length.id, false), (scaledLength.id, true)].all (fun (targetField, suppress) =>
       decide ((outcomes? [
@@ -165,13 +165,13 @@ example :
         some [
           (addressAt targetField 1, .accepted (stored 0)),
           (addressAt targetField 2, .accepted (stored 0)),
-          (addressAt targetField 3, .accepted (stored 4)),
+          (addressAt targetField 3, .inheritedPoison .unsupportedCharacter),
           (addressAt targetField 4, .rejected (stored 5) .aboveMaximum),
           (addressAt targetField 5, .inheritedPoison .declaredConstraint)
         ])) = true := by
   native_decide
 
-/- Result classification preserves exact addresses across a changed UTF-16 value, normalized target rejection, and poison-cleared stale target. -/
+/- Result classification preserves exact addresses across charset poison, normalized target rejection, and poison-cleared stale targets. -/
 example :
     (do
       let view ← result? [
@@ -184,11 +184,10 @@ example :
       pure (view.cleared, view.withChanges.map
         fun entry => (entry.targetField, entry.value), view.withErrors)) =
       some (
-        [addressAt length.id 5],
+        [addressAt length.id 3, addressAt length.id 5],
         [
           (addressAt length.id 1, stored 0),
-          (addressAt length.id 2, stored 0),
-          (addressAt length.id 3, stored 4)
+          (addressAt length.id 2, stored 0)
         ],
         [{
           targetField := addressAt length.id 4

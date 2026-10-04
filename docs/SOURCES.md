@@ -1077,11 +1077,11 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-correlated-filter-runtime"></a>
 - [`$` binds the captured outer row and the candidate set includes it](sources/having-filter-probes.md#src-correlated-filter-runtime)
 <a id="src-pattern-invalid-string-cell"></a>
-- [A pattern or length violation makes the cell formally invalid on the validation arm](sources/evaluation-and-application-routes.md#src-pattern-invalid-string-cell)
+- [String formal-invalid input](sources/evaluation-and-application-routes.md#src-pattern-invalid-string-cell)
 <a id="src-filter-condition-carrier-independence"></a>
-- [The filter is checked and evaluated identically on every operand carrier](sources/having-filter-probes.md#src-filter-condition-carrier-independence)
+- [Filter carrier independence](sources/having-filter-probes.md#src-filter-condition-carrier-independence)
 <a id="src-nested-correlated-filter-and-poison-scope"></a>
-- [Multi-level correlation matches the one-level account, the scope gate is syntactic, and computation poison is per instance](sources/having-filter-probes.md#src-nested-correlated-filter-and-poison-scope)
+- [Nested correlation and poison scope](sources/having-filter-probes.md#src-nested-correlated-filter-and-poison-scope)
 <a id="src-outer-origin-filter-leaves"></a>
 - [A `$`-marked reference does not bind the filtered level, and both newer leaves read the captured row](sources/having-filter-probes.md#src-outer-origin-filter-leaves)
 
@@ -1751,3 +1751,6 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 <a id="src-compositional-temporal-disposition"></a>
 - [Temporal source slots and runtime wall-label failures](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-disposition), including the peer's already committed seeded-target correction to spec/09.
+
+<a id="src-string-expression-family"></a>
+- [Shared String expressions](sources/evaluation-and-application-routes.md#src-string-expression-family)

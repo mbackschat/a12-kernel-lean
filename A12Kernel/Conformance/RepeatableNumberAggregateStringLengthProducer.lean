@@ -84,7 +84,7 @@ private def input? (secondText : Option ClassifiedCellInput) :
       { group := 10, path := [1] },
       { group := 10, path := [2] }]
     cells := [
-      textCell 1 "A😀B" (.parsed (.str "A😀B")),
+      textCell 1 "AuvB" (.parsed (.str "AuvB")),
       numberCell produced.id [1] 99,
       numberCell produced.id [2] 88,
       numberCell total.id [] 77
