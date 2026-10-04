@@ -1,3 +1,5 @@
+import A12Kernel.Semantics.NumericRounding
+
 /-! # A computation's normalized condition is generated, and the generator satisfies its own checker
 
 The Kernel checks a calculation rule by parsing one **normalized condition**: a gate naming the computed field, then an optional common precondition, then one comparison per alternative between that field and the alternative's operation, joined by `And` inside and `Or` across. Twelve catalog classes report the ways that condition can be wrong.
@@ -88,12 +90,6 @@ inductive ComparisonSpelling where
   | notEqual
   /-- The tolerance-range operator for the declared range. -/
   | differsWithTolerance (range : ToleranceRange)
-  deriving Repr, DecidableEq
-
-/-- The rounding mode a computation declares, once for all its alternatives. An absent mode is
-`exact`. -/
-inductive ComputationRoundingMode where
-  | exact | roundUp | roundDown
   deriving Repr, DecidableEq
 
 /-- One declared alternative of a structured computation.
@@ -206,10 +202,8 @@ Each cell is measured: `RoundUp` and `RoundDown` beside `!=` are refused, and ev
 range is admitted ([inbound](../../docs/SOURCES.md#inbound-2026-09-25g-rounding-mode)). -/
 def roundingRefusal (spelling : ComparisonSpelling) (mode : ComputationRoundingMode) :
     Option CalculationRefusal :=
-  match spelling, mode with
-  | .notEqual, .exact => none
-  | .notEqual, .roundUp | .notEqual, .roundDown => some .wrongRoundingMode
-  | .differsWithTolerance _, _ => none
+  if mode.admitted (match spelling with | .notEqual => false | .differsWithTolerance _ => true)
+  then none else some .wrongRoundingMode
 
 /-- The rounding-mode check on a computation: its one declared mode against every alternative's
 emitted comparison, so a single alternative without a tolerance range is enough. -/

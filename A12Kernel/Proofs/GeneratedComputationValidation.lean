@@ -17,7 +17,7 @@ theorem generatedNumericComputationEvaluation_noMatch
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (admitted : admitGeneratedNumericOperationTable model computation =
       .ok admission)
-    (selection : computation.selectFirstCheckedNumeric context = .ok .noMatch) :
+    (selection : CheckedComputationAlternative.selectFirstChecked computation.outputNumericAlternatives context = .ok .noMatch) :
     computation.evaluateNumeric context = .ok .noMatch := by
   simp [GeneratedComputationTable.evaluateNumeric, admitted,
     AdmittedGeneratedNumericOperationTable.evaluate,
@@ -34,7 +34,7 @@ theorem generatedNumericComputationEvaluation_guardPoison
     (cause : FormalCause)
     (admitted : admitGeneratedNumericOperationTable model computation =
       .ok admission)
-    (selection : computation.selectFirstCheckedNumeric context = .ok (.poison cause)) :
+    (selection : CheckedComputationAlternative.selectFirstChecked computation.outputNumericAlternatives context = .ok (.poison cause)) :
     computation.evaluateNumeric context = .ok (.guardPoison cause) := by
   simp [GeneratedComputationTable.evaluateNumeric, admitted,
     AdmittedGeneratedNumericOperationTable.evaluate,
@@ -48,13 +48,14 @@ theorem generatedNumericComputationEvaluation_selected
       (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (context : ScalarComputationContext)
     (operation : CheckedNumericComputationOperation model)
+    (rounding : Option ComputationRoundingMode)
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (admitted : admitGeneratedNumericOperationTable model computation =
       .ok admission)
-    (selection : computation.selectFirstCheckedNumeric context = .ok (.selected operation)) :
+    (selection : CheckedComputationAlternative.selectFirstChecked computation.outputNumericAlternatives context = .ok (.selected (operation, rounding))) :
     computation.evaluateNumeric context =
       ((operation.evaluate context).map
-        (.evaluated operation.core.suppressExactScaleWarning)).mapError
+        (fun result => .evaluated operation.core.suppressExactScaleWarning result rounding)).mapError
           .operation := by
   cases result : operation.evaluate context <;>
     simp [GeneratedComputationTable.evaluateNumeric, admitted,
@@ -68,11 +69,12 @@ theorem admittedGeneratedNumericOperationTable_evaluateIn_selected
       (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (context : NumericComputationEvaluationContext)
     (operation : CheckedNumericComputationOperation model)
+    (rounding : Option ComputationRoundingMode)
     (admission : AdmittedGeneratedNumericOperationTable model computation)
-    (selection : computation.selectFirstCheckedNumericIn context = .ok (.selected operation)) :
+    (selection : CheckedComputationAlternative.selectFirstCheckedIn computation.outputNumericAlternatives context = .ok (.selected (operation, rounding))) :
     admission.evaluateIn context =
       ((operation.evaluateIn context).map
-        (.evaluated operation.core.suppressExactScaleWarning)).mapError
+        (fun result => .evaluated operation.core.suppressExactScaleWarning result rounding)).mapError
           .operation := by
   cases result : operation.evaluateIn context <;>
     simp [AdmittedGeneratedNumericOperationTable.evaluateIn,

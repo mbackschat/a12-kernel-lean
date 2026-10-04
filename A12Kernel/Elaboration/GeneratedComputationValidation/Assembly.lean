@@ -5,14 +5,14 @@ import A12Kernel.Semantics.ComputationCondition
 
 /-! # Checked generated computation validation assembly
 
-This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and validation-only tolerance metadata. Generated expression validation retains computation's model-wide operand policy, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared model-indexed condition and whole-rule boundary. Direct entity-list aggregates narrow to the established scalar atom; repeatable aggregates, row-paired `SumOfProducts`, and Number `FirstFilledValue` retain their exact checked sources and evaluate through the bounded addressed leaf context without flattening model certificates or row topology. Runtime selection and target completion live in the sibling Execution module; applied-destination composition lives in its narrow follow-on module. General whole-rule orchestration and scheduling remain outside.
+This capsule admits one nonrepeatable Number target, an optional common precondition, and a complete nonempty table: either one optionally guarded operation or at least two guarded operations, with optional per-alternative fixed tolerance. Literal Number and already-checked numeric-expression payloads share that cardinality, first-match selector, gate/common/body shape, and tolerance metadata. Generated expression validation retains computation's model-wide operand policy, every declaration-ordered mismatch branch, and the common-outside-disjunction rule while reusing the shared model-indexed condition and whole-rule boundary. Direct entity-list aggregates narrow to the established scalar atom; repeatable aggregates, row-paired `SumOfProducts`, and Number `FirstFilledValue` retain their exact checked sources and evaluate through the bounded addressed leaf context without flattening model certificates or row topology. Runtime selection and target completion live in the sibling Execution module; applied-destination composition lives in its narrow follow-on module. General whole-rule orchestration and scheduling remain outside.
 
 Numeric, typed String/stored-Enumeration, and Boolean/Confirm value counts retain their exact checked direct/plain-star/filtered-star sources so generated validation cannot collapse per-cell provenance, discard literal-domain certificates, or merge distinct field-kind matrices.
 -/
 
 namespace A12Kernel
 
-/-- One guarded computation alternative with validation-only tolerance metadata. First-match computation selection consumes only the required precondition and operation. -/
+/-- One guarded computation alternative with tolerance metadata. First-match computation selection consumes only the required precondition and operation. -/
 structure GeneratedComputationAlternative (Operation : Type) (Guard : Type := ComputationCondition) where
   precondition : Guard
   operation : Operation
@@ -21,7 +21,7 @@ structure GeneratedComputationAlternative (Operation : Type) (Guard : Type := Co
 
 namespace GeneratedComputationAlternative
 
-/-- Erase validation-only tolerance while retaining the required guarded-row shape. -/
+/-- Erase tolerance while retaining the required guarded-row shape. -/
 def toComputationAlternative
     (alternative : GeneratedComputationAlternative Operation Guard) :
     ComputationAlternative Operation Guard := {
@@ -93,6 +93,7 @@ structure GeneratedComputationTable (Operation : Type) (Guard : Type := Computat
   commonPrecondition : Option Guard := none
   alternatives : GeneratedComputationAlternatives Operation Guard
   messagePlan : MessageRenderPlan
+  roundingMode : ComputationRoundingMode := .exact
   deriving Repr, DecidableEq
 
 namespace GeneratedComputationTable
@@ -118,15 +119,39 @@ def selectFirstChecked (computation : GeneratedComputationTable Operation)
   ComputationAlternative.selectFirstChecked
     (ComputationAlternative.expandCommonPrecondition computation.commonPrecondition alternatives) context
 
-/-- Expand source-table shape once before either scalar or addressed guard evaluation. -/
+/-- Expand the source table while retaining any operation/tolerance projection needed by the
+consumer. Selection and generated mismatch must not erase each other's metadata (spec/09). -/
+def checkedNumericAlternativesWith
+    (computation : GeneratedComputationTable Operation (CheckedComputationCondition model))
+    (project : Operation → Option NumericToleranceRange → Result) :
+    List (CheckedComputationAlternative model Result) :=
+  let alternatives : List (CheckedComputationAlternative model Result) :=
+    match computation.alternatives with
+    | .singleton alternative => [{
+        precondition := alternative.precondition
+        operation := project alternative.operation alternative.tolerance }]
+    | .guarded alternatives => alternatives.declaredAlternatives.map fun alternative =>
+        { precondition := some alternative.precondition
+          operation := project alternative.operation alternative.tolerance }
+  CheckedComputationAlternative.expandCommonPrecondition computation.commonPrecondition alternatives
+
 def checkedNumericAlternatives
     (computation : GeneratedComputationTable Operation (CheckedComputationCondition model)) :
     List (CheckedComputationAlternative model Operation) :=
-  let alternatives : List (CheckedComputationAlternative model Operation) :=
-    match computation.alternatives with
-    | .singleton alternative => [{ precondition := alternative.precondition, operation := alternative.operation }]
-    | .guarded alternatives => alternatives.declaredAlternatives.map (·.toComputationAlternative)
-  CheckedComputationAlternative.expandCommonPrecondition computation.commonPrecondition alternatives
+  computation.checkedNumericAlternativesWith (fun operation _ => operation)
+
+def outputNumericAlternatives
+    (computation : GeneratedComputationTable Operation (CheckedComputationCondition model)) :
+    List (CheckedComputationAlternative model (Operation × Option ComputationRoundingMode)) :=
+  computation.checkedNumericAlternativesWith fun operation tolerance =>
+    (operation, tolerance.map fun _ => computation.roundingMode)
+
+/-- Static mode admission is per alternative, independently of whether its guard will hold. -/
+def roundingAdmitted (computation : GeneratedComputationTable Operation Guard) : Bool :=
+  match computation.alternatives with
+  | .singleton alternative => computation.roundingMode.admitted alternative.tolerance.isSome
+  | .guarded alternatives => alternatives.declaredAlternatives.all fun alternative =>
+      computation.roundingMode.admitted alternative.tolerance.isSome
 
 /-- Model-indexed guards retain their numeric and predicate sources during the common scan. -/
 def selectFirstCheckedNumeric
@@ -166,6 +191,7 @@ inductive GeneratedComputationGuardPosition where
 
 inductive GeneratedComputationValidationError where
   | resolve (error : ResolveError)
+  | wrongRoundingMode
   | numericGuardRequiresConditionTree
   | fieldFillGuardRequiresConditionTree
   | groupGuardRequiresConditionTree
@@ -384,6 +410,7 @@ def assembleGeneratedLiteralNumberRule (model : FlatModel)
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
+      if !computation.roundingAdmitted then throw .wrongRoundingMode
       let resolvedTarget ←
         model.resolveGeneratedNumberTarget computation.targetField
       let targetDeclaration := resolvedTarget.declaration
@@ -676,6 +703,7 @@ def admitGeneratedNumericOperationTable (model : FlatModel)
   match hModel : model.validate with
   | .error error => .error (.resolve error)
   | .ok () => do
+      if !computation.roundingAdmitted then throw .wrongRoundingMode
       let resolvedTarget ←
         model.resolveGeneratedNumberTarget computation.targetField
       let targetDeclaration := resolvedTarget.declaration

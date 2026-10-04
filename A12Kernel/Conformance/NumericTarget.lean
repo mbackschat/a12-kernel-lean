@@ -220,4 +220,41 @@ example :
         (.filled (.decimal (stored 7 0))) = some .cleared := by
   decide
 
+example : flexibleScaleTwo.checkBanded .roundUp (.value (125 / 100)) =
+      .supported (.accepted (stored 2 0)) ∧
+    flexibleScaleTwo.checkBanded .roundUp (.value (-125 / 100)) =
+      .supported (.accepted (stored (-1) 0)) ∧
+    flexibleScaleTwo.checkBanded .roundDown (.value (175 / 100)) =
+      .supported (.accepted (stored 1 0)) ∧
+    flexibleScaleTwo.checkBanded .roundDown (.value (-125 / 100)) =
+      .supported (.accepted (stored (-2) 0)) := by native_decide
+
+example : flexibleScaleTwo.checkBanded .exact (.value (1255 / 1000)) =
+      .supported (.accepted (stored 125 2)) ∧
+    flexibleScaleTwo.checkBanded .exact (.value (-1255 / 1000)) =
+      .supported (.accepted (stored (-126) 2)) ∧
+    flexibleScaleTwo.check (.value (1255 / 1000)) =
+      .unsupported (.fractionalScaleDoesNotFit 3 2) := by native_decide
+
+example : [ComputationRoundingMode.exact, .roundUp, .roundDown].all (fun mode =>
+    flexibleScaleTwo.checkBanded mode (.value 0) == .supported (.accepted (stored 0 0)) &&
+    flexibleScaleTwo.checkBanded mode .domainFailure == .supported (.invalidNoValue .calculationValue) &&
+    flexibleScaleTwo.checkBanded mode (.poison .malformed) == .supported (.inheritedPoison .malformed)) = true := by native_decide
+
+example : constrainedTarget.checkBanded .roundDown (.value (1 / 2)) =
+    .supported (.rejected (stored 0 2) .zeroNotAllowed) ∧
+    ({ flexibleScaleTwo with maxIntegerDigits := some 1 }).checkBanded .roundUp (.value (999 / 100)) =
+    .supported (.rejected (stored 10 0) .integerDigitsTooLong) := by native_decide
+
+example :
+    let epsilon : Rat := 1 / (10 ^ 20 : Rat)
+    flexibleScaleTwo.checkBanded .roundDown (.value (1 - epsilon)) =
+      .supported (.accepted (stored 1 0)) ∧
+    flexibleScaleTwo.checkBanded .roundUp (.value (1 + epsilon)) =
+      .supported (.accepted (stored 1 0)) ∧
+    flexibleScaleTwo.checkBanded .exact (.value (1 - epsilon)) =
+      .supported (.accepted (stored 1 0)) ∧
+    flexibleScaleTwo.checkBanded .exact (.value (-1 - epsilon)) =
+      .supported (.accepted (stored (-1) 0)) := by native_decide
+
 end A12Kernel.Conformance.NumericTarget

@@ -56,7 +56,7 @@ theorem roundingRefusal_emitted_isSome_iff (alternative : DeclaredComputationAlt
     (roundingRefusal (emittedSpelling alternative) mode).isSome ↔
       mode ≠ .exact ∧ alternative.toleranceRange = none := by
   cases h : alternative.toleranceRange <;> cases mode <;>
-    simp [roundingRefusal, emittedSpelling, h]
+    simp [roundingRefusal, ComputationRoundingMode.admitted, emittedSpelling, h]
 
 /-- **The rounding-mode class is a judgement about a pair, owed by every alternative.** A
 computation draws it exactly when its declared mode is not exact and at least one alternative

@@ -52,25 +52,27 @@ def elaborateNumericTargetComputationOperation
 
 namespace CheckedNumericTargetComputationOperation
 
-/-- Evaluate with the retained target policy and route solely by the checked operation's warning-suppression choice. -/
+/-- A selected band changes only the store attempt; an unbanded operation keeps its original
+warning-suppression policy (spec/09). The authored expression remains available for validation. -/
+def checkResult (operation : CheckedNumericTargetComputationOperation model)
+    (result : NumericComputationResult) : NumericTargetCheckResult :=
+  match operation.bandedRounding with
+  | some mode => operation.policy.checkBanded mode result
+  | none => if operation.operation.core.suppressExactScaleWarning then
+      operation.policy.checkWithScaleWarningSuppressed result
+    else operation.policy.check result
+
+/-- Evaluate the authored expression before applying its retained output policy. -/
 def evaluate (operation : CheckedNumericTargetComputationOperation model)
     (context : ScalarComputationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
-  let result ← operation.operation.evaluate context
-  if operation.operation.core.suppressExactScaleWarning then
-    pure (operation.policy.checkWithScaleWarningSuppressed result)
-  else
-    pure (operation.policy.check result)
+  pure (operation.checkResult (← operation.operation.evaluate context))
 
 /-- Preserve the same retained target-policy dispatch after repeatable expression evaluation. Source-relative target policy and result classification are not recomputed or reordered. -/
 def evaluateIn (operation : CheckedNumericTargetComputationOperation model)
     (context : NumericComputationEvaluationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
-  let result ← operation.operation.evaluateIn context
-  if operation.operation.core.suppressExactScaleWarning then
-    pure (operation.policy.checkWithScaleWarningSuppressed result)
-  else
-    pure (operation.policy.check result)
+  pure (operation.checkResult (← operation.operation.evaluateIn context))
 
 end CheckedNumericTargetComputationOperation
 

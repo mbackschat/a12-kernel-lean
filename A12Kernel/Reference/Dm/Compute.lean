@@ -260,10 +260,29 @@ inductive LoweredComputation (model : FlatModel)
   /-- A non-Number computation over addressed instances, including fixed Boolean/Confirm tables. -/
   | rows (step : RowStep model)
 
+private def computationOutputModes (computation : DmComputation) :
+    Lowering (List (Option ComputationRoundingMode)) := do
+  let mode ← match computation.roundingMode with
+    | "Exact" => pure ComputationRoundingMode.exact
+    | "RoundUp" => pure .roundUp
+    | "RoundDown" => pure .roundDown
+    | _ => refuse "RoundingMode" "unknown mode"
+  computation.alternatives.mapM fun alternative => do
+    let banded ← match alternative.toleranceRangeOp with
+      | none => pure false
+      | some "DiffersWithToleranceRange1" | some "DiffersWithToleranceRange2"
+      | some "DiffersWithToleranceRange5" | some "DiffersWithToleranceRange10" => pure true
+      | some _ => refuse "ToleranceRange" "unknown range"
+    if !mode.admitted banded then refuse "RoundingMode" "MVK_ERROR_WRONG_ROUNDING_MODE"
+    pure (if banded then some mode else none)
+
 private def lowerComputationWith (allowParallelGuards : Bool)
     (model : FlatModel) (language : Language) (computation : DmComputation) :
     Lowering (FlatFieldDecl × LoweredComputation model) := do
   let target ← targetOf language model computation
+  let outputModes ← computationOutputModes computation
+  if target.policy.kind.surfaceKind != .number && outputModes.any Option.isSome then
+    refuse "ToleranceRange" "non-Number target"
   -- Decode once for guard scale admission, but retain the reader's guard/operation/refusal order.
   let suppression : Lowering (List String) :=
     if computation.errorCodesToSuppress.isEmpty then pure [] else
@@ -308,8 +327,11 @@ private def lowerComputationWith (allowParallelGuards : Bool)
       match elaborated "NumberComputation"
           (elaborateCompleteNumericTargetComputationTable model computation.group target.id
             (guards.zip expressions) suppress (if row then .row else .fixed) common) with
-      | .ok table => pure (target, .number table row)
+      | .ok table => do
+          let table ← (table.withBandedRounding? outputModes).getDM (refuse "NumberComputation" "output policy arity")
+          pure (target, .number table row)
       | .error refusal =>
+          if outputModes.any Option.isSome then throw refusal
           match lowerParallelNumber model computation.group target.id guards expressions common suppress with
           | .ok step => pure (target, .parallel step)
           | .error _ => .error refusal

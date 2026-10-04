@@ -35,6 +35,7 @@ structure DmRule where
 structure DmAlternative where
   precondition : Option String
   operation : String
+  toleranceRangeOp : Option String := none
   deriving Repr, Inhabited
 
 /-- One computation, its target and alternatives kept as authored. -/
@@ -45,6 +46,7 @@ structure DmComputation where
   commonPrecondition : Option String
   alternatives : List DmAlternative
   errorCodesToSuppress : List String
+  roundingMode : String := "Exact"
   deriving Repr, Inhabited
 
 structure DmModel where
@@ -171,8 +173,21 @@ private structure ReadState where
   /-- Index-field names to resolve once every field id is known, by repeatable level. -/
   indexFields : Array (RepeatableLevel × GroupPath × String) := #[]
 
+/-- KF297's optional computation members default only on absence/null; scalar coercion must
+still reach closed-set admission, while containers are reader errors. -/
+private def computationString? (json : Json) (key : String) : Except String (Option String) :=
+  match (json.getObjVal? key).toOption with
+  | none | some .null => pure none
+  | some (.str value) => pure (some value)
+  | some (.num value) => pure (some value.toString)
+  | some (.bool value) => pure (some (if value then "true" else "false"))
+  | some _ => throw s!"expected scalar computation member: {key}"
+
 private def readAlternative (json : Json) : Except String DmAlternative := do
-  pure { precondition := str? json "precondition", operation := ← json.getObjValAs? String "operation" }
+  pure {
+    precondition := str? json "precondition"
+    operation := ← json.getObjValAs? String "operation"
+    toleranceRangeOp := ← computationString? json "toleranceRangeOp" }
 
 /-- Walk one group element and its descendants depth-first. -/
 private partial def readElement (path : GroupPath) (scope : List RepeatableLevel) (element : Json) :
@@ -207,12 +222,14 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         condition := (str? body "errorCondition").getD ""
         severity := (str? body "severity").getD "ERROR" } }
   | "Computation" =>
+      let roundingMode ← StateT.lift (computationString? body "roundingMode")
       let alternatives ← StateT.lift do
         (← body.getObjValAs? (Array Json) "computationAlternatives").toList.mapM readAlternative
       modify fun state => { state with computations := state.computations.push {
         group := path, name, alternatives
         targetRelPath := (str? body "computedFieldRelPath").getD ""
         commonPrecondition := str? body "commonPrecondition"
+        roundingMode := roundingMode.getD "Exact"
         errorCodesToSuppress := ((body.getObjValAs? (Array String) "errorCodesToSuppress").toOption.getD #[]).toList } }
   | other => modify fun state => { state with refusals := state.refusals.push (path ++ [name], s!"element {other}") }
 

@@ -216,6 +216,18 @@ def checkWithScaleWarningSuppressed (policy : NumericTargetPolicy) :
         | none =>
             .supported (.rejected boundedAttempt .suppressedScaleMismatch)
 
+/-- A tolerance-banded computation rounds only its store attempt: Exact floors to target digits,
+while RoundUp/Down use whole numbers (spec/09, KF474). All modes follow the scale-19 pre-round
+(spec/04); validation retains the authored operation. -/
+def checkBanded (policy : NumericTargetPolicy) (mode : ComputationRoundingMode)
+    (result : NumericComputationResult) : NumericTargetCheckResult :=
+  policy.check (result.mapValue fun amount =>
+    let preRounded := rescaleHalfUp amount decimalPreRoundScale
+    match mode with
+    | .exact => rescaleFloor preRounded policy.info.scale
+    | .roundUp => rescaleCeiling preRounded 0
+    | .roundDown => rescaleFloor preRounded 0)
+
 end NumericTargetPolicy
 
 /-- Prior target state used only for change-only delta reporting. It intentionally erases absent versus present-empty placement while retaining whether typed source equality with computed Number output is possible. -/

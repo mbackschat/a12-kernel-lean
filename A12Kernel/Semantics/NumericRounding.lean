@@ -4,6 +4,17 @@ import A12Kernel.Core
 
 namespace A12Kernel
 
+/-- The rounding mode a computation declares, once for all its alternatives. An absent mode is
+`exact`. -/
+inductive ComputationRoundingMode where
+  | exact | roundUp | roundDown
+  deriving Repr, DecidableEq
+
+
+/-- Non-exact computation rounding requires a tolerance band on every alternative (spec/09). -/
+def ComputationRoundingMode.admitted (mode : ComputationRoundingMode) (hasTolerance : Bool) : Bool :=
+  hasTolerance || mode == .exact
+
 /-- The kernel first rounds to this decimal scale before applying an authored rounding mode. -/
 def decimalPreRoundScale : Nat := 19
 

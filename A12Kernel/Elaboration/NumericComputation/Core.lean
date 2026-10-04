@@ -240,6 +240,7 @@ structure CheckedNumericTargetComputationOperation (model : FlatModel) where
   operation : CheckedNumericComputationOperation model
   policy : NumericTargetPolicy
   targetMatches : policy.info = operation.core.target.info
+  bandedRounding : Option ComputationRoundingMode := none
 
 /-- The targets one elaboration admits. A fixed scope admits a nonrepeatable target, which the scalar
 executors write at the empty path; a row scope admits a repeatable one, which the repeatable plan runs

@@ -14,7 +14,7 @@ inductive GeneratedNumericComputationEvaluation where
   | noMatch
   | guardPoison (cause : FormalCause)
   | evaluated (suppressExactScaleWarning : Bool)
-      (result : NumericComputationResult)
+      (result : NumericComputationResult) (bandedRounding : Option ComputationRoundingMode := none)
   deriving Repr, DecidableEq
 
 namespace GeneratedNumericComputationEvaluation
@@ -25,8 +25,9 @@ def completeNumericTarget (evaluation : GeneratedNumericComputationEvaluation)
   match evaluation with
   | .noMatch => .supported .noValue
   | .guardPoison cause => .supported (.inheritedPoison cause)
-  | .evaluated false result => policy.check result
-  | .evaluated true result => policy.checkWithScaleWarningSuppressed result
+  | .evaluated _ result (some mode) => policy.checkBanded mode result
+  | .evaluated false result none => policy.check result
+  | .evaluated true result none => policy.checkWithScaleWarningSuppressed result
 
 end GeneratedNumericComputationEvaluation
 
@@ -72,7 +73,7 @@ entry points share this projection while supplying their exact source reader to 
 def evaluateSelection
     (_admission : AdmittedGeneratedNumericOperationTable model computation)
     (selection : Except CheckedComputationConditionError
-      (ComputationAlternativeSelection (CheckedNumericComputationOperation model)))
+      (ComputationAlternativeSelection (CheckedNumericComputationOperation model × Option ComputationRoundingMode)))
     (evaluateOperation : CheckedNumericComputationOperation model →
       Except NumericComputationFault NumericComputationResult) :
     Except GeneratedNumericComputationEvaluationError
@@ -80,9 +81,9 @@ def evaluateSelection
   match ← selection.mapError (fun error => .operation error.toNumericFault) with
   | .noMatch => pure .noMatch
   | .poison cause => pure (.guardPoison cause)
-  | .selected operation =>
+  | .selected (operation, rounding) =>
       evaluateOperation operation
-        |>.map (.evaluated operation.core.suppressExactScaleWarning)
+        |>.map (fun result => .evaluated operation.core.suppressExactScaleWarning result rounding)
         |>.mapError .operation
 
 /-- Preserve one first-selection decision while delegating the selected checked operation to a caller-supplied scalar or addressed evaluator. -/
@@ -92,7 +93,7 @@ def evaluateWith
     (evaluateOperation : CheckedNumericComputationOperation model →
       Except NumericComputationFault NumericComputationResult) :
     Except GeneratedNumericComputationEvaluationError GeneratedNumericComputationEvaluation :=
-  admission.evaluateSelection (computation.selectFirstCheckedNumeric context) evaluateOperation
+  admission.evaluateSelection (CheckedComputationAlternative.selectFirstChecked computation.outputNumericAlternatives context) evaluateOperation
 
 /-- Evaluate only the first selected operation of an already-admitted table through the scalar compatibility boundary. Target completion remains separate. -/
 def evaluate (admission : AdmittedGeneratedNumericOperationTable model computation)
@@ -106,7 +107,7 @@ def evaluateIn (admission : AdmittedGeneratedNumericOperationTable model computa
     (context : NumericComputationEvaluationContext) :
     Except GeneratedNumericComputationEvaluationError
       GeneratedNumericComputationEvaluation :=
-  admission.evaluateSelection (computation.selectFirstCheckedNumericIn context)
+  admission.evaluateSelection (CheckedComputationAlternative.selectFirstCheckedIn computation.outputNumericAlternatives context)
     (fun operation => operation.evaluateIn context)
 
 private def checkedReadAtWith

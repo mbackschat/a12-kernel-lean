@@ -357,35 +357,29 @@ theorem checkedNumericTargetComputationOperation_policyMatches
     checked.policy.info = checked.operation.core.target.info :=
   checked.targetMatches
 
-/-- Target-attached evaluation dispatches solely by the certified suppression bit after preserving the exact expression result. -/
+/-- Target-attached evaluation preserves the authored result until its retained output policy runs. -/
 theorem checkedNumericTargetComputationOperation_evaluate_routes
     (checked : CheckedNumericTargetComputationOperation model)
     (context : ScalarComputationContext)
     (result : NumericComputationResult)
     (evaluated : checked.operation.evaluate context = .ok result) :
     checked.evaluate context =
-      .ok (if checked.operation.core.suppressExactScaleWarning then
-        checked.policy.checkWithScaleWarningSuppressed result
-      else
-        checked.policy.check result) := by
+      .ok (checked.checkResult result) := by
   simp only [CheckedNumericTargetComputationOperation.evaluate]
   rw [evaluated]
-  cases checked.operation.core.suppressExactScaleWarning <;> rfl
+  rfl
 
-/-- Target-attached addressed evaluation preserves the same certified suppression dispatch after the unified expression has consumed its repeatable inputs. -/
+/-- Addressed evaluation uses the same output policy after the expression consumes its bound inputs. -/
 theorem checkedNumericTargetComputationOperation_evaluateIn_routes
     (checked : CheckedNumericTargetComputationOperation model)
     (context : NumericComputationEvaluationContext)
     (result : NumericComputationResult)
     (evaluated : checked.operation.evaluateIn context = .ok result) :
     checked.evaluateIn context =
-      .ok (if checked.operation.core.suppressExactScaleWarning then
-        checked.policy.checkWithScaleWarningSuppressed result
-      else
-        checked.policy.check result) := by
+      .ok (checked.checkResult result) := by
   simp only [CheckedNumericTargetComputationOperation.evaluateIn]
   rw [evaluated]
-  cases checked.operation.core.suppressExactScaleWarning <;> rfl
+  rfl
 
 /-- Numeric Base Year is the fixed declared year and performs no context read in a checked computation expression. -/
 theorem numericComputation_baseYear_evaluatesYear

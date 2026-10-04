@@ -274,6 +274,19 @@ def elaborateNumericTargetComputationTableFromSurface (model : FlatModel) (decla
 
 namespace CheckedNumericComputationTable
 
+/-- Attach exactly one admitted output policy per authored alternative, preserving all target and
+selection certificates. Band width belongs to generated comparison, not storage rounding. -/
+def withBandedRounding? (table : CheckedNumericComputationTable model)
+    (modes : List (Option ComputationRoundingMode)) : Option (CheckedNumericComputationTable model) := do
+  let first :: rest := modes | none
+  if rest.length != table.remaining.length then none else
+    let attach (alternative : CheckedNumericComputationAlternative model table.targetField table.targetPolicy)
+        (mode : Option ComputationRoundingMode) :=
+      { alternative with operation := { alternative.operation with bandedRounding := mode } }
+    pure { table with
+      first := attach table.first first
+      remaining := (table.remaining.zip rest).map fun (alternative, mode) => attach alternative mode }
+
 /-- Retain every checked row in authored order for same-target assembly. -/
 def checkedAlternatives (table : CheckedNumericComputationTable model) :
     List (CheckedNumericComputationAlternative
