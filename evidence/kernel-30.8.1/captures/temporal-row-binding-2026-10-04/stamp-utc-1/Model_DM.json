@@ -1,0 +1,1566 @@
+{
+  "header": {
+    "id": "StampConstruction_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "StampConstruction_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false,
+      "baseYear": "2024"
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "UTC",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/Flag",
+                "name": "Flag",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 5
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Form/Rows",
+                "name": "Rows",
+                "Group": {
+                  "repeatability": 3,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/D",
+                      "name": "D",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/P",
+                      "name": "P",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd",
+                            "datePrecision": "YEAR_OPTIONAL"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Y",
+                      "name": "Y",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/YM",
+                      "name": "YM",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/MD",
+                      "name": "MD",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/M",
+                      "name": "M",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "MM"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/T",
+                      "name": "T",
+                      "Field": {
+                        "fieldType": {
+                          "type": "TimeType",
+                          "TimeType": {
+                            "format": "HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Z",
+                      "name": "Z",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/R",
+                      "name": "R",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateRangeType",
+                          "DateRangeType": {
+                            "format": "yyyy-MM-dd",
+                            "rangeSeparator": "/"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/H",
+                      "name": "H",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0,
+                            "maxLength": 2,
+                            "positivesOnly": true
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/A",
+                      "name": "A",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Empty",
+                      "name": "Empty",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/DateTarget",
+                      "name": "DateTarget",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/StampTarget",
+                      "name": "StampTarget",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutFields",
+                      "name": "OutFields",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/FieldsEqual",
+                      "name": "FieldsEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "FieldsEqual",
+                        "errorCondition": "DateTime(D,T) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/FieldsNotEqual",
+                      "name": "FieldsNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "FieldsNotEqual",
+                        "errorCondition": "DateTime(D,T) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterFields",
+                      "name": "AfterFields",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutYear",
+                      "name": "OutYear",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/YearEqual",
+                      "name": "YearEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "YearEqual",
+                        "errorCondition": "DateTime(Y,T) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/YearNotEqual",
+                      "name": "YearNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "YearNotEqual",
+                        "errorCondition": "DateTime(Y,T) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterYear",
+                      "name": "AfterYear",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutYM",
+                      "name": "OutYM",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/YMEqual",
+                      "name": "YMEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "YMEqual",
+                        "errorCondition": "DateTime(YM,T) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/YMNotEqual",
+                      "name": "YMNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "YMNotEqual",
+                        "errorCondition": "DateTime(YM,T) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterYM",
+                      "name": "AfterYM",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutMD",
+                      "name": "OutMD",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/MDEqual",
+                      "name": "MDEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "MDEqual",
+                        "errorCondition": "DateTime(MD,T) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/MDNotEqual",
+                      "name": "MDNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "MDNotEqual",
+                        "errorCondition": "DateTime(MD,T) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterMD",
+                      "name": "AfterMD",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutMonth",
+                      "name": "OutMonth",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/MonthEqual",
+                      "name": "MonthEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "MonthEqual",
+                        "errorCondition": "DateTime(M,T) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/MonthNotEqual",
+                      "name": "MonthNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "MonthNotEqual",
+                        "errorCondition": "DateTime(M,T) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterMonth",
+                      "name": "AfterMonth",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutFirst",
+                      "name": "OutFirst",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/FirstEqual",
+                      "name": "FirstEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../D",
+                        "errorCode": "FirstEqual",
+                        "errorCondition": "ValueAsDate(P,FirstDay) == [D]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/FirstNotEqual",
+                      "name": "FirstNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../D",
+                        "errorCode": "FirstNotEqual",
+                        "errorCondition": "ValueAsDate(P,FirstDay) != [D]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterFirst",
+                      "name": "AfterFirst",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutLast",
+                      "name": "OutLast",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/LastEqual",
+                      "name": "LastEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../D",
+                        "errorCode": "LastEqual",
+                        "errorCondition": "ValueAsDate(P,LastDay) == [D]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/LastNotEqual",
+                      "name": "LastNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../D",
+                        "errorCode": "LastNotEqual",
+                        "errorCondition": "ValueAsDate(P,LastDay) != [D]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterLast",
+                      "name": "AfterLast",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutPartialShift",
+                      "name": "OutPartialShift",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PartialShiftEqual",
+                      "name": "PartialShiftEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../D",
+                        "errorCode": "PartialShiftEqual",
+                        "errorCondition": "AddDays(ValueAsDate(P,LastDay),1) == [D]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PartialShiftNotEqual",
+                      "name": "PartialShiftNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../D",
+                        "errorCode": "PartialShiftNotEqual",
+                        "errorCondition": "AddDays(ValueAsDate(P,LastDay),1) != [D]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterPartialShift",
+                      "name": "AfterPartialShift",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutPartialFirst",
+                      "name": "OutPartialFirst",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PartialFirstEqual",
+                      "name": "PartialFirstEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "PartialFirstEqual",
+                        "errorCondition": "DateTime(ValueAsDate(P,FirstDay),T) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PartialFirstNotEqual",
+                      "name": "PartialFirstNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "PartialFirstNotEqual",
+                        "errorCondition": "DateTime(ValueAsDate(P,FirstDay),T) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterPartialFirst",
+                      "name": "AfterPartialFirst",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutPartialLast",
+                      "name": "OutPartialLast",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PartialLastEqual",
+                      "name": "PartialLastEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "PartialLastEqual",
+                        "errorCondition": "DateTime(ValueAsDate(P,LastDay),T) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PartialLastNotEqual",
+                      "name": "PartialLastNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "PartialLastNotEqual",
+                        "errorCondition": "DateTime(ValueAsDate(P,LastDay),T) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterPartialLast",
+                      "name": "AfterPartialLast",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutToday",
+                      "name": "OutToday",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/TodayEqual",
+                      "name": "TodayEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "TodayEqual",
+                        "errorCondition": "DateTime(Today,T) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/TodayNotEqual",
+                      "name": "TodayNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "TodayNotEqual",
+                        "errorCondition": "DateTime(Today,T) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterToday",
+                      "name": "AfterToday",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutComponents",
+                      "name": "OutComponents",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ComponentsEqual",
+                      "name": "ComponentsEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "ComponentsEqual",
+                        "errorCondition": "DateTime(Date(\"31\",\"03\",\"2024\"),Time(H)) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ComponentsNotEqual",
+                      "name": "ComponentsNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "ComponentsNotEqual",
+                        "errorCondition": "DateTime(Date(\"31\",\"03\",\"2024\"),Time(H)) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterComponents",
+                      "name": "AfterComponents",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutClock",
+                      "name": "OutClock",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ClockEqual",
+                      "name": "ClockEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "ClockEqual",
+                        "errorCondition": "DateTime(D,Time(H)) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ClockNotEqual",
+                      "name": "ClockNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "ClockNotEqual",
+                        "errorCondition": "DateTime(D,Time(H)) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterClock",
+                      "name": "AfterClock",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutUnrealDate",
+                      "name": "OutUnrealDate",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/UnrealDateEqual",
+                      "name": "UnrealDateEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "UnrealDateEqual",
+                        "errorCondition": "DateTime(Date(\"31\",\"02\",\"2024\"),T) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/UnrealDateNotEqual",
+                      "name": "UnrealDateNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "UnrealDateNotEqual",
+                        "errorCondition": "DateTime(Date(\"31\",\"02\",\"2024\"),T) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterUnrealDate",
+                      "name": "AfterUnrealDate",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutShift",
+                      "name": "OutShift",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ShiftEqual",
+                      "name": "ShiftEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "ShiftEqual",
+                        "errorCondition": "AddHours(DateTime(AddDays(D,1),T),1) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ShiftNotEqual",
+                      "name": "ShiftNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "ShiftNotEqual",
+                        "errorCondition": "AddHours(DateTime(AddDays(D,1),T),1) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterShift",
+                      "name": "AfterShift",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutRange",
+                      "name": "OutRange",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangeEqual",
+                      "name": "RangeEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "RangeEqual",
+                        "errorCondition": "DateTime(EndOfDateRange(R),T) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/RangeNotEqual",
+                      "name": "RangeNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "RangeNotEqual",
+                        "errorCondition": "DateTime(EndOfDateRange(R),T) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterRange",
+                      "name": "AfterRange",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutProject",
+                      "name": "OutProject",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ProjectEqual",
+                      "name": "ProjectEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "ProjectEqual",
+                        "errorCondition": "DateTime(D,TimeFromDateTime(Z)) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ProjectNotEqual",
+                      "name": "ProjectNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "ProjectNotEqual",
+                        "errorCondition": "DateTime(D,TimeFromDateTime(Z)) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterProject",
+                      "name": "AfterProject",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutGiven",
+                      "name": "OutGiven",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/GivenEqual",
+                      "name": "GivenEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "GivenEqual",
+                        "errorCondition": "DateTime(AddDays(D,[A]),T) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/GivenNotEqual",
+                      "name": "GivenNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "GivenNotEqual",
+                        "errorCondition": "DateTime(AddDays(D,[A]),T) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterGiven",
+                      "name": "AfterGiven",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutGapAfterPartial",
+                      "name": "OutGapAfterPartial",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/GapAfterPartialEqual",
+                      "name": "GapAfterPartialEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "GapAfterPartialEqual",
+                        "errorCondition": "DateTime(ValueAsDate(P,FirstDay),TimeFromDateTime(\"31.03.2024T02:30:00\")) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/GapAfterPartialNotEqual",
+                      "name": "GapAfterPartialNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "GapAfterPartialNotEqual",
+                        "errorCondition": "DateTime(ValueAsDate(P,FirstDay),TimeFromDateTime(\"31.03.2024T02:30:00\")) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterGapAfterPartial",
+                      "name": "AfterGapAfterPartial",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutHourAfter",
+                      "name": "OutHourAfter",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/HourAfterEqual",
+                      "name": "HourAfterEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "HourAfterEqual",
+                        "errorCondition": "AddHours(DateTime(D,T),1) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/HourAfterNotEqual",
+                      "name": "HourAfterNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "HourAfterNotEqual",
+                        "errorCondition": "AddHours(DateTime(D,T),1) != [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterHourAfter",
+                      "name": "AfterHourAfter",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/OutMinPartial",
+                      "name": "OutMinPartial",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/MinPartialEqual",
+                      "name": "MinPartialEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../D",
+                        "errorCode": "MinPartialEqual",
+                        "errorCondition": "Min(ValueAsDate(P,FirstDay),[D]) == [D]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/MinPartialNotEqual",
+                      "name": "MinPartialNotEqual",
+                      "Rule": {
+                        "errorEntityRelPath": "../D",
+                        "errorCode": "MinPartialNotEqual",
+                        "errorCondition": "Min(ValueAsDate(P,FirstDay),[D]) != [D]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/AfterMinPartial",
+                      "name": "AfterMinPartial",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ClockMin",
+                      "name": "ClockMin",
+                      "Rule": {
+                        "errorEntityRelPath": "../T",
+                        "errorCode": "ClockMin",
+                        "errorCondition": "Min(Time(H),[T]) == [T]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/ConstructedMin",
+                      "name": "ConstructedMin",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "ConstructedMin",
+                        "errorCondition": "Min(DateTime(D,Time(H)),[Z]) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Rule",
+                      "id": "/Form/Rows/PartialMin",
+                      "name": "PartialMin",
+                      "Rule": {
+                        "errorEntityRelPath": "../Z",
+                        "errorCode": "PartialMin",
+                        "errorCondition": "Min(DateTime(ValueAsDate(P,FirstDay),T),[Z]) == [Z]",
+                        "severity": "ERROR",
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Temporal comparison check."
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

@@ -8,6 +8,7 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 ### SG9 — paths, indices, and static legality completion
 
 - `state`: open
+- `remaining`: reconcile the non-normative `evalRule` note in [spec/07 §1](../../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) with that section’s declared-product rule. Its physical-outer/implicit-child wording excludes empty coordinates 2/3 at child capacity 3, contrary to the [iteration-domain oracle](../sources/evaluation-and-application-routes.md#src-validation-iteration-domain); this is a stale description, not an unmeasured runtime distinction.
 - `missing`: bilingual parser and renderer paths, lexical and dot syntax, globals, nested or multiple stars, wider RNU `@From`, and remaining diagnostics must resolve through one checked namespace.
 - `baseline`: [§10](../IMPLEMENTATION-MAP.md#10--paths-and-references) owns implemented paths. The [cross-clause diagnostic owner](../IMPLEMENTATION-MAP.md#cross-clause-implementation-notes) owns exact projections and explicit unmapped refusals.
 - `remaining`: nested or different repeatable scopes, including carrier-specific Kernel calibration of `SumOfProducts` with an outer repeatable ancestor already bound and only the inner level starred.

@@ -1,0 +1,1005 @@
+{
+  "model": "Model_DM.json",
+  "locale": "en_US",
+  "clock": "2024-03-30T23:00:00Z",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "gap",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "2024-03-31",
+                  "P": "2024-03-00",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "02:30:00",
+                  "Z": "2024-03-31T03:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "2",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ordinary",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "2024-03-30",
+                  "P": "2024-02-00",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "12:30:00",
+                  "Z": "2024-03-30T12:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "2",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "fold",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "2024-10-27",
+                  "P": "2024-10-00",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "02:30:00",
+                  "Z": "2024-10-27T02:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "2",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-date",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "",
+                  "P": "",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "02:30:00",
+                  "Z": "2024-03-31T03:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "2",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-clock",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "2024-03-31",
+                  "P": "2024-03-00",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "",
+                  "Z": "2024-03-31T03:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-amount",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "2024-03-31",
+                  "P": "2024-03-00",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "02:30:00",
+                  "Z": "2024-03-31T03:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "2",
+                  "A": "",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bad-date",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "bad",
+                  "P": "bad",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "02:30:00",
+                  "Z": "2024-03-31T03:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "2",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bad-clock",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "2024-03-31",
+                  "P": "2024-03-00",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "bad",
+                  "Z": "2024-03-31T03:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "2",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-date-bad-clock",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "",
+                  "P": "",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "bad",
+                  "Z": "2024-03-31T03:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "2",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unknown-year",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "2024-03-31",
+                  "P": "0000-00-00",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "02:30:00",
+                  "Z": "2024-03-31T03:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "2",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unknown-month",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "2024-03-31",
+                  "P": "2024-00-00",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "02:30:00",
+                  "Z": "2024-03-31T03:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "2",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unreal-clock",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "2024-03-31",
+                  "P": "2024-03-00",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "02:30:00",
+                  "Z": "2024-03-31T03:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "24",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "two-empty",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {},
+                {}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "two-values",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Parents": [
+            {
+              "Rows": [
+                {
+                  "D": "2024-03-31",
+                  "P": "2024-03-00",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "02:30:00",
+                  "Z": "2024-03-31T03:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "2",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                },
+                {
+                  "D": "2024-03-30",
+                  "P": "2024-02-00",
+                  "Y": "2024",
+                  "YM": "2024-03",
+                  "MD": "03-31",
+                  "M": "03",
+                  "T": "12:30:00",
+                  "Z": "2024-03-30T12:30:00",
+                  "R": "2024-03-01/2024-03-31",
+                  "H": "2",
+                  "A": "0",
+                  "Empty": "",
+                  "OutFields": "2001-12-25T12:30:00",
+                  "AfterFields": "9",
+                  "OutYear": "2001-12-25T12:30:00",
+                  "AfterYear": "9",
+                  "OutYM": "2001-12-25T12:30:00",
+                  "AfterYM": "9",
+                  "OutMD": "2001-12-25T12:30:00",
+                  "AfterMD": "9",
+                  "OutMonth": "2001-12-25T12:30:00",
+                  "AfterMonth": "9",
+                  "OutFirst": "2001-12-25",
+                  "AfterFirst": "9",
+                  "OutLast": "2001-12-25",
+                  "AfterLast": "9",
+                  "OutPartialShift": "2001-12-25",
+                  "AfterPartialShift": "9",
+                  "OutPartialFirst": "2001-12-25T12:30:00",
+                  "AfterPartialFirst": "9",
+                  "OutPartialLast": "2001-12-25T12:30:00",
+                  "AfterPartialLast": "9",
+                  "OutToday": "2001-12-25T12:30:00",
+                  "AfterToday": "9",
+                  "OutComponents": "2001-12-25T12:30:00",
+                  "AfterComponents": "9",
+                  "OutClock": "2001-12-25T12:30:00",
+                  "AfterClock": "9",
+                  "OutUnrealDate": "2001-12-25T12:30:00",
+                  "AfterUnrealDate": "9",
+                  "OutShift": "2001-12-25T12:30:00",
+                  "AfterShift": "9",
+                  "OutRange": "2001-12-25T12:30:00",
+                  "AfterRange": "9",
+                  "OutProject": "2001-12-25T12:30:00",
+                  "AfterProject": "9",
+                  "OutGiven": "2001-12-25T12:30:00",
+                  "AfterGiven": "9",
+                  "OutGapAfterPartial": "2001-12-25T12:30:00",
+                  "AfterGapAfterPartial": "9",
+                  "OutHourAfter": "2001-12-25T12:30:00",
+                  "AfterHourAfter": "9",
+                  "OutMinPartial": "2001-12-25",
+                  "AfterMinPartial": "9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,935 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Model_DM.json",
+    "locale": "en_US",
+    "clock": "2024-03-30T23:00:00Z"
+  },
+  "rows": [
+    {
+      "name": "absent",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "present",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DatePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Hours",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Min",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinValue",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/W",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Minutes",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Seconds",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DatePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Hours",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Min",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinValue",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/W",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Minutes",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Seconds",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "two",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DatePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Hours",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Hours",
+              "field": "Form/Rows[2]/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/A",
+                "Form/Rows[2]/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows[2]/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/D",
+                "Form/Rows[2]/T",
+                "Form/Rows[2]/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxValue",
+              "field": "Form/Rows[2]/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/W",
+                "Form/Rows[2]/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Min",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinValue",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/W",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Minutes",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Seconds",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DatePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Hours",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Hours",
+              "field": "Form/Rows[2]/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/A",
+                "Form/Rows[2]/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows[2]/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/D",
+                "Form/Rows[2]/T",
+                "Form/Rows[2]/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxValue",
+              "field": "Form/Rows[2]/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/W",
+                "Form/Rows[2]/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Min",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinValue",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/W",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Minutes",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Seconds",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "malformed-amount",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DatePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Hours",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Min",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinValue",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/W",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Rows/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/A"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DatePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Hours",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Min",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinValue",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/W",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Rows/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/A"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-amount",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DatePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Hours",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Min",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinValue",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/W",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DatePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Hours",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/A",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Min",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/D",
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinValue",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/W",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimePart",
+              "field": "Form/Rows/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/T",
+                "Form/Rows/Z"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -152,9 +152,10 @@ def fromStringExpression (rowGroup : GroupPath) (comparison : CheckedStringExpre
   checkCore model rowGroup (.leaf (.stringExpression comparison)) comparison.left.modelWellFormed
 
 /-- Join a sealed scalar temporal comparison to the existing connective tree. -/
-def fromScalarTemporal (rowGroup : GroupPath) (comparison : CheckedScalarTemporalComparison model) :
+def fromScalarTemporal (rowGroup : GroupPath) (comparison : CheckedScalarTemporalComparison model)
+    (declaringGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
-  checkCore model rowGroup (.leaf (.scalarTemporal comparison)) comparison.modelWellFormed
+  checkCore model rowGroup (.leaf (.scalarTemporal comparison)) comparison.modelWellFormed declaringGroup
 
 /-- Compose the owning uniqueness certificate without changing its operand order or identity. -/
 def fromValuesNotUnique (rowGroup : GroupPath) (source : CheckedValuesNotUniqueCondition model) :

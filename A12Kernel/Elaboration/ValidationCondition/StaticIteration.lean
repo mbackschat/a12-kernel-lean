@@ -323,6 +323,9 @@ def ordinaryIterationScope :
   | .leaf (.stringExpression comparison) =>
       mergeIterationScopeList (comparison.declarations.map fun field =>
         if field.repeatableScope.isEmpty then none else some field.repeatableScope)
+  | .leaf (.scalarTemporal comparison) =>
+      mergeIterationScopeList (comparison.declarations.map fun field =>
+        if field.repeatableScope.isEmpty then none else some field.repeatableScope)
   | .leaf (.tokenComparison comparison) =>
       mergeIterationScopeList (comparison.bindingScopes.map fun scope =>
         if scope.isEmpty then none else some scope)

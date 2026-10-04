@@ -282,8 +282,10 @@ private def ValidationConditionLeaf.iterationGuardAt
   -- The explicit validity operand is nonrepeatable by its own well-formedness, so it references no
   -- level and reads like a flat leaf here.
   | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
-  | .constructedDateValidity _ _ | .customFieldValidity _ | .stringPattern _ | .scalarTemporal _ =>
+  | .constructedDateValidity _ _ | .customFieldValidity _ | .stringPattern _ =>
       .noReference
+  | .scalarTemporal comparison =>
+      if comparison.declarations.any (·.repeatableScope.contains level) then .guarded else .noReference
   | .guardedRepeatableCurrentRepetition guard _ _ =>
       if guard.repeatableScope.contains level then .guarded else .noReference
   | .groupList operator operands =>
@@ -398,6 +400,8 @@ def ordinaryRepeatableFields (condition : ValidationCondition model) :
   | .leaf (.repeatableFieldPresence _ declaration) => [declaration]
   | .leaf (.stringExpression comparison) =>
       comparison.declarations.filter fun field => !field.repeatableScope.isEmpty
+  | .leaf (.scalarTemporal comparison) =>
+      comparison.declarations.filter fun field => !field.repeatableScope.isEmpty
   | .leaf (.orderedNumeric _ comparison) =>
       authoredNumericRepeatableFields
           (ordinaryNumericAtomRepeatableFields model) comparison.left ++
@@ -426,7 +430,7 @@ def supportsOrdinaryIteration
     -- A nonrepeatable operand read is environment-insensitive, exactly as a flat leaf's is, so the
     -- default `false` here would narrow the fragment without a reason.
     | .constructedDateValidity _ _ | .customFieldValidity _ | .stringPattern _ => true
-    | .stringExpression _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => true
+    | .stringExpression _ | .scalarTemporal _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => true
     | _ => false
 
 /-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/
@@ -449,12 +453,15 @@ remain in the caller's error domain. -/
 def evalWithTemporalResult (condition : ValidationCondition model)
     (context : ValidationEvaluationContext) (isRelevant : FlatRelevance)
     (evaluate : ValidationConditionLeaf model → Except Error Verdict)
-    (onTemporalUnavailable : Except Error Verdict := .ok .unknown) : Except Error Verdict :=
+    (onTemporalUnavailable : Except Error Verdict := .ok .unknown)
+    (temporalFields : CheckedScalarTemporalComparison model → Except Error FlatContext :=
+      fun _ => pure context.fields) : Except Error Verdict :=
   let result : Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
     condition.evalVerdictExcept (fun leaf => match leaf with
       | .scalarTemporal comparison =>
-          if comparison.fieldIds.all isRelevant then
-            (comparison.evalResult .validation context.fields).mapError Sum.inr
+          if comparison.fieldIds.all isRelevant then do
+            let fields ← (temporalFields comparison).mapError Sum.inl
+            (comparison.evalResult .validation fields).mapError Sum.inr
           else pure .unknown
       | leaf => (evaluate leaf).mapError Sum.inl)
       (fun left error => match left, error with
@@ -482,12 +489,21 @@ def evalFull (condition : ValidationCondition model)
   if hasContent || condition.canFireOnEmpty then condition.evalSelected context
   else .notFired
 
+/-- Bind only a reached temporal leaf to exact row cells; the row-binding grid separates this view from the scalar context without changing the temporal evaluator. -/
+private def addressedTemporalFields (context : AddressedValidationEvaluationContext model)
+    (comparison : CheckedScalarTemporalComparison model) : Except CheckedAddressingError FlatContext := do
+  let cells ← comparison.fieldIds.mapM fun field => do
+    pure (field, ← context.readCell context.outer field)
+  pure { context.scalar.fields with
+    read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell }
+
 /-- Evaluate one row-selected checked tree while retaining structural addressing failure outside the verdict algebra. The generic effectful connective fold preserves the ordinary decisive-left short-circuit boundary. -/
 def evalAddressed (condition : ValidationCondition model)
     (context : AddressedValidationEvaluationContext model) :
     Except CheckedAddressingError Verdict :=
   condition.evalWithTemporalResult context.scalar context.directRelevant
     (fun leaf => leaf.evalAddressed context) (.error .temporalUnavailable)
+    (addressedTemporalFields context)
 
 /-- Evaluate the same connective tree with one already-prepared current-row RNU result. Duplicate construction remains outside and branch-independent. -/
 def evalAddressedWithRepetitionNotUnique
@@ -497,6 +513,7 @@ def evalAddressedWithRepetitionNotUnique
     Except CheckedAddressingError Verdict :=
   condition.evalWithTemporalResult context.scalar context.directRelevant
     (fun leaf => leaf.evalAddressedWithRepetitionNotUnique context result?) (.error .temporalUnavailable)
+    (addressedTemporalFields context)
 
 /-- Apply the ordinary full-validation content gate to the addressed tree without sampling any repeatable source on an ineligible empty row. -/
 def evalAddressedFull (condition : ValidationCondition model)

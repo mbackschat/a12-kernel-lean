@@ -1,0 +1,4 @@
+rule	code
+/Form/HoursClock	MVK_INVALID_TIME
+/Form/MinutesClock	MVK_INVALID_TIME
+/Form/SecondsClock	MVK_INVALID_TIME

@@ -1,0 +1,300 @@
+{
+  "header": {
+    "id": "StampConstruction_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "StampConstruction_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false,
+      "baseYear": "2024"
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/Flag",
+                "name": "Flag",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 5
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Form/Rows",
+                "name": "Rows",
+                "Group": {
+                  "repeatability": 3,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/D",
+                      "name": "D",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/T",
+                      "name": "T",
+                      "Field": {
+                        "fieldType": {
+                          "type": "TimeType",
+                          "TimeType": {
+                            "format": "HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Z",
+                      "name": "Z",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/A",
+                      "name": "A",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/W",
+                      "name": "W",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/A",
+                "name": "A",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Hours",
+                "name": "Hours",
+                "Rule": {
+                  "errorEntityRelPath": "../Rows/Z",
+                  "errorCode": "Hours",
+                  "errorCondition": "AddHours(Rows/Z,[A]) == [Rows/Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Row check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Minutes",
+                "name": "Minutes",
+                "Rule": {
+                  "errorEntityRelPath": "../Rows/Z",
+                  "errorCode": "Minutes",
+                  "errorCondition": "AddMinutes(Rows/Z,[Rows/A]) > [Rows/Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Row check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Seconds",
+                "name": "Seconds",
+                "Rule": {
+                  "errorEntityRelPath": "../Rows/Z",
+                  "errorCode": "Seconds",
+                  "errorCondition": "AddSeconds(Rows/Z,[Rows/A]) > [Rows/Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Row check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/DatePart",
+                "name": "DatePart",
+                "Rule": {
+                  "errorEntityRelPath": "../Rows/Z",
+                  "errorCode": "DatePart",
+                  "errorCondition": "DateFromDateTime(Rows/Z) == [Rows/D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Row check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/TimePart",
+                "name": "TimePart",
+                "Rule": {
+                  "errorEntityRelPath": "../Rows/Z",
+                  "errorCode": "TimePart",
+                  "errorCondition": "TimeFromDateTime(Rows/Z) == [Rows/T]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Row check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Min",
+                "name": "Min",
+                "Rule": {
+                  "errorEntityRelPath": "../Rows/Z",
+                  "errorCode": "Min",
+                  "errorCondition": "Min([Rows/Z],DateTime(Rows/D,Rows/T)) == [Rows/Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Row check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Max",
+                "name": "Max",
+                "Rule": {
+                  "errorEntityRelPath": "../Rows/Z",
+                  "errorCode": "Max",
+                  "errorCondition": "Max([Rows/Z],DateTime(Rows/D,Rows/T)) == [Rows/Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Row check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MinValue",
+                "name": "MinValue",
+                "Rule": {
+                  "errorEntityRelPath": "../Rows/Z",
+                  "errorCode": "MinValue",
+                  "errorCondition": "MinValue(Rows/Z,Rows/W) == [Rows/Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Row check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MaxValue",
+                "name": "MaxValue",
+                "Rule": {
+                  "errorEntityRelPath": "../Rows/Z",
+                  "errorCode": "MaxValue",
+                  "errorCondition": "MaxValue(Rows/Z,Rows/W) == [Rows/Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Row check."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

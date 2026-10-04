@@ -451,11 +451,11 @@ def elaborateNumericValidationExpression
 /-- Resolve one standalone numeric operation at a repeatable authoring group. Each direct field may live at that group or an outer scope, while runtime addressing remains a consumer responsibility. -/
 def elaborateRepeatableNumericValidationExpression
     (model : FlatModel) (rowGroup : GroupPath)
-    (surface : AuthoredNumericExpr SurfaceNumericAtom) :
+    (surface : AuthoredNumericExpr SurfaceNumericAtom) (declaringGroup : GroupPath := rowGroup) :
     Except NumericValidationElabError
       (CheckedNumericValidationExpression model) :=
   elaborateNumericValidationExpressionWith model rowGroup .sameGroupAddressed
-    (resolveAddressedNumericAtom model rowGroup) surface
+    (resolveAddressedNumericAtomIn model declaringGroup rowGroup) surface
 
 private def elaborateNumericComparisonWith
     (model : FlatModel) (rowGroup : GroupPath)

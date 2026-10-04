@@ -250,12 +250,12 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         match operator.toSurface?, lowerScalarTemporalExpression model rowGroup left,
             lowerScalarTemporalExpression model rowGroup right with
         | some operator, .ok left, .ok right =>
-            match elaborateScalarTemporalComparison model rowGroup operator.toTemporal left right with
+            match elaborateScalarTemporalComparison model rowGroup operator.toTemporal left right (some bindingGroup) with
             | .error (.nonTemporal _) | .error (.extremum (.firstNotTemporal _ _)) => []
             | result => [do
                 let comparison ← elaborated "TemporalComparison" result
                 elaborated "TemporalComparison"
-                  (CheckedValidationCondition.fromScalarTemporal rowGroup comparison)]
+                  (CheckedValidationCondition.fromScalarTemporal bindingGroup comparison rowGroup)]
         | _, _, _ => []
     | _ => []
   let stringExpression := match leaf with

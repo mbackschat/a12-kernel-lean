@@ -208,4 +208,71 @@ example : validationRun "FieldNotFilled(Stamp) And [Stamp] < \"31.03.2024T02:30:
     "bad" = some [] := by native_decide
 
 
+private def rowModel : FlatModel := {
+  model with
+  fields := (model.fields.map fun field =>
+    { field with groupPath := ["Order", "Rows"], repeatableScope := [10] }) ++ [
+    { id := 9, groupPath := ["Order", "Rows"], name := "Amount", repeatableScope := [10],
+      policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 10, groupPath := ["Order"], name := "Flag", policy := { kind := .string } },
+    { id := 11, groupPath := ["Order"], name := "Amount",
+      policy := { kind := .number { scale := 0, signed := true } } }]
+  repeatableGroups := [{ level := 10, path := ["Order", "Rows"], repeatability := some 3 }] }
+
+private def rowDm : DmModel := {
+  flat := rowModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+
+private def rowRule (text : String) (atRoot : Bool := false) : DmRule := {
+  group := if atRoot then ["Order"] else ["Order", "Rows"]
+  name := "Rule", errorCode := "R", condition := text, severity := "ERROR"
+  errorEntityRelPath := if atRoot then "../Rows/Stamp2" else "../Stamp2" }
+
+private def runRows (text : String) (rows : List Lean.Json) (atRoot : Bool := false) :
+    Option (List String) := do
+  let rule ← (checkRule rowDm .english (rowRule text atRoot)).toOption
+  let input ← (readDocument rowDm (Lean.Json.mkObj [("Order", Lean.Json.mkObj [
+    ("Flag", "yes"), ("Amount", "0"), ("Rows", Lean.Json.arr rows.toArray)])])).toOption
+  if !input.refusals.isEmpty then none
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler rowModel).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  pure ((← (runRule world checked rule).toOption).map fun message =>
+    (observe rowModel message).pointer)
+
+private def clockRow (amount : String) : Lean.Json := Lean.Json.mkObj [
+  ("Stamp", "2024-03-31T01:00:00"), ("Stamp2", "2024-03-31T02:00:00"),
+  ("Clock", "01:00:00"), ("Due1", "2024-03-31"), ("Amount", Lean.Json.str amount)]
+
+-- The row-binding grid transposes the same temporal trees to selected and implicit
+-- coordinates; equal field names at different rows must never read the scalar context.
+example : runRows "AddHours(Stamp,[Amount]) == [Stamp2]" [clockRow "0", clockRow "1"] =
+    some ["Order/Rows[2]/Stamp2"] := by native_decide
+
+example : runRows "AddHours(Rows/Stamp,[Rows/Amount]) == [Rows/Stamp2]"
+    [clockRow "0", clockRow "1"] true = some ["Order/Rows[2]/Stamp2"] := by native_decide
+
+example : runRows "DateTime(DateFromDateTime(Stamp),TimeFromDateTime(Stamp)) == [Stamp2]"
+    [] = some [] := by native_decide
+
+example : (do
+    let checked ← (checkRule rowDm .english
+      (rowRule "AddHours(Stamp,[Amount]) == [Stamp2]")).toOption
+    pure (checked.condition.rowGroup, checked.condition.declaringGroup,
+      checked.iterationScope, checked.supportsOrdinaryRepeatablePartial)) =
+    some (["Order", "Rows"], ["Order", "Rows"], some [10], false) := by native_decide
+
+example : runRows "AddHours(Rows/Stamp,[Amount]) == [Rows/Stamp2]"
+    [clockRow "1"] true = some [] ∧
+    runRows "AddHours(Rows/Stamp,[Amount]+1) == [Rows/Stamp2]"
+    [clockRow "0"] true = some ["Order/Rows/Stamp2"] := by native_decide
+
+example : runRows "MinValue(Stamp,Stamp2) == [Stamp]" [clockRow "1"] =
+    some ["Order/Rows/Stamp2"] := by native_decide
+
+example : (do
+    let parsed ← (parseText .english "AddHours(Rows/Stamp,1) == [Rows/Stamp2]").toOption
+    pure (!(lowerCondition rowModel ["Order"] false parsed.body).isOk &&
+      (lowerCondition rowModel ["Order"] false parsed.body (bindingGroup := ["Order", "Rows"])).isOk)) =
+    some true := by native_decide
+
 end A12Kernel.Dm.TemporalExpressionLocks

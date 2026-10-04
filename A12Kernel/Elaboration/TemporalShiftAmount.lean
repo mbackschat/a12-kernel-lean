@@ -162,10 +162,10 @@ def elaborateTemporalExpressionShiftAmount
 /-- Resolve one checked numeric operation at a repeatable authoring group and retain only direct Number atoms for temporal shifting. -/
 def elaborateRepeatableTemporalExpressionShiftAmount
     (model : FlatModel) (rowGroup : GroupPath)
-    (surface : AuthoredNumericExpr SurfaceNumericAtom) :
+    (surface : AuthoredNumericExpr SurfaceNumericAtom) (declaringGroup : GroupPath := rowGroup) :
     Except TemporalShiftAmountElabError
       (CheckedTemporalShiftAmount model) := do
-  let checked ← elaborateRepeatableNumericValidationExpression model rowGroup surface
+  let checked ← elaborateRepeatableNumericValidationExpression model rowGroup surface declaringGroup
     |>.mapError .expression
   if hDirect :
       NumericValidationExpression.usesOnlyDirectNumberFields

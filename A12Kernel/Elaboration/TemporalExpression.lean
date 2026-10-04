@@ -172,10 +172,12 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       pure (.atom (.field field), scalarComponents model field.components)
   | .group source => resolveScalarTemporalExpression model rowGroup targetGroup? source
   | .extremum operator operands => do
-      let source ← (TemporalExtremumOperands.elaborate model rowGroup operands).mapError .extremum
+      let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
+      let source ← (TemporalExtremumOperands.elaborate model rowGroup operands
+        (targetGroup?.getD rowGroup) scope).mapError .extremum
       let fields ← source.shape.operands.mapM fun
         | .field declaration _ => do
-            if !declaration.repeatableScope.isEmpty then throw .unsupportedSource
+            if !declaration.repeatableScope.isPrefixOf scope then throw .unsupportedSource
             let some field := declaration.toTemporalField? | throw (.nonTemporal declaration.path)
             pure field
         | _ => throw .unsupportedSource
@@ -226,7 +228,9 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
         | .years => components.year
       if !componentPresent || (unit != .days && components.hasTime) then throw .incompatibleFormats
       let profile ← scalarProfile model
-      let amount ← (elaborateTemporalExpressionShiftAmount model rowGroup amount).mapError .amount
+      let amount ← (match targetGroup? with
+        | none => elaborateTemporalExpressionShiftAmount model rowGroup amount
+        | some binding => elaborateRepeatableTemporalExpressionShiftAmount model binding amount rowGroup).mapError .amount
       pure (.apply (.calendarShift profile unit amount) source [], components)
   | .timeConstruction source => do
       let components ← (elaborateTimeComponents model source).mapError .timeComponents
@@ -246,7 +250,9 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? source
       if !unit.admittedBy components || !components.isFullDateTime then throw .incompatibleFormats
       let profile ← scalarProfile model
-      let amount ← (elaborateTemporalExpressionShiftAmount model rowGroup amount).mapError .amount
+      let amount ← (match targetGroup? with
+        | none => elaborateTemporalExpressionShiftAmount model rowGroup amount
+        | some binding => elaborateRepeatableTemporalExpressionShiftAmount model binding amount rowGroup).mapError .amount
       pure (.apply (.subdayShift profile unit amount) source [], components)
 
 def elaborateScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
@@ -577,6 +583,9 @@ namespace CheckedScalarTemporalComparison
 
 def fieldIds (comparison : CheckedScalarTemporalComparison model) : List FieldId :=
   comparison.left.fieldIds ++ comparison.right.fieldIds
+
+def declarations (comparison : CheckedScalarTemporalComparison model) : List FlatFieldDecl :=
+  comparison.fieldIds.filterMap fun field => (model.lookupUniqueId field).toOption
 
 def referencesField (comparison : CheckedScalarTemporalComparison model) (field : FieldId) : Bool :=
   comparison.fieldIds.contains field

@@ -1,0 +1,821 @@
+{
+  "model": "Model_DM.json",
+  "locale": "en_US",
+  "clock": "2024-03-30T23:00:00Z",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "month-end",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "2024-01-31",
+              "D2": "2024-04-01",
+              "Z1": "2024-01-31T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "1",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "nonleap-feb",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "2023-02-28",
+              "D2": "2024-04-01",
+              "Z1": "2023-02-28T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "1",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "leap-feb",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "2024-02-28",
+              "D2": "2024-04-01",
+              "Z1": "2024-02-28T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "1",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "spring",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "2024-03-30",
+              "D2": "2024-04-01",
+              "Z1": "2024-03-30T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "1",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "autumn",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "2024-10-26",
+              "D2": "2024-04-01",
+              "Z1": "2024-10-26T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "1",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "zero",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "2024-10-27",
+              "D2": "2024-04-01",
+              "Z1": "2024-10-27T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "0",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "negative",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "2024-03-31",
+              "D2": "2024-04-01",
+              "Z1": "2024-03-31T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "-1",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-source",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "",
+              "D2": "2024-04-01",
+              "Z1": "",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "1",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bad-source",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "bad",
+              "D2": "2024-04-01",
+              "Z1": "bad",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "1",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-amount",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "2024-03-30",
+              "D2": "2024-04-01",
+              "Z1": "2024-03-30T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "bad-amount",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "2024-03-30",
+              "D2": "2024-04-01",
+              "Z1": "2024-03-30T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "bad",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "both-bad",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "bad",
+              "D2": "2024-04-01",
+              "Z1": "bad",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "bad",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "floor",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "1583-10-16",
+              "D2": "2024-04-01",
+              "Z1": "1583-10-16T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "-1",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "year-overflow",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "9999-12-31",
+              "D2": "2024-04-01",
+              "Z1": "9999-12-31T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "1",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": []
+        }
+      }
+    },
+    {
+      "name": "two-empty",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {},
+            {}
+          ]
+        }
+      }
+    },
+    {
+      "name": "two-values",
+      "documentInline": {
+        "Form": {
+          "Flag": "yes",
+          "Rows": [
+            {
+              "D1": "2024-01-31",
+              "D2": "2024-04-01",
+              "Z1": "2024-01-31T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "1",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            },
+            {
+              "D1": "2023-02-28",
+              "D2": "2024-04-01",
+              "Z1": "2023-02-28T12:30:00",
+              "Z2": "2024-04-01T12:30:00",
+              "N": "1",
+              "Zero": "0",
+              "DateDay": "2000-01-01",
+              "AfterDateDay": "9",
+              "StampDay": "2000-01-01T00:00:00",
+              "AfterStampDay": "9",
+              "TodayDay": "2000-01-01",
+              "AfterTodayDay": "9",
+              "DateMonth": "2000-01-01",
+              "AfterDateMonth": "9",
+              "StampMonth": "2000-01-01T00:00:00",
+              "AfterStampMonth": "9",
+              "TodayMonth": "2000-01-01",
+              "AfterTodayMonth": "9",
+              "DateYear": "2000-01-01",
+              "AfterDateYear": "9",
+              "StampYear": "2000-01-01T00:00:00",
+              "AfterStampYear": "9",
+              "TodayYear": "2000-01-01",
+              "AfterTodayYear": "9",
+              "Constructed": "2000-01-01",
+              "AfterConstructed": "9",
+              "ConstructedFour": "2000-01-01",
+              "AfterConstructedFour": "9",
+              "ConstructedShift": "2000-01-01",
+              "AfterConstructedShift": "9",
+              "MonthThenDay": "2000-01-01",
+              "AfterMonthThenDay": "9",
+              "DayThenMonth": "2000-01-01",
+              "AfterDayThenMonth": "9",
+              "UnrealAmount": "2000-01-01",
+              "AfterUnrealAmount": "9",
+              "DomainAmount": "2000-01-01",
+              "AfterDomainAmount": "9"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
