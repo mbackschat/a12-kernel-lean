@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-04-02"></a>
+### `SPEC-2026-10-04-02` — temporal construction preserves independent absence and relevance states
+
+- `status`: pending
+- `clause`: [spec/05 constructor composition](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity).
+- `delta`: Time and DateTime no-payload outcomes retain missing versus fixed provenance under extrema. Cause-free partial-Date non-relevance remains distinct. DateTime arguments evaluate in order; a constructed Berlin gap clears cleanly, unlike a gap literal, and the retained fold chooses the later occurrence.
+- `evidence`: the [ValueAsDate composition checkpoint](sources/temporal-and-message-probes.md#src-value-as-date-locus) retains 36 documents on both Kernel 30.8.1 engines, 87 static rows, source mechanisms and a content manifest. Its dependent guards separate clean absence from poison.
+- `redundancy`: searched peer finding headings and the values `createDateTime`, `NON_RELEVANT_DATE` and `31.03.2024T02:30:00` at `35ad604468360640f9f5bd9fcdc2cc6922b0b685`. The existing gap-literal finding settles that control, not the Date-plus-Time construction outcome or its provenance under extrema.
+- `surfaces`: temporal constructor/interpreter outcomes, extrema provenance and ordered computation reads; no repeatable-locus or wider-zone extension.
+- `acceptance`: reconcile these distinctions with the retained constructed/literal gap, fold, empty/malformed and unknown-year controls, or provide contrary evidence. Existing equivalent handling may be acknowledged without reimplementation.
+- `introducing commit`: resolve using the ledger contract’s `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-04-01"></a>
 ### `SPEC-2026-10-04-01` — component-omitting Date checking completes the stored format after rendering
 

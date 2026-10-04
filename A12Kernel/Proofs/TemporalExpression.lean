@@ -1,51 +1,44 @@
 import A12Kernel.Semantics.TemporalExpression
 
-/-! # Temporal expression dependencies
+/-! # Temporal expression dependencies and argument evaluation
 
 An Analyze or Translate consumer may replace atom reads when every authored atom keeps its
-classified value and the transformation evaluator stays fixed. Transformations may read additional
-checked numeric operands; this law does not permit changing that environment without a separate
-agreement argument. The expression retains the same value and missing provenance.
+classified result and the operation evaluator stays fixed. Extra operands read by an operation
+require a separate environment agreement. Strict application preserves reached failure order.
 -/
 
 namespace A12Kernel
 
 theorem temporalExpression_evalWith_congr
-    (expression : TemporalExpressionOf Atom Transform)
-    (select : TemporalExtremumOp → α → α → α)
-    (left right : Atom → Except Error (SimpleComparisonOperand α))
-    (apply : Transform → SimpleComparisonOperand α → Except Error (SimpleComparisonOperand α))
+    (expression : TemporalExpressionOf Atom Operation)
+    (left right : Atom → Except Error Operand)
+    (apply : Operation → List Operand → Except Error Operand)
     (agree : ∀ atom ∈ expression.atoms, left atom = right atom) :
-    expression.evalWithResult select left apply = expression.evalWithResult select right apply := by
+    expression.evalWithResult left apply = expression.evalWithResult right apply := by
   cases expression with
   | atom source =>
       simpa only [TemporalExpressionOf.evalWithResult] using
         agree source (by simp [TemporalExpressionOf.atoms])
-  | extremum operator first rest =>
-      have hfirst := temporalExpression_evalWith_congr first select left right apply (by
+  | apply operation first rest =>
+      have hfirst := temporalExpression_evalWith_congr first left right apply (by
         intro atom member
         apply agree atom
         simp only [TemporalExpressionOf.atoms, List.mem_append]
         exact Or.inl member)
-      have hrest : rest.map (TemporalExpressionOf.evalWithResult select left apply) =
-          rest.map (TemporalExpressionOf.evalWithResult select right apply) := by
+      have hrest : rest.map (TemporalExpressionOf.evalWithResult left apply) =
+          rest.map (TemporalExpressionOf.evalWithResult right apply) := by
         apply List.map_congr_left
         intro expression member
-        apply temporalExpression_evalWith_congr expression select left right apply
+        apply temporalExpression_evalWith_congr expression left right apply
         intro atom atomMember
         apply agree atom
         simp only [TemporalExpressionOf.atoms, List.mem_append, List.mem_flatMap]
         exact Or.inr ⟨expression, member, atomMember⟩
-      have hrestM : rest.mapM (TemporalExpressionOf.evalWithResult select left apply) =
-          rest.mapM (TemporalExpressionOf.evalWithResult select right apply) := by
+      have hrestM : rest.mapM (TemporalExpressionOf.evalWithResult left apply) =
+          rest.mapM (TemporalExpressionOf.evalWithResult right apply) := by
         simpa only [List.mapM_map, Function.comp_def, id] using
-          congrArg (fun results : List (Except Error (SimpleComparisonOperand α)) => results.mapM id) hrest
+          congrArg (fun results : List (Except Error Operand) => results.mapM id) hrest
       simp only [TemporalExpressionOf.evalWithResult, hfirst, hrestM]
-  | transform operation source =>
-      have same := temporalExpression_evalWith_congr source select left right apply (by
-        intro atom member
-        exact agree atom (by simpa only [TemporalExpressionOf.atoms] using member))
-      simp only [TemporalExpressionOf.evalWithResult, same]
 termination_by sizeOf expression
 decreasing_by
   all_goals subst_vars
@@ -53,19 +46,37 @@ decreasing_by
   · have := List.sizeOf_lt_of_mem member
     simp_wf
     omega
-  · simp_wf
 
-/-- A source evaluation failure crosses every unary transform without being reclassified as a
-missing or poisoned operand. Computation consumers retain the failure's separate result channel. -/
-theorem temporalExpression_evalWithResult_transform_error
-    (source : TemporalExpressionOf Atom Transform) (operation : Transform)
-    (select : TemporalExtremumOp → α → α → α)
-    (read : Atom → Except Error (SimpleComparisonOperand α))
-    (apply : Transform → SimpleComparisonOperand α → Except Error (SimpleComparisonOperand α))
-    (cause : Error) (failed : source.evalWithResult select read apply = .error cause) :
-    (TemporalExpressionOf.transform operation source).evalWithResult select read apply =
-      .error cause := by
+/-- The first reached failure prevents later argument evaluation and the operation itself. -/
+theorem temporalExpression_evalWithResult_apply_head_error
+    (source : TemporalExpressionOf Atom Operation) (rest : List (TemporalExpressionOf Atom Operation))
+    (operation : Operation) (read : Atom → Except Error Operand)
+    (apply : Operation → List Operand → Except Error Operand)
+    (cause : Error) (failed : source.evalWithResult read apply = .error cause) :
+    (TemporalExpressionOf.apply operation source rest).evalWithResult read apply = .error cause := by
   simp only [TemporalExpressionOf.evalWithResult, failed]
   rfl
+
+/-- Any successful first result still reaches later arguments, including an absent or non-relevant
+value supplied by a temporal consumer. Its representation must not make the application skip them. -/
+theorem temporalExpression_evalWithResult_apply_tail_error
+    (source : TemporalExpressionOf Atom Operation) (rest : List (TemporalExpressionOf Atom Operation))
+    (operation : Operation) (read : Atom → Except Error Operand)
+    (apply : Operation → List Operand → Except Error Operand)
+    (value : Operand) (cause : Error)
+    (reached : source.evalWithResult read apply = .ok value)
+    (failed : rest.mapM (TemporalExpressionOf.evalWithResult read apply) = .error cause) :
+    (TemporalExpressionOf.apply operation source rest).evalWithResult read apply = .error cause := by
+  simp only [TemporalExpressionOf.evalWithResult, reached, failed]
+  rfl
+
+/-- Unary transformations specialize the same ordered-application failure law. -/
+theorem temporalExpression_evalWithResult_transform_error
+    (source : TemporalExpressionOf Atom Operation) (operation : Operation)
+    (read : Atom → Except Error Operand)
+    (apply : Operation → List Operand → Except Error Operand)
+    (cause : Error) (failed : source.evalWithResult read apply = .error cause) :
+    (TemporalExpressionOf.apply operation source []).evalWithResult read apply = .error cause :=
+  temporalExpression_evalWithResult_apply_head_error source [] operation read apply cause failed
 
 end A12Kernel

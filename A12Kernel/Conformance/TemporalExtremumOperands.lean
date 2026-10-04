@@ -116,7 +116,7 @@ example :
       basis := .legacyHybrid }
     temporalExpressionOutcome (.field { base := .relative 0, groups := [], field := "IsoDate" })
       (fun _ => { rawPresent := true, parsed := some (.temporal (.date value)), findings := [] }) =
-        some (.value (.date (some value)) true) := by native_decide
+        some (.value (.date (value)) true) := by native_decide
 
 example :
     let amount : AuthoredNumericExpr SurfaceNumericAtom :=

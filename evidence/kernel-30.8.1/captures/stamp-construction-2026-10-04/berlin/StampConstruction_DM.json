@@ -1,0 +1,2379 @@
+{
+  "header": {
+    "id": "StampConstruction_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "StampConstruction_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false,
+      "baseYear": "2024"
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/D",
+                "name": "D",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/P",
+                "name": "P",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd",
+                      "datePrecision": "YEAR_OPTIONAL"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Y",
+                "name": "Y",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YM",
+                "name": "YM",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MD",
+                "name": "MD",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/M",
+                "name": "M",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/T",
+                "name": "T",
+                "Field": {
+                  "fieldType": {
+                    "type": "TimeType",
+                    "TimeType": {
+                      "format": "HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Z",
+                "name": "Z",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/R",
+                "name": "R",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "yyyy-MM-dd",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/H",
+                "name": "H",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0,
+                      "maxLength": 2,
+                      "positivesOnly": true
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/A",
+                "name": "A",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Empty",
+                "name": "Empty",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/DateTarget",
+                "name": "DateTarget",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/StampTarget",
+                "name": "StampTarget",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutFields",
+                "name": "OutFields",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/FieldsComp",
+                "name": "FieldsComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutFields",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(D,T)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FieldsEqual",
+                "name": "FieldsEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "FieldsEqual",
+                  "errorCondition": "DateTime(D,T) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FieldsNotEqual",
+                "name": "FieldsNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "FieldsNotEqual",
+                  "errorCondition": "DateTime(D,T) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterFields",
+                "name": "AfterFields",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterFieldsComp",
+                "name": "AfterFieldsComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterFields",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutFields)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutYear",
+                "name": "OutYear",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YearComp",
+                "name": "YearComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutYear",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(Y,T)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/YearEqual",
+                "name": "YearEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "YearEqual",
+                  "errorCondition": "DateTime(Y,T) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/YearNotEqual",
+                "name": "YearNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "YearNotEqual",
+                  "errorCondition": "DateTime(Y,T) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterYear",
+                "name": "AfterYear",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterYearComp",
+                "name": "AfterYearComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterYear",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutYear)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutYM",
+                "name": "OutYM",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YMComp",
+                "name": "YMComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutYM",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(YM,T)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/YMEqual",
+                "name": "YMEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "YMEqual",
+                  "errorCondition": "DateTime(YM,T) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/YMNotEqual",
+                "name": "YMNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "YMNotEqual",
+                  "errorCondition": "DateTime(YM,T) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterYM",
+                "name": "AfterYM",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterYMComp",
+                "name": "AfterYMComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterYM",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutYM)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutMD",
+                "name": "OutMD",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MDComp",
+                "name": "MDComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutMD",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(MD,T)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MDEqual",
+                "name": "MDEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "MDEqual",
+                  "errorCondition": "DateTime(MD,T) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MDNotEqual",
+                "name": "MDNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "MDNotEqual",
+                  "errorCondition": "DateTime(MD,T) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterMD",
+                "name": "AfterMD",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterMDComp",
+                "name": "AfterMDComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterMD",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutMD)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutMonth",
+                "name": "OutMonth",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MonthComp",
+                "name": "MonthComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutMonth",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(M,T)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MonthEqual",
+                "name": "MonthEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "MonthEqual",
+                  "errorCondition": "DateTime(M,T) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MonthNotEqual",
+                "name": "MonthNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "MonthNotEqual",
+                  "errorCondition": "DateTime(M,T) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterMonth",
+                "name": "AfterMonth",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterMonthComp",
+                "name": "AfterMonthComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterMonth",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutMonth)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutFirst",
+                "name": "OutFirst",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/FirstComp",
+                "name": "FirstComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutFirst",
+                  "computationAlternatives": [
+                    {
+                      "operation": "ValueAsDate(P,FirstDay)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstEqual",
+                "name": "FirstEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "FirstEqual",
+                  "errorCondition": "ValueAsDate(P,FirstDay) == [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FirstNotEqual",
+                "name": "FirstNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "FirstNotEqual",
+                  "errorCondition": "ValueAsDate(P,FirstDay) != [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterFirst",
+                "name": "AfterFirst",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterFirstComp",
+                "name": "AfterFirstComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterFirst",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutFirst)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutLast",
+                "name": "OutLast",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/LastComp",
+                "name": "LastComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutLast",
+                  "computationAlternatives": [
+                    {
+                      "operation": "ValueAsDate(P,LastDay)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/LastEqual",
+                "name": "LastEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "LastEqual",
+                  "errorCondition": "ValueAsDate(P,LastDay) == [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/LastNotEqual",
+                "name": "LastNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "LastNotEqual",
+                  "errorCondition": "ValueAsDate(P,LastDay) != [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterLast",
+                "name": "AfterLast",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterLastComp",
+                "name": "AfterLastComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterLast",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutLast)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutPartialShift",
+                "name": "OutPartialShift",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/PartialShiftComp",
+                "name": "PartialShiftComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutPartialShift",
+                  "computationAlternatives": [
+                    {
+                      "operation": "AddDays(ValueAsDate(P,LastDay),1)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/PartialShiftEqual",
+                "name": "PartialShiftEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "PartialShiftEqual",
+                  "errorCondition": "AddDays(ValueAsDate(P,LastDay),1) == [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/PartialShiftNotEqual",
+                "name": "PartialShiftNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "PartialShiftNotEqual",
+                  "errorCondition": "AddDays(ValueAsDate(P,LastDay),1) != [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterPartialShift",
+                "name": "AfterPartialShift",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterPartialShiftComp",
+                "name": "AfterPartialShiftComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterPartialShift",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutPartialShift)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutPartialFirst",
+                "name": "OutPartialFirst",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/PartialFirstComp",
+                "name": "PartialFirstComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutPartialFirst",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(ValueAsDate(P,FirstDay),T)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/PartialFirstEqual",
+                "name": "PartialFirstEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "PartialFirstEqual",
+                  "errorCondition": "DateTime(ValueAsDate(P,FirstDay),T) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/PartialFirstNotEqual",
+                "name": "PartialFirstNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "PartialFirstNotEqual",
+                  "errorCondition": "DateTime(ValueAsDate(P,FirstDay),T) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterPartialFirst",
+                "name": "AfterPartialFirst",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterPartialFirstComp",
+                "name": "AfterPartialFirstComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterPartialFirst",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutPartialFirst)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutPartialLast",
+                "name": "OutPartialLast",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/PartialLastComp",
+                "name": "PartialLastComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutPartialLast",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(ValueAsDate(P,LastDay),T)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/PartialLastEqual",
+                "name": "PartialLastEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "PartialLastEqual",
+                  "errorCondition": "DateTime(ValueAsDate(P,LastDay),T) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/PartialLastNotEqual",
+                "name": "PartialLastNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "PartialLastNotEqual",
+                  "errorCondition": "DateTime(ValueAsDate(P,LastDay),T) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterPartialLast",
+                "name": "AfterPartialLast",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterPartialLastComp",
+                "name": "AfterPartialLastComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterPartialLast",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutPartialLast)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutToday",
+                "name": "OutToday",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/TodayComp",
+                "name": "TodayComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutToday",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(Today,T)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/TodayEqual",
+                "name": "TodayEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "TodayEqual",
+                  "errorCondition": "DateTime(Today,T) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/TodayNotEqual",
+                "name": "TodayNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "TodayNotEqual",
+                  "errorCondition": "DateTime(Today,T) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterToday",
+                "name": "AfterToday",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterTodayComp",
+                "name": "AfterTodayComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterToday",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutToday)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutComponents",
+                "name": "OutComponents",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/ComponentsComp",
+                "name": "ComponentsComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutComponents",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(Date(\"31\",\"03\",\"2024\"),Time(H))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/ComponentsEqual",
+                "name": "ComponentsEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "ComponentsEqual",
+                  "errorCondition": "DateTime(Date(\"31\",\"03\",\"2024\"),Time(H)) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/ComponentsNotEqual",
+                "name": "ComponentsNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "ComponentsNotEqual",
+                  "errorCondition": "DateTime(Date(\"31\",\"03\",\"2024\"),Time(H)) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterComponents",
+                "name": "AfterComponents",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterComponentsComp",
+                "name": "AfterComponentsComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterComponents",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutComponents)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutClock",
+                "name": "OutClock",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/ClockComp",
+                "name": "ClockComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutClock",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(D,Time(H))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/ClockEqual",
+                "name": "ClockEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "ClockEqual",
+                  "errorCondition": "DateTime(D,Time(H)) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/ClockNotEqual",
+                "name": "ClockNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "ClockNotEqual",
+                  "errorCondition": "DateTime(D,Time(H)) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterClock",
+                "name": "AfterClock",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterClockComp",
+                "name": "AfterClockComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterClock",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutClock)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutUnrealDate",
+                "name": "OutUnrealDate",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/UnrealDateComp",
+                "name": "UnrealDateComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutUnrealDate",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(Date(\"31\",\"02\",\"2024\"),T)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/UnrealDateEqual",
+                "name": "UnrealDateEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "UnrealDateEqual",
+                  "errorCondition": "DateTime(Date(\"31\",\"02\",\"2024\"),T) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/UnrealDateNotEqual",
+                "name": "UnrealDateNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "UnrealDateNotEqual",
+                  "errorCondition": "DateTime(Date(\"31\",\"02\",\"2024\"),T) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterUnrealDate",
+                "name": "AfterUnrealDate",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterUnrealDateComp",
+                "name": "AfterUnrealDateComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterUnrealDate",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutUnrealDate)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutShift",
+                "name": "OutShift",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/ShiftComp",
+                "name": "ShiftComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutShift",
+                  "computationAlternatives": [
+                    {
+                      "operation": "AddHours(DateTime(AddDays(D,1),T),1)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/ShiftEqual",
+                "name": "ShiftEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "ShiftEqual",
+                  "errorCondition": "AddHours(DateTime(AddDays(D,1),T),1) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/ShiftNotEqual",
+                "name": "ShiftNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "ShiftNotEqual",
+                  "errorCondition": "AddHours(DateTime(AddDays(D,1),T),1) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterShift",
+                "name": "AfterShift",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterShiftComp",
+                "name": "AfterShiftComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterShift",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutShift)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutRange",
+                "name": "OutRange",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/RangeComp",
+                "name": "RangeComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutRange",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(EndOfDateRange(R),T)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/RangeEqual",
+                "name": "RangeEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "RangeEqual",
+                  "errorCondition": "DateTime(EndOfDateRange(R),T) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/RangeNotEqual",
+                "name": "RangeNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "RangeNotEqual",
+                  "errorCondition": "DateTime(EndOfDateRange(R),T) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterRange",
+                "name": "AfterRange",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterRangeComp",
+                "name": "AfterRangeComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterRange",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutRange)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutProject",
+                "name": "OutProject",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/ProjectComp",
+                "name": "ProjectComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutProject",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(D,TimeFromDateTime(Z))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/ProjectEqual",
+                "name": "ProjectEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "ProjectEqual",
+                  "errorCondition": "DateTime(D,TimeFromDateTime(Z)) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/ProjectNotEqual",
+                "name": "ProjectNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "ProjectNotEqual",
+                  "errorCondition": "DateTime(D,TimeFromDateTime(Z)) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterProject",
+                "name": "AfterProject",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterProjectComp",
+                "name": "AfterProjectComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterProject",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutProject)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutGiven",
+                "name": "OutGiven",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/GivenComp",
+                "name": "GivenComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutGiven",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(AddDays(D,[A]),T)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/GivenEqual",
+                "name": "GivenEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "GivenEqual",
+                  "errorCondition": "DateTime(AddDays(D,[A]),T) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/GivenNotEqual",
+                "name": "GivenNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "GivenNotEqual",
+                  "errorCondition": "DateTime(AddDays(D,[A]),T) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterGiven",
+                "name": "AfterGiven",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterGivenComp",
+                "name": "AfterGivenComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterGiven",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutGiven)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutGapAfterPartial",
+                "name": "OutGapAfterPartial",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/GapAfterPartialComp",
+                "name": "GapAfterPartialComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutGapAfterPartial",
+                  "computationAlternatives": [
+                    {
+                      "operation": "DateTime(ValueAsDate(P,FirstDay),TimeFromDateTime(\"31.03.2024T02:30:00\"))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/GapAfterPartialEqual",
+                "name": "GapAfterPartialEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "GapAfterPartialEqual",
+                  "errorCondition": "DateTime(ValueAsDate(P,FirstDay),TimeFromDateTime(\"31.03.2024T02:30:00\")) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/GapAfterPartialNotEqual",
+                "name": "GapAfterPartialNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "GapAfterPartialNotEqual",
+                  "errorCondition": "DateTime(ValueAsDate(P,FirstDay),TimeFromDateTime(\"31.03.2024T02:30:00\")) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterGapAfterPartial",
+                "name": "AfterGapAfterPartial",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterGapAfterPartialComp",
+                "name": "AfterGapAfterPartialComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterGapAfterPartial",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutGapAfterPartial)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutHourAfter",
+                "name": "OutHourAfter",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/HourAfterComp",
+                "name": "HourAfterComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutHourAfter",
+                  "computationAlternatives": [
+                    {
+                      "operation": "AddHours(DateTime(D,T),1)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/HourAfterEqual",
+                "name": "HourAfterEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "HourAfterEqual",
+                  "errorCondition": "AddHours(DateTime(D,T),1) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/HourAfterNotEqual",
+                "name": "HourAfterNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "HourAfterNotEqual",
+                  "errorCondition": "AddHours(DateTime(D,T),1) != [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterHourAfter",
+                "name": "AfterHourAfter",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterHourAfterComp",
+                "name": "AfterHourAfterComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterHourAfter",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutHourAfter)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/OutMinPartial",
+                "name": "OutMinPartial",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MinPartialComp",
+                "name": "MinPartialComp",
+                "Computation": {
+                  "computedFieldRelPath": "../OutMinPartial",
+                  "computationAlternatives": [
+                    {
+                      "operation": "Min(ValueAsDate(P,FirstDay),[D])"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MinPartialEqual",
+                "name": "MinPartialEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "MinPartialEqual",
+                  "errorCondition": "Min(ValueAsDate(P,FirstDay),[D]) == [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MinPartialNotEqual",
+                "name": "MinPartialNotEqual",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "MinPartialNotEqual",
+                  "errorCondition": "Min(ValueAsDate(P,FirstDay),[D]) != [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/AfterMinPartial",
+                "name": "AfterMinPartial",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/AfterMinPartialComp",
+                "name": "AfterMinPartialComp",
+                "Computation": {
+                  "computedFieldRelPath": "../AfterMinPartial",
+                  "computationAlternatives": [
+                    {
+                      "operation": "1",
+                      "precondition": "FieldNotFilled(OutMinPartial)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal composition check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/ClockMin",
+                "name": "ClockMin",
+                "Rule": {
+                  "errorEntityRelPath": "../T",
+                  "errorCode": "ClockMin",
+                  "errorCondition": "Min(Time(H),[T]) == [T]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/ConstructedMin",
+                "name": "ConstructedMin",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "ConstructedMin",
+                  "errorCondition": "Min(DateTime(D,Time(H)),[Z]) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/PartialMin",
+                "name": "PartialMin",
+                "Rule": {
+                  "errorEntityRelPath": "../Z",
+                  "errorCode": "PartialMin",
+                  "errorCondition": "Min(DateTime(ValueAsDate(P,FirstDay),T),[Z]) == [Z]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/PartialOrOmission",
+                "name": "PartialOrOmission",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "PartialOrOmission",
+                  "errorCondition": "ValueAsDate(P,FirstDay) == [D] Or [Empty] == 0",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Temporal comparison check."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

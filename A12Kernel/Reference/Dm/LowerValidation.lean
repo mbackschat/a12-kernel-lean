@@ -167,6 +167,15 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
       | .source, some field => pure (.field field)
       | .value, _ => refuse "TemporalExpression" "bare entity in temporal value expression"
       | _, none => refuse "TemporalExpression" "field path"
+  | .call "DateTime" [.mk date none none, .mk time none none] none none =>
+      pure (.dateTimeConstruction (← lowerSourceSlot date) (← lowerSourceSlot time))
+  | .call "ValueAsDate" [.mk source none none, .mk (.constant endpoint) none none] none none => do
+      let some path := source.fieldEntity? | refuse "ValueAsDate" "partial Date entity"
+      let endpoint ← match endpoint with
+        | "FirstDay" => pure ValueAsDateEndpoint.firstDay
+        | "LastDay" => pure ValueAsDateEndpoint.lastDay
+        | _ => refuse "ValueAsDate" "endpoint"
+      pure (.valueAsDate path endpoint)
   | .call "Date" arguments none none =>
       (.dateConstruction ·) <$> lowerDateComponents model rowGroup arguments
   | .call "Time" arguments none none =>

@@ -8,44 +8,38 @@ missing provenance and unavailable operands; a consumer supplies its calendar or
 
 namespace A12Kernel
 
-inductive TemporalExpressionOf (Atom : Type) (Transform : Type := Empty) where
+/-- Nonempty ordered application models generated argument evaluation for constructors,
+selectors and shifts alike. Operator arity and source types are checked by elaboration. -/
+inductive TemporalExpressionOf (Atom : Type) (Operation : Type := Empty) where
   | atom (source : Atom)
-  | extremum (operator : TemporalExtremumOp)
-      (first : TemporalExpressionOf Atom Transform) (rest : List (TemporalExpressionOf Atom Transform))
-  | transform (operation : Transform) (source : TemporalExpressionOf Atom Transform)
+  | apply (operation : Operation) (first : TemporalExpressionOf Atom Operation)
+      (rest : List (TemporalExpressionOf Atom Operation))
 
 namespace TemporalExpressionOf
 
 /-- Authored occurrence order, including repeated occurrences in distinct expressions. -/
-def atoms : TemporalExpressionOf Atom Transform → List Atom
+def atoms : TemporalExpressionOf Atom Operation → List Atom
   | .atom source => [source]
-  | .extremum _ first rest => first.atoms ++ rest.flatMap atoms
-  | .transform _ source => source.atoms
+  | .apply _ first rest => first.atoms ++ rest.flatMap atoms
 
-/-- A transform's additional operands are reached after its source, in authored order. -/
-def dependencies (atom : Atom → List Dependency) (transform : Transform → List Dependency) :
-    TemporalExpressionOf Atom Transform → List Dependency
+/-- Additional operator operands, such as a shift amount, follow the temporal arguments. -/
+def dependencies (atom : Atom → List Dependency) (operation : Operation → List Dependency) :
+    TemporalExpressionOf Atom Operation → List Dependency
   | .atom source => atom source
-  | .extremum _ first rest => first.dependencies atom transform ++
-      rest.flatMap (dependencies atom transform)
-  | .transform operation source => source.dependencies atom transform ++ transform operation
+  | .apply op first rest => first.dependencies atom operation ++
+      rest.flatMap (dependencies atom operation) ++ operation op
 
-/-- Operand expressions are evaluated before the classified extrema fold. A runtime failure is
-distinct from a successfully evaluated unknown operand; generated Java/Groovy operation-list calls
-evaluate their arguments before entering the selector. -/
-def evalWithResult (select : TemporalExtremumOp → α → α → α)
-    (read : Atom → Except Error (SimpleComparisonOperand α))
-    (apply : Transform → SimpleComparisonOperand α → Except Error (SimpleComparisonOperand α)) :
-    TemporalExpressionOf Atom Transform → Except Error (SimpleComparisonOperand α)
+/-- Arguments are reached in authored order before their operator runs. A caller can abort a
+reached computation poison through the error channel while retaining cause-free non-relevance as
+an operand, so it does not suppress a later argument's failure (stamp-construction grid, 2026-10-04). -/
+def evalWithResult (read : Atom → Except Error Operand)
+    (apply : Operation → List Operand → Except Error Operand) :
+    TemporalExpressionOf Atom Operation → Except Error Operand
   | .atom source => read source
-  | .extremum operator first rest => do
-      let first ← first.evalWithResult select read apply
-      let rest ← rest.mapM (evalWithResult select read apply)
-      pure (evalTemporalExtremumAggregate (select operator)
-        { operands := first :: rest
-          hasUninstantiatedTail := false, hasHaving := false })
-  | .transform operation source => do
-      apply operation (← source.evalWithResult select read apply)
+  | .apply operation first rest => do
+      let first ← first.evalWithResult read apply
+      let rest ← rest.mapM (evalWithResult read apply)
+      apply operation (first :: rest)
 
 end TemporalExpressionOf
 

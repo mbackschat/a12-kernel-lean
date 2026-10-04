@@ -1,0 +1,88 @@
+id	arm	expression	admitted	codes
+utc-Fields-rule	rule	DateTime(D,T) == [Z]	true	
+utc-Fields-compute	computation	DateTime(D,T)	true	
+utc-Year-rule	rule	DateTime(Y,T) == [Z]	true	
+utc-Year-compute	computation	DateTime(Y,T)	true	
+utc-YM-rule	rule	DateTime(YM,T) == [Z]	true	
+utc-YM-compute	computation	DateTime(YM,T)	true	
+utc-MD-rule	rule	DateTime(MD,T) == [Z]	true	
+utc-MD-compute	computation	DateTime(MD,T)	true	
+utc-Month-rule	rule	DateTime(M,T) == [Z]	true	
+utc-Month-compute	computation	DateTime(M,T)	true	
+utc-First-rule	rule	ValueAsDate(P,FirstDay) == [D]	true	
+utc-First-compute	computation	ValueAsDate(P,FirstDay)	true	
+utc-Last-rule	rule	ValueAsDate(P,LastDay) == [D]	true	
+utc-Last-compute	computation	ValueAsDate(P,LastDay)	true	
+utc-PartialShift-rule	rule	AddDays(ValueAsDate(P,LastDay),1) == [D]	true	
+utc-PartialShift-compute	computation	AddDays(ValueAsDate(P,LastDay),1)	true	
+utc-PartialFirst-rule	rule	DateTime(ValueAsDate(P,FirstDay),T) == [Z]	true	
+utc-PartialFirst-compute	computation	DateTime(ValueAsDate(P,FirstDay),T)	true	
+utc-PartialLast-rule	rule	DateTime(ValueAsDate(P,LastDay),T) == [Z]	true	
+utc-PartialLast-compute	computation	DateTime(ValueAsDate(P,LastDay),T)	true	
+utc-Today-rule	rule	DateTime(Today,T) == [Z]	true	
+utc-Today-compute	computation	DateTime(Today,T)	true	
+utc-Components-rule	rule	DateTime(Date("31","03","2024"),Time(H)) == [Z]	true	
+utc-Components-compute	computation	DateTime(Date("31","03","2024"),Time(H))	true	
+utc-Clock-rule	rule	DateTime(D,Time(H)) == [Z]	true	
+utc-Clock-compute	computation	DateTime(D,Time(H))	true	
+utc-UnrealDate-rule	rule	DateTime(Date("31","02","2024"),T) == [Z]	true	
+utc-UnrealDate-compute	computation	DateTime(Date("31","02","2024"),T)	true	
+utc-Shift-rule	rule	AddHours(DateTime(AddDays(D,1),T),1) == [Z]	true	
+utc-Shift-compute	computation	AddHours(DateTime(AddDays(D,1),T),1)	true	
+utc-Range-rule	rule	DateTime(EndOfDateRange(R),T) == [Z]	true	
+utc-Range-compute	computation	DateTime(EndOfDateRange(R),T)	true	
+utc-Project-rule	rule	DateTime(D,TimeFromDateTime(Z)) == [Z]	true	
+utc-Project-compute	computation	DateTime(D,TimeFromDateTime(Z))	true	
+utc-Given-rule	rule	DateTime(AddDays(D,[A]),T) == [Z]	true	
+utc-Given-compute	computation	DateTime(AddDays(D,[A]),T)	true	
+utc-GapAfterPartial-rule	rule	DateTime(ValueAsDate(P,FirstDay),TimeFromDateTime("31.03.2024T02:30:00")) == [Z]	true	
+utc-GapAfterPartial-compute	computation	DateTime(ValueAsDate(P,FirstDay),TimeFromDateTime("31.03.2024T02:30:00"))	true	
+utc-BracketDate-rule	rule	DateTime([D],T) == [Z]	false	MVK_UNEXPECTED_TOKEN
+utc-BracketDate-compute	computation	DateTime([D],T)	false	MVK_UNEXPECTED_TOKEN
+utc-BracketTime-rule	rule	DateTime(D,[T]) == [Z]	false	MVK_UNEXPECTED_TOKEN
+utc-BracketTime-compute	computation	DateTime(D,[T])	false	MVK_UNEXPECTED_TOKEN
+utc-PartialBare-rule	rule	DateTime(P,T) == [Z]	false	MVK_INVALID_DATE_TYPE
+utc-PartialBare-compute	computation	DateTime(P,T)	false	MVK_INVALID_DATE_TYPE
+utc-StampAsDate-rule	rule	DateTime(Z,T) == [Z]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+utc-StampAsDate-compute	computation	DateTime(Z,T)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+utc-ClockAsDate-rule	rule	DateTime(T,T) == [Z]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+utc-ClockAsDate-compute	computation	DateTime(T,T)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+utc-DateAsTime-rule	rule	DateTime(D,D) == [Z]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+utc-DateAsTime-compute	computation	DateTime(D,D)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+utc-StampAsTime-rule	rule	DateTime(D,Z) == [Z]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+utc-StampAsTime-compute	computation	DateTime(D,Z)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+utc-Literal-rule	rule	DateTime("31.03.2024","02:30:00") == [Z]	true	
+utc-Literal-compute	computation	DateTime("31.03.2024","02:30:00")	true	
+utc-NoClock-rule	rule	DateTime(D,Time()) == [Z]	true	
+utc-NoClock-compute	computation	DateTime(D,Time())	true	
+utc-MinPartial-rule	rule	Min(ValueAsDate(P,FirstDay),[D]) == [D]	true	
+utc-MinPartial-compute	computation	Min(ValueAsDate(P,FirstDay),[D])	true	
+unconfigured-Fields-rule	rule	DateTime(D,T) == [Z]	true	
+unconfigured-Year-rule	rule	DateTime(Y,T) == [Z]	true	
+unconfigured-YM-rule	rule	DateTime(YM,T) == [Z]	true	
+unconfigured-MD-rule	rule	DateTime(MD,T) == [Z]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+unconfigured-Month-rule	rule	DateTime(M,T) == [Z]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+unconfigured-First-rule	rule	ValueAsDate(P,FirstDay) == [D]	true	
+unconfigured-Last-rule	rule	ValueAsDate(P,LastDay) == [D]	true	
+unconfigured-PartialShift-rule	rule	AddDays(ValueAsDate(P,LastDay),1) == [D]	true	
+unconfigured-PartialFirst-rule	rule	DateTime(ValueAsDate(P,FirstDay),T) == [Z]	true	
+unconfigured-PartialLast-rule	rule	DateTime(ValueAsDate(P,LastDay),T) == [Z]	true	
+unconfigured-Today-rule	rule	DateTime(Today,T) == [Z]	true	
+unconfigured-Components-rule	rule	DateTime(Date("31","03","2024"),Time(H)) == [Z]	true	
+unconfigured-Clock-rule	rule	DateTime(D,Time(H)) == [Z]	true	
+unconfigured-UnrealDate-rule	rule	DateTime(Date("31","02","2024"),T) == [Z]	true	
+unconfigured-Shift-rule	rule	AddHours(DateTime(AddDays(D,1),T),1) == [Z]	true	
+unconfigured-Range-rule	rule	DateTime(EndOfDateRange(R),T) == [Z]	true	
+unconfigured-Project-rule	rule	DateTime(D,TimeFromDateTime(Z)) == [Z]	true	
+unconfigured-Given-rule	rule	DateTime(AddDays(D,[A]),T) == [Z]	true	
+unconfigured-GapAfterPartial-rule	rule	DateTime(ValueAsDate(P,FirstDay),TimeFromDateTime("31.03.2024T02:30:00")) == [Z]	true	
+unconfigured-BracketDate-rule	rule	DateTime([D],T) == [Z]	false	MVK_UNEXPECTED_TOKEN
+unconfigured-BracketTime-rule	rule	DateTime(D,[T]) == [Z]	false	MVK_UNEXPECTED_TOKEN
+unconfigured-PartialBare-rule	rule	DateTime(P,T) == [Z]	false	MVK_INVALID_DATE_TYPE
+unconfigured-StampAsDate-rule	rule	DateTime(Z,T) == [Z]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+unconfigured-ClockAsDate-rule	rule	DateTime(T,T) == [Z]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+unconfigured-DateAsTime-rule	rule	DateTime(D,D) == [Z]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+unconfigured-StampAsTime-rule	rule	DateTime(D,Z) == [Z]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+unconfigured-Literal-rule	rule	DateTime("31.03.2024","02:30:00") == [Z]	true	
+unconfigured-NoClock-rule	rule	DateTime(D,Time()) == [Z]	true	
+unconfigured-MinPartial-rule	rule	Min(ValueAsDate(P,FirstDay),[D]) == [D]	true	
