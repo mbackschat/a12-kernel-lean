@@ -22,7 +22,7 @@ namespace A12Kernel
 
 /-- One extracted endpoint usable as a comparison operand, from either bound owner. -/
 inductive CheckedDateRangeBoundOperand (model : FlatModel) where
-  | exact (bound : CheckedDateRangeBound model)
+  | exact (bound : CheckedDateRangeSourceBound model)
   | yearless (bound : CheckedYearlessDateRangeBound model)
 
 namespace CheckedDateRangeBoundOperand
@@ -62,13 +62,13 @@ end DateRangeBoundPairElabError
 yearless one only where the exact owner reports an unsupported policy. Every other refusal
 propagates as itself, so a genuine source failure is never replaced by the policy cause. -/
 def elaborateDateRangeBoundOperand (model : FlatModel) (source : FieldId)
-    (bound : DateRangeBound) :
+    (bound : DateRangeBound) (scope : List RepeatableLevel := []) :
     Except YearlessDateRangeBoundElabError
       (CheckedDateRangeBoundOperand model) :=
-  match elaborateDateRangeBound model source bound with
+  match elaborateDateRangeBoundIn model scope source bound with
   | .ok exact => pure (.exact exact)
   | .error (.unsupportedPolicy _ _ _) =>
-      .yearless <$> elaborateYearlessDateRangeBound model source bound
+      .yearless <$> elaborateYearlessDateRangeBoundIn model scope source bound
   | .error cause => throw (.source cause)
 
 /-- One certified pair of extracted endpoints retained in authored order. -/
@@ -146,8 +146,8 @@ def evaluate (checked : CheckedDateRangeBoundPair model)
     Except DateRangeBoundPairFault DateRangeBoundPairResult :=
   match checked.left, checked.right with
   | .exact left, .exact right => do
-      let leftObserved ← (left.evaluate .validation input).mapError .leftExact
-      let rightObserved ← (right.evaluate .validation input).mapError .rightExact
+      let leftObserved ← (left.evaluateAt [] .validation input).mapError .leftExact
+      let rightObserved ← (right.evaluateAt [] .validation input).mapError .rightExact
       let leftDate ← exactObservation left.source.id leftObserved
       let rightDate ← exactObservation right.source.id rightObserved
       pure (.exact leftDate rightDate

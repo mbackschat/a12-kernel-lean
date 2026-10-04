@@ -511,7 +511,16 @@ private def addressedTemporalFields (context : AddressedValidationEvaluationCont
     (comparison : CheckedScalarTemporalComparison model) : Except CheckedAddressingError FlatContext := do
   let cells ← comparison.fieldIds.mapM fun field => do
     pure (field, ← context.readCell context.outer field)
+  let storedText ← match context.input with
+    | .checked document | .partialView document _ => pure (document.storedTextIn context.outer)
+    | .legacy _ _ => do
+        let rawFields := comparison.left.storedTextFields ++ comparison.right.storedTextFields
+        if rawFields.any (fun field => (model.lookupUniqueId field).toOption.any
+            (fun declaration => !declaration.repeatableScope.isEmpty)) then
+          throw (.checkedDocumentRequired [])
+        pure context.scalar.fields.storedText
   pure { context.scalar.fields with
+    storedText
     read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell }
 
 /-- Evaluate one row-selected checked tree while retaining structural addressing failure outside the verdict algebra. Truth testing and conditional classification retain their separate failure boundaries. -/

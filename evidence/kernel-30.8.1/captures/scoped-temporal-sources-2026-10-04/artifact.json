@@ -1,0 +1,1871 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "ScopedTemporal_DM.json",
+    "locale": "en_US",
+    "clock": "2024-03-30T23:00:00Z"
+  },
+  "rows": [
+    {
+      "name": "valid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DateMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Dn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z",
+                "Form/Rows/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/Hn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DateMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Dn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z",
+                "Form/Rows/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/Hn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "absent",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "two-level",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DateMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Dn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z",
+                "Form/Rows/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Extracted",
+              "field": "Form/Rows[2]/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/D",
+                "Form/Rows[2]/Items/T",
+                "Form/Rows[2]/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows[2]/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/P",
+                "Form/Rows[2]/Items/T",
+                "Form/Rows[2]/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows[2]/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/P",
+                "Form/Rows[2]/Items/T",
+                "Form/Rows[2]/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows[2]/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/R",
+                "Form/Rows[2]/Items/T",
+                "Form/Rows[2]/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows[2]/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/R",
+                "Form/Rows[2]/Items/T",
+                "Form/Rows[2]/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/Hn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows[2]/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/D",
+                "Form/Rows[2]/Items/Hn",
+                "Form/Rows[2]/Items/Ms",
+                "Form/Rows[2]/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows[2]/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/YR"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DateMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Dn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z",
+                "Form/Rows/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Extracted",
+              "field": "Form/Rows[2]/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/D",
+                "Form/Rows[2]/Items/T",
+                "Form/Rows[2]/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows[2]/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/P",
+                "Form/Rows[2]/Items/T",
+                "Form/Rows[2]/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows[2]/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/P",
+                "Form/Rows[2]/Items/T",
+                "Form/Rows[2]/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows[2]/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/R",
+                "Form/Rows[2]/Items/T",
+                "Form/Rows[2]/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows[2]/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/R",
+                "Form/Rows[2]/Items/T",
+                "Form/Rows[2]/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/Hn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows[2]/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/D",
+                "Form/Rows[2]/Items/Hn",
+                "Form/Rows[2]/Items/Ms",
+                "Form/Rows[2]/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows[2]/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Items/YR"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-year",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/Hn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/Hn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-year",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/Hn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Y"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/Hn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Y"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-number",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Rows/Items/Dn",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Dn"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Rows/Items/Hn",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Hn"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Rows/Items/Dn",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Dn"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/Rows/Items/Hn",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Hn"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bad-string",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Rows/Items/Ms",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Ms"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "First",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringFalschesMuster",
+              "field": "Form/Rows/Items/Ms",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Ms"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "omitted-day",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DateMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Dn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z",
+                "Form/Rows/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/Hn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DateMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Dn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z",
+                "Form/Rows/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Last",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/P",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/Hn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "unknown-year",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DateMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Dn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z",
+                "Form/Rows/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/Hn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DateMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/Dn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z",
+                "Form/Rows/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Extracted",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeEnd",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "RangeStart",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/R",
+                "Form/Rows/Items/T",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TimeMixed",
+              "field": "Form/Rows/Items/Z",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/D",
+                "Form/Rows/Items/Hn",
+                "Form/Rows/Items/Ms",
+                "Form/Rows/Items/Z"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Yearless",
+              "field": "Form/Rows/Items/YR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Items/YR"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

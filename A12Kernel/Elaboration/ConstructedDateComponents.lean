@@ -6,9 +6,9 @@ import A12Kernel.Semantics.String
 
 /-! # Checked direct constructed Dates
 
-This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, admitted quoted constants, or matching Date/DateTime/Base-Year/`Today`/`Now` extractors, plus the two-argument Base-Year specialization, for the concrete UTC/GMT/Berlin profiles. Each field position keeps the kernel checker's exact stored-width, numeric-maximum, or Year-only format gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; dynamic point-in-time sources retain the selected model-zone profile without sampling a clock; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
+This capsule certifies direct `Date` components at an explicitly bound reading scope backed by ordinary Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, admitted quoted constants, or matching Date/DateTime/Base-Year/`Today`/`Now` extractors, plus the two-argument Base-Year specialization, for the concrete UTC/GMT/Berlin profiles. Each field position keeps the kernel checker's exact stored-width, numeric-maximum, or Year-only format gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; dynamic point-in-time sources retain the selected model-zone profile without sampling a clock; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
 
-Execution and composition use the shared scalar temporal tree and floor-free legacy calendar model. Direct extensible-enumeration String components, other recursive extractor operands, other model zones and repeatable constructor placement remain separate obligations in SG6.
+Execution and composition use the shared scalar temporal tree and floor-free legacy calendar model. Direct extensible-enumeration String components, other recursive extractor operands, other model zones and repeatable computation targets remain separate obligations in SG6.
 -/
 
 namespace A12Kernel
@@ -101,12 +101,12 @@ structure SurfaceConstructedDateComponents where
 /-- Exact Number declaration gate for one direct three-field Date component. -/
 def FlatModel.admitsConstructedDateNumberField (model : FlatModel)
     (position : ConstructedDateComponentPosition)
-    (source : FlatNumberField) : Bool :=
+    (source : FlatNumberField) (scope : List RepeatableLevel := []) : Bool :=
   match model.lookupUniqueId source.id with
   | .error _ => false
   | .ok declaration =>
       let constraints := declaration.numericTargetConstraints
-      declaration.repeatableScope.isEmpty &&
+      declaration.repetitionBoundBy scope &&
         declaration.toNumberField? == some source &&
         source.info.scale == 0 &&
         constraints.minFractionalDigits == 0 &&
@@ -116,18 +116,19 @@ def FlatModel.admitsConstructedDateNumberField (model : FlatModel)
 
 /-- One ordinary Number field carrying its exact Date-component certificate. -/
 structure CheckedConstructedDateNumberField (model : FlatModel) where
+  scope : List RepeatableLevel := []
   position : ConstructedDateComponentPosition
   source : FlatNumberField
-  admitted : model.admitsConstructedDateNumberField position source = true
+  admitted : model.admitsConstructedDateNumberField position source scope = true
 
 /-- Exact pattern-backed String declaration gate for one direct Date component. Extensible-enumeration admission is deliberately not represented here. -/
 def FlatModel.admitsConstructedDateStringField (model : FlatModel)
     (position : ConstructedDateComponentPosition)
-    (source : FlatStringField) : Bool :=
+    (source : FlatStringField) (scope : List RepeatableLevel := []) : Bool :=
   match model.lookupUniqueId source.id with
   | .error _ => false
   | .ok declaration =>
-      declaration.repeatableScope.isEmpty &&
+      declaration.repetitionBoundBy scope &&
         declaration.toStringValueField? == some source &&
         declaration.customType.isNone &&
         declaration.enumeration.isNone &&
@@ -137,10 +138,11 @@ def FlatModel.admitsConstructedDateStringField (model : FlatModel)
 
 /-- One ordinary checked String field under the position's exact digit-pattern and stored-width gate. -/
 structure CheckedConstructedDateStringField (model : FlatModel) where
+  scope : List RepeatableLevel := []
   position : ConstructedDateComponentPosition
   source : FlatStringField
   admitted :
-    model.admitsConstructedDateStringField position source = true
+    model.admitsConstructedDateStringField position source scope = true
 
 /-- Exact direct temporal-field gate used only by the complete-Year constructor position. The
     retained policy is part of the certificate because component flags do not imply the literal
@@ -153,11 +155,11 @@ structure CheckedConstructedDateStringField (model : FlatModel) where
     So both remaining conjuncts are measured necessary and the former `kind == .date` was not. -/
 def FlatModel.admitsConstructedDateYearField (model : FlatModel)
     (position : ConstructedDateComponentPosition)
-    (source : FlatTemporalField) (policy : TemporalTargetPolicy) : Bool :=
+    (source : FlatTemporalField) (policy : TemporalTargetPolicy) (scope : List RepeatableLevel := []) : Bool :=
   match model.lookupUniqueId source.id with
   | .error _ => false
   | .ok declaration =>
-      declaration.repeatableScope.isEmpty &&
+      declaration.repetitionBoundBy scope &&
         declaration.toTemporalField? == some source &&
         declaration.toTemporalTargetPolicy? == some policy &&
         position == .year &&
@@ -165,11 +167,12 @@ def FlatModel.admitsConstructedDateYearField (model : FlatModel)
 
 /-- One complete-Year Date field with the exact model-owned `yyyy` declaration policy. -/
 structure CheckedConstructedDateYearField (model : FlatModel) where
+  scope : List RepeatableLevel := []
   position : ConstructedDateComponentPosition
   source : FlatTemporalField
   policy : TemporalTargetPolicy
   admitted :
-    model.admitsConstructedDateYearField position source policy = true
+    model.admitsConstructedDateYearField position source policy scope = true
 
 /-- Exact direct field gate for one matching Date-component extractor.
 
@@ -181,22 +184,23 @@ structure CheckedConstructedDateYearField (model : FlatModel) where
     this very position. -/
 def FlatModel.admitsConstructedDateExtractorField (model : FlatModel)
     (position : ConstructedDateComponentPosition) (part : DateNumericPart)
-    (source : FlatTemporalField) : Bool :=
+    (source : FlatTemporalField) (scope : List RepeatableLevel := []) : Bool :=
   match model.lookupUniqueId source.id with
   | .error _ => false
   | .ok declaration =>
-      declaration.repeatableScope.isEmpty &&
+      declaration.repetitionBoundBy scope &&
         declaration.toTemporalField? == some source &&
         position.extractor? == some part &&
         part.admittedBy model.hasBaseYear source.components
 
 /-- One ordinary Date or DateTime field carrying the matching component-extractor certificate. -/
 structure CheckedConstructedDateExtractorField (model : FlatModel) where
+  scope : List RepeatableLevel := []
   position : ConstructedDateComponentPosition
   part : DateNumericPart
   source : FlatTemporalField
   admitted :
-    model.admitsConstructedDateExtractorField position part source = true
+    model.admitsConstructedDateExtractorField position part source scope = true
 
 /-- One matching Date component extracted from the configured model Base Year. The equality records the model-relative source check rather than treating Base Year as an unowned literal. -/
 structure CheckedConstructedDateBaseYearExtractor (model : FlatModel) where
@@ -304,45 +308,45 @@ inductive ConstructedDateComponentsElabError where
 /-- Resolve one direct Number field and retain the position-specific declaration proof. -/
 def elaborateConstructedDateNumberField
     (model : FlatModel) (position : ConstructedDateComponentPosition)
-    (field : FieldId) :
+    (field : FieldId) (scope : List RepeatableLevel := []) :
     Except ConstructedDateComponentsElabError
       (CheckedConstructedDateNumberField model) := do
   let declaration ←
-    model.resolveNonrepeatableDeclarationById field |>.mapError (.field position)
+    (model.lookupUniqueId field >>= (·.requireRepetitionBoundBy scope)) |>.mapError (.field position)
   let source ← match declaration.toNumberField? with
     | some source => pure source
     | none => throw (.sourceKind position field)
   if admitted :
-      model.admitsConstructedDateNumberField position source = true then
-    pure { position, source, admitted }
+      model.admitsConstructedDateNumberField position source scope = true then
+    pure { scope, position, source, admitted }
   else
     throw (.declarationNotAdmitted position field)
 
 /-- Resolve one ordinary String field and retain the position-specific pattern and stored-width certificate. -/
 def elaborateConstructedDateStringField
     (model : FlatModel) (position : ConstructedDateComponentPosition)
-    (field : FieldId) :
+    (field : FieldId) (scope : List RepeatableLevel := []) :
     Except ConstructedDateComponentsElabError
       (CheckedConstructedDateStringField model) := do
   let declaration ←
-    model.resolveNonrepeatableDeclarationById field |>.mapError (.field position)
+    (model.lookupUniqueId field >>= (·.requireRepetitionBoundBy scope)) |>.mapError (.field position)
   let source ← match declaration.toStringValueField? with
     | some source => pure source
     | none => throw (.stringSourceKind position field)
   if admitted :
-      model.admitsConstructedDateStringField position source = true then
-    pure { position, source, admitted }
+      model.admitsConstructedDateStringField position source scope = true then
+    pure { scope, position, source, admitted }
   else
     throw (.stringDeclarationNotAdmitted position field)
 
 /-- Resolve one Date field and retain the exact complete-Year `yyyy` certificate. -/
 def elaborateConstructedDateYearField
     (model : FlatModel) (position : ConstructedDateComponentPosition)
-    (field : FieldId) :
+    (field : FieldId) (scope : List RepeatableLevel := []) :
     Except ConstructedDateComponentsElabError
       (CheckedConstructedDateYearField model) := do
   let declaration ←
-    model.resolveNonrepeatableDeclarationById field |>.mapError (.field position)
+    (model.lookupUniqueId field >>= (·.requireRepetitionBoundBy scope)) |>.mapError (.field position)
   let source ← match declaration.toTemporalField? with
     | some source => pure source
     | none => throw (.dateYearSourceKind position field)
@@ -350,27 +354,27 @@ def elaborateConstructedDateYearField
     | some policy => pure policy
     | none => throw (.dateYearPolicyUnavailable position field)
   if admitted :
-      model.admitsConstructedDateYearField position source policy = true then
-    pure { position, source, policy, admitted }
+      model.admitsConstructedDateYearField position source policy scope = true then
+    pure { scope, position, source, policy, admitted }
   else
     throw (.dateYearDeclarationNotAdmitted position field)
 
 /-- Resolve one direct Date/DateTime field and retain the matching component-extractor certificate. -/
 def elaborateConstructedDateExtractorField
     (model : FlatModel) (position : ConstructedDateComponentPosition)
-    (part : DateNumericPart) (field : FieldId) :
+    (part : DateNumericPart) (field : FieldId) (scope : List RepeatableLevel := []) :
     Except ConstructedDateComponentsElabError
       (CheckedConstructedDateExtractorField model) := do
   if position.extractor? != some part then
     throw (.extractorMismatch position part)
   let declaration ←
-    model.resolveNonrepeatableDeclarationById field |>.mapError (.field position)
+    (model.lookupUniqueId field >>= (·.requireRepetitionBoundBy scope)) |>.mapError (.field position)
   let source ← match declaration.toTemporalField? with
     | some source => pure source
     | none => throw (.extractorSourceKind position field)
   if admitted :
-      model.admitsConstructedDateExtractorField position part source = true then
-    pure { position, part, source, admitted }
+      model.admitsConstructedDateExtractorField position part source scope = true then
+    pure { scope, position, part, source, admitted }
   else
     throw (.extractorDeclarationNotAdmitted position part field)
 
@@ -408,25 +412,26 @@ def elaborateConstructedDatePointInTimeExtractor
 
 /-- Check one direct field or quoted constant at its authored position. -/
 def elaborateConstructedDateSource
-    (model : FlatModel) (position : ConstructedDateComponentPosition) :
-    SurfaceConstructedDateSource →
+    (model : FlatModel) (position : ConstructedDateComponentPosition)
+    (surface : SurfaceConstructedDateSource) (scope : List RepeatableLevel := []) :
       Except ConstructedDateComponentsElabError
-        (CheckedConstructedDateSource model)
+        (CheckedConstructedDateSource model) :=
+  match surface with
   | .numberField field =>
-      .numberField <$> elaborateConstructedDateNumberField model position field
+      .numberField <$> elaborateConstructedDateNumberField model position field scope
   | .stringField field =>
       .stringField <$> elaborateConstructedDateStringField
-        model position field
+        model position field scope
   | .dateYearField field =>
       .dateYearField <$> elaborateConstructedDateYearField
-        model position field
+        model position field scope
   | .constant source =>
       match position.decodeConstant? source with
       | some value => pure (.constant value)
       | none => throw (.constantNotAdmitted position source)
   | .extractor part field =>
       .extractor <$> elaborateConstructedDateExtractorField
-        model position part field
+        model position part field scope
   | .baseYearExtractor part =>
       .baseYearExtractor <$>
         elaborateConstructedDateBaseYearExtractor model position .direct part
@@ -445,26 +450,27 @@ def elaborateConstructedDateSource
 
 /-- Check one two-, three-, or four-part direct Date through a common ordered source seam. -/
 def elaborateConstructedDateSources
-    (model : FlatModel) (sources : SurfaceConstructedDateComponents) :
+    (model : FlatModel) (sources : SurfaceConstructedDateComponents)
+    (scope : List RepeatableLevel := []) :
     Except ConstructedDateComponentsElabError
       (CheckedConstructedDateComponents model) := do
   match profileSelected :
       ModelZone.ConcreteProfile.ofId? model.timeZoneId with
   | some profile =>
-      let day ← elaborateConstructedDateSource model .day sources.day
-      let month ← elaborateConstructedDateSource model .month sources.month
+      let day ← elaborateConstructedDateSource model .day sources.day scope
+      let month ← elaborateConstructedDateSource model .month sources.month scope
       let year ← match sources.year with
         | .complete source =>
             CheckedConstructedDateYear.complete <$>
-              elaborateConstructedDateSource model .year source
+              elaborateConstructedDateSource model .year source scope
         | .baseYear =>
             match model.baseYear with
             | some year => pure (.baseYear year)
             | none => throw .missingBaseYear
         | .centuryAndShortYear century shortYear =>
             pure (.centuryAndShortYear
-              (← elaborateConstructedDateSource model .century century)
-              (← elaborateConstructedDateSource model .shortYear shortYear))
+              (← elaborateConstructedDateSource model .century century scope)
+              (← elaborateConstructedDateSource model .shortYear shortYear scope))
       pure { day, month, year, profile, profileSelected }
   | none => throw (.unsupportedZone model.timeZoneId)
 

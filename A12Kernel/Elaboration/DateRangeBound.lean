@@ -122,8 +122,8 @@ def DateRangeInputFormat.supportsDirectBound
   | .yearlessDayMonthDotted => baseYear.isSome
 
 /-- One selected endpoint of a DateRange field read at a rule's iterating row. The exact-value gate
-is the scalar carrier's, so an unconfigured yearless profile is excluded here exactly as it is
-there; the iterated yearless endpoint is a separate unmodelled shape. -/
+excludes unconfigured yearless profiles; `CheckedYearlessDateRangeBound` in
+`YearlessDateRangeBound.lean` owns their separate endpoint contract without synthesizing an exact year. -/
 structure CheckedDateRangeSourceBound (model : FlatModel)
     extends CheckedDateRangeSource model where
   private mk ::

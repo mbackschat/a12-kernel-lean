@@ -538,6 +538,14 @@ target reads its rendering; `none` where no placement or no text is placed. -/
 def storedTextAt (checked : CheckedDocument model) (address : CellAddr) : Option String :=
   (checked.checkedCells.find? fun placement => placement.address == address).bind (·.storedText)
 
+/-- Select stored text through the declaration's complete scope, so validation and computation
+read the same row-local spelling as their parsed-cell view. -/
+def storedTextIn (checked : CheckedDocument model) (environment : Env)
+    (field : FieldId) : Option String := do
+  let declaration ← (model.lookupUniqueId field).toOption
+  let path ← (environment.pathForScope declaration.repeatableScope).toOption
+  checked.storedTextAt { field, path }
+
 /-- Read one placed cell's **stored text**, for a Date declaring a partial precision.
 
 The text is the one channel that carries every value such a declaration can hold: a *partially* known
@@ -610,10 +618,7 @@ def computationFillContext (checked : CheckedDocument model) : ComputationFillCo
 already carries completed target placements (calendar review-control grid, 2026-10-04). -/
 def computationContextAt (checked : CheckedDocument model) (environment : Env) : ScalarComputationContext where
   read := checked.computationFillContext.read environment
-  storedText field := do
-    let declaration ← (model.lookupUniqueId field).toOption
-    let path ← (environment.pathForScope declaration.repeatableScope).toOption
-    checked.storedTextAt { field, path }
+  storedText := checked.storedTextIn environment
   numberText field := do
     let declaration ← (model.lookupUniqueId field).toOption
     let path ← (environment.pathForScope declaration.repeatableScope).toOption

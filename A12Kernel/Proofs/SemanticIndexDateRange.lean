@@ -148,7 +148,7 @@ operand its own model could complete. -/
 theorem semanticIndexDateRangeBoundComparison_yearlessAgainstExact
     (operation : CheckedSemanticIndexDateRangeBoundComparison model)
     (preliminary : CheckedIndexPreliminary model) (keyRaw : RawFlatContext)
-    (environment : Env) (direct : CheckedDateRangeBound model)
+    (environment : Env) (direct : CheckedDateRangeSourceBound model)
     (isExact : operation.direct = .exact direct)
     (isYearless : operation.keyed.exactDomain = false)
     (range : CellObservation DateRangeCellValue)

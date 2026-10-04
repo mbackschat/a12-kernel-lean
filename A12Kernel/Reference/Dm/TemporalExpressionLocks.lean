@@ -216,7 +216,22 @@ private def rowModel : FlatModel := {
       policy := { kind := .number { scale := 0, signed := true } } },
     { id := 10, groupPath := ["Order"], name := "Flag", policy := { kind := .string } },
     { id := 11, groupPath := ["Order"], name := "Amount",
-      policy := { kind := .number { scale := 0, signed := true } } }]
+      policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 12, groupPath := ["Order", "Rows"], name := "Year", repeatableScope := [10],
+      policy := { kind := .temporal .date { TemporalComponents.fullDate with month := false, day := false } },
+      temporalTargetPolicy := some { format := "yyyy" } },
+    { id := 13, groupPath := ["Order", "Rows"], name := "Partial", repeatableScope := [10],
+      policy := { kind := .temporal .date TemporalComponents.fullDate },
+      temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .yearOptional } },
+    { id := 14, groupPath := ["Order", "Rows"], name := "Range", repeatableScope := [10],
+      policy := { kind := .dateRange },
+      dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } },
+    { id := 15, groupPath := ["Order", "Rows"], name := "Day", repeatableScope := [10],
+      policy := { kind := .number { scale := 0, signed := false } },
+      numericTargetConstraints := { maxStoredLength := some 2 } },
+    { id := 16, groupPath := ["Order", "Rows"], name := "Month", repeatableScope := [10],
+      policy := { kind := .string }, stringPolicy := { maxLength := some 2 },
+      stringPatternSource := some asciiDigitsPatternSource }]
   repeatableGroups := [{ level := 10, path := ["Order", "Rows"], repeatability := some 3 }] }
 
 private def rowDm : DmModel := {
@@ -368,5 +383,54 @@ example : (do
         [{ base := .relative 0, groups := [], field := "B" }])).toOption
     pure ((ValidationCondition.flat (model := membershipModel) checked.core).anyLeaf
       ValidationConditionLeaf.requiresClassificationPass)) = some true := by native_decide
+
+private def sourceRow (second : Bool) : Lean.Json := Lean.Json.mkObj [
+  ("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00"),
+  ("Due1", if second then "2024-04-30" else "2024-03-31"),
+  ("Year", if second then "2023" else "2024"), ("Day", "31"), ("Month", "03"),
+  ("Partial", if second then "2024-04-00" else "2024-03-00"),
+  ("Range", if second then "2024-04-01/2024-04-30" else "2024-03-01/2024-03-31")]
+
+
+example : runRows
+    "DateTime(Date(DayFromDate(Due1),MonthFromDate(Due1),YearFromDate(Due1)),Clock) == [Stamp2]"
+    [sourceRow false, sourceRow true] = some ["Order/Rows/Stamp2"] := by native_decide
+
+example : runRows
+    "DateTime(Due1,Time(HoursFromTime(Clock),MinutesFromTime(Clock),SecondsFromTime(Clock))) == [Stamp2]"
+    [sourceRow false, sourceRow true] = some ["Order/Rows/Stamp2"] := by native_decide
+
+example : runRows "DateTime(Date(Day,Month,Year),Clock) == [Stamp2]"
+    [sourceRow false, sourceRow true] = some ["Order/Rows/Stamp2"] := by native_decide
+
+example : runRows "DateTime(ValueAsDate(Partial,LastDay),Clock) == [Stamp2]"
+    [sourceRow false, sourceRow true] = some ["Order/Rows/Stamp2"] := by native_decide
+
+example : runRows "DateTime(EndOfDateRange(Range),Clock) == [Stamp2]"
+    [sourceRow false, sourceRow true] = some ["Order/Rows/Stamp2"] := by native_decide
+
+example : [
+    "DateTime(Date(Rows/Day,Rows/Month,Rows/Year),Rows/Clock) == [Rows/Stamp2]",
+    "DateTime(Rows/Due1,Time(HoursFromTime(Rows/Clock))) == [Rows/Stamp2]",
+    "DateTime(ValueAsDate(Rows/Partial,LastDay),Rows/Clock) == [Rows/Stamp2]",
+    "DateTime(EndOfDateRange(Rows/Range),Rows/Clock) == [Rows/Stamp2]"].all (fun text =>
+      match parseText .english text with
+      | .error _ => false
+      | .ok parsed =>
+          !(lowerCondition rowModel ["Order"] false parsed.body).isOk &&
+          (lowerCondition rowModel ["Order"] false parsed.body
+            (bindingGroup := ["Order", "Rows"])).isOk) = true := by native_decide
+
+example : (do
+    let rule ← (checkRule rowDm .english
+      (rowRule "DateTime(ValueAsDate(Partial,LastDay),Clock) == [Stamp2]")).toOption
+    let emptyCell : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
+    let result := rule.condition.core.evalAddressed {
+      scalar := { fields := { read := fun _ => emptyCell }, groups := .unavailable }
+      outer := [(10, 1)]
+      input := .legacy { instantiatedRows := [], rawCells := fun _ => none }
+        (fun _ _ => emptyCell) }
+    pure (match result with | .error (.checkedDocumentRequired []) => true | _ => false)) =
+    some true := by native_decide
 
 end A12Kernel.Dm.TemporalExpressionLocks

@@ -199,7 +199,8 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       pure (.atom (.dateTimeLiteral profile value), TemporalComponents.now)
   | .rangeBound reference bound => do
       let declaration ← (model.resolveFieldDeclarationUnchecked rowGroup reference).mapError .read
-      let source ← (elaborateDateRangeBoundOperand model declaration.id bound).mapError .rangeBound
+      let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
+      let source ← (elaborateDateRangeBoundOperand model declaration.id bound scope).mapError .rangeBound
       pure (.atom (.rangeBound (← scalarProfile model) source),
         source.components.withBaseYear model.hasBaseYear)
   | .baseYearBound bound => do
@@ -207,7 +208,8 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       pure (.atom (.baseYearBound (← scalarProfile model) year bound), TemporalComponents.fullDate)
   | .valueAsDate reference endpoint => do
       let declaration ← (model.resolveFieldDeclarationUnchecked rowGroup reference).mapError .read
-      let source ← (elaborateZonedValueAsDateSource model declaration.id endpoint).mapError .partialDate
+      let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
+      let source ← (elaborateZonedValueAsDateSource model declaration.id endpoint scope).mapError .partialDate
       pure (.atom (.valueAsDate source), TemporalComponents.fullDate)
   | .dateTimeConstruction date time => do
       if !date.admittedSourceSlot || !time.admittedSourceSlot then throw .unsupportedSource
@@ -217,7 +219,8 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
           timeComponents.hasDate || !timeComponents.hasTime then throw .incompatibleFormats
       pure (.apply (.dateTime (← scalarProfile model)) date [time], TemporalComponents.now)
   | .dateConstruction source => do
-      let components ← (elaborateConstructedDateSources model source).mapError .dateComponents
+      let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
+      let components ← (elaborateConstructedDateSources model source scope).mapError .dateComponents
       pure (.atom (.dateConstruction components), TemporalComponents.fullDate)
   | .calendarShift unit source amount => do
       if !source.admittedSourceSlot then throw .unsupportedSource
@@ -233,7 +236,8 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
         | some binding => elaborateRepeatableTemporalExpressionShiftAmount model binding amount rowGroup).mapError .amount
       pure (.apply (.calendarShift profile unit amount) source [], components)
   | .timeConstruction source => do
-      let components ← (elaborateTimeComponents model source).mapError .timeComponents
+      let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
+      let components ← (elaborateTimeComponents model source scope).mapError .timeComponents
       pure (.atom (.timeConstruction components), TemporalComponents.time)
   | .dateFromDateTime source => do
       if !source.admittedSourceSlot then throw .unsupportedSource
@@ -542,6 +546,16 @@ private def applyScalarTemporalOperation (phase : Phase) (context : FlatContext)
   | _, _ => throw .calendarUnavailable
 
 namespace CheckedScalarTemporalExpression
+
+/-- The two source contracts that consume exact stored text in addition to a typed cell. -/
+def storedTextFields (expression : CheckedScalarTemporalExpression model) : List FieldId :=
+  expression.core.dependencies
+    (fun | .dateConstruction components => components.sources.filterMap fun
+           | .dateYearField checked => some checked.source.id
+           | _ => none
+         | .valueAsDate source => [source.source.target.id]
+         | _ => [])
+    (fun _ => [])
 
 def fieldIds (expression : CheckedScalarTemporalExpression model) : List FieldId :=
   expression.core.dependencies
