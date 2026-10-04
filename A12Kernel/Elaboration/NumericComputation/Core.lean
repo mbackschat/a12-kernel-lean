@@ -45,8 +45,13 @@ def FlatModel.admitsNumericComputationOperand
     (model : FlatModel) (scope : List RepeatableLevel) : CheckedNumericComputationAtom model → Bool
   | .temporalPart source => model.directFieldsBoundBy scope source.source.fieldIds
   | .filledFieldCount source =>
-      source.computationSources.toOption.any fun sources =>
-        !sources.isEmpty && sources.all (·.admitted model scope)
+      !source.operands.isEmpty && source.rowBoundBool scope &&
+        source.operands.all fun operand =>
+          let structural : CheckedFieldFillOperand model := match operand with
+            | .star source => .star (.plain source.declaringGroup source.source)
+            | other => other
+          (CheckedFieldFillList.computationSources { operands := [structural] }).toOption.any
+            (fun sources => !sources.isEmpty && sources.all (·.admitted model scope))
   | .firstFilled source | .valueCount _ source =>
       source.bindingScopes.all (·.isPrefixOf scope)
   | .tokenDistinctCount source => source.bindingScopes.all (·.isPrefixOf scope)
@@ -187,7 +192,7 @@ def NumericComputationAtom.referencesField (model : FlatModel) (field : FieldId)
 def CheckedNumericComputationAtom.references
     (model : FlatModel) (field : FieldId) :
     CheckedNumericComputationAtom model → Bool
-  | .filledFieldCount source => source.declarations.any (·.id == field)
+  | .filledFieldCount source => source.referencesField field
   | .firstFilled source => source.referencesField field
   | .valueCount _ source => source.referencesField field
   | .tokenDistinctCount source => source.referencesField field

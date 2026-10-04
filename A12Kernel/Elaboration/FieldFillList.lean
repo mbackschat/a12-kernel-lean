@@ -13,9 +13,9 @@ makes it unavailable) and the quantifiers' tally apply to the whole list exactly
 
 Each operand also contributes its declared slots: a direct field one, a starred field the product of
 the maxima its star reopens, a group its subtree's capacity. The declared-range quantifiers read the
-list's missing tail from their sum, and the count's movement runs against it. Filtered quantifiers
-select their missing slots and retain operand order for polarity; counts retain their separate
-filter boundary. Computation guards keep the list certificates for their own ordered scans. Category reads are refused here.
+list's missing tail from their sum. Filtered quantifiers select their missing slots and retain
+operand order for polarity. Counts move against declared capacity, with shrinkability added only
+when a filtered operand contributes filled content. Computation guards keep the list certificates for their own ordered scans. Category reads are refused here.
 
 The unfiltered, materialized computation projection reads the same checked addresses with computation observations and places
 one open-tail marker after each declaration. `FieldFillQuantifier.evalComputation_omittedRun` proves
@@ -106,6 +106,7 @@ def fillCapacity? : CheckedFieldFillOperand model → Option Nat
 
 def countCapacity? : CheckedFieldFillOperand model → Option Nat
   | .group source => source.countCapacity?
+  | .star source => model.declarationSlots? source.source.path.firstStar source.source.declaration
   | operand => operand.fillCapacity?
 
 /-- Computation observes each addressed cell in order and records an open declared tail once.
@@ -156,6 +157,9 @@ def declarations (list : CheckedFieldFillList model) : List FlatFieldDecl :=
 
 def bindingScope (list : CheckedFieldFillList model) : List RepeatableLevel :=
   (list.operands.flatMap (·.bindingScope)).eraseDups
+
+def rowBoundBool (list : CheckedFieldFillList model) (scope : List RepeatableLevel) : Bool :=
+  list.operands.all fun operand => operand.bindingScopes.all (·.isPrefixOf scope)
 
 def hasHaving (list : CheckedFieldFillList model) : Bool :=
   list.operands.any (·.hasHaving)
@@ -236,12 +240,21 @@ def evaluateFill? (list : CheckedFieldFillList model) (operator : FieldFillQuant
     | .noFieldFilled | .atLeastOneFieldFilled | .moreThanOneFieldFilled
         | .notExactlyOneFieldFilled => pure (some (operator.evalValidation tally))
 
-/-- `NumberOfFilledFields` over the list, with its movement against the list's declared slots. -/
+/-- Count movement retains whether filled content came from a filtered operand, rather than
+whether a filter was merely authored (`RuntimeController.anzahlAngegebenerEntities`, kernel 30.8.1). -/
 def evaluateCountOperand? (list : CheckedFieldFillList model) (document : CheckedDocument model)
     (outer : Env) : Except CheckedAddressingError (Option NumericOperand) := do
-  let count := numberOfFilledFields (← list.observations document outer)
-  pure (list.countCapacity?.bind fun capacity =>
-    (count.availableWithFillability? capacity).map fun available => .value available.1 available.2)
+  let contributions ← list.operands.mapM fun operand => do
+    pure (operand.hasHaving, numberOfFilledFields (← operand.observations document outer))
+  let available := contributions.foldlM (m := Option) (init := ((0 : Nat), false)) fun (total, filtered) (having, count) =>
+    match count with
+    | .unknown => none
+    | .value amount => some (total + amount, filtered || (having && amount > 0))
+  pure (available.bind fun (total, filtered) =>
+    if filtered then some (.value total .both)
+    else list.countCapacity?.bind fun capacity =>
+      ((FilledFieldCount.value total).availableWithFillability? capacity).map fun available =>
+        .value available.1 available.2)
 
 end CheckedFieldFillList
 
@@ -275,7 +288,6 @@ def elaborateFieldFillList (model : FlatModel) (rowGroup : GroupPath)
     | (_, .field declaration .stored) => pure (.field declaration)
     | (_, .star source) => pure (.star (.plain rowGroup source))
     | (_, .starHaving source having) => do
-        if consumer == .count then throw .unsupportedOperand
         pure (.star (← (CheckedFilledFieldStarSource.withHaving model rowGroup bindingGroup
           source having).mapError .having))
     | (.group (.path _), .group reference) =>

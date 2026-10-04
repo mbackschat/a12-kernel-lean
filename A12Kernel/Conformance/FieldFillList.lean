@@ -138,7 +138,7 @@ example : (do
     some (true, some .empty, true, true, true) := by native_decide
 
 example : (elaborateFieldFillList listModel ["Probe"]
-      { first := selectedFirst, rest := [] }).isOk = false ∧
+      { first := selectedFirst, rest := [] }).isOk = true ∧
     (elaborateComputationFieldFillList listModel ["Probe"] ["Probe"]
       { first := selectedFirst, rest := [] }).isOk = true ∧
     (do
@@ -179,5 +179,26 @@ example : (do
     pure ((source.declaredEnvironments? document [(4, 1)]).toOption.join,
       (source.declaredEnvironments? document [(4, 2)]).toOption.isNone)) =
     some (some [[(4, 1), (5, 1)], [(4, 1), (5, 2)]], true) := by native_decide
+
+private def filteredCountSource : SurfaceFieldEntitySource := {
+  first := direct "A"
+  rest := [.starHaving
+    { base := .relative 0, groups := [{ name := "Rows", starred := true }], field := "R" }
+    (.presence .filled { origin := .inner, field := { base := .relative 0, groups := ["Rows"], field := "R" } })] }
+
+example : count filteredCountSource [{ group := 4, path := [1] }, { group := 4, path := [2] }]
+    [cell 1 [] 1, cell 4 [1] 2, invalid 4 [2]] = some (.value 2 .both) := by native_decide
+
+example : count filteredCountSource [{ group := 4, path := [1] }, { group := 4, path := [2] }, { group := 4, path := [3] }]
+    [cell 4 [1] 2, cell 4 [3] 3] = some (.value 1 .both) := by native_decide
+
+example : count filteredCountSource [] [] = some (.value 0 .growOnly) ∧
+    count filteredCountSource [] [cell 1 [] 1] = some (.value 1 .growOnly) ∧
+    count filteredCountSource [] [invalid 1 []] = none := by native_decide
+
+example : count { first := direct "A", rest := [selectedFirst] }
+    [{ group := 4, path := [1] }] [cell 1 [] 1] = some (.value 1 .growOnly) ∧
+    count { first := selectedFirst, rest := [direct "A"] }
+    [{ group := 4, path := [1] }] [cell 1 [] 1] = some (.value 1 .growOnly) := by native_decide
 
 end A12Kernel

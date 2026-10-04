@@ -23,7 +23,7 @@ def referencesField (source : CheckedComputationFieldFill model) (field : FieldI
   source.source.referencesField field
 
 def rowBoundBool (source : CheckedComputationFieldFill model) (scope : List RepeatableLevel) : Bool :=
-  source.source.operands.all fun operand => operand.bindingScopes.all (·.isPrefixOf scope)
+  source.source.rowBoundBool scope
 
 private abbrev SearchResult := ComputationHavingScanResult Bool ScanResult
 

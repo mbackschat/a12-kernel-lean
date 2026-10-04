@@ -9,17 +9,48 @@ def NumericOperand.toComputationResult : NumericOperand → NumericComputationRe
   | .value amount _ => .value amount
   | .unknown cause => .poison cause
 
-/-- Read the existing field-fill sources through the current computation overlay, then count
-all instantiated content. Resolution faults remain separate from a reached operand's poison. -/
-def CheckedFieldFillList.evaluateComputationCount (source : CheckedFieldFillList model)
-    (context : ScalarComputationContext) : Except NumericComputationFault NumericComputationResult := do
-  let sources ← source.computationSources.mapError NumericComputationFault.fieldFillSource
-  let slots ← (sources.mapM fun (operand : ComputationFillSource) =>
-    operand.slots context.read context.row context.addressed).mapError
+private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFillOperand model)
+    (context : ScalarComputationContext) (filterRead? : Option (Env → FieldId → CheckedCell)) :
+    Except NumericComputationFault (Except FormalCause Nat) := do
+  match operand with
+  | .star source =>
+      if let some filter := source.filter then
+        let some addressed := context.addressed
+          | throw (.guardBinding (.fieldFill .contextRequired))
+        let resolved ← (source.source.path.resolveInCapacity addressed.document context.row).mapError
+          (NumericComputationFault.guardBinding ∘ ComputationConditionError.fieldFill ∘ ComputationFillError.addressing)
+        let result ← (filter.condition.scanComputationResolving
+          { read := fun row field => pure ((filterRead?.getD addressed.read) row field)
+            bindingError := fun error => ComputationFillError.addressing error.toStarAddressingError }
+          context.row (fun count row => pure (match observeCell .computation
+              (addressed.read row source.source.declaration.id) with
+            | .value _ => Sum.inl (count + 1)
+            | .empty => Sum.inl count
+            | .unknown cause | .poison cause => Sum.inr cause))
+          resolved.environments 0).mapError
+          (NumericComputationFault.guardBinding ∘ ComputationConditionError.fieldFill)
+        return match result with
+          | .exhausted count => .ok count
+          | .terminated cause | .poison cause => .error cause
+  | _ => pure ()
+  let sources ← (CheckedFieldFillList.computationSources { operands := [operand] }).mapError
+    NumericComputationFault.fieldFillSource
+  let slots ← (sources.mapM fun (source : ComputationFillSource) =>
+    source.slots context.read context.row context.addressed).mapError
     (NumericComputationFault.guardBinding ∘ ComputationConditionError.fieldFill)
-  pure (match numberOfFilledFieldsForComputation slots.flatten with
-    | .ok count => .value count
-    | .error cause => .poison cause)
+  pure (numberOfFilledFieldsForComputation slots.flatten)
+
+/-- Each filtered operand reuses the computation iterator's lookahead and poison timing
+(spec/09 §5). Finish its selected count before reaching the next authored operand. -/
+def CheckedFieldFillList.evaluateComputationCount (source : CheckedFieldFillList model)
+    (context : ScalarComputationContext) (filterRead? : Option (Env → FieldId → CheckedCell) := none) :
+    Except NumericComputationFault NumericComputationResult := do
+  let mut total := 0
+  for operand in source.operands do
+    match ← operand.countComputation context filterRead? with
+    | .error cause => return .poison cause
+    | .ok count => total := total + count
+  pure (.value total)
 
 namespace CheckedNumericProductAggregate
 
@@ -471,7 +502,7 @@ def readCheckedNumericComputationAtom
   | .filledFieldCount source =>
       source.evaluateComputationCount { context.scalar with
         row := context.outer
-        addressed := some { document := context.document, read := context.starRead } }
+        addressed := some { document := context.document, read := context.starRead } } (some context.filterRead)
   | .firstFilled source => do
       let result ←
         (source.evaluateComputationFirstFilled context.document context.outer
@@ -587,9 +618,11 @@ def fixedGroupCountOperandFault? (model : FlatModel) (reference : ResolvedGroupR
 
 def CheckedNumericComputationAtom.numericComputationFault? :
     CheckedNumericComputationAtom model → Option NumericComputationFault
-  | .filledFieldCount source => match source.computationSources with
-      | .ok _ => none
-      | .error error => some (.fieldFillSource error)
+  | .filledFieldCount source => source.operands.findSome? fun operand =>
+      if operand.hasHaving then none else
+        match CheckedFieldFillList.computationSources { operands := [operand] } with
+        | .ok _ => none
+        | .error error => some (.fieldFillSource error)
   | .temporalPart _ | .firstFilled _ => none
   | .valueCount _ _ => none
   | .tokenDistinctCount _ | .temporalDistinctCount _ => none

@@ -170,7 +170,8 @@ def admitted (atom : OrderedNumericValidationAtom model)
         CheckedGroupCountOperand.admittedArity operands &&
         !operands.any CheckedGroupCountOperand.isRoot
   | .filledFieldCount source =>
-      !source.hasHaving && (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed)
+      (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed) &&
+        source.rowBoundBool (model.repeatableScopeForGroupPath rowGroup)
   | .tokenDistinctCount _ | .temporalDistinctCount _ =>
       scope == .modelWideCheckedComputation || scope == .sameGroupAddressed
 
@@ -188,7 +189,7 @@ def referencesField (atom : OrderedNumericValidationAtom model)
       source.left.field.id == field || source.right.field.id == field
   | .filledGroupCountMixed operands =>
       operands.any fun operand => operand.referencesField model field
-  | .filledFieldCount source => source.declarations.any (·.id == field)
+  | .filledFieldCount source => source.referencesField field
   | .tokenDistinctCount source => source.referencesField field
   | .temporalDistinctCount run => run.source.referencesField field
 
@@ -207,7 +208,8 @@ def referencesErrorField (atom : OrderedNumericValidationAtom model)
   | .tokenDistinctCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .temporalDistinctCount run =>
       run.source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _ =>
+  | .filledFieldCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
+  | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
       atom.referencesField field
 
 /-- Whether this exact checked atom retains any filtered entity-list slot. This is static source structure, not a statement about which runtime branch or candidate will be reached. -/
@@ -218,7 +220,8 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
   | .booleanValueCount source => source.hasHaving
   | .tokenDistinctCount source => source.hasHaving
   | .temporalDistinctCount run => run.source.hasHaving
-  | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _ => false
+  | .filledFieldCount source => source.hasHaving
+  | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
 
 end OrderedNumericValidationAtom
 
