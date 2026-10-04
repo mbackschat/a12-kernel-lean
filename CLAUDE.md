@@ -46,7 +46,7 @@ The following permanent semantic-throughput rules govern all future work:
 
    For human-facing Markdown such as README files and implementer guides, write natural paragraphs without cosmetic fixed-column wrapping. For agent-facing operational owners such as the implementation map, semantic gaps, plan, and source checkpoints, rendered readability is not a goal: choose physical lines and keyed records solely for bounded retrieval, precise mutation, and unambiguous diffs. [`docs/DOC-DISCIPLINE.md`](docs/DOC-DISCIPLINE.md#bounded-detailed-records) owns the exact record contract.
 
-7. Batch external evidence by coherent family. Internally closed clauses may remain honestly marked `external evidence pending`; do not request a kernel capture for each small operator.
+7. Batch external evidence by coherent family. Internally closed clauses may remain honestly marked `external evidence pending`; do not request a kernel capture for each small operator. Follow the [standing population-replay cadence](docs/TESTING.md#population-replay-cadence); a report refresh alone never justifies full replay.
 
 8. **Owner balance, 2026-10-04:** capturing missing semantics is the immediate priority. Use occasional bounded consumer probes at meaningful capability milestones, rather than after every family batch: select a reusable family closure, a major addressing/computation change, or an impending public compatibility claim where the probe can expose a material consumer risk. Between probes, the ordinary consumer hypothesis and same-context adequacy check preserve consumer needs without another independent exercise. A probe tests knowledge transport and does not become a permanent lockstep product suite by default.
 

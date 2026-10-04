@@ -279,6 +279,16 @@ Use it demand-driven, one coherent family at a time, exactly like every other ev
 
 ### The population replay
 
+<a id="population-replay-cadence"></a>
+**Standing replay cadence — owner direction, 2026-10-05.** During implementation, use focused family checks. Before each family commit, run the applicable integrated build, compact evidence, trust and hygiene gate. Full population replay is separate from the routine Tier 1 gate:
+
+- Run it once on the stable, reviewed family slice when the batch changes shared evaluation, scheduling, scope resolution or parsing. Apply review corrections before this run.
+- Otherwise run it after three completed semantic family batches since the last full replay. Intermediate checkpoint commits do not count as separate batches; a triggered full replay resets the interval.
+- Repeat immediately only when a failure or subsequent semantic fix invalidates the preceding replay result. Rerun only affected checks; prose edits and report requests do not invalidate replay.
+- A coverage-report refresh alone must never trigger full replay. The current [report script](../scripts/report-conformance-coverage.sh) couples regeneration to replay, so run it only when replay is due and retain its dated snapshot between runs. Update changed cell classifications in [the construct inventory](CONFORMANCE-CONSTRUCTS.tsv) immediately; describe current totals from that inventory without presenting the older report as current.
+
+Keep the interval in working context and carry it in [the handoff](PLAN.md) when needed. This cadence changes neither focused evidence obligations nor honest `external evidence pending` classifications, and requires no additional tracking machinery.
+
 `lake exe a12-kernel-replay <request.json>…` reads each retained `kernelProbe` request with its DM-JSON model and documents. It parses every rule condition and computation operation, lowers each onto the existing checked carriers and runs it. Each rule and computation is compared, row by row, with the request's retained artifact (`artifact<suffix>.json` beside `req<suffix>.json` or `request<suffix>.json`). A rule is compared by the messages it fires and a computation by the Kernel's change projection for its target. An admitted computation sharing a refused computation's resolved target is unattributed, like a dependent of a refused computation: its alternative table is incomplete, whether its partial result agrees or differs. Each instance lands in one of the six tiers the [replay executable](../A12Kernel/ReplayMain.lean)'s module doc defines: `match`, `tier1`, `unattributed`, `tier2`, `fault` or `absent`. The [coverage report](../scripts/report-conformance-coverage.sh) runs it over every retained request and owns the clustered result in [Axis R](CONFORMANCE-COVERAGE.md#axis-r--population-replay).
 
 The reader stands where the Kernel's document conversion stands, so it owns that conversion's choices: a Number text the conversion parses is decimal-valued (spec §4, storage regimes), a Boolean token is read regardless of case, and a JSON `null` is a field present without a value. Its locks are [`ReaderLocks.lean`](../A12Kernel/Reference/Dm/ReaderLocks.lean) and [`ParserLocks.lean`](../A12Kernel/Reference/Dm/ParserLocks.lean).
