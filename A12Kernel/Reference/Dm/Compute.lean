@@ -257,7 +257,7 @@ inductive LoweredComputation (model : FlatModel)
   | parallel (step : CheckedParallelNumericStep model)
   | string (table : CheckedStringComputationTable model)
   | document (step : CheckedDocumentComputationStep model)
-  /-- A computation into a repeatable target of a kind other than Number, run at every row. -/
+  /-- A non-Number computation over addressed instances, including fixed Boolean/Confirm tables. -/
   | rows (step : RowStep model)
 
 private def lowerComputationWith (allowParallelGuards : Bool)
@@ -291,7 +291,8 @@ private def lowerComputationWith (allowParallelGuards : Bool)
       | none => pure step
       | some guard => (step.guard? guard).getDM (refuse "DocumentStep" "guard admission")
     pure (target, .document step)
-  if row && operations.all (isRowAlternativeOperation target) then
+  if (row || target.policy.kind == .boolean || target.policy.kind == .confirm) &&
+      operations.all (isRowAlternativeOperation target) then
     let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do
       let operation ← lowerRowAlternativeOperation model computation.group target expression
       pure ({ precondition, operation } : CheckedComputationAlternative model _)

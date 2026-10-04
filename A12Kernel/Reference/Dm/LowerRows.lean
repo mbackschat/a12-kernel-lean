@@ -4,10 +4,10 @@ import A12Kernel.Reference.Dm.LowerEntity
 import A12Kernel.Reference.Dm.Parser
 import A12Kernel.Elaboration.MixedComputationPlan
 
-/-! # Lowering a computation into a repeatable target of a kind other than Number
+/-! # Lowering addressed non-Number computations
 
-A row target computes one value per instantiated row, so its operation is lowered onto the row step
-of the carrier that operation names. A constant is placed by its literal's shape, Boolean and Confirm
+Each carrier selects its target instances: repeated targets use instantiated rows, while fixed
+Boolean/Confirm tables use the empty address. Constants are placed by literal shape, Boolean and Confirm
 by `True` and `False`; `FieldValueAsString`, `DateFromDateTime` and the `Time(...)` construction each
 have one addressed carrier, and `FirstFilledValue` the one carrier per kind that also serves a fixed
 target, a temporal target's chosen by its profile. Each carrier owns its target's
@@ -78,8 +78,12 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
       (elaborateRowStringExpression model group target.id (← lowerStringExpr expression)))
   match expression with
   | .constant "True" | .constant "False" =>
-      pure (.booleanConstant (← elaborated "BooleanComputation"
-        (checkRepeatableBooleanConstantComputation model group target.id (expression == .constant "True"))))
+      if target.repeatableScope.isEmpty then
+        pure (.fixedBooleanConstant (← elaborated "BooleanComputation"
+          (checkBooleanConstantComputation model group target.id (expression == .constant "True"))))
+      else
+        pure (.booleanConstant (← elaborated "BooleanComputation"
+          (checkRepeatableBooleanConstantComputation model group target.id (expression == .constant "True"))))
   | .string text => do
       if isTemporalConstant text then refuse "RowComputation" "temporal literal"
       if target.policy.kind == .enumeration then

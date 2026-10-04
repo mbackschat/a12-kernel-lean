@@ -17,9 +17,9 @@ import A12Kernel.Elaboration.DocumentComputationStep
 
 /-! # Row computation steps
 
-A **row step** is a checked computation into a repeatable target of a kind other than Number, run once
-per instantiated target row by its own carrier and read back per row as the whole-document steps
-are, so a later step reads a completed row target through the cell a stored rendering of it reads as.
+A **row step** is a checked non-Number computation over addressed target instances. Its carrier runs
+once per instantiated row, or once at the empty address for a fixed Boolean/Confirm table. Read-back
+uses the same typed cell as the stored result, so dependent steps observe the completed target.
 Each row carrier supplies its operation reads, checked against its target here. A table also retains
 its guard inventory: group membership may include the target, while the shared condition certificate
 and producer-protection rule separately decide forbidden reads and scheduling dependencies.
@@ -50,7 +50,7 @@ inductive RowComputationStepFault where
   | timeConstruction (cause : AddressedTimeConstructionFault)
   deriving Repr, DecidableEq
 
-/-- One checked computation into a repeatable non-Number target, run at every instantiated row. -/
+/-- One checked non-Number computation over its carrier-owned target instances. -/
 structure CheckedRowComputationStep (model : FlatModel) (compilePattern : StringPatternCompiler) where
   private mk ::
   target : FieldId

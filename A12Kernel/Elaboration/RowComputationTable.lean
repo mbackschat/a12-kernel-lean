@@ -4,9 +4,9 @@ import A12Kernel.Elaboration.DocumentComputationStep
 import A12Kernel.Elaboration.ComputationNumericGuard
 import A12Kernel.Elaboration.BooleanConstantComputation
 
-/-! # Checked alternatives at a repeatable non-Number target
+/-! # Checked alternatives at non-Number target instances
 
-Selection belongs to one target row. Bound String expressions, String/Boolean/Confirm constants and Enumeration operations
+Selection belongs to one target instance; a fixed Boolean/Confirm target has the empty address. Bound String expressions, String/Boolean/Confirm constants and Enumeration operations
 keep their certificates and evaluators; this table adds no token semantics or selection algorithm.
 -/
 
@@ -17,6 +17,7 @@ inductive CheckedRowComputationOperation (model : FlatModel) where
   | stringConstant (operation : CheckedRepeatableStringConstantComputation model)
   | enumeration (operation : CheckedAddressedEnumerationComputation model)
   | booleanConstant (operation : CheckedRepeatableBooleanConstantComputation model)
+  | fixedBooleanConstant (operation : CheckedBooleanConstantComputation model)
 
 namespace CheckedRowComputationOperation
 
@@ -25,21 +26,23 @@ def target : CheckedRowComputationOperation model → FieldId
   | .stringConstant operation => operation.checkedTarget.targetField
   | .enumeration operation => operation.target.field
   | .booleanConstant operation => operation.checkedTarget.targetField
+  | .fixedBooleanConstant operation => operation.target.id
 
 def scope : CheckedRowComputationOperation model → List RepeatableLevel
   | .stringExpression operation => operation.target.declaration.repeatableScope
   | .stringConstant operation => operation.checkedTarget.declaration.repeatableScope
   | .enumeration operation => operation.target.declaration.repeatableScope
   | .booleanConstant operation => operation.checkedTarget.declaration.repeatableScope
+  | .fixedBooleanConstant _ => []
 
 def family : CheckedRowComputationOperation model → DocumentTargetFamily
   | .stringExpression _ | .stringConstant _ => .string
   | .enumeration _ => .enumeration
-  | .booleanConstant _ => .boolean
+  | .booleanConstant _ | .fixedBooleanConstant _ => .boolean
 
 def referencesField : CheckedRowComputationOperation model → FieldId → Bool
   | .stringExpression operation, field => operation.expression.referencesField field
-  | .stringConstant _, _ | .booleanConstant _, _ => false
+  | .stringConstant _, _ | .booleanConstant _, _ | .fixedBooleanConstant _, _ => false
   | .enumeration operation, field => operation.source.referencesField field
 
 end CheckedRowComputationOperation
@@ -124,6 +127,10 @@ inductive RowComputationTableFault where
 
 namespace CheckedRowComputationOperation
 
+private def booleanOutcome (operation : BooleanConstantOperation) : DocumentTargetOutcome × CheckedCell :=
+  let outcome := BooleanComputationOutcome.value operation.value
+  (.boolean outcome, DocumentComputationReadBack.booleanConstant operation outcome)
+
 /-- Evaluate only a selected operation; target checking cannot influence which alternative wins. -/
 def evaluateAt (operation : CheckedRowComputationOperation model)
     (patterns : PreparedFlatStringPatterns model compilePattern) (document : CheckedDocument model)
@@ -142,9 +149,8 @@ def evaluateAt (operation : CheckedRowComputationOperation model)
         | throw (.targetPatternUnavailable operation.checkedTarget.targetField)
       let outcome := operation.outcomeWithPattern matcher
       pure (.string outcome, ← (DocumentComputationReadBack.string outcome).mapError .readBack)
-  | .booleanConstant operation =>
-      let outcome := BooleanComputationOutcome.value operation.value
-      pure (.boolean outcome, DocumentComputationReadBack.booleanConstant operation.operation.operation outcome)
+  | .booleanConstant operation => pure (booleanOutcome operation.operation.operation)
+  | .fixedBooleanConstant operation => pure (booleanOutcome operation.operation.operation)
   | .enumeration operation =>
       let result ← (operation.evaluateAtWithRead document.read environment).mapError .enumeration
       let outcome := result.result.asExactStringTargetOutcome
@@ -163,7 +169,7 @@ def operationReferencesField (table : CheckedRowComputationTable model) (field :
 def protectionConditions (table : CheckedRowComputationTable model) : List (Option (CheckedComputationCondition model)) :=
   table.alternatives.map (·.precondition)
 
-/-- Traverse the existing in-capacity row domain. An over-limit row clears without guard or operation
+/-- Traverse the existing target domain, including the fixed empty address. An over-limit row clears without guard or operation
 reads; an admitted row selects once using the same addressed overlay as the operation reads. -/
 def execute (table : CheckedRowComputationTable model) (world : World)
     (patterns : PreparedFlatStringPatterns model compilePattern) (document : CheckedDocument model) :
@@ -174,7 +180,7 @@ def execute (table : CheckedRowComputationTable model) (world : World)
   let atRow (environment : Env) (outcome : DocumentTargetOutcome) (cell : CheckedCell) := do
     let path ← (environment.pathForScope scope).mapError RowComputationTableFault.environment
     pure ({ field := target, path }, outcome, cell)
-  document.computationRowOutcomes scope .rows
+  document.computationTargetOutcomes scope .rows
     (fun environment => atRow environment family.noValue DocumentComputationReadBack.empty)
     (fun environment => do
       let context := (document.computationContextAt environment).withWorld world

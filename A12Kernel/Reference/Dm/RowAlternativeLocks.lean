@@ -128,4 +128,56 @@ example : planHasCycle [unreachableCopy, definition "Source" [{ operation := "[E
     planHasCycle [unreachableCopy, definition "Source" [{ operation := "\"A\"", precondition := none }]] =
     some false := by native_decide
 
+private def fixedBooleanAlternatives (gate : String) (confirm : Bool := false)
+    (first : String := "False") (common : Option String := none) (fresh : Bool := false)
+    (firstGuard : Option String := some "[Gate] == 1") :
+    Option (String × String) := do
+  let number : FieldKind := .number { scale := 0, signed := true }
+  let model : FlatModel := { fields := [
+    { id := 1, name := "Gate", groupPath := ["Form"], policy := { kind := number } },
+    { id := 2, name := "Out", groupPath := ["Form", "Box"],
+      policy := { kind := if confirm then .confirm else .boolean } },
+    { id := 3, name := "After", groupPath := ["Form", "Box"], policy := { kind := number } },
+    { id := 4, name := "A", groupPath := ["Form"], policy := { kind := .boolean } },
+    { id := 5, name := "B", groupPath := ["Form"], policy := { kind := .boolean } }] }
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Json.mkObj [("Form", .mkObj [
+    ("Gate", .str gate), ("A", .str "false"), ("B", .str "false"), ("Box", .mkObj [("Out", .str "bad"), ("After", .str "99")])])])).toOption
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let operation : DmComputation := {
+    group := ["Form"], name := "Select", targetRelPath := "../Box/Out", commonPrecondition := common
+    alternatives := [{ operation := first, precondition := firstGuard }, guarded "True" "[Gate] >= 0"], errorCodesToSuppress := [] }
+  let dependent : DmComputation := {
+    group := ["Form"], name := "After", targetRelPath := "../Box/After"
+    commonPrecondition := some "FieldFilled(Box/Out) Or FieldNotFilled(Box/Out)"
+    alternatives := [{ operation := "1", precondition := none }], errorCodesToSuppress := [] }
+  let producer : DmComputation := {
+    group := ["Form"], name := "FreshGate", targetRelPath := "../Gate", commonPrecondition := none
+    alternatives := [{ operation := "1", precondition := none }], errorCodesToSuppress := [] }
+  let steps ← ([dependent, operation] ++ if fresh then [producer] else []).mapM fun definition =>
+    (lowerComputation model .english definition).toOption.map (·.2)
+  let results ← (runComputations world prepared checked steps).toOption
+  let outcome (name : String) := ((results.find? (·.pointer.endsWith name)).map (·.outcome)).getD "unchanged"
+  pure (outcome "/Out", outcome "/After")
+
+example : fixedBooleanAlternatives "1" = some ("value false", "value 1") ∧
+    fixedBooleanAlternatives "2" = some ("value true", "value 1") ∧
+    fixedBooleanAlternatives "-1" = some ("cleared", "value 1") ∧
+    fixedBooleanAlternatives "" = some ("value true", "value 1") ∧
+    fixedBooleanAlternatives "bad" = some ("cleared", "cleared") := by native_decide
+
+example : fixedBooleanAlternatives "1" true "True" = some ("value true", "value 1") ∧
+    fixedBooleanAlternatives "2" true "False" = none ∧
+    fixedBooleanAlternatives "1" false "False" (some "[Gate] == 0") = some ("cleared", "value 1") ∧
+    fixedBooleanAlternatives "bad" false "False" (some "[Gate] == 0") = some ("cleared", "cleared") := by
+  native_decide
+
+example : fixedBooleanAlternatives "-1" false "False" none true = some ("value false", "value 1") ∧
+    fixedBooleanAlternatives "1" false "False" (some "[A] == [B]") = some ("value false", "value 1") ∧
+    fixedBooleanAlternatives "1" false "False" (some "FieldFilled(Box/Out)") = none ∧
+    fixedBooleanAlternatives "1" false "False" (some "FieldFilled(Gate)") false none = none := by
+  native_decide
+
 end A12Kernel.Dm.RowAlternativeLocks
