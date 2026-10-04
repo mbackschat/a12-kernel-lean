@@ -17,7 +17,7 @@ theorem temporalExpression_evalWith_congr
     expression.evalWithResult left apply = expression.evalWithResult right apply := by
   cases expression with
   | atom source =>
-      simpa only [TemporalExpressionOf.evalWithResult] using
+      simpa only [TemporalExpressionOf.evalWithResult_atom, TemporalExpressionOf.evalWithResult_apply] using
         agree source (by simp [TemporalExpressionOf.atoms])
   | apply operation first rest =>
       have hfirst := temporalExpression_evalWith_congr first left right apply (by
@@ -38,7 +38,7 @@ theorem temporalExpression_evalWith_congr
           rest.mapM (TemporalExpressionOf.evalWithResult right apply) := by
         simpa only [List.mapM_map, Function.comp_def, id] using
           congrArg (fun results : List (Except Error Operand) => results.mapM id) hrest
-      simp only [TemporalExpressionOf.evalWithResult, hfirst, hrestM]
+      simp only [TemporalExpressionOf.evalWithResult_apply, hfirst, hrestM]
 termination_by sizeOf expression
 decreasing_by
   all_goals subst_vars
@@ -54,7 +54,7 @@ theorem temporalExpression_evalWithResult_apply_head_error
     (apply : Operation → List Operand → Except Error Operand)
     (cause : Error) (failed : source.evalWithResult read apply = .error cause) :
     (TemporalExpressionOf.apply operation source rest).evalWithResult read apply = .error cause := by
-  simp only [TemporalExpressionOf.evalWithResult, failed]
+  simp only [TemporalExpressionOf.evalWithResult_apply, failed]
   rfl
 
 /-- Any successful first result still reaches later arguments, including an absent or non-relevant
@@ -67,7 +67,7 @@ theorem temporalExpression_evalWithResult_apply_tail_error
     (reached : source.evalWithResult read apply = .ok value)
     (failed : rest.mapM (TemporalExpressionOf.evalWithResult read apply) = .error cause) :
     (TemporalExpressionOf.apply operation source rest).evalWithResult read apply = .error cause := by
-  simp only [TemporalExpressionOf.evalWithResult, reached, failed]
+  simp only [TemporalExpressionOf.evalWithResult_apply, reached, failed]
   rfl
 
 /-- Unary transformations specialize the same ordered-application failure law. -/

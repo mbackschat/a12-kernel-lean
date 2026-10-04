@@ -79,6 +79,11 @@ example :
 example : observed "Min(ValueAsDate(P,FirstDay),[D])" "2024-03-31" "0000-00-00" "02:30:00" "2" =
     some (.inr (.value .nonRelevant true)) := by native_decide
 
+example : ["AddDays(D,DayFromDate(ValueAsDate(P,FirstDay)))",
+    "AddSeconds(Z,DayFromDate(ValueAsDate(P,FirstDay)))"].all
+    (fun source => observed source "2024-03-31" "0000-00-00" "02:30:00" "2" ==
+      some (.inr (.value .nonRelevant true))) := by native_decide
+
 private def given (source hour : String) (baseYear : Option Int := none) : Option Bool := do
   let result ← observed source "2024-03-31" "2024-03-00" "02:30:00" hour baseYear
   match result with

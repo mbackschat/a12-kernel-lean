@@ -166,8 +166,8 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
           let some operator := op.toNumeric? | refuse "Comparison" "operator"
           pure (.numeric {
             op := operator
-            left := ← lowerNumericExpr (lowerComputationNumericAtom model group) (lowerNumericFieldAtom model group (lowerComputationNumericAtom model group)) left
-            right := ← lowerNumericExpr (lowerComputationNumericAtom model group) (lowerNumericFieldAtom model group (lowerComputationNumericAtom model group)) right
+            left := ← lowerNumericExpr (lowerCompleteComputationNumericAtom model group) (lowerNumericFieldAtom model group (lowerCompleteComputationNumericAtom model group)) left
+            right := ← lowerNumericExpr (lowerCompleteComputationNumericAtom model group) (lowerNumericFieldAtom model group (lowerCompleteComputationNumericAtom model group)) right
             suppressExactScaleWarning := suppress })
   | other => refuse ("Guard/" ++ other.construct)
 
@@ -302,7 +302,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
   match target.policy.kind with
   | .number _ => do
       let expressions ← operations.mapM
-        (lowerNumericExpr (lowerComputationNumericAtom model computation.group) (lowerNumericFieldAtom model computation.group (lowerComputationNumericAtom model computation.group)))
+        (lowerNumericExpr (lowerCompleteComputationNumericAtom model computation.group) (lowerNumericFieldAtom model computation.group (lowerCompleteComputationNumericAtom model computation.group)))
       match elaborated "NumberComputation"
           (elaborateCompleteNumericTargetComputationTable model computation.group target.id
             (guards.zip expressions) suppress (if row then .row else .fixed) common) with

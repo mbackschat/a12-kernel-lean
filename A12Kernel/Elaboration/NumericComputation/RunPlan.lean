@@ -30,7 +30,7 @@ def supportsScalarEvaluation :
   | .numeric (.filledGroupCount groups) =>
       groups.all fun reference =>
         (reference.computationDescendants? model).isSome
-  | .numeric _ => true
+  | .temporalPart _ | .numeric _ => true
 
 end CheckedNumericComputationAtom
 

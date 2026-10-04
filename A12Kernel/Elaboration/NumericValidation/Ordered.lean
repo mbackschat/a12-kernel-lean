@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericValidation.Core
+import A12Kernel.Elaboration.TemporalNumericExpression
 import A12Kernel.Elaboration.FieldFillList
 import A12Kernel.Elaboration.TokenDistinctCount
 import A12Kernel.Elaboration.TemporalDistinctCount
@@ -12,6 +13,7 @@ namespace A12Kernel
 
 /-- A numeric leaf either delegates one established scalar atom unchanged or retains a model-certified first-filled, aggregate, or row-product source for full addressed validation. -/
 inductive OrderedNumericValidationAtom (model : FlatModel) where
+  | temporalPart (source : CheckedTemporalNumericExpression model)
   | ordinary (source : NumericValidationAtom)
   | firstFilled (source : CheckedNumberEntitySource model)
   | valueCount (expected : Rat) (source : CheckedNumberEntitySource model)
@@ -95,6 +97,7 @@ private def checkedTokenValueCountAdmittedIn
             | .modelWideCheckedComputation => true
 
 def summary : OrderedNumericValidationAtom model → NumericScaleSummary
+  | .temporalPart _ => NumericScaleSummary.field 0
   | .ordinary source => numericValidationSummary source
   | .firstFilled source => source.scaleSummary
   | .valueCount _ _ => NumericScaleSummary.field 0
@@ -109,6 +112,8 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
 /-- Structural coordinates and group counts retain their binding requirements independently of
     field dependencies. Field-backed atoms require addressing when a checked declaration repeats. -/
 def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
+  | .temporalPart source => source.source.fieldIds.any fun field =>
+      (model.lookupUniqueId field).toOption.any (fun declaration => !declaration.repeatableScope.isEmpty)
   | .ordinary (.boundCurrentRepetition _) => true
   | .ordinary (.filledGroupCount groups) =>
       groups.any fun reference => !reference.boundRepeatableScope.isEmpty
@@ -129,6 +134,12 @@ def admitted (atom : OrderedNumericValidationAtom model)
     (rowGroup : GroupPath)
     (scope : NumericOperandScope) : Bool :=
   match atom with
+  | .temporalPart source => source.source.fieldIds.all fun field =>
+      (model.lookupUniqueId field).toOption.any fun declaration => match scope with
+        | .sameGroup => declaration.groupPath == rowGroup && declaration.repeatableScope.isEmpty
+        | .sameGroupAddressed => declaration.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
+        | .modelWideNonrepeatable => declaration.repeatableScope.isEmpty
+        | .modelWideCheckedComputation => true
   | .ordinary source => source.admitted model rowGroup scope
   | .firstFilled source =>
       checkedNumberEntitySourceAdmittedIn source rowGroup scope
@@ -166,6 +177,7 @@ def admitted (atom : OrderedNumericValidationAtom model)
 def referencesField (atom : OrderedNumericValidationAtom model)
     (field : FieldId) : Bool :=
   match atom with
+  | .temporalPart source => source.source.referencesField field
   | .ordinary source => source.referencesField model field
   | .firstFilled source => source.referencesField field
   | .valueCount _ source => source.referencesField field
@@ -195,7 +207,7 @@ def referencesErrorField (atom : OrderedNumericValidationAtom model)
   | .tokenDistinctCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .temporalDistinctCount run =>
       run.source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _ =>
+  | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _ =>
       atom.referencesField field
 
 /-- Whether this exact checked atom retains any filtered entity-list slot. This is static source structure, not a statement about which runtime branch or candidate will be reached. -/
@@ -206,7 +218,7 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
   | .booleanValueCount source => source.hasHaving
   | .tokenDistinctCount source => source.hasHaving
   | .temporalDistinctCount run => run.source.hasHaving
-  | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _ => false
+  | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _ => false
 
 end OrderedNumericValidationAtom
 
@@ -242,6 +254,13 @@ def OrderedNumericComparison.requiresAddressedValidation
   comparison.left.anyAtom OrderedNumericValidationAtom.requiresAddressedValidation ||
     comparison.right.anyAtom OrderedNumericValidationAtom.requiresAddressedValidation
 
+/-- Whether the rule must retain temporal runtime effects while evaluating its numeric leaves. -/
+def OrderedNumericComparison.hasTemporalExpression (comparison : OrderedNumericComparison model) : Bool :=
+  let temporal : OrderedNumericValidationAtom model → Bool
+    | .temporalPart _ => true
+    | _ => false
+  comparison.left.anyAtom temporal || comparison.right.anyAtom temporal
+
 /-- Whether partial addressed evaluation has an exact interpretation for an atom. Supported ordinary atoms use per-field relevance, entity-list aggregates use their source-owned extent relevance, and the mixed filled-group count walks its counted groups' own instances. `false` is structural unsupported information, never numeric UNKNOWN.
 
     A bound repetition coordinate **is** supported, and it is the one supported atom that reads no cell: it answers from the row environment, so its relevance query is vacuously satisfied and no coverage can mask it. That is the Kernel's behaviour — a rule reading it answers under a coverage that drives its field-reading twin to UNKNOWN ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-repetition-operand-partial-relevance)) — and refusing it here made the whole rule structurally unsupported rather than merely unmasked. Unmaskable is not unconditional: the separate error-field gate still skips the row before any of this is reached, so a coverage naming neither field reports nothing. -/
@@ -251,7 +270,7 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
   | .ordinary _ | .aggregate _ _ | .filledGroupCountMixed _ => true
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
   | .booleanValueCount _ | .sumOfProducts _ | .filledFieldCount _
-  | .tokenDistinctCount _ | .temporalDistinctCount _ => false
+  | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ => false
 
 def OrderedNumericComparison.supportsAddressedPartial
     (comparison : OrderedNumericComparison model) : Bool :=

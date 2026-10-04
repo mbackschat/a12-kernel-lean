@@ -42,6 +42,125 @@ private def admitted (text : String) : Bool :=
   | .ok parsed => (lowerCondition model ["Order"] false parsed.body).toOption.isSome
   | .error _ => false
 
+private def numericModel : FlatModel := { model with
+  timeZoneId := "Europe/Berlin"
+  fields := model.fields ++ [(90, "NumericOut"), (91, "NumericDep"), (92, "Anchor")].map
+    (fun (id, name) => {
+      id, name, groupPath := ["Order"]
+      policy := { kind := .number { scale := 0, signed := true } } }) }
+
+private def numericArms (expression : String) : Bool × Bool :=
+  ((match parseText .english (expression ++ " == 1") with
+    | .ok parsed => (lowerCondition numericModel ["Order"] false parsed.body).isOk
+    | .error _ => false), (lowerComputation numericModel .english {
+    group := ["Order"], name := "NumericOutComp", targetRelPath := "../NumericOut"
+    commonPrecondition := none, alternatives := [{ precondition := none, operation := expression }]
+    errorCodesToSuppress := [] }).isOk)
+
+example : ["HoursFromTime(Now)", "MinutesFromTime(Now)", "SecondsFromTime(Now)",
+    "HoursFromTime(AddHours(Stamp,1))", "MinutesFromTime(AddMinutes(Stamp,90))",
+    "SecondsFromTime(AddSeconds(Stamp,1))", "HoursFromTime(TimeFromDateTime(Stamp))",
+    "HoursFromTime(Time(\"01\",\"02\",\"03\"))"].all
+      (fun expression => numericArms expression == (true, true)) = true := by native_decide
+
+example : ["HoursFromTime(\"01:02:03\")", "MinutesFromTime(Today)",
+    "SecondsFromTime([Clock])", "HoursFromTime({Now})"].all
+      (fun expression => numericArms expression == (false, false)) = true := by native_decide
+
+example : numericArms "HoursFromTime(AddSeconds(Stamp,[NumericOut]))" = (true, false) ∧
+    numericArms "HoursFromTime(AddSeconds(Stamp,[NumericDep]))" = (true, true) ∧
+    numericArms "HoursFromTime(Time(MinutesFromTime(Clock)))" = (false, false) ∧
+    numericArms "SecondsFromTime(Time(HoursFromTime(Now),MinutesFromTime(Now),SecondsFromTime(Now)))" =
+      (true, true) := by native_decide
+
+private def numericReadback (expression stamp clock : String) :
+    Option (List String × List (List Polarity)) := do
+  let dm : DmModel := {
+    flat := numericModel, computations := [], rules := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Lean.Json.mkObj [("Order", Lean.Json.mkObj [
+    ("Stamp", Lean.Json.str stamp), ("Clock", Lean.Json.str clock),
+    ("NumericOut", Lean.Json.num 99), ("NumericDep", Lean.Json.num 99),
+    ("Anchor", Lean.Json.num 1)])])).toOption
+  let world : World := { now := { epochMillis := 1704112496000 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler numericModel).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let steps ← [("NumericDep", "[NumericOut] + 1"), ("NumericOut", expression)].mapM fun (name, operation) =>
+    (lowerComputation numericModel .english {
+      group := ["Order"], name := name ++ "Comp", targetRelPath := "../" ++ name
+      commonPrecondition := none, alternatives := [{ precondition := none, operation }]
+      errorCodesToSuppress := [] }).toOption.map (·.2)
+  let computed ← (runComputations world prepared checked steps).toOption
+  let messages ← [" == 0", " < 1", " > -1"].mapM fun suffix => do
+    let rule ← (checkRule dm .english {
+      group := ["Order"], name := "Check", errorEntityRelPath := "../Anchor", errorCode := "Check"
+      condition := "FieldFilled(Anchor) And " ++ expression ++ suffix, severity := "ERROR" } world).toOption
+    pure ((← (runRule world checked rule).toOption).map (·.messageType))
+  pure ((computed.map fun result => result.pointer ++ ":" ++ result.outcome).mergeSort, messages)
+
+example : numericReadback "HoursFromTime(TimeFromDateTime(Stamp))" "2024-01-01T00:00:00" "" =
+    some (["Order/NumericDep:value 1", "Order/NumericOut:value 0"], [[.value], [.value], [.value]]) ∧
+    numericReadback "HoursFromTime(TimeFromDateTime(Stamp))" "" "" =
+    some (["Order/NumericDep:value 1", "Order/NumericOut:value 0"], [[.omission], [.omission], [.omission]]) ∧
+    numericReadback "HoursFromTime(TimeFromDateTime(Stamp))" "bad" "" =
+    some (["Order/NumericDep:cleared", "Order/NumericOut:cleared"], [[], [], []]) := by native_decide
+
+example : numericReadback "SecondsFromTime(AddSeconds(Stamp,61))" "2024-01-01T23:59:30" "bad" =
+    some (["Order/NumericDep:value 32", "Order/NumericOut:value 31"], [[], [], [.value]]) ∧
+    numericReadback "HoursFromTime(Now)" "bad" "bad" =
+    some (["Order/NumericDep:value 14", "Order/NumericOut:value 13"], [[], [], [.value]]) ∧
+    numericReadback "MinutesFromTime(Time(\"01\",\"02\",\"03\"))" "bad" "bad" =
+    some (["Order/NumericDep:value 3", "Order/NumericOut:value 2"], [[], [], [.value]]) := by native_decide
+
+example : numericReadback "HoursFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(Stamp,61)))))"
+      "2024-01-01T23:59:30" "" =
+    some (["Order/NumericDep:value 1", "Order/NumericOut:value 0"], [[.value], [.value], [.value]]) := by native_decide
+
+example : numericReadback "SecondsFromTime(AddSeconds(Stamp,HoursFromTime(Clock)))"
+      "2024-01-01T23:59:30" "" =
+    some (["Order/NumericDep:value 31", "Order/NumericOut:value 30"], [[], [], [.omission]]) ∧
+    numericReadback "SecondsFromTime(AddSeconds(Stamp,HoursFromTime(Clock)))"
+      "2024-01-01T23:59:30" "00:00:00" =
+    some (["Order/NumericDep:value 31", "Order/NumericOut:value 30"], [[], [], [.value]]) ∧
+    numericReadback "SecondsFromTime(AddSeconds(Stamp,HoursFromTime(Clock)))" "" "bad" =
+    some (["Order/NumericDep:cleared", "Order/NumericOut:cleared"], [[], [], []]) := by native_decide
+
+example : ["AddSeconds", "AddDays"].all (fun shift =>
+    numericReadback ("HoursFromTime(" ++ shift ++ "(Stamp,1/0))") "2024-01-01T23:59:30" "" ==
+      some (["Order/NumericDep:value 1", "Order/NumericOut:value 0"], [[.value], [.value], [.value]]) &&
+    numericReadback ("HoursFromTime(" ++ shift ++ "(Stamp,1/0))") "" "" ==
+      some (["Order/NumericDep:value 1", "Order/NumericOut:value 0"], [[.omission], [.omission], [.omission]]) &&
+    numericReadback ("HoursFromTime(" ++ shift ++ "(Stamp,HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\"))))") "bad" "" ==
+      some (["Order/NumericDep:cleared", "Order/NumericOut:cleared"], [[.value], [.value], [.value]])) = true := by native_decide
+
+private def numericRows (expression : String) : Option (List String) := do
+  let model := { numericModel with
+    fields := numericModel.fields.map (fun field => { field with groupPath := ["Order", "Rows"], repeatableScope := [10] })
+    repeatableGroups := [{ level := 10, path := ["Order", "Rows"], repeatability := some 3 }] }
+  let dm : DmModel := { flat := model, computations := [], rules := [], conditionLanguage := "en_US", refusals := [] }
+  let rows := [("2024-01-01T23:59:30", "05:06:07"), ("2024-01-01T23:59:30", ""), ("bad", "00:00:00")].map
+    (fun (stamp, clock) => Lean.Json.mkObj [("Stamp", Lean.Json.str stamp), ("Clock", Lean.Json.str clock),
+      ("NumericOut", Lean.Json.num 99), ("NumericDep", Lean.Json.num 99), ("Anchor", Lean.Json.num 1)])
+  let input ← (readDocument dm (Lean.Json.mkObj [("Order", Lean.Json.mkObj [("Rows", .arr rows.toArray)])])).toOption
+  let world : World := { now := { epochMillis := 1704112496000 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let steps ← [("NumericDep", "[NumericOut] + 1"), ("NumericOut", expression)].mapM fun (name, operation) =>
+    (lowerComputation model .english {
+      group := ["Order", "Rows"], name := name ++ "Comp", targetRelPath := "../" ++ name
+      commonPrecondition := none, alternatives := [{ precondition := none, operation }]
+      errorCodesToSuppress := [] }).toOption.map (·.2)
+  pure ((← (runComputations world prepared checked steps).toOption).map
+    (fun result => result.pointer ++ ":" ++ result.outcome)).mergeSort
+
+example : numericRows "SecondsFromTime(AddSeconds(Stamp,HoursFromTime(Clock)))" = some [
+    "Order/Rows/NumericDep:value 36", "Order/Rows/NumericOut:value 35",
+    "Order/Rows[2]/NumericDep:value 31", "Order/Rows[2]/NumericOut:value 30",
+    "Order/Rows[3]/NumericDep:cleared", "Order/Rows[3]/NumericOut:cleared"] ∧
+    numericRows "HoursFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(Stamp,61)))))" = some [
+    "Order/Rows/NumericDep:value 1", "Order/Rows/NumericOut:value 0",
+    "Order/Rows[2]/NumericDep:value 1", "Order/Rows[2]/NumericOut:value 0",
+    "Order/Rows[3]/NumericDep:cleared", "Order/Rows[3]/NumericOut:cleared"] := by native_decide
+
 private def operationAdmitted (text : String) : Bool :=
   match parseText .english text, model.lookupUniqueId 7 with
   | .ok parsed, .ok target =>

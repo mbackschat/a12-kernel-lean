@@ -1,135 +1,6 @@
-import A12Kernel.Elaboration.ConstructedDateEvaluation
-import A12Kernel.Semantics.TemporalExpression
-import A12Kernel.Elaboration.TemporalExtremumStream
-import A12Kernel.Elaboration.Flat.FieldValueRead
-import A12Kernel.Elaboration.ValueAsDateTimeWorldComponents
-import A12Kernel.Elaboration.DateRangeBoundComparison
-
-/-! # Checked scalar temporal expressions
-
-Fields, clocks, typed literals and constructors share the expression tree with extrema, projections
-and elapsed or calendar shifts. Date values retain exact instants and calendar provenance through
-composition; yearless comparisons additionally retain their declared component key. Storage limits
-are applied by the target, after arithmetic (spec/05 and calendar-expression grid, 2026-10-04).
--/
+import A12Kernel.Elaboration.TemporalExpression.Types
 
 namespace A12Kernel
-
-inductive SurfaceScalarTemporalExpression where
-  | field (reference : SurfaceFieldPath)
-  | group (source : SurfaceScalarTemporalExpression)
-  | extremum (operator : TemporalExtremumOp) (source : SurfaceFieldEntitySource)
-  | combine (operator : TemporalExtremumOp)
-      (left right : SurfaceScalarTemporalExpression)
-  | now
-  | today
-  | dateLiteral (value : FullDate)
-  | timeLiteral (value : TimeOfDay)
-  | dateTimeLiteral (value : LocalDateTime)
-  | rangeBound (reference : SurfaceFieldPath) (bound : DateRangeBound)
-  | baseYearBound (bound : BaseYearRangeEndpoint)
-  | dateTimeConstruction (date time : SurfaceScalarTemporalExpression)
-  | valueAsDate (reference : SurfaceFieldPath) (endpoint : ValueAsDateEndpoint)
-  | dateConstruction (components : SurfaceConstructedDateComponents)
-  | calendarShift (unit : DateShiftUnit) (source : SurfaceScalarTemporalExpression)
-      (amount : AuthoredNumericExpr SurfaceNumericAtom)
-  | timeConstruction (components : SurfaceTimeComponents)
-  | dateFromDateTime (source : SurfaceScalarTemporalExpression)
-  | timeFromDateTime (source : SurfaceScalarTemporalExpression)
-  | subdayShift (unit : DateTimeSubdayUnit) (source : SurfaceScalarTemporalExpression)
-      (amount : AuthoredNumericExpr SurfaceNumericAtom)
-  deriving Repr, DecidableEq
-
-/-- Temporal source slots exclude the grouped comparison and extrema productions; each nested
-operation checks its own slot (spec/12 §3, grammar `datumAngabe`/`datumAngabe2`). -/
-def SurfaceScalarTemporalExpression.admittedSourceSlot : SurfaceScalarTemporalExpression → Bool
-  | .group _ | .extremum _ _ | .combine _ _ _ => false
-  | .field _ | .now | .today | .dateLiteral _ | .timeLiteral _ | .dateTimeLiteral _
-  | .dateTimeConstruction _ _ | .valueAsDate _ _ | .rangeBound _ _ | .baseYearBound _ | .dateConstruction _ | .calendarShift _ _ _
-  | .timeConstruction _ | .dateFromDateTime _ | .timeFromDateTime _ | .subdayShift _ _ _ => true
-
-inductive ScalarTemporalExpressionError where
-  | model (error : ResolveError)
-  | read (error : ResolveError)
-  | extremum (error : TemporalExtremumOperandElabError)
-  | amount (error : TemporalShiftAmountElabError)
-  | dateComponents (error : ConstructedDateComponentsElabError)
-  | timeComponents (error : TimeComponentsElabError)
-  | rangeBound (error : YearlessDateRangeBoundElabError)
-  | partialDate (error : ValueAsDateZonedElabError)
-  | nonTemporal (path : List String)
-  | unsupportedSource
-  | incompatibleFormats
-  deriving Repr, DecidableEq
-
-inductive ScalarTemporalValue where
-  /-- Payload absence and non-relevance are independent of the enclosing operand's missing flag.
-  Date, Time and DateTime constructors share this domain (stamp-construction grid, 2026-10-04). -/
-  | noValue
-  | nonRelevant
-  | date (value : DateValue)
-  | yearless (value : DateValue) (key : MonthDayValue)
-  | time (value : TimeOfDay)
-  | instant (value : Instant)
-  deriving Repr, DecidableEq
-
-namespace ScalarTemporalValue
-
-def select (operator : TemporalExtremumOp) : ScalarTemporalValue → ScalarTemporalValue → ScalarTemporalValue
-  | .nonRelevant, _ | _, .nonRelevant => .nonRelevant
-  | .noValue, right => right
-  | left, .noValue => left
-  | .date left, .date right =>
-      .date (match operator with
-        | .minimum => if right.instant.epochMillis < left.instant.epochMillis then right else left
-        | .maximum => if left.instant.epochMillis < right.instant.epochMillis then right else left)
-  | .yearless left leftKey, .yearless right rightKey =>
-      match operator with
-      | .minimum => if rightKey.before leftKey then .yearless right rightKey else .yearless left leftKey
-      | .maximum => if leftKey.before rightKey then .yearless right rightKey else .yearless left leftKey
-  | .time left, .time right => .time (operator.selectTime left right)
-  | .instant left, .instant right => .instant (operator.selectInstant left right)
-  | left, _ => left
-
-def holds (operator : TemporalComparisonOp) : ScalarTemporalValue → ScalarTemporalValue → Bool
-  | .date left, .date right => operator.holdsInstant left.instant right.instant
-  | .yearless _ left, .yearless _ right => operator.holdsMonthDay left right
-  | .time left, .time right => operator.holdsTime left right
-  | .instant left, .instant right => operator.holdsInstant left right
-  | _, _ => false
-
-end ScalarTemporalValue
-
-inductive ScalarTemporalAtom (model : FlatModel) where
-  | field (source : FlatTemporalField)
-  | fixed (value : ScalarTemporalValue)
-  | now
-  | today (profile : ModelZone.ConcreteProfile)
-  | dateLiteral (profile : ModelZone.ConcreteProfile) (value : FullDate)
-  | dateTimeLiteral (profile : ModelZone.ConcreteProfile) (value : LocalDateTime)
-  | dateConstruction (components : CheckedConstructedDateComponents model)
-  | timeConstruction (components : CheckedTimeComponents model)
-  | valueAsDate (source : CheckedZonedValueAsDateSource model)
-  | rangeBound (profile : ModelZone.ConcreteProfile) (source : CheckedDateRangeBoundOperand model)
-  | baseYearBound (profile : ModelZone.ConcreteProfile) (year : Int) (bound : BaseYearRangeEndpoint)
-
-inductive ScalarTemporalEvaluationFault where
-  | dateTimeLabelUnresolved
-  | calendarUnavailable
-  deriving Repr, DecidableEq
-
-inductive ScalarTemporalTransform (model : FlatModel) where
-  | extremum (operator : TemporalExtremumOp)
-  | dateTime (profile : ModelZone.ConcreteProfile)
-  | calendarShift (profile : ModelZone.ConcreteProfile)
-      (unit : DateShiftUnit) (amount : CheckedTemporalShiftAmount model)
-  | dateFromDateTime (profile : ModelZone.ConcreteProfile)
-  | timeFromDateTime (profile : ModelZone.ConcreteProfile)
-  | subdayShift (profile : ModelZone.ConcreteProfile)
-      (unit : DateTimeSubdayUnit) (amount : CheckedTemporalShiftAmount model)
-
-abbrev ScalarTemporalExpression (model : FlatModel) :=
-  TemporalExpressionOf (ScalarTemporalAtom model) (ScalarTemporalTransform model)
 
 /-- The sealed core records the component set established at each compositional boundary. -/
 structure CheckedScalarTemporalExpression (model : FlatModel) where
@@ -147,6 +18,7 @@ structure CheckedScalarTemporalComparison (model : FlatModel) where
   comparisonZone? : Option ModelZone.ConcreteProfile := none
   modelWellFormed : model.validate.isOk = true
 
+
 private def scalarProfile (model : FlatModel) :
     Except ScalarTemporalExpressionError ModelZone.ConcreteProfile :=
   match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
@@ -158,10 +30,11 @@ year supplementation in spec/05; the configured/unconfigured stamp grid locks bo
 private def scalarComponents (model : FlatModel) (components : TemporalComponents) : TemporalComponents :=
   if components.hasDate then components.withBaseYear model.hasBaseYear else components
 
+mutual
 private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
-    (targetGroup? : Option GroupPath) :
-    SurfaceScalarTemporalExpression → Except ScalarTemporalExpressionError
-      (ScalarTemporalExpression model × TemporalComponents)
+    (targetGroup? : Option GroupPath) (surface : SurfaceScalarTemporalExpression) :
+    Except ScalarTemporalExpressionError (ScalarTemporalExpression model × TemporalComponents) :=
+  match surface with
   | .field reference => do
       let declaration ← (match targetGroup? with
         | none => model.resolveFieldValueRead rowGroup reference
@@ -231,13 +104,10 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
         | .years => components.year
       if !componentPresent || (unit != .days && components.hasTime) then throw .incompatibleFormats
       let profile ← scalarProfile model
-      let amount ← (match targetGroup? with
-        | none => elaborateTemporalExpressionShiftAmount model rowGroup amount
-        | some binding => elaborateRepeatableTemporalExpressionShiftAmount model binding amount rowGroup).mapError .amount
+      let amount ← resolveScalarTemporalAmount model rowGroup targetGroup? amount
       pure (.apply (.calendarShift profile unit amount) source [], components)
   | .timeConstruction source => do
-      let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
-      let components ← (elaborateTimeComponents model source scope).mapError .timeComponents
+      let components ← resolveScalarTimeComponents model rowGroup targetGroup? source
       pure (.atom (.timeConstruction components), TemporalComponents.time)
   | .dateFromDateTime source => do
       if !source.admittedSourceSlot then throw .unsupportedSource
@@ -254,10 +124,79 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? source
       if !unit.admittedBy components || !components.isFullDateTime then throw .incompatibleFormats
       let profile ← scalarProfile model
-      let amount ← (match targetGroup? with
-        | none => elaborateTemporalExpressionShiftAmount model rowGroup amount
-        | some binding => elaborateRepeatableTemporalExpressionShiftAmount model binding amount rowGroup).mapError .amount
+      let amount ← resolveScalarTemporalAmount model rowGroup targetGroup? amount
       pure (.apply (.subdayShift profile unit amount) source [], components)
+
+termination_by (sizeOf surface, 0)
+
+private def resolveScalarTemporalProjection (model : FlatModel) (rowGroup : GroupPath)
+    (targetGroup? : Option GroupPath) (surface : SurfaceScalarTemporalExpression) (part : TemporalNumericPart) :
+    Except ScalarTemporalExpressionError (ScalarTemporalNumericAtom model) := do
+  match surface with
+  | .dateLiteral _ | .timeLiteral _ | .dateTimeLiteral _ => throw .unsupportedSource
+  | _ => pure ()
+  if !surface.admittedSourceSlot then throw .unsupportedSource
+  let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? surface
+  if !part.admitsComponents components model.hasBaseYear then throw .incompatibleFormats
+  pure (.projection part (← scalarProfile model) source)
+termination_by (sizeOf surface, 1)
+
+private def resolveScalarTemporalAmount (model : FlatModel) (rowGroup : GroupPath)
+    (targetGroup? : Option GroupPath)
+    (surface : AuthoredNumericExpr (Sum SurfaceNumericAtom (TemporalNumericPart × SurfaceScalarTemporalExpression))) :
+    Except ScalarTemporalExpressionError (AuthoredNumericExpr (ScalarTemporalNumericAtom model)) := do
+  let core ← surface.mapMSubterm fun atom _ => do
+    match atom with
+    | .inl source =>
+        let checked ← (match targetGroup? with
+          | none => elaborateTemporalExpressionShiftAmount model rowGroup (.atom source)
+          | some binding => elaborateRepeatableTemporalExpressionShiftAmount model binding (.atom source) rowGroup).mapError .amount
+        pure (.ordinary checked)
+    | .inr (part, source) => resolveScalarTemporalProjection model rowGroup targetGroup? source part
+  if !core.isAdmittedResolvedNumericOperation then throw (.amount (.expression .unsupportedExpression))
+  match core.numericOperationAuthoringCheck with
+  | .accepted => pure ()
+  | result => throw (.amount (.expression (.authoring result)))
+  let summary : ScalarTemporalNumericAtom model → NumericScaleSummary
+    | .projection _ _ _ => .field 0
+    | .ordinary (.literal _) => .field 0
+    | .ordinary (.field source _) => .field source.info.scale
+    | .ordinary (.expression checked _) => (checked.core.summary? numericValidationSummary).getD (.field 0)
+  if (core.summary? summary).isNone then throw (.amount (.expression .unsupportedExpression))
+  pure core
+termination_by (sizeOf surface, 0)
+decreasing_by
+  all_goals first | decreasing_tactic | (apply Prod.Lex.left; simp_all +arith <;> omega)
+
+private def resolveScalarTimeComponent (model : FlatModel) (rowGroup : GroupPath)
+    (targetGroup? : Option GroupPath) (position : TimeComponentPosition)
+    (surface : Sum SurfaceTimeComponent (TimeNumericPart × SurfaceScalarTemporalExpression)) :
+    Except ScalarTemporalExpressionError (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model)) := do
+  match surface with
+  | .inl source =>
+      let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
+      .inl <$> (elaborateTimeComponent model position source scope).mapError .timeComponents
+  | .inr (part, source) =>
+      if position.extractor != part then throw .incompatibleFormats
+      .inr <$> resolveScalarTemporalProjection model rowGroup targetGroup? source (.time part)
+termination_by (sizeOf surface, 0)
+
+private def resolveScalarTimeComponents (model : FlatModel) (rowGroup : GroupPath)
+    (targetGroup? : Option GroupPath)
+    (surface : TimeComponentPrefix (Sum SurfaceTimeComponent (TimeNumericPart × SurfaceScalarTemporalExpression))) :
+    Except ScalarTemporalExpressionError (TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model))) :=
+  match surface with
+  | .empty => pure .empty
+  | .hour hour => do pure (.hour (← resolveScalarTimeComponent model rowGroup targetGroup? .hour hour))
+  | .minute hour minute => do
+      pure (.minute (← resolveScalarTimeComponent model rowGroup targetGroup? .hour hour)
+        (← resolveScalarTimeComponent model rowGroup targetGroup? .minute minute))
+  | .second hour minute second => do
+      pure (.second (← resolveScalarTimeComponent model rowGroup targetGroup? .hour hour)
+        (← resolveScalarTimeComponent model rowGroup targetGroup? .minute minute)
+        (← resolveScalarTimeComponent model rowGroup targetGroup? .second second))
+termination_by (sizeOf surface, 0)
+end
 
 def elaborateScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
     (surface : SurfaceScalarTemporalExpression) (targetGroup? : Option GroupPath := none) :
@@ -326,6 +265,44 @@ private def resolvedScalarDate (profile : ModelZone.ConcreteProfile) (date : Ful
     date, time := { hour := 0, minute := 0, second := 0, valid := by decide } }
   pure { instant, parts := date.civil.parts, basis := .storedGregorian }
 
+private def readScalarTimeComponent (context : FlatContext) (phase : Phase)
+    (component : CheckedTimeComponent model) : Except TimeComponentsFault TimeConstructionComponent :=
+  match component with
+  | .constant value => pure (.value value)
+  | .number checked => checked.classify (observeCell phase (context.read checked.source.id))
+  | .string checked => checked.classify (observeCell phase (context.read checked.source.id))
+  | .extractor checked => checked.classify (observeCell phase (context.read checked.source.id))
+  | .shiftedExtractor checked => do
+      let source := checked.source
+      let result ← ValueAsDateTimeResult.evaluateShiftedDateTimeObservation
+        source.profile source.unit source.source.id
+        (observeCell phase (context.read source.source.id))
+        (fun _ => pure (readScalarTemporalAmount context phase source.amount))
+        TimeComponentsFault.shifted
+      pure (result.asTimeOperand.extractComponent checked.part)
+
+/-- Both shift families preserve source missingness when arithmetic has no value. Relevance is
+independent of that payload, while reached formal causes remain unavailable (BedingungsOperatorHelper.addTime;
+temporal numeric effects grid, 2026-10-04). The caller reaches the amount before this pure classification. -/
+private def applyScalarTemporalShift
+    (source : SimpleComparisonOperand ScalarTemporalValue)
+    (amount : Except NumericValidationUnavailable NumericArithmeticOutcome)
+    (shift : ScalarTemporalValue → Rat → Except ScalarTemporalEvaluationFault ScalarTemporalValue) :
+    Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
+  match source, amount with
+  | .unknown cause, _ | _, .error (.formal cause) => pure (.unknown cause)
+  | .value .nonRelevant _, _ | _, .error .nonRelevant => pure (.value .nonRelevant true)
+  | _, .error _ => throw .calendarUnavailable
+  | .notEvaluated, .ok .notEvaluated => pure (.value .noValue false)
+  | .value _ given, .ok .notEvaluated => pure (.value .noValue given)
+  | .notEvaluated, .ok (.value _ _) => pure .notEvaluated
+  | .value value given, .ok (.value amount fillability) =>
+      let given := given && !fillability.canGrow && !fillability.canShrink
+      match value with
+      | .noValue => pure (.value .noValue given)
+      | value => pure (.value (← shift value amount) given)
+
+mutual
 private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context : FlatContext)
     (atom : ScalarTemporalAtom model) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
@@ -402,28 +379,13 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       | .ok (.noValue notGiven) => pure (.value .noValue (!notGiven))
       | .ok (.unavailable cause) => pure (.unknown cause)
       | .error _ => throw .calendarUnavailable
-  | .timeConstruction components =>
-      let read (component : CheckedTimeComponent model) : Except TimeComponentsFault TimeConstructionComponent :=
-        match component with
-        | .constant value => pure (.value value)
-        | .number checked => checked.classify (observeCell phase (context.read checked.source.id))
-        | .string checked => checked.classify (observeCell phase (context.read checked.source.id))
-        | .extractor checked => checked.classify (observeCell phase (context.read checked.source.id))
-        | .shiftedExtractor checked => do
-            let source := checked.source
-            let result ← ValueAsDateTimeResult.evaluateShiftedDateTimeObservation
-              source.profile source.unit source.source.id
-              (observeCell phase (context.read source.source.id))
-              (fun _ => pure (readScalarTemporalAmount context phase source.amount))
-              TimeComponentsFault.shifted
-            pure (result.asTimeOperand.extractComponent checked.part)
-      pure (match components.evaluateWith read with
-      | .ok (.value time) => .value (.time time) true
-      | .ok (.unavailable cause) => .unknown cause
-      | .ok .incomplete => .value .noValue false
-      | .ok .unreal => .value .noValue true
-      | .ok .nonRelevant => .value .nonRelevant true
-      | .error _ => .unknown .malformed)
+  | .timeConstruction components => do
+      pure (match ← readRecursiveTimeComponents phase context components with
+      | .value time => .value (.time time) true
+      | .unavailable cause => .unknown cause
+      | .incomplete => .value .noValue false
+      | .unreal => .value .noValue true
+      | .nonRelevant => .value .nonRelevant true)
   | .field field =>
       let observation := observeCell phase (context.read field.id)
       let components := scalarComponents model field.components
@@ -450,74 +412,59 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
         | .unknown cause, _ => .unknown cause
         | _, _ => .unknown .malformed)
 
+termination_by (sizeOf atom, 0)
+
 private def applyScalarTemporalTransform (phase : Phase) (context : FlatContext)
     (operation : ScalarTemporalTransform model)
     (source : SimpleComparisonOperand ScalarTemporalValue) :
-    Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
-  match source with
-  | .unknown cause => pure (.unknown cause)
-  | source => match operation with
-      | .calendarShift profile unit amount => do
-          match readScalarTemporalAmount context phase amount with
-          | .error (.formal cause) => pure (.unknown cause)
-          | .error _ => throw .calendarUnavailable
-          | .ok .notEvaluated => pure .notEvaluated
-          | .ok (.value amount fillability) =>
-              let shift (instant : Instant) (wrap : LegacyCalendarLabel → Instant → ScalarTemporalValue) (given : Bool) :
-                  Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
-                match profile.shiftCalendar? unit instant (temporalShiftAmountToInt32 amount) with
-                | some (label, instant) => pure (.value
-                    (wrap label instant)
-                    (given && !fillability.canGrow && !fillability.canShrink))
-                | none => throw .calendarUnavailable
-              match source with
-              | .value .nonRelevant _ => pure (.value .nonRelevant true)
-              | .value .noValue given =>
-                  pure (.value .noValue (given && !fillability.canGrow && !fillability.canShrink))
-              | .value (.date value) given =>
-                  shift value.instant (fun label instant => .date { instant, parts := label.parts, basis := .legacyHybrid }) given
-              | .value (.yearless value _) given =>
-                  shift value.instant (fun label instant => .yearless { instant, parts := label.parts, basis := .legacyHybrid }
-                    { month := label.parts.month, day := label.parts.day }) given
-              | .value (.instant instant) given => shift instant (fun _ instant => .instant instant) given
-              | .notEvaluated => pure .notEvaluated
-              | _ => throw .calendarUnavailable
-      | .dateFromDateTime profile => do
-          match source with
-          | .value (.instant instant) given =>
-              let some label := profile.calendarLabel? instant | throw .calendarUnavailable
-              let midnight := { label with time := { hour := 0, minute := 0, second := 0, valid := by decide } }
-              let some instant := profile.resolveCalendarLabel? midnight | throw .dateTimeLabelUnresolved
-              pure (.value (.date { instant, parts := label.parts, basis := .legacyHybrid }) given)
-          | .value .noValue given => pure (.value .noValue given)
-          | .value .nonRelevant _ => pure (.value .nonRelevant true)
-          | .notEvaluated => pure .notEvaluated
+    Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
+  match operation with
+  | .calendarShift profile unit amount =>
+      let amount ← readRecursiveScalarAmount phase context amount
+      applyScalarTemporalShift source amount fun value amount => do
+        let instant ← match value with
+          | .date value | .yearless value _ => pure value.instant
+          | .instant instant => pure instant
           | _ => throw .calendarUnavailable
-      | .timeFromDateTime profile => do
-          match source with
-          | .value (.instant instant) given =>
-              let some label := profile.calendarLabel? instant | throw .calendarUnavailable
-              pure (.value (.time label.time) given)
-          | .value .noValue given => pure (.value .noValue given)
-          | .value .nonRelevant _ => pure (.value .nonRelevant true)
-          | .notEvaluated => pure .notEvaluated
-          | _ => throw .calendarUnavailable
-      | .subdayShift _ unit amount => do
-          match readScalarTemporalAmount context phase amount with
-          | .error (.formal cause) => pure (.unknown cause)
-          | .error _ => throw .calendarUnavailable
-          | .ok .notEvaluated => pure .notEvaluated
-          | .ok (.value amount fillability) =>
-              match source with
-              | .value (.instant instant) given =>
-                  pure (.value (.instant (instant.shift unit (temporalShiftAmountToInt32 amount)))
-                    (given && !fillability.canGrow && !fillability.canShrink))
-              | .value .noValue given =>
-                  pure (.value .noValue (given && !fillability.canGrow && !fillability.canShrink))
-              | .value .nonRelevant _ => pure (.value .nonRelevant true)
-              | .notEvaluated => pure .notEvaluated
-              | _ => throw .calendarUnavailable
-      | .extremum _ | .dateTime _ => throw .calendarUnavailable
+        let some (label, shifted) := profile.shiftCalendar? unit instant (temporalShiftAmountToInt32 amount)
+          | throw .calendarUnavailable
+        match value with
+        | .date _ => pure (.date { instant := shifted, parts := label.parts, basis := .legacyHybrid })
+        | .yearless _ _ => pure (.yearless { instant := shifted, parts := label.parts, basis := .legacyHybrid }
+            { month := label.parts.month, day := label.parts.day })
+        | .instant _ => pure (.instant shifted)
+        | _ => throw .calendarUnavailable
+  | .subdayShift _ unit amount =>
+      let amount ← readRecursiveScalarAmount phase context amount
+      applyScalarTemporalShift source amount fun value amount =>
+        match value with
+        | .instant instant => pure (.instant (instant.shift unit (temporalShiftAmountToInt32 amount)))
+        | _ => throw .calendarUnavailable
+  | .dateFromDateTime profile =>
+      match source with
+      | .value (.instant instant) given =>
+          let some label := profile.calendarLabel? instant | throw .calendarUnavailable
+          let midnight := { label with time := { hour := 0, minute := 0, second := 0, valid := by decide } }
+          let some instant := profile.resolveCalendarLabel? midnight | throw .dateTimeLabelUnresolved
+          pure (.value (.date { instant, parts := label.parts, basis := .legacyHybrid }) given)
+      | .value .noValue given => pure (.value .noValue given)
+      | .value .nonRelevant _ => pure (.value .nonRelevant true)
+      | .notEvaluated => pure .notEvaluated
+      | .unknown cause => pure (.unknown cause)
+      | _ => throw .calendarUnavailable
+  | .timeFromDateTime profile =>
+      match source with
+      | .value (.instant instant) given =>
+          let some label := profile.calendarLabel? instant | throw .calendarUnavailable
+          pure (.value (.time label.time) given)
+      | .value .noValue given => pure (.value .noValue given)
+      | .value .nonRelevant _ => pure (.value .nonRelevant true)
+      | .notEvaluated => pure .notEvaluated
+      | .unknown cause => pure (.unknown cause)
+      | _ => throw .calendarUnavailable
+  | .extremum _ | .dateTime _ => throw .calendarUnavailable
+
+termination_by (sizeOf operation, 0)
 
 /-- Constructor arguments have already been reached by the shared ordered application. A missing
 payload keeps its own provenance; non-relevance suppresses a result without inventing a formal cause. -/
@@ -525,7 +472,7 @@ private def applyScalarTemporalOperation (phase : Phase) (context : FlatContext)
     (operation : ScalarTemporalTransform model)
     (operands : List (SimpleComparisonOperand ScalarTemporalValue)) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
-  match operation, operands with
+  match _h : operation, operands with
   | .extremum operator, operands => pure (evalTemporalExtremumAggregate (ScalarTemporalValue.select operator)
       { operands, hasUninstantiatedTail := false, hasHaving := false })
   | .dateTime profile, [date, time] =>
@@ -545,28 +492,140 @@ private def applyScalarTemporalOperation (phase : Phase) (context : FlatContext)
   | _, [source] => applyScalarTemporalTransform phase context operation source
   | _, _ => throw .calendarUnavailable
 
+termination_by (sizeOf operation, 1)
+decreasing_by
+  all_goals simp_all
+  all_goals apply Prod.Lex.right
+  all_goals omega
+
+private def readRecursiveScalarAtom (phase : Phase) (context : FlatContext)
+    (atom : ScalarTemporalNumericAtom model) : Except ScalarTemporalEvaluationFault
+      (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
+  match atom with
+  | .ordinary amount => pure (readScalarTemporalAmount context phase amount)
+  | .projection part profile source => part.observeScalar profile (← evalScalarTemporalCore phase context source)
+termination_by (sizeOf atom, 0)
+
+private def readRecursiveScalarAmount (phase : Phase) (context : FlatContext)
+    (amount : AuthoredNumericExpr (ScalarTemporalNumericAtom model)) : Except ScalarTemporalEvaluationFault
+      (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
+  let resolved := amount.mapMSubterm fun atom _ => do
+    let value ← (readRecursiveScalarAtom phase context atom).mapError Sum.inr
+    match phase, value with
+    | .computation, .error (.formal cause) => throw (Sum.inl cause)
+    | _, value => pure value
+  match resolved with
+  | .error (.inl cause) => pure (.error (.formal cause))
+  | .error (.inr fault) => throw fault
+  | .ok expression => pure (expression.lowerForEvaluation.evalNumericOperationTree id)
+termination_by (sizeOf amount, 0)
+
+private def readRecursiveTimeComponents (phase : Phase) (context : FlatContext)
+    (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model))) :
+    Except ScalarTemporalEvaluationFault TimeConstructionResult :=
+  components.evaluateWithSubterm fun component _ => do
+    match component with
+    | .inl source => pure (match readScalarTimeComponent context phase source with
+        | .ok value => value | .error _ => .unavailable .malformed)
+    | .inr source =>
+        match ← readRecursiveScalarAtom phase context source with
+        | .error (.formal cause) => pure (.unavailable cause)
+        | .error .nonRelevant => pure .nonRelevant
+        | .error _ => throw .calendarUnavailable
+        | .ok .notEvaluated => pure .empty
+        | .ok (.value value fillability) =>
+            pure (if fillability.canGrow || fillability.canShrink then .empty
+              else .value (temporalShiftAmountToInt32 value))
+termination_by (sizeOf components, 0)
+decreasing_by
+  all_goals first | decreasing_tactic | (apply Prod.Lex.left; simp_all +arith <;> omega)
+
+private def evalScalarTemporalCore (phase : Phase) (context : FlatContext)
+    (expression : ScalarTemporalExpression model) :
+    Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
+  let reached (operand : SimpleComparisonOperand ScalarTemporalValue) :
+      Except (Sum FormalCause ScalarTemporalEvaluationFault) (SimpleComparisonOperand ScalarTemporalValue) :=
+    match phase, operand with
+    | .computation, .unknown cause => .error (.inl cause)
+    | _, operand => .ok operand
+  let result := expression.evalWithResultSubterm
+    (fun atom _ => do
+      let operand ← (readScalarTemporalAtom model phase context atom).mapError Sum.inr
+      reached operand)
+    (fun operation _ operands => do
+      reached (← (applyScalarTemporalOperation phase context operation operands).mapError Sum.inr))
+  match result with
+  | .ok operand => .ok operand
+  | .error (.inl cause) => .ok (.unknown cause)
+  | .error (.inr fault) => .error fault
+termination_by (sizeOf expression, 0)
+end
+
+mutual
+private def scalarTemporalDependencies (storedOnly : Bool) (expression : ScalarTemporalExpression model) : List FieldId :=
+  match expression with
+  | .atom source => scalarTemporalAtomDependencies storedOnly source
+  | .apply operation first rest =>
+      scalarTemporalDependencies storedOnly first ++
+        (rest.attach.flatMap fun ⟨source, _⟩ => scalarTemporalDependencies storedOnly source) ++
+        scalarTemporalOperationDependencies storedOnly operation
+termination_by sizeOf expression
+
+private def scalarTemporalAtomDependencies (storedOnly : Bool) (atom : ScalarTemporalAtom model) : List FieldId :=
+  match atom with
+  | .dateConstruction components =>
+      if storedOnly then components.sources.filterMap fun
+        | .dateYearField checked => some checked.source.id | _ => none
+      else components.fields
+  | .valueAsDate source => [source.source.target.id]
+  | .timeConstruction components => scalarTemporalComponentDependencies storedOnly components
+  | .field source => if storedOnly then [] else [source.id]
+  | .rangeBound _ (.exact source) => if storedOnly then [] else [source.source.id]
+  | .rangeBound _ (.yearless source) => if storedOnly then [] else [source.source.id]
+  | _ => []
+termination_by sizeOf atom
+
+private def scalarTemporalOperationDependencies (storedOnly : Bool) (operation : ScalarTemporalTransform model) : List FieldId :=
+  match operation with
+  | .subdayShift _ _ amount | .calendarShift _ _ amount =>
+      match amount.mapMSubterm (fun atom _ => (Except.ok (scalarTemporalNumericDependencies storedOnly atom) : Except Empty (List FieldId))) with
+      | .ok result => result.atoms.flatten
+      | .error error => nomatch error
+  | _ => []
+termination_by sizeOf operation
+
+private def scalarTemporalNumericDependencies (storedOnly : Bool) (atom : ScalarTemporalNumericAtom model) : List FieldId :=
+  match atom with
+  | .ordinary source => if storedOnly then [] else source.fieldDependencies
+  | .projection _ _ source => scalarTemporalDependencies storedOnly source
+termination_by sizeOf atom
+
+private def scalarTemporalComponentDependency (storedOnly : Bool)
+    (component : Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model)) : List FieldId :=
+  match component with
+  | .inl source => if storedOnly then [] else source.fieldDependencies
+  | .inr source => scalarTemporalNumericDependencies storedOnly source
+termination_by sizeOf component
+
+private def scalarTemporalComponentDependencies (storedOnly : Bool)
+    (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model))) : List FieldId :=
+  match components with
+  | .empty => []
+  | .hour hour => scalarTemporalComponentDependency storedOnly hour
+  | .minute hour minute => scalarTemporalComponentDependency storedOnly hour ++ scalarTemporalComponentDependency storedOnly minute
+  | .second hour minute second => scalarTemporalComponentDependency storedOnly hour ++
+      scalarTemporalComponentDependency storedOnly minute ++ scalarTemporalComponentDependency storedOnly second
+termination_by sizeOf components
+end
+
 namespace CheckedScalarTemporalExpression
 
-/-- The two source contracts that consume exact stored text in addition to a typed cell. -/
+/-- Stored-text requirements include recursively nested temporal operands. -/
 def storedTextFields (expression : CheckedScalarTemporalExpression model) : List FieldId :=
-  expression.core.dependencies
-    (fun | .dateConstruction components => components.sources.filterMap fun
-           | .dateYearField checked => some checked.source.id
-           | _ => none
-         | .valueAsDate source => [source.source.target.id]
-         | _ => [])
-    (fun _ => [])
+  scalarTemporalDependencies true expression.core
 
 def fieldIds (expression : CheckedScalarTemporalExpression model) : List FieldId :=
-  expression.core.dependencies
-    (fun | .field source => [source.id]
-         | .dateConstruction components => components.fields
-         | .timeConstruction components => components.toWorld.fieldDependencies
-         | .valueAsDate source => [source.source.target.id]
-         | .rangeBound _ (.exact source) => [source.source.id]
-         | .rangeBound _ (.yearless source) => [source.source.id]
-         | _ => [])
-    (fun | .subdayShift _ _ amount | .calendarShift _ _ amount => amount.fieldDependencies | _ => [])
+  scalarTemporalDependencies false expression.core
 
 def referencesField (expression : CheckedScalarTemporalExpression model) (field : FieldId) : Bool :=
   expression.fieldIds.contains field
@@ -575,21 +634,7 @@ def referencesField (expression : CheckedScalarTemporalExpression model) (field 
 missingness and operand poison (the DateTime constant zone-split checkpoint, spec/09). -/
 def evalResult (expression : CheckedScalarTemporalExpression model) (phase : Phase) (context : FlatContext) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
-  let reached (operand : SimpleComparisonOperand ScalarTemporalValue) :
-      Except (Sum FormalCause ScalarTemporalEvaluationFault) (SimpleComparisonOperand ScalarTemporalValue) :=
-    match phase, operand with
-    | .computation, .unknown cause => .error (.inl cause)
-    | _, operand => .ok operand
-  let result := expression.core.evalWithResult
-    (fun atom => do
-      let operand ← (readScalarTemporalAtom model phase context atom).mapError Sum.inr
-      reached operand)
-    (fun operation operands => do
-      reached (← (applyScalarTemporalOperation phase context operation operands).mapError Sum.inr))
-  match result with
-  | .ok operand => .ok operand
-  | .error (.inl cause) => .ok (.unknown cause)
-  | .error (.inr fault) => .error fault
+  evalScalarTemporalCore phase context expression.core
 
 end CheckedScalarTemporalExpression
 

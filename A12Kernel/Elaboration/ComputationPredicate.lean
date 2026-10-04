@@ -26,7 +26,6 @@ inductive SurfaceComputationPredicate where
   | fieldFill (operator : FieldFillQuantifier) (source : SurfaceFieldEntitySource)
   | overlap (source : SurfaceFieldEntitySource)
   | scalarOverlap (source : SurfaceAtLeastOneDateRangeOverlapsSource)
-  deriving Repr, DecidableEq
 
 inductive ComputationPredicateElabError where
   | stringExpression (error : StringComputationElabError)

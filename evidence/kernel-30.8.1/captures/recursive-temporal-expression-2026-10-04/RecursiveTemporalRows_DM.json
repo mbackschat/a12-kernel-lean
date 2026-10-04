@@ -1,0 +1,2638 @@
+{
+  "header" : {
+    "id" : "RecursiveTemporalRows_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "RecursiveTemporalRows_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 12,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Clock",
+                "name" : "Clock",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Stamp",
+                "name" : "Stamp",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateTimeType",
+                    "DateTimeType" : {
+                      "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/H",
+                "name" : "H",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minValue" : 0,
+                      "maxValue" : 23,
+                      "positivesOnly" : true,
+                      "maxLength" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Anchor",
+                "name" : "Anchor",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/clockH",
+                "name" : "clockH",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/clockHDep",
+                "name" : "clockHDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/clockM",
+                "name" : "clockM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/clockMDep",
+                "name" : "clockMDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/clockS",
+                "name" : "clockS",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/clockSDep",
+                "name" : "clockSDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/stampH",
+                "name" : "stampH",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/stampHDep",
+                "name" : "stampHDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/stampM",
+                "name" : "stampM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/stampMDep",
+                "name" : "stampMDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/stampS",
+                "name" : "stampS",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/stampSDep",
+                "name" : "stampSDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/nowH",
+                "name" : "nowH",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/nowHDep",
+                "name" : "nowHDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/nowM",
+                "name" : "nowM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/nowMDep",
+                "name" : "nowMDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/nowS",
+                "name" : "nowS",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/nowSDep",
+                "name" : "nowSDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/shiftH",
+                "name" : "shiftH",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/shiftHDep",
+                "name" : "shiftHDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/shiftM",
+                "name" : "shiftM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/shiftMDep",
+                "name" : "shiftMDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/shiftS",
+                "name" : "shiftS",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/shiftSDep",
+                "name" : "shiftSDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/projectionH",
+                "name" : "projectionH",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/projectionHDep",
+                "name" : "projectionHDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/projectionM",
+                "name" : "projectionM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/projectionMDep",
+                "name" : "projectionMDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/projectionS",
+                "name" : "projectionS",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/projectionSDep",
+                "name" : "projectionSDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/constantConstructionH",
+                "name" : "constantConstructionH",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/constantConstructionHDep",
+                "name" : "constantConstructionHDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/constantConstructionM",
+                "name" : "constantConstructionM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/constantConstructionMDep",
+                "name" : "constantConstructionMDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/constantConstructionS",
+                "name" : "constantConstructionS",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/constantConstructionSDep",
+                "name" : "constantConstructionSDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/fieldConstructionH",
+                "name" : "fieldConstructionH",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/fieldConstructionHDep",
+                "name" : "fieldConstructionHDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/fieldConstructionM",
+                "name" : "fieldConstructionM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/fieldConstructionMDep",
+                "name" : "fieldConstructionMDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/fieldConstructionS",
+                "name" : "fieldConstructionS",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/fieldConstructionSDep",
+                "name" : "fieldConstructionSDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/recursiveConstructionH",
+                "name" : "recursiveConstructionH",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/recursiveConstructionHDep",
+                "name" : "recursiveConstructionHDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/recursiveConstructionM",
+                "name" : "recursiveConstructionM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/recursiveConstructionMDep",
+                "name" : "recursiveConstructionMDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/recursiveConstructionS",
+                "name" : "recursiveConstructionS",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/recursiveConstructionSDep",
+                "name" : "recursiveConstructionSDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/recursiveAmountH",
+                "name" : "recursiveAmountH",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/recursiveAmountHDep",
+                "name" : "recursiveAmountHDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/recursiveAmountM",
+                "name" : "recursiveAmountM",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/recursiveAmountMDep",
+                "name" : "recursiveAmountMDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/recursiveAmountS",
+                "name" : "recursiveAmountS",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/recursiveAmountSDep",
+                "name" : "recursiveAmountSDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/clockHComp",
+                "name" : "clockHComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../clockH",
+                  "computationAlternatives" : [ {
+                    "operation" : "HoursFromTime(/Form/Rows/Clock)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/clockHDepComp",
+                "name" : "clockHDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../clockHDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/clockH] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/clockHEq",
+                "name" : "clockHEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "clockHEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(/Form/Rows/Clock) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/clockHLt",
+                "name" : "clockHLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "clockHLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(/Form/Rows/Clock) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/clockHGt",
+                "name" : "clockHGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "clockHGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(/Form/Rows/Clock) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/clockMComp",
+                "name" : "clockMComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../clockM",
+                  "computationAlternatives" : [ {
+                    "operation" : "MinutesFromTime(/Form/Rows/Clock)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/clockMDepComp",
+                "name" : "clockMDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../clockMDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/clockM] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/clockMEq",
+                "name" : "clockMEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "clockMEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(/Form/Rows/Clock) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/clockMLt",
+                "name" : "clockMLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "clockMLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(/Form/Rows/Clock) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/clockMGt",
+                "name" : "clockMGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "clockMGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(/Form/Rows/Clock) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/clockSComp",
+                "name" : "clockSComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../clockS",
+                  "computationAlternatives" : [ {
+                    "operation" : "SecondsFromTime(/Form/Rows/Clock)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/clockSDepComp",
+                "name" : "clockSDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../clockSDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/clockS] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/clockSEq",
+                "name" : "clockSEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "clockSEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(/Form/Rows/Clock) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/clockSLt",
+                "name" : "clockSLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "clockSLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(/Form/Rows/Clock) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/clockSGt",
+                "name" : "clockSGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "clockSGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(/Form/Rows/Clock) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/stampHComp",
+                "name" : "stampHComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../stampH",
+                  "computationAlternatives" : [ {
+                    "operation" : "HoursFromTime(/Form/Rows/Stamp)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/stampHDepComp",
+                "name" : "stampHDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../stampHDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/stampH] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/stampHEq",
+                "name" : "stampHEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "stampHEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(/Form/Rows/Stamp) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/stampHLt",
+                "name" : "stampHLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "stampHLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(/Form/Rows/Stamp) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/stampHGt",
+                "name" : "stampHGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "stampHGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(/Form/Rows/Stamp) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/stampMComp",
+                "name" : "stampMComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../stampM",
+                  "computationAlternatives" : [ {
+                    "operation" : "MinutesFromTime(/Form/Rows/Stamp)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/stampMDepComp",
+                "name" : "stampMDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../stampMDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/stampM] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/stampMEq",
+                "name" : "stampMEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "stampMEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(/Form/Rows/Stamp) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/stampMLt",
+                "name" : "stampMLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "stampMLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(/Form/Rows/Stamp) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/stampMGt",
+                "name" : "stampMGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "stampMGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(/Form/Rows/Stamp) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/stampSComp",
+                "name" : "stampSComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../stampS",
+                  "computationAlternatives" : [ {
+                    "operation" : "SecondsFromTime(/Form/Rows/Stamp)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/stampSDepComp",
+                "name" : "stampSDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../stampSDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/stampS] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/stampSEq",
+                "name" : "stampSEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "stampSEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(/Form/Rows/Stamp) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/stampSLt",
+                "name" : "stampSLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "stampSLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(/Form/Rows/Stamp) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/stampSGt",
+                "name" : "stampSGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "stampSGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(/Form/Rows/Stamp) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/nowHComp",
+                "name" : "nowHComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../nowH",
+                  "computationAlternatives" : [ {
+                    "operation" : "HoursFromTime(Now)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/nowHDepComp",
+                "name" : "nowHDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../nowHDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/nowH] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/nowHEq",
+                "name" : "nowHEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "nowHEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(Now) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/nowHLt",
+                "name" : "nowHLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "nowHLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(Now) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/nowHGt",
+                "name" : "nowHGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "nowHGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(Now) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/nowMComp",
+                "name" : "nowMComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../nowM",
+                  "computationAlternatives" : [ {
+                    "operation" : "MinutesFromTime(Now)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/nowMDepComp",
+                "name" : "nowMDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../nowMDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/nowM] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/nowMEq",
+                "name" : "nowMEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "nowMEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(Now) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/nowMLt",
+                "name" : "nowMLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "nowMLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(Now) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/nowMGt",
+                "name" : "nowMGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "nowMGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(Now) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/nowSComp",
+                "name" : "nowSComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../nowS",
+                  "computationAlternatives" : [ {
+                    "operation" : "SecondsFromTime(Now)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/nowSDepComp",
+                "name" : "nowSDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../nowSDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/nowS] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/nowSEq",
+                "name" : "nowSEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "nowSEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(Now) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/nowSLt",
+                "name" : "nowSLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "nowSLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(Now) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/nowSGt",
+                "name" : "nowSGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "nowSGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(Now) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/shiftHComp",
+                "name" : "shiftHComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../shiftH",
+                  "computationAlternatives" : [ {
+                    "operation" : "HoursFromTime(AddSeconds(/Form/Rows/Stamp,61))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/shiftHDepComp",
+                "name" : "shiftHDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../shiftHDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/shiftH] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/shiftHEq",
+                "name" : "shiftHEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "shiftHEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(AddSeconds(/Form/Rows/Stamp,61)) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/shiftHLt",
+                "name" : "shiftHLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "shiftHLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(AddSeconds(/Form/Rows/Stamp,61)) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/shiftHGt",
+                "name" : "shiftHGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "shiftHGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(AddSeconds(/Form/Rows/Stamp,61)) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/shiftMComp",
+                "name" : "shiftMComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../shiftM",
+                  "computationAlternatives" : [ {
+                    "operation" : "MinutesFromTime(AddSeconds(/Form/Rows/Stamp,61))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/shiftMDepComp",
+                "name" : "shiftMDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../shiftMDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/shiftM] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/shiftMEq",
+                "name" : "shiftMEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "shiftMEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(AddSeconds(/Form/Rows/Stamp,61)) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/shiftMLt",
+                "name" : "shiftMLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "shiftMLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(AddSeconds(/Form/Rows/Stamp,61)) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/shiftMGt",
+                "name" : "shiftMGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "shiftMGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(AddSeconds(/Form/Rows/Stamp,61)) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/shiftSComp",
+                "name" : "shiftSComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../shiftS",
+                  "computationAlternatives" : [ {
+                    "operation" : "SecondsFromTime(AddSeconds(/Form/Rows/Stamp,61))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/shiftSDepComp",
+                "name" : "shiftSDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../shiftSDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/shiftS] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/shiftSEq",
+                "name" : "shiftSEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "shiftSEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(AddSeconds(/Form/Rows/Stamp,61)) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/shiftSLt",
+                "name" : "shiftSLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "shiftSLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(AddSeconds(/Form/Rows/Stamp,61)) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/shiftSGt",
+                "name" : "shiftSGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "shiftSGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(AddSeconds(/Form/Rows/Stamp,61)) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/projectionHComp",
+                "name" : "projectionHComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../projectionH",
+                  "computationAlternatives" : [ {
+                    "operation" : "HoursFromTime(TimeFromDateTime(/Form/Rows/Stamp))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/projectionHDepComp",
+                "name" : "projectionHDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../projectionHDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/projectionH] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/projectionHEq",
+                "name" : "projectionHEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "projectionHEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(TimeFromDateTime(/Form/Rows/Stamp)) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/projectionHLt",
+                "name" : "projectionHLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "projectionHLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(TimeFromDateTime(/Form/Rows/Stamp)) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/projectionHGt",
+                "name" : "projectionHGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "projectionHGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(TimeFromDateTime(/Form/Rows/Stamp)) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/projectionMComp",
+                "name" : "projectionMComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../projectionM",
+                  "computationAlternatives" : [ {
+                    "operation" : "MinutesFromTime(TimeFromDateTime(/Form/Rows/Stamp))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/projectionMDepComp",
+                "name" : "projectionMDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../projectionMDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/projectionM] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/projectionMEq",
+                "name" : "projectionMEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "projectionMEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(TimeFromDateTime(/Form/Rows/Stamp)) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/projectionMLt",
+                "name" : "projectionMLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "projectionMLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(TimeFromDateTime(/Form/Rows/Stamp)) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/projectionMGt",
+                "name" : "projectionMGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "projectionMGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(TimeFromDateTime(/Form/Rows/Stamp)) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/projectionSComp",
+                "name" : "projectionSComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../projectionS",
+                  "computationAlternatives" : [ {
+                    "operation" : "SecondsFromTime(TimeFromDateTime(/Form/Rows/Stamp))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/projectionSDepComp",
+                "name" : "projectionSDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../projectionSDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/projectionS] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/projectionSEq",
+                "name" : "projectionSEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "projectionSEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(TimeFromDateTime(/Form/Rows/Stamp)) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/projectionSLt",
+                "name" : "projectionSLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "projectionSLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(TimeFromDateTime(/Form/Rows/Stamp)) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/projectionSGt",
+                "name" : "projectionSGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "projectionSGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(TimeFromDateTime(/Form/Rows/Stamp)) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/constantConstructionHComp",
+                "name" : "constantConstructionHComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../constantConstructionH",
+                  "computationAlternatives" : [ {
+                    "operation" : "HoursFromTime(Time(\"01\",\"02\",\"03\"))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/constantConstructionHDepComp",
+                "name" : "constantConstructionHDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../constantConstructionHDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/constantConstructionH] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/constantConstructionHEq",
+                "name" : "constantConstructionHEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "constantConstructionHEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(Time(\"01\",\"02\",\"03\")) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/constantConstructionHLt",
+                "name" : "constantConstructionHLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "constantConstructionHLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(Time(\"01\",\"02\",\"03\")) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/constantConstructionHGt",
+                "name" : "constantConstructionHGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "constantConstructionHGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(Time(\"01\",\"02\",\"03\")) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/constantConstructionMComp",
+                "name" : "constantConstructionMComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../constantConstructionM",
+                  "computationAlternatives" : [ {
+                    "operation" : "MinutesFromTime(Time(\"01\",\"02\",\"03\"))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/constantConstructionMDepComp",
+                "name" : "constantConstructionMDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../constantConstructionMDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/constantConstructionM] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/constantConstructionMEq",
+                "name" : "constantConstructionMEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "constantConstructionMEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(Time(\"01\",\"02\",\"03\")) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/constantConstructionMLt",
+                "name" : "constantConstructionMLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "constantConstructionMLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(Time(\"01\",\"02\",\"03\")) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/constantConstructionMGt",
+                "name" : "constantConstructionMGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "constantConstructionMGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(Time(\"01\",\"02\",\"03\")) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/constantConstructionSComp",
+                "name" : "constantConstructionSComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../constantConstructionS",
+                  "computationAlternatives" : [ {
+                    "operation" : "SecondsFromTime(Time(\"01\",\"02\",\"03\"))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/constantConstructionSDepComp",
+                "name" : "constantConstructionSDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../constantConstructionSDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/constantConstructionS] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/constantConstructionSEq",
+                "name" : "constantConstructionSEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "constantConstructionSEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(Time(\"01\",\"02\",\"03\")) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/constantConstructionSLt",
+                "name" : "constantConstructionSLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "constantConstructionSLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(Time(\"01\",\"02\",\"03\")) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/constantConstructionSGt",
+                "name" : "constantConstructionSGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "constantConstructionSGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(Time(\"01\",\"02\",\"03\")) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/fieldConstructionHComp",
+                "name" : "fieldConstructionHComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../fieldConstructionH",
+                  "computationAlternatives" : [ {
+                    "operation" : "HoursFromTime(Time(/Form/Rows/H))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/fieldConstructionHDepComp",
+                "name" : "fieldConstructionHDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../fieldConstructionHDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/fieldConstructionH] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/fieldConstructionHEq",
+                "name" : "fieldConstructionHEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "fieldConstructionHEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(Time(/Form/Rows/H)) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/fieldConstructionHLt",
+                "name" : "fieldConstructionHLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "fieldConstructionHLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(Time(/Form/Rows/H)) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/fieldConstructionHGt",
+                "name" : "fieldConstructionHGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "fieldConstructionHGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(Time(/Form/Rows/H)) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/fieldConstructionMComp",
+                "name" : "fieldConstructionMComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../fieldConstructionM",
+                  "computationAlternatives" : [ {
+                    "operation" : "MinutesFromTime(Time(/Form/Rows/H))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/fieldConstructionMDepComp",
+                "name" : "fieldConstructionMDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../fieldConstructionMDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/fieldConstructionM] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/fieldConstructionMEq",
+                "name" : "fieldConstructionMEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "fieldConstructionMEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(Time(/Form/Rows/H)) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/fieldConstructionMLt",
+                "name" : "fieldConstructionMLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "fieldConstructionMLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(Time(/Form/Rows/H)) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/fieldConstructionMGt",
+                "name" : "fieldConstructionMGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "fieldConstructionMGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(Time(/Form/Rows/H)) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/fieldConstructionSComp",
+                "name" : "fieldConstructionSComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../fieldConstructionS",
+                  "computationAlternatives" : [ {
+                    "operation" : "SecondsFromTime(Time(/Form/Rows/H))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/fieldConstructionSDepComp",
+                "name" : "fieldConstructionSDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../fieldConstructionSDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/fieldConstructionS] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/fieldConstructionSEq",
+                "name" : "fieldConstructionSEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "fieldConstructionSEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(Time(/Form/Rows/H)) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/fieldConstructionSLt",
+                "name" : "fieldConstructionSLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "fieldConstructionSLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(Time(/Form/Rows/H)) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/fieldConstructionSGt",
+                "name" : "fieldConstructionSGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "fieldConstructionSGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(Time(/Form/Rows/H)) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/recursiveConstructionHComp",
+                "name" : "recursiveConstructionHComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../recursiveConstructionH",
+                  "computationAlternatives" : [ {
+                    "operation" : "HoursFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(/Form/Rows/Stamp,61)))))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/recursiveConstructionHDepComp",
+                "name" : "recursiveConstructionHDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../recursiveConstructionHDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/recursiveConstructionH] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveConstructionHEq",
+                "name" : "recursiveConstructionHEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveConstructionHEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(/Form/Rows/Stamp,61))))) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveConstructionHLt",
+                "name" : "recursiveConstructionHLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveConstructionHLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(/Form/Rows/Stamp,61))))) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveConstructionHGt",
+                "name" : "recursiveConstructionHGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveConstructionHGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(/Form/Rows/Stamp,61))))) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/recursiveConstructionMComp",
+                "name" : "recursiveConstructionMComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../recursiveConstructionM",
+                  "computationAlternatives" : [ {
+                    "operation" : "MinutesFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(/Form/Rows/Stamp,61)))))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/recursiveConstructionMDepComp",
+                "name" : "recursiveConstructionMDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../recursiveConstructionMDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/recursiveConstructionM] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveConstructionMEq",
+                "name" : "recursiveConstructionMEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveConstructionMEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(/Form/Rows/Stamp,61))))) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveConstructionMLt",
+                "name" : "recursiveConstructionMLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveConstructionMLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(/Form/Rows/Stamp,61))))) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveConstructionMGt",
+                "name" : "recursiveConstructionMGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveConstructionMGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(/Form/Rows/Stamp,61))))) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/recursiveConstructionSComp",
+                "name" : "recursiveConstructionSComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../recursiveConstructionS",
+                  "computationAlternatives" : [ {
+                    "operation" : "SecondsFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(/Form/Rows/Stamp,61)))))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/recursiveConstructionSDepComp",
+                "name" : "recursiveConstructionSDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../recursiveConstructionSDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/recursiveConstructionS] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveConstructionSEq",
+                "name" : "recursiveConstructionSEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveConstructionSEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(/Form/Rows/Stamp,61))))) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveConstructionSLt",
+                "name" : "recursiveConstructionSLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveConstructionSLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(/Form/Rows/Stamp,61))))) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveConstructionSGt",
+                "name" : "recursiveConstructionSGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveConstructionSGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(Time(HoursFromTime(TimeFromDateTime(AddSeconds(/Form/Rows/Stamp,61))))) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/recursiveAmountHComp",
+                "name" : "recursiveAmountHComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../recursiveAmountH",
+                  "computationAlternatives" : [ {
+                    "operation" : "HoursFromTime(AddSeconds(/Form/Rows/Stamp,HoursFromTime(/Form/Rows/Clock)))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/recursiveAmountHDepComp",
+                "name" : "recursiveAmountHDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../recursiveAmountHDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/recursiveAmountH] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveAmountHEq",
+                "name" : "recursiveAmountHEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveAmountHEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(AddSeconds(/Form/Rows/Stamp,HoursFromTime(/Form/Rows/Clock))) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveAmountHLt",
+                "name" : "recursiveAmountHLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveAmountHLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(AddSeconds(/Form/Rows/Stamp,HoursFromTime(/Form/Rows/Clock))) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveAmountHGt",
+                "name" : "recursiveAmountHGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveAmountHGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And HoursFromTime(AddSeconds(/Form/Rows/Stamp,HoursFromTime(/Form/Rows/Clock))) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/recursiveAmountMComp",
+                "name" : "recursiveAmountMComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../recursiveAmountM",
+                  "computationAlternatives" : [ {
+                    "operation" : "MinutesFromTime(AddSeconds(/Form/Rows/Stamp,HoursFromTime(/Form/Rows/Clock)))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/recursiveAmountMDepComp",
+                "name" : "recursiveAmountMDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../recursiveAmountMDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/recursiveAmountM] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveAmountMEq",
+                "name" : "recursiveAmountMEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveAmountMEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(AddSeconds(/Form/Rows/Stamp,HoursFromTime(/Form/Rows/Clock))) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveAmountMLt",
+                "name" : "recursiveAmountMLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveAmountMLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(AddSeconds(/Form/Rows/Stamp,HoursFromTime(/Form/Rows/Clock))) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveAmountMGt",
+                "name" : "recursiveAmountMGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveAmountMGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And MinutesFromTime(AddSeconds(/Form/Rows/Stamp,HoursFromTime(/Form/Rows/Clock))) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/recursiveAmountSComp",
+                "name" : "recursiveAmountSComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../recursiveAmountS",
+                  "computationAlternatives" : [ {
+                    "operation" : "SecondsFromTime(AddSeconds(/Form/Rows/Stamp,HoursFromTime(/Form/Rows/Clock)))"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/recursiveAmountSDepComp",
+                "name" : "recursiveAmountSDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../recursiveAmountSDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[/Form/Rows/recursiveAmountS] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveAmountSEq",
+                "name" : "recursiveAmountSEq",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveAmountSEq",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(AddSeconds(/Form/Rows/Stamp,HoursFromTime(/Form/Rows/Clock))) == 0",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveAmountSLt",
+                "name" : "recursiveAmountSLt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveAmountSLt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(AddSeconds(/Form/Rows/Stamp,HoursFromTime(/Form/Rows/Clock))) < 1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/recursiveAmountSGt",
+                "name" : "recursiveAmountSGt",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Anchor",
+                  "errorCode" : "recursiveAmountSGt",
+                  "errorCondition" : "FieldFilled(/Form/Rows/Anchor) And SecondsFromTime(AddSeconds(/Form/Rows/Stamp,HoursFromTime(/Form/Rows/Clock))) > -1",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Temporal expression control."
+                  } ]
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

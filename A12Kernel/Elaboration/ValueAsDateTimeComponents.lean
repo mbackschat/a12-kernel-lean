@@ -240,7 +240,7 @@ private def elaborateTimeExtractorField (model : FlatModel)
   else
     throw (.declarationNotAdmitted position field)
 
-private def elaborateTimeComponent (model : FlatModel)
+def elaborateTimeComponent (model : FlatModel)
     (position : TimeComponentPosition) (surface : SurfaceTimeComponent)
     (scope : List RepeatableLevel := []) : Except TimeComponentsElabError (CheckedTimeComponent model) :=
   match surface with
@@ -532,34 +532,41 @@ def referencesFieldWith (checked : TimeComponentPrefix Component)
 
 /-- Evaluate one supplied prefix through its carrier-specific reader. A reached formal
     component stops before every later read; omitted trailing slots remain fixed zeroes. -/
-def evaluateWith (checked : TimeComponentPrefix Component)
-    (read : Component → Except Error TimeConstructionComponent) :
+@[simp]
+def evaluateWithSubterm [SizeOf Component] (checked : TimeComponentPrefix Component)
+    (read : (component : Component) → sizeOf component < sizeOf checked → Except Error TimeConstructionComponent) :
     Except Error TimeConstructionResult :=
   match checked with
   | .empty =>
       pure (TimeConstructionArity.zero.evaluate .empty .empty .empty)
   | .hour hourField => do
-      let hourValue ← read hourField
+      let hourValue ← read hourField (by simp +arith)
       pure (TimeConstructionArity.hour.evaluate hourValue .empty .empty)
   | .minute hourField minuteField => do
-      let hourValue ← read hourField
+      let hourValue ← read hourField (by simp +arith)
       match hourValue with
       | .unavailable cause => pure (.unavailable cause)
       | hourValue =>
-          let minuteValue ← read minuteField
+          let minuteValue ← read minuteField (by simp +arith)
           pure (TimeConstructionArity.minute.evaluate hourValue minuteValue .empty)
   | .second hourField minuteField secondField => do
-      let hourValue ← read hourField
+      let hourValue ← read hourField (by simp +arith)
       match hourValue with
       | .unavailable cause => pure (.unavailable cause)
       | hourValue =>
-          let minuteValue ← read minuteField
+          let minuteValue ← read minuteField (by simp +arith)
           match minuteValue with
           | .unavailable cause => pure (.unavailable cause)
           | minuteValue =>
-              let secondValue ← read secondField
+              let secondValue ← read secondField (by simp +arith)
               pure (TimeConstructionArity.second.evaluate
                 hourValue minuteValue secondValue)
+
+/-- The ordinary reader specializes the same ordered prefix evaluation. -/
+def evaluateWith (checked : TimeComponentPrefix Component)
+    (read : Component → Except Error TimeConstructionComponent) :
+    Except Error TimeConstructionResult :=
+  checked.evaluateWithSubterm (fun component _ => read component)
 
 end TimeComponentPrefix
 

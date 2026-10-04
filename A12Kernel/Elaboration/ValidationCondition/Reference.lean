@@ -276,6 +276,8 @@ def CheckedFieldFillList.referencePointers (source : CheckedFieldFillList model)
 def OrderedNumericValidationAtom.referencePointers (environment : Env) :
     OrderedNumericValidationAtom model →
       Except ReferenceProjectionError (List MessagePointer)
+  | .temporalPart source =>
+      sievedFieldPointers model (fun declaration => source.source.referencesField declaration.id) environment
   | .ordinary (.filledGroupCount groups) =>
       (·.flatten) <$> groups.mapM fun reference =>
         fixedGroupPointers model reference environment

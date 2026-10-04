@@ -1,0 +1,842 @@
+{
+  "header" : {
+    "id" : "TemporalNumericEffects_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "TemporalNumericEffects_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Clock",
+            "name" : "Clock",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Stamp",
+            "name" : "Stamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/H",
+            "name" : "H",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "positivesOnly" : true,
+                  "maxLength" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Anchor",
+            "name" : "Anchor",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/gap",
+            "name" : "gap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/gapDep",
+            "name" : "gapDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/gapComp",
+            "name" : "gapComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../gap",
+              "computationAlternatives" : [ {
+                "operation" : "HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/gapDepComp",
+            "name" : "gapDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../gapDep",
+              "computationAlternatives" : [ {
+                "operation" : "[/Form/gap]+1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/gapEq",
+            "name" : "gapEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "gapEq",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\")) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/gapLt",
+            "name" : "gapLt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "gapLt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\")) < 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/gapGt",
+            "name" : "gapGt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "gapGt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\")) > -1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/gapAmount",
+            "name" : "gapAmount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/gapAmountDep",
+            "name" : "gapAmountDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/gapAmountComp",
+            "name" : "gapAmountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../gapAmount",
+              "computationAlternatives" : [ {
+                "operation" : "HoursFromTime(AddSeconds(/Form/Stamp,HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\"))))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/gapAmountDepComp",
+            "name" : "gapAmountDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../gapAmountDep",
+              "computationAlternatives" : [ {
+                "operation" : "[/Form/gapAmount]+1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/gapAmountEq",
+            "name" : "gapAmountEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "gapAmountEq",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(AddSeconds(/Form/Stamp,HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\")))) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/gapAmountLt",
+            "name" : "gapAmountLt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "gapAmountLt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(AddSeconds(/Form/Stamp,HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\")))) < 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/gapAmountGt",
+            "name" : "gapAmountGt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "gapAmountGt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(AddSeconds(/Form/Stamp,HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\")))) > -1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/rightGap",
+            "name" : "rightGap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/rightGapDep",
+            "name" : "rightGapDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/rightGapComp",
+            "name" : "rightGapComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../rightGap",
+              "computationAlternatives" : [ {
+                "operation" : "HoursFromTime(/Form/Clock)+HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\"))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/rightGapDepComp",
+            "name" : "rightGapDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../rightGapDep",
+              "computationAlternatives" : [ {
+                "operation" : "[/Form/rightGap]+1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/rightGapEq",
+            "name" : "rightGapEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "rightGapEq",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(/Form/Clock)+HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\")) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/rightGapLt",
+            "name" : "rightGapLt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "rightGapLt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(/Form/Clock)+HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\")) < 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/rightGapGt",
+            "name" : "rightGapGt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "rightGapGt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(/Form/Clock)+HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\")) > -1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/leftGap",
+            "name" : "leftGap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/leftGapDep",
+            "name" : "leftGapDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/leftGapComp",
+            "name" : "leftGapComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../leftGap",
+              "computationAlternatives" : [ {
+                "operation" : "HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\"))+HoursFromTime(/Form/Clock)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/leftGapDepComp",
+            "name" : "leftGapDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../leftGapDep",
+              "computationAlternatives" : [ {
+                "operation" : "[/Form/leftGap]+1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/leftGapEq",
+            "name" : "leftGapEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "leftGapEq",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\"))+HoursFromTime(/Form/Clock) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/leftGapLt",
+            "name" : "leftGapLt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "leftGapLt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\"))+HoursFromTime(/Form/Clock) < 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/leftGapGt",
+            "name" : "leftGapGt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "leftGapGt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\"))+HoursFromTime(/Form/Clock) > -1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/invalidAmount",
+            "name" : "invalidAmount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/invalidAmountDep",
+            "name" : "invalidAmountDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/invalidAmountComp",
+            "name" : "invalidAmountComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../invalidAmount",
+              "computationAlternatives" : [ {
+                "operation" : "HoursFromTime(AddSeconds(/Form/Stamp,1/0))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/invalidAmountDepComp",
+            "name" : "invalidAmountDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../invalidAmountDep",
+              "computationAlternatives" : [ {
+                "operation" : "[/Form/invalidAmount]+1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/invalidAmountEq",
+            "name" : "invalidAmountEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "invalidAmountEq",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(AddSeconds(/Form/Stamp,1/0)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/invalidAmountLt",
+            "name" : "invalidAmountLt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "invalidAmountLt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(AddSeconds(/Form/Stamp,1/0)) < 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/invalidAmountGt",
+            "name" : "invalidAmountGt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "invalidAmountGt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(AddSeconds(/Form/Stamp,1/0)) > -1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/nestedMissing",
+            "name" : "nestedMissing",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/nestedMissingDep",
+            "name" : "nestedMissingDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/nestedMissingComp",
+            "name" : "nestedMissingComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../nestedMissing",
+              "computationAlternatives" : [ {
+                "operation" : "HoursFromTime(Time(HoursFromTime(AddSeconds(/Form/Stamp,HoursFromTime(/Form/Clock)))))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/nestedMissingDepComp",
+            "name" : "nestedMissingDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../nestedMissingDep",
+              "computationAlternatives" : [ {
+                "operation" : "[/Form/nestedMissing]+1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/nestedMissingEq",
+            "name" : "nestedMissingEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "nestedMissingEq",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(Time(HoursFromTime(AddSeconds(/Form/Stamp,HoursFromTime(/Form/Clock))))) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/nestedMissingLt",
+            "name" : "nestedMissingLt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "nestedMissingLt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(Time(HoursFromTime(AddSeconds(/Form/Stamp,HoursFromTime(/Form/Clock))))) < 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/nestedMissingGt",
+            "name" : "nestedMissingGt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "nestedMissingGt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(Time(HoursFromTime(AddSeconds(/Form/Stamp,HoursFromTime(/Form/Clock))))) > -1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/unrealStamp",
+            "name" : "unrealStamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/unrealStampDep",
+            "name" : "unrealStampDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/unrealStampComp",
+            "name" : "unrealStampComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../unrealStamp",
+              "computationAlternatives" : [ {
+                "operation" : "HoursFromTime(DateTime(Date(\"31\",\"03\",\"2024\"),Time(\"02\",\"30\")))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/unrealStampDepComp",
+            "name" : "unrealStampDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../unrealStampDep",
+              "computationAlternatives" : [ {
+                "operation" : "[/Form/unrealStamp]+1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/unrealStampEq",
+            "name" : "unrealStampEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "unrealStampEq",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(DateTime(Date(\"31\",\"03\",\"2024\"),Time(\"02\",\"30\"))) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/unrealStampLt",
+            "name" : "unrealStampLt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "unrealStampLt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(DateTime(Date(\"31\",\"03\",\"2024\"),Time(\"02\",\"30\"))) < 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/unrealStampGt",
+            "name" : "unrealStampGt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "unrealStampGt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(DateTime(Date(\"31\",\"03\",\"2024\"),Time(\"02\",\"30\"))) > -1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/unrealClock",
+            "name" : "unrealClock",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/unrealClockDep",
+            "name" : "unrealClockDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/unrealClockComp",
+            "name" : "unrealClockComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../unrealClock",
+              "computationAlternatives" : [ {
+                "operation" : "HoursFromTime(Time(/Form/H))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/unrealClockDepComp",
+            "name" : "unrealClockDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../unrealClockDep",
+              "computationAlternatives" : [ {
+                "operation" : "[/Form/unrealClock]+1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/unrealClockEq",
+            "name" : "unrealClockEq",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "unrealClockEq",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(Time(/Form/H)) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/unrealClockLt",
+            "name" : "unrealClockLt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "unrealClockLt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(Time(/Form/H)) < 1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/unrealClockGt",
+            "name" : "unrealClockGt",
+            "Rule" : {
+              "errorEntityRelPath" : "../Anchor",
+              "errorCode" : "unrealClockGt",
+              "errorCondition" : "FieldFilled(/Form/Anchor) And HoursFromTime(Time(/Form/H)) > -1",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Temporal effect control."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

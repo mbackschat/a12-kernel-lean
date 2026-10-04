@@ -1,17 +1,10 @@
 import A12Kernel.Elaboration.NumericValidation.Resolution
+import A12Kernel.Elaboration.NumericValidation.Expression
 import A12Kernel.Elaboration.PartialGroupCount
 
 /-! # Checked numeric-validation evaluation -/
 
 namespace A12Kernel
-
-/-- Lift one already-classified validation numeric operand into the arithmetic outcome domain. Number and temporal component reads share this exact boundary. -/
-def NumericOperand.toValidationArithmetic
-    (operand : NumericOperand) :
-    Except NumericValidationUnavailable NumericArithmeticOutcome :=
-  match operand with
-  | .value amount fillability => .ok (.value amount fillability)
-  | .unknown cause => .error (.formal cause)
 
 /-- Lift the existing validation-phase Number read into the arithmetic outcome domain. -/
 def FlatContext.resolveNumericArithmetic (context : FlatContext)
@@ -137,6 +130,10 @@ def resolve (atom : OrderedNumericValidationAtom model)
         context.resolveNumericValidationAtom source
       else
         .error .nonRelevant
+  | .temporalPart source =>
+      if source.source.fieldIds.all isRelevant then
+        (source.evalResult .validation context.fields).toOption.getD (.error .groupState)
+      else .error .nonRelevant
   | .firstFilled source =>
       match source.directResolvedFields? with
       | some direct =>
@@ -178,6 +175,31 @@ def resolve (atom : OrderedNumericValidationAtom model)
   -- carries no document to read. The addressed resolver owns the arm.
   | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
   | .temporalDistinctCount _ => .error .groupState
+
+/-- Keep temporal runtime effects outside numeric unavailability on the rule execution path. -/
+def resolveResult (atom : OrderedNumericValidationAtom model)
+    (context : ValidationEvaluationContext) (isRelevant : FlatRelevance) :
+    Except ScalarTemporalEvaluationFault (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
+  match atom with
+  | .temporalPart source =>
+      if source.source.fieldIds.all isRelevant then source.evalResult .validation context.fields
+      else pure (.error .nonRelevant)
+  | _ => pure (atom.resolve context isRelevant)
+
+private def temporalNumericFields (source : CheckedTemporalNumericExpression model)
+    (context : AddressedValidationEvaluationContext model) : Except CheckedAddressingError FlatContext := do
+  let cells ← source.source.fieldIds.mapM fun field => do
+    pure (field, ← context.readCell context.outer field)
+  let storedText ← match context.input with
+    | .checked document | .partialView document _ => pure (document.storedTextIn context.outer)
+    | .legacy _ _ => do
+        if source.source.storedTextFields.any (fun field => (model.lookupUniqueId field).toOption.any
+            (fun declaration => !declaration.repeatableScope.isEmpty)) then
+          throw (.checkedDocumentRequired [])
+        pure context.scalar.fields.storedText
+  pure { context.scalar.fields with
+    storedText
+    read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell }
 
 /-- Full addressed validation makes every already-certified direct field relevant. Partial scopes use their separate evaluator and cannot inhabit this context. -/
 def addressedDirectRelevant
@@ -282,6 +304,9 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
     Except CheckedAddressingError
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   match atom with
+  | .temporalPart source => do
+      let fields ← temporalNumericFields source context
+      (source.evalResult .validation fields).mapError (fun _ => .temporalUnavailable)
   | .ordinary source =>
       if source.allRelevant (addressedDirectRelevant context) then
         match source, context.input with
@@ -408,56 +433,23 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
           (run.evaluate document context.outer).map NumericOperand.toValidationArithmetic
       | .legacy _ _ | .partialView _ _ => pure (.error .groupState)
 
+/-- Addressed temporal extraction keeps cell addressing and temporal execution as separate effects. -/
+def resolveAddressedResult (atom : OrderedNumericValidationAtom model)
+    (context : AddressedValidationEvaluationContext model) :
+    Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault)
+      (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
+  match atom with
+  | .temporalPart source =>
+      let fields ← (temporalNumericFields source context).mapError Sum.inl
+      (source.evalResult .validation fields).mapError Sum.inr
+  | _ => (atom.resolveAddressed context).mapError Sum.inl
+
 end OrderedNumericValidationAtom
 
 /-- The direct-field relevance view induced by one addressed validation scope. -/
 def AddressedValidationEvaluationContext.directRelevant
     (context : AddressedValidationEvaluationContext model) : FlatRelevance :=
   OrderedNumericValidationAtom.addressedDirectRelevant context
-
-/-- Evaluate a checked standalone operation through the shared one-pass lowering and arithmetic engine. The caller selects the already-checked atom observation policy. -/
-def CheckedNumericValidationExpression.evalWith
-    (checked : CheckedNumericValidationExpression model)
-    (read : NumericValidationAtom →
-      Except NumericValidationUnavailable NumericArithmeticOutcome) :
-    Except NumericValidationUnavailable NumericArithmeticOutcome :=
-  checked.core.lowerForEvaluation.evalNumericOperationTree read
-
-/-- Resolve one direct Number field at its model-owned scalar or repeatable scope in the requested phase. A partial view may suppress the field without fabricating a formal cause; structural addressing failure remains outside numeric unavailability. -/
-def AddressedValidationEvaluationContext.resolveDirectNumberAt
-    (context : AddressedValidationEvaluationContext model)
-    (phase : Phase) (source : FlatNumberField) :
-    Except CheckedAddressingError
-      (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
-  match model.lookupUniqueId source.id with
-  | .error _ => pure (.error (.formal .malformed))
-  | .ok declaration =>
-      let needsAddressedRead :=
-        match context.input with
-        | .partialView _ _ => true
-        | .legacy _ _ | .checked _ =>
-            !declaration.repeatableScope.isEmpty
-      if !needsAddressedRead then
-        pure ((context.scalar.fields.resolveNumberComparisonOperandAt phase source)
-          |>.toValidationArithmetic)
-      else
-        match ← context.readPartialCell context.outer source.id with
-        | none => pure (.error .silentlyUnavailable)
-        | some cell =>
-            pure ((observeCell phase cell).asDirectNumericComparisonOperand source.info
-              |>.toValidationArithmetic)
-
-/-- Resolve every direct Number field in one checked expression against an addressed row context in the requested phase, then apply the shared one-pass arithmetic evaluator. The fallback is unreachable through the temporal direct-field certificate. -/
-def CheckedNumericValidationExpression.evalAddressedDirectNumbersAt
-    (checked : CheckedNumericValidationExpression model)
-    (phase : Phase)
-    (context : AddressedValidationEvaluationContext model) :
-    Except CheckedAddressingError
-      (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
-  let resolved ← checked.core.mapM fun
-    | .field source => context.resolveDirectNumberAt phase source
-    | _ => pure (.error .groupState)
-  pure (resolved.lowerForEvaluation.evalNumericOperationTree id)
 
 /-- Compatibility wrapper for the established ordinary numeric comparison. -/
 def NumericComparison.evalWith
@@ -524,6 +516,26 @@ def OrderedNumericComparison.evalAddressed
     suppressExactScaleWarning := comparison.suppressExactScaleWarning }
   pure (resolved.evalWith id)
 
+/-- Numeric arithmetic consumes reached results only after temporal runtime effects have been
+separated; the enclosing rule retains its existing abort and classification policy. -/
+def OrderedNumericComparison.evalSelectedResult (comparison : OrderedNumericComparison model)
+    (context : ValidationEvaluationContext) (isRelevant : FlatRelevance) :
+    Except ScalarTemporalEvaluationFault Verdict := do
+  let left ← comparison.left.mapM (·.resolveResult context isRelevant)
+  let right ← comparison.right.mapM (·.resolveResult context isRelevant)
+  let resolved : NumericComparisonOf (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
+    { comparison with left, right }
+  pure (resolved.evalWith id)
+
+def OrderedNumericComparison.evalAddressedResult (comparison : OrderedNumericComparison model)
+    (context : AddressedValidationEvaluationContext model) :
+    Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault) Verdict := do
+  let left ← comparison.left.mapM (·.resolveAddressedResult context)
+  let right ← comparison.right.mapM (·.resolveAddressedResult context)
+  let resolved : NumericComparisonOf (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
+    { comparison with left, right }
+  pure (resolved.evalWith id)
+
 /-- Resolve one atom after the public support check. Unsupported branches make recursion total but are unreachable through `evalAddressedPartial?`; they cannot become public semantic UNKNOWN. -/
 private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
     (atom : OrderedNumericValidationAtom model)
@@ -577,7 +589,7 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
               | some available => pure (.ok (.value available.1 available.2))
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
   | .booleanValueCount _ | .sumOfProducts _ | .filledFieldCount _
-  | .tokenDistinctCount _ | .temporalDistinctCount _ =>
+  | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ =>
       pure (.error .groupState)
 
 /-- Evaluate a partial addressed numeric comparison. `none` means the atom family or filter shape is structurally unsupported; a reached relevance failure is numeric UNKNOWN. The caller must apply the rule-wide `Having` skip first. -/

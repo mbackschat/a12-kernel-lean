@@ -1,0 +1,173 @@
+{
+  "model": "TemporalNumericEffects_DM.json",
+  "locale": "en_US",
+  "clock": "2024-01-01T12:34:56Z",
+  "observe": [
+    "compute",
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "filled",
+      "documentInline": {
+        "Form": {
+          "Stamp": "2024-01-01T23:59:30",
+          "Clock": "05:06:07",
+          "H": "9",
+          "Anchor": "1",
+          "gap": "99",
+          "gapDep": "99",
+          "gapAmount": "99",
+          "gapAmountDep": "99",
+          "rightGap": "99",
+          "rightGapDep": "99",
+          "leftGap": "99",
+          "leftGapDep": "99",
+          "invalidAmount": "99",
+          "invalidAmountDep": "99",
+          "nestedMissing": "99",
+          "nestedMissingDep": "99",
+          "unrealStamp": "99",
+          "unrealStampDep": "99",
+          "unrealClock": "99",
+          "unrealClockDep": "99"
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "Form": {
+          "Stamp": "",
+          "Clock": "",
+          "H": "",
+          "Anchor": "1",
+          "gap": "99",
+          "gapDep": "99",
+          "gapAmount": "99",
+          "gapAmountDep": "99",
+          "rightGap": "99",
+          "rightGapDep": "99",
+          "leftGap": "99",
+          "leftGapDep": "99",
+          "invalidAmount": "99",
+          "invalidAmountDep": "99",
+          "nestedMissing": "99",
+          "nestedMissingDep": "99",
+          "unrealStamp": "99",
+          "unrealStampDep": "99",
+          "unrealClock": "99",
+          "unrealClockDep": "99"
+        }
+      }
+    },
+    {
+      "name": "badStamp",
+      "documentInline": {
+        "Form": {
+          "Stamp": "bad",
+          "Clock": "05:06:07",
+          "H": "9",
+          "Anchor": "1",
+          "gap": "99",
+          "gapDep": "99",
+          "gapAmount": "99",
+          "gapAmountDep": "99",
+          "rightGap": "99",
+          "rightGapDep": "99",
+          "leftGap": "99",
+          "leftGapDep": "99",
+          "invalidAmount": "99",
+          "invalidAmountDep": "99",
+          "nestedMissing": "99",
+          "nestedMissingDep": "99",
+          "unrealStamp": "99",
+          "unrealStampDep": "99",
+          "unrealClock": "99",
+          "unrealClockDep": "99"
+        }
+      }
+    },
+    {
+      "name": "badClock",
+      "documentInline": {
+        "Form": {
+          "Stamp": "2024-01-01T23:59:30",
+          "Clock": "bad",
+          "H": "9",
+          "Anchor": "1",
+          "gap": "99",
+          "gapDep": "99",
+          "gapAmount": "99",
+          "gapAmountDep": "99",
+          "rightGap": "99",
+          "rightGapDep": "99",
+          "leftGap": "99",
+          "leftGapDep": "99",
+          "invalidAmount": "99",
+          "invalidAmountDep": "99",
+          "nestedMissing": "99",
+          "nestedMissingDep": "99",
+          "unrealStamp": "99",
+          "unrealStampDep": "99",
+          "unrealClock": "99",
+          "unrealClockDep": "99"
+        }
+      }
+    },
+    {
+      "name": "highHour",
+      "documentInline": {
+        "Form": {
+          "Stamp": "2024-01-01T23:59:30",
+          "Clock": "05:06:07",
+          "H": "24",
+          "Anchor": "1",
+          "gap": "99",
+          "gapDep": "99",
+          "gapAmount": "99",
+          "gapAmountDep": "99",
+          "rightGap": "99",
+          "rightGapDep": "99",
+          "leftGap": "99",
+          "leftGapDep": "99",
+          "invalidAmount": "99",
+          "invalidAmountDep": "99",
+          "nestedMissing": "99",
+          "nestedMissingDep": "99",
+          "unrealStamp": "99",
+          "unrealStampDep": "99",
+          "unrealClock": "99",
+          "unrealClockDep": "99"
+        }
+      }
+    },
+    {
+      "name": "amountOnlyEmpty",
+      "documentInline": {
+        "Form": {
+          "Stamp": "2024-01-01T23:59:30",
+          "Clock": "",
+          "H": "9",
+          "Anchor": "1",
+          "gap": "99",
+          "gapDep": "99",
+          "gapAmount": "99",
+          "gapAmountDep": "99",
+          "rightGap": "99",
+          "rightGapDep": "99",
+          "leftGap": "99",
+          "leftGapDep": "99",
+          "invalidAmount": "99",
+          "invalidAmountDep": "99",
+          "nestedMissing": "99",
+          "nestedMissingDep": "99",
+          "unrealStamp": "99",
+          "unrealStampDep": "99",
+          "unrealClock": "99",
+          "unrealClockDep": "99"
+        }
+      }
+    }
+  ]
+}

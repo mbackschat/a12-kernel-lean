@@ -244,6 +244,10 @@ private def ordinaryNumericAtomIterationScope
 private def orderedNumericAtomIterationScope :
     OrderedNumericValidationAtom model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
+  | .temporalPart source =>
+      mergeIterationScopeList (source.source.fieldIds.map fun field =>
+        let scope := model.fieldRepeatableScope field
+        if scope.isEmpty then none else some scope)
   | .ordinary source => ordinaryNumericAtomIterationScope model source
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
       checkedNumberSourceIterationScope source

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.TemporalNumericExpression
 import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.DateRangeBoundComponent
 import A12Kernel.Elaboration.FieldFillList
@@ -23,6 +24,7 @@ abbrev NumericComputationAtom := ResolvedNumericAtom FlatFieldDecl
 
 /-- The complete computation surface keeps ordinary numeric atoms in their shared representation and adds distinct prefix-selecting and row-aligned aggregate atoms without creating another arithmetic tree. -/
 inductive SurfaceNumericComputationAtom where
+  | temporalPart (source : SurfaceScalarTemporalExpression) (part : TemporalNumericPart)
   | numeric (source : SurfaceNumericAtom SurfaceNumberEntitySource)
   | filledFieldCount (source : SurfaceFieldEntitySource)
   | firstFilled (source : SurfaceNumberEntitySource)
@@ -34,10 +36,10 @@ inductive SurfaceNumericComputationAtom where
   | booleanValueCount (expected : Bool)
       (source : SurfaceBooleanValueCountSource)
   | sumOfProducts (source : SurfaceNumericProductAggregate)
-  deriving Repr, DecidableEq
 
 /-- One checked numeric computation atom. Ordinary scalar/entity-list sources retain the shared resolved atom, `FirstFilledValue` and value count retain their distinct scans over that same entity-list source, and `SumOfProducts` retains its proof-bearing common-row plan. -/
 inductive CheckedNumericComputationAtom (model : FlatModel) where
+  | temporalPart (source : CheckedTemporalNumericExpression model)
   | numeric
       (source : ResolvedNumericAtom FlatFieldDecl
         (CheckedNumberEntitySource model))
@@ -56,6 +58,7 @@ inductive CheckedNumericComputationAtom (model : FlatModel) where
 
 /-- Fail-closed faults outside the admitted numeric computation-expression fragment. -/
 inductive NumericComputationFault where
+  | temporalExpression (fault : ScalarTemporalEvaluationFault)
   | guardBinding (error : ComputationConditionError)
   | stringExpression (error : StringComputationFault)
   | guardValueFailure
@@ -86,6 +89,7 @@ structure NumericComputationEvaluationContext where
   starRead : Env → FieldId → CheckedCell
 
 inductive NumericComputationElabError where
+  | temporalExpression (error : TemporalNumericExpressionError)
   /-- An operand's reference, or the declaring group's syntax. -/
   | resolve (error : ResolveError)
   /-- The target's own declaration, looked up by identity rather than by an authored path. -/

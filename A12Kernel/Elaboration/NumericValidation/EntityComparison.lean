@@ -30,6 +30,7 @@ and temporal, tried in that order on the same authored list.
 namespace A12Kernel
 
 inductive EntityNumericComparisonElabError where
+  | temporalExpression (error : TemporalNumericExpressionError)
   | ordinary (error : NumericValidationElabError)
   | numberSource (error : NumberEntityElabError)
   | tokenSource (error : TokenValueCountElabError)
@@ -63,6 +64,9 @@ private def SurfaceNumericAtom.ofEntityAtom? :
 private def resolveEntityAtom (model : FlatModel) (rowGroup bindingGroup : GroupPath) :
     SurfaceNumericComputationAtom →
       Except EntityNumericComparisonElabError (OrderedNumericValidationAtom model)
+  | .temporalPart source part =>
+      (elaborateTemporalNumericExpression model rowGroup source part (some bindingGroup)).map .temporalPart
+        |>.mapError .temporalExpression
   | .numeric (.aggregate .distinctCount source) => do
       match ← (elaborateDistinctCountSource model rowGroup source (bindingGroup? := some bindingGroup)).mapError .numberSource with
       | .number checked => pure (.aggregate .distinctCount checked)

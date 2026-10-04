@@ -1,6 +1,6 @@
 import A12Kernel.Reference.Dm.LowerString
 import A12Kernel.Reference.Dm.LowerFlat
-import A12Kernel.Reference.Dm.LowerNumeric
+import A12Kernel.Reference.Dm.LowerScalarTemporal
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.NumericValidation.EntityComparison
 import A12Kernel.Elaboration.FieldFillRule
@@ -64,170 +64,6 @@ def lowerNumericComparison (model : FlatModel) (rowGroup : GroupPath) (op : Comp
   pure { op, left := ← lowerNumericExpr lowerValidationNumericAtom (lowerNumericFieldAtom model rowGroup lowerValidationNumericAtom) left
          right := ← lowerNumericExpr lowerValidationNumericAtom (lowerNumericFieldAtom model rowGroup lowerValidationNumericAtom) right
          suppressExactScaleWarning := suppress }
-
-private def fieldOperand (model : FlatModel) (group : GroupPath) (construct : String) (expr : Expr) :
-    Lowering FlatFieldDecl := do
-  let some path := expr.fieldEntity? | refuse construct "operand"
-  elaborated construct (model.resolveFieldDeclarationUnchecked group path)
-
-private def timeComponent (model : FlatModel) (group : GroupPath) : Argument → Lowering SurfaceTimeComponent
-  | .mk (.string text) none none => pure (.constant text)
-  | .mk (.call id [.mk field none none] none none) none none => do
-      let part ← match id with
-        | "HoursFromTime" => pure TimeNumericPart.hour
-        | "MinutesFromTime" => pure .minute
-        | "SecondsFromTime" => pure .second
-        | _ => refuse "Time" id
-      pure (.extractor part (← fieldOperand model group "Time" field).id)
-  | .mk expr none none => do
-      let declaration ← fieldOperand model group "Time" expr
-      match declaration.policy.kind.surfaceKind with
-      | .number => pure (.number declaration.id)
-      | .string => pure (.string declaration.id)
-      | _ => refuse "Time" "component kind"
-  | _ => refuse "Time" "component"
-
-private def timeComponents (model : FlatModel) (group : GroupPath) :
-    List Argument → Lowering SurfaceTimeComponents
-  | [] => pure .empty
-  | [hour] => do pure (.hour (← timeComponent model group hour))
-  | [hour, minute] => do
-      pure (.minute (← timeComponent model group hour) (← timeComponent model group minute))
-  | [hour, minute, second] => do
-      pure (.second (← timeComponent model group hour) (← timeComponent model group minute)
-        (← timeComponent model group second))
-  | _ => refuse "Time" "arity"
-
-/-- Decode every direct component form the checked Date constructor already certifies. -/
-private def lowerDateComponent (model : FlatModel) (rowGroup : GroupPath) :
-    Expr → Lowering SurfaceConstructedDateSource
-  | .string text => pure (.constant text)
-  | .call name [.mk operand none none] none none => do
-      let some part := datePart? name | refuse "Date" "component extractor"
-      match operand with
-      | .constant "BaseYear" => pure (.baseYearExtractor part)
-      | .constant "Today" => pure (.todayExtractor part)
-      | .constant "Now" => pure (.nowExtractor part)
-      | .call bound [.mk (.constant "BaseYear") none none] none none =>
-          match bound with
-          | "StartOfDateRange" => pure (.baseYearRangeExtractor .start part)
-          | "EndOfDateRange" => pure (.baseYearRangeExtractor .finish part)
-          | _ => refuse "Date" "Base Year endpoint"
-      | _ =>
-          let some path := operand.fieldEntity? | refuse "Date" "extractor operand"
-          let field ← elaborated "Date" (model.resolveFieldDeclarationUnchecked rowGroup path)
-          pure (.extractor part field.id)
-  | expression => do
-      let some path := expression.fieldEntity? | refuse "Date" "component field"
-      let field ← elaborated "Date" (model.resolveFieldDeclarationUnchecked rowGroup path)
-      match field.policy.kind.surfaceKind with
-      | .number => pure (.numberField field.id)
-      | .string => pure (.stringField field.id)
-      | .temporal _ => pure (.dateYearField field.id)
-      | _ => refuse "Date" "component kind"
-
-private def lowerDateComponents (model : FlatModel) (rowGroup : GroupPath)
-    (arguments : List Argument) : Lowering SurfaceConstructedDateComponents := do
-  let some expressions := arguments.mapM plain | refuse "Date" "component modifier"
-  let component := lowerDateComponent model rowGroup
-  match expressions with
-  | [day, month] => pure { day := ← component day, month := ← component month, year := .baseYear }
-  | [day, month, year] => pure {
-      day := ← component day, month := ← component month, year := .complete (← component year) }
-  | [day, month, century, shortYear] => pure {
-      day := ← component day, month := ← component month
-      year := .centuryAndShortYear (← component century) (← component shortYear) }
-  | _ => refuse "Date" "component arity"
-
-private inductive TemporalExpressionPosition where
-  | value
-  | source
-
-/-- Field spelling depends on the grammar position (spec/12 §3): value expressions use
-brackets, while temporal source slots take an entity. Keep that distinction until lowering. -/
-private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGroup : GroupPath)
-    (position : TemporalExpressionPosition) (expression : Expr) : Lowering SurfaceScalarTemporalExpression := do
-  let lowerSourceSlot (source : Expr) : Lowering SurfaceScalarTemporalExpression :=
-    lowerScalarTemporalExpressionAt model rowGroup .source source
-  let lowerRangeSlot (bound : DateRangeBound) (source : Expr) : Lowering SurfaceScalarTemporalExpression := do
-    match source with
-    | .constant "BaseYear" =>
-        pure (.baseYearBound (if bound == .start then .start else .finish))
-    | _ =>
-        let some path := source.fieldEntity? | refuse "TemporalExpression" "range entity"
-        pure (.rangeBound path bound)
-  match expression with
-  | .braces source => (.group ·) <$> lowerScalarTemporalExpressionAt model rowGroup .value source
-  | .value { path, index := none, category := none } =>
-      match position, path.toFieldPath? with
-      | .value, some field => pure (.field field)
-      | .source, _ => refuse "TemporalExpression" "bracketed read in temporal source slot"
-      | _, none => refuse "TemporalExpression" "field path"
-  | .entity { path, index := none, category := none } =>
-      match position, path.toFieldPath? with
-      | .source, some field => pure (.field field)
-      | .value, _ => refuse "TemporalExpression" "bare entity in temporal value expression"
-      | _, none => refuse "TemporalExpression" "field path"
-  | .call "DateTime" [.mk date none none, .mk time none none] none none =>
-      pure (.dateTimeConstruction (← lowerSourceSlot date) (← lowerSourceSlot time))
-  | .call "ValueAsDate" [.mk source none none, .mk (.constant endpoint) none none] none none => do
-      let some path := source.fieldEntity? | refuse "ValueAsDate" "partial Date entity"
-      let endpoint ← match endpoint with
-        | "FirstDay" => pure ValueAsDateEndpoint.firstDay
-        | "LastDay" => pure ValueAsDateEndpoint.lastDay
-        | _ => refuse "ValueAsDate" "endpoint"
-      pure (.valueAsDate path endpoint)
-  | .call "Date" arguments none none =>
-      (.dateConstruction ·) <$> lowerDateComponents model rowGroup arguments
-  | .call "Time" arguments none none =>
-      (.timeConstruction ·) <$> timeComponents model rowGroup arguments
-  | .constant "Now" => pure .now
-  | .constant "Today" => pure .today
-  | .call "StartOfDateRange" [.mk source none none] none none => lowerRangeSlot .start source
-  | .call "EndOfDateRange" [.mk source none none] none none => lowerRangeSlot .finish source
-  | .call "DateFromDateTime" [.mk source none none] none none =>
-      (.dateFromDateTime ·) <$> lowerSourceSlot source
-  | .call "TimeFromDateTime" [.mk source none none] none none =>
-      (.timeFromDateTime ·) <$> lowerSourceSlot source
-  | .string text =>
-      match dateTimeConstant? text, timeConstant? text, civilDateConstant? text with
-      | some value, _, _ => pure (.dateTimeLiteral value)
-      | _, some value, _ => pure (.timeLiteral value)
-      | _, _, some value => match FullDate.ofCivil? value with
-          | some value => pure (.dateLiteral value)
-          | none => refuse "TemporalExpression" "literal calendar profile"
-      | _, _, _ => refuse "TemporalExpression" "literal"
-  | .call name [.mk source none none, .mk amount none none] none none => do
-      match name with
-      | "Min" | "Max" =>
-          pure (.combine (if name == "Min" then .minimum else .maximum)
-            (← lowerScalarTemporalExpressionAt model rowGroup .value source)
-            (← lowerScalarTemporalExpressionAt model rowGroup .value amount))
-      | "AddDays" | "AddMonths" | "AddYears" =>
-          let unit := if name == "AddDays" then DateShiftUnit.days
-            else if name == "AddMonths" then .months else .years
-          pure (.calendarShift unit (← lowerSourceSlot source)
-            (← lowerNumericExpr lowerValidationNumericAtom (lowerNumericFieldAtom model rowGroup lowerValidationNumericAtom) amount))
-      | "AddHours" | "AddMinutes" | "AddSeconds" =>
-          let unit := if name == "AddHours" then DateTimeSubdayUnit.hours
-            else if name == "AddMinutes" then .minutes else .seconds
-          pure (.subdayShift unit (← lowerSourceSlot source)
-            (← lowerNumericExpr lowerValidationNumericAtom (lowerNumericFieldAtom model rowGroup lowerValidationNumericAtom) amount))
-      | "MinValue" | "MaxValue" =>
-          pure (.extremum (if name == "MinValue" then .minimum else .maximum)
-            (← lowerEntitySource model rowGroup [.mk source none none, .mk amount none none]))
-      | _ => refuse "TemporalExpression" name
-  | .call name operands none none => do
-      let operator ← match name with
-        | "MinValue" => pure TemporalExtremumOp.minimum
-        | "MaxValue" => pure TemporalExtremumOp.maximum
-        | _ => refuse "TemporalExpression" name
-      pure (.extremum operator (← lowerEntitySource model rowGroup operands))
-  | expression => refuse "TemporalExpression" expression.construct
-
-def lowerScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
-    (expression : Expr) : Lowering SurfaceScalarTemporalExpression :=
-  lowerScalarTemporalExpressionAt model rowGroup .value expression
 
 private def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPath) :
     Expr → Lowering SurfaceTokenComparisonOperand
@@ -419,7 +255,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
       -- numeric carriers' own refusal is the one reported.
       ++ (match (do
             let some numericOp := op.toNumeric? | refuse "Comparison" "operator"
-            let atom := lowerComputationNumericAtom model rowGroup
+            let atom := lowerCompleteComputationNumericAtom model rowGroup
             match elaborateEntityNumericComparison model rowGroup numericOp
                 (← lowerNumericExpr atom (lowerNumericFieldAtom model rowGroup atom) left) (← lowerNumericExpr atom (lowerNumericFieldAtom model rowGroup atom) right) suppress bindingGroup with
             | .error .readsNoList => pure none

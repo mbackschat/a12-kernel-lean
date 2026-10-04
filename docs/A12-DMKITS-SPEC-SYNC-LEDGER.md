@@ -35,10 +35,23 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-04-06"></a>
+### SPEC-2026-10-04-06 — validation reaches a failing shift amount after an unavailable source
+
+- `status`: pending
+- `clause`: [spec/05 date arithmetic](../spec/05-dates-and-time.md#2-addition-and-difference-are-asymmetric-and-calendar-corrected).
+- `delta`: narrow the formal-source short-circuit to computation. Validation still reaches the shift amount, whose runtime failure can produce the authored rule’s VALUE error despite the earlier unavailable source.
+- `evidence`: [recursive temporal checkpoint](sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression), Kernel 30.8.1, both strategies. The malformed Stamp/later gap-amount row is distinguished from the same source with an ordinary amount and the clean constructed-gap control.
+- `redundancy`: KF78, KF165, KF166 and KF231 at `35ad604468360640f9f5bd9fcdc2cc6922b0b685` were inspected after heading and value searches. They settle extraction, nested-constructor provenance, invalid arithmetic and zone behavior, but do not carry this shift-amount phase discriminator. SPEC-2026-10-03-06 owns the related temporal-list and rule-handler boundaries.
+- `surfaces`: generated validation numeric extraction and temporal shift operand evaluation; preserve computation’s earlier poison stop.
+- `acceptance`: reconcile the bad-source/gap-amount and ordinary-amount controls against the retained outcomes, or provide contrary Kernel observations. Existing equivalent handling can be acknowledged without reimplementation.
+- `introducing commit`: resolve by this stable entry ID using the ledger contract.
+
 <a id="spec-2026-10-04-05"></a>
 ### SPEC-2026-10-04-05 — filtered field-fill computation ranges
 
-- `status`: pending
+- `status`: handed-off
+- `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/02 §A.4](../spec/02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges)
 - `delta`: state selected declared versus instantiated candidates, absent-coordinate reads, per-scan lookahead and composite restart for filtered computation guards.
 - `evidence`: the [family checkpoint](sources/computation-scheduling-probes.md#src-field-fill-computation-guards) retains all seven predicates on Kernel 30.8.1 under both strategies; the runtime grid has 1,584 computation instances.
@@ -50,7 +63,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-04-04"></a>
 ### `SPEC-2026-10-04-04` — DateRange overlap guards preserve reached poison and ordered prefixes
 
-- `status`: pending
+- `status`: handed-off
+- `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/05 §8](../spec/05-dates-and-time.md#8-date-ranges-and-overlap).
 - `delta`: qualify unavailable-cell skipping as validation behavior. Computation overlap guards preserve scalar-first empty termination, reached poison, deciding prefixes, filter lookahead and declaration-major group ordering.
 - `evidence`: [overlap guard checkpoint](sources/computation-scheduling-probes.md#src-overlap-computation-guards), Kernel 30.8.1, both strategies agreeing on eighteen documents. Dependents distinguish poison from clean clearing; the retained manifest pins the inputs and observations.
@@ -62,7 +76,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-04-03"></a>
 ### `SPEC-2026-10-04-03` — full-rule iteration differs from physical extent and uniqueness cache membership
 
-- `status`: pending
+- `status`: handed-off
+- `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands).
 - `delta`: ordinary single-root full-rule iteration selects dense declared slots at product ≤ 5 and occupied coordinate prefixes above it, retaining each reset's first coordinate. Root dispatch is separate; occupancy crosses group identities. RNU always uses the occupied-prefix relation over document depth bounds, even inside a dense rule.
 - `evidence`: [Iteration-domain checkpoint](sources/evaluation-and-application-routes.md#src-validation-iteration-domain), pinned Kernel 30.8.1 source and both runtime strategies; manifest pins all inputs/results. The ancestor-key/optional-child controls distinguish uniqueness from the enclosing rule.
@@ -74,7 +89,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-04-02"></a>
 ### `SPEC-2026-10-04-02` — temporal construction preserves independent absence and relevance states
 
-- `status`: pending
+- `status`: handed-off
+- `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/05 constructor composition](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity).
 - `delta`: Time and DateTime no-payload outcomes retain missing versus fixed provenance under extrema. Cause-free partial-Date non-relevance remains distinct. DateTime arguments evaluate in order; a constructed Berlin gap clears cleanly, unlike a gap literal, and the retained fold chooses the later occurrence.
 - `evidence`: the [ValueAsDate composition checkpoint](sources/temporal-and-message-probes.md#src-value-as-date-locus) retains 36 documents on both Kernel 30.8.1 engines, 87 static rows, source mechanisms and a content manifest. Its dependent guards separate clean absence from poison.
@@ -86,7 +102,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-04-01"></a>
 ### `SPEC-2026-10-04-01` — component-omitting Date checking completes the stored format after rendering
 
-- `status`: pending
+- `status`: handed-off
+- `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/05 component-omitting formats](../spec/05-dates-and-time.md#1-constant-format-and-the-stringdate-literal-ambiguity-).
 - `delta`: replace the no-position-error claim with format-specific formal completion and position checking. Computed fragment targets are classified after rendering, so discarded years can cause floor or leap-reality failure; the attempted text remains errored and dependents are poisoned. Arithmetic retains intermediate calendar values before storage checks.
 - `evidence`: the [calendar family checkpoint](sources/temporal-runtime-fold-probes.md#src-calendar-expression-family) retains the separating floor, year-overflow and leap-loss rows on both Kernel 30.8.1 engines, the clean producer identity and manifest. The checkpoint names the source path that distinguishes formal completion from runtime completion.
@@ -98,7 +115,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-03-06"></a>
 ### `SPEC-2026-10-03-06` — temporal failures preserve operand order and the validation rule boundary
 
-- `status`: pending
+- `status`: handed-off
+- `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/09 §3.2](../spec/09-computations.md#32-an-invalidity-clear-poisons) and [spec/10 §3.1](../spec/10-validation-and-polarity.md#31-truth-testing-and-message-classification).
 - `delta`: temporal operand-list Min/Max stop at an earlier malformed operand before converting a later gap literal. Reversing Min operands reaches the literal error first. During validation truth testing, a reached gap-label comparison produces the authored rule’s VALUE_ERROR; a later false And cannot suppress it, while an earlier false or unknown prefix skips it. A true complete condition may then reach the skipped failure during statically enabled classification.
 - `evidence`: the [temporal disposition checkpoint](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-disposition) retains four documents, both strategies, ordinary-label and dependent controls, exact producer identity and artifact hashes.
@@ -114,7 +132,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-03-05"></a>
 ### `SPEC-2026-10-03-05` — group-list expansion does not inherit singular containing-group exemptions
 
-- `status`: pending
+- `status`: handed-off
+- `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/09 §1.1](../spec/09-computations.md#11-group-derived-scheduling-dependencies) and §5.
 - `delta`: positive singular GroupFilled and the admitted positive fixed-root AtLeastOneGroupFilled form retain their special target/dependency treatment. Ordinary containing-group lists, including a sole non-root AtLeastOneGroupFilled and starred Any/No controls, draw MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD; Boolean expansion must preserve the authored dependency kind.
 - `evidence`: the [guard checkpoint](sources/computation-scheduling-probes.md#src-compositional-computation-guards) owns the eighteen-row shared static capture and the source owners that inspect unexpanded condition shapes. The corresponding temporal runtime rows make no additional scheduling claim for refused group-list shapes.
@@ -126,7 +145,8 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-03-04"></a>
 ### `SPEC-2026-10-03-04` — computation membership preserves reached poison and deciding prefixes
 
-- `status`: pending
+- `status`: handed-off
+- `handoff`: owner confirmed transfer on 2026-10-04.
 - `origin`: this entry records local measurements and was created after the owner's 2026-10-03 ledger handoff; it was not part of that transfer.
 - `clause`: [spec/06 §B.5](../spec/06-strings-and-enumerations.md#b5-computation-preconditions-preserve-reached-errors-and-traversal-order).
 - `delta`: computation membership retains member-first collection, `NotAll`'s presence prepass and restarted subject scan, deciding subject prefixes and the distinct empty-member behavior of `AtLeastOne` and `No`. Reached formal errors poison the guarded computation. Scalar membership has neither plural prepass; filtered membership retains one-kept-successor lookahead.

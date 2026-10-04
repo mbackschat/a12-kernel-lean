@@ -124,19 +124,19 @@ example :
     let missing : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
     let poisoned (cause : FormalCause) : CheckedCell :=
       { rawPresent := true, parsed := none, findings := [cause] }
-    temporalExpressionOutcome (.subdayShift .hours .now amount) (fun _ => missing) =
+    temporalExpressionOutcome (.subdayShift .hours .now (amount.map Sum.inl)) (fun _ => missing) =
       some (.value (.instant { epochMillis := 0 }) false) ∧
     temporalExpressionOutcome
-      (.subdayShift .hours (.field { base := .relative 0, groups := [], field := "Stamp" }) amount)
+      (.subdayShift .hours (.field { base := .relative 0, groups := [], field := "Stamp" }) (amount.map Sum.inl))
       (fun id => poisoned (if id == 9 then .dateFormat else .malformed)) =
         some (.unknown .dateFormat) ∧
     temporalExpressionOutcome
-      (.subdayShift .hours (.field { base := .relative 0, groups := [], field := "Stamp" }) amount)
+      (.subdayShift .hours (.field { base := .relative 0, groups := [], field := "Stamp" }) (amount.map Sum.inl))
       (fun id => if id == 9 then missing else poisoned .malformed) =
         some (.unknown .malformed) := by native_decide
 
 example :
-    temporalExpressionResult (.timeConstruction (.minute (.constant "1") (.constant "30")))
+    temporalExpressionResult (.timeConstruction (.minute (.inl (.constant "1")) (.inl (.constant "30"))))
       (.timeFromDateTime (.subdayShift .minutes .now (.literal { value := 90, authoredScale := 0 }))) =
         some (.fired .value) := by native_decide
 

@@ -1,6 +1,6 @@
 import A12Kernel.Semantics.DateShift
 import A12Kernel.Elaboration.CheckedDocument
-import A12Kernel.Elaboration.NumericValidation.Evaluation
+import A12Kernel.Elaboration.NumericValidation.Expression
 
 /-! # Checked temporal shift amounts
 

@@ -187,24 +187,36 @@ def map (transform : SourceAtom → TargetAtom) :
   | .round mode places body =>
       .round mode places (body.map transform)
 
+/-- Retain the strict subterm bound when numeric atoms recursively contain another expression family.
+Elaboration and evaluation use the same traversal without fuel or an opaque recursive callback. -/
+@[simp]
+def mapMSubterm [SizeOf A] (expression : AuthoredNumericExpr A)
+    (resolve : (atom : A) → sizeOf atom < sizeOf expression → Except E B) :
+    Except E (AuthoredNumericExpr B) :=
+  match expression with
+  | .atom sourceAtom => (resolve sourceAtom (by simp)).map .atom
+  | .literal decoded => pure (.literal decoded)
+  | .group body => (mapMSubterm body (fun atom h => resolve atom (by simp_all; omega))).map .group
+  | .abs body => (mapMSubterm body (fun atom h => resolve atom (by simp_all; omega))).map .abs
+  | .extremumCall op body =>
+      (mapMSubterm body (fun atom h => resolve atom (by simp_all; omega))).map (.extremumCall op)
+  | .round mode places body =>
+      (mapMSubterm body (fun atom h => resolve atom (by simp_all; omega))).map (.round mode places)
+  | .binary op left right => do
+      pure (.binary op (← mapMSubterm left (fun atom h => resolve atom (by simp_all; omega)))
+        (← mapMSubterm right (fun atom h => resolve atom (by simp_all; omega))))
+  | .power left right => do
+      pure (.power (← mapMSubterm left (fun atom h => resolve atom (by simp_all; omega)))
+        (← mapMSubterm right (fun atom h => resolve atom (by simp_all; omega))))
+  | .extremum op left right => do
+      pure (.extremum op (← mapMSubterm left (fun atom h => resolve atom (by simp_all; omega)))
+        (← mapMSubterm right (fun atom h => resolve atom (by simp_all; omega))))
+
 /-- Traverse every atom from left to right while preserving the authored expression shape and all syntax metadata. This is the shared path-resolution seam for checked validation and computation consumers. -/
 def mapM {SourceAtom TargetAtom Error : Type}
-    (resolve : SourceAtom → Except Error TargetAtom) :
-    AuthoredNumericExpr SourceAtom → Except Error (AuthoredNumericExpr TargetAtom)
-  | .atom sourceAtom => (resolve sourceAtom).map .atom
-  | .literal decoded => pure (.literal decoded)
-  | .group body => (body.mapM resolve).map .group
-  | .binary op left right => do
-      pure (.binary op (← left.mapM resolve) (← right.mapM resolve))
-  | .power base exponent => do
-      pure (.power (← base.mapM resolve) (← exponent.mapM resolve))
-  | .abs body => (body.mapM resolve).map .abs
-  | .extremum op left right => do
-      pure (.extremum op (← left.mapM resolve) (← right.mapM resolve))
-  | .extremumCall op body =>
-      (body.mapM resolve).map (.extremumCall op)
-  | .round mode places body =>
-      (body.mapM resolve).map (.round mode places)
+    (resolve : SourceAtom → Except Error TargetAtom)
+    (expression : AuthoredNumericExpr SourceAtom) : Except Error (AuthoredNumericExpr TargetAtom) :=
+  expression.mapMSubterm (fun source _ => resolve source)
 
 /-- Numeric sources in authored occurrence order, without deduplication or loss of repeated reads. -/
 def atoms : AuthoredNumericExpr Atom → List Atom

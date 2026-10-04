@@ -1700,7 +1700,7 @@ An a12-dmkits interpreter agreement is triangulation. A maintained adapter test 
 
 ## Maintenance rule
 
-Update this owner only when an authoritative locus, reusable drill route, source tension, or inbound provenance checkpoint changes. Edit the matching shard record and change this hub only when navigation or its stable entry set changes. Do not append Lean implementation status, current exclusions, capsule summaries, theorem/test counts, or a chronological research narrative. Replace superseded source guidance and rely on Git for the old review path.
+Edit the source shard when its provenance or drill route changes; change this hub only for navigation. [Documentation discipline](DOC-DISCIPLINE.md) owns the update boundaries.
 
 <a id="src-peer-adapter-diagnostics-replay"></a>
 - [The peer's retained computation fixture and seven runtime documents replay with 18 matches and one document refusal](sources/evaluation-and-application-routes.md#src-peer-adapter-diagnostics-replay)
@@ -1760,3 +1760,6 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 <a id="src-validation-iteration-domain"></a>
 - [Rule iteration](sources/evaluation-and-application-routes.md#src-validation-iteration-domain)
+
+<a id="src-recursive-temporal-numeric-expression"></a>
+- [Recursive temporal numeric expressions and phase-specific shift effects](sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression)

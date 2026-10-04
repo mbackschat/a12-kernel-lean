@@ -220,10 +220,27 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
         observeCell .computation (context.read field)).toComputationResult))
     (fun _ => throw .groupCountNeedsModel)
 
+/-- Numeric extraction consumes the temporal source's computation observation before discarding
+validation-only fillability; formal poison and calendar faults remain distinct. -/
+def readTemporalNumericExpression (context : ScalarComputationContext)
+    (source : CheckedTemporalNumericExpression model) :
+    Except NumericComputationFault NumericComputationResult := do
+  let result ← match source.evalResult .computation {
+      read := context.read, storedText := context.storedText, world := context.world } with
+    | .ok result => pure result
+    | .error .dateTimeLabelUnresolved => return .domainFailure
+    | .error fault => throw (.temporalExpression fault)
+  match result with
+  | .ok (.value amount _) => pure (.value amount)
+  | .ok .notEvaluated | .error .nonRelevant | .error .silentlyUnavailable => pure .domainFailure
+  | .error (.formal cause) => pure (.poison cause)
+  | .error .groupState => throw .unsupportedDateCalendar
+
 /-- Evaluate a checked computation atom without a repeatable document only when its entity-list payload narrows exactly to direct fields. A repeatable operand fails explicitly rather than silently observing an empty synthetic document. -/
 def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
     CheckedNumericComputationAtom model →
       Except NumericComputationFault NumericComputationResult
+  | .temporalPart source => context.readTemporalNumericExpression source
   | .filledFieldCount source => source.evaluateComputationCount context
   | .firstFilled source =>
       match source.evaluateDirectComputationFirstFilled? context.read with
@@ -450,6 +467,7 @@ def readCheckedNumericComputationAtom
     (context : NumericComputationEvaluationContext) :
     CheckedNumericComputationAtom model →
       Except NumericComputationFault NumericComputationResult
+  | .temporalPart source => context.scalar.readTemporalNumericExpression source
   | .filledFieldCount source =>
       source.evaluateComputationCount { context.scalar with
         row := context.outer
@@ -572,7 +590,7 @@ def CheckedNumericComputationAtom.numericComputationFault? :
   | .filledFieldCount source => match source.computationSources with
       | .ok _ => none
       | .error error => some (.fieldFillSource error)
-  | .firstFilled _ => none
+  | .temporalPart _ | .firstFilled _ => none
   | .valueCount _ _ => none
   | .tokenDistinctCount _ | .temporalDistinctCount _ => none
   | .tokenValueCount _ => none

@@ -43,6 +43,7 @@ private def FlatModel.admitsTemporalComputationOperand
 
 def FlatModel.admitsNumericComputationOperand
     (model : FlatModel) (scope : List RepeatableLevel) : CheckedNumericComputationAtom model → Bool
+  | .temporalPart source => model.directFieldsBoundBy scope source.source.fieldIds
   | .filledFieldCount source =>
       source.computationSources.toOption.any fun sources =>
         !sources.isEmpty && sources.all (·.admitted model scope)
@@ -148,7 +149,7 @@ def CheckedNumericComputationAtom.numericScaleSummary
       source.summaryWith FlatFieldDecl.numericScaleSummary
         CheckedNumberEntitySource.aggregateScaleSummary
   | .firstFilled source => source.scaleSummary
-  | .tokenDistinctCount _ | .temporalDistinctCount _
+  | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _
   | .valueCount _ _ | .filledFieldCount _ => NumericScaleSummary.field 0
   | .tokenValueCount source => source.scaleSummary
   | .booleanValueCount source => source.scaleSummary
@@ -195,6 +196,7 @@ def CheckedNumericComputationAtom.references
   | .firstFilled source => source.referencesField field
   | .valueCount _ source => source.referencesField field
   | .tokenDistinctCount source => source.referencesField field
+  | .temporalPart source => source.source.referencesField field
   | .temporalDistinctCount run => run.source.referencesField field
   | .tokenValueCount source => source.referencesField field
   | .booleanValueCount source => source.referencesField field
@@ -321,6 +323,9 @@ def FlatModel.elaborateNumericComputationAtom
     (model : FlatModel) (declaringGroup targetGroup : GroupPath) :
     SurfaceNumericComputationAtom →
       Except NumericComputationElabError (CheckedNumericComputationAtom model)
+    | .temporalPart source part =>
+        (elaborateTemporalNumericExpression model declaringGroup source part (some targetGroup)).map .temporalPart
+          |>.mapError .temporalExpression
     | .filledFieldCount source =>
         (elaborateComputationFieldFillList model declaringGroup targetGroup source).map .filledFieldCount
           |>.mapError .fieldFill

@@ -191,7 +191,7 @@ private def numericEntityGuardShape? :
   -- The token distinct count shares the Number one's fold, but no measurement crosses that carrier
   -- boundary for the guard, so it classifies nothing and an iterating rule it alone would guard stays
   -- refused as unclassified.
-  | .ordinary _ | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
+  | .temporalPart _ | .ordinary _ | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
   | .temporalDistinctCount _ => none
 
 private def positiveCountThresholdIsUnguarded
@@ -456,7 +456,9 @@ def evalWithTemporalResult (condition : ValidationCondition model)
     (onTemporalUnavailable : Except Error Verdict := .ok .unknown)
     (temporalFields : CheckedScalarTemporalComparison model → Except Error FlatContext :=
       fun _ => pure context.fields)
-    (onTemporalValueFailure : Except Error Verdict := .ok (.fired .value)) :
+    (onTemporalValueFailure : Except Error Verdict := .ok (.fired .value))
+    (numericResult : OrderedNumericComparison model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
+      fun comparison => (comparison.evalSelectedResult context isRelevant).mapError Sum.inr) :
     Except Error Verdict :=
   let readLeaf : ValidationConditionLeaf model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
     fun leaf => match leaf with
@@ -465,6 +467,9 @@ def evalWithTemporalResult (condition : ValidationCondition model)
             let fields ← (temporalFields comparison).mapError Sum.inl
             (comparison.evalResult .validation fields).mapError Sum.inr
           else pure .unknown
+      | leaf@(.orderedNumeric _ comparison) =>
+          if comparison.hasTemporalExpression then numericResult comparison
+          else (evaluate leaf).mapError Sum.inl
       | leaf => (evaluate leaf).mapError Sum.inl
   let result : Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
     match condition with
@@ -530,6 +535,7 @@ def evalAddressed (condition : ValidationCondition model)
   condition.evalWithTemporalResult context.scalar context.directRelevant
     (fun leaf => leaf.evalAddressed context) (.error .temporalUnavailable)
     (addressedTemporalFields context)
+    (numericResult := fun comparison => comparison.evalAddressedResult context)
 
 /-- Evaluate the same connective tree with one already-prepared current-row RNU result. Duplicate construction remains outside and branch-independent. -/
 def evalAddressedWithRepetitionNotUnique
@@ -540,6 +546,7 @@ def evalAddressedWithRepetitionNotUnique
   condition.evalWithTemporalResult context.scalar context.directRelevant
     (fun leaf => leaf.evalAddressedWithRepetitionNotUnique context result?) (.error .temporalUnavailable)
     (addressedTemporalFields context)
+    (numericResult := fun comparison => comparison.evalAddressedResult context)
 
 /-- Keep reached temporal failure distinct from a row verdict until the rule's iteration handler.
 The generated Java `CodeGenRuleDefinition.st` catches outside its row loop. -/
@@ -553,6 +560,9 @@ def evalAddressedWithRepetitionNotUniqueResult
     (.error (.inl .temporalUnavailable))
     (fun comparison => (addressedTemporalFields context comparison).mapError Sum.inl)
     (.error (.inr .dateTimeLabelUnresolved))
+    (numericResult := fun comparison => (comparison.evalAddressedResult context).mapError fun
+      | .inl error => .inl (.inl error)
+      | .inr fault => .inr fault)
 
 /-- Apply the ordinary full-validation content gate to the addressed tree without sampling any repeatable source on an ineligible empty row. -/
 def evalAddressedFull (condition : ValidationCondition model)

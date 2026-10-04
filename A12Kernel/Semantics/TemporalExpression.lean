@@ -29,17 +29,48 @@ def dependencies (atom : Atom → List Dependency) (operation : Operation → Li
   | .apply op first rest => first.dependencies atom operation ++
       rest.flatMap (dependencies atom operation) ++ operation op
 
+/-- Ordered application with bounds for recursively embedded numeric operands. The proof arguments
+let both expression families share this evaluator without fuel or partial definitions. -/
+@[simp]
+def evalWithResultSubterm [SizeOf Atom] [SizeOf Operation]
+    (expression : TemporalExpressionOf Atom Operation)
+    (read : (atom : Atom) → sizeOf atom < sizeOf expression → Except Error Operand)
+    (apply : (operation : Operation) → sizeOf operation < sizeOf expression →
+      List Operand → Except Error Operand) : Except Error Operand :=
+  match expression with
+  | .atom source => read source (by simp)
+  | .apply operation first rest => do
+      let firstValue ← first.evalWithResultSubterm
+        (fun atom h => read atom (by simp_all; omega))
+        (fun op h => apply op (by simp_all; omega))
+      let restValues ← rest.attach.mapM fun ⟨expression, member⟩ =>
+        expression.evalWithResultSubterm
+          (fun atom h => read atom (by have := List.sizeOf_lt_of_mem member; simp_all; omega))
+          (fun op h => apply op (by have := List.sizeOf_lt_of_mem member; simp_all; omega))
+      apply operation (by simp; omega) (firstValue :: restValues)
+
 /-- Arguments are reached in authored order before their operator runs. A caller can abort a
 reached computation poison through the error channel while retaining cause-free non-relevance as
 an operand, so it does not suppress a later argument's failure (stamp-construction grid, 2026-10-04). -/
 def evalWithResult (read : Atom → Except Error Operand)
-    (apply : Operation → List Operand → Except Error Operand) :
-    TemporalExpressionOf Atom Operation → Except Error Operand
-  | .atom source => read source
-  | .apply operation first rest => do
+    (apply : Operation → List Operand → Except Error Operand)
+    (expression : TemporalExpressionOf Atom Operation) : Except Error Operand :=
+  expression.evalWithResultSubterm (fun atom _ => read atom) (fun operation _ => apply operation)
+
+@[simp] theorem evalWithResult_atom (read : Atom → Except Error Operand)
+    (apply : Operation → List Operand → Except Error Operand) (source : Atom) :
+    (TemporalExpressionOf.atom source).evalWithResult read apply = read source := by
+  simp [evalWithResult]
+
+@[simp] theorem evalWithResult_apply (read : Atom → Except Error Operand)
+    (apply : Operation → List Operand → Except Error Operand) (operation : Operation)
+    (first : TemporalExpressionOf Atom Operation) (rest : List (TemporalExpressionOf Atom Operation)) :
+    (TemporalExpressionOf.apply operation first rest).evalWithResult read apply = (do
       let first ← first.evalWithResult read apply
       let rest ← rest.mapM (evalWithResult read apply)
-      apply operation (first :: rest)
+      apply operation (first :: rest)) := by
+  simp [evalWithResult, evalWithResultSubterm]
+  rfl
 
 end TemporalExpressionOf
 
