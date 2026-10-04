@@ -103,6 +103,19 @@ def boundEnvironment (path : StarPath) (outer : Env) : Except StarAddressingErro
       (outer.bindingAt axis.level).mapError EnvBindingError.toStarAddressingError
     pure (axis.level, coordinate)
 
+/-- Enumerate a finite declared suffix without materializing rows. Field-fill filters use this
+same coordinate space in validation and computation (filtered-fill grids, 2026-10-03/04). -/
+def declaredEnvironments? (path : StarPath) (outer : Env) :
+    Except StarAddressingError (Option (List Env)) := do
+  let bound ← path.boundEnvironment outer
+  if StarAxes.environmentOverLimit path.axes bound then return some []
+  let mut environments := [bound]
+  for axis in path.axes.drop path.firstStar do
+    let some capacity := axis.repeatability | return none
+    environments := environments.flatMap fun parent =>
+      (List.range capacity).map fun index => parent ++ [(axis.level, index + 1)]
+  pure (some environments)
+
 end StarPath
 
 structure ResolvedStarTopology where

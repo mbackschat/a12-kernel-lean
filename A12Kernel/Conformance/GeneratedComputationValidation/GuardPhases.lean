@@ -64,10 +64,13 @@ private def comparisonModel : FlatModel := { model with fields := model.fields +
   { id := 12, groupPath := ["Form"], name := "Z2", policy := { kind := .temporal .dateTime TemporalComponents.now },
     temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } }] }
 
-private def comparisonPhases (predicate : SurfaceComputationPredicate) (bad : FieldId) (cause : BaseFormalCause) := do
+private def comparisonPhases (predicate : SurfaceComputationPredicate) (bad : FieldId) (cause : BaseFormalCause)
+    (standalone : Bool := false) (badRaw : RawCell := .rejected cause) (badStored : String := "bad")
+    (emptyText : Bool := false) := do
   let source := comparisonModel
   let predicate ← (source.elaborateComputationPredicate ["Form"] ["Form"] predicate).toOption
-  let guard : CheckedComputationCondition source := .or (.leaf (.predicate predicate)) (.fieldFilled textGuard.id)
+  let guard : CheckedComputationCondition source := if standalone then .leaf (.predicate predicate)
+    else .or (.leaf (.predicate predicate)) (.fieldFilled textGuard.id)
   let operation ← (elaborateNumericComputationOperation source ["Form"] target.id
     (.literal { value := 3, authoredScale := 0 })).toOption
   let table : GeneratedComputationTable (CheckedNumericComputationOperation source) (CheckedComputationCondition source) := {
@@ -76,8 +79,9 @@ private def comparisonPhases (predicate : SurfaceComputationPredicate) (bad : Fi
   let rule ← (assembleGeneratedNumericOperationTableRule source table).toOption
   let prepared ← (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler source).toOption
   let document ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := [
-    { address := { field := bad, path := [] }, stored := "bad", raw := .rejected cause },
-    { address := { field := textGuard.id, path := [] }, stored := "A", raw := .parsed (.str "A") },
+    { address := { field := bad, path := [] }, stored := badStored, raw := match badRaw with | .empty => .presentEmpty | _ => badRaw },
+    { address := { field := textGuard.id, path := [] }, stored := if emptyText then "" else "A",
+      raw := if emptyText then .presentEmpty else .parsed (.str "A") },
     { address := { field := target.id, path := [] }, stored := "1", raw := .parsed (.num 1) }] }).toOption
   let selected ← (guard.evalChecked (document.scalarComputationContext evaluationWorld)).toOption
   let outcome ← (rule.evalAddressedFull {
@@ -107,5 +111,29 @@ example :
       scalar := .field (absolutePath ["Form"] "R1")
       list := { first := .field (absolutePath ["Form"] "R2"), rest := [] } }) 9 .dateRangeSeparator =
         some (.poison .dateRangeSeparator, .fired (expectedMessage .value)) := by native_decide
+
+example : ([.allFieldsFilled, .noFieldFilled, .atLeastOneFieldFilled, .moreThanOneFieldFilled,
+      .notAllFieldsFilled, .notExactlyOneFieldFilled, .fieldsNotCollectivelyFilled] : List FieldFillQuantifier).all
+    (fun operator => comparisonPhases (.fieldFill operator {
+      first := .field (absolutePath ["Form"] "Gate"),
+      rest := [.field (absolutePath ["Form"] "TextGuard")] }) gate.id .malformed ==
+        some (.poison .malformed, .fired (expectedMessage .value))) = true := by native_decide
+
+private def generatedFillSignature (raw : RawCell) (emptyText : Bool := false) : Option String := do
+  let results ← ([.allFieldsFilled, .noFieldFilled, .atLeastOneFieldFilled, .moreThanOneFieldFilled,
+    .notAllFieldsFilled, .notExactlyOneFieldFilled, .fieldsNotCollectivelyFilled] : List FieldFillQuantifier).mapM
+    fun operator => comparisonPhases (.fieldFill operator {
+      first := .field (absolutePath ["Form"] "Gate"),
+      rest := [.field (absolutePath ["Form"] "TextGuard")] }) gate.id .malformed true raw
+        (match raw with | .empty => "" | .parsed _ => "1" | _ => "bad") emptyText
+  pure (String.ofList (results.map fun (_, outcome) => match outcome with
+    | .fired message => if message.messageType == .value then 'V' else 'O'
+    | .notFired | .unknown => '-'))
+
+example : generatedFillSignature (.parsed (.num 1)) = some "V-VV-V-" ∧
+    generatedFillSignature .empty = some "--V-O-O" ∧
+    generatedFillSignature (.rejected .malformed) = some "--V----" := by native_decide
+
+example : generatedFillSignature .empty true = some "-O--OO-" := by native_decide
 
 end A12Kernel.Conformance.GeneratedComputationValidation.GuardPhases

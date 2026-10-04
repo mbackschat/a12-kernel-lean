@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-04-05"></a>
+### SPEC-2026-10-04-05 — filtered field-fill computation ranges
+
+- `status`: pending
+- `clause`: [spec/02 §A.4](../spec/02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges)
+- `delta`: state selected declared versus instantiated candidates, absent-coordinate reads, per-scan lookahead and composite restart for filtered computation guards.
+- `evidence`: the [family checkpoint](sources/computation-scheduling-probes.md#src-field-fill-computation-guards) retains all seven predicates on Kernel 30.8.1 under both strategies; the runtime grid has 1,584 computation instances.
+- `redundancy`: [KF512](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf512) establishes validation selected slots and excludes computation. [KF105](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf105) owns generic lookahead. This entry carries their field-fill computation composition, not another iterator rule.
+- `reconcile`: canonical field-fill account, computation interpreter selection and its phase distinction.
+- `acceptance`: preserve coordinate-selected missing slots versus a value filter’s empty selection, deciding prefixes beside filter/payload failure, composite restart, and fresh filter producers.
+- `introducing commit`: resolve by this stable entry ID using the ledger contract.
+
 <a id="spec-2026-10-04-04"></a>
 ### `SPEC-2026-10-04-04` — DateRange overlap guards preserve reached poison and ordered prefixes
 

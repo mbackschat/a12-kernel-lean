@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.FieldFillList
 import A12Kernel.Elaboration.DateRangeOverlap
 import A12Kernel.Elaboration.NumberValuesNotUnique
 import A12Kernel.Elaboration.TemporalValuesNotUnique
@@ -14,7 +15,8 @@ carrier: the counts ask it ahead of the repeat and the other carriers behind it,
 behind the root gate too by the peer's source reading
 ([inbound](../../docs/SOURCES.md#inbound-2026-09-26b-entity-list-category), `kf482`). Of the 22
 operators the peer measures, the Lean carriers that ask it are the three routes of
-`FieldValuesNotUnique`, the token `NumberOfDifferentValues` and both `DateRangesOverlap` routes. The
+`FieldValuesNotUnique`, the token `NumberOfDifferentValues`, both `DateRangesOverlap` routes, and
+the shared field-fill list on validation and computation. The
 fixture is the peer's `/Order` plus a yearless `Season`, a Date `Shipped` and a second root
 `Archive`, every rule declared at the root.
 -/
@@ -203,5 +205,16 @@ example :
         (fun error => error.diagnostic?)] =
     [.mapped .categoryUnknown, .mapped .categoryUnknown] := by
   native_decide
+
+private def fillList (computation : Bool) (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand) : Decision :=
+  decide (if computation then elaborateComputationFieldFillList orderModel ["Order"] ["Order"] { first, rest }
+    else elaborateFieldFillList orderModel ["Order"] { first, rest } ["Order"] .quantifier)
+    (fun error => match error with | .shape error => error.diagnostic? | _ => none)
+
+example : [false, true].all (fun computation =>
+    fillList computation (level "Tier") [field "Label"] == .mapped .categoryNotAllowed &&
+    fillList computation (level "Tier") [field "Label", field "Label"] == .mapped .duplicateParam1 &&
+    fillList computation (field "Tier") [field "Label"] == .admitted) = true := by native_decide
 
 end A12Kernel.Conformance.EntityListCategoryGate

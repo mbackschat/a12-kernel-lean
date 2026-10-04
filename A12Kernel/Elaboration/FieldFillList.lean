@@ -14,14 +14,15 @@ makes it unavailable) and the quantifiers' tally apply to the whole list exactly
 Each operand also contributes its declared slots: a direct field one, a starred field the product of
 the maxima its star reopens, a group its subtree's capacity. The declared-range quantifiers read the
 list's missing tail from their sum, and the count's movement runs against it. Filtered quantifiers
-select their missing slots and retain operand order for polarity; counts and computation guards
-keep their separate admission boundaries. Category reads are refused here.
+select their missing slots and retain operand order for polarity; counts retain their separate
+filter boundary. Computation guards keep the list certificates for their own ordered scans. Category reads are refused here.
 
-The computation projection reads the same checked addresses with computation observations and places
+The unfiltered, materialized computation projection reads the same checked addresses with computation observations and places
 one open-tail marker after each declaration. `FieldFillQuantifier.evalComputation_omittedRun` proves
 that one marker represents any nonempty omitted run; moving it behind another declaration is not
-valid, as the retained field-fill guard grid separates. Guard authoring and scheduling are consumers
-of this projection, not responsibilities of the list.
+valid, as the retained field-fill guard grid separates. This projection retains the legacy unfiltered
+boundary; ordinary computation guards preserve the checked source through `CheckedComputationFieldFill`
+and its ordered scans, including filtered operands.
 -/
 
 namespace A12Kernel
@@ -267,7 +268,9 @@ def elaborateFieldFillList (model : FlatModel) (rowGroup : GroupPath)
         rowGroup { group } bindingGroup).mapError .group)] }
   | _ => pure ()
   let shape ← (elaborateFieldEntityShapeIn model rowGroup (model.repeatableScopeForGroupPath bindingGroup)
-    authored .manyRequired none bindingGroup (groupReadScope := .ruleBound)).mapError .shape
+    authored .manyRequired none bindingGroup
+    (categoryGate := if consumer == .quantifier then .behindRootGate else .absent)
+    (groupReadScope := .ruleBound)).mapError .shape
   let operands ← ((authored.first :: authored.rest).zip shape.operands).mapM fun
     | (_, .field declaration .stored) => pure (.field declaration)
     | (_, .star source) => pure (.star (.plain rowGroup source))
@@ -292,7 +295,7 @@ def elaborateComputationFieldFillList (model : FlatModel)
     Except FieldFillListElabError (CheckedFieldFillList model) := do
   let shape ← (elaborateFieldEntityShapeIn model declaringGroup
     (model.repeatableScopeForGroupPath targetGroup) authored .manyRequired
-    (some targetGroup) targetGroup).mapError .shape
+    (some targetGroup) targetGroup (categoryGate := .behindRootGate)).mapError .shape
   let group (source : CheckedEntityGroupSource model) :=
     (CheckedFieldFillOperand.group <$>
       CheckedFilledFieldCountGroupSource.ofResolved model source).mapError FieldFillListElabError.group
@@ -302,7 +305,10 @@ def elaborateComputationFieldFillList (model : FlatModel)
     | .group reference => group (.fixed reference)
     | .starredGroup source => group (.starred source)
     | .starredGroupPresence source => group (.starredPresence source)
-    | .field _ (.projected _) | .starHaving _ _ => throw .unsupportedOperand
+    | .starHaving source having => do
+        pure (.star (← (CheckedFilledFieldStarSource.withHaving model declaringGroup targetGroup
+          source having targetGroup).mapError .having))
+    | .field _ (.projected _) => throw .unsupportedOperand
   pure { operands }
 
 end A12Kernel

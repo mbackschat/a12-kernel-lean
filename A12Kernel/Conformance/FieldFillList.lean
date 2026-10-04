@@ -140,7 +140,7 @@ example : (do
 example : (elaborateFieldFillList listModel ["Probe"]
       { first := selectedFirst, rest := [] }).isOk = false ∧
     (elaborateComputationFieldFillList listModel ["Probe"] ["Probe"]
-      { first := selectedFirst, rest := [] }).isOk = false ∧
+      { first := selectedFirst, rest := [] }).isOk = true ∧
     (do
       let source ← (elaborateFieldFillList listModel ["Probe"]
         { first := selectedFirst, rest := [] } ["Probe"] .quantifier).toOption

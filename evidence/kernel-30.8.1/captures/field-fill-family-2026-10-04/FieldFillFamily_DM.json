@@ -1,0 +1,2719 @@
+{
+  "header" : {
+    "id" : "FieldFillFamily_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "FieldFillFamily_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Gate",
+                "name" : "Gate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/FreshGate",
+                "name" : "FreshGate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/FreshGateComp",
+                "name" : "FreshGateComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../FreshGate",
+                  "computationAlternatives" : [ {
+                    "operation" : "1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Field-fill family control."
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P0",
+            "name" : "P0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P0Dep",
+            "name" : "P0Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P1",
+            "name" : "P1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P1Dep",
+            "name" : "P1Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P2",
+            "name" : "P2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P2Dep",
+            "name" : "P2Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P3",
+            "name" : "P3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P3Dep",
+            "name" : "P3Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P4",
+            "name" : "P4",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P4Dep",
+            "name" : "P4Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P5",
+            "name" : "P5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P5Dep",
+            "name" : "P5Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P6",
+            "name" : "P6",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/P6Dep",
+            "name" : "P6Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C10",
+            "name" : "C10",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C10Dep",
+            "name" : "C10Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C11",
+            "name" : "C11",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C11Dep",
+            "name" : "C11Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C12",
+            "name" : "C12",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C12Dep",
+            "name" : "C12Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C13",
+            "name" : "C13",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C13Dep",
+            "name" : "C13Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C14",
+            "name" : "C14",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C14Dep",
+            "name" : "C14Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C15",
+            "name" : "C15",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C15Dep",
+            "name" : "C15Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C16",
+            "name" : "C16",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C16Dep",
+            "name" : "C16Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA0",
+            "name" : "CA0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA0Dep",
+            "name" : "CA0Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA1",
+            "name" : "CA1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA1Dep",
+            "name" : "CA1Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA2",
+            "name" : "CA2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA2Dep",
+            "name" : "CA2Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA3",
+            "name" : "CA3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA3Dep",
+            "name" : "CA3Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA4",
+            "name" : "CA4",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA4Dep",
+            "name" : "CA4Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA5",
+            "name" : "CA5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA5Dep",
+            "name" : "CA5Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA6",
+            "name" : "CA6",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/CA6Dep",
+            "name" : "CA6Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F0",
+            "name" : "F0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F0Dep",
+            "name" : "F0Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F1",
+            "name" : "F1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F1Dep",
+            "name" : "F1Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F2",
+            "name" : "F2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F2Dep",
+            "name" : "F2Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F3",
+            "name" : "F3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F3Dep",
+            "name" : "F3Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F4",
+            "name" : "F4",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F4Dep",
+            "name" : "F4Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F5",
+            "name" : "F5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F5Dep",
+            "name" : "F5Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F6",
+            "name" : "F6",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/F6Dep",
+            "name" : "F6Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF0",
+            "name" : "AF0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF0Dep",
+            "name" : "AF0Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF1",
+            "name" : "AF1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF1Dep",
+            "name" : "AF1Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF2",
+            "name" : "AF2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF2Dep",
+            "name" : "AF2Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF3",
+            "name" : "AF3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF3Dep",
+            "name" : "AF3Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF4",
+            "name" : "AF4",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF4Dep",
+            "name" : "AF4Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF5",
+            "name" : "AF5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF5Dep",
+            "name" : "AF5Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF6",
+            "name" : "AF6",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AF6Dep",
+            "name" : "AF6Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA0",
+            "name" : "FA0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA0Dep",
+            "name" : "FA0Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA1",
+            "name" : "FA1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA1Dep",
+            "name" : "FA1Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA2",
+            "name" : "FA2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA2Dep",
+            "name" : "FA2Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA3",
+            "name" : "FA3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA3Dep",
+            "name" : "FA3Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA4",
+            "name" : "FA4",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA4Dep",
+            "name" : "FA4Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA5",
+            "name" : "FA5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA5Dep",
+            "name" : "FA5Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA6",
+            "name" : "FA6",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FA6Dep",
+            "name" : "FA6Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG0",
+            "name" : "FG0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG0Dep",
+            "name" : "FG0Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG1",
+            "name" : "FG1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG1Dep",
+            "name" : "FG1Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG2",
+            "name" : "FG2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG2Dep",
+            "name" : "FG2Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG3",
+            "name" : "FG3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG3Dep",
+            "name" : "FG3Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG4",
+            "name" : "FG4",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG4Dep",
+            "name" : "FG4Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG5",
+            "name" : "FG5",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG5Dep",
+            "name" : "FG5Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG6",
+            "name" : "FG6",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FG6Dep",
+            "name" : "FG6Dep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P0DepComp",
+            "name" : "P0DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P0Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[P0] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P0Comp",
+            "name" : "P0Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P0",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AllFieldsFilled(Rows*/N)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P1DepComp",
+            "name" : "P1DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P1Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[P1] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P1Comp",
+            "name" : "P1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P1",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldFilled(Rows*/N)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P2DepComp",
+            "name" : "P2DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P2Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[P2] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P2Comp",
+            "name" : "P2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P2",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldFilled(Rows*/N)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P3DepComp",
+            "name" : "P3DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P3Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[P3] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P3Comp",
+            "name" : "P3Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P3",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "MoreThanOneFieldFilled(Rows*/N)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P4DepComp",
+            "name" : "P4DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P4Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[P4] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P4Comp",
+            "name" : "P4Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P4",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldsFilled(Rows*/N)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P5DepComp",
+            "name" : "P5DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P5Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[P5] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P5Comp",
+            "name" : "P5Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P5",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotExactlyOneFieldFilled(Rows*/N)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P6DepComp",
+            "name" : "P6DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P6Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[P6] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/P6Comp",
+            "name" : "P6Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P6",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldsNotCollectivelyFilled(Rows*/N)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C10DepComp",
+            "name" : "C10DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C10Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[C10] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C10Comp",
+            "name" : "C10Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C10",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AllFieldsFilled(Rows*/N Having CurrentRepetition(Rows) == 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C11DepComp",
+            "name" : "C11DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C11Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[C11] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C11Comp",
+            "name" : "C11Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C11",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldFilled(Rows*/N Having CurrentRepetition(Rows) == 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C12DepComp",
+            "name" : "C12DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C12Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[C12] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C12Comp",
+            "name" : "C12Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C12",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldFilled(Rows*/N Having CurrentRepetition(Rows) == 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C13DepComp",
+            "name" : "C13DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C13Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[C13] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C13Comp",
+            "name" : "C13Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C13",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "MoreThanOneFieldFilled(Rows*/N Having CurrentRepetition(Rows) == 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C14DepComp",
+            "name" : "C14DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C14Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[C14] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C14Comp",
+            "name" : "C14Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C14",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldsFilled(Rows*/N Having CurrentRepetition(Rows) == 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C15DepComp",
+            "name" : "C15DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C15Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[C15] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C15Comp",
+            "name" : "C15Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C15",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotExactlyOneFieldFilled(Rows*/N Having CurrentRepetition(Rows) == 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C16DepComp",
+            "name" : "C16DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C16Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[C16] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/C16Comp",
+            "name" : "C16Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../C16",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldsNotCollectivelyFilled(Rows*/N Having CurrentRepetition(Rows) == 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA0DepComp",
+            "name" : "CA0DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA0Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[CA0] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA0Comp",
+            "name" : "CA0Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA0",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AllFieldsFilled(Rows*/N Having CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA1DepComp",
+            "name" : "CA1DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA1Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[CA1] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA1Comp",
+            "name" : "CA1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA1",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldFilled(Rows*/N Having CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA2DepComp",
+            "name" : "CA2DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA2Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[CA2] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA2Comp",
+            "name" : "CA2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA2",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldFilled(Rows*/N Having CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA3DepComp",
+            "name" : "CA3DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA3Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[CA3] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA3Comp",
+            "name" : "CA3Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA3",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "MoreThanOneFieldFilled(Rows*/N Having CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA4DepComp",
+            "name" : "CA4DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA4Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[CA4] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA4Comp",
+            "name" : "CA4Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA4",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldsFilled(Rows*/N Having CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA5DepComp",
+            "name" : "CA5DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA5Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[CA5] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA5Comp",
+            "name" : "CA5Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA5",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotExactlyOneFieldFilled(Rows*/N Having CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA6DepComp",
+            "name" : "CA6DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA6Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[CA6] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/CA6Comp",
+            "name" : "CA6Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../CA6",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldsNotCollectivelyFilled(Rows*/N Having CurrentRepetition(Rows) > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F0DepComp",
+            "name" : "F0DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F0Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[F0] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F0Comp",
+            "name" : "F0Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F0",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AllFieldsFilled(Rows*/N Having [Rows/Gate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F1DepComp",
+            "name" : "F1DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F1Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[F1] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F1Comp",
+            "name" : "F1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F1",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldFilled(Rows*/N Having [Rows/Gate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F2DepComp",
+            "name" : "F2DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F2Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[F2] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F2Comp",
+            "name" : "F2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F2",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldFilled(Rows*/N Having [Rows/Gate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F3DepComp",
+            "name" : "F3DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F3Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[F3] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F3Comp",
+            "name" : "F3Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F3",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "MoreThanOneFieldFilled(Rows*/N Having [Rows/Gate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F4DepComp",
+            "name" : "F4DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F4Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[F4] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F4Comp",
+            "name" : "F4Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F4",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldsFilled(Rows*/N Having [Rows/Gate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F5DepComp",
+            "name" : "F5DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F5Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[F5] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F5Comp",
+            "name" : "F5Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F5",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotExactlyOneFieldFilled(Rows*/N Having [Rows/Gate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F6DepComp",
+            "name" : "F6DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F6Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[F6] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/F6Comp",
+            "name" : "F6Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../F6",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldsNotCollectivelyFilled(Rows*/N Having [Rows/Gate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF0DepComp",
+            "name" : "AF0DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF0Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[AF0] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF0Comp",
+            "name" : "AF0Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF0",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AllFieldsFilled(A,Rows*/N Having [Rows/Gate] > 0,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF1DepComp",
+            "name" : "AF1DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF1Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[AF1] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF1Comp",
+            "name" : "AF1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF1",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldFilled(A,Rows*/N Having [Rows/Gate] > 0,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF2DepComp",
+            "name" : "AF2DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF2Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[AF2] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF2Comp",
+            "name" : "AF2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF2",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldFilled(A,Rows*/N Having [Rows/Gate] > 0,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF3DepComp",
+            "name" : "AF3DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF3Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[AF3] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF3Comp",
+            "name" : "AF3Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF3",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "MoreThanOneFieldFilled(A,Rows*/N Having [Rows/Gate] > 0,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF4DepComp",
+            "name" : "AF4DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF4Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[AF4] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF4Comp",
+            "name" : "AF4Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF4",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldsFilled(A,Rows*/N Having [Rows/Gate] > 0,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF5DepComp",
+            "name" : "AF5DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF5Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[AF5] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF5Comp",
+            "name" : "AF5Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF5",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotExactlyOneFieldFilled(A,Rows*/N Having [Rows/Gate] > 0,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF6DepComp",
+            "name" : "AF6DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF6Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[AF6] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AF6Comp",
+            "name" : "AF6Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AF6",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldsNotCollectivelyFilled(A,Rows*/N Having [Rows/Gate] > 0,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA0DepComp",
+            "name" : "FA0DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA0Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FA0] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA0Comp",
+            "name" : "FA0Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA0",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AllFieldsFilled(Rows*/N Having [Rows/Gate] > 0,A,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA1DepComp",
+            "name" : "FA1DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA1Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FA1] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA1Comp",
+            "name" : "FA1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA1",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldFilled(Rows*/N Having [Rows/Gate] > 0,A,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA2DepComp",
+            "name" : "FA2DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA2Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FA2] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA2Comp",
+            "name" : "FA2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA2",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldFilled(Rows*/N Having [Rows/Gate] > 0,A,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA3DepComp",
+            "name" : "FA3DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA3Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FA3] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA3Comp",
+            "name" : "FA3Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA3",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "MoreThanOneFieldFilled(Rows*/N Having [Rows/Gate] > 0,A,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA4DepComp",
+            "name" : "FA4DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA4Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FA4] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA4Comp",
+            "name" : "FA4Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA4",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldsFilled(Rows*/N Having [Rows/Gate] > 0,A,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA5DepComp",
+            "name" : "FA5DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA5Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FA5] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA5Comp",
+            "name" : "FA5Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA5",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotExactlyOneFieldFilled(Rows*/N Having [Rows/Gate] > 0,A,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA6DepComp",
+            "name" : "FA6DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA6Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FA6] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FA6Comp",
+            "name" : "FA6Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FA6",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldsNotCollectivelyFilled(Rows*/N Having [Rows/Gate] > 0,A,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG0DepComp",
+            "name" : "FG0DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG0Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FG0] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG0Comp",
+            "name" : "FG0Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG0",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AllFieldsFilled(Rows*/N Having [Rows/FreshGate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG1DepComp",
+            "name" : "FG1DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG1Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FG1] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG1Comp",
+            "name" : "FG1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG1",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoFieldFilled(Rows*/N Having [Rows/FreshGate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG2DepComp",
+            "name" : "FG2DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG2Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FG2] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG2Comp",
+            "name" : "FG2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG2",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneFieldFilled(Rows*/N Having [Rows/FreshGate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG3DepComp",
+            "name" : "FG3DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG3Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FG3] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG3Comp",
+            "name" : "FG3Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG3",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "MoreThanOneFieldFilled(Rows*/N Having [Rows/FreshGate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG4DepComp",
+            "name" : "FG4DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG4Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FG4] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG4Comp",
+            "name" : "FG4Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG4",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotAllFieldsFilled(Rows*/N Having [Rows/FreshGate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG5DepComp",
+            "name" : "FG5DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG5Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FG5] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG5Comp",
+            "name" : "FG5Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG5",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NotExactlyOneFieldFilled(Rows*/N Having [Rows/FreshGate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG6DepComp",
+            "name" : "FG6DepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG6Dep",
+              "computationAlternatives" : [ {
+                "operation" : "[FG6] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FG6Comp",
+            "name" : "FG6Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FG6",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldsNotCollectivelyFilled(Rows*/N Having [Rows/FreshGate] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Field-fill family control."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

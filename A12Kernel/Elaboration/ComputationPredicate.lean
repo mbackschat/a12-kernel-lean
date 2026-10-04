@@ -5,6 +5,7 @@ import A12Kernel.Semantics.ComputationValueList
 import A12Kernel.Elaboration.ScalarFieldComparison
 import A12Kernel.Elaboration.TemporalExpression
 import A12Kernel.Elaboration.ComputationOverlap
+import A12Kernel.Elaboration.ComputationFieldFill
 
 namespace A12Kernel
 
@@ -22,6 +23,7 @@ inductive SurfaceComputationPredicate where
       (members : SurfaceScalarMembershipMembers)
   | entityValueList (source : SurfaceNumberEntityValueListSource)
   | tokenLiteralValueList (source : SurfaceTokenEntityStringLiteralValueListSource)
+  | fieldFill (operator : FieldFillQuantifier) (source : SurfaceFieldEntitySource)
   | overlap (source : SurfaceFieldEntitySource)
   | scalarOverlap (source : SurfaceAtLeastOneDateRangeOverlapsSource)
   deriving Repr, DecidableEq
@@ -36,6 +38,7 @@ inductive ComputationPredicateElabError where
   | incoherent
   | token (error : TokenEntityValueListElabError)
   | literals (error : TokenEntityStringLiteralValueListElabError)
+  | fieldFill (error : FieldFillListElabError)
   | overlap (error : IteratedDateRangeConditionElabError)
   deriving Repr, DecidableEq
 
@@ -45,6 +48,7 @@ inductive ComputationPredicateError where
   from inherited operand poison (comparison-guard grid, 2026-10-04). -/
   | valueFailure
   | temporalUnavailable
+  | fieldFill (error : ComputationFillError)
   | fieldKindMismatch (field : FieldId)
   | contextRequired
   | addressing (error : StarAddressingError)
@@ -60,6 +64,7 @@ inductive CheckedComputationPredicate (model : FlatModel) where
   | scalarValueList (operator : ValueListMembershipOp) (source : CheckedValueListCondition model)
   | scalarNumberLiterals (operator : ValueListMembershipOp)
       (subject : CheckedNumberEntityField model) (values : List Int)
+  | fieldFill (operator : FieldFillQuantifier) (source : CheckedComputationFieldFill model)
   | overlap (source : CheckedComputationOverlap model)
 
 namespace CheckedComputationPredicate
@@ -71,6 +76,7 @@ def referencesField (predicate : CheckedComputationPredicate model) (field : Fie
   | .fieldComparison source => source.referencesField field
   | .valueList source | .scalarValueList _ source => source.referencesField field
   | .scalarNumberLiterals _ source _ => source.field.id == field
+  | .fieldFill _ source => source.referencesField field
   | .overlap source => source.referencesField field
 
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
@@ -81,6 +87,7 @@ def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List R
   | .fieldComparison source => source.rowBoundBool scope
   | .valueList source | .scalarValueList _ source => source.bindingScopes.all (·.isPrefixOf scope)
   | .scalarNumberLiterals _ source _ => source.declaration.repeatableScope.isPrefixOf scope
+  | .fieldFill _ source => source.rowBoundBool scope
   | .overlap source => source.rowBoundBool scope
 
 private def addressed (context : ScalarComputationContext) : Except ComputationPredicateError ComputationFillContext :=
@@ -202,6 +209,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
       | .dateTimeLabelUnresolved => .valueFailure
       | .calendarUnavailable => .temporalUnavailable)
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
+  | .fieldFill operator source => (source.evalChecked operator context filterRead).mapError .fieldFill
   | .overlap source => (source.evalChecked context filterRead).mapError fun
       | .contextRequired => .contextRequired
       | .addressing error => .addressing error
@@ -252,6 +260,8 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (surface : SurfaceComputationPredicate) :
     Except ComputationPredicateElabError (CheckedComputationPredicate model) := do
   match surface with
+  | .fieldFill operator source =>
+      .fieldFill operator <$> (CheckedComputationFieldFill.elaborate model declaringGroup targetGroup source).mapError .fieldFill
   | .overlap source =>
       let scope := model.repeatableScopeForGroupPath targetGroup
       match elaborateDateRangesOverlapSourceIn model declaringGroup scope source targetGroup (some targetGroup) with

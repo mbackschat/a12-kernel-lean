@@ -1,0 +1,191 @@
+[
+  {
+    "id": "AllFieldsFilled-category",
+    "verb": "computation",
+    "args": [
+      "add",
+      "AllFieldsFilled-category.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "AllFieldsFilled-duplicate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "AllFieldsFilled-duplicate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "AllFieldsFilled-positive",
+    "verb": "computation",
+    "args": [
+      "add",
+      "AllFieldsFilled-positive.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "NoFieldFilled-category",
+    "verb": "computation",
+    "args": [
+      "add",
+      "NoFieldFilled-category.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "NoFieldFilled-duplicate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "NoFieldFilled-duplicate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "NoFieldFilled-positive",
+    "verb": "computation",
+    "args": [
+      "add",
+      "NoFieldFilled-positive.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "AtLeastOneFieldFilled-category",
+    "verb": "computation",
+    "args": [
+      "add",
+      "AtLeastOneFieldFilled-category.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "AtLeastOneFieldFilled-duplicate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "AtLeastOneFieldFilled-duplicate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "AtLeastOneFieldFilled-positive",
+    "verb": "computation",
+    "args": [
+      "add",
+      "AtLeastOneFieldFilled-positive.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "MoreThanOneFieldFilled-category",
+    "verb": "computation",
+    "args": [
+      "add",
+      "MoreThanOneFieldFilled-category.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "MoreThanOneFieldFilled-duplicate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "MoreThanOneFieldFilled-duplicate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "MoreThanOneFieldFilled-positive",
+    "verb": "computation",
+    "args": [
+      "add",
+      "MoreThanOneFieldFilled-positive.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "NotAllFieldsFilled-category",
+    "verb": "computation",
+    "args": [
+      "add",
+      "NotAllFieldsFilled-category.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "NotAllFieldsFilled-duplicate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "NotAllFieldsFilled-duplicate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "NotAllFieldsFilled-positive",
+    "verb": "computation",
+    "args": [
+      "add",
+      "NotAllFieldsFilled-positive.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "NotExactlyOneFieldFilled-category",
+    "verb": "computation",
+    "args": [
+      "add",
+      "NotExactlyOneFieldFilled-category.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "NotExactlyOneFieldFilled-duplicate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "NotExactlyOneFieldFilled-duplicate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "NotExactlyOneFieldFilled-positive",
+    "verb": "computation",
+    "args": [
+      "add",
+      "NotExactlyOneFieldFilled-positive.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "FieldsNotCollectivelyFilled-category",
+    "verb": "computation",
+    "args": [
+      "add",
+      "FieldsNotCollectivelyFilled-category.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "FieldsNotCollectivelyFilled-duplicate",
+    "verb": "computation",
+    "args": [
+      "add",
+      "FieldsNotCollectivelyFilled-duplicate.json",
+      "--dry-run"
+    ]
+  },
+  {
+    "id": "FieldsNotCollectivelyFilled-positive",
+    "verb": "computation",
+    "args": [
+      "add",
+      "FieldsNotCollectivelyFilled-positive.json",
+      "--dry-run"
+    ]
+  }
+]

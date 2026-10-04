@@ -34,6 +34,7 @@ structure ComputationFillContext where
   read : Env → FieldId → CheckedCell
 
 inductive ComputationFillError where
+  | declaredCapacityRequired
   | contextRequired
   | addressing (error : StarAddressingError)
   deriving Repr, DecidableEq
@@ -79,83 +80,113 @@ def numberOfFilledFieldsForComputation : List ComputationFillSlot → Except For
 
 namespace FieldFillQuantifier
 
-private inductive ScanResult where
+inductive ScanResult where
   | found
   | exhausted
   | poison (cause : FormalCause)
+  deriving Repr, DecidableEq
 
-/-- Find the first filled instantiated slot. Declared-but-uninstantiated slots are outside this scan. -/
-private def scanAnyFilled : List ComputationFillSlot → ScanResult
-  | [] => .exhausted
-  | .filled :: _ => .found
-  | .empty :: remaining => scanAnyFilled remaining
-  | .uninstantiated :: remaining => scanAnyFilled remaining
-  | .poison cause :: _ => .poison cause
+/-- The family has two instantiated searches and one declared-range search; the filtered
+field-fill grid (2026-10-04) separates their missing-coordinate behavior. -/
+inductive ScanKind where
+  | anyFilled
+  | anyDeclaredEmpty
+  | secondFilled
+  deriving Repr, DecidableEq
 
-/-- Find the first empty slot in the declared range. An uninstantiated declaration is a deciding empty without a cell read. -/
-private def scanAnyDeclaredEmpty : List ComputationFillSlot → ScanResult
-  | [] => .exhausted
-  | .filled :: remaining => scanAnyDeclaredEmpty remaining
-  | .empty :: _ => .found
-  | .uninstantiated :: _ => .found
-  | .poison cause :: _ => .poison cause
+/-- One reached slot either advances the search or decides it. The Boolean state records only
+whether the second-filled search has already seen its first witness. -/
+def step (kind : ScanKind) (seen : Bool) : ComputationFillSlot → Bool ⊕ ScanResult
+  | .poison cause => .inr (.poison cause)
+  | .filled => match kind with
+      | .anyFilled => .inr .found
+      | .anyDeclaredEmpty => .inl seen
+      | .secondFilled => if seen then .inr .found else .inl true
+  | .empty => match kind with
+      | .anyDeclaredEmpty => .inr .found
+      | _ => .inl seen
+  | .uninstantiated => match kind with
+      | .anyDeclaredEmpty => .inr .found
+      | _ => .inl seen
 
-/-- Find a second filled instantiated slot, retaining whether the first has already been seen. -/
-private def scanSecondFilled : List ComputationFillSlot → Bool → ScanResult
-  | [], _ => .exhausted
-  | .filled :: _, true => .found
-  | .filled :: remaining, false => scanSecondFilled remaining true
-  | .empty :: remaining, seenFirst => scanSecondFilled remaining seenFirst
-  | .uninstantiated :: remaining, seenFirst => scanSecondFilled remaining seenFirst
-  | .poison cause :: _, _ => .poison cause
+/-- Scan reached reads while retaining the witness state for the next operand. -/
+def scanRead (kind : ScanKind) (read : slot → ComputationFillSlot) :
+    List slot → Bool → Bool ⊕ ScanResult
+  | [], seen => .inl seen
+  | slot :: rest, seen => match step kind seen (read slot) with
+      | .inl next => scanRead kind read rest next
+      | .inr result => .inr result
 
-/-- Evaluate one field-fill quantifier over the canonical resolved slot order. `NotExactlyOneFieldFilled` and `FieldsNotCollectivelyFilled` deliberately perform their two source-level scans from the beginning; the slot domain is pure, so rereading a clean slot adds no state, while the first reached poison remains exact. -/
-def evalComputation (operator : FieldFillQuantifier)
-    (slots : List ComputationFillSlot) : ComputationConditionResult :=
+def scanSlots (kind : ScanKind) (seen : Bool) (slots : List ComputationFillSlot) : ScanResult :=
+  match scanRead kind id slots seen with
+  | .inl _ => .exhausted
+  | .inr result => result
+
+private def scanAnyFilled (slots : List ComputationFillSlot) : ScanResult :=
+  scanSlots .anyFilled false slots
+
+private def scanAnyDeclaredEmpty (slots : List ComputationFillSlot) : ScanResult :=
+  scanSlots .anyDeclaredEmpty false slots
+
+private def scanSecondFilled (slots : List ComputationFillSlot) (seen : Bool) : ScanResult :=
+  scanSlots .secondFilled seen slots
+
+/-- Execute the family's scan program. Each callback invocation starts at the first operand:
+composite guards restart, and may switch from instantiated to declared candidates. -/
+def evalComputationUsing [Monad m] (operator : FieldFillQuantifier)
+    (scan : ScanKind → m ScanResult) : m ComputationConditionResult := do
   match operator with
   | .allFieldsFilled =>
-      match scanAnyDeclaredEmpty slots with
-      | .found => .notTrue
-      | .exhausted => .holds
-      | .poison cause => .poison cause
+      match ← scan .anyDeclaredEmpty with
+      | .found => pure .notTrue
+      | .exhausted => pure .holds
+      | .poison cause => pure (.poison cause)
   | .noFieldFilled =>
-      match scanAnyFilled slots with
-      | .found => .notTrue
-      | .exhausted => .holds
-      | .poison cause => .poison cause
+      match ← scan .anyFilled with
+      | .found => pure .notTrue
+      | .exhausted => pure .holds
+      | .poison cause => pure (.poison cause)
   | .atLeastOneFieldFilled =>
-      match scanAnyFilled slots with
-      | .found => .holds
-      | .exhausted => .notTrue
-      | .poison cause => .poison cause
+      match ← scan .anyFilled with
+      | .found => pure .holds
+      | .exhausted => pure .notTrue
+      | .poison cause => pure (.poison cause)
   | .moreThanOneFieldFilled =>
-      match scanSecondFilled slots false with
-      | .found => .holds
-      | .exhausted => .notTrue
-      | .poison cause => .poison cause
+      match ← scan .secondFilled with
+      | .found => pure .holds
+      | .exhausted => pure .notTrue
+      | .poison cause => pure (.poison cause)
   | .notAllFieldsFilled =>
-      match scanAnyDeclaredEmpty slots with
-      | .found => .holds
-      | .exhausted => .notTrue
-      | .poison cause => .poison cause
+      match ← scan .anyDeclaredEmpty with
+      | .found => pure .holds
+      | .exhausted => pure .notTrue
+      | .poison cause => pure (.poison cause)
   | .notExactlyOneFieldFilled =>
-      match scanAnyFilled slots with
-      | .exhausted => .holds
-      | .poison cause => .poison cause
+      match ← scan .anyFilled with
+      | .exhausted => pure .holds
+      | .poison cause => pure (.poison cause)
       | .found =>
-          match scanSecondFilled slots false with
-          | .found => .holds
-          | .exhausted => .notTrue
-          | .poison cause => .poison cause
+          match ← scan .secondFilled with
+          | .found => pure .holds
+          | .exhausted => pure .notTrue
+          | .poison cause => pure (.poison cause)
   | .fieldsNotCollectivelyFilled =>
-      match scanAnyFilled slots with
-      | .exhausted => .notTrue
-      | .poison cause => .poison cause
+      match ← scan .anyFilled with
+      | .exhausted => pure .notTrue
+      | .poison cause => pure (.poison cause)
       | .found =>
-          match scanAnyDeclaredEmpty slots with
-          | .found => .holds
-          | .exhausted => .notTrue
-          | .poison cause => .poison cause
+          match ← scan .anyDeclaredEmpty with
+          | .found => pure .holds
+          | .exhausted => pure .notTrue
+          | .poison cause => pure (.poison cause)
+
+/-- Materialized and addressed consumers execute the same scan program. -/
+def evalComputation (operator : FieldFillQuantifier)
+    (slots : List ComputationFillSlot) : ComputationConditionResult :=
+  Id.run (operator.evalComputationUsing fun kind => pure (match kind with
+    | .anyFilled => scanAnyFilled slots
+    | .anyDeclaredEmpty => scanAnyDeclaredEmpty slots
+    | .secondFilled => scanSecondFilled slots false))
 
 private theorem scanAnyFilled_omittedRun (before suffix : List ComputationFillSlot) (count : Nat) :
     scanAnyFilled (before ++ List.replicate count .uninstantiated ++ suffix) =
@@ -164,16 +195,16 @@ private theorem scanAnyFilled_omittedRun (before suffix : List ComputationFillSl
   | nil =>
       induction count with
       | zero => rfl
-      | succ count ih => simpa [scanAnyFilled, List.replicate_succ] using ih
-  | cons head rest ih => cases head <;> simp_all [scanAnyFilled]
+      | succ count ih => simpa [scanAnyFilled, scanSlots, scanRead, step, List.replicate_succ] using ih
+  | cons head rest ih => cases head <;> simp_all [scanAnyFilled, scanSlots, scanRead, step]
 
 private theorem scanAnyDeclaredEmpty_omittedRun (before suffix : List ComputationFillSlot)
     (count : Nat) :
     scanAnyDeclaredEmpty (before ++ List.replicate (count + 1) .uninstantiated ++ suffix) =
       scanAnyDeclaredEmpty (before ++ [.uninstantiated] ++ suffix) := by
   induction before with
-  | nil => simp [scanAnyDeclaredEmpty, List.replicate_succ]
-  | cons head rest ih => cases head <;> simp_all [scanAnyDeclaredEmpty]
+  | nil => simp [scanAnyDeclaredEmpty, scanSlots, scanRead, step, List.replicate_succ]
+  | cons head rest ih => cases head <;> simp_all [scanAnyDeclaredEmpty, scanSlots, scanRead, step]
 
 private theorem scanSecondFilled_omittedRun (before suffix : List ComputationFillSlot)
     (count : Nat) (seen : Bool) :
@@ -183,8 +214,8 @@ private theorem scanSecondFilled_omittedRun (before suffix : List ComputationFil
   | nil =>
       induction count with
       | zero => rfl
-      | succ count ih => simpa [scanSecondFilled, List.replicate_succ] using ih
-  | cons head rest ih => cases head <;> cases seen <;> simp_all [scanSecondFilled]
+      | succ count ih => simpa [scanSecondFilled, scanSlots, scanRead, step, List.replicate_succ] using ih
+  | cons head rest ih => cases head <;> cases seen <;> simp_all [scanSecondFilled, scanSlots, scanRead, step]
 
 /-- Every nonempty run of declared omissions has the same meaning as one marker at that exact
 position. This permits the checked operand core's open-tail bit to supply all seven scans. -/
@@ -193,7 +224,7 @@ theorem evalComputation_omittedRun (operator : FieldFillQuantifier)
     operator.evalComputation (before ++ List.replicate (count + 1) .uninstantiated ++ suffix) =
       operator.evalComputation (before ++ [.uninstantiated] ++ suffix) := by
   have one : [.uninstantiated] = List.replicate 1 (ComputationFillSlot.uninstantiated) := rfl
-  cases operator <;> simp only [evalComputation, scanAnyDeclaredEmpty_omittedRun] <;>
+  cases operator <;> simp only [evalComputation, evalComputationUsing, Id.run, bind, pure, scanAnyDeclaredEmpty_omittedRun] <;>
     rw [one] <;> simp only [scanAnyFilled_omittedRun, scanSecondFilled_omittedRun]
 
 end FieldFillQuantifier

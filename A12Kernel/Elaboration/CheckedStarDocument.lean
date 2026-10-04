@@ -374,15 +374,8 @@ instantiated topology; ordinary aggregates continue using `resolveInCapacity`. -
 def declaredEnvironments? (source : CheckedStarFieldPath model)
     (checked : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (Option (List Env)) := do
-  let bound ← source.path.boundEnvironment outer |>.mapError .addressing
   checked.requireInstantiatedEnvironment source.bindingScope outer
-  if StarAxes.environmentOverLimit source.path.axes bound then return some []
-  let mut environments := [bound]
-  for axis in source.path.axes.drop source.path.firstStar do
-    let some capacity := axis.repeatability | return none
-    environments := environments.flatMap fun parent =>
-      (List.range capacity).map fun index => parent ++ [(axis.level, index + 1)]
-  pure (some environments)
+  source.path.declaredEnvironments? outer |>.mapError .addressing
 
 /-- Resolve one full-validation starred entity-list occurrence. Optional checked-filter ownership remains with the typed caller; this function owns the common filter-before-addressing projection and preserves reached failures structurally. -/
 def resolveCheckedValidationEntityOperandCore

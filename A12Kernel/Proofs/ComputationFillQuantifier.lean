@@ -181,4 +181,22 @@ theorem filledFieldCount_validationProjection (cells : List CellObservation) :
           CellObservation.asComputationFillSlot, Functor.map, Except.map] <;>
         split at ih <;> simp_all
 
+/-- The actual addressed scan never invokes later payload reads after a deciding step. -/
+theorem computationFillScan_deciding_prefix (kind : FieldFillQuantifier.ScanKind)
+    (read : Slot → ComputationFillSlot) (first : Slot) (rest : List Slot) (seen : Bool)
+    (result : FieldFillQuantifier.ScanResult)
+    (decides : FieldFillQuantifier.step kind seen (read first) = .inr result) :
+    FieldFillQuantifier.scanRead kind read (first :: rest) seen = .inr result := by
+  simp [FieldFillQuantifier.scanRead, decides]
+
+/-- A failed first scan prevents a composite guard from starting its other range. -/
+theorem computationFillRestart_poison (operator : FieldFillQuantifier)
+    (scan : FieldFillQuantifier.ScanKind → Except Error FieldFillQuantifier.ScanResult)
+    (cause : FormalCause)
+    (first : scan .anyFilled = .ok (.poison cause))
+    (composite : operator = .notExactlyOneFieldFilled ∨ operator = .fieldsNotCollectivelyFilled) :
+    operator.evalComputationUsing scan = .ok (.poison cause) := by
+  rcases composite with rfl | rfl <;>
+    simp [FieldFillQuantifier.evalComputationUsing, first, bind, Except.bind, pure, Except.pure]
+
 end A12Kernel

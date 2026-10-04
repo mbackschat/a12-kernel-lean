@@ -24,6 +24,7 @@ def CheckedComputationConditionError.toNumericFault :
   | .predicate .valueFailure => .guardValueFailure
   | .predicate .temporalUnavailable => .unsupportedDateCalendar
   | .predicate (.fieldKindMismatch field) => .fieldKindMismatch field
+  | .predicate (.fieldFill error) => .guardBinding (.fieldFill error)
   | .predicate .contextRequired => .repeatableContextRequired
   | .predicate (.addressing error) => .repeatableAddressing error
 
@@ -185,7 +186,8 @@ def FlatModel.elaborateCheckedComputationCondition (model : FlatModel)
   | .fieldNotFilled field => model.liftPrimitiveComputationGuard declaringGroup targetGroup (.fieldNotFilled field)
   | .text op left right => model.liftPrimitiveComputationGuard declaringGroup targetGroup (.text op left right)
   | .boolean op field expected => model.liftPrimitiveComputationGuard declaringGroup targetGroup (.boolean op field expected)
-  | .fieldFill operator source => model.liftPrimitiveComputationGuard declaringGroup targetGroup (.fieldFill operator source)
+  | .fieldFill operator source => (.leaf ∘ .predicate) <$>
+      ((model.elaborateComputationPredicate declaringGroup targetGroup (.fieldFill operator source)).mapError .predicate)
   | .groupPresence operator source => model.liftPrimitiveComputationGuard declaringGroup targetGroup (.groupPresence operator source)
   | .groupFill operator source => model.liftPrimitiveComputationGuard declaringGroup targetGroup (.groupFill operator source)
   | .and left right => do

@@ -16,6 +16,7 @@ import A12Kernel.Reference.Dm.NumericFieldFormLocks
 import A12Kernel.Reference.Dm.ComputationGuardLocks
 import A12Kernel.Reference.Dm.ComputationPredicateGuardLocks
 import A12Kernel.Reference.Dm.ComputationOverlapLocks
+import A12Kernel.Reference.Dm.FieldFillGuardLocks
 import A12Kernel.Reference.Dm.TemporalExpressionLocks
 import A12Kernel.Reference.Dm.ScalarFieldGuardLocks
 import A12Kernel.Reference.Dm.NumericCountLocks
