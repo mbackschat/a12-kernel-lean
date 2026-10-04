@@ -60,22 +60,26 @@ where
       (checkRepeatableBooleanConstantComputation model group target.id value)
     pure fun _ => .ofRepeatableBooleanConstant operation
 
-/-- Ordinary String expressions and Enumeration reads share row-local alternative selection.
+/-- Ordinary String expressions, Boolean/Confirm constants and Enumeration reads share row-local alternative selection.
 Temporal literal classification stays with `rowConstant`, whose family gate precedes the target kind. -/
 def isRowAlternativeOperation (target : FlatFieldDecl) (expression : Expr) : Bool :=
   if target.policy.kind == .string && (lowerStringExpr expression).isOk then true else
   match expression with
+  | .constant "True" | .constant "False" => target.policy.kind == .boolean || target.policy.kind == .confirm
   | .string text => !isTemporalConstant text
   | .value { index := none, .. } => target.policy.kind == .enumeration
   | _ => false
 
-/-- Reuse bound String expressions and checked Enumeration operations before certifying row-local selection. -/
+/-- Retain each admitted operation certificate before certifying row-local selection. -/
 def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (expression : Expr) : Lowering (CheckedRowComputationOperation model) := do
   if target.policy.kind == .string then
     return .stringExpression (← elaborated "StringExpression"
       (elaborateRowStringExpression model group target.id (← lowerStringExpr expression)))
   match expression with
+  | .constant "True" | .constant "False" =>
+      pure (.booleanConstant (← elaborated "BooleanComputation"
+        (checkRepeatableBooleanConstantComputation model group target.id (expression == .constant "True"))))
   | .string text => do
       if isTemporalConstant text then refuse "RowComputation" "temporal literal"
       if target.policy.kind == .enumeration then

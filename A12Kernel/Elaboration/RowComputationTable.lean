@@ -2,10 +2,11 @@ import A12Kernel.Elaboration.RepeatableStringConstantComputation
 import A12Kernel.Elaboration.AddressedEnumerationComputation
 import A12Kernel.Elaboration.DocumentComputationStep
 import A12Kernel.Elaboration.ComputationNumericGuard
+import A12Kernel.Elaboration.BooleanConstantComputation
 
 /-! # Checked alternatives at a repeatable non-Number target
 
-Selection belongs to one target row. Bound String expressions, constants and Enumeration operations
+Selection belongs to one target row. Bound String expressions, String/Boolean/Confirm constants and Enumeration operations
 keep their certificates and evaluators; this table adds no token semantics or selection algorithm.
 -/
 
@@ -15,6 +16,7 @@ inductive CheckedRowComputationOperation (model : FlatModel) where
   | stringExpression (operation : CheckedRowStringExpression model)
   | stringConstant (operation : CheckedRepeatableStringConstantComputation model)
   | enumeration (operation : CheckedAddressedEnumerationComputation model)
+  | booleanConstant (operation : CheckedRepeatableBooleanConstantComputation model)
 
 namespace CheckedRowComputationOperation
 
@@ -22,19 +24,22 @@ def target : CheckedRowComputationOperation model → FieldId
   | .stringExpression operation => operation.target.targetField
   | .stringConstant operation => operation.checkedTarget.targetField
   | .enumeration operation => operation.target.field
+  | .booleanConstant operation => operation.checkedTarget.targetField
 
 def scope : CheckedRowComputationOperation model → List RepeatableLevel
   | .stringExpression operation => operation.target.declaration.repeatableScope
   | .stringConstant operation => operation.checkedTarget.declaration.repeatableScope
   | .enumeration operation => operation.target.declaration.repeatableScope
+  | .booleanConstant operation => operation.checkedTarget.declaration.repeatableScope
 
 def family : CheckedRowComputationOperation model → DocumentTargetFamily
   | .stringExpression _ | .stringConstant _ => .string
   | .enumeration _ => .enumeration
+  | .booleanConstant _ => .boolean
 
 def referencesField : CheckedRowComputationOperation model → FieldId → Bool
   | .stringExpression operation, field => operation.expression.referencesField field
-  | .stringConstant _, _ => false
+  | .stringConstant _, _ | .booleanConstant _, _ => false
   | .enumeration operation, field => operation.source.referencesField field
 
 end CheckedRowComputationOperation
@@ -137,6 +142,9 @@ def evaluateAt (operation : CheckedRowComputationOperation model)
         | throw (.targetPatternUnavailable operation.checkedTarget.targetField)
       let outcome := operation.outcomeWithPattern matcher
       pure (.string outcome, ← (DocumentComputationReadBack.string outcome).mapError .readBack)
+  | .booleanConstant operation =>
+      let outcome := BooleanComputationOutcome.value operation.value
+      pure (.boolean outcome, DocumentComputationReadBack.booleanConstant operation.operation.operation outcome)
   | .enumeration operation =>
       let result ← (operation.evaluateAtWithRead document.read environment).mapError .enumeration
       let outcome := result.result.asExactStringTargetOutcome

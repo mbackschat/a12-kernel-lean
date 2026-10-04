@@ -291,8 +291,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
       | none => pure step
       | some guard => (step.guard? guard).getDM (refuse "DocumentStep" "guard admission")
     pure (target, .document step)
-  if row && (target.policy.kind == .string || target.policy.kind == .enumeration) &&
-      operations.all (isRowAlternativeOperation target) then
+  if row && operations.all (isRowAlternativeOperation target) then
     let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do
       let operation ← lowerRowAlternativeOperation model computation.group target expression
       pure ({ precondition, operation } : CheckedComputationAlternative model _)

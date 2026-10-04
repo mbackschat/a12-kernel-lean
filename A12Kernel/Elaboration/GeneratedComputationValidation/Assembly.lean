@@ -504,11 +504,38 @@ def CheckedNumericComputationOperation.generatedMismatchComparison
   else
     throw (.conditionAssembly .incoherentCore)
 
+/-- Certify the retained star plan at the generated rule's anchor without re-resolving names or
+collapsing a fixed terminal below a star into structural row presence (spec/02 §2). -/
+private def generatedGroupStarOperand (model : FlatModel) (rowGroup : GroupPath)
+    (source : ComputationGroupOperand) (path : StarPath) :
+    Except GeneratedComputationValidationError (ResolvedGroupListOperand model) := do
+  if hModel : model.validate.isOk = true then
+    if hOwned : model.hasGroupPath source.reference.path = true then
+      if hAncestry : path.axes.map (·.level) = model.repeatableScopeForGroupPath source.reference.path then
+        if hFirst : path.firstStar < path.axes.length then
+          if hPath : path.validate.isOk = true then
+            if hTerminal : model.repeatableGroups.any (fun group => group.path == source.reference.path) = false then
+              return .starredGroupPresence {
+                declaringGroup := rowGroup, groupPath := source.reference.path, path
+                modelWellFormed := hModel, groupOwned := hOwned, terminalNonrepeatable := hTerminal
+                ancestryOwned := hAncestry, firstStarWithin := hFirst, pathValid := hPath }
+            else
+              let group ← (model.lookupUniqueRepeatablePath source.reference.path).mapError
+                GeneratedComputationValidationError.resolve
+              if hGroup : model.repeatableGroups.contains group = true then
+                if hPopulated : model.groupContributesField group.path = true then
+                  if hGroupAncestry : path.axes.map (·.level) = model.repeatableScopeForGroupPath group.path then
+                    return .starredGroup {
+                      declaringGroup := rowGroup, group, path, modelWellFormed := hModel
+                      groupOwned := hGroup, groupPopulated := hPopulated, ancestryOwned := hGroupAncestry
+                      firstStarWithin := hFirst, pathValid := hPath }
+  throw (.conditionAssembly .incoherentCore)
+
 private def generatedGuardCondition (model : FlatModel) (target : FieldId)
     (position : GeneratedComputationGuardPosition)
     (condition : CheckedComputationCondition model) :
     Except GeneratedComputationValidationError (ValidationCondition model) := do
-  if condition.referencesField target then throw (.targetSelfReference position)
+  if condition.forbidsTarget target then throw (.targetSelfReference position)
   match condition with
   | .leaf (.numeric comparison) =>
       let left ← comparison.left.mapM CheckedNumericComputationAtom.toValidationAtom
@@ -542,7 +569,20 @@ private def generatedGuardCondition (model : FlatModel) (target : FieldId)
       (.fieldNotFilled (← model.resolveGeneratedGuardField field)))
   | .leaf (.text comparison) | .leaf (.scalar comparison) => pure (ValidationCondition.flat (.compare comparison))
   | .leaf (.fieldFill _ _) => throw .fieldFillGuardRequiresConditionTree
-  | .leaf (.groupPresence _ _) => throw .groupGuardRequiresConditionTree
+  | .leaf (.groupPresence operator source) => do
+      let targetDeclaration ← (model.lookupUniqueId target).mapError GeneratedComputationValidationError.resolve
+      if !source.admitted model targetDeclaration.repeatableScope then
+        throw (.conditionAssembly .incoherentCore)
+      match source.starPath with
+      | none =>
+          -- ValidationModelConverter retains the computation's declaration path independently of
+          -- its target. Lower the resolved operand to that path before checking at the target anchor;
+          -- the checked computation guard still owns the authored RuleGroup origin.
+          pure (ValidationCondition.groupPresence operator { source.reference with origin := .path })
+      | some path => do
+          let operand ← generatedGroupStarOperand model targetDeclaration.groupPath source path
+          pure (ValidationCondition.groupList
+            (match operator with | .filled => .atLeastOneGroupFilled | .notFilled => .noGroupFilled) [operand])
   | .and left right => pure (.and (← generatedGuardCondition model target position left)
       (← generatedGuardCondition model target position right))
   | .or left right => pure (.or (← generatedGuardCondition model target position left)

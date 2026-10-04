@@ -1,0 +1,2029 @@
+{
+  "header" : {
+    "id" : "GroupGuardFamily_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "GroupGuardFamily_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Batches",
+            "name" : "Batches",
+            "Group" : {
+              "repeatability" : 2,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Batches/Rows",
+                "name" : "Rows",
+                "Group" : {
+                  "repeatability" : 2,
+                  "elements" : [ {
+                    "type" : "Group",
+                    "id" : "/Form/Batches/Rows/Box",
+                    "name" : "Box",
+                    "Group" : {
+                      "repeatability" : 1,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Form/Batches/Rows/Box/Gate",
+                        "name" : "Gate",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType",
+                            "NumberType" : {
+                              "maxFractionalDigits" : 0
+                            }
+                          }
+                        }
+                      } ]
+                    }
+                  }, {
+                    "type" : "Group",
+                    "id" : "/Form/Batches/Rows/Spare",
+                    "name" : "Spare",
+                    "Group" : {
+                      "repeatability" : 1,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Form/Batches/Rows/Spare/Gate",
+                        "name" : "Gate",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "BooleanType"
+                          }
+                        }
+                      } ]
+                    }
+                  }, {
+                    "type" : "Group",
+                    "id" : "/Form/Batches/Rows/FreshBox",
+                    "name" : "FreshBox",
+                    "Group" : {
+                      "repeatability" : 1,
+                      "elements" : [ {
+                        "type" : "Field",
+                        "id" : "/Form/Batches/Rows/FreshBox/Fresh",
+                        "name" : "Fresh",
+                        "Field" : {
+                          "fieldType" : {
+                            "type" : "NumberType",
+                            "NumberType" : {
+                              "maxFractionalDigits" : 0
+                            }
+                          }
+                        }
+                      }, {
+                        "type" : "Computation",
+                        "id" : "/Form/Batches/Rows/FreshBox/FreshComp",
+                        "name" : "FreshComp",
+                        "Computation" : {
+                          "computedFieldRelPath" : "../Fresh",
+                          "computationAlternatives" : [ {
+                            "operation" : "[/Form/Divider]"
+                          } ],
+                          "errorMessage" : [ {
+                            "locale" : "en_US",
+                            "text" : "Group guard family control."
+                          } ]
+                        }
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N0",
+                    "name" : "N0",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N0Dep",
+                    "name" : "N0Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N0DepComp",
+                    "name" : "N0DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N0Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/N0)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N0Comp",
+                    "name" : "N0Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N0",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "GroupFilled(/Form/Batches/Rows/Box)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N1",
+                    "name" : "N1",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N1Dep",
+                    "name" : "N1Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N1DepComp",
+                    "name" : "N1DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N1Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/N1)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N1Comp",
+                    "name" : "N1Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N1",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "GroupNotFilled(/Form/Batches/Rows/Box)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N2",
+                    "name" : "N2",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N2Dep",
+                    "name" : "N2Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N2DepComp",
+                    "name" : "N2DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N2Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/N2)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N2Comp",
+                    "name" : "N2Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N2",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "AllGroupsFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N3",
+                    "name" : "N3",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N3Dep",
+                    "name" : "N3Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N3DepComp",
+                    "name" : "N3DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N3Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/N3)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N3Comp",
+                    "name" : "N3Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N3",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "NoGroupFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N4",
+                    "name" : "N4",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N4Dep",
+                    "name" : "N4Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N4DepComp",
+                    "name" : "N4DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N4Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/N4)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N4Comp",
+                    "name" : "N4Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N4",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "AtLeastOneGroupFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N5",
+                    "name" : "N5",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N5Dep",
+                    "name" : "N5Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N5DepComp",
+                    "name" : "N5DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N5Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/N5)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N5Comp",
+                    "name" : "N5Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N5",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "NotAllGroupsFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N6",
+                    "name" : "N6",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/N6Dep",
+                    "name" : "N6Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N6DepComp",
+                    "name" : "N6DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N6Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/N6)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/N6Comp",
+                    "name" : "N6Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../N6",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "GroupsNotCollectivelyFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S0",
+                    "name" : "S0",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S0Dep",
+                    "name" : "S0Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S0DepComp",
+                    "name" : "S0DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S0Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/S0)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S0Comp",
+                    "name" : "S0Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S0",
+                      "computationAlternatives" : [ {
+                        "operation" : "\"x\"",
+                        "precondition" : "GroupFilled(/Form/Batches/Rows/Box)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S1",
+                    "name" : "S1",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S1Dep",
+                    "name" : "S1Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S1DepComp",
+                    "name" : "S1DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S1Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/S1)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S1Comp",
+                    "name" : "S1Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S1",
+                      "computationAlternatives" : [ {
+                        "operation" : "\"x\"",
+                        "precondition" : "GroupNotFilled(/Form/Batches/Rows/Box)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S2",
+                    "name" : "S2",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S2Dep",
+                    "name" : "S2Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S2DepComp",
+                    "name" : "S2DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S2Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/S2)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S2Comp",
+                    "name" : "S2Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S2",
+                      "computationAlternatives" : [ {
+                        "operation" : "\"x\"",
+                        "precondition" : "AllGroupsFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S3",
+                    "name" : "S3",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S3Dep",
+                    "name" : "S3Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S3DepComp",
+                    "name" : "S3DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S3Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/S3)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S3Comp",
+                    "name" : "S3Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S3",
+                      "computationAlternatives" : [ {
+                        "operation" : "\"x\"",
+                        "precondition" : "NoGroupFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S4",
+                    "name" : "S4",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S4Dep",
+                    "name" : "S4Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S4DepComp",
+                    "name" : "S4DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S4Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/S4)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S4Comp",
+                    "name" : "S4Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S4",
+                      "computationAlternatives" : [ {
+                        "operation" : "\"x\"",
+                        "precondition" : "AtLeastOneGroupFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S5",
+                    "name" : "S5",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S5Dep",
+                    "name" : "S5Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S5DepComp",
+                    "name" : "S5DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S5Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/S5)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S5Comp",
+                    "name" : "S5Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S5",
+                      "computationAlternatives" : [ {
+                        "operation" : "\"x\"",
+                        "precondition" : "NotAllGroupsFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S6",
+                    "name" : "S6",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/S6Dep",
+                    "name" : "S6Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S6DepComp",
+                    "name" : "S6DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S6Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/S6)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/S6Comp",
+                    "name" : "S6Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../S6",
+                      "computationAlternatives" : [ {
+                        "operation" : "\"x\"",
+                        "precondition" : "GroupsNotCollectivelyFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B0",
+                    "name" : "B0",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B0Dep",
+                    "name" : "B0Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B0DepComp",
+                    "name" : "B0DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B0Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/B0)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B0Comp",
+                    "name" : "B0Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B0",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "GroupFilled(/Form/Batches/Rows/Box)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B1",
+                    "name" : "B1",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B1Dep",
+                    "name" : "B1Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B1DepComp",
+                    "name" : "B1DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B1Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/B1)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B1Comp",
+                    "name" : "B1Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B1",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "GroupNotFilled(/Form/Batches/Rows/Box)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B2",
+                    "name" : "B2",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B2Dep",
+                    "name" : "B2Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B2DepComp",
+                    "name" : "B2DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B2Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/B2)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B2Comp",
+                    "name" : "B2Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B2",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "AllGroupsFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B3",
+                    "name" : "B3",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B3Dep",
+                    "name" : "B3Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B3DepComp",
+                    "name" : "B3DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B3Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/B3)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B3Comp",
+                    "name" : "B3Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B3",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "NoGroupFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B4",
+                    "name" : "B4",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B4Dep",
+                    "name" : "B4Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B4DepComp",
+                    "name" : "B4DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B4Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/B4)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B4Comp",
+                    "name" : "B4Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B4",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "AtLeastOneGroupFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B5",
+                    "name" : "B5",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B5Dep",
+                    "name" : "B5Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B5DepComp",
+                    "name" : "B5DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B5Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/B5)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B5Comp",
+                    "name" : "B5Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B5",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "NotAllGroupsFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B6",
+                    "name" : "B6",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/B6Dep",
+                    "name" : "B6Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B6DepComp",
+                    "name" : "B6DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B6Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/B6)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/B6Comp",
+                    "name" : "B6Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../B6",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "GroupsNotCollectivelyFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C0",
+                    "name" : "C0",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "ConfirmType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C0Dep",
+                    "name" : "C0Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C0DepComp",
+                    "name" : "C0DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C0Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/C0)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C0Comp",
+                    "name" : "C0Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C0",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "GroupFilled(/Form/Batches/Rows/Box)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C1",
+                    "name" : "C1",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "ConfirmType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C1Dep",
+                    "name" : "C1Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C1DepComp",
+                    "name" : "C1DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C1Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/C1)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C1Comp",
+                    "name" : "C1Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C1",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "GroupNotFilled(/Form/Batches/Rows/Box)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C2",
+                    "name" : "C2",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "ConfirmType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C2Dep",
+                    "name" : "C2Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C2DepComp",
+                    "name" : "C2DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C2Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/C2)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C2Comp",
+                    "name" : "C2Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C2",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "AllGroupsFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C3",
+                    "name" : "C3",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "ConfirmType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C3Dep",
+                    "name" : "C3Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C3DepComp",
+                    "name" : "C3DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C3Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/C3)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C3Comp",
+                    "name" : "C3Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C3",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "NoGroupFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C4",
+                    "name" : "C4",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "ConfirmType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C4Dep",
+                    "name" : "C4Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C4DepComp",
+                    "name" : "C4DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C4Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/C4)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C4Comp",
+                    "name" : "C4Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C4",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "AtLeastOneGroupFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C5",
+                    "name" : "C5",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "ConfirmType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C5Dep",
+                    "name" : "C5Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C5DepComp",
+                    "name" : "C5DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C5Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/C5)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C5Comp",
+                    "name" : "C5Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C5",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "NotAllGroupsFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C6",
+                    "name" : "C6",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "ConfirmType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/C6Dep",
+                    "name" : "C6Dep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C6DepComp",
+                    "name" : "C6DepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C6Dep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/C6)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/C6Comp",
+                    "name" : "C6Comp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../C6",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "GroupsNotCollectivelyFilled(/Form/Batches/Rows/Box,/Form/Batches/Rows/Spare)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/SFreshF",
+                    "name" : "SFreshF",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/SFreshFDep",
+                    "name" : "SFreshFDep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/SFreshFDepComp",
+                    "name" : "SFreshFDepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../SFreshFDep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/SFreshF)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/SFreshFComp",
+                    "name" : "SFreshFComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../SFreshF",
+                      "computationAlternatives" : [ {
+                        "operation" : "\"x\"",
+                        "precondition" : "GroupFilled(/Form/Batches/Rows/FreshBox)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/SFreshE",
+                    "name" : "SFreshE",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/SFreshEDep",
+                    "name" : "SFreshEDep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/SFreshEDepComp",
+                    "name" : "SFreshEDepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../SFreshEDep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/SFreshE)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/SFreshEComp",
+                    "name" : "SFreshEComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../SFreshE",
+                      "computationAlternatives" : [ {
+                        "operation" : "\"x\"",
+                        "precondition" : "GroupNotFilled(/Form/Batches/Rows/FreshBox)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/BFreshF",
+                    "name" : "BFreshF",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/BFreshFDep",
+                    "name" : "BFreshFDep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/BFreshFDepComp",
+                    "name" : "BFreshFDepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../BFreshFDep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/BFreshF)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/BFreshFComp",
+                    "name" : "BFreshFComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../BFreshF",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "GroupFilled(/Form/Batches/Rows/FreshBox)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/BFreshE",
+                    "name" : "BFreshE",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/BFreshEDep",
+                    "name" : "BFreshEDep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/BFreshEDepComp",
+                    "name" : "BFreshEDepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../BFreshEDep",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "FieldFilled(/Form/Batches/Rows/BFreshE)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/BFreshEComp",
+                    "name" : "BFreshEComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../BFreshE",
+                      "computationAlternatives" : [ {
+                        "operation" : "True",
+                        "precondition" : "GroupNotFilled(/Form/Batches/Rows/FreshBox)"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Group guard family control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/RowConfirmCmp",
+                    "name" : "RowConfirmCmp",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Batches/Rows/RowConfirmDep",
+                    "name" : "RowConfirmDep",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/RowConfirmCmpComp",
+                    "name" : "RowConfirmCmpComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../RowConfirmCmp",
+                      "computationAlternatives" : [ {
+                        "operation" : "1",
+                        "precondition" : "[/Form/Batches/Rows/C0] != True"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Typed Confirm readback control."
+                      } ]
+                    }
+                  }, {
+                    "type" : "Computation",
+                    "id" : "/Form/Batches/Rows/RowConfirmDepComp",
+                    "name" : "RowConfirmDepComp",
+                    "Computation" : {
+                      "computedFieldRelPath" : "../RowConfirmDep",
+                      "computationAlternatives" : [ {
+                        "operation" : "[/Form/Batches/Rows/RowConfirmCmp] + 1"
+                      } ],
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "Typed Confirm readback control."
+                      } ]
+                    }
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Divider",
+            "name" : "Divider",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RowAny",
+            "name" : "RowAny",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RowAnyComp",
+            "name" : "RowAnyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RowAny",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneGroupFilled(/Form/Batches*/Rows*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Group guard family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RowNo",
+            "name" : "RowNo",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RowNoComp",
+            "name" : "RowNoComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RowNo",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoGroupFilled(/Form/Batches*/Rows*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Group guard family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BoxAny",
+            "name" : "BoxAny",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BoxAnyComp",
+            "name" : "BoxAnyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BoxAny",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneGroupFilled(/Form/Batches*/Rows*/Box)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Group guard family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BoxNo",
+            "name" : "BoxNo",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BoxNoComp",
+            "name" : "BoxNoComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BoxNo",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "NoGroupFilled(/Form/Batches*/Rows*/Box)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Group guard family control."
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FixedConfirm",
+            "name" : "FixedConfirm",
+            "Field" : {
+              "fieldType" : {
+                "type" : "ConfirmType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FixedConfirmCmp",
+            "name" : "FixedConfirmCmp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FixedConfirmDep",
+            "name" : "FixedConfirmDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FixedConfirmComp",
+            "name" : "FixedConfirmComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FixedConfirm",
+              "computationAlternatives" : [ {
+                "operation" : "True"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Typed Confirm readback control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FixedConfirmCmpComp",
+            "name" : "FixedConfirmCmpComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FixedConfirmCmp",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[/Form/FixedConfirm] != True"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Typed Confirm readback control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FixedConfirmDepComp",
+            "name" : "FixedConfirmDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FixedConfirmDep",
+              "computationAlternatives" : [ {
+                "operation" : "[/Form/FixedConfirmCmp] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Typed Confirm readback control."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
