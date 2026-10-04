@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.BooleanConstantComputation
 
 /-! # Checked alternatives at non-Number target instances
 
-Selection belongs to one target instance; a fixed Boolean/Confirm target has the empty address. Bound String expressions, String/Boolean/Confirm constants and Enumeration operations
+Selection belongs to one target instance; fixed Boolean/Confirm and temporal targets have the empty address. Temporal expressions, bound String expressions, String/Boolean/Confirm constants and Enumeration operations
 keep their certificates and evaluators; this table adds no token semantics or selection algorithm.
 -/
 
@@ -18,6 +18,7 @@ inductive CheckedRowComputationOperation (model : FlatModel) where
   | enumeration (operation : CheckedAddressedEnumerationComputation model)
   | booleanConstant (operation : CheckedRepeatableBooleanConstantComputation model)
   | fixedBooleanConstant (operation : CheckedBooleanConstantComputation model)
+  | temporalExpression (operation : CheckedTemporalExpressionComputation model)
 
 namespace CheckedRowComputationOperation
 
@@ -27,6 +28,7 @@ def target : CheckedRowComputationOperation model → FieldId
   | .enumeration operation => operation.target.field
   | .booleanConstant operation => operation.checkedTarget.targetField
   | .fixedBooleanConstant operation => operation.target.id
+  | .temporalExpression operation => operation.target
 
 def scope : CheckedRowComputationOperation model → List RepeatableLevel
   | .stringExpression operation => operation.target.declaration.repeatableScope
@@ -34,16 +36,19 @@ def scope : CheckedRowComputationOperation model → List RepeatableLevel
   | .enumeration operation => operation.target.declaration.repeatableScope
   | .booleanConstant operation => operation.checkedTarget.declaration.repeatableScope
   | .fixedBooleanConstant _ => []
+  | .temporalExpression operation => operation.scope
 
 def family : CheckedRowComputationOperation model → DocumentTargetFamily
   | .stringExpression _ | .stringConstant _ => .string
   | .enumeration _ => .enumeration
   | .booleanConstant _ | .fixedBooleanConstant _ => .boolean
+  | .temporalExpression operation => operation.family
 
 def referencesField : CheckedRowComputationOperation model → FieldId → Bool
   | .stringExpression operation, field => operation.expression.referencesField field
   | .stringConstant _, _ | .booleanConstant _, _ | .fixedBooleanConstant _, _ => false
   | .enumeration operation, field => operation.source.referencesField field
+  | .temporalExpression operation, field => operation.expression.referencesField field
 
 end CheckedRowComputationOperation
 
@@ -132,7 +137,7 @@ private def booleanOutcome (operation : BooleanConstantOperation) : DocumentTarg
   (.boolean outcome, DocumentComputationReadBack.booleanConstant operation outcome)
 
 /-- Evaluate only a selected operation; target checking cannot influence which alternative wins. -/
-def evaluateAt (operation : CheckedRowComputationOperation model)
+def evaluateAt (operation : CheckedRowComputationOperation model) (world : World)
     (patterns : PreparedFlatStringPatterns model compilePattern) (document : CheckedDocument model)
     (environment : Env) : Except RowComputationTableFault (DocumentTargetOutcome × CheckedCell) := do
   match operation with
@@ -151,6 +156,9 @@ def evaluateAt (operation : CheckedRowComputationOperation model)
       pure (.string outcome, ← (DocumentComputationReadBack.string outcome).mapError .readBack)
   | .booleanConstant operation => pure (booleanOutcome operation.operation.operation)
   | .fixedBooleanConstant operation => pure (booleanOutcome operation.operation.operation)
+  | .temporalExpression operation =>
+      let context := document.computationContextAt environment
+      (operation.run { read := context.read, storedText := context.storedText, world := some world }).mapError .readBack
   | .enumeration operation =>
       let result ← (operation.evaluateAtWithRead document.read environment).mapError .enumeration
       let outcome := result.result.asExactStringTargetOutcome
@@ -190,7 +198,7 @@ def execute (table : CheckedRowComputationTable model) (world : World)
       | .ok .noMatch => atRow environment family.noValue DocumentComputationReadBack.empty
       | .ok (.poison cause) => atRow environment (family.poison cause) DocumentComputationReadBack.poison
       | .ok (.selected operation) =>
-          let (outcome, cell) ← operation.evaluateAt patterns document environment
+          let (outcome, cell) ← operation.evaluateAt world patterns document environment
           atRow environment outcome cell)
 
 end CheckedRowComputationTable

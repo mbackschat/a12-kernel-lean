@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.LowerScalarTemporal
 import A12Kernel.Reference.Dm.LowerString
 import A12Kernel.Reference.Dm.LowerCore
 import A12Kernel.Reference.Dm.LowerEntity
@@ -6,13 +7,10 @@ import A12Kernel.Elaboration.MixedComputationPlan
 
 /-! # Lowering addressed non-Number computations
 
-Each carrier selects its target instances: repeated targets use instantiated rows, while fixed
-Boolean/Confirm tables use the empty address. Constants are placed by literal shape, Boolean and Confirm
-by `True` and `False`; `FieldValueAsString`, `DateFromDateTime` and the `Time(...)` construction each
-have one addressed carrier, and `FirstFilledValue` the one carrier per kind that also serves a fixed
-target, a temporal target's chosen by its profile. Each carrier owns its target's
-admission, its sources' placement and its refusal of a read of its own target, so the reader only
-names it; the step's certificate that it excludes its target restates what the carrier ensures.
+Target-instance tables share guarded selection for fixed and repeated temporal expressions,
+Boolean/Confirm constants, bound String expressions and Enumeration operations. Temporal trees
+use declaration-owned projection and read-back. Specialized field forms and `FirstFilledValue`
+keep their existing carriers; each carrier owns source placement and target exclusion.
 -/
 
 namespace A12Kernel.Dm
@@ -60,10 +58,15 @@ where
       (checkRepeatableBooleanConstantComputation model group target.id value)
     pure fun _ => .ofRepeatableBooleanConstant operation
 
-/-- Ordinary String expressions, Boolean/Confirm constants and Enumeration reads share row-local alternative selection.
-Temporal literal classification stays with `rowConstant`, whose family gate precedes the target kind. -/
+/-- Temporal target profiles select expression projection; other kinds retain their established
+carrier choice. FirstFilledValue and bare Date literals keep their entity-stream and year-presence gates. -/
 def isRowAlternativeOperation (target : FlatFieldDecl) (expression : Expr) : Bool :=
-  if target.policy.kind == .string && (lowerStringExpr expression).isOk then true else
+  if target.temporalTargetPolicy.isSome then
+    match expression with
+    | .call "FirstFilledValue" _ _ _ => false
+    | .string text => (authoredDateLiteral? text).isNone
+    | _ => true
+  else if target.policy.kind == .string && (lowerStringExpr expression).isOk then true else
   match expression with
   | .constant "True" | .constant "False" => target.policy.kind == .boolean || target.policy.kind == .confirm
   | .string text => !isTemporalConstant text
@@ -73,6 +76,13 @@ def isRowAlternativeOperation (target : FlatFieldDecl) (expression : Expr) : Boo
 /-- Retain each admitted operation certificate before certifying row-local selection. -/
 def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (expression : Expr) : Lowering (CheckedRowComputationOperation model) := do
+  if target.temporalTargetPolicy.isSome then
+    let surface ← lowerScalarTemporalExpression model group expression
+    let checked ← elaborated "TemporalExpression"
+      (elaborateScalarTemporalExpression model group surface (some target.groupPath))
+    let operation ← (checkTemporalExpressionComputation? checked target.id).getDM
+      (refuse "TemporalExpression" "target, binding or dependency")
+    return .temporalExpression operation
   if target.policy.kind == .string then
     return .stringExpression (← elaborated "StringExpression"
       (elaborateRowStringExpression model group target.id (← lowerStringExpr expression)))

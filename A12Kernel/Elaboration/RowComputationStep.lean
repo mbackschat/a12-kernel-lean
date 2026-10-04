@@ -18,7 +18,7 @@ import A12Kernel.Elaboration.DocumentComputationStep
 /-! # Row computation steps
 
 A **row step** is a checked non-Number computation over addressed target instances. Its carrier runs
-once per instantiated row, or once at the empty address for a fixed Boolean/Confirm table. Read-back
+once per instantiated row, or once at the empty address for a fixed Boolean/Confirm or temporal table. Read-back
 uses the same typed cell as the stored result, so dependent steps observe the completed target.
 Each row carrier supplies its operation reads, checked against its target here. A table also retains
 its guard inventory: group membership may include the target, while the shared condition certificate

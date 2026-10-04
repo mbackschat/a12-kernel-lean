@@ -588,4 +588,90 @@ example : runRows "Min([Stamp2], [Stamp], AddHours(Stamp,[Amount])) < [Stamp]"
 example : numericArms "Min(Max(Min([Anchor],1),2), HoursFromTime(AddHours(Now,1)),3)" =
     (true, true) := by native_decide
 
+private def temporalAlternativeRows (definitions : List (String × List DmAlternative × Option String))
+    (rows : List Lean.Json) (zone : String := "UTC") (fixed : Bool := false) : Option (List String) := do
+  let dm := { rowDm with flat := { (if fixed then model else rowModel) with timeZoneId := zone } }
+  let input ← (readDocument dm (Lean.Json.mkObj [("Order", Lean.Json.mkObj
+    (if fixed then [] else [("Rows", .arr rows.toArray)]))])).toOption
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let steps ← definitions.mapM fun (name, alternatives, guard) =>
+    (lowerComputation dm.flat .english {
+      group := if fixed then ["Order"] else ["Order", "Rows"], name := name ++ "Comp", targetRelPath := "../" ++ name
+      commonPrecondition := guard, alternatives
+      errorCodesToSuppress := [] }).toOption.map (·.2)
+  pure ((← (runComputations world prepared checked steps).toOption).map
+    (fun result => result.pointer ++ ":" ++ result.outcome)).mergeSort
+
+private def temporalRows (definitions : List (String × String × Option String))
+    (rows : List Lean.Json) (zone : String := "UTC") : Option (List String) :=
+  temporalAlternativeRows (definitions.map fun (name, operation, guard) =>
+    (name, [{ operation, precondition := none }], guard)) rows zone
+
+example : temporalRows [("Stamp2", "Min([Stamp],AddHours(Stamp,[Amount]),AddHours(Stamp,3))", none)]
+    [clockRow "-1", clockRow "1", clockRow "bad", clockRow "100"] = some [
+      "Order/Rows/Stamp2:value 2024-03-31T00:00:00",
+      "Order/Rows[2]/Stamp2:value 2024-03-31T01:00:00",
+      "Order/Rows[3]/Stamp2:cleared", "Order/Rows[4]/Stamp2:cleared"] := by native_decide
+
+example : temporalRows [("Stamp2", "Max([Stamp],AddHours(Stamp,[Amount]),AddHours(Stamp,3))", none)]
+    [clockRow "1", clockRow "4"] = some [
+      "Order/Rows/Stamp2:value 2024-03-31T04:00:00",
+      "Order/Rows[2]/Stamp2:value 2024-03-31T05:00:00"] := by native_decide
+
+example : temporalRows [
+    ("Clock", "TimeFromDateTime(Stamp2)", none),
+    ("Due1", "DateFromDateTime(Stamp2)", none),
+    ("Stamp2", "Max([Stamp],AddHours(Stamp,[Amount]))", none)]
+    [clockRow "2", clockRow "bad"] = some [
+      "Order/Rows/Clock:value 03:00:00",
+      "Order/Rows/Stamp2:value 2024-03-31T03:00:00",
+      "Order/Rows[2]/Clock:cleared", "Order/Rows[2]/Due1:cleared", "Order/Rows[2]/Stamp2:cleared"] := by native_decide
+
+example : temporalRows [("Due1", "Date(\"2\",\"3\",Year)", none),
+    ("Year", "AddYears(Today,[Amount])", none)] [clockRow "1", clockRow "2"] = some [
+      "Order/Rows/Due1:value 1971-03-02", "Order/Rows/Year:value 1971",
+      "Order/Rows[2]/Due1:value 1972-03-02", "Order/Rows[2]/Year:value 1972"] := by native_decide
+
+example : temporalRows [("Due1", "Today", none),
+    ("Clock", "Min(Time(\"3\"),Time(\"2\"),Time(\"4\"))", none)] [clockRow "1"] = some [
+      "Order/Rows/Clock:value 02:00:00", "Order/Rows/Due1:value 1970-01-01"] ∧
+    temporalRows [("Stamp2", "Max([Stamp],AddHours(Now,1))", none)] [] = some [] ∧
+    temporalRows [("Stamp2", "Max([Stamp],AddHours(Stamp2,1))", none)] [] = none ∧
+    temporalRows [("Clock", "Time(HoursFromTime(Clock))", none)] [] = none := by native_decide
+
+example : temporalAlternativeRows [("Stamp2", [
+    { operation := "AddHours(Stamp,2)", precondition := some "[Amount] == 1" },
+    { operation := "AddHours(Stamp,3)", precondition := some "[Amount] > 0" }], none)]
+    [clockRow "1", clockRow "2", clockRow "0", clockRow "1"] = some [
+      "Order/Rows/Stamp2:value 2024-03-31T03:00:00",
+      "Order/Rows[2]/Stamp2:value 2024-03-31T04:00:00",
+      "Order/Rows[3]/Stamp2:cleared", "Order/Rows[4]/Stamp2:cleared"] := by native_decide
+
+private def gapTargetRow : Lean.Json := Lean.Json.mkObj [
+  ("Stamp", "2024-03-31T01:00:00"), ("Stamp2", "2024-03-31T03:00:00"),
+  ("Clock", "01:00:00"), ("Amount", "1"), ("Day", "9")]
+
+example : temporalRows [("Day", "HoursFromTime(Stamp2)", none),
+    ("Stamp2", "Min([Stamp],\"31.03.2024T02:30:00\")", some "FieldNotFilled(Amount)")]
+    [gapTargetRow] "Europe/Berlin" = some ["Order/Rows/Day:value 0", "Order/Rows/Stamp2:cleared"] ∧
+    temporalRows [("Day", "HoursFromTime(Stamp2)", none),
+    ("Stamp2", "Min([Stamp],\"31.03.2024T02:30:00\")", some "FieldFilled(Amount)")]
+    [gapTargetRow] "Europe/Berlin" = some ["Order/Rows/Day:cleared", "Order/Rows/Stamp2:cleared"] := by native_decide
+
+example : temporalAlternativeRows [("Stamp", [
+    { operation := "Min(AddHours(Now,1),AddHours(Now,2))", precondition := some "FieldNotFilled(Stamp2)" },
+    { operation := "Max(AddHours(Now,1),AddHours(Now,2))", precondition := some "FieldNotFilled(Stamp2)" }], none)]
+    [] "UTC" true = some ["Order/Stamp:value 1970-01-01T01:00:00"] := by native_decide
+
+example : (do
+    let narrow := { rowModel with fields := rowModel.fields.map fun field =>
+      if field.id == 8 then { field with groupPath := ["Order"], repeatableScope := [] } else field }
+    let parsed ← (parseText .english "[Stamp]").toOption
+    let surface ← (lowerScalarTemporalExpression narrow ["Order", "Rows"] parsed.body).toOption
+    let expression ← (elaborateScalarTemporalExpression narrow ["Order", "Rows"] surface
+      (some ["Order", "Rows"])).toOption
+    pure (checkTemporalExpressionComputation? expression 8).isNone) = some true := by native_decide
+
 end A12Kernel.Dm.TemporalExpressionLocks

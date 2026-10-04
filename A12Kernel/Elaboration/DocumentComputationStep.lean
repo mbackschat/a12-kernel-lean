@@ -306,6 +306,91 @@ end DocumentComputationReadBack
 own, `some none` for one declaring no pattern. -/
 abbrev StringTargetMatchers := FieldId → Option (Option (String → Bool))
 
+/-- A temporal operation retains its checked tree and declaration-owned target projection, shared by
+fixed and addressed execution. Row selection and guarded alternative choice remain table-owned. -/
+structure CheckedTemporalExpressionComputation (model : FlatModel) where
+  private mk ::
+  target : FieldId
+  scope : List RepeatableLevel
+  family : DocumentTargetFamily
+  expression : CheckedScalarTemporalExpression model
+  excludesTarget : expression.referencesField target = false
+  run : FlatContext → Except DocumentComputationStepFault (DocumentTargetOutcome × CheckedCell)
+
+/-- Bind every dependency to the target scope before projecting through its existing store policy. -/
+def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpression model)
+    (targetField : FieldId) : Option (CheckedTemporalExpressionComputation model) := do
+  let declaration ← (model.lookupUniqueId targetField).toOption
+  let scope := declaration.repeatableScope
+  if !expression.fieldIds.all (fun field =>
+      (model.lookupUniqueId field).toOption.any (·.repeatableScope.isPrefixOf scope)) then none else
+  if excludes : expression.referencesField targetField = false then
+    if expression.components == TemporalComponents.time then
+      let target ← (elaborateClockFormatTargetIn model scope targetField).toOption
+      pure {
+        target := targetField
+        scope := scope
+        expression := expression
+        family := .time
+        excludesTarget := excludes
+        run context := do
+          let result ← match expression.evalResult .computation context with
+            | .ok result => pure result
+            | .error .calendarUnavailable => throw .temporalExpressionUnavailable
+            | .error .dateTimeLabelUnresolved => return (.valueError .time, DocumentComputationReadBack.poison)
+          let outcome := target.evaluate (match result with
+            | .value (.time value) _ => .value value
+            | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue
+            | .unknown cause => .poison cause
+            | _ => .poison .malformed)
+          let cell ← DocumentComputationReadBack.time model targetField outcome
+          pure (.time outcome, cell)
+      }
+    else if expression.components == TemporalComponents.now then
+      let target ← (elaborateDateTimeTargetIn model scope targetField).toOption
+      pure {
+        target := targetField
+        scope := scope
+        expression := expression
+        family := .dateTime
+        excludesTarget := excludes
+        run context := do
+          let result ← match expression.evalResult .computation context with
+            | .ok result => pure result
+            | .error .calendarUnavailable => throw .temporalExpressionUnavailable
+            | .error .dateTimeLabelUnresolved => return (.valueError .dateTime, DocumentComputationReadBack.poison)
+          let outcome ← (target.evaluate (match result with
+            | .value (.instant value) _ => .value value
+            | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue
+            | .unknown cause => .poison cause
+            | _ => .poison .malformed)).mapError .temporalExpressionTarget
+          let cell ← DocumentComputationReadBack.dateTime model targetField outcome
+          pure (.dateTime outcome, cell)
+      }
+    else if expression.components.hasDate && !expression.components.hasTime then
+      let target ← (elaborateDateConstantTargetIn model scope targetField expression.components.year).toOption
+      pure {
+        target := targetField
+        scope := scope
+        expression := expression
+        family := .fullDate
+        excludesTarget := excludes
+        run context := do
+          let result ← match expression.evalResult .computation context with
+            | .ok result => pure result
+            | .error .calendarUnavailable => throw .temporalExpressionUnavailable
+            | .error .dateTimeLabelUnresolved => return (.valueError .fullDate, DocumentComputationReadBack.poison)
+          let outcome := match result with
+            | .value (.date value) _ | .value (.yearless value _) _ => target.evaluateParts value.parts
+            | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue
+            | .unknown cause => .poison cause
+            | _ => .poison .malformed
+          let cell ← DocumentComputationReadBack.dateConstant target outcome
+          pure (.fullDate outcome, cell)
+      }
+    else none
+  else none
+
 /-- One checked whole-document computation as a plan step. Only this module's instances construct one,
 so every step's cell is the read-back of its own outcome. -/
 structure CheckedDocumentComputationStep (model : FlatModel) where
@@ -321,73 +406,16 @@ structure CheckedDocumentComputationStep (model : FlatModel) where
 
 namespace CheckedDocumentComputationStep
 
-/-- A checked temporal expression enters the same target rendering and read-back boundary as the
-direct carriers. The expression's complete dependency fold enforces the target-read exclusion. -/
+/-- The fixed adapter uses the same operation as the addressed table, at the empty environment. -/
 def ofScalarTemporalExpression? (expression : CheckedScalarTemporalExpression model)
     (targetField : FieldId) : Option (CheckedDocumentComputationStep model) := do
-  if excludes : expression.referencesField targetField = false then
-    if expression.components == TemporalComponents.time then
-      let target ← (elaborateClockFormatTarget model targetField).toOption
-      pure {
-        target := targetField
-        family := .time
-        operationReferencesField := expression.referencesField
-        excludesTarget := excludes
-        run world _ document := do
-          let result ← match expression.evalResult .computation (document.flatContext.withWorld world) with
-            | .ok result => pure result
-            | .error .calendarUnavailable => throw .temporalExpressionUnavailable
-            | .error .dateTimeLabelUnresolved => return (.valueError .time, DocumentComputationReadBack.poison)
-          let outcome := target.evaluate (match result with
-            | .value (.time value) _ => .value value
-            | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue
-            | .unknown cause => .poison cause
-            | _ => .poison .malformed)
-          let cell ← DocumentComputationReadBack.time model targetField outcome
-          pure (.time outcome, cell)
-      }
-    else if expression.components == TemporalComponents.now then
-      let target ← (elaborateDateTimeTarget model targetField).toOption
-      pure {
-        target := targetField
-        family := .dateTime
-        operationReferencesField := expression.referencesField
-        excludesTarget := excludes
-        run world _ document := do
-          let result ← match expression.evalResult .computation (document.flatContext.withWorld world) with
-            | .ok result => pure result
-            | .error .calendarUnavailable => throw .temporalExpressionUnavailable
-            | .error .dateTimeLabelUnresolved => return (.valueError .dateTime, DocumentComputationReadBack.poison)
-          let outcome ← (target.evaluate (match result with
-            | .value (.instant value) _ => .value value
-            | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue
-            | .unknown cause => .poison cause
-            | _ => .poison .malformed)).mapError .temporalExpressionTarget
-          let cell ← DocumentComputationReadBack.dateTime model targetField outcome
-          pure (.dateTime outcome, cell)
-      }
-    else if expression.components.hasDate && !expression.components.hasTime then
-      let target ← (elaborateDateConstantTargetIn model [] targetField expression.components.year).toOption
-      pure {
-        target := targetField
-        family := .fullDate
-        operationReferencesField := expression.referencesField
-        excludesTarget := excludes
-        run world _ document := do
-          let result ← match expression.evalResult .computation (document.flatContext.withWorld world) with
-            | .ok result => pure result
-            | .error .calendarUnavailable => throw .temporalExpressionUnavailable
-            | .error .dateTimeLabelUnresolved => return (.valueError .fullDate, DocumentComputationReadBack.poison)
-          let outcome := match result with
-            | .value (.date value) _ | .value (.yearless value _) _ => target.evaluateParts value.parts
-            | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue
-            | .unknown cause => .poison cause
-            | _ => .poison .malformed
-          let cell ← DocumentComputationReadBack.dateConstant target outcome
-          pure (.fullDate outcome, cell)
-      }
-    else none
-  else none
+  let operation ← checkTemporalExpressionComputation? expression targetField
+  if !operation.scope.isEmpty then none else
+    pure {
+      target := operation.target, family := operation.family
+      operationReferencesField := operation.expression.referencesField
+      excludesTarget := operation.excludesTarget
+      run world _ document := operation.run (document.flatContext.withWorld world) }
 
 def referencesField (step : CheckedDocumentComputationStep model) (field : FieldId) : Bool :=
   step.precondition.any (·.val.referencesField field) || step.operationReferencesField field
