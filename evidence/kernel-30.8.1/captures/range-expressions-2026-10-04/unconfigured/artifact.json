@@ -1,0 +1,3019 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "RangeExpressions_DM.json",
+    "locale": "en_US",
+    "clock": "2024-03-30T23:00:00Z"
+  },
+  "rows": [
+    {
+      "name": "filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FullEndAfter",
+              "field": "Form/FullPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullEndComp",
+              "field": "Form/FullEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullSelectComp",
+              "field": "Form/FullSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullStartComp",
+              "field": "Form/FullStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullStartEquals",
+              "field": "Form/FullPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDEndAfter",
+              "field": "Form/MDPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/MDPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDEndComp",
+              "field": "Form/MDEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/MDEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDSelectComp",
+              "field": "Form/MDSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/MDSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDStartComp",
+              "field": "Form/MDStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/MDStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDStartEquals",
+              "field": "Form/MDPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/MDPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthEndAfter",
+              "field": "Form/MonthPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/MonthPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthEndComp",
+              "field": "Form/MonthEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/MonthEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthSelectComp",
+              "field": "Form/MonthSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/MonthSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthStartEquals",
+              "field": "Form/MonthPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/MonthPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMEndAfter",
+              "field": "Form/YMPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMEndComp",
+              "field": "Form/YMEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMSelectComp",
+              "field": "Form/YMSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMStartComp",
+              "field": "Form/YMStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMStartEquals",
+              "field": "Form/YMPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearEndAfter",
+              "field": "Form/YearPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearEndComp",
+              "field": "Form/YearEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearSelectComp",
+              "field": "Form/YearSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearStartComp",
+              "field": "Form/YearStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearStartEquals",
+              "field": "Form/YearPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearPeer"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullStart",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-01"
+              },
+              {
+                "field": "Form/MDCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              },
+              {
+                "field": "Form/MDEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              },
+              {
+                "field": "Form/MDGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              },
+              {
+                "field": "Form/MDStart",
+                "cleared": false,
+                "errored": false,
+                "value": "01-02"
+              },
+              {
+                "field": "Form/MonthCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MonthEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MonthGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/YMCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMStart",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "Form/YearCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearStart",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-01-01"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/FullCopy",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullEnd",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullSelected",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullStart",
+                "value": "2024-02-01"
+              },
+              {
+                "field": "Form/MDCopy",
+                "value": "02-28"
+              },
+              {
+                "field": "Form/MDEnd",
+                "value": "02-28"
+              },
+              {
+                "field": "Form/MDSelected",
+                "value": "02-28"
+              },
+              {
+                "field": "Form/MDStart",
+                "value": "01-02"
+              },
+              {
+                "field": "Form/MonthCopy",
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MonthEnd",
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MonthSelected",
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MonthStart",
+                "value": "01-01"
+              },
+              {
+                "field": "Form/YMCopy",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMEnd",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMSelected",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMStart",
+                "value": "2024-01-01"
+              },
+              {
+                "field": "Form/YearCopy",
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearEnd",
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearSelected",
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearStart",
+                "value": "2023-01-01"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Full": "2024-02-01/2024-02-29",
+                "FullCopy": "2024-02-29",
+                "FullEnd": "2024-02-29",
+                "FullGuard": null,
+                "FullPeer": "2024-02-01",
+                "FullSelected": "2024-02-29",
+                "FullStart": "2024-02-01",
+                "MD": "01-02/02-28",
+                "MDCopy": "02-28",
+                "MDEnd": "02-28",
+                "MDGuard": null,
+                "MDPeer": "01-02",
+                "MDSelected": "02-28",
+                "MDStart": "01-02",
+                "Month": "01/02",
+                "MonthCopy": "02-29",
+                "MonthEnd": "02-29",
+                "MonthGuard": null,
+                "MonthPeer": "01-01",
+                "MonthSelected": "02-29",
+                "MonthStart": "01-01",
+                "YM": "2024-01/2024-02",
+                "YMCopy": "2024-02-29",
+                "YMEnd": "2024-02-29",
+                "YMGuard": null,
+                "YMPeer": "2024-01-01",
+                "YMSelected": "2024-02-29",
+                "YMStart": "2024-01-01",
+                "Year": "2023/2024",
+                "YearCopy": "2024-12-31",
+                "YearEnd": "2024-12-31",
+                "YearGuard": null,
+                "YearPeer": "2023-01-01",
+                "YearSelected": "2024-12-31",
+                "YearStart": "2023-01-01"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FullEndAfter",
+              "field": "Form/FullPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullEndComp",
+              "field": "Form/FullEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullSelectComp",
+              "field": "Form/FullSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullStartComp",
+              "field": "Form/FullStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullStartEquals",
+              "field": "Form/FullPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDEndAfter",
+              "field": "Form/MDPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/MDPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDEndComp",
+              "field": "Form/MDEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/MDEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDSelectComp",
+              "field": "Form/MDSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/MDSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDStartComp",
+              "field": "Form/MDStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/MDStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDStartEquals",
+              "field": "Form/MDPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/MDPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthEndAfter",
+              "field": "Form/MonthPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/MonthPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthEndComp",
+              "field": "Form/MonthEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/MonthEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthSelectComp",
+              "field": "Form/MonthSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/MonthSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MonthStartEquals",
+              "field": "Form/MonthPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/MonthPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMEndAfter",
+              "field": "Form/YMPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMEndComp",
+              "field": "Form/YMEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMSelectComp",
+              "field": "Form/YMSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMStartComp",
+              "field": "Form/YMStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMStartEquals",
+              "field": "Form/YMPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearEndAfter",
+              "field": "Form/YearPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearEndComp",
+              "field": "Form/YearEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearSelectComp",
+              "field": "Form/YearSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearStartComp",
+              "field": "Form/YearStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearStartEquals",
+              "field": "Form/YearPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearPeer"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullStart",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-01"
+              },
+              {
+                "field": "Form/MDCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              },
+              {
+                "field": "Form/MDEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              },
+              {
+                "field": "Form/MDGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              },
+              {
+                "field": "Form/MDStart",
+                "cleared": false,
+                "errored": false,
+                "value": "01-02"
+              },
+              {
+                "field": "Form/MonthCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MonthEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MonthGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/YMCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMStart",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "Form/YearCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearStart",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-01-01"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/FullCopy",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullEnd",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullSelected",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullStart",
+                "value": "2024-02-01"
+              },
+              {
+                "field": "Form/MDCopy",
+                "value": "02-28"
+              },
+              {
+                "field": "Form/MDEnd",
+                "value": "02-28"
+              },
+              {
+                "field": "Form/MDSelected",
+                "value": "02-28"
+              },
+              {
+                "field": "Form/MDStart",
+                "value": "01-02"
+              },
+              {
+                "field": "Form/MonthCopy",
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MonthEnd",
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MonthSelected",
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MonthStart",
+                "value": "01-01"
+              },
+              {
+                "field": "Form/YMCopy",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMEnd",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMSelected",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMStart",
+                "value": "2024-01-01"
+              },
+              {
+                "field": "Form/YearCopy",
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearEnd",
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearSelected",
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearStart",
+                "value": "2023-01-01"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Full": "2024-02-01/2024-02-29",
+                "FullCopy": "2024-02-29",
+                "FullEnd": "2024-02-29",
+                "FullGuard": null,
+                "FullPeer": "2024-02-01",
+                "FullSelected": "2024-02-29",
+                "FullStart": "2024-02-01",
+                "MD": "01-02/02-28",
+                "MDCopy": "02-28",
+                "MDEnd": "02-28",
+                "MDGuard": null,
+                "MDPeer": "01-02",
+                "MDSelected": "02-28",
+                "MDStart": "01-02",
+                "Month": "01/02",
+                "MonthCopy": "02-29",
+                "MonthEnd": "02-29",
+                "MonthGuard": null,
+                "MonthPeer": "01-01",
+                "MonthSelected": "02-29",
+                "MonthStart": "01-01",
+                "YM": "2024-01/2024-02",
+                "YMCopy": "2024-02-29",
+                "YMEnd": "2024-02-29",
+                "YMGuard": null,
+                "YMPeer": "2024-01-01",
+                "YMSelected": "2024-02-29",
+                "YMStart": "2024-01-01",
+                "Year": "2023/2024",
+                "YearCopy": "2024-12-31",
+                "YearEnd": "2024-12-31",
+                "YearGuard": null,
+                "YearPeer": "2023-01-01",
+                "YearSelected": "2024-12-31",
+                "YearStart": "2023-01-01"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/FullCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-01"
+              },
+              {
+                "field": "Form/FullSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "01-02"
+              },
+              {
+                "field": "Form/MDSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "Form/YMSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-01-01"
+              },
+              {
+                "field": "Form/YearSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearStart",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/FullGuard",
+                "value": "2024-02-01"
+              },
+              {
+                "field": "Form/MDGuard",
+                "value": "01-02"
+              },
+              {
+                "field": "Form/MonthGuard",
+                "value": "01-01"
+              },
+              {
+                "field": "Form/YMGuard",
+                "value": "2024-01-01"
+              },
+              {
+                "field": "Form/YearGuard",
+                "value": "2023-01-01"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Full": null,
+                "FullCopy": null,
+                "FullEnd": null,
+                "FullGuard": "2024-02-01",
+                "FullPeer": "2024-02-01",
+                "FullSelected": null,
+                "FullStart": null,
+                "MD": null,
+                "MDCopy": null,
+                "MDEnd": null,
+                "MDGuard": "01-02",
+                "MDPeer": "01-02",
+                "MDSelected": null,
+                "MDStart": null,
+                "Month": null,
+                "MonthCopy": null,
+                "MonthEnd": null,
+                "MonthGuard": "01-01",
+                "MonthPeer": "01-01",
+                "MonthSelected": null,
+                "MonthStart": null,
+                "YM": null,
+                "YMCopy": null,
+                "YMEnd": null,
+                "YMGuard": "2024-01-01",
+                "YMPeer": "2024-01-01",
+                "YMSelected": null,
+                "YMStart": null,
+                "Year": null,
+                "YearCopy": null,
+                "YearEnd": null,
+                "YearGuard": "2023-01-01",
+                "YearPeer": "2023-01-01",
+                "YearSelected": null,
+                "YearStart": null
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/FullCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-01"
+              },
+              {
+                "field": "Form/FullSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "01-02"
+              },
+              {
+                "field": "Form/MDSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "Form/YMSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearGuard",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-01-01"
+              },
+              {
+                "field": "Form/YearSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearStart",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/FullGuard",
+                "value": "2024-02-01"
+              },
+              {
+                "field": "Form/MDGuard",
+                "value": "01-02"
+              },
+              {
+                "field": "Form/MonthGuard",
+                "value": "01-01"
+              },
+              {
+                "field": "Form/YMGuard",
+                "value": "2024-01-01"
+              },
+              {
+                "field": "Form/YearGuard",
+                "value": "2023-01-01"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Full": null,
+                "FullCopy": null,
+                "FullEnd": null,
+                "FullGuard": "2024-02-01",
+                "FullPeer": "2024-02-01",
+                "FullSelected": null,
+                "FullStart": null,
+                "MD": null,
+                "MDCopy": null,
+                "MDEnd": null,
+                "MDGuard": "01-02",
+                "MDPeer": "01-02",
+                "MDSelected": null,
+                "MDStart": null,
+                "Month": null,
+                "MonthCopy": null,
+                "MonthEnd": null,
+                "MonthGuard": "01-01",
+                "MonthPeer": "01-01",
+                "MonthSelected": null,
+                "MonthStart": null,
+                "YM": null,
+                "YMCopy": null,
+                "YMEnd": null,
+                "YMGuard": "2024-01-01",
+                "YMPeer": "2024-01-01",
+                "YMSelected": null,
+                "YMStart": null,
+                "Year": null,
+                "YearCopy": null,
+                "YearEnd": null,
+                "YearGuard": "2023-01-01",
+                "YearPeer": "2023-01-01",
+                "YearSelected": null,
+                "YearStart": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "malformed",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/Full",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/MD",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/Month",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/Year",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/FullCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearStart",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/Full",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Full"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/MD",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/MD"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/Month",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Month"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/YM",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/YM"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/Year",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Year"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Full": "bad",
+                "FullCopy": null,
+                "FullEnd": null,
+                "FullGuard": null,
+                "FullPeer": "2024-02-01",
+                "FullSelected": null,
+                "FullStart": null,
+                "MD": "bad",
+                "MDCopy": null,
+                "MDEnd": null,
+                "MDGuard": null,
+                "MDPeer": "01-02",
+                "MDSelected": null,
+                "MDStart": null,
+                "Month": "bad",
+                "MonthCopy": null,
+                "MonthEnd": null,
+                "MonthGuard": null,
+                "MonthPeer": "01-01",
+                "MonthSelected": null,
+                "MonthStart": null,
+                "YM": "bad",
+                "YMCopy": null,
+                "YMEnd": null,
+                "YMGuard": null,
+                "YMPeer": "2024-01-01",
+                "YMSelected": null,
+                "YMStart": null,
+                "Year": "bad",
+                "YearCopy": null,
+                "YearEnd": null,
+                "YearGuard": null,
+                "YearPeer": "2023-01-01",
+                "YearSelected": null,
+                "YearStart": null
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/Full",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/MD",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/Month",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichTrennerFehlt",
+              "field": "Form/Year",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/FullCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearStart",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/Full",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Full"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/MD",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/MD"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/Month",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Month"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/YM",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/YM"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichTrennerFehlt",
+                "field": "Form/Year",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Year"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Full": "bad",
+                "FullCopy": null,
+                "FullEnd": null,
+                "FullGuard": null,
+                "FullPeer": "2024-02-01",
+                "FullSelected": null,
+                "FullStart": null,
+                "MD": "bad",
+                "MDCopy": null,
+                "MDEnd": null,
+                "MDGuard": null,
+                "MDPeer": "01-02",
+                "MDSelected": null,
+                "MDStart": null,
+                "Month": "bad",
+                "MonthCopy": null,
+                "MonthEnd": null,
+                "MonthGuard": null,
+                "MonthPeer": "01-01",
+                "MonthSelected": null,
+                "MonthStart": null,
+                "YM": "bad",
+                "YMCopy": null,
+                "YMEnd": null,
+                "YMGuard": null,
+                "YMPeer": "2024-01-01",
+                "YMSelected": null,
+                "YMStart": null,
+                "Year": "bad",
+                "YearCopy": null,
+                "YearEnd": null,
+                "YearGuard": null,
+                "YearPeer": "2023-01-01",
+                "YearSelected": null,
+                "YearStart": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "wrapped",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "FullEndAfter",
+              "field": "Form/FullPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullEndComp",
+              "field": "Form/FullEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullSelectComp",
+              "field": "Form/FullSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullStartComp",
+              "field": "Form/FullStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMEndAfter",
+              "field": "Form/YMPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMEndComp",
+              "field": "Form/YMEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMSelectComp",
+              "field": "Form/YMSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMStartComp",
+              "field": "Form/YMStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearEndAfter",
+              "field": "Form/YearPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearEndComp",
+              "field": "Form/YearEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearSelectComp",
+              "field": "Form/YearSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearStartComp",
+              "field": "Form/YearStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearStartEquals",
+              "field": "Form/YearPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichNichtGueltig",
+              "field": "Form/MD",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichNichtGueltig",
+              "field": "Form/Month",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullStart",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-11-01"
+              },
+              {
+                "field": "Form/MDCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMStart",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-11-01"
+              },
+              {
+                "field": "Form/YearCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearStart",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-01-01"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumBereichNichtGueltig",
+                "field": "Form/MD",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/MD"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichNichtGueltig",
+                "field": "Form/Month",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Month"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/FullCopy",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullEnd",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullSelected",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullStart",
+                "value": "2023-11-01"
+              },
+              {
+                "field": "Form/YMCopy",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMEnd",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMSelected",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMStart",
+                "value": "2023-11-01"
+              },
+              {
+                "field": "Form/YearCopy",
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearEnd",
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearSelected",
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearStart",
+                "value": "2023-01-01"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Full": "2023-11-01/2024-02-29",
+                "FullCopy": "2024-02-29",
+                "FullEnd": "2024-02-29",
+                "FullGuard": null,
+                "FullPeer": "2024-02-01",
+                "FullSelected": "2024-02-29",
+                "FullStart": "2023-11-01",
+                "MD": "11-02/02-28",
+                "MDCopy": null,
+                "MDEnd": null,
+                "MDGuard": null,
+                "MDPeer": "01-02",
+                "MDSelected": null,
+                "MDStart": null,
+                "Month": "11/02",
+                "MonthCopy": null,
+                "MonthEnd": null,
+                "MonthGuard": null,
+                "MonthPeer": "01-01",
+                "MonthSelected": null,
+                "MonthStart": null,
+                "YM": "2023-11/2024-02",
+                "YMCopy": "2024-02-29",
+                "YMEnd": "2024-02-29",
+                "YMGuard": null,
+                "YMPeer": "2024-01-01",
+                "YMSelected": "2024-02-29",
+                "YMStart": "2023-11-01",
+                "Year": "2023/2024",
+                "YearCopy": "2024-12-31",
+                "YearEnd": "2024-12-31",
+                "YearGuard": null,
+                "YearPeer": "2023-01-01",
+                "YearSelected": "2024-12-31",
+                "YearStart": "2023-01-01"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "FullEndAfter",
+              "field": "Form/FullPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullEndComp",
+              "field": "Form/FullEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullSelectComp",
+              "field": "Form/FullSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FullStartComp",
+              "field": "Form/FullStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Full",
+                "Form/FullStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMEndAfter",
+              "field": "Form/YMPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMEndComp",
+              "field": "Form/YMEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMSelectComp",
+              "field": "Form/YMSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YMStartComp",
+              "field": "Form/YMStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/YM",
+                "Form/YMStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearEndAfter",
+              "field": "Form/YearPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearEndComp",
+              "field": "Form/YearEnd",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearEnd"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearSelectComp",
+              "field": "Form/YearSelected",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearSelected"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearStartComp",
+              "field": "Form/YearStart",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearStart"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "YearStartEquals",
+              "field": "Form/YearPeer",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Year",
+                "Form/YearPeer"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichNichtGueltig",
+              "field": "Form/MD",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumBereichNichtGueltig",
+              "field": "Form/Month",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullStart",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-11-01"
+              },
+              {
+                "field": "Form/MDCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthEnd",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthSelected",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MonthStart",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YMSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMStart",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-11-01"
+              },
+              {
+                "field": "Form/YearCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearEnd",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearGuard",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearSelected",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearStart",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-01-01"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumBereichNichtGueltig",
+                "field": "Form/MD",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/MD"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumBereichNichtGueltig",
+                "field": "Form/Month",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Month"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/FullCopy",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullEnd",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullSelected",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/FullStart",
+                "value": "2023-11-01"
+              },
+              {
+                "field": "Form/YMCopy",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMEnd",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMSelected",
+                "value": "2024-02-29"
+              },
+              {
+                "field": "Form/YMStart",
+                "value": "2023-11-01"
+              },
+              {
+                "field": "Form/YearCopy",
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearEnd",
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearSelected",
+                "value": "2024-12-31"
+              },
+              {
+                "field": "Form/YearStart",
+                "value": "2023-01-01"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Full": "2023-11-01/2024-02-29",
+                "FullCopy": "2024-02-29",
+                "FullEnd": "2024-02-29",
+                "FullGuard": null,
+                "FullPeer": "2024-02-01",
+                "FullSelected": "2024-02-29",
+                "FullStart": "2023-11-01",
+                "MD": "11-02/02-28",
+                "MDCopy": null,
+                "MDEnd": null,
+                "MDGuard": null,
+                "MDPeer": "01-02",
+                "MDSelected": null,
+                "MDStart": null,
+                "Month": "11/02",
+                "MonthCopy": null,
+                "MonthEnd": null,
+                "MonthGuard": null,
+                "MonthPeer": "01-01",
+                "MonthSelected": null,
+                "MonthStart": null,
+                "YM": "2023-11/2024-02",
+                "YMCopy": "2024-02-29",
+                "YMEnd": "2024-02-29",
+                "YMGuard": null,
+                "YMPeer": "2024-01-01",
+                "YMSelected": "2024-02-29",
+                "YMStart": "2023-11-01",
+                "Year": "2023/2024",
+                "YearCopy": "2024-12-31",
+                "YearEnd": "2024-12-31",
+                "YearGuard": null,
+                "YearPeer": "2023-01-01",
+                "YearSelected": "2024-12-31",
+                "YearStart": "2023-01-01"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

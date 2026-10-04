@@ -1,0 +1,1325 @@
+{
+  "header": {
+    "id": "RangeExpressions_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "RangeExpressions_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "UTC",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/Full",
+                "name": "Full",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "yyyy-MM-dd",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullPeer",
+                "name": "FullPeer",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullStart",
+                "name": "FullStart",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/FullStartComp",
+                "name": "FullStartComp",
+                "Computation": {
+                  "computedFieldRelPath": "../FullStart",
+                  "computationAlternatives": [
+                    {
+                      "operation": "StartOfDateRange(Full)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FullStartEquals",
+                "name": "FullStartEquals",
+                "Rule": {
+                  "errorEntityRelPath": "../FullPeer",
+                  "errorCode": "FullStartEquals",
+                  "errorCondition": "StartOfDateRange(Full) == [FullPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FullStartAfter",
+                "name": "FullStartAfter",
+                "Rule": {
+                  "errorEntityRelPath": "../FullPeer",
+                  "errorCode": "FullStartAfter",
+                  "errorCondition": "StartOfDateRange(Full) > [FullPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullEnd",
+                "name": "FullEnd",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/FullEndComp",
+                "name": "FullEndComp",
+                "Computation": {
+                  "computedFieldRelPath": "../FullEnd",
+                  "computationAlternatives": [
+                    {
+                      "operation": "EndOfDateRange(Full)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FullEndEquals",
+                "name": "FullEndEquals",
+                "Rule": {
+                  "errorEntityRelPath": "../FullPeer",
+                  "errorCode": "FullEndEquals",
+                  "errorCondition": "EndOfDateRange(Full) == [FullPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/FullEndAfter",
+                "name": "FullEndAfter",
+                "Rule": {
+                  "errorEntityRelPath": "../FullPeer",
+                  "errorCode": "FullEndAfter",
+                  "errorCondition": "EndOfDateRange(Full) > [FullPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullSelected",
+                "name": "FullSelected",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/FullSelectComp",
+                "name": "FullSelectComp",
+                "Computation": {
+                  "computedFieldRelPath": "../FullSelected",
+                  "computationAlternatives": [
+                    {
+                      "operation": "Max(StartOfDateRange(Full),EndOfDateRange(Full))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullCopy",
+                "name": "FullCopy",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/FullCopyComp",
+                "name": "FullCopyComp",
+                "Computation": {
+                  "computedFieldRelPath": "../FullCopy",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[FullEnd]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullGuard",
+                "name": "FullGuard",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/FullGuardComp",
+                "name": "FullGuardComp",
+                "Computation": {
+                  "computedFieldRelPath": "../FullGuard",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[FullPeer]",
+                      "precondition": "FieldNotFilled(FullEnd)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Year",
+                "name": "Year",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "yyyy",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YearPeer",
+                "name": "YearPeer",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YearStart",
+                "name": "YearStart",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YearStartComp",
+                "name": "YearStartComp",
+                "Computation": {
+                  "computedFieldRelPath": "../YearStart",
+                  "computationAlternatives": [
+                    {
+                      "operation": "StartOfDateRange(Year)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/YearStartEquals",
+                "name": "YearStartEquals",
+                "Rule": {
+                  "errorEntityRelPath": "../YearPeer",
+                  "errorCode": "YearStartEquals",
+                  "errorCondition": "StartOfDateRange(Year) == [YearPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/YearStartAfter",
+                "name": "YearStartAfter",
+                "Rule": {
+                  "errorEntityRelPath": "../YearPeer",
+                  "errorCode": "YearStartAfter",
+                  "errorCondition": "StartOfDateRange(Year) > [YearPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YearEnd",
+                "name": "YearEnd",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YearEndComp",
+                "name": "YearEndComp",
+                "Computation": {
+                  "computedFieldRelPath": "../YearEnd",
+                  "computationAlternatives": [
+                    {
+                      "operation": "EndOfDateRange(Year)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/YearEndEquals",
+                "name": "YearEndEquals",
+                "Rule": {
+                  "errorEntityRelPath": "../YearPeer",
+                  "errorCode": "YearEndEquals",
+                  "errorCondition": "EndOfDateRange(Year) == [YearPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/YearEndAfter",
+                "name": "YearEndAfter",
+                "Rule": {
+                  "errorEntityRelPath": "../YearPeer",
+                  "errorCode": "YearEndAfter",
+                  "errorCondition": "EndOfDateRange(Year) > [YearPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YearSelected",
+                "name": "YearSelected",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YearSelectComp",
+                "name": "YearSelectComp",
+                "Computation": {
+                  "computedFieldRelPath": "../YearSelected",
+                  "computationAlternatives": [
+                    {
+                      "operation": "Max(StartOfDateRange(Year),EndOfDateRange(Year))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YearCopy",
+                "name": "YearCopy",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YearCopyComp",
+                "name": "YearCopyComp",
+                "Computation": {
+                  "computedFieldRelPath": "../YearCopy",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[YearEnd]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YearGuard",
+                "name": "YearGuard",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YearGuardComp",
+                "name": "YearGuardComp",
+                "Computation": {
+                  "computedFieldRelPath": "../YearGuard",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[YearPeer]",
+                      "precondition": "FieldNotFilled(YearEnd)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YM",
+                "name": "YM",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "yyyy-MM",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YMPeer",
+                "name": "YMPeer",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YMStart",
+                "name": "YMStart",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YMStartComp",
+                "name": "YMStartComp",
+                "Computation": {
+                  "computedFieldRelPath": "../YMStart",
+                  "computationAlternatives": [
+                    {
+                      "operation": "StartOfDateRange(YM)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/YMStartEquals",
+                "name": "YMStartEquals",
+                "Rule": {
+                  "errorEntityRelPath": "../YMPeer",
+                  "errorCode": "YMStartEquals",
+                  "errorCondition": "StartOfDateRange(YM) == [YMPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/YMStartAfter",
+                "name": "YMStartAfter",
+                "Rule": {
+                  "errorEntityRelPath": "../YMPeer",
+                  "errorCode": "YMStartAfter",
+                  "errorCondition": "StartOfDateRange(YM) > [YMPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YMEnd",
+                "name": "YMEnd",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YMEndComp",
+                "name": "YMEndComp",
+                "Computation": {
+                  "computedFieldRelPath": "../YMEnd",
+                  "computationAlternatives": [
+                    {
+                      "operation": "EndOfDateRange(YM)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/YMEndEquals",
+                "name": "YMEndEquals",
+                "Rule": {
+                  "errorEntityRelPath": "../YMPeer",
+                  "errorCode": "YMEndEquals",
+                  "errorCondition": "EndOfDateRange(YM) == [YMPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/YMEndAfter",
+                "name": "YMEndAfter",
+                "Rule": {
+                  "errorEntityRelPath": "../YMPeer",
+                  "errorCode": "YMEndAfter",
+                  "errorCondition": "EndOfDateRange(YM) > [YMPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YMSelected",
+                "name": "YMSelected",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YMSelectComp",
+                "name": "YMSelectComp",
+                "Computation": {
+                  "computedFieldRelPath": "../YMSelected",
+                  "computationAlternatives": [
+                    {
+                      "operation": "Max(StartOfDateRange(YM),EndOfDateRange(YM))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YMCopy",
+                "name": "YMCopy",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YMCopyComp",
+                "name": "YMCopyComp",
+                "Computation": {
+                  "computedFieldRelPath": "../YMCopy",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[YMEnd]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YMGuard",
+                "name": "YMGuard",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/YMGuardComp",
+                "name": "YMGuardComp",
+                "Computation": {
+                  "computedFieldRelPath": "../YMGuard",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[YMPeer]",
+                      "precondition": "FieldNotFilled(YMEnd)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Month",
+                "name": "Month",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "MM",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MonthPeer",
+                "name": "MonthPeer",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MonthStart",
+                "name": "MonthStart",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MonthStartComp",
+                "name": "MonthStartComp",
+                "Computation": {
+                  "computedFieldRelPath": "../MonthStart",
+                  "computationAlternatives": [
+                    {
+                      "operation": "StartOfDateRange(Month)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MonthStartEquals",
+                "name": "MonthStartEquals",
+                "Rule": {
+                  "errorEntityRelPath": "../MonthPeer",
+                  "errorCode": "MonthStartEquals",
+                  "errorCondition": "StartOfDateRange(Month) == [MonthPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MonthStartAfter",
+                "name": "MonthStartAfter",
+                "Rule": {
+                  "errorEntityRelPath": "../MonthPeer",
+                  "errorCode": "MonthStartAfter",
+                  "errorCondition": "StartOfDateRange(Month) > [MonthPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MonthEnd",
+                "name": "MonthEnd",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MonthEndComp",
+                "name": "MonthEndComp",
+                "Computation": {
+                  "computedFieldRelPath": "../MonthEnd",
+                  "computationAlternatives": [
+                    {
+                      "operation": "EndOfDateRange(Month)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MonthEndEquals",
+                "name": "MonthEndEquals",
+                "Rule": {
+                  "errorEntityRelPath": "../MonthPeer",
+                  "errorCode": "MonthEndEquals",
+                  "errorCondition": "EndOfDateRange(Month) == [MonthPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MonthEndAfter",
+                "name": "MonthEndAfter",
+                "Rule": {
+                  "errorEntityRelPath": "../MonthPeer",
+                  "errorCode": "MonthEndAfter",
+                  "errorCondition": "EndOfDateRange(Month) > [MonthPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MonthSelected",
+                "name": "MonthSelected",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MonthSelectComp",
+                "name": "MonthSelectComp",
+                "Computation": {
+                  "computedFieldRelPath": "../MonthSelected",
+                  "computationAlternatives": [
+                    {
+                      "operation": "Max(StartOfDateRange(Month),EndOfDateRange(Month))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MonthCopy",
+                "name": "MonthCopy",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MonthCopyComp",
+                "name": "MonthCopyComp",
+                "Computation": {
+                  "computedFieldRelPath": "../MonthCopy",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[MonthEnd]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MonthGuard",
+                "name": "MonthGuard",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MonthGuardComp",
+                "name": "MonthGuardComp",
+                "Computation": {
+                  "computedFieldRelPath": "../MonthGuard",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[MonthPeer]",
+                      "precondition": "FieldNotFilled(MonthEnd)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MD",
+                "name": "MD",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateRangeType",
+                    "DateRangeType": {
+                      "format": "MM-dd",
+                      "rangeSeparator": "/"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MDPeer",
+                "name": "MDPeer",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MDStart",
+                "name": "MDStart",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MDStartComp",
+                "name": "MDStartComp",
+                "Computation": {
+                  "computedFieldRelPath": "../MDStart",
+                  "computationAlternatives": [
+                    {
+                      "operation": "StartOfDateRange(MD)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MDStartEquals",
+                "name": "MDStartEquals",
+                "Rule": {
+                  "errorEntityRelPath": "../MDPeer",
+                  "errorCode": "MDStartEquals",
+                  "errorCondition": "StartOfDateRange(MD) == [MDPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MDStartAfter",
+                "name": "MDStartAfter",
+                "Rule": {
+                  "errorEntityRelPath": "../MDPeer",
+                  "errorCode": "MDStartAfter",
+                  "errorCondition": "StartOfDateRange(MD) > [MDPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MDEnd",
+                "name": "MDEnd",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MDEndComp",
+                "name": "MDEndComp",
+                "Computation": {
+                  "computedFieldRelPath": "../MDEnd",
+                  "computationAlternatives": [
+                    {
+                      "operation": "EndOfDateRange(MD)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MDEndEquals",
+                "name": "MDEndEquals",
+                "Rule": {
+                  "errorEntityRelPath": "../MDPeer",
+                  "errorCode": "MDEndEquals",
+                  "errorCondition": "EndOfDateRange(MD) == [MDPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MDEndAfter",
+                "name": "MDEndAfter",
+                "Rule": {
+                  "errorEntityRelPath": "../MDPeer",
+                  "errorCode": "MDEndAfter",
+                  "errorCondition": "EndOfDateRange(MD) > [MDPeer]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range comparison check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MDSelected",
+                "name": "MDSelected",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MDSelectComp",
+                "name": "MDSelectComp",
+                "Computation": {
+                  "computedFieldRelPath": "../MDSelected",
+                  "computationAlternatives": [
+                    {
+                      "operation": "Max(StartOfDateRange(MD),EndOfDateRange(MD))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MDCopy",
+                "name": "MDCopy",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MDCopyComp",
+                "name": "MDCopyComp",
+                "Computation": {
+                  "computedFieldRelPath": "../MDCopy",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[MDEnd]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MDGuard",
+                "name": "MDGuard",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/MDGuardComp",
+                "name": "MDGuardComp",
+                "Computation": {
+                  "computedFieldRelPath": "../MDGuard",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[MDPeer]",
+                      "precondition": "FieldNotFilled(MDEnd)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Range result check."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

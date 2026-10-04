@@ -148,6 +148,13 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
     (position : TemporalExpressionPosition) (expression : Expr) : Lowering SurfaceScalarTemporalExpression := do
   let lowerSourceSlot (source : Expr) : Lowering SurfaceScalarTemporalExpression :=
     lowerScalarTemporalExpressionAt model rowGroup .source source
+  let lowerRangeSlot (bound : DateRangeBound) (source : Expr) : Lowering SurfaceScalarTemporalExpression := do
+    match source with
+    | .constant "BaseYear" =>
+        pure (.baseYearBound (if bound == .start then .start else .finish))
+    | _ =>
+        let some path := source.fieldEntity? | refuse "TemporalExpression" "range entity"
+        pure (.rangeBound path bound)
   match expression with
   | .braces source => (.group ·) <$> lowerScalarTemporalExpressionAt model rowGroup .value source
   | .value { path, index := none, category := none } =>
@@ -166,6 +173,12 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
       (.timeConstruction ·) <$> timeComponents model rowGroup arguments
   | .constant "Now" => pure .now
   | .constant "Today" => pure .today
+  | .call "StartOfDateRange" [.mk source none none] none none => lowerRangeSlot .start source
+  | .call "EndOfDateRange" [.mk source none none] none none => lowerRangeSlot .finish source
+  | .call "DateFromDateTime" [.mk source none none] none none =>
+      (.dateFromDateTime ·) <$> lowerSourceSlot source
+  | .call "TimeFromDateTime" [.mk source none none] none none =>
+      (.timeFromDateTime ·) <$> lowerSourceSlot source
   | .string text =>
       match dateTimeConstant? text, timeConstant? text, civilDateConstant? text with
       | some value, _, _ => pure (.dateTimeLiteral value)
@@ -174,10 +187,6 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
           | some value => pure (.dateLiteral value)
           | none => refuse "TemporalExpression" "literal calendar profile"
       | _, _, _ => refuse "TemporalExpression" "literal"
-  | .call "DateFromDateTime" [.mk source none none] none none =>
-      (.dateFromDateTime ·) <$> lowerSourceSlot source
-  | .call "TimeFromDateTime" [.mk source none none] none none =>
-      (.timeFromDateTime ·) <$> lowerSourceSlot source
   | .call name [.mk source none none, .mk amount none none] none none => do
       match name with
       | "Min" | "Max" =>

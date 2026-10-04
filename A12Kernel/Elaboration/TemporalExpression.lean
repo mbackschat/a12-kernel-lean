@@ -3,6 +3,7 @@ import A12Kernel.Semantics.TemporalExpression
 import A12Kernel.Elaboration.TemporalExtremumStream
 import A12Kernel.Elaboration.Flat.FieldValueRead
 import A12Kernel.Elaboration.ValueAsDateTimeWorldComponents
+import A12Kernel.Elaboration.DateRangeBoundComparison
 
 /-! # Checked scalar temporal expressions
 
@@ -25,6 +26,8 @@ inductive SurfaceScalarTemporalExpression where
   | dateLiteral (value : FullDate)
   | timeLiteral (value : TimeOfDay)
   | dateTimeLiteral (value : LocalDateTime)
+  | rangeBound (reference : SurfaceFieldPath) (bound : DateRangeBound)
+  | baseYearBound (bound : BaseYearRangeEndpoint)
   | dateConstruction (components : SurfaceConstructedDateComponents)
   | calendarShift (unit : DateShiftUnit) (source : SurfaceScalarTemporalExpression)
       (amount : AuthoredNumericExpr SurfaceNumericAtom)
@@ -40,7 +43,8 @@ operation checks its own slot (spec/12 §3, grammar `datumAngabe`/`datumAngabe2`
 def SurfaceScalarTemporalExpression.admittedSourceSlot : SurfaceScalarTemporalExpression → Bool
   | .group _ | .extremum _ _ | .combine _ _ _ => false
   | .field _ | .now | .today | .dateLiteral _ | .timeLiteral _ | .dateTimeLiteral _
-  | .dateConstruction _ | .calendarShift _ _ _ | .timeConstruction _ | .dateFromDateTime _ | .timeFromDateTime _ | .subdayShift _ _ _ => true
+  | .rangeBound _ _ | .baseYearBound _ | .dateConstruction _ | .calendarShift _ _ _
+  | .timeConstruction _ | .dateFromDateTime _ | .timeFromDateTime _ | .subdayShift _ _ _ => true
 
 inductive ScalarTemporalExpressionError where
   | model (error : ResolveError)
@@ -49,6 +53,7 @@ inductive ScalarTemporalExpressionError where
   | amount (error : TemporalShiftAmountElabError)
   | dateComponents (error : ConstructedDateComponentsElabError)
   | timeComponents (error : TimeComponentsElabError)
+  | rangeBound (error : YearlessDateRangeBoundElabError)
   | nonTemporal (path : List String)
   | unsupportedSource
   | incompatibleFormats
@@ -98,6 +103,8 @@ inductive ScalarTemporalAtom (model : FlatModel) where
   | dateTimeLiteral (profile : ModelZone.ConcreteProfile) (value : LocalDateTime)
   | dateConstruction (components : CheckedConstructedDateComponents model)
   | timeConstruction (components : CheckedTimeComponents model)
+  | rangeBound (profile : ModelZone.ConcreteProfile) (source : CheckedDateRangeBoundOperand model)
+  | baseYearBound (profile : ModelZone.ConcreteProfile) (year : Int) (bound : BaseYearRangeEndpoint)
 
 inductive ScalarTemporalEvaluationFault where
   | dateTimeLabelUnresolved
@@ -173,6 +180,14 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
   | .dateTimeLiteral value => do
       let profile ← scalarProfile model
       pure (.atom (.dateTimeLiteral profile value), TemporalComponents.now)
+  | .rangeBound reference bound => do
+      let declaration ← (model.resolveFieldDeclarationUnchecked rowGroup reference).mapError .read
+      let source ← (elaborateDateRangeBoundOperand model declaration.id bound).mapError .rangeBound
+      pure (.atom (.rangeBound (← scalarProfile model) source),
+        source.components.withBaseYear model.hasBaseYear)
+  | .baseYearBound bound => do
+      let some year := model.baseYear | throw .unsupportedSource
+      pure (.atom (.baseYearBound (← scalarProfile model) year bound), TemporalComponents.fullDate)
   | .dateConstruction source => do
       let components ← (elaborateConstructedDateSources model source).mapError .dateComponents
       pure (.atom (.dateConstruction components), TemporalComponents.fullDate)
@@ -288,6 +303,33 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       | some value => pure (.value (.date (some value)) true)
       | none => throw .dateTimeLabelUnresolved
   | .fixed value => pure (.value value true)
+  | .baseYearBound profile year bound =>
+      match profile.resolveCompletedDateParts? (baseYearRangeParts year bound) with
+      | some value => pure (.value (.date (some value)) true)
+      | none => throw .calendarUnavailable
+  | .rangeBound profile source =>
+      match source with
+      | .exact bound => do
+          let range ← (CheckedDateRangeSource.observeRange bound.source.id phase
+            (context.read bound.source.id)).mapError (fun _ => .calendarUnavailable)
+          let selected ← (CheckedDateRangeSource.selectBound bound.source.id bound.bound range)
+            |>.mapError (fun _ => .calendarUnavailable)
+          pure (liftScalarTemporal (fun value => .date (some value)) selected.asValidationSimpleOperand)
+      | .yearless bound => do
+          let range ← (CheckedDateRangeSource.observeRange bound.source.id phase
+            (context.read bound.source.id)).mapError (fun _ => .calendarUnavailable)
+          let selected ← (CheckedYearlessDateRangeBound.projectYearless bound.source.id bound.bound range)
+            |>.mapError (fun _ => .calendarUnavailable)
+          match selected with
+          | .empty => pure .notEvaluated
+          | .unknown cause | .poison cause => pure (.unknown cause)
+          | .value label =>
+              let key := label.completed bound.bound
+              -- The yearless comparison key stays independent of the runtime completion year.
+              -- KF201 and the range-expression grid retain February 29 at a month-only end.
+              let some value := profile.resolveCompletedDateParts? {
+                year := 2000, month := key.month, day := key.day } | throw .calendarUnavailable
+              pure (.value (.yearless value key) true)
   | .now => pure (match context.world with
       | some world => .value (.instant world.now) true
       | none => .unknown .malformed)
@@ -425,6 +467,8 @@ def fieldIds (expression : CheckedScalarTemporalExpression model) : List FieldId
     (fun | .field source => [source.id]
          | .dateConstruction components => components.fields
          | .timeConstruction components => components.toWorld.fieldDependencies
+         | .rangeBound _ (.exact source) => [source.source.id]
+         | .rangeBound _ (.yearless source) => [source.source.id]
          | _ => [])
     (fun | .subdayShift _ _ amount | .calendarShift _ _ amount => amount.fieldDependencies | _ => [])
 

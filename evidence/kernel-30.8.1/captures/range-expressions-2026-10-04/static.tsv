@@ -1,0 +1,37 @@
+profile	condition	valid	codes
+unconfigured	StartOfDateRange(Full) == [FullPeer]	true	
+unconfigured	StartOfDateRange([Full]) == [FullPeer]	false	MVK_UNEXPECTED_TOKEN
+unconfigured	StartOfDateRange(FullPeer) == [FullPeer]	false	MVK_NO_DATE_RANGE
+unconfigured	StartOfDateRange(Month) == [FullPeer]	false	MVK_INVALID_COMPARE_TO_DATE
+unconfigured	StartOfDateRange(Month) == [MonthPeer]	true	
+unconfigured	StartOfDateRange(BaseYear) == [FullPeer]	false	MVK_NO_BASE_YEAR
+unconfigured	AddDays(StartOfDateRange(Full),1) > [FullPeer]	true	
+unconfigured	AddDays(StartOfDateRange(Month),1) > [MonthPeer]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+unconfigured	AddMonths(StartOfDateRange(Month),1) > [MonthPeer]	true	
+unconfigured	EndOfDateRange(Full) == [FullPeer]	true	
+unconfigured	EndOfDateRange([Full]) == [FullPeer]	false	MVK_UNEXPECTED_TOKEN
+unconfigured	EndOfDateRange(FullPeer) == [FullPeer]	false	MVK_NO_DATE_RANGE
+unconfigured	EndOfDateRange(Month) == [FullPeer]	false	MVK_INVALID_COMPARE_TO_DATE
+unconfigured	EndOfDateRange(Month) == [MonthPeer]	true	
+unconfigured	EndOfDateRange(BaseYear) == [FullPeer]	false	MVK_NO_BASE_YEAR
+unconfigured	AddDays(EndOfDateRange(Full),1) > [FullPeer]	true	
+unconfigured	AddDays(EndOfDateRange(Month),1) > [MonthPeer]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+unconfigured	AddMonths(EndOfDateRange(Month),1) > [MonthPeer]	true	
+leap	StartOfDateRange(Full) == [FullPeer]	true	
+leap	StartOfDateRange([Full]) == [FullPeer]	false	MVK_UNEXPECTED_TOKEN
+leap	StartOfDateRange(FullPeer) == [FullPeer]	false	MVK_NO_DATE_RANGE
+leap	StartOfDateRange(Month) == [FullPeer]	true	
+leap	StartOfDateRange(Month) == [MonthPeer]	true	
+leap	StartOfDateRange(BaseYear) == [FullPeer]	true	
+leap	AddDays(StartOfDateRange(Full),1) > [FullPeer]	true	
+leap	AddDays(StartOfDateRange(Month),1) > [MonthPeer]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+leap	AddMonths(StartOfDateRange(Month),1) > [MonthPeer]	true	
+leap	EndOfDateRange(Full) == [FullPeer]	true	
+leap	EndOfDateRange([Full]) == [FullPeer]	false	MVK_UNEXPECTED_TOKEN
+leap	EndOfDateRange(FullPeer) == [FullPeer]	false	MVK_NO_DATE_RANGE
+leap	EndOfDateRange(Month) == [FullPeer]	true	
+leap	EndOfDateRange(Month) == [MonthPeer]	true	
+leap	EndOfDateRange(BaseYear) == [FullPeer]	true	
+leap	AddDays(EndOfDateRange(Full),1) > [FullPeer]	true	
+leap	AddDays(EndOfDateRange(Month),1) > [MonthPeer]	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+leap	AddMonths(EndOfDateRange(Month),1) > [MonthPeer]	true	
