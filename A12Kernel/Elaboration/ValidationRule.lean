@@ -454,12 +454,17 @@ def evalOrdinaryRepeatablePartialAt
       |>.mapError .preliminary
   rule.evalOrdinaryRepeatablePartialAtPrepared preliminary environment
 
+private inductive OrdinaryRuleStep where
+  | next (row : Env) (outcome : FlatRuleOutcome)
+  | abort (row : Env) (outcome : FlatRuleOutcome)
+
 private def evalOrdinaryRepeatableAt
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model) (environment : Env)
+    (failureErrorPath : List Nat)
     (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult := none)
     (world : Option World := none) :
-    Except OrdinaryRepeatableRuleEvaluationError (Env × FlatRuleOutcome) := do
+    Except OrdinaryRepeatableRuleEvaluationError OrdinaryRuleStep := do
   let _ ← rule.ordinaryRepeatableFieldIds.mapM fun field =>
     (checked.fullValidationAddressedCell environment field)
       |>.mapError .addressing
@@ -472,14 +477,15 @@ private def evalOrdinaryRepeatableAt
     outer := environment
     input := .checked checked
   }
-  let verdict ←
-    (rule.condition.core.evalAddressedFullWithRepetitionNotUnique
-      context true repetitionNotUniqueResult?)
-      |>.mapError .conditionAddressing
-  let outcome := rule.core.emitAt errorCell.address.path verdict
-  pure (environment, outcome)
+  match rule.condition.core.evalAddressedWithRepetitionNotUniqueResult
+      context repetitionNotUniqueResult? with
+  | .ok verdict => pure (.next environment (rule.core.emitAt errorCell.address.path verdict))
+  | .error (.inl error) => throw (.conditionAddressing error)
+  | .error (.inr .calendarUnavailable) => throw (.conditionAddressing .temporalUnavailable)
+  | .error (.inr .dateTimeLabelUnresolved) =>
+      pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
 
-/-- Execute a checked ordinary nonparallel repeatable rule over the validation row domain. The root dispatcher and declared-capacity/occupied-prefix iterator own the domain (iteration grid, 2026-10-04). Every repeated read and the error target use the validation-only addressed view without materializing stored topology. -/
+/-- Execute a checked ordinary nonparallel repeatable rule over the validation row domain. The root dispatcher and declared-capacity/occupied-prefix iterator own the domain (iteration grid, 2026-10-04). Every repeated read and the error target use the validation-only addressed view without materializing stored topology. A runtime-aborted pair retains the failing environment, while its message points to the iterator’s first error address. -/
 def evalOrdinaryRepeatableFull
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model) (world : Option World := none) :
@@ -495,11 +501,25 @@ def evalOrdinaryRepeatableFull
       |>.mapError toOrdinaryRowEnvironmentError
   let repetitionNotUniqueResults ←
     rule.repetitionNotUniqueResults checked .full environments true
-  environments.mapM fun environment =>
-    let result? := (repetitionNotUniqueResults.find? (·.row == environment)).orElse fun _ =>
-      rule.condition.core.repetitionNotUniqueSource?.map fun _ =>
-        { row := environment, verdict := .notFired, cluster := [] }
-    rule.evalOrdinaryRepeatableAt checked environment result? world
+  -- The generated rule handler surrounds the whole loop (CodeGenRuleDefinition.st), so a
+  -- reached runtime failure keeps earlier messages and terminates before later row reads.
+  -- Its error address uses EbenenIterator.get(), which restarts at the first environment.
+  let failureErrorPath ← match environments with
+    | [] => pure []
+    | first :: _ =>
+        (first.pathForScope rule.errorDeclaration.repeatableScope).mapError
+          (fun error => .addressing (.environment error))
+  let rec evaluate : List Env → Except OrdinaryRepeatableRuleEvaluationError
+      (List (Env × FlatRuleOutcome))
+    | [] => pure []
+    | environment :: remaining => do
+        let result? := (repetitionNotUniqueResults.find? (·.row == environment)).orElse fun _ =>
+          rule.condition.core.repetitionNotUniqueSource?.map fun _ =>
+            { row := environment, verdict := .notFired, cluster := [] }
+        match ← rule.evalOrdinaryRepeatableAt checked environment failureErrorPath result? world with
+        | .next row outcome => pure ((row, outcome) :: (← evaluate remaining))
+        | .abort row outcome => pure [(row, outcome)]
+  evaluate environments
 
 /-- Execute the distinct no-per-row-reference rule shape exactly once. Every repeatable error level is pinned to row 1, but target addressing is derived from the checked declaration and never read or inserted as document topology. Full validation retains the root admitted-content gate before addressed condition reads unless the error field lies in a repeatable root group. -/
 def evalOrdinaryOnceFull

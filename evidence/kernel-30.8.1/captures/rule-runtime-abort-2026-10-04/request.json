@@ -1,0 +1,142 @@
+{
+  "model": "RuleAbort_DM.json",
+  "locale": "en_US",
+  "clock": "2024-03-30T23:00:00Z",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "all-positive",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "failure-middle",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "failure-first",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {
+              "Stamp": "2024-03-31T01:00:00"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "failure-last",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unknown-first",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {
+              "Stamp": "bad"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "blank-first",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {},
+            {
+              "Stamp": "2024-03-31T01:00:00"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": []
+        }
+      }
+    }
+  ]
+}

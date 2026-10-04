@@ -455,7 +455,9 @@ def evalWithTemporalResult (condition : ValidationCondition model)
     (evaluate : ValidationConditionLeaf model → Except Error Verdict)
     (onTemporalUnavailable : Except Error Verdict := .ok .unknown)
     (temporalFields : CheckedScalarTemporalComparison model → Except Error FlatContext :=
-      fun _ => pure context.fields) : Except Error Verdict :=
+      fun _ => pure context.fields)
+    (onTemporalValueFailure : Except Error Verdict := .ok (.fired .value)) :
+    Except Error Verdict :=
   let result : Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
     condition.evalVerdictExcept (fun leaf => match leaf with
       | .scalarTemporal comparison =>
@@ -470,7 +472,7 @@ def evalWithTemporalResult (condition : ValidationCondition model)
   match result with
   | .ok verdict => .ok verdict
   | .error (.inl error) => .error error
-  | .error (.inr .dateTimeLabelUnresolved) => .ok (.fired .value)
+  | .error (.inr .dateTimeLabelUnresolved) => onTemporalValueFailure
   | .error (.inr .calendarUnavailable) => onTemporalUnavailable
 
 /-- Evaluate a row-selected mixed tree through the sole connective evaluator. -/
@@ -514,6 +516,19 @@ def evalAddressedWithRepetitionNotUnique
   condition.evalWithTemporalResult context.scalar context.directRelevant
     (fun leaf => leaf.evalAddressedWithRepetitionNotUnique context result?) (.error .temporalUnavailable)
     (addressedTemporalFields context)
+
+/-- Keep reached temporal failure distinct from a row verdict until the rule's iteration handler.
+The generated Java `CodeGenRuleDefinition.st` catches outside its row loop. -/
+def evalAddressedWithRepetitionNotUniqueResult
+    (condition : ValidationCondition model)
+    (context : AddressedValidationEvaluationContext model)
+    (result? : Option RepetitionNotUniqueResult) :
+    Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault) Verdict :=
+  condition.evalWithTemporalResult context.scalar context.directRelevant
+    (fun leaf => (leaf.evalAddressedWithRepetitionNotUnique context result?).mapError Sum.inl)
+    (.error (.inl .temporalUnavailable))
+    (fun comparison => (addressedTemporalFields context comparison).mapError Sum.inl)
+    (.error (.inr .dateTimeLabelUnresolved))
 
 /-- Apply the ordinary full-validation content gate to the addressed tree without sampling any repeatable source on an ineligible empty row. -/
 def evalAddressedFull (condition : ValidationCondition model)

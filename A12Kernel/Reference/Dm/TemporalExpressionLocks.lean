@@ -227,8 +227,11 @@ private def rowRule (text : String) (atRoot : Bool := false) : DmRule := {
   name := "Rule", errorCode := "R", condition := text, severity := "ERROR"
   errorEntityRelPath := if atRoot then "../Rows/Stamp2" else "../Stamp2" }
 
-private def runRows (text : String) (rows : List Lean.Json) (atRoot : Bool := false) :
+private def runRows (text : String) (rows : List Lean.Json) (atRoot : Bool := false)
+    (zone : String := "UTC") :
     Option (List String) := do
+  let rowDm := { rowDm with flat := { rowModel with timeZoneId := zone } }
+  let rowModel := rowDm.flat
   let rule ← (checkRule rowDm .english (rowRule text atRoot)).toOption
   let input ← (readDocument rowDm (Lean.Json.mkObj [("Order", Lean.Json.mkObj [
     ("Flag", "yes"), ("Amount", "0"), ("Rows", Lean.Json.arr rows.toArray)])])).toOption
@@ -274,5 +277,38 @@ example : (do
     pure (!(lowerCondition rowModel ["Order"] false parsed.body).isOk &&
       (lowerCondition rowModel ["Order"] false parsed.body (bindingGroup := ["Order", "Rows"])).isOk)) =
     some true := by native_decide
+
+example : runRows "[Stamp2] < \"31.03.2024T02:30:00\""
+    [Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")], Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")]] false "Europe/Berlin" =
+    some ["Order/Rows/Stamp2"] := by native_decide
+
+private def delayedFailureRows : List Lean.Json :=
+  [Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00")],
+     Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")],
+     Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")]]
+
+example : runRows "FieldFilled(Clock) And [Stamp2] < \"31.03.2024T02:30:00\""
+    delayedFailureRows
+    false "Europe/Berlin" = some ["Order/Rows/Stamp2"] := by native_decide
+
+example : runRows "[Stamp2] < \"31.03.2024T01:30:00\""
+    (List.replicate 3 (Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00")]))
+    false "Europe/Berlin" =
+    some ["Order/Rows/Stamp2", "Order/Rows[2]/Stamp2", "Order/Rows[3]/Stamp2"] := by native_decide
+
+example : (do
+    let dm := { rowDm with flat := { rowModel with timeZoneId := "Europe/Berlin" } }
+    let world : World := { now := { epochMillis := 0 } }
+    let rule ← (checkRule dm .english
+      (rowRule "FieldFilled(Clock) And [Stamp2] < \"31.03.2024T02:30:00\"")).toOption
+    let input ← (readDocument dm (Lean.Json.mkObj [("Order", Lean.Json.mkObj [
+      ("Rows", Lean.Json.arr delayedFailureRows.toArray)])])).toOption
+    let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
+    let checked ← (checkDocument prepared "en_US" input.data).toOption
+    let outcomes ← (rule.evalOrdinaryRepeatableFull checked (some world)).toOption
+    pure (outcomes.map fun (environment, outcome) =>
+      (environment, outcome.message?.map fun message =>
+        (observe dm.flat message).pointer))) =
+    some [([(10, 1)], none), ([(10, 2)], some "Order/Rows/Stamp2")] := by native_decide
 
 end A12Kernel.Dm.TemporalExpressionLocks
