@@ -292,11 +292,12 @@ shared checker's and is unaware of the scope. The uniform-year gate is not appli
 admitted source is uniformly yearless by construction. -/
 def elaborateYearlessDateRangesOverlapSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
-    (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := declaringGroup) :
+    (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := declaringGroup)
+    (fixedTargetGroup? : Option GroupPath := none) :
     Except YearlessDateRangesOverlapElabError
       (CheckedYearlessDateRangesOverlapSource model) := do
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope authored
-      (writtenGroup := writtenGroup) (categoryGate := .behindRootGate)
+      (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup) (categoryGate := .behindRootGate)
     |>.mapError fun error => .source (.shape error)
   if let some path := firstDateRangesOverlapGroup? (shape.first :: shape.rest) then
     throw (.groupsNotAllowed path)

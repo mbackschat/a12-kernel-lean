@@ -318,11 +318,12 @@ def mixesDateRangeYearInclusion (model : FlatModel)
     policy — is unchanged and unaware of the scope. -/
 def elaborateDateRangesOverlapSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
-    (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := declaringGroup) :
+    (authored : SurfaceFieldEntitySource) (writtenGroup : GroupPath := declaringGroup)
+    (fixedTargetGroup? : Option GroupPath := none) :
     Except DateRangesOverlapElabError
       (CheckedDateRangesOverlapSource model) := do
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope authored
-      (writtenGroup := writtenGroup) (categoryGate := .behindRootGate)
+      (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup) (categoryGate := .behindRootGate)
     |>.mapError .shape
   if let some path := firstDateRangesOverlapGroup? (shape.first :: shape.rest) then
     throw (.groupsNotAllowed path)

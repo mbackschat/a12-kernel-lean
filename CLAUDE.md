@@ -48,7 +48,7 @@ The following permanent semantic-throughput rules govern all future work:
 
 7. Batch external evidence by coherent family. Internally closed clauses may remain honestly marked `external evidence pending`; do not request a kernel capture for each small operator.
 
-8. Run bounded consumer probes only at capability milestones: after a reusable family closes, after a major addressing or computation boundary changes, or before declaring a public compatibility capability. A probe tests knowledge transport and does not become a permanent lockstep product suite by default.
+8. **Owner balance, 2026-10-04:** capturing missing semantics is the immediate priority. Use occasional bounded consumer probes at meaningful capability milestones, rather than after every family batch: select a reusable family closure, a major addressing/computation change, or an impending public compatibility claim where the probe can expose a material consumer risk. Between probes, the ordinary consumer hypothesis and same-context adequacy check preserve consumer needs without another independent exercise. A probe tests knowledge transport and does not become a permanent lockstep product suite by default.
 
 9. Interleave breadth with early high-risk spikes. Establish a minimal foundation in each major area, then test its most dangerous uncertainty before broadening routine operators—for example model-zone discontinuities, multi-level outer correlation, scheduling/poison/clearing, and enumeration remapping or locale collisions.
 

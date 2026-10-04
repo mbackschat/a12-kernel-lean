@@ -271,9 +271,9 @@ measured on this operator
 ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-count-placement-overlap-list-grid)). -/
 private def checkAtLeastOneDateRangeOverlapValueList (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel) (list : SurfaceFieldEntitySource)
-    (writtenGroup : GroupPath) :
+    (writtenGroup : GroupPath) (fixedTargetGroup? : Option GroupPath) :
     Except FieldEntityShapeElabError (List (ResolvedFieldEntityOperand model)) := do
-  let shape ← elaborateFieldEntityShapeIn model declaringGroup scope list .soleAllowed none writtenGroup
+  let shape ← elaborateFieldEntityShapeIn model declaringGroup scope list .soleAllowed fixedTargetGroup? writtenGroup
   if let some root := (shape.first :: shape.rest).findSome? starredRootPath? then
     throw (.rootGroupOperand root)
   pure (shape.first :: shape.rest)
@@ -281,7 +281,8 @@ private def checkAtLeastOneDateRangeOverlapValueList (model : FlatModel)
 /-- Read every operand, then ask the scalar's root, base-type and slot gates, then resolve both sides as one nonempty entity sequence so cross-side duplicate and overlap checks remain shared. Then walk every field for its kind and year interpretation, ask the uniform-year gate, and finally certify the supported DateRange policies. -/
 def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
-    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := declaringGroup) :
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := declaringGroup)
+    (fixedTargetGroup? : Option GroupPath := none) :
     Except AtLeastOneDateRangeOverlapsElabError
       (CheckedAtLeastOneDateRangeOverlapsSource model) :=
   match model.validate with
@@ -292,9 +293,9 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
       -- ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)).
       let scalarOperand ←
         resolveFieldEntityOperandIn model declaringGroup scope authored.scalar
-            (writtenGroup := writtenGroup)
+            (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup)
           |>.mapError .shape
-      let _ ← resolveFieldEntityOperands model declaringGroup scope none writtenGroup
+      let _ ← resolveFieldEntityOperands model declaringGroup scope fixedTargetGroup? writtenGroup
           (authored.list.first :: authored.list.rest)
         |>.mapError .shape
       -- The Kernel's checker asks its root and base-type gates over the scalar before the slot
@@ -307,14 +308,14 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
         throw (.scalarVaryingBaseType path)
       let scalarDeclaration ← certifyAtLeastOneDateRangeOverlapScalarShape scalarOperand
       let listOperands ←
-        checkAtLeastOneDateRangeOverlapValueList model declaringGroup scope authored.list writtenGroup
+        checkAtLeastOneDateRangeOverlapValueList model declaringGroup scope authored.list writtenGroup fixedTargetGroup?
           |>.mapError .shape
       if let some path := fieldListBaseTypeMismatch? (scalarOperand :: listOperands) then
         throw (.listVaryingBaseType path)
       let shape ← elaborateFieldEntityShapeIn model declaringGroup scope {
           first := authored.scalar
           rest := authored.list.first :: authored.list.rest
-        } (writtenGroup := writtenGroup) |>.mapError .shape
+        } (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup) |>.mapError .shape
       match shape.rest with
       | [] => throw .incoherentCore
       | listFirst :: listRest => do
@@ -374,15 +375,16 @@ for its kind and year interpretation, then certify every operand as unconfigured
 sit inside a level the rule iterates. -/
 def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     (declaringGroup : GroupPath) (scope : List RepeatableLevel)
-    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := declaringGroup) :
+    (authored : SurfaceAtLeastOneDateRangeOverlapsSource) (writtenGroup : GroupPath := declaringGroup)
+    (fixedTargetGroup? : Option GroupPath := none) :
     Except YearlessDateRangesOverlapElabError
       (CheckedYearlessAtLeastOneDateRangeOverlapsSource model) := do
   let scalarOperand ←
     resolveFieldEntityOperandIn model declaringGroup scope authored.scalar
-        (writtenGroup := writtenGroup)
+        (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup)
       |>.mapError fun error => .source (.shape error)
   -- As on the canonical route, every operand is read before the scalar's own gate.
-  let _ ← resolveFieldEntityOperands model declaringGroup scope none writtenGroup
+  let _ ← resolveFieldEntityOperands model declaringGroup scope fixedTargetGroup? writtenGroup
       (authored.list.first :: authored.list.rest)
     |>.mapError fun error => .source (.shape error)
   let scalarDeclaration ←
@@ -395,14 +397,14 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     | .starredGroup source => throw (.pluralScalarNotDirect source.group.path)
     | .starredGroupPresence source => throw (.pluralScalarNotDirect source.groupPath)
   let listOperands ←
-    checkAtLeastOneDateRangeOverlapValueList model declaringGroup scope authored.list writtenGroup
+    checkAtLeastOneDateRangeOverlapValueList model declaringGroup scope authored.list writtenGroup fixedTargetGroup?
       |>.mapError fun error => .source (.shape error)
   if let some path := fieldListBaseTypeMismatch? (scalarOperand :: listOperands) then
     throw (.listVaryingBaseType path)
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope {
       first := authored.scalar
       rest := authored.list.first :: authored.list.rest
-    } (writtenGroup := writtenGroup) |>.mapError fun error => .source (.shape error)
+    } (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup) |>.mapError fun error => .source (.shape error)
   -- Every list gate answers ahead of the scalar's year interpretation, and the field walk ahead of
   -- this route's own yearless refusal
   -- ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-overlap-field-walk-order)).

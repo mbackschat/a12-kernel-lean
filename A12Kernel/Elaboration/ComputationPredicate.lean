@@ -4,6 +4,7 @@ import A12Kernel.Elaboration.NumericAggregate.Entities
 import A12Kernel.Semantics.ComputationValueList
 import A12Kernel.Elaboration.ScalarFieldComparison
 import A12Kernel.Elaboration.TemporalExpression
+import A12Kernel.Elaboration.ComputationOverlap
 
 namespace A12Kernel
 
@@ -21,6 +22,8 @@ inductive SurfaceComputationPredicate where
       (members : SurfaceScalarMembershipMembers)
   | entityValueList (source : SurfaceNumberEntityValueListSource)
   | tokenLiteralValueList (source : SurfaceTokenEntityStringLiteralValueListSource)
+  | overlap (source : SurfaceFieldEntitySource)
+  | scalarOverlap (source : SurfaceAtLeastOneDateRangeOverlapsSource)
   deriving Repr, DecidableEq
 
 inductive ComputationPredicateElabError where
@@ -33,6 +36,7 @@ inductive ComputationPredicateElabError where
   | incoherent
   | token (error : TokenEntityValueListElabError)
   | literals (error : TokenEntityStringLiteralValueListElabError)
+  | overlap (error : IteratedDateRangeConditionElabError)
   deriving Repr, DecidableEq
 
 inductive ComputationPredicateError where
@@ -56,6 +60,7 @@ inductive CheckedComputationPredicate (model : FlatModel) where
   | scalarValueList (operator : ValueListMembershipOp) (source : CheckedValueListCondition model)
   | scalarNumberLiterals (operator : ValueListMembershipOp)
       (subject : CheckedNumberEntityField model) (values : List Int)
+  | overlap (source : CheckedComputationOverlap model)
 
 namespace CheckedComputationPredicate
 
@@ -66,6 +71,7 @@ def referencesField (predicate : CheckedComputationPredicate model) (field : Fie
   | .fieldComparison source => source.referencesField field
   | .valueList source | .scalarValueList _ source => source.referencesField field
   | .scalarNumberLiterals _ source _ => source.field.id == field
+  | .overlap source => source.referencesField field
 
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
   match predicate with
@@ -75,6 +81,7 @@ def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List R
   | .fieldComparison source => source.rowBoundBool scope
   | .valueList source | .scalarValueList _ source => source.bindingScopes.all (·.isPrefixOf scope)
   | .scalarNumberLiterals _ source _ => source.declaration.repeatableScope.isPrefixOf scope
+  | .overlap source => source.rowBoundBool scope
 
 private def addressed (context : ScalarComputationContext) : Except ComputationPredicateError ComputationFillContext :=
   match context.addressed with
@@ -195,6 +202,10 @@ def evalChecked (predicate : CheckedComputationPredicate model)
       | .dateTimeLabelUnresolved => .valueFailure
       | .calendarUnavailable => .temporalUnavailable)
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
+  | .overlap source => (source.evalChecked context filterRead).mapError fun
+      | .contextRequired => .contextRequired
+      | .addressing error => .addressing error
+      | .fieldKindMismatch field => .fieldKindMismatch field
   | .valueList source => evalValueList (.quantified source.quantifier) source context filterRead
   | .scalarValueList operator source => evalValueList (.scalar operator) source context filterRead
   | .scalarNumberLiterals operator source values =>
@@ -241,6 +252,22 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (surface : SurfaceComputationPredicate) :
     Except ComputationPredicateElabError (CheckedComputationPredicate model) := do
   match surface with
+  | .overlap source =>
+      let scope := model.repeatableScopeForGroupPath targetGroup
+      match elaborateDateRangesOverlapSourceIn model declaringGroup scope source targetGroup (some targetGroup) with
+      | .ok source => pure (.overlap (.anyPair source))
+      | .error exactError =>
+          match elaborateYearlessDateRangesOverlapSourceIn model declaringGroup scope source targetGroup (some targetGroup) with
+          | .ok source => pure (.overlap (.yearlessAnyPair source))
+          | .error _ => throw (.overlap (.overlap exactError))
+  | .scalarOverlap source =>
+      let scope := model.repeatableScopeForGroupPath targetGroup
+      match elaborateAtLeastOneDateRangeOverlapsSourceIn model declaringGroup scope source targetGroup (some targetGroup) with
+      | .ok source => pure (.overlap (.scalar source))
+      | .error exactError =>
+          match elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn model declaringGroup scope source targetGroup (some targetGroup) with
+          | .ok source => pure (.overlap (.yearlessScalar source))
+          | .error _ => throw (.overlap (.pluralOverlap exactError))
   | .stringExpression op left right => .stringExpression <$>
       (elaborateStringExpressionComparison model declaringGroup targetGroup op left right).mapError .stringExpression
   | .temporal op left right => .temporal <$>

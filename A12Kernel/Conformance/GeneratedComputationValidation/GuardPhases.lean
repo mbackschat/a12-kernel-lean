@@ -98,4 +98,14 @@ example :
       (.field (absolutePath ["Form"] "Z1")) (.field (absolutePath ["Form"] "Z2"))) 11 .malformed =
         some (.poison .malformed, .fired (expectedMessage .value)) := by native_decide
 
+example :
+    comparisonPhases (.overlap {
+      first := .field (absolutePath ["Form"] "R1")
+      rest := [.field (absolutePath ["Form"] "R2")] }) 9 .dateRangeSeparator =
+        some (.poison .dateRangeSeparator, .fired (expectedMessage .value)) ∧
+    comparisonPhases (.scalarOverlap {
+      scalar := .field (absolutePath ["Form"] "R1")
+      list := { first := .field (absolutePath ["Form"] "R2"), rest := [] } }) 9 .dateRangeSeparator =
+        some (.poison .dateRangeSeparator, .fired (expectedMessage .value)) := by native_decide
+
 end A12Kernel.Conformance.GeneratedComputationValidation.GuardPhases

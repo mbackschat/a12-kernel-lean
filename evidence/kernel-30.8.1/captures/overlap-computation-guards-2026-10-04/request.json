@@ -1,0 +1,1265 @@
+{
+  "model": "OverlapGuards_DM.json",
+  "locale": "en_US",
+  "clock": "2024-01-01T00:00:00Z",
+  "observe": [
+    "compute",
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "positive",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "disjoint",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-03-01/2024-03-10",
+          "C": "2024-04-01/2024-04-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "03-01/03-02",
+          "Rows": [
+            {
+              "R": "2024-03-01/2024-03-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-03-01/2024-03-10",
+            "S": "2024-03-01/2024-03-10"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "invalid-tail",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "bad",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "invalid-first",
+      "documentInline": {
+        "Form": {
+          "A": "bad",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "empty-scalar-invalid-list",
+      "documentInline": {
+        "Form": {
+          "A": "",
+          "B": "bad",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "bad",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "absent-scalar-invalid-list",
+      "documentInline": {
+        "Form": {
+          "B": "bad",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "empty-and-missing",
+      "documentInline": {
+        "Form": {
+          "A": "",
+          "B": "",
+          "C": "",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "",
+          "YB": "",
+          "Rows": [],
+          "Pool": {},
+          "RangeRows": [],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "unfiltered-deciding-prefix",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "bad",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "unfiltered-poison-prefix",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "bad",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "filter-dropped-invalid",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "bad",
+              "Gate": "0",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "filter-kept-invalid",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "bad",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "filter-next-poison",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "Gate": "bad",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "filter-third-poison",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "Gate": "bad",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "filter-third-payload-poison",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "bad",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "filter-dropped-between",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "Gate": "0",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "group-field-order",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-01-01/2024-01-10"
+            },
+            {
+              "R": "bad",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "group-deciding-prefix",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "02-01/02-29",
+          "YB": "02-29/03-01",
+          "Rows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-03-01/2024-03-10"
+            },
+            {
+              "R": "bad",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    },
+    {
+      "name": "yearless-reversed",
+      "documentInline": {
+        "Form": {
+          "A": "2024-01-01/2024-01-10",
+          "B": "2024-01-05/2024-01-15",
+          "C": "2024-03-01/2024-03-10",
+          "Fresh": "2024-03-01/2024-03-10",
+          "YA": "03-01/02-01",
+          "YB": "02-15/02-20",
+          "Rows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-01-05/2024-01-15",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "Gate": "1",
+              "Bound": "99",
+              "BoundDep": "99"
+            }
+          ],
+          "Pool": {
+            "R": "2024-01-01/2024-01-10",
+            "S": "2024-01-05/2024-01-15"
+          },
+          "RangeRows": [
+            {
+              "R": "2024-01-01/2024-01-10",
+              "S": "2024-01-05/2024-01-15"
+            },
+            {
+              "R": "2024-03-01/2024-03-10",
+              "S": "2024-03-01/2024-03-10"
+            }
+          ],
+          "AnyABC": "99",
+          "AnyABCDep": "99",
+          "AnyCAB": "99",
+          "AnyCABDep": "99",
+          "OneABC": "99",
+          "OneABCDep": "99",
+          "OneCAB": "99",
+          "OneCABDep": "99",
+          "AnyStar": "99",
+          "AnyStarDep": "99",
+          "OneStar": "99",
+          "OneStarDep": "99",
+          "AnyFilter": "99",
+          "AnyFilterDep": "99",
+          "OneFilter": "99",
+          "OneFilterDep": "99",
+          "OneGroup": "99",
+          "OneGroupDep": "99",
+          "OneStarGroup": "99",
+          "OneStarGroupDep": "99",
+          "YearlessAny": "99",
+          "YearlessAnyDep": "99",
+          "YearlessOne": "99",
+          "YearlessOneDep": "99",
+          "FreshGuard": "99",
+          "FreshGuardDep": "99"
+        }
+      }
+    }
+  ]
+}

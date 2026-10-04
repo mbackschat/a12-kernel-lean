@@ -201,6 +201,7 @@ import A12Kernel.Proofs.NumericDependency
 import A12Kernel.Proofs.NumericExpression
 import A12Kernel.Proofs.TemporalExpression
 import A12Kernel.Proofs.ComputationValueList
+import A12Kernel.Proofs.ComputationOverlap
 import A12Kernel.Proofs.NumericFillability
 import A12Kernel.Proofs.NumericInput
 import A12Kernel.Proofs.NumericRounding

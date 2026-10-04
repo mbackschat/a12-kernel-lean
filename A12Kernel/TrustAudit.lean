@@ -2975,6 +2975,10 @@ run_cmd do
 #print axioms A12Kernel.ComputationValueListOperator.atLeastOne_emptyCollection
 #print axioms A12Kernel.ComputationValueListOperator.notAll_emptySubjects
 #print axioms A12Kernel.ComputationValueListOperator.scalar_memberPoison
+#print axioms A12Kernel.ComputationOverlapSearch.scalarUsing_empty
+#print axioms A12Kernel.ComputationOverlapSearch.against_miss
+#print axioms A12Kernel.ComputationOverlapSearch.scan_deciding_prefix
+#print axioms A12Kernel.ComputationOverlapSearch.scan_emptyCells
 
 #print axioms A12Kernel.RuleIterationDomain.axis_dense
 #print axioms A12Kernel.RuleIterationDomain.axis_first

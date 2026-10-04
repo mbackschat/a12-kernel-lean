@@ -1,0 +1,975 @@
+{
+  "header" : {
+    "id" : "OverlapGuards_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "OverlapGuards_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/R",
+                "name" : "R",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Gate",
+                "name" : "Gate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Bound",
+                "name" : "Bound",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/BoundDep",
+                "name" : "BoundDep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/BoundDepComp",
+                "name" : "BoundDepComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../BoundDep",
+                  "computationAlternatives" : [ {
+                    "operation" : "[Bound] + 1"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "Overlap guard control."
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Pool",
+            "name" : "Pool",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Pool/R",
+                "name" : "R",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Pool/S",
+                "name" : "S",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/RangeRows",
+            "name" : "RangeRows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/RangeRows/R",
+                "name" : "R",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/RangeRows/S",
+                "name" : "S",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/A",
+            "name" : "A",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/B",
+            "name" : "B",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/C",
+            "name" : "C",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Fresh",
+            "name" : "Fresh",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YA",
+            "name" : "YA",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YB",
+            "name" : "YB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AnyABC",
+            "name" : "AnyABC",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AnyABCDep",
+            "name" : "AnyABCDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AnyCAB",
+            "name" : "AnyCAB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AnyCABDep",
+            "name" : "AnyCABDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OneABC",
+            "name" : "OneABC",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OneABCDep",
+            "name" : "OneABCDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OneCAB",
+            "name" : "OneCAB",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OneCABDep",
+            "name" : "OneCABDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AnyStar",
+            "name" : "AnyStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AnyStarDep",
+            "name" : "AnyStarDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OneStar",
+            "name" : "OneStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OneStarDep",
+            "name" : "OneStarDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AnyFilter",
+            "name" : "AnyFilter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AnyFilterDep",
+            "name" : "AnyFilterDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OneFilter",
+            "name" : "OneFilter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OneFilterDep",
+            "name" : "OneFilterDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OneGroup",
+            "name" : "OneGroup",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OneGroupDep",
+            "name" : "OneGroupDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OneStarGroup",
+            "name" : "OneStarGroup",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/OneStarGroupDep",
+            "name" : "OneStarGroupDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YearlessAny",
+            "name" : "YearlessAny",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YearlessAnyDep",
+            "name" : "YearlessAnyDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YearlessOne",
+            "name" : "YearlessOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/YearlessOneDep",
+            "name" : "YearlessOneDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FreshGuard",
+            "name" : "FreshGuard",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FreshGuardDep",
+            "name" : "FreshGuardDep",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AnyABCDepComp",
+            "name" : "AnyABCDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyABCDep",
+              "computationAlternatives" : [ {
+                "operation" : "[AnyABC] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AnyABCComp",
+            "name" : "AnyABCComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyABC",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "DateRangesOverlap(A,B,C)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AnyCABDepComp",
+            "name" : "AnyCABDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyCABDep",
+              "computationAlternatives" : [ {
+                "operation" : "[AnyCAB] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AnyCABComp",
+            "name" : "AnyCABComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyCAB",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "DateRangesOverlap(C,A,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OneABCDepComp",
+            "name" : "OneABCDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OneABCDep",
+              "computationAlternatives" : [ {
+                "operation" : "[OneABC] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OneABCComp",
+            "name" : "OneABCComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OneABC",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneDateRangeOverlaps(A In B,C)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OneCABDepComp",
+            "name" : "OneCABDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OneCABDep",
+              "computationAlternatives" : [ {
+                "operation" : "[OneCAB] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OneCABComp",
+            "name" : "OneCABComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OneCAB",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneDateRangeOverlaps(C In A,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AnyStarDepComp",
+            "name" : "AnyStarDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyStarDep",
+              "computationAlternatives" : [ {
+                "operation" : "[AnyStar] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AnyStarComp",
+            "name" : "AnyStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyStar",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "DateRangesOverlap(Rows*/R)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OneStarDepComp",
+            "name" : "OneStarDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OneStarDep",
+              "computationAlternatives" : [ {
+                "operation" : "[OneStar] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OneStarComp",
+            "name" : "OneStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OneStar",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneDateRangeOverlaps(A In Rows*/R)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AnyFilterDepComp",
+            "name" : "AnyFilterDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyFilterDep",
+              "computationAlternatives" : [ {
+                "operation" : "[AnyFilter] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AnyFilterComp",
+            "name" : "AnyFilterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AnyFilter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "DateRangesOverlap(Rows*/R Having ([Gate] > 0))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OneFilterDepComp",
+            "name" : "OneFilterDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OneFilterDep",
+              "computationAlternatives" : [ {
+                "operation" : "[OneFilter] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OneFilterComp",
+            "name" : "OneFilterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OneFilter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneDateRangeOverlaps(A In Rows*/R Having ([Gate] > 0))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OneGroupDepComp",
+            "name" : "OneGroupDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OneGroupDep",
+              "computationAlternatives" : [ {
+                "operation" : "[OneGroup] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OneGroupComp",
+            "name" : "OneGroupComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OneGroup",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneDateRangeOverlaps(A In Pool)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OneStarGroupDepComp",
+            "name" : "OneStarGroupDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OneStarGroupDep",
+              "computationAlternatives" : [ {
+                "operation" : "[OneStarGroup] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/OneStarGroupComp",
+            "name" : "OneStarGroupComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../OneStarGroup",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneDateRangeOverlaps(A In RangeRows*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/YearlessAnyDepComp",
+            "name" : "YearlessAnyDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../YearlessAnyDep",
+              "computationAlternatives" : [ {
+                "operation" : "[YearlessAny] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/YearlessAnyComp",
+            "name" : "YearlessAnyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../YearlessAny",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "DateRangesOverlap(YA,YB)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/YearlessOneDepComp",
+            "name" : "YearlessOneDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../YearlessOneDep",
+              "computationAlternatives" : [ {
+                "operation" : "[YearlessOne] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/YearlessOneComp",
+            "name" : "YearlessOneComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../YearlessOne",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "AtLeastOneDateRangeOverlaps(YA In YB)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FreshGuardDepComp",
+            "name" : "FreshGuardDepComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FreshGuardDep",
+              "computationAlternatives" : [ {
+                "operation" : "[FreshGuard] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FreshGuardComp",
+            "name" : "FreshGuardComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FreshGuard",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "DateRangesOverlap(Fresh,B)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BoundComp",
+            "name" : "BoundComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Rows/Bound",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "DateRangesOverlap(A,Rows/R)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FreshComp",
+            "name" : "FreshComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Fresh",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(A,C)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Overlap guard control."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

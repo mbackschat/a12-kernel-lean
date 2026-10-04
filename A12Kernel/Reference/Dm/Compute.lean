@@ -92,6 +92,12 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
   | .call "GroupNotFilled" [.mk group none none] none none => match group.groupReference? with
       | some reference => pure (.groupPresence .notFilled reference)
       | none => refuse "Guard/GroupNotFilled" "group operand"
+  | .call "DateRangesOverlap" arguments none none =>
+      (.predicate ∘ .overlap) <$> lowerEntitySource model group arguments
+  | .call "AtLeastOneDateRangeOverlaps" [scalar] (some values) none => do
+      pure (.predicate (.scalarOverlap {
+        scalar := ← lowerEntityOperand model group scalar
+        list := ← lowerEntitySource model group values }))
   | .call id arguments (some values) none => do
       let some quantifier := valueListQuantifier? id | refuse ("Guard/" ++ id)
       let fields ← lowerEntitySource model group arguments

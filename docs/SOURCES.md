@@ -3,7 +3,7 @@
 <a id="authoritative-sources--how-to-drill"></a>
 <a id="authoritative-sources-how-to-drill"></a>
 
-This hub and its bounded [`sources/`](sources/) records are the repository’s provenance owner. They map semantic questions to the authoritative kernel layer and to maintained a12-dmkits knowledge. They are not a second specification, findings ledger, implementation map, evidence inventory, or review history.
+This hub and bounded [`sources/`](sources/) records own provenance: routes from semantic questions to authoritative kernel layers and maintained a12-dmkits knowledge. Specification, findings, implementation, evidence inventory and review history have separate owners.
 
 Authority order is **[`../../a12-kernel`](../../a12-kernel) → project-owned [`../spec/`](../spec/) and Lean theory → [a12-dmkits](../../a12-rulekit)**. The real kernel is the behavioral oracle. The spec and Lean theory are this project’s working semantics-of-record. a12-dmkits is a peer clean-room implementation, source of maintained kernel-executing differentials, and knowledge corpus.
 
@@ -1710,6 +1710,9 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 <a id="src-comparison-computation-guards"></a>
 - [Typed comparison guards](sources/computation-scheduling-probes.md#src-comparison-computation-guards)
+
+<a id="src-overlap-computation-guards"></a>
+- [Overlap guards](sources/computation-scheduling-probes.md#src-overlap-computation-guards)
 
 <a id="src-compositional-computation-guards"></a>
 - [Shared computation guards](sources/computation-scheduling-probes.md#src-compositional-computation-guards)

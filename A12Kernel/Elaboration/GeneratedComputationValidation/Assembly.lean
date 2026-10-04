@@ -519,6 +519,7 @@ private def generatedGuardCondition (model : FlatModel) (target : FieldId)
         (if resolved.requiresAddressedValidation then .modelWideCheckedComputation else .modelWideNonrepeatable)
         resolved)
   | .leaf (.predicate (.temporal source)) => pure (.leaf (.scalarTemporal source))
+  | .leaf (.predicate (.overlap source)) => pure (.leaf (.iteratedDateRange source.toValidation))
   | .leaf (.predicate (.stringExpression source)) => pure (.leaf (.stringExpression source))
   | .leaf (.predicate (.fieldComparison (.boolean source))) =>
       pure (ValidationCondition.flat (.compare source.toFlat))

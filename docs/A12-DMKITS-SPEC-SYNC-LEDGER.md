@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-04-04"></a>
+### `SPEC-2026-10-04-04` — DateRange overlap guards preserve reached poison and ordered prefixes
+
+- `status`: pending
+- `clause`: [spec/05 §8](../spec/05-dates-and-time.md#8-date-ranges-and-overlap).
+- `delta`: qualify unavailable-cell skipping as validation behavior. Computation overlap guards preserve scalar-first empty termination, reached poison, deciding prefixes, filter lookahead and declaration-major group ordering.
+- `evidence`: [overlap guard checkpoint](sources/computation-scheduling-probes.md#src-overlap-computation-guards), Kernel 30.8.1, both strategies agreeing on eighteen documents. Dependents distinguish poison from clean clearing; the retained manifest pins the inputs and observations.
+- `redundancy`: peer findings were searched heading-first and by overlap/computation/poison values at `35ad604468360640f9f5bd9fcdc2cc6922b0b685`. KF105 settles the shared lookahead and KF191 the first-filled group order; neither supplies the overlap-specific separating matrix. Reuse those mechanisms rather than reimplementing them.
+- `surfaces`: overlap evaluation in computation preconditions and the language-neutral phase distinction. Indexed/parallel guards and broader yearless profiles are outside this capture.
+- `acceptance`: reconcile the ordered overlap consumer against the retained early-match, scalar-empty, third-filter-versus-third-payload and group-order controls, or supply contrary observations. Acknowledge an existing equivalent implementation without duplicate work.
+- `introducing commit`: resolve using the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-04-03"></a>
 ### `SPEC-2026-10-04-03` — full-rule iteration differs from physical extent and uniqueness cache membership
 
