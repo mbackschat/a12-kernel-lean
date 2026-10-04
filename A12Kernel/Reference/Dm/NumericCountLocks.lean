@@ -115,4 +115,26 @@ example : (lowerComputation model .english
       (definition "Other" "../Out" "NumberOfFilledFields(Inputs, Down)")).isOk = true := by
   native_decide
 
+private def capturedAdmission (token : Bool) (operation : String) : Option (List Bool) := do
+  let model : FlatModel := {
+    fields := [
+      { id := 1, name := "A", groupPath := ["Form", "Rows"], repeatableScope := [10]
+        policy := { kind := if token then .string else .number { scale := 0, signed := true } } },
+      { id := 2, name := "Keep", groupPath := ["Form", "Rows"], repeatableScope := [10]
+        policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 3, name := "Out", groupPath := ["Form", "Rows"], repeatableScope := [10]
+        policy := { kind := .number { scale := 0, signed := true } } }]
+    repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
+  let (_, .number table _) ← (lowerComputation model .english
+    (definition "Read" "../Rows/Out" operation)).toOption | none
+  let .atom atom := table.first.operation.operation.core.expression | none
+  pure ([[], [10], [10, 20], [20]].map (model.admitsNumericComputationOperand · atom))
+
+example : ["FirstFilledValue(Rows*/A Having CurrentRepetition(Rows) <= [$Rows/Keep])",
+    "NumberOfValueInFields(1 In Rows*/A Having CurrentRepetition(Rows) <= [$Rows/Keep])"].all
+    (fun operation => capturedAdmission false operation == some [false, true, true, false]) ∧
+    capturedAdmission true
+      "NumberOfValueInFields(\"A\" In Rows*/A Having CurrentRepetition(Rows) <= [$Rows/Keep])" =
+        some [false, true, true, false] := by native_decide
+
 end A12Kernel.Dm.NumericCountLocks

@@ -37,7 +37,8 @@ def elaborateNumberValuesNotUniqueSource (model : FlatModel)
   match firstFieldListCategoryMismatch? .number shape.operands with
   | some mismatch => throw (.mixedCategories mismatch.path mismatch.actual)
   | none => pure ()
-  certifyNumberEntityShape model declaringGroup shape |>.mapError .source
+  certifyNumberEntityShape model declaringGroup shape (targetGroup?.getD writtenGroup)
+    |>.mapError .source
 
 namespace NumberValuesNotUniqueElabError
 

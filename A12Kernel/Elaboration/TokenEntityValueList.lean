@@ -284,7 +284,7 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
   match numberListPath? shape.operands with
   | some path => throw (.slotNumberAgainstStringLiterals path)
   | none => pure ()
-  let fields ← certifyTokenEntityShape model declaringGroup shape
+  let fields ← certifyTokenEntityShape model declaringGroup shape (targetGroup?.getD writtenGroup)
     |>.mapError .fields
   match hFamily : fields.valueListFamily? with
   | none => throw (.unsupportedFieldsFamily none)
@@ -441,7 +441,7 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
   match refusedKindListPath? fieldsShape.operands with
   | some path => throw (.fieldsKindNotStringEnumNumber path)
   | none => pure ()
-  let fields := certifyTokenEntityShape model declaringGroup fieldsShape
+  let fields := certifyTokenEntityShape model declaringGroup fieldsShape (targetGroup?.getD writtenGroup)
   -- Number fields leave this token fragment but are inside the Kernel's kind set, so the Kernel
   -- reads the value side next and a String value there draws the base-type class (measured). Only
   -- a different certification refusal is raised ahead of the value side.
@@ -458,7 +458,8 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
   if let some error := crossListRepeat? (fieldsShape.operands ++ valuesShape.operands) then
     throw (.crossListRepeat error)
   let fields ← fields.mapError .fields
-  let values ← certifyTokenEntityShape model declaringGroup valuesShape |>.mapError fun
+  let values ← certifyTokenEntityShape model declaringGroup valuesShape
+      (targetGroup?.getD writtenGroup) |>.mapError fun
     | .rawStringValue path => .rawValue path
     | error => .values error
   assembleTokenEntityValueListSource authored.quantifier fields values

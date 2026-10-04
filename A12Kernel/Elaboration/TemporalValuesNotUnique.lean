@@ -272,13 +272,11 @@ def certifyTemporalUniquenessOperand (model : FlatModel)
       certifyTemporalUniquenessGroup model (.starredPresence source)
 
 def certifyTemporalUniquenessOperands (model : FlatModel)
-    (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
-      Except TemporalValuesNotUniqueElabError
-        (List (CheckedTemporalUniquenessOperand model))
-  | [] => pure []
-  | operand :: remaining => do
-      pure ((← certifyTemporalUniquenessOperand model declaringGroup operand) ::
-        (← certifyTemporalUniquenessOperands model declaringGroup remaining))
+    (declaringGroup : GroupPath) (operands : List (ResolvedFieldEntityOperand model))
+    (bindingGroup : GroupPath := declaringGroup) :
+    Except TemporalValuesNotUniqueElabError (List (CheckedTemporalUniquenessOperand model)) :=
+  operands.mapM (fun operand =>
+    certifyTemporalUniquenessOperand model declaringGroup operand bindingGroup)
 
 /-- Report the first operand the Kernel's **kind** gate refuses, scanning the whole list. This runs before any category or format decision because the gate order is observable: a Boolean or Confirm beside a String reports the kind code with the mixing code absent. Public because the gate-order law has to speak about this scan. -/
 def firstKindGateRefusal? :
@@ -301,8 +299,9 @@ def elaborateTemporalValuesNotUniqueSource (model : FlatModel)
   match firstKindGateRefusal? shape.operands with
   | some refusal => throw refusal
   | none => pure ()
-  let first ← certifyTemporalUniquenessOperand model declaringGroup shape.first
-  let rest ← certifyTemporalUniquenessOperands model declaringGroup shape.rest
+  let bindingGroup := targetGroup?.getD writtenGroup
+  let first ← certifyTemporalUniquenessOperand model declaringGroup shape.first bindingGroup
+  let rest ← certifyTemporalUniquenessOperands model declaringGroup shape.rest bindingGroup
   match hFormats : firstMismatchedTemporalFormat? first.format rest with
   | some (path, found) =>
       throw (.mixedDeclaredFormats path found first.format)

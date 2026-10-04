@@ -132,6 +132,15 @@ example : run date "FieldValuesNotUnique(A,B,Bad)" "2024-01-01" "2024-01-01" "ba
     run date "FieldValuesNotUnique(Bad,A,B)" "2024-01-01" "2024-01-01" "bad"
     { stringTarget := true } = some ["cleared", "cleared"] := by native_decide
 
+example : [(number 1 "A", "1"), (token, "A"), (enumeration, "A"),
+    (date, "2024-01-01")].all (fun (source, a) =>
+      ["", "A, "].all fun leading =>
+        let guard := s!"FieldValuesNotUnique({leading}Rows*/A Having CurrentRepetition(Rows) <= [$Rows/Keep])"
+        run source guard "" "" "" { rows := [row a a "1", row a a "2"], rowTarget := true } ==
+          some ["cleared", "value 1", "value 1", "value 2"] &&
+        run source guard "" "" "" { rows := [row a a "1", row a a "bad"], rowTarget := true } ==
+          some ["cleared", "cleared", "value 1", "cleared"]) := by native_decide
+
 private def generatedPhase : Option (Bool × Bool) := do
   let model : FlatModel := { fields := [number 1 "A", number 2 "B", number 3 "Bad", number 4 "Out"] }
   let parsed ← (parseText .english "FieldValuesNotUnique(Bad,A,B)").toOption

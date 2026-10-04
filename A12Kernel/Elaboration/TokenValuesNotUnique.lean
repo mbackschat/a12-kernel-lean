@@ -68,7 +68,8 @@ def elaborateTokenValuesNotUniqueSource (model : FlatModel)
           match firstFieldListCategoryMismatch? expected shape.operands with
           | some mismatch => throw (.mixedCategories mismatch.path mismatch.actual)
           | none => pure ()
-  let source ← certifyTokenEntityShape model declaringGroup shape |>.mapError .source
+  let source ← certifyTokenEntityShape model declaringGroup shape
+      (targetGroup?.getD writtenGroup) |>.mapError .source
   if hKinds : ∀ kind ∈ source.declaredKinds,
       some kind = source.declaredKinds.head? then
     pure { source, oneDeclaredKind := hKinds }

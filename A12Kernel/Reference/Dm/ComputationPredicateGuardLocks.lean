@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.Compute
+import A12Kernel.Reference.Dm.Document
 
 /-! # Computation predicate guard composition
 
@@ -101,5 +102,49 @@ example : run "FieldValueIncludedInValueList([Flag], 1)" numericKind (.parsed (.
     run "FieldValueIncludedInValueList(Flag, 1.0)" numericKind (.parsed (.num 1)) = none ∧
     run "FieldValueIncludedInValueList(Flag, [Flag])" numericKind (.parsed (.num 1)) = none := by
   native_decide
+
+private def capturedMembership (enumeration : Bool) (guard : String) (selection : String := "2") :
+    Option (List String) := do
+  let source : FlatFieldDecl := {
+    id := 1, name := "A", groupPath := ["Form", "Rows"], repeatableScope := [10]
+    policy := { kind := if enumeration then .enumeration else .string }
+    enumeration := if enumeration then some { storedTokens := ["A", "B"] } else none }
+  let model : FlatModel := {
+    fields := [source,
+      { source with id := 2, name := "B", groupPath := ["Form"], repeatableScope := [] },
+      { id := 3, name := "Keep", groupPath := ["Form", "Rows"], repeatableScope := [10]
+        policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 4, name := "Out", groupPath := ["Form", "Rows"], repeatableScope := [10]
+        policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 5, name := "After", groupPath := ["Form", "Rows"], repeatableScope := [10]
+        policy := { kind := .number { scale := 0, signed := true } } }]
+    repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
+  let row := fun a keep => Lean.Json.mkObj [("A", Lean.Json.str a), ("Keep", .str keep), ("Out", "9"), ("After", "9")]
+  let input ← (readDocument {
+      flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (Lean.Json.mkObj [("Form", Lean.Json.mkObj [("B", "B"), ("Rows", .arr #[
+      row "A" "1", row "B" selection])])])).toOption
+  if !input.refusals.isEmpty then none
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let (_, step) ← (lowerComputation model .english {
+    group := ["Form"], name := "Member", targetRelPath := "../Rows/Out"
+    commonPrecondition := some guard, alternatives := [{ precondition := none, operation := "1" }]
+    errorCodesToSuppress := [] }).toOption
+  let (_, dependent) ← (lowerComputation model .english {
+    group := ["Form"], name := "Dependent", targetRelPath := "../Rows/After"
+    commonPrecondition := none, alternatives := [{ precondition := none, operation := "[Rows/Out] + 1" }]
+    errorCodesToSuppress := [] }).toOption
+  pure ((← (runComputations world prepared checked [step, dependent]).toOption).map (·.outcome))
+
+example : [false, true].all (fun enumeration =>
+    ["Rows*/A Having CurrentRepetition(Rows) <= [$Rows/Keep] In B",
+      "B In Rows*/A Having CurrentRepetition(Rows) <= [$Rows/Keep]",
+      "Rows*/A Having CurrentRepetition(Rows) <= [$Rows/Keep] In \"B\""].all fun operands =>
+      let guard := s!"AtLeastOneFieldValueIncludedInValueList({operands})"
+      capturedMembership enumeration guard == some ["cleared", "value 1", "value 1", "value 2"] &&
+      capturedMembership enumeration guard "bad" == some ["cleared", "cleared", "value 1", "cleared"] &&
+      capturedMembership enumeration guard "0" == some ["cleared", "cleared", "value 1", "value 1"]) := by native_decide
 
 end A12Kernel.Dm.ComputationPredicateGuardLocks

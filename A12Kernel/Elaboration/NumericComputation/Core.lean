@@ -48,13 +48,11 @@ def FlatModel.admitsNumericComputationOperand
       source.computationSources.toOption.any fun sources =>
         !sources.isEmpty && sources.all (·.admitted model scope)
   | .firstFilled source | .valueCount _ source =>
-      model.directFieldsBoundBy scope (source.operands.filterMap (·.directField?.map (·.id)))
+      source.bindingScopes.all (·.isPrefixOf scope)
   | .tokenDistinctCount source => source.bindingScopes.all (·.isPrefixOf scope)
   | .temporalDistinctCount run =>
       run.source.bindingScopes.all (·.isPrefixOf scope)
-  | .tokenValueCount source =>
-      model.directFieldsBoundBy scope
-        (source.source.operands.filterMap (·.directField?.map (·.operand.field.id)))
+  | .tokenValueCount source => source.source.bindingScopes.all (·.isPrefixOf scope)
   | .booleanValueCount source =>
       model.directFieldsBoundBy scope (source.operands.filterMap (·.directField?.map (·.id)))
   | .sumOfProducts _ => true
