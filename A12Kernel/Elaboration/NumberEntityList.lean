@@ -236,11 +236,12 @@ def directAggregateFields?
 end CheckedNumberEntitySource
 
 def CheckedNumberEntitySource.bindingScopes (source : CheckedNumberEntitySource model) : List (List RepeatableLevel) :=
-  source.operands.map fun
-    | .field field => field.declaration.repeatableScope
-    | .star source => source.source.bindingScope
-    | .starHaving source => source.source.source.bindingScope
-    | .group source => source.source.bindingScope
+  source.operands.flatMap fun
+    | .field field => [field.declaration.repeatableScope]
+    | .star source => [source.source.bindingScope]
+    | .starHaving source => [source.source.source.bindingScope,
+        model.repeatableScopeForGroupPath source.bindingGroup]
+    | .group source => [source.source.bindingScope]
 
 
 inductive NumberEntityElabError where
@@ -488,6 +489,7 @@ def elaborateNumberEntitySource (model : FlatModel)
     (fixedTargetGroup? : Option GroupPath := none) (writtenGroup : GroupPath := declaringGroup)
     (arity : EntityListArity := .manyRequired) (bindingGroup? : Option GroupPath := none) :
     Except NumberEntityElabError (CheckedNumberEntitySource model) := do
+  let bindingGroup? := bindingGroup?.or fixedTargetGroup?
   let shape ←
     elaborateFieldEntityShapeIn model declaringGroup
       (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD [])

@@ -22,11 +22,13 @@ def elaborateDistinctCountSource (model : FlatModel) (declaringGroup : GroupPath
   | .ok checked => pure (.number checked)
   | .error error =>
       match elaborateTokenDistinctCountSource model declaringGroup source
-          (fixedTargetGroup? := fixedTargetGroup?) with
+          (fixedTargetGroup? := fixedTargetGroup?)
+          (writtenGroup := bindingGroup?.getD declaringGroup) with
       | .ok checked => pure (.token checked)
       | .error _ =>
           match (elaborateTemporalDistinctCountSource model declaringGroup source
-              (fixedTargetGroup? := fixedTargetGroup?)).toOption.bind
+              (fixedTargetGroup? := fixedTargetGroup?)
+              (writtenGroup := bindingGroup?.getD declaringGroup)).toOption.bind
               fun temporal => (checkTemporalDistinctCountRun temporal).toOption with
           | some run => pure (.temporal run)
           | none => throw error

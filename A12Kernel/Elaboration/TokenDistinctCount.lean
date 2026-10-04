@@ -92,7 +92,8 @@ def elaborateTokenDistinctCountSource (model : FlatModel)
   match distinctPositionalError? shape.operands with
   | some error => throw error
   | none =>
-      certifyTokenEntityShape model declaringGroup shape |>.mapError .source
+      certifyTokenEntityShape model declaringGroup shape
+        (fixedTargetGroup?.getD writtenGroup) |>.mapError .source
 
 namespace TokenDistinctCountElabError
 

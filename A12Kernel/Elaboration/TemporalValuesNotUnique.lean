@@ -249,9 +249,11 @@ private def certifyTemporalUniquenessGroup (model : FlatModel)
     rather than private because the temporal distinct count certifies slots identically and differs
     only in the **list** gate it then applies — component sets there, format equality here. -/
 def certifyTemporalUniquenessOperand (model : FlatModel)
-    (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
+    (declaringGroup : GroupPath) (operand : ResolvedFieldEntityOperand model)
+    (bindingGroup : GroupPath := declaringGroup) :
       Except TemporalValuesNotUniqueElabError
-        (CheckedTemporalUniquenessOperand model)
+        (CheckedTemporalUniquenessOperand model) :=
+  match operand with
   | .field declaration _ =>
       do pure (.field (← certifyTemporalUniquenessField declaration))
   | .star source =>
@@ -259,7 +261,7 @@ def certifyTemporalUniquenessOperand (model : FlatModel)
         none)
   | .starHaving source having => do
       let field ← certifyTemporalUniquenessField source.declaration
-      let filter ← elaborateStarHavingCore model declaringGroup source having
+      let filter ← elaborateStarHavingCore model declaringGroup source having bindingGroup
         |>.mapError .having
       pure (.star source field (some filter.condition))
   | .group reference =>

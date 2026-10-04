@@ -219,6 +219,7 @@ structure CheckedTemporalDistinctCountSource (model : FlatModel) where
   shape : CheckedFieldEntityShape model
   first : CheckedTemporalDistinctCountOperand model
   rest : List (CheckedTemporalDistinctCountOperand model)
+  filterBindingScope : List RepeatableLevel
   oneComponentSet :
     firstMismatchedTemporalComponents? model.hasBaseYear first.components first.format rest = none
 
@@ -245,6 +246,11 @@ def referencesField (checked : CheckedTemporalDistinctCountSource model) (field 
 
 def hasHaving (checked : CheckedTemporalDistinctCountSource model) : Bool :=
   checked.operands.any (·.hasHaving)
+
+/-- Expanded levels bind themselves; captured filter levels remain required from the caller. -/
+def bindingScopes (checked : CheckedTemporalDistinctCountSource model) : List (List RepeatableLevel) :=
+  checked.shape.operands.map (·.bindingScope) ++
+    (if checked.hasHaving then [checked.filterBindingScope] else [])
 
 /-- The list's shared component set, which every operand carries by construction. -/
 def components (checked : CheckedTemporalDistinctCountSource model) :
@@ -310,24 +316,24 @@ private def certifyDistinctCountGroup (model : FlatModel)
 /-- Certify one slot: the scalar forms through the shared certifier, a group through this
     operator's own. -/
 private def certifyDistinctCountOperand (model : FlatModel)
-    (declaringGroup : GroupPath) (operand : ResolvedFieldEntityOperand model) :
+    (declaringGroup bindingGroup : GroupPath) (operand : ResolvedFieldEntityOperand model) :
     Except TemporalDistinctCountElabError
       (CheckedTemporalDistinctCountOperand model) :=
   match groupSlotSource? operand with
   | some source => certifyDistinctCountGroup model source
   | none =>
-      (certifyTemporalUniquenessOperand model declaringGroup operand).map .slot
+      (certifyTemporalUniquenessOperand model declaringGroup operand bindingGroup).map .slot
         |>.mapError .slot
 
 private def certifyDistinctCountOperands (model : FlatModel)
-    (declaringGroup : GroupPath) :
+    (declaringGroup bindingGroup : GroupPath) :
     List (ResolvedFieldEntityOperand model) →
       Except TemporalDistinctCountElabError
         (List (CheckedTemporalDistinctCountOperand model))
   | [] => pure []
   | operand :: remaining => do
-      pure ((← certifyDistinctCountOperand model declaringGroup operand) ::
-        (← certifyDistinctCountOperands model declaringGroup remaining))
+      pure ((← certifyDistinctCountOperand model declaringGroup bindingGroup operand) ::
+        (← certifyDistinctCountOperands model declaringGroup bindingGroup remaining))
 
 /-- The first operand in authored order whose declared precision is not fully known. -/
 def firstPartialTemporalOperand? :
@@ -369,8 +375,9 @@ def elaborateTemporalDistinctCountSource (model : FlatModel)
   match firstKindGateRefusal? shape.operands with
   | some refusal => throw (.slot refusal)
   | none => pure ()
-  let first ← certifyDistinctCountOperand model declaringGroup shape.first
-  let rest ← certifyDistinctCountOperands model declaringGroup shape.rest
+  let bindingGroup := fixedTargetGroup?.getD writtenGroup
+  let first ← certifyDistinctCountOperand model declaringGroup bindingGroup shape.first
+  let rest ← certifyDistinctCountOperands model declaringGroup bindingGroup shape.rest
   -- The precision gate is this operator's own and is applied in authored order, before the
   -- component-set gate: a partial declaration carries a complete component set, so the two gates
   -- are independent and a list can be refused by either.
@@ -381,7 +388,10 @@ def elaborateTemporalDistinctCountSource (model : FlatModel)
       firstMismatchedTemporalComponents? model.hasBaseYear first.components first.format rest with
   | some (path, found, expected) =>
       throw (.mixedComponentSets path found expected)
-  | none => pure { shape, first, rest, oneComponentSet := hComponents }
+  | none => pure {
+      shape, first, rest
+      filterBindingScope := model.repeatableScopeForGroupPath bindingGroup
+      oneComponentSet := hComponents }
 
 namespace TemporalDistinctCountElabError
 

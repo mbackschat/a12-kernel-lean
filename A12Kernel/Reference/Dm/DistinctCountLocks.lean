@@ -15,13 +15,13 @@ namespace A12Kernel.Dm.DistinctCountLocks
 open A12Kernel A12Kernel.Dm Lean
 
 private inductive Family where
-  | number | token | enumeration | date | clock | instant | month
+  | number | token | enumeration | date | clock | instant | month | yearlessMonth
   deriving BEq
 
 private def declaration (family : Family) (id : FieldId) (name : String) : FlatFieldDecl :=
   let format := match family with
     | .date => "yyyy-MM-dd" | .clock => "HH:mm:ss" | .instant => "yyyy-MM-dd'T'HH:mm:ss"
-    | .month => "yyyy-MM" | _ => ""
+    | .month => "yyyy-MM" | .yearlessMonth => "MM" | _ => ""
   { id, name, groupPath := ["Form", "Inputs"]
     policy := { kind := match family with
       | .number => .number { scale := 0, signed := true }
@@ -37,6 +37,7 @@ private def text (family : Family) (other : Bool) : String := match family, othe
   | .clock, false => "12:30:00" | .clock, true => "13:30:00"
   | .instant, false => "2024-03-05T12:30:00" | .instant, true => "2024-03-05T13:30:00"
   | .month, false => "2024-03" | .month, true => "2024-04"
+  | .yearlessMonth, false => "03" | .yearlessMonth, true => "04"
 
 private def execute (model : FlatModel) (data : Json) (definitions : List DmComputation) :
     Option (List String) := do
@@ -67,7 +68,7 @@ private def run (family : Family) (values : List String) (operation : String :=
     ([definition "Count" "../Out" operation] ++
       if fresh then [definition "Producer" "../Inputs/A" "FirstFilledValue(Inputs/B, Inputs/C)"] else [])
 
-example : [.number, .token, .enumeration, .date, .clock, .instant, .month].all (fun family =>
+example : [.number, .token, .enumeration, .date, .clock, .instant, .month, .yearlessMonth].all (fun family =>
     run family [text family false, text family false] == some ["value 1"] &&
     run family [text family false, text family true] == some ["value 2"] &&
     run family [] == some ["value 0"] &&
@@ -75,7 +76,7 @@ example : [.number, .token, .enumeration, .date, .clock, .instant, .month].all (
     run family [text family false, text family true] "1 + NumberOfDifferentValues(Inputs)" ==
       some ["value 3"]) := by native_decide
 
-example : [.enumeration, .date, .clock, .instant, .month].all (fun family =>
+example : [.enumeration, .date, .clock, .instant, .month, .yearlessMonth].all (fun family =>
     run family [text family false, "bad"] == some ["cleared"]) := by native_decide
 
 example : run .token ["A", "B"] "NumberOfDifferentValues(Inputs/A, Inputs/B)" true =
@@ -105,7 +106,7 @@ private def repeated (family : Family) (guards : List String) (filtered : Bool)
     ([definition "Count" "../Out" s!"1 + NumberOfDifferentValues({source})"] ++
       if fresh then [definition "Producer" "../Inputs/Guard" "1"] else [])
 
-example : [.token, .enumeration, .date, .clock, .instant, .month].all (fun family =>
+example : [.token, .enumeration, .date, .clock, .instant, .month, .yearlessMonth].all (fun family =>
     repeated family ["1", "1", ""] true == some ["value 3"] &&
     repeated family ["1", "", ""] true == some ["value 2"] &&
     repeated family ["1", "bad", ""] true == some ["cleared"] &&
@@ -113,7 +114,7 @@ example : [.token, .enumeration, .date, .clock, .instant, .month].all (fun famil
     repeated family ["1", "1", "", "bad"] true == some ["value 3"] &&
     repeated family ["1", "1", "", "bad"] false == some ["value 3"]) := by native_decide
 
-example : [.enumeration, .date, .clock, .instant, .month].all (fun family =>
+example : [.enumeration, .date, .clock, .instant, .month, .yearlessMonth].all (fun family =>
     repeated family ["1", "1", ""] false true == some ["cleared"] &&
     repeated family ["1", "", ""] true true == some ["value 2"]) := by native_decide
 
@@ -149,7 +150,7 @@ private def targetScope (family : Family) (bound : Bool) : Bool :=
   (lowerComputation model .english (definition "Count" (if bound then "../Inputs/Out" else "../Out")
     "NumberOfDifferentValues(Inputs/A, Inputs/B)")).isOk
 
-example : [.token, .enumeration, .date, .clock, .instant, .month].all (fun family =>
+example : [.token, .enumeration, .date, .clock, .instant, .month, .yearlessMonth].all (fun family =>
     targetScope family true && !targetScope family false) := by native_decide
 
 private def retainedBridge (family : Family) : Option (Bool × Bool × NumericScaleSummary) := do
@@ -168,7 +169,7 @@ private def retainedBridge (family : Family) : Option (Bool × Bool × NumericSc
     | _, _ => false,
     atom.numericScaleSummary)
 
-example : [.token, .enumeration, .date, .clock, .instant, .month].all (fun family =>
+example : [.token, .enumeration, .date, .clock, .instant, .month, .yearlessMonth].all (fun family =>
     retainedBridge family == some (true, true, NumericScaleSummary.field 0)) := by native_decide
 
 private def scalarBoundary (family : Family) (shape : Nat) :
@@ -197,9 +198,57 @@ private def scalarBoundary (family : Family) (shape : Nat) :
     | .ok value => .inr value
     | .error fault => .inl fault)
 
-example : [.token, .enumeration, .date, .clock, .instant, .month].all (fun family =>
+example : [.token, .enumeration, .date, .clock, .instant, .month, .yearlessMonth].all (fun family =>
     decide (scalarBoundary family 0 = some (true, .inr (.value 2)) ∧
       scalarBoundary family 1 = some (false, .inl .repeatableContextRequired) ∧
       scalarBoundary family 2 = some (false, .inl .repeatableContextRequired))) := by native_decide
+
+private inductive NestedMode where
+  | group | filtered | filterPoison | filterProducer | rebind
+  deriving BEq
+
+private def nestedTarget (family : Family) (mode : NestedMode) : Option (List String) :=
+  let poison := mode == .filterPoison || mode == .filterProducer
+  let model : FlatModel := {
+    timeZoneId := "UTC"
+    fields := [
+    { (declaration family 1 "A") with groupPath := ["Form", "Rows", "Values"], repeatableScope := [10, 20] },
+    { (declaration family 2 "B") with groupPath := ["Form", "Rows", "Values"], repeatableScope := [10, 20] },
+    { id := 3, name := "Out", groupPath := ["Form", "Rows"], repeatableScope := [10]
+      policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 4, name := "Choice", groupPath := ["Form", "Rows"], repeatableScope := [10]
+      policy := { kind := .number { scale := 0, signed := true } } }]
+    repeatableGroups := [
+      { level := 10, path := ["Form", "Rows"], repeatability := some 3 },
+      { level := 20, path := ["Form", "Rows", "Values"], repeatability := some 3 }] }
+  let values := Json.arr #[
+    Json.mkObj [("A", .str (text family false)), ("B", .str (text family false))],
+    Json.mkObj [("A", .str (text family true)), ("B", .str (text family false))]]
+  let row := fun choice values => Json.mkObj [("Out", "9"), ("Choice", Json.str choice), ("Values", values)]
+  let filter := " Having CurrentRepetition(Rows/Values) <= [$Rows/Choice]"
+  let operand := match mode with
+    | .group => "Rows/Values*"
+    | .rebind => "Rows*/Values*/A" ++ filter
+    | _ => "Rows/Values*/A" ++ filter
+  if mode == .rebind then do
+    let (_, .number table _) ← (lowerComputation model .english
+      (definition "Count" "../Rows/Out" s!"NumberOfDifferentValues({operand})")).toOption | none
+    let .atom atom := table.first.operation.operation.core.expression | none
+    pure [toString (model.admitsNumericComputationOperand [] atom)]
+  else
+  execute model (Json.mkObj [("Form", Json.mkObj [("Rows", Json.arr #[
+    row "1" values, row (if poison then "bad" else "2") values, row "bad" (Json.arr #[])])])])
+    ([definition "Count" "../Rows/Out" s!"NumberOfDifferentValues({operand})"] ++
+      if mode == .filterProducer then [definition "Producer" "../Rows/Choice" "2"] else [])
+
+example : [.number, .token, .enumeration, .date, .clock, .instant, .month, .yearlessMonth].all (fun family =>
+    nestedTarget family .group == some ["value 2", "value 2", "value 0"] &&
+    nestedTarget family .filtered == some ["value 1", "value 2", "value 0"] &&
+    nestedTarget family .filterPoison == some ["value 1", "cleared", "value 0"]) := by native_decide
+
+example : [.number, .token, .enumeration, .date, .clock, .instant, .month, .yearlessMonth].all (fun family =>
+    nestedTarget family .filterProducer ==
+      some ["value 2", "value 2", "value 2", "value 2", "value 2", "value 0"] &&
+    nestedTarget family .rebind == some ["false"]) := by native_decide
 
 end A12Kernel.Dm.DistinctCountLocks

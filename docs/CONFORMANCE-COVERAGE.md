@@ -6,11 +6,11 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-04; HEAD was `099d66e6`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-05; HEAD was `586dfb3b`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
-**Replaying 1592 retained Kernel observation rows through Lean, 25857 of the 25857 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 189 broadly (87%), 24 partially and 4 not at all, as classified on 2026-10-04 at `099d66e6+working-tree` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
+**Replaying 1592 retained Kernel observation rows through Lean, 25857 of the 25857 rule and computation instances Lean admits match the Kernel, 0 diverge, 0 are not attributable beside a refused computation and 0 fault; [Axis R](#axis-r--population-replay) gives the clusters Lean cannot yet represent.** **Of the 217 construct-by-arm cells the Kernel admits, Lean represents 190 broadly (87%), 23 partially and 4 not at all, as classified on 2026-10-05 at `586dfb3b+working-tree` in [Axis 0](#axis-0--kernel-constructs-by-arm).** 472 of 495 diagnostic identifiers occur in Lean source (95%); 23 do not.
 
 An occurrence can be a definition, fixture, comment, request, or list of exclusions. It establishes neither implemented behaviour nor a matching Kernel observation. The vocabulary denominator also says nothing about successful evaluation, scheduling, addressing, or combinations of features. Use capability scopes, their retained evidence, and open obligations to assess semantic progress; they do not currently supply a complete behavioural denominator either.
 
@@ -34,14 +34,14 @@ An occurrence can be a definition, fixture, comment, request, or list of exclusi
 
 ## Axis 0 — Kernel constructs by arm
 
-The denominator is every construct in a12-dmkits' [operator catalog](../../a12-rulekit/rulekit/src/main/resources/catalog/operators.json), on the validation arm (a rule's error condition) and the computation arm (an operation or its guard). Each cell's level is this repository's judgment in [`CONFORMANCE-CONSTRUCTS.tsv`](CONFORMANCE-CONSTRUCTS.tsv), classified 2026-10-04 at `099d66e6+working-tree`: **broad** represents the construct's main authoring forms on that arm across the operand kinds the Kernel admits, with conformance locks; **partial** represents some of them; **absent** has no Lean surface there. A cell is **calibrated** when a retained capture or checkpoint measures the construct on that arm, which for many cells is static admission only, not a runtime value. Constructs compose freely, so a broad cell can still miss a composition no catalog row names.
+The denominator is every construct in a12-dmkits' [operator catalog](../../a12-rulekit/rulekit/src/main/resources/catalog/operators.json), on the validation arm (a rule's error condition) and the computation arm (an operation or its guard). Each cell's level is this repository's judgment in [`CONFORMANCE-CONSTRUCTS.tsv`](CONFORMANCE-CONSTRUCTS.tsv), classified 2026-10-05 at `586dfb3b+working-tree`: **broad** represents the construct's main authoring forms on that arm across the operand kinds the Kernel admits, with conformance locks; **partial** represents some of them; **absent** has no Lean surface there. A cell is **calibrated** when a retained capture or checkpoint measures the construct on that arm, which for many cells is static admission only, not a runtime value. Constructs compose freely, so a broad cell can still miss a composition no catalog row names.
 
 | | validation | computation | both arms |
 |---|---|---|---|
 | Constructs | 110 | 110 | |
 | Admitted by the Kernel | 110 | 107 | 217 |
-| Broad | 96 | 93 | 189 (87%) |
-| Partial | 14 | 10 | 24 (11%) |
+| Broad | 96 | 94 | 190 (87%) |
+| Partial | 14 | 9 | 23 (10%) |
 | Absent | 0 | 4 | 4 (1%) |
 
 Of the admitted cells, 203 are calibrated, 10 are represented without a Kernel observation and 4 are neither represented nor measured; the Kernel refuses 3 constructs on the computation arm.
@@ -150,7 +150,7 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | count |
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 24 |
-| `remaining` rows across those gaps | 312 |
+| `remaining` rows across those gaps | 314 |
 | Gaps whose route is **blocked** | 0 |
 | Ledger entries `pending` with a12-dmkits | 3 |
 | Ledger entries `handed-off` | 8 |
@@ -163,8 +163,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 241314 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 16958 | 7% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 241332 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 17003 | 7% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.

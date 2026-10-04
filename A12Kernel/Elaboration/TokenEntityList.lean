@@ -58,7 +58,8 @@ structure CheckedTokenStarSource (model : FlatModel) where
     source.declaration.toTokenFieldComparison? projectionRef =
       some (operand, profile)
   declaringGroup : GroupPath
-  filter : Option (CheckedStarHaving model source declaringGroup)
+  bindingGroup : GroupPath := declaringGroup
+  filter : Option (CheckedStarHaving model source bindingGroup)
 
 /-- One checked token-family slot retains its direct owner, its general starred owner, or the certified expansion of an authored group scope. -/
 inductive CheckedTokenEntityOperand (model : FlatModel) where
@@ -186,10 +187,11 @@ def directFields? (checked : CheckedTokenEntitySource model) :
 end CheckedTokenEntitySource
 
 def CheckedTokenEntitySource.bindingScopes (source : CheckedTokenEntitySource model) : List (List RepeatableLevel) :=
-  source.operands.map fun
-    | .field field => field.declaration.repeatableScope
-    | .star source => source.source.bindingScope
-    | .group source => source.source.bindingScope
+  source.operands.flatMap fun
+    | .field field => [field.declaration.repeatableScope]
+    | .star source => source.source.bindingScope ::
+        (if source.filter.isSome then [model.repeatableScopeForGroupPath source.bindingGroup] else [])
+    | .group source => [source.source.bindingScope]
 
 
 inductive TokenEntityElabError where
@@ -272,7 +274,8 @@ def certifyDirectTokenOperand (model : FlatModel)
 def certifyStarTokenOperand (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model)
     (having : Option SurfaceCorrelatedHaving)
-    (projectionRef : EnumerationProjectionRef := .stored) :
+    (projectionRef : EnumerationProjectionRef := .stored)
+    (bindingGroup : GroupPath := declaringGroup) :
     Except TokenEntityElabError
       (CheckedTokenStarSource model) :=
   match hOperand : checkedTokenOperand? source.declaration projectionRef with
@@ -293,7 +296,7 @@ def certifyStarTokenOperand (declaringGroup : GroupPath)
       let filter ← match having with
         | none => pure none
         | some authored =>
-            pure (some (← elaborateStarHavingCore model declaringGroup source authored
+            pure (some (← elaborateStarHavingCore model declaringGroup source authored bindingGroup
               |>.mapError .having))
       pure {
         source
@@ -302,10 +305,11 @@ def certifyStarTokenOperand (declaringGroup : GroupPath)
         profile
         operandOwned := hOperand
         declaringGroup
+        bindingGroup
         filter }
 
 private def certifyTokenEntityOperand (model : FlatModel)
-    (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
+    (declaringGroup bindingGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except TokenEntityElabError (CheckedTokenEntityOperand model)
   -- The authored read form is kept: a category read certifies through its projection, which reading
   -- the field stored would silently replace.
@@ -315,9 +319,9 @@ private def certifyTokenEntityOperand (model : FlatModel)
         | .projected category => .category category
       do pure (.field (← certifyDirectTokenOperand model declaration projectionRef))
   | .star source =>
-      do pure (.star (← certifyStarTokenOperand declaringGroup source none))
+      do pure (.star (← certifyStarTokenOperand declaringGroup source none (bindingGroup := bindingGroup)))
   | .starHaving source having =>
-      do pure (.star (← certifyStarTokenOperand declaringGroup source (some having)))
+      do pure (.star (← certifyStarTokenOperand declaringGroup source (some having) (bindingGroup := bindingGroup)))
   | .group reference =>
       do pure (.group (← certifyTokenEntityGroup model (.fixed reference)
         |>.mapError .group))
@@ -329,13 +333,13 @@ private def certifyTokenEntityOperand (model : FlatModel)
         |>.mapError .group))
 
 private def certifyTokenEntityOperands (model : FlatModel)
-    (declaringGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
+    (declaringGroup bindingGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
       Except TokenEntityElabError
         (List (CheckedTokenEntityOperand model))
   | [] => pure []
   | operand :: remaining => do
-      pure ((← certifyTokenEntityOperand model declaringGroup operand) ::
-        (← certifyTokenEntityOperands model declaringGroup remaining))
+      pure ((← certifyTokenEntityOperand model declaringGroup bindingGroup operand) ::
+        (← certifyTokenEntityOperands model declaringGroup bindingGroup remaining))
 
 /-- Finish one checked token entity list after its consumer has resolved and certified every slot. Exact direct-reference identity retains category selection, while wildcard occurrences remain independent. -/
 def assembleTokenEntitySource
@@ -362,10 +366,11 @@ def assembleTokenEntitySource
 /-- Certify an already checked entity-list shape as String/ordinary stored-Enumeration without
     resolving it again. A consumer may run its own whole-list gate before entering this boundary. -/
 def certifyTokenEntityShape (model : FlatModel)
-    (declaringGroup : GroupPath) (shape : CheckedFieldEntityShape model) :
+    (declaringGroup : GroupPath) (shape : CheckedFieldEntityShape model)
+    (bindingGroup : GroupPath := declaringGroup) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) := do
-  let first ← certifyTokenEntityOperand model declaringGroup shape.first
-  let rest ← certifyTokenEntityOperands model declaringGroup shape.rest
+  let first ← certifyTokenEntityOperand model declaringGroup bindingGroup shape.first
+  let rest ← certifyTokenEntityOperands model declaringGroup bindingGroup shape.rest
   -- The shape's own rule carries through rather than being re-decided here: the arity gate has
   -- already fired (or not) upstream, so re-applying `manyRequired` would refuse a list the
   -- carrier's rule admitted.
@@ -380,7 +385,7 @@ def elaborateTokenEntitySource (model : FlatModel)
   let shape ← elaborateFieldEntityShape model declaringGroup authored arity fixedTargetGroup?
       (writtenGroup := writtenGroup)
     |>.mapError .shape
-  certifyTokenEntityShape model declaringGroup shape
+  certifyTokenEntityShape model declaringGroup shape (fixedTargetGroup?.getD writtenGroup)
 
 /-- A path-resolved projection-bearing token slot. Keeping this intermediate private preserves duplicate-before-certification diagnostics without exposing a second checked representation. -/
 private inductive ResolvedProjectedTokenEntityOperand
