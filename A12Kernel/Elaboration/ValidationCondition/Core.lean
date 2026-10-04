@@ -638,8 +638,10 @@ def wellFormedBool (rowGroup : GroupPath) :
       (model.repeatableScopeForGroupPath rowGroup).contains
   | .stringExpression comparison => comparison.declarations.all fun field =>
       field.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
-  | .scalarTemporal comparison => comparison.declarations.all fun field =>
-      field.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
+  | .scalarTemporal comparison =>
+      !comparison.left.requiresAddressed && !comparison.right.requiresAddressed &&
+        comparison.declarations.all fun field =>
+          field.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
   | .valuesNotUnique source => source.admittedMultiplicity && source.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains
   | .valueList source => source.bindingScopes.flatten.all

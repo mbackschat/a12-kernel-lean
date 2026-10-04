@@ -95,8 +95,7 @@ def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List R
   match predicate with
   | .typeValidity _ source _ => source.declaration.repeatableScope.isPrefixOf scope
   | .stringExpression source => source.declarations.all (·.repeatableScope.isPrefixOf scope)
-  | .temporal source => source.fieldIds.all fun field =>
-      (model.lookupUniqueId field).toOption.any (·.repeatableScope.isPrefixOf scope)
+  | .temporal source => (source.left.bindingScopes ++ source.right.bindingScopes).all (·.isPrefixOf scope)
   | .fieldComparison source => source.rowBoundBool scope
   | .valueList source | .scalarValueList _ source => source.bindingScopes.all (·.isPrefixOf scope)
   | .scalarNumberLiterals _ source _ => source.declaration.repeatableScope.isPrefixOf scope
@@ -306,7 +305,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
           | .poison cause => pure (.poison cause)
           | .validatorUnavailable => throw .valueFailure
   | .stringExpression source => (source.evalComputation { read := context.read } context.numberText).mapError .stringExpression
-  | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError (fun
+  | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError (fun
       | .dateTimeLabelUnresolved => .valueFailure
       | .calendarUnavailable => .temporalUnavailable)
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch

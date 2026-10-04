@@ -1,0 +1,680 @@
+{
+  "header" : {
+    "id" : "TemporalRows_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "TemporalRows_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/G",
+        "name" : "G",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/G/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/G/Rows/A",
+                "name" : "A",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/B",
+                "name" : "B",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/Keep",
+                "name" : "Keep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/G/Pool",
+            "name" : "Pool",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/G/Pool/A",
+                "name" : "A",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Pool/B",
+                "name" : "B",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/G/PoolRows",
+            "name" : "PoolRows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/G/PoolRows/A",
+                "name" : "A",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/PoolRows/B",
+                "name" : "B",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Fallback",
+            "name" : "Fallback",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MinStar",
+            "name" : "MinStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MinStarComp",
+            "name" : "MinStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MinStar",
+              "computationAlternatives" : [ {
+                "operation" : "MinValue(Rows*/A)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "extremum"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterMinStar",
+            "name" : "AfterMinStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMinStarComp",
+            "name" : "AfterMinStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMinStar",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(MinStar, Fallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MinFiltered",
+            "name" : "MinFiltered",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MinFilteredComp",
+            "name" : "MinFilteredComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MinFiltered",
+              "computationAlternatives" : [ {
+                "operation" : "MinValue(Rows*/A Having [Rows/Keep] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "extremum"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterMinFiltered",
+            "name" : "AfterMinFiltered",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMinFilteredComp",
+            "name" : "AfterMinFilteredComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMinFiltered",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(MinFiltered, Fallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MinGroup",
+            "name" : "MinGroup",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MinGroupComp",
+            "name" : "MinGroupComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MinGroup",
+              "computationAlternatives" : [ {
+                "operation" : "MinValue(Pool)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "extremum"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterMinGroup",
+            "name" : "AfterMinGroup",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMinGroupComp",
+            "name" : "AfterMinGroupComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMinGroup",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(MinGroup, Fallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MinGroupStar",
+            "name" : "MinGroupStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MinGroupStarComp",
+            "name" : "MinGroupStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MinGroupStar",
+              "computationAlternatives" : [ {
+                "operation" : "MinValue(PoolRows*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "extremum"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterMinGroupStar",
+            "name" : "AfterMinGroupStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMinGroupStarComp",
+            "name" : "AfterMinGroupStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMinGroupStar",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(MinGroupStar, Fallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MaxStar",
+            "name" : "MaxStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MaxStarComp",
+            "name" : "MaxStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MaxStar",
+              "computationAlternatives" : [ {
+                "operation" : "MaxValue(Rows*/A)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "extremum"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterMaxStar",
+            "name" : "AfterMaxStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMaxStarComp",
+            "name" : "AfterMaxStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMaxStar",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(MaxStar, Fallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MaxFiltered",
+            "name" : "MaxFiltered",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MaxFilteredComp",
+            "name" : "MaxFilteredComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MaxFiltered",
+              "computationAlternatives" : [ {
+                "operation" : "MaxValue(Rows*/A Having [Rows/Keep] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "extremum"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterMaxFiltered",
+            "name" : "AfterMaxFiltered",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMaxFilteredComp",
+            "name" : "AfterMaxFilteredComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMaxFiltered",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(MaxFiltered, Fallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MaxGroup",
+            "name" : "MaxGroup",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MaxGroupComp",
+            "name" : "MaxGroupComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MaxGroup",
+              "computationAlternatives" : [ {
+                "operation" : "MaxValue(Pool)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "extremum"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterMaxGroup",
+            "name" : "AfterMaxGroup",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMaxGroupComp",
+            "name" : "AfterMaxGroupComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMaxGroup",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(MaxGroup, Fallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MaxGroupStar",
+            "name" : "MaxGroupStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MaxGroupStarComp",
+            "name" : "MaxGroupStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MaxGroupStar",
+              "computationAlternatives" : [ {
+                "operation" : "MaxValue(PoolRows*)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "extremum"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterMaxGroupStar",
+            "name" : "AfterMaxGroupStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMaxGroupStarComp",
+            "name" : "AfterMaxGroupStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMaxGroupStar",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(MaxGroupStar, Fallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MinMixed",
+            "name" : "MinMixed",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MinMixedComp",
+            "name" : "MinMixedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MinMixed",
+              "computationAlternatives" : [ {
+                "operation" : "MinValue(Pool/A, Rows*/A Having 1 / [Rows/Keep] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "extremum"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterMinMixed",
+            "name" : "AfterMinMixed",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMinMixedComp",
+            "name" : "AfterMinMixedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMinMixed",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(MinMixed, Fallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "extremum"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/MaxMixed",
+            "name" : "MaxMixed",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/MaxMixedComp",
+            "name" : "MaxMixedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MaxMixed",
+              "computationAlternatives" : [ {
+                "operation" : "MaxValue(Pool/A, Rows*/A Having 1 / [Rows/Keep] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "extremum"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterMaxMixed",
+            "name" : "AfterMaxMixed",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterMaxMixedComp",
+            "name" : "AfterMaxMixedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterMaxMixed",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(MaxMixed, Fallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "extremum"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

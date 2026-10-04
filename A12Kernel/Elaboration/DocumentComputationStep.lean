@@ -315,15 +315,14 @@ structure CheckedTemporalExpressionComputation (model : FlatModel) where
   family : DocumentTargetFamily
   expression : CheckedScalarTemporalExpression model
   excludesTarget : expression.referencesField target = false
-  run : FlatContext → Except DocumentComputationStepFault (DocumentTargetOutcome × CheckedCell)
+  run : ScalarComputationContext → Except DocumentComputationStepFault (DocumentTargetOutcome × CheckedCell)
 
 /-- Bind every dependency to the target scope before projecting through its existing store policy. -/
 def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpression model)
     (targetField : FieldId) : Option (CheckedTemporalExpressionComputation model) := do
   let declaration ← (model.lookupUniqueId targetField).toOption
   let scope := declaration.repeatableScope
-  if !expression.fieldIds.all (fun field =>
-      (model.lookupUniqueId field).toOption.any (·.repeatableScope.isPrefixOf scope)) then none else
+  if !expression.bindingScopes.all (·.isPrefixOf scope) then none else
   if excludes : expression.referencesField targetField = false then
     if expression.components == TemporalComponents.time then
       let target ← (elaborateClockFormatTargetIn model scope targetField).toOption
@@ -334,7 +333,8 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
         family := .time
         excludesTarget := excludes
         run context := do
-          let result ← match expression.evalResult .computation context with
+          let result ← match expression.evalResult .computation
+              { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
             | .ok result => pure result
             | .error .calendarUnavailable => throw .temporalExpressionUnavailable
             | .error .dateTimeLabelUnresolved => return (.valueError .time, DocumentComputationReadBack.poison)
@@ -355,7 +355,8 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
         family := .dateTime
         excludesTarget := excludes
         run context := do
-          let result ← match expression.evalResult .computation context with
+          let result ← match expression.evalResult .computation
+              { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
             | .ok result => pure result
             | .error .calendarUnavailable => throw .temporalExpressionUnavailable
             | .error .dateTimeLabelUnresolved => return (.valueError .dateTime, DocumentComputationReadBack.poison)
@@ -376,7 +377,8 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
         family := .fullDate
         excludesTarget := excludes
         run context := do
-          let result ← match expression.evalResult .computation context with
+          let result ← match expression.evalResult .computation
+              { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
             | .ok result => pure result
             | .error .calendarUnavailable => throw .temporalExpressionUnavailable
             | .error .dateTimeLabelUnresolved => return (.valueError .fullDate, DocumentComputationReadBack.poison)
@@ -415,7 +417,7 @@ def ofScalarTemporalExpression? (expression : CheckedScalarTemporalExpression mo
       target := operation.target, family := operation.family
       operationReferencesField := operation.expression.referencesField
       excludesTarget := operation.excludesTarget
-      run world _ document := operation.run (document.flatContext.withWorld world) }
+      run world _ document := operation.run (document.scalarComputationContext world) }
 
 def referencesField (step : CheckedDocumentComputationStep model) (field : FieldId) : Bool :=
   step.precondition.any (·.val.referencesField field) || step.operationReferencesField field

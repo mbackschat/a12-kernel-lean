@@ -112,6 +112,9 @@ structure CheckedTemporalExtremumOperands (model : FlatModel) where
       legality is a static property, and the shared entity-list checker passes the filter through
       unelaborated, so nothing else in this capsule's path ever looks at it. -/
   filters : List (Option CorrelatedHaving)
+  /-- Captured filter references use the target/rule binding environment, which can differ from
+  the lexical declaring group (spec/08 §2); retaining it prevents rebinding a checked filter. -/
+  filterBindingScope : List RepeatableLevel := []
   /-- One entry per operand. This is what keeps the two lists from drifting into a silent
       misalignment, where a filter would be applied to the wrong operand — the failure that makes an
       index-aligned side table worth a proof rather than a comment. -/
@@ -171,10 +174,10 @@ private def operandDeclarations (model : FlatModel) :
     ([SG17](../../docs/SEMANTICS-GAPS.md#sg17--having-filter-leaf-and-connective-completion)), so
     that gap is expected rather than hypothetical. The cost lands on the fold, which declines the
     operand it cannot filter correctly. -/
-private def certifiedFilter? (model : FlatModel) (declaringGroup : GroupPath) :
+private def certifiedFilter? (model : FlatModel) (declaringGroup bindingGroup : GroupPath) :
     ResolvedFieldEntityOperand model → Option CorrelatedHaving
   | .starHaving source having =>
-      (elaborateStarHavingCore model declaringGroup source having).toOption.map
+      (elaborateStarHavingCore model declaringGroup source having bindingGroup).toOption.map
         (·.condition)
   | .field .. | .star _ | .group _ | .starredGroup _
   | .starredGroupPresence _ => none
@@ -233,13 +236,14 @@ def elaborate (model : FlatModel) (declaringGroup : GroupPath)
         pure (accumulated ++ (← operandDeclarations model operand)))
       ([] : List FlatFieldDecl)
   let filters :=
-    (shape.first :: shape.rest).map (certifiedFilter? model declaringGroup)
+    (shape.first :: shape.rest).map (certifiedFilter? model declaringGroup writtenGroup)
   match declarations with
   | [] => throw (.groupExpansionEmpty [])
   | first :: rest =>
       let expected ← liftedComponentsOf model true first
       certifyAgainst model expected rest
       pure { shape, components := expected, filters
+             filterBindingScope := model.repeatableScopeForGroupPath writtenGroup
              filtersAligned := by simp [filters] }
 
 end TemporalExtremumOperands

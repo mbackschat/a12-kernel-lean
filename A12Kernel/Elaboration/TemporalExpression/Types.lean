@@ -107,6 +107,7 @@ inductive ScalarTemporalEvaluationFault where
 mutual
 inductive ScalarTemporalAtom (model : FlatModel) where
   | field (source : FlatTemporalField)
+  | entityExtremum (operator : TemporalExtremumOp) (source : CheckedTemporalExtremumOperands model)
   | fixed (value : ScalarTemporalValue)
   | now
   | today (profile : ModelZone.ConcreteProfile)

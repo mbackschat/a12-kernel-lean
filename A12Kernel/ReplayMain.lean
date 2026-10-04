@@ -21,6 +21,7 @@ import A12Kernel.Reference.Dm.TypeValidityGuardLocks
 import A12Kernel.Reference.Dm.GroupGuardLocks
 import A12Kernel.Reference.Dm.FieldFillGuardLocks
 import A12Kernel.Reference.Dm.TemporalExpressionLocks
+import A12Kernel.Reference.Dm.TemporalRowsetLocks
 import A12Kernel.Reference.Dm.ScalarFieldGuardLocks
 import A12Kernel.Reference.Dm.NumericCountLocks
 import A12Kernel.Reference.Dm.BandedComputationLocks

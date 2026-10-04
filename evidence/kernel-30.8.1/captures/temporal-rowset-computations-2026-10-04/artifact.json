@@ -1,0 +1,3822 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "TemporalRows_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "ascending",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MaxFilteredComp",
+              "field": "G/MaxFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ]
+            },
+            {
+              "code": "MaxGroupComp",
+              "field": "G/MaxGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MaxGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGroupStarComp",
+              "field": "G/MaxGroupStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MaxGroupStar"
+              ],
+              "fillToFix": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MaxGroupStar"
+              ]
+            },
+            {
+              "code": "MaxMixedComp",
+              "field": "G/MaxMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MaxStarComp",
+              "field": "G/MaxStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "G/MaxStar"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "G/MaxStar"
+              ]
+            },
+            {
+              "code": "MinFilteredComp",
+              "field": "G/MinFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ]
+            },
+            {
+              "code": "MinGroupComp",
+              "field": "G/MinGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MinGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGroupStarComp",
+              "field": "G/MinGroupStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MinGroupStar"
+              ],
+              "fillToFix": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MinGroupStar"
+              ]
+            },
+            {
+              "code": "MinMixedComp",
+              "field": "G/MinMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MinStarComp",
+              "field": "G/MinStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "G/MinStar"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "G/MinStar"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-05"
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-05"
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MaxFilteredComp",
+              "field": "G/MaxFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ]
+            },
+            {
+              "code": "MaxGroupComp",
+              "field": "G/MaxGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MaxGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGroupStarComp",
+              "field": "G/MaxGroupStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MaxGroupStar"
+              ],
+              "fillToFix": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MaxGroupStar"
+              ]
+            },
+            {
+              "code": "MaxMixedComp",
+              "field": "G/MaxMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MaxStarComp",
+              "field": "G/MaxStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "G/MaxStar"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "G/MaxStar"
+              ]
+            },
+            {
+              "code": "MinFilteredComp",
+              "field": "G/MinFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ]
+            },
+            {
+              "code": "MinGroupComp",
+              "field": "G/MinGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MinGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGroupStarComp",
+              "field": "G/MinGroupStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MinGroupStar"
+              ],
+              "fillToFix": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MinGroupStar"
+              ]
+            },
+            {
+              "code": "MinMixedComp",
+              "field": "G/MinMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MinStarComp",
+              "field": "G/MinStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "G/MinStar"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "G/MinStar"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-05"
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-05"
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "descending",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MaxFilteredComp",
+              "field": "G/MaxFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ]
+            },
+            {
+              "code": "MaxGroupComp",
+              "field": "G/MaxGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MaxGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGroupStarComp",
+              "field": "G/MaxGroupStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MaxGroupStar"
+              ],
+              "fillToFix": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MaxGroupStar"
+              ]
+            },
+            {
+              "code": "MaxMixedComp",
+              "field": "G/MaxMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MaxStarComp",
+              "field": "G/MaxStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "G/MaxStar"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "G/MaxStar"
+              ]
+            },
+            {
+              "code": "MinFilteredComp",
+              "field": "G/MinFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ]
+            },
+            {
+              "code": "MinGroupComp",
+              "field": "G/MinGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MinGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGroupStarComp",
+              "field": "G/MinGroupStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MinGroupStar"
+              ],
+              "fillToFix": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MinGroupStar"
+              ]
+            },
+            {
+              "code": "MinMixedComp",
+              "field": "G/MinMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MinStarComp",
+              "field": "G/MinStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "G/MinStar"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "G/MinStar"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-05"
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-05"
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MaxFilteredComp",
+              "field": "G/MaxFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ]
+            },
+            {
+              "code": "MaxGroupComp",
+              "field": "G/MaxGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MaxGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGroupStarComp",
+              "field": "G/MaxGroupStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MaxGroupStar"
+              ],
+              "fillToFix": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MaxGroupStar"
+              ]
+            },
+            {
+              "code": "MaxMixedComp",
+              "field": "G/MaxMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MaxStarComp",
+              "field": "G/MaxStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "G/MaxStar"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "G/MaxStar"
+              ]
+            },
+            {
+              "code": "MinFilteredComp",
+              "field": "G/MinFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ]
+            },
+            {
+              "code": "MinGroupComp",
+              "field": "G/MinGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MinGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGroupStarComp",
+              "field": "G/MinGroupStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MinGroupStar"
+              ],
+              "fillToFix": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MinGroupStar"
+              ]
+            },
+            {
+              "code": "MinMixedComp",
+              "field": "G/MinMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MinStarComp",
+              "field": "G/MinStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "G/MinStar"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "G/MinStar"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-05"
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-05"
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid-first",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Pool/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Pool/A"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/PoolRows/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/PoolRows/A"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Rows/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows/A"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Pool/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Pool/A"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/PoolRows/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/PoolRows/A"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Rows/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Rows/A"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Pool/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Pool/A"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/PoolRows/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/PoolRows/A"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Rows/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows/A"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Pool/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Pool/A"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/PoolRows/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/PoolRows/A"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Rows/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Rows/A"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid-last",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Pool/B",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/PoolRows[2]/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/PoolRows[2]/A"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Rows[2]/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[2]/A"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Pool/B",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Pool/B"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/PoolRows[2]/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/PoolRows[2]/A"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Rows[2]/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Rows[2]/A"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Pool/B",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/PoolRows[2]/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/PoolRows[2]/A"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Rows[2]/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[2]/A"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Pool/B",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Pool/B"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/PoolRows[2]/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/PoolRows[2]/A"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Rows[2]/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Rows[2]/A"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "unselected-invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MaxFilteredComp",
+              "field": "G/MaxFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ]
+            },
+            {
+              "code": "MaxGroupComp",
+              "field": "G/MaxGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MaxGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxMixedComp",
+              "field": "G/MaxMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MinFilteredComp",
+              "field": "G/MinFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ]
+            },
+            {
+              "code": "MinGroupComp",
+              "field": "G/MinGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MinGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinMixedComp",
+              "field": "G/MinMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/PoolRows[2]/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/PoolRows[2]/A"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Rows[2]/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[2]/A"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/PoolRows[2]/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/PoolRows[2]/A"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Rows[2]/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Rows[2]/A"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MaxFilteredComp",
+              "field": "G/MaxFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ]
+            },
+            {
+              "code": "MaxGroupComp",
+              "field": "G/MaxGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MaxGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxMixedComp",
+              "field": "G/MaxMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MinFilteredComp",
+              "field": "G/MinFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ]
+            },
+            {
+              "code": "MinGroupComp",
+              "field": "G/MinGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MinGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinMixedComp",
+              "field": "G/MinMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/PoolRows[2]/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/PoolRows[2]/A"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Rows[2]/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[2]/A"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/PoolRows[2]/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/PoolRows[2]/A"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Rows[2]/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Rows[2]/A"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid-filter",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MaxFilteredComp",
+              "field": "G/MaxFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ]
+            },
+            {
+              "code": "MaxGroupComp",
+              "field": "G/MaxGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MaxGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGroupStarComp",
+              "field": "G/MaxGroupStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MaxGroupStar"
+              ],
+              "fillToFix": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MaxGroupStar"
+              ]
+            },
+            {
+              "code": "MaxMixedComp",
+              "field": "G/MaxMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MaxStarComp",
+              "field": "G/MaxStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "G/MaxStar"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "G/MaxStar"
+              ]
+            },
+            {
+              "code": "MinFilteredComp",
+              "field": "G/MinFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ]
+            },
+            {
+              "code": "MinGroupComp",
+              "field": "G/MinGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MinGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGroupStarComp",
+              "field": "G/MinGroupStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MinGroupStar"
+              ],
+              "fillToFix": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MinGroupStar"
+              ]
+            },
+            {
+              "code": "MinMixedComp",
+              "field": "G/MinMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MinStarComp",
+              "field": "G/MinStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "G/MinStar"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "G/MinStar"
+              ]
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/Rows[2]/Keep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[2]/Keep"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/Rows[2]/Keep",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Rows[2]/Keep"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MaxFilteredComp",
+              "field": "G/MaxFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxFiltered"
+              ]
+            },
+            {
+              "code": "MaxGroupComp",
+              "field": "G/MaxGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MaxGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxGroupStarComp",
+              "field": "G/MaxGroupStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MaxGroupStar"
+              ],
+              "fillToFix": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MaxGroupStar"
+              ]
+            },
+            {
+              "code": "MaxMixedComp",
+              "field": "G/MaxMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MaxStarComp",
+              "field": "G/MaxStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "G/MaxStar"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "G/MaxStar"
+              ]
+            },
+            {
+              "code": "MinFilteredComp",
+              "field": "G/MinFiltered",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinFiltered"
+              ]
+            },
+            {
+              "code": "MinGroupComp",
+              "field": "G/MinGroup",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/MinGroup",
+                "G/Pool/A",
+                "G/Pool/B"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinGroupStarComp",
+              "field": "G/MinGroupStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MinGroupStar"
+              ],
+              "fillToFix": [
+                "/G[1]/PoolRows[0]/A",
+                "/G[1]/PoolRows[0]/B",
+                "G/MinGroupStar"
+              ]
+            },
+            {
+              "code": "MinMixedComp",
+              "field": "G/MinMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MinStarComp",
+              "field": "G/MinStar",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "G/MinStar"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "G/MinStar"
+              ]
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/Rows[2]/Keep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[2]/Keep"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MaxFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MinFiltered",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/Rows[2]/Keep",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Rows[2]/Keep"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "source-poison-before-filter-error",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Pool/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Pool/A"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Pool/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Pool/A"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/Pool/A",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Pool/A"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/Pool/A",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Pool/A"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "filter-error-with-valid-source",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MaxMixedComp",
+              "field": "G/MaxMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MinMixedComp",
+              "field": "G/MinMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MaxMixedComp",
+              "field": "G/MaxMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MaxMixed",
+                "G/Pool/A"
+              ]
+            },
+            {
+              "code": "MinMixedComp",
+              "field": "G/MinMixed",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/A",
+                "/G[1]/Rows[0]/Keep",
+                "G/MinMixed",
+                "G/Pool/A"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterMaxFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMaxGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/AfterMinFiltered",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinGroupStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-09"
+              },
+              {
+                "field": "G/AfterMinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/AfterMinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MaxMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MaxStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              },
+              {
+                "field": "G/MinGroup",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinMixed",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-01"
+              },
+              {
+                "field": "G/MinStar",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-01-03"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TemporalExpression.Types
+import A12Kernel.Elaboration.TemporalExpression.EntityList
 
 namespace A12Kernel
 
@@ -53,15 +53,10 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
       let source ← (TemporalExtremumOperands.elaborate model rowGroup operands
         (targetGroup?.getD rowGroup) scope).mapError .extremum
-      let fields ← source.shape.operands.mapM fun
-        | .field declaration _ => do
-            if !declaration.repeatableScope.isPrefixOf scope then throw .unsupportedSource
-            let some field := declaration.toTemporalField? | throw (.nonTemporal declaration.path)
-            pure field
-        | _ => throw .unsupportedSource
-      let first :: rest := fields | throw .unsupportedSource
-      pure (.apply (.extremum operator) (.atom (.field first))
-        (rest.map fun field => .atom (.field field)), scalarComponents model first.components)
+      if !source.bindingScopes.all (·.isPrefixOf scope) then throw .unsupportedSource
+      let some first := source.shape.first.expansionDeclarations.head? | throw .unsupportedSource
+      let some field := first.toTemporalField? | throw (.nonTemporal first.path)
+      pure (.atom (.entityExtremum operator source), scalarComponents model field.components)
   | .combine operator first rest => do
       if ((first :: rest).filter temporalConstant).length > 1 then throw .unsupportedSource
       let (first, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? first
@@ -308,7 +303,7 @@ private def applyScalarTemporalShift
       | value => pure (.value (← shift value amount) given)
 
 mutual
-private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context : FlatContext)
+private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context : ScalarComputationContext)
     (atom : ScalarTemporalAtom model) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
   match atom with
@@ -391,35 +386,12 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       | .incomplete => .value .noValue false
       | .unreal => .value .noValue true
       | .nonRelevant => .value .nonRelevant true)
-  | .field field =>
-      let observation := observeCell phase (context.read field.id)
-      let components := scalarComponents model field.components
-      pure (if components == TemporalComponents.now then
-        liftScalarTemporal .instant observation.asDateTimeExtremumOperand
-      else if components == TemporalComponents.time then
-        liftScalarTemporal .time observation.asTimeExtremumOperand
-      else if components.year then
-        match observation with
-        | .empty => .notEvaluated
-        | .unknown cause | .poison cause => .unknown cause
-        | .value (.temporal (.date stored)) =>
-            let (year, month, day) := maskedDateComponents field.components model.baseYear stored.parts
-            let parts : DateParts := { year, month, day }
-            if stored.parts == parts then .value (.date stored) true
-            else match (ModelZone.ConcreteProfile.ofId? model.timeZoneId).bind
-                (fun profile => profile.resolveCompletedDateParts? parts) with
-              | some value => .value (.date value) true
-              | none => .unknown .malformed
-        | _ => .unknown .malformed
-      else match observation.asYearlessDateExtremumOperand field.components, observation with
-        | .value key given, .value (.temporal (.date value)) => .value (.yearless value key) given
-        | .notEvaluated, _ => .notEvaluated
-        | .unknown cause, _ => .unknown cause
-        | _, _ => .unknown .malformed)
+  | .field field => pure (readScalarTemporalField model phase field (context.read field.id))
+  | .entityExtremum operator source => source.evalScalar operator phase context
 
 termination_by (sizeOf atom, 0)
 
-private def applyScalarTemporalTransform (phase : Phase) (context : FlatContext)
+private def applyScalarTemporalTransform (phase : Phase) (context : ScalarComputationContext)
     (operation : ScalarTemporalTransform model)
     (source : SimpleComparisonOperand ScalarTemporalValue) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
@@ -473,7 +445,7 @@ termination_by (sizeOf operation, 0)
 
 /-- Constructor arguments have already been reached by the shared ordered application. A missing
 payload keeps its own provenance; non-relevance suppresses a result without inventing a formal cause. -/
-private def applyScalarTemporalOperation (phase : Phase) (context : FlatContext)
+private def applyScalarTemporalOperation (phase : Phase) (context : ScalarComputationContext)
     (operation : ScalarTemporalTransform model)
     (operands : List (SimpleComparisonOperand ScalarTemporalValue)) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
@@ -503,15 +475,15 @@ decreasing_by
   all_goals apply Prod.Lex.right
   all_goals omega
 
-private def readRecursiveScalarAtom (phase : Phase) (context : FlatContext)
+private def readRecursiveScalarAtom (phase : Phase) (context : ScalarComputationContext)
     (atom : ScalarTemporalNumericAtom model) : Except ScalarTemporalEvaluationFault
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   match atom with
-  | .ordinary amount => pure (readScalarTemporalAmount context phase amount)
+  | .ordinary amount => pure (readScalarTemporalAmount { read := context.read, storedText := context.storedText, world := context.world } phase amount)
   | .projection part profile source => part.observeScalar profile (← evalScalarTemporalCore phase context source)
 termination_by (sizeOf atom, 0)
 
-private def readRecursiveScalarAmount (phase : Phase) (context : FlatContext)
+private def readRecursiveScalarAmount (phase : Phase) (context : ScalarComputationContext)
     (amount : AuthoredNumericExpr (ScalarTemporalNumericAtom model)) : Except ScalarTemporalEvaluationFault
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   let resolved := amount.mapMSubterm fun atom _ => do
@@ -525,12 +497,12 @@ private def readRecursiveScalarAmount (phase : Phase) (context : FlatContext)
   | .ok expression => pure (expression.lowerForEvaluation.evalNumericOperationTree id)
 termination_by (sizeOf amount, 0)
 
-private def readRecursiveTimeComponents (phase : Phase) (context : FlatContext)
+private def readRecursiveTimeComponents (phase : Phase) (context : ScalarComputationContext)
     (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model))) :
     Except ScalarTemporalEvaluationFault TimeConstructionResult :=
   components.evaluateWithSubterm fun component _ => do
     match component with
-    | .inl source => pure (match readScalarTimeComponent context phase source with
+    | .inl source => pure (match readScalarTimeComponent { read := context.read, storedText := context.storedText, world := context.world } phase source with
         | .ok value => value | .error _ => .unavailable .malformed)
     | .inr source =>
         match ← readRecursiveScalarAtom phase context source with
@@ -545,7 +517,7 @@ termination_by (sizeOf components, 0)
 decreasing_by
   all_goals first | decreasing_tactic | (apply Prod.Lex.left; simp_all +arith <;> omega)
 
-private def evalScalarTemporalCore (phase : Phase) (context : FlatContext)
+private def evalScalarTemporalCore (phase : Phase) (context : ScalarComputationContext)
     (expression : ScalarTemporalExpression model) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
   let reached (operand : SimpleComparisonOperand ScalarTemporalValue) :
@@ -567,59 +539,66 @@ termination_by (sizeOf expression, 0)
 end
 
 mutual
-private def scalarTemporalDependencies (storedOnly : Bool) (expression : ScalarTemporalExpression model) : List FieldId :=
+private def scalarTemporalDependencies (storedOnly : Bool)
+    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α) (expression : ScalarTemporalExpression model) : List α :=
   match expression with
-  | .atom source => scalarTemporalAtomDependencies storedOnly source
+  | .atom source => scalarTemporalAtomDependencies storedOnly field entity source
   | .apply operation first rest =>
-      scalarTemporalDependencies storedOnly first ++
-        (rest.attach.flatMap fun ⟨source, _⟩ => scalarTemporalDependencies storedOnly source) ++
-        scalarTemporalOperationDependencies storedOnly operation
+      scalarTemporalDependencies storedOnly field entity first ++
+        (rest.attach.flatMap fun ⟨source, _⟩ => scalarTemporalDependencies storedOnly field entity source) ++
+        scalarTemporalOperationDependencies storedOnly field entity operation
 termination_by sizeOf expression
 
-private def scalarTemporalAtomDependencies (storedOnly : Bool) (atom : ScalarTemporalAtom model) : List FieldId :=
+private def scalarTemporalAtomDependencies (storedOnly : Bool)
+    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α) (atom : ScalarTemporalAtom model) : List α :=
   match atom with
   | .dateConstruction components =>
-      if storedOnly then components.sources.filterMap fun
+      (if storedOnly then components.sources.filterMap fun
         | .dateYearField checked => some checked.source.id | _ => none
-      else components.fields
-  | .valueAsDate source => [source.source.target.id]
-  | .timeConstruction components => scalarTemporalComponentDependencies storedOnly components
-  | .field source => if storedOnly then [] else [source.id]
-  | .rangeBound _ (.exact source) => if storedOnly then [] else [source.source.id]
-  | .rangeBound _ (.yearless source) => if storedOnly then [] else [source.source.id]
+      else components.fields).flatMap field
+  | .valueAsDate source => field source.source.target.id
+  | .timeConstruction components => scalarTemporalComponentDependencies storedOnly field entity components
+  | .field source => if storedOnly then [] else field source.id
+  | .entityExtremum _ source => if storedOnly then [] else entity source
+  | .rangeBound _ (.exact source) => if storedOnly then [] else field source.source.id
+  | .rangeBound _ (.yearless source) => if storedOnly then [] else field source.source.id
   | _ => []
 termination_by sizeOf atom
 
-private def scalarTemporalOperationDependencies (storedOnly : Bool) (operation : ScalarTemporalTransform model) : List FieldId :=
+private def scalarTemporalOperationDependencies (storedOnly : Bool)
+    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α) (operation : ScalarTemporalTransform model) : List α :=
   match operation with
   | .subdayShift _ _ amount | .calendarShift _ _ amount =>
-      match amount.mapMSubterm (fun atom _ => (Except.ok (scalarTemporalNumericDependencies storedOnly atom) : Except Empty (List FieldId))) with
+      match amount.mapMSubterm (fun atom _ => (Except.ok (scalarTemporalNumericDependencies storedOnly field entity atom) : Except Empty (List α))) with
       | .ok result => result.atoms.flatten
       | .error error => nomatch error
   | _ => []
 termination_by sizeOf operation
 
-private def scalarTemporalNumericDependencies (storedOnly : Bool) (atom : ScalarTemporalNumericAtom model) : List FieldId :=
+private def scalarTemporalNumericDependencies (storedOnly : Bool)
+    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α) (atom : ScalarTemporalNumericAtom model) : List α :=
   match atom with
-  | .ordinary source => if storedOnly then [] else source.fieldDependencies
-  | .projection _ _ source => scalarTemporalDependencies storedOnly source
+  | .ordinary source => if storedOnly then [] else source.fieldDependencies.flatMap field
+  | .projection _ _ source => scalarTemporalDependencies storedOnly field entity source
 termination_by sizeOf atom
 
 private def scalarTemporalComponentDependency (storedOnly : Bool)
-    (component : Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model)) : List FieldId :=
+    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
+    (component : Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model)) : List α :=
   match component with
-  | .inl source => if storedOnly then [] else source.fieldDependencies
-  | .inr source => scalarTemporalNumericDependencies storedOnly source
+  | .inl source => if storedOnly then [] else source.fieldDependencies.flatMap field
+  | .inr source => scalarTemporalNumericDependencies storedOnly field entity source
 termination_by sizeOf component
 
 private def scalarTemporalComponentDependencies (storedOnly : Bool)
-    (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model))) : List FieldId :=
+    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
+    (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model))) : List α :=
   match components with
   | .empty => []
-  | .hour hour => scalarTemporalComponentDependency storedOnly hour
-  | .minute hour minute => scalarTemporalComponentDependency storedOnly hour ++ scalarTemporalComponentDependency storedOnly minute
-  | .second hour minute second => scalarTemporalComponentDependency storedOnly hour ++
-      scalarTemporalComponentDependency storedOnly minute ++ scalarTemporalComponentDependency storedOnly second
+  | .hour hour => scalarTemporalComponentDependency storedOnly field entity hour
+  | .minute hour minute => scalarTemporalComponentDependency storedOnly field entity hour ++ scalarTemporalComponentDependency storedOnly field entity minute
+  | .second hour minute second => scalarTemporalComponentDependency storedOnly field entity hour ++
+      scalarTemporalComponentDependency storedOnly field entity minute ++ scalarTemporalComponentDependency storedOnly field entity second
 termination_by sizeOf components
 end
 
@@ -627,19 +606,33 @@ namespace CheckedScalarTemporalExpression
 
 /-- Stored-text requirements include recursively nested temporal operands. -/
 def storedTextFields (expression : CheckedScalarTemporalExpression model) : List FieldId :=
-  scalarTemporalDependencies true expression.core
+  scalarTemporalDependencies true (fun field => [field]) (·.fieldIds) expression.core
 
 def fieldIds (expression : CheckedScalarTemporalExpression model) : List FieldId :=
-  scalarTemporalDependencies false expression.core
+  scalarTemporalDependencies false (fun field => [field]) (·.fieldIds) expression.core
+
+/-- Dependencies below a star remain scheduler inputs, but the star binds those row levels itself. -/
+def bindingScopes (expression : CheckedScalarTemporalExpression model) : List (List RepeatableLevel) :=
+  scalarTemporalDependencies false
+    (fun field => ((model.lookupUniqueId field).toOption.map (·.repeatableScope)).toList)
+    (·.bindingScopes) expression.core
+
+/-- Expanded operands need topology and selected row reads; a flat validation carrier must defer
+these expressions to the existing addressed extrema carrier. -/
+def requiresAddressed (expression : CheckedScalarTemporalExpression model) : Bool :=
+  (scalarTemporalDependencies false (fun _ => []) (fun source =>
+    [source.shape.operands.any fun | .field .. => false | _ => true]) expression.core).any id
 
 def referencesField (expression : CheckedScalarTemporalExpression model) (field : FieldId) : Bool :=
   expression.fieldIds.contains field
 
 /-- Model-zone literal resolution belongs to execution, retaining value failure separately from
 missingness and operand poison (the DateTime constant zone-split checkpoint, spec/09). -/
-def evalResult (expression : CheckedScalarTemporalExpression model) (phase : Phase) (context : FlatContext) :
+def evalResult (expression : CheckedScalarTemporalExpression model) (phase : Phase) (context : FlatContext)
+    (addressed : Option ComputationFillContext := none) (row : Env := []) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
-  evalScalarTemporalCore phase context expression.core
+  evalScalarTemporalCore phase
+    { read := context.read, storedText := context.storedText, world := context.world, addressed, row } expression.core
 
 end CheckedScalarTemporalExpression
 
@@ -657,9 +650,10 @@ def referencesField (comparison : CheckedScalarTemporalComparison model) (field 
 /-- Mixed Date/DateTime ordering uses the Date's retained instant; same-family comparison
 keeps its existing identity domain (KF386 and the comparison-guard grid, 2026-10-04). -/
 private def readOperand (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
-    (context : FlatContext) (expression : CheckedScalarTemporalExpression model) :
+    (context : FlatContext) (addressed : Option ComputationFillContext) (row : Env)
+    (expression : CheckedScalarTemporalExpression model) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
-  let operand ← expression.evalResult phase context
+  let operand ← expression.evalResult phase context addressed row
   match comparison.comparisonZone?, operand with
   | _, .value .noValue _ => pure .notEvaluated
   | some _, .value (.date date) given => pure (.value (.instant date.instant) given)
@@ -668,36 +662,36 @@ private def readOperand (comparison : CheckedScalarTemporalComparison model) (ph
 /-- Temporal guards use the shared ordered computation comparison, preserving label failure as a
 runtime effect and aborting on a reached operand poison (comparison-guard grid, 2026-10-04). -/
 def evalComputation (comparison : CheckedScalarTemporalComparison model)
-    (context : FlatContext) : Except ScalarTemporalEvaluationFault ComputationConditionResult :=
+    (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := []) : Except ScalarTemporalEvaluationFault ComputationConditionResult :=
   evalComputationComparisonExcept (ScalarTemporalValue.holds comparison.operator)
-    (comparison.readOperand .computation context comparison.left)
-    (fun _ => comparison.readOperand .computation context comparison.right)
+    (comparison.readOperand .computation context addressed row comparison.left)
+    (fun _ => comparison.readOperand .computation context addressed row comparison.right)
 
 /-- Retain runtime label failure outside the comparison verdict; the enclosing rule owns its
 value-error projection (temporal review grid, 2026-10-03). -/
 def evalResult (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
-    (context : FlatContext) : Except ScalarTemporalEvaluationFault Verdict := do
+    (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := []) : Except ScalarTemporalEvaluationFault Verdict := do
   match phase with
-  | .computation => pure (match ← comparison.evalComputation context with
+  | .computation => pure (match ← comparison.evalComputation context addressed row with
       | .holds => .fired .value
       | .notTrue => .notFired
       | .poison _ => .unknown)
   | .validation =>
-      let left ← comparison.readOperand phase context comparison.left
-      let right ← comparison.readOperand phase context comparison.right
+      let left ← comparison.readOperand phase context addressed row comparison.left
+      let right ← comparison.readOperand phase context addressed row comparison.right
       match left, right with
       | .value .nonRelevant _, _ | _, .value .nonRelevant _ => pure .unknown
       | _, _ => pure (evalSymmetricComparison (ScalarTemporalValue.holds comparison.operator) left right)
 
 def evalAt (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
-    (context : FlatContext) : Verdict :=
-  match comparison.evalResult phase context with
+    (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := []) : Verdict :=
+  match comparison.evalResult phase context addressed row with
   | .ok verdict => verdict
   | .error .dateTimeLabelUnresolved => .fired .value
   | .error .calendarUnavailable => .unknown
 
-def eval (comparison : CheckedScalarTemporalComparison model) (context : FlatContext) : Verdict :=
-  comparison.evalAt .validation context
+def eval (comparison : CheckedScalarTemporalComparison model) (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := []) : Verdict :=
+  comparison.evalAt .validation context addressed row
 
 end CheckedScalarTemporalComparison
 

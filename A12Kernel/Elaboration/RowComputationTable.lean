@@ -158,7 +158,7 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
   | .fixedBooleanConstant operation => pure (booleanOutcome operation.operation.operation)
   | .temporalExpression operation =>
       let context := document.computationContextAt environment
-      (operation.run { read := context.read, storedText := context.storedText, world := some world }).mapError .readBack
+      (operation.run (context.withWorld world)).mapError .readBack
   | .enumeration operation =>
       let result ← (operation.evaluateAtWithRead document.read environment).mapError .enumeration
       let outcome := result.result.asExactStringTargetOutcome

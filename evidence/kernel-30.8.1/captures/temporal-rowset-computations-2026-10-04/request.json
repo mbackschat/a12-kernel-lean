@@ -1,0 +1,395 @@
+{
+  "model": "TemporalRows_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "ascending",
+      "documentInline": {
+        "G": {
+          "Rows": [
+            {
+              "A": "2024-01-01",
+              "B": "2024-01-03",
+              "Keep": 1
+            },
+            {
+              "A": "2024-01-03",
+              "B": "2024-01-05",
+              "Keep": 1
+            }
+          ],
+          "Pool": {
+            "A": "2024-01-03",
+            "B": "2024-01-01"
+          },
+          "PoolRows": [
+            {
+              "A": "2024-01-01",
+              "B": "2024-01-03"
+            },
+            {
+              "A": "2024-01-03",
+              "B": "2024-01-05"
+            }
+          ],
+          "Fallback": "2024-01-09",
+          "MinStar": "2024-01-10",
+          "AfterMinStar": "2024-01-10",
+          "MinFiltered": "2024-01-10",
+          "AfterMinFiltered": "2024-01-10",
+          "MinGroup": "2024-01-10",
+          "AfterMinGroup": "2024-01-10",
+          "MinGroupStar": "2024-01-10",
+          "AfterMinGroupStar": "2024-01-10",
+          "MaxStar": "2024-01-10",
+          "AfterMaxStar": "2024-01-10",
+          "MaxFiltered": "2024-01-10",
+          "AfterMaxFiltered": "2024-01-10",
+          "MaxGroup": "2024-01-10",
+          "AfterMaxGroup": "2024-01-10",
+          "MaxGroupStar": "2024-01-10",
+          "AfterMaxGroupStar": "2024-01-10",
+          "MinMixed": "2024-01-10",
+          "AfterMinMixed": "2024-01-10",
+          "MaxMixed": "2024-01-10",
+          "AfterMaxMixed": "2024-01-10"
+        }
+      }
+    },
+    {
+      "name": "descending",
+      "documentInline": {
+        "G": {
+          "Rows": [
+            {
+              "A": "2024-01-03",
+              "B": "2024-01-05",
+              "Keep": 1
+            },
+            {
+              "A": "2024-01-01",
+              "B": "2024-01-03",
+              "Keep": 1
+            }
+          ],
+          "Pool": {
+            "A": "2024-01-01",
+            "B": "2024-01-03"
+          },
+          "PoolRows": [
+            {
+              "A": "2024-01-03",
+              "B": "2024-01-05"
+            },
+            {
+              "A": "2024-01-01",
+              "B": "2024-01-03"
+            }
+          ],
+          "Fallback": "2024-01-09",
+          "MinStar": "2024-01-10",
+          "AfterMinStar": "2024-01-10",
+          "MinFiltered": "2024-01-10",
+          "AfterMinFiltered": "2024-01-10",
+          "MinGroup": "2024-01-10",
+          "AfterMinGroup": "2024-01-10",
+          "MinGroupStar": "2024-01-10",
+          "AfterMinGroupStar": "2024-01-10",
+          "MaxStar": "2024-01-10",
+          "AfterMaxStar": "2024-01-10",
+          "MaxFiltered": "2024-01-10",
+          "AfterMaxFiltered": "2024-01-10",
+          "MaxGroup": "2024-01-10",
+          "AfterMaxGroup": "2024-01-10",
+          "MaxGroupStar": "2024-01-10",
+          "AfterMaxGroupStar": "2024-01-10",
+          "MinMixed": "2024-01-10",
+          "AfterMinMixed": "2024-01-10",
+          "MaxMixed": "2024-01-10",
+          "AfterMaxMixed": "2024-01-10"
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "G": {
+          "Rows": [],
+          "Pool": {},
+          "PoolRows": [],
+          "Fallback": "2024-01-09",
+          "MinStar": "2024-01-10",
+          "AfterMinStar": "2024-01-10",
+          "MinFiltered": "2024-01-10",
+          "AfterMinFiltered": "2024-01-10",
+          "MinGroup": "2024-01-10",
+          "AfterMinGroup": "2024-01-10",
+          "MinGroupStar": "2024-01-10",
+          "AfterMinGroupStar": "2024-01-10",
+          "MaxStar": "2024-01-10",
+          "AfterMaxStar": "2024-01-10",
+          "MaxFiltered": "2024-01-10",
+          "AfterMaxFiltered": "2024-01-10",
+          "MaxGroup": "2024-01-10",
+          "AfterMaxGroup": "2024-01-10",
+          "MaxGroupStar": "2024-01-10",
+          "AfterMaxGroupStar": "2024-01-10",
+          "MinMixed": "2024-01-10",
+          "AfterMinMixed": "2024-01-10",
+          "MaxMixed": "2024-01-10",
+          "AfterMaxMixed": "2024-01-10"
+        }
+      }
+    },
+    {
+      "name": "invalid-first",
+      "documentInline": {
+        "G": {
+          "Rows": [
+            {
+              "A": "bad",
+              "Keep": 1
+            },
+            {
+              "A": "2024-01-01",
+              "Keep": 1
+            }
+          ],
+          "Pool": {
+            "A": "bad",
+            "B": "2024-01-01"
+          },
+          "PoolRows": [
+            {
+              "A": "bad"
+            },
+            {
+              "A": "2024-01-01"
+            }
+          ],
+          "Fallback": "2024-01-09",
+          "MinStar": "2024-01-10",
+          "AfterMinStar": "2024-01-10",
+          "MinFiltered": "2024-01-10",
+          "AfterMinFiltered": "2024-01-10",
+          "MinGroup": "2024-01-10",
+          "AfterMinGroup": "2024-01-10",
+          "MinGroupStar": "2024-01-10",
+          "AfterMinGroupStar": "2024-01-10",
+          "MaxStar": "2024-01-10",
+          "AfterMaxStar": "2024-01-10",
+          "MaxFiltered": "2024-01-10",
+          "AfterMaxFiltered": "2024-01-10",
+          "MaxGroup": "2024-01-10",
+          "AfterMaxGroup": "2024-01-10",
+          "MaxGroupStar": "2024-01-10",
+          "AfterMaxGroupStar": "2024-01-10",
+          "MinMixed": "2024-01-10",
+          "AfterMinMixed": "2024-01-10",
+          "MaxMixed": "2024-01-10",
+          "AfterMaxMixed": "2024-01-10"
+        }
+      }
+    },
+    {
+      "name": "invalid-last",
+      "documentInline": {
+        "G": {
+          "Rows": [
+            {
+              "A": "2024-01-01",
+              "Keep": 1
+            },
+            {
+              "A": "bad",
+              "Keep": 1
+            }
+          ],
+          "Pool": {
+            "A": "2024-01-01",
+            "B": "bad"
+          },
+          "PoolRows": [
+            {
+              "A": "2024-01-01"
+            },
+            {
+              "A": "bad"
+            }
+          ],
+          "Fallback": "2024-01-09",
+          "MinStar": "2024-01-10",
+          "AfterMinStar": "2024-01-10",
+          "MinFiltered": "2024-01-10",
+          "AfterMinFiltered": "2024-01-10",
+          "MinGroup": "2024-01-10",
+          "AfterMinGroup": "2024-01-10",
+          "MinGroupStar": "2024-01-10",
+          "AfterMinGroupStar": "2024-01-10",
+          "MaxStar": "2024-01-10",
+          "AfterMaxStar": "2024-01-10",
+          "MaxFiltered": "2024-01-10",
+          "AfterMaxFiltered": "2024-01-10",
+          "MaxGroup": "2024-01-10",
+          "AfterMaxGroup": "2024-01-10",
+          "MaxGroupStar": "2024-01-10",
+          "AfterMaxGroupStar": "2024-01-10",
+          "MinMixed": "2024-01-10",
+          "AfterMinMixed": "2024-01-10",
+          "MaxMixed": "2024-01-10",
+          "AfterMaxMixed": "2024-01-10"
+        }
+      }
+    },
+    {
+      "name": "unselected-invalid",
+      "documentInline": {
+        "G": {
+          "Rows": [
+            {
+              "A": "2024-01-01",
+              "Keep": 1
+            },
+            {
+              "A": "bad",
+              "Keep": 0
+            }
+          ],
+          "Pool": {
+            "A": "2024-01-01",
+            "B": "2024-01-03"
+          },
+          "PoolRows": [
+            {
+              "A": "2024-01-01"
+            },
+            {
+              "A": "bad"
+            }
+          ],
+          "Fallback": "2024-01-09",
+          "MinStar": "2024-01-10",
+          "AfterMinStar": "2024-01-10",
+          "MinFiltered": "2024-01-10",
+          "AfterMinFiltered": "2024-01-10",
+          "MinGroup": "2024-01-10",
+          "AfterMinGroup": "2024-01-10",
+          "MinGroupStar": "2024-01-10",
+          "AfterMinGroupStar": "2024-01-10",
+          "MaxStar": "2024-01-10",
+          "AfterMaxStar": "2024-01-10",
+          "MaxFiltered": "2024-01-10",
+          "AfterMaxFiltered": "2024-01-10",
+          "MaxGroup": "2024-01-10",
+          "AfterMaxGroup": "2024-01-10",
+          "MaxGroupStar": "2024-01-10",
+          "AfterMaxGroupStar": "2024-01-10",
+          "MinMixed": "2024-01-10",
+          "AfterMinMixed": "2024-01-10",
+          "MaxMixed": "2024-01-10",
+          "AfterMaxMixed": "2024-01-10"
+        }
+      }
+    },
+    {
+      "name": "invalid-filter",
+      "documentInline": {
+        "G": {
+          "Rows": [
+            {
+              "A": "2024-01-01",
+              "Keep": 1
+            },
+            {
+              "A": "2024-01-03",
+              "Keep": "bad"
+            }
+          ],
+          "Pool": {
+            "A": "2024-01-01",
+            "B": "2024-01-03"
+          },
+          "PoolRows": [
+            {
+              "A": "2024-01-01"
+            },
+            {
+              "A": "2024-01-03"
+            }
+          ],
+          "Fallback": "2024-01-09",
+          "MinStar": "2024-01-10",
+          "AfterMinStar": "2024-01-10",
+          "MinFiltered": "2024-01-10",
+          "AfterMinFiltered": "2024-01-10",
+          "MinGroup": "2024-01-10",
+          "AfterMinGroup": "2024-01-10",
+          "MinGroupStar": "2024-01-10",
+          "AfterMinGroupStar": "2024-01-10",
+          "MaxStar": "2024-01-10",
+          "AfterMaxStar": "2024-01-10",
+          "MaxFiltered": "2024-01-10",
+          "AfterMaxFiltered": "2024-01-10",
+          "MaxGroup": "2024-01-10",
+          "AfterMaxGroup": "2024-01-10",
+          "MaxGroupStar": "2024-01-10",
+          "AfterMaxGroupStar": "2024-01-10",
+          "MinMixed": "2024-01-10",
+          "AfterMinMixed": "2024-01-10",
+          "MaxMixed": "2024-01-10",
+          "AfterMaxMixed": "2024-01-10"
+        }
+      }
+    },
+    {
+      "name": "source-poison-before-filter-error",
+      "documentInline": {
+        "G": {
+          "Rows": [
+            {
+              "A": "2024-01-03",
+              "Keep": 0
+            }
+          ],
+          "Pool": {
+            "A": "bad",
+            "B": "2024-01-03"
+          },
+          "PoolRows": [],
+          "Fallback": "2024-01-09",
+          "MinMixed": "2024-01-10",
+          "AfterMinMixed": "2024-01-10",
+          "MaxMixed": "2024-01-10",
+          "AfterMaxMixed": "2024-01-10"
+        }
+      }
+    },
+    {
+      "name": "filter-error-with-valid-source",
+      "documentInline": {
+        "G": {
+          "Rows": [
+            {
+              "A": "2024-01-03",
+              "Keep": 0
+            }
+          ],
+          "Pool": {
+            "A": "2024-01-01",
+            "B": "2024-01-03"
+          },
+          "PoolRows": [],
+          "Fallback": "2024-01-09",
+          "MinMixed": "2024-01-10",
+          "AfterMinMixed": "2024-01-10",
+          "MaxMixed": "2024-01-10",
+          "AfterMaxMixed": "2024-01-10"
+        }
+      }
+    }
+  ]
+}
