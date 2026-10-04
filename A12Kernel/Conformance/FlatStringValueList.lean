@@ -138,10 +138,10 @@ private def membership (op : ValueListMembershipOp) : SurfaceCondition :=
 
 example : coreOf (elaborate model ["Order"] (membership .included)) =
     some (.tokenValueList .atLeastOne [.string { id := 10 }]
-      (.literals ["AB\nCD", "Other"])) ∧
+      (.literals ["AB\nCD", "Other"]) .membership) ∧
     coreOf (elaborate model ["Order"] (membership .notIncluded)) =
       some (.tokenValueList .notAll [.string { id := 10 }]
-        (.literals ["AB\nCD", "Other"])) := by
+        (.literals ["AB\nCD", "Other"]) .membership) := by
   native_decide
 
 example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
@@ -179,10 +179,10 @@ private def fieldMembership (op : ValueListMembershipOp) : SurfaceCondition :=
 
 example : coreOf (elaborate model ["Order"] (fieldMembership .included)) =
     some (.tokenValueList .atLeastOne [.string { id := 10 }]
-      (.fields [.string { id := 11 }])) ∧
+      (.fields [.string { id := 11 }]) .membership) ∧
     coreOf (elaborate model ["Order"] (fieldMembership .notIncluded)) =
       some (.tokenValueList .notAll [.string { id := 10 }]
-        (.fields [.string { id := 11 }])) := by
+        (.fields [.string { id := 11 }]) .membership) := by
   native_decide
 
 example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
@@ -213,5 +213,13 @@ example : errorOf (elaborate model ["Order"]
 example : errorOf (elaborate model ["Order"]
     (.stringFieldValueMembership .included (path "Text") [path "Text"])) =
     some (.duplicateStringValueListField ["Order", "Text"]) := by native_decide
+
+example : errorOf ((FlatCondition.tokenValueList .atLeastOne
+    [.string { id := 10 }, .string { id := 11 }] (.literals ["x"]) .membership).checkAgainstValidatedModel model ["Order"] (by rfl)) =
+    some .incoherentCore := by native_decide
+
+example : errorOf ((FlatCondition.tokenValueList .no [.string { id := 10 }]
+    (.fields [.string { id := 11 }]) .membership).checkAgainstValidatedModel model ["Order"] (by rfl)) =
+    some .incoherentCore := by native_decide
 
 end A12Kernel.Conformance.FlatStringValueList

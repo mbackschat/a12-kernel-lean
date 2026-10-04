@@ -3,10 +3,10 @@ import A12Kernel.Semantics.Condition
 
 /-! # A12Kernel.Proofs.ConditionTree — what the shared connective tree does and does not preserve
 
-Two results about `ConditionTree.evalVerdict`. The first is that its short-circuit is a
+The `ConditionTree.evalVerdict` short-circuit is a
 pure optimization: the tree's outcome is the plain `conj`/`disj` fold of its subtrees, so
-no law about the algebra has to be restated against the skipping branches. The second uses
-that to state how far an UNKNOWN leaf reaches — nowhere, as long as only the boundary
+no law about the algebra has to be restated against the skipping branches. That also states
+how far an UNKNOWN leaf reaches — nowhere, as long as only the boundary
 between `unknown` and `notFired` is at stake.
 
 The claim boundary matters. These are results about the **verdict** a tree evaluates to.
@@ -60,7 +60,60 @@ theorem evalVerdict_collapseUnknown {Leaf : Type} (evalLeaf : Leaf → Verdict)
       rw [evalVerdict_or_eq_disj, evalVerdict_or_eq_disj,
         Verdict.disj_collapseUnknown, leftIH, rightIH]
 
+/-- Without failures, eager message classification preserves the established verdict algebra.
+This does not identify the two folds' exception reachability. -/
+theorem evalClassificationExcept_pure (tree : ConditionTree Leaf) (evaluate : Leaf → Verdict) :
+    tree.evalClassificationExcept (fun leaf => Except.ok (ε := Error) (evaluate leaf)) =
+      .ok (tree.evalVerdict evaluate) := by
+  induction tree with
+  | leaf value => rfl
+  | and left right leftIH rightIH =>
+      rw [evalClassificationExcept, leftIH, rightIH, evalVerdict_and_eq_conj]
+      rfl
+  | or left right leftIH rightIH =>
+      rw [evalClassificationExcept, leftIH, rightIH, evalVerdict_or_eq_disj]
+      rfl
+
+/-- The effectful eligibility fold agrees with ordinary Boolean evaluation on total leaves. -/
+theorem evalBoolExcept_pure (tree : ConditionTree Leaf) (evaluate : Leaf → Bool) :
+    tree.evalBoolExcept (fun leaf => Except.ok (ε := Error) (evaluate leaf)) =
+      .ok (tree.evalBool evaluate) := by
+  induction tree with
+  | leaf value => rfl
+  | and left right leftIH rightIH =>
+      simp only [evalBoolExcept, leftIH, rightIH, bind, Except.bind, pure, Except.pure, evalBool]
+      cases left.evalBool evaluate <;> rfl
+  | or left right leftIH rightIH =>
+      simp only [evalBoolExcept, leftIH, rightIH, bind, Except.bind, pure, Except.pure, evalBool]
+      cases left.evalBool evaluate <;> rfl
+
+/-- Leaf translation commutes with eligibility, including its failure boundary. -/
+theorem evalBoolExcept_map (tree : ConditionTree Source) (translate : Source → Target)
+    (evaluate : Target → Except Error Bool) :
+    (tree.map translate).evalBoolExcept evaluate =
+      tree.evalBoolExcept (fun leaf => evaluate (translate leaf)) := by
+  induction tree with
+  | leaf _ => rfl
+  | and _ _ leftIH rightIH | or _ _ leftIH rightIH =>
+      simp only [map, evalBoolExcept, leftIH, rightIH]
+
+/-- Leaf translation also preserves authored classification order and failures. -/
+theorem evalClassificationExcept_map (tree : ConditionTree Source) (translate : Source → Target)
+    (evaluate : Target → Except Error Verdict) :
+    (tree.map translate).evalClassificationExcept evaluate =
+      tree.evalClassificationExcept (fun leaf => evaluate (translate leaf)) := by
+  induction tree with
+  | leaf _ => rfl
+  | and _ _ leftIH rightIH | or _ _ leftIH rightIH =>
+      simp only [map, evalClassificationExcept, leftIH, rightIH]
+
 end ConditionTree
+
+example :
+    let tree : ConditionTree Bool := .or (.leaf true) (.leaf false)
+    let read : Bool → Except Unit Verdict := fun leaf => if leaf then .ok (.fired .value) else .error ()
+    tree.evalVerdictExcept read = .ok (.fired .value) ∧
+      tree.evalClassificationExcept read = .error () := by constructor <;> rfl
 
 /-! ## Checked non-law
 
@@ -80,9 +133,8 @@ example :
 theorem conditionTree_evalVerdictExcept_embed
     (tree : ConditionTree Source) (embed : Source → Target)
     (evaluate : Target → Except Error Verdict) (plain : Source → Verdict)
-    (onAndError : Verdict → Error → Except Error Verdict)
     (agrees : ∀ source, evaluate (embed source) = .ok (plain source)) :
-    (tree.map embed).evalVerdictExcept evaluate onAndError = .ok (tree.evalVerdict plain) := by
+    (tree.map embed).evalVerdictExcept evaluate = .ok (tree.evalVerdict plain) := by
   induction tree with
   | leaf source => exact agrees source
   | and left right leftIH rightIH | or left right leftIH rightIH =>

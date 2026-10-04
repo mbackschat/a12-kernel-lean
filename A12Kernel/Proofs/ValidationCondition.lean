@@ -144,9 +144,17 @@ theorem validationCondition_flat_evalSelected
         context isRelevant =
       condition.evalSelected context.fields isRelevant := by
   unfold ValidationCondition.evalSelected ValidationCondition.evalWithTemporalResult ValidationCondition.flat
+  dsimp only
+  simp only [ConditionTree.evalBoolExcept_map, ConditionTree.evalClassificationExcept_map]
+  dsimp only [Except.mapError, pure, Except.pure, bind, Except.bind]
+  rw [ConditionTree.evalBoolExcept_pure, ConditionTree.evalClassificationExcept_pure]
   rw [conditionTree_evalVerdictExcept_embed condition ValidationConditionLeaf.flat _
-    (fun leaf => (ValidationConditionLeaf.flat leaf).evalSelected context isRelevant) _ (fun _ => rfl)]
-  rfl
+    (fun leaf => (ValidationConditionLeaf.flat leaf).evalSelected context isRelevant) (fun _ => rfl)]
+  rw [conditionTree_evalVerdictExcept_embed condition ValidationConditionLeaf.flat _
+    (fun leaf => (ValidationConditionLeaf.flat leaf).evalSelected context isRelevant) (fun _ => rfl)]
+  cases condition <;> simp [ConditionTree.map,
+    FlatCondition.evalSelected, ValidationConditionLeaf.evalSelected]
+
 
 
 /-- The mixed tree's reference traversal preserves every reference in an embedded flat condition. -/
@@ -198,7 +206,7 @@ theorem validationCondition_numeric_evalSelected_of_relevant
         context isRelevant =
       comparison.evalSelectedWithGroups context := by
   simp [ValidationCondition.numeric, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult,
-    ConditionTree.evalVerdictExcept, Except.mapError, pure, Except.pure,
+    Except.mapError,
     ValidationConditionLeaf.evalSelected, relevant]
 
 /-- A reached resolved group leaf delegates exactly to the established product-state operator. -/
@@ -213,7 +221,7 @@ theorem validationCondition_groupPresence_evalSelected
         operator reference).evalSelected
         context isRelevant = operator.eval state := by
   simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult,
-    ConditionTree.evalVerdictExcept, Except.mapError, pure, Except.pure,
+    Except.mapError,
     ValidationConditionLeaf.evalSelected, resolved]
 
 /-- Missing checked-document group state is explicit semantic unavailability. -/
@@ -228,7 +236,7 @@ theorem validationCondition_groupPresence_missing_isUnknown
         operator reference).evalSelected
         context isRelevant = .unknown := by
   simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult,
-    ConditionTree.evalVerdictExcept, Except.mapError, pure, Except.pure,
+    Except.mapError,
     ValidationConditionLeaf.evalSelected, missing]
 
 /-- A group reference contributes exactly its model-owned repeatable ancestry to ordinary rule iteration, and the same fact selects the addressed evaluator. -/
@@ -273,7 +281,7 @@ theorem validationCondition_groupPresence_evalAddressed_checked
             fun input => operator.eval input.derive := by
   cases h : document.groupPresenceInput reference.path outer .fullyRelevant false <;>
     simp [ValidationCondition.groupPresence, ValidationCondition.evalAddressed,
-      ValidationCondition.evalWithTemporalResult, ConditionTree.evalVerdictExcept,
+      ValidationCondition.evalWithTemporalResult,
       ValidationConditionLeaf.evalAddressed, h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
 
 
@@ -343,7 +351,7 @@ theorem validationCondition_repeatablePresence_evalAddressed
         operator.eval (observeCell .validation cell) := by
   cases h : context.readCell context.outer declaration.id <;>
     simp [ValidationCondition.repeatableFieldPresence, ValidationCondition.evalAddressed,
-      ValidationCondition.evalWithTemporalResult, ConditionTree.evalVerdictExcept,
+      ValidationCondition.evalWithTemporalResult,
       ValidationConditionLeaf.evalAddressed, h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
 
 
@@ -425,7 +433,7 @@ theorem validationCondition_repetitionNotUnique_preparedResult
     ValidationCondition.evalAddressedWithRepetitionNotUnique, ValidationCondition.evalWithTemporalResult,
     Except.mapError, pure, Except.pure,
     ValidationConditionLeaf.evalAddressedWithRepetitionNotUnique,
-    ConditionTree.evalVerdictExcept, sameRow]
+    sameRow]
 
 /-- Partial RNU treats an absent prepared result as semantic UNKNOWN because incomplete key relevance excluded the current row; a supplied result still must belong to that exact row. -/
 @[simp]

@@ -276,6 +276,63 @@ inductive ValidationConditionLeaf (model : FlatModel) where
 abbrev ValidationCondition (model : FlatModel) :=
   ConditionTree (ValidationConditionLeaf model)
 
+/-- Static classification-pass eligibility follows the authored operator families, not the
+runtime verdict or empty-document gate (`CodeGenHelper.canCreateOmissionErrors`). -/
+private def numericClassificationSource : NumericValidationAtom → Bool
+  | .fixedCurrentRepetition _ | .boundCurrentRepetition _ | .baseYear _ | .baseYearDatePart _ _ _ => false
+  | .dateDifference _ left right | .dayDifference _ left right => left.isField || right.isField
+  | .dateTimeDifference _ left right => !(left.fields ++ right.fields).isEmpty
+  | .field _ | .temporalFieldPart _ _ | .dateRangeBoundPart _ _ _ | .stringLength _
+  | .stringRange _ _ _ | .fieldValueAsNumber _ | .aggregate _ _ | .filledGroupCount _ => true
+
+private def orderedNumericClassificationSource : OrderedNumericValidationAtom model → Bool
+  | .ordinary source => numericClassificationSource source
+  | .firstFilled _ | .valueCount _ _ | .tokenValueCount _ | .booleanValueCount _
+  | .aggregate _ _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _
+  | .tokenDistinctCount _ | .temporalDistinctCount _ => true
+
+/-- Preserve the generator's static distinction even for a leaf that happens to fire only value
+messages on the current document. In particular a child-group presence guard enables the pass,
+whereas unfiltered positive field presence does not (classification grid, 2026-10-04). -/
+def ValidationConditionLeaf.requiresClassificationPass : ValidationConditionLeaf model → Bool
+  | .flat (.compare comparison) => !comparison.fieldIds.isEmpty
+  | .flat (.fieldFilled _) => false
+  | .flat (.fieldNotFilled _) => true
+  | .flat (.tokenValueList quantifier _ values form) =>
+      match form with
+      | .membership => !values.operands.isEmpty
+      | .quantifier => quantifier != .atLeastOne
+  | .flat (.numberValueList quantifier _ values form) =>
+      match form with
+      | .membership => !values.operands.isEmpty
+      | .quantifier => quantifier != .atLeastOne
+  | .numeric _ comparison =>
+      comparison.left.anyAtom numericClassificationSource || comparison.right.anyAtom numericClassificationSource
+  | .orderedNumeric _ comparison =>
+      comparison.left.anyAtom orderedNumericClassificationSource || comparison.right.anyAtom orderedNumericClassificationSource
+  | .groupPresence operator reference => !reference.isRoot || operator == .notFilled
+  | .groupList operator operands =>
+      !operands.any (·.isRootGroup) || operator == .noGroupFilled
+  | .repeatableFieldPresence operator _ => operator == .notFilled
+  | .repetitionNotUnique _ => true
+  | .guardedRootCurrentRepetition _ _ _ | .guardedRepeatableCurrentRepetition _ _ _ => false
+  | .iteratedDateRange (.pluralOverlap source) => source.hasHaving
+  | .iteratedDateRange (.yearlessPluralOverlap source) => source.operands.any (·.hasFilter)
+  | .iteratedDateRange _ => true
+  | .customFieldValidity _ => false
+  | .stringPattern _ => true
+  | .fieldFill operator source =>
+      match operator with
+      | .allFieldsFilled | .moreThanOneFieldFilled => source.hasHaving
+      | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled
+      | .atLeastOneFieldFilled | .fieldsNotCollectivelyFilled => true
+  | .valueList source => source.quantifier != .atLeastOne || source.hasHaving
+  | .valuesNotUnique source => source.hasHaving
+  | .tokenComparison _ => true
+  | .stringExpression comparison => !comparison.declarations.isEmpty
+  | .scalarTemporal comparison => !comparison.fieldIds.isEmpty
+  | .constructedDateValidity _ source => !source.fields.isEmpty
+
 namespace ValidationCondition
 
 /-- Embed an established flat tree without retaining a nested connective tree. -/

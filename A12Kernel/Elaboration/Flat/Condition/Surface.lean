@@ -359,22 +359,22 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
   | .stringValueMembership op surface values => do
       checkScalarLiteralSubjectRead model declaringGroup writtenGroup (.direct surface)
       let operand ← elaborateStringLiteralList model declaringGroup writtenGroup surface values
-      pure (.tokenValueList op.quantifier [operand] (.literals values))
+      pure (.tokenValueList op.quantifier [operand] (.literals values) .membership)
   | .stringFieldValueMembership op surface valueSurfaces => do
       checkScalarMemberReads model declaringGroup writtenGroup (.direct surface) (valueSurfaces.map .direct)
       let (fields, values) ←
         elaborateStringFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
-      pure (.tokenValueList op.quantifier fields (.fields values))
+      pure (.tokenValueList op.quantifier fields (.fields values) .membership)
   | .numberValueMembership op surface values => do
       checkScalarLiteralSubjectRead model declaringGroup writtenGroup (.direct surface)
       let (operand, values) ←
         elaborateNumberLiteralMembership model declaringGroup writtenGroup surface values
-      pure (.numberValueList op.quantifier [operand] (.literals values))
+      pure (.numberValueList op.quantifier [operand] (.literals values) .membership)
   | .numberFieldValueMembership op surface valueSurfaces => do
       checkScalarMemberReads model declaringGroup writtenGroup (.direct surface) (valueSurfaces.map .direct)
       let (fields, values) ←
         elaborateNumberFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
-      pure (.numberValueList op.quantifier fields (.fields values))
+      pure (.numberValueList op.quantifier fields (.fields values) .membership)
   | .numberFieldValueList quantifier fieldSurfaces valueSurfaces => do
       let (fields, values) ←
         elaborateNumberFieldValueSides model declaringGroup writtenGroup fieldSurfaces valueSurfaces
@@ -383,13 +383,13 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
       checkScalarLiteralSubjectRead model declaringGroup writtenGroup surface
       let operand ←
         elaborateEnumerationLiteralList model declaringGroup writtenGroup surface values
-      pure (.tokenValueList op.quantifier [.enumeration operand] (.literals values))
+      pure (.tokenValueList op.quantifier [.enumeration operand] (.literals values) .membership)
   | .enumerationFieldValueMembership op surface valueSurfaces => do
       checkScalarMemberReads model declaringGroup writtenGroup surface valueSurfaces
       let (fields, values) ←
         elaborateEnumerationFieldValueSides model declaringGroup writtenGroup [surface] valueSurfaces
       pure (.tokenValueList op.quantifier (fields.map .enumeration)
-        (.fields (values.map .enumeration)))
+        (.fields (values.map .enumeration)) .membership)
   | .compareFields op leftReference rightReference => do
       -- Each read's gates are asked before the next read resolves, as the Kernel checks each bracket
       -- as it closes; a raw String therefore never reaches the kind match below.

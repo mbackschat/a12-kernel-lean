@@ -311,4 +311,62 @@ example : (do
         (observe dm.flat message).pointer))) =
     some [([(10, 1)], none), ([(10, 2)], some "Order/Rows/Stamp2")] := by native_decide
 
+example : runRows
+    "FieldFilled(Stamp2) Or [Stamp2] < \"31.03.2024T02:30:00\""
+    (List.replicate 3 (Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")])) false "Europe/Berlin" =
+    some ["Order/Rows/Stamp2"] := by native_decide
+
+example : runRows
+    "FieldFilled(Stamp2) Or (FieldFilled(Stamp2) And Now < \"31.03.2024T02:30:00\")"
+    (List.replicate 3 (Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")])) false "Europe/Berlin" =
+    some ["Order/Rows/Stamp2", "Order/Rows[2]/Stamp2", "Order/Rows[3]/Stamp2"] := by native_decide
+
+example : runRows
+    "GroupFilled(/Order/Rows) And (FieldFilled(Stamp2) Or (FieldFilled(Stamp2) And Now < \"31.03.2024T02:30:00\"))"
+    (List.replicate 3 (Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")])) false "Europe/Berlin" =
+    some ["Order/Rows/Stamp2"] := by native_decide
+
+example : runRows
+    "(FieldNotFilled(Clock) Or Now < \"31.03.2024T02:30:00\") And FieldFilled(Stamp2) And FieldFilled(Clock)"
+    [Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00")]] false "Europe/Berlin" =
+    some [] := by native_decide
+
+example : validationRun
+    "(FieldNotFilled(Stamp) Or Now < \"31.03.2024T02:30:00\") And FieldFilled(Stamp)"
+    "" = some [] := by native_decide
+
+private def classificationEnabled (text : String) : Option Bool := do
+  let parsed ← (parseText .english text).toOption
+  let checked ← (lowerCondition rowModel ["Order", "Rows"] false parsed.body).toOption
+  pure (checked.core.anyLeaf ValidationConditionLeaf.requiresClassificationPass)
+
+example : classificationEnabled "GroupFilled(/Order)" = some false ∧
+    classificationEnabled "GroupFilled(/Order/Rows)" = some true ∧
+    classificationEnabled "FieldFilled(Stamp2)" = some false ∧
+    classificationEnabled "FieldNotFilled(Stamp2)" = some true ∧
+    classificationEnabled "[Amount] > 0" = some true ∧
+    classificationEnabled "Now < \"31.03.2024T02:30:00\"" = some false := by native_decide
+
+private def membershipClassification (text : String) : Option Bool := do
+  let membershipModel : FlatModel := { fields := [
+    { id := 1, groupPath := ["Order"], name := "A", policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 2, groupPath := ["Order"], name := "B", policy := { kind := .number { scale := 0, signed := true } } }] }
+  let parsed ← (parseText .english text).toOption
+  let checked ← (lowerCondition membershipModel ["Order"] false parsed.body).toOption
+  pure (checked.core.anyLeaf ValidationConditionLeaf.requiresClassificationPass)
+
+example : membershipClassification "FieldValueNotIncludedInValueList(A, 1)" = some false ∧
+    membershipClassification "NoFieldValueIncludedInValueList(A In B)" = some true ∧
+    membershipClassification "AtLeastOneFieldValueIncludedInValueList(A In B)" = some false := by native_decide
+
+example : (do
+    let membershipModel : FlatModel := { fields := [
+      { id := 1, groupPath := ["Order"], name := "A", policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 2, groupPath := ["Order"], name := "B", policy := { kind := .number { scale := 0, signed := true } } }] }
+    let checked ← (elaborate membershipModel ["Order"]
+      (.numberFieldValueMembership .included { base := .relative 0, groups := [], field := "A" }
+        [{ base := .relative 0, groups := [], field := "B" }])).toOption
+    pure ((ValidationCondition.flat (model := membershipModel) checked.core).anyLeaf
+      ValidationConditionLeaf.requiresClassificationPass)) = some true := by native_decide
+
 end A12Kernel.Dm.TemporalExpressionLocks

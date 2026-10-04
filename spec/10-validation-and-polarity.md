@@ -53,6 +53,15 @@ Because empty operands participate in so many firings ([§2](03-empty-and-requir
 
 The public validation finding projection emits a message only for `fired`; both `notFired` and `unknown` yield no finding. Their distinction remains part of the executable semantics because enclosing `And`/`Or` consumers can distinguish them, but a terminal leaf result with no such consumer is not independently message-observable.
 
+
+### 3.1 Truth testing and message classification
+
+An ordinary rule first tests whether its complete condition is known true. This Boolean pass visits leaves in authored order: `And` skips its right side after false or unknown; `Or` skips its right side after true. A runtime exception already reached aborts before any later connective can suppress it.
+
+If the complete condition is true and its authored constructs enable omission classification, the rule evaluates every condition leaf again in authored order and combines their verdicts with the polarity algebra. This second pass is eager across both connectives. Its static enablement is independent of the current document's eventual message type: a child `GroupFilled` guard enables it, while unfiltered `FieldFilled` and a field-free `Now` comparison do not. Root-group presence follows the separate root-condition classification. Field-value operations enable the pass even when the current values are present. When classification is disabled, the first pass's skipped branches remain unreachable and a normal firing is a value message. Singular `FieldValueIncludedInValueList` / `FieldValueNotIncludedInValueList` enables classification only through field-value operations in its value list; a literal-only membership does not. The plural `No` / `NotAll` quantifiers enable it, while plural `AtLeastOne` requires a filter on either side. Their shared pure verdict does not make these authored forms interchangeable in a condition that can fail at runtime.
+
+A runtime failure in either pass reaches the same enclosing rule handler. A true `FieldFilled(Flag)` disjunct can therefore hide a failing `Now` comparison when no classification-triggering construct occurs, while adding a child-group presence guard reaches that comparison during classification and aborts the ordinary row loop. A false complete first-pass result runs no classification, including when an earlier omission-valued leaf made an `Or` true. These distinctions are retained in the [classification matrix](../docs/sources/temporal-runtime-fold-probes.md#src-compositional-temporal-disposition); [the temporal failure clause](09-computations.md#32-an-invalidity-clear-poisons) owns the loop handler and error address.
+
 ---
 
 ## 4. The directional-fill machinery behind the typing

@@ -152,29 +152,40 @@ def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison)
   | .string .. | .textFields .. | .enumeration .. => model.admitsTextComparisonIn [] comparison
   | _ => !comparison.fields.isEmpty && comparison.fields.all model.admitsField
 
+/-- Singular membership has one subject and two polarities; `No` belongs only to plural quantification (spec/06 §B.4). -/
+def ValueListAuthoredForm.admits (form : ValueListAuthoredForm)
+    (quantifier : ValueListQuantifier) (subjectCount : Nat) : Bool :=
+  match form with
+  | .membership => subjectCount == 1 && quantifier != .no
+  | .quantifier => true
+
 def FlatConditionLeaf.wellFormedBool (condition : FlatConditionLeaf) (model : FlatModel) : Bool :=
   match condition with
   | .compare comparison => model.admitsComparison comparison
-  | .tokenValueList _ operands (.literals values) =>
-      !values.isEmpty && match model.tokenOperandListKind? operands with
-        | some .string => true
-        | some .enumeration =>
-            values.all (model.enumerationLiteralAllowedByAny operands)
-        | none => false
-  | .tokenValueList _ operands (.fields valueOperands) =>
-      match model.tokenOperandListKind? operands,
-          model.tokenOperandListKind? valueOperands with
-      | some fieldKind, some valueKind =>
-          fieldKind == valueKind &&
-            !tokenOperandListHasDuplicate (operands ++ valueOperands)
-      | _, _ => false
-  | .numberValueList _ operands (.literals values) =>
-      operands.length == 1 && model.admitsNumberOperandList operands && !values.isEmpty &&
-        values.all fun value => value.den == 1
-  | .numberValueList _ operands (.fields valueOperands) =>
-      model.admitsNumberOperandList operands &&
-        model.admitsNumberOperandList valueOperands &&
-        !numberOperandListHasDuplicate (operands ++ valueOperands)
+  | .tokenValueList quantifier operands (.literals values) form =>
+      form.admits quantifier operands.length && (
+        !values.isEmpty && match model.tokenOperandListKind? operands with
+          | some .string => true
+          | some .enumeration =>
+              values.all (model.enumerationLiteralAllowedByAny operands)
+          | none => false)
+  | .tokenValueList quantifier operands (.fields valueOperands) form =>
+      form.admits quantifier operands.length && (
+        match model.tokenOperandListKind? operands,
+            model.tokenOperandListKind? valueOperands with
+        | some fieldKind, some valueKind =>
+            fieldKind == valueKind &&
+              !tokenOperandListHasDuplicate (operands ++ valueOperands)
+        | _, _ => false)
+  | .numberValueList quantifier operands (.literals values) form =>
+      form.admits quantifier operands.length && (
+        operands.length == 1 && model.admitsNumberOperandList operands && !values.isEmpty &&
+          values.all fun value => value.den == 1)
+  | .numberValueList quantifier operands (.fields valueOperands) form =>
+      form.admits quantifier operands.length && (
+        model.admitsNumberOperandList operands &&
+          model.admitsNumberOperandList valueOperands &&
+          !numberOperandListHasDuplicate (operands ++ valueOperands))
   | .fieldFilled field => model.admitsField field
   | .fieldNotFilled field => model.admitsField field
 
@@ -194,20 +205,24 @@ inductive FlatConditionLeaf.Legal (model : FlatModel) : FlatConditionLeaf → Pr
       model.admitsComparison comparison = true →
       FlatConditionLeaf.Legal model (.compare comparison)
   | tokenLiteralsString {quantifier operands values} :
+      (form = .membership → operands.length = 1 ∧ quantifier ≠ .no) →
       values ≠ [] →
       model.tokenOperandListKind? operands = some .string →
-      FlatConditionLeaf.Legal model (.tokenValueList quantifier operands (.literals values))
+      FlatConditionLeaf.Legal model (.tokenValueList quantifier operands (.literals values) form)
   | tokenLiteralsEnumeration {quantifier operands values} :
+      (form = .membership → operands.length = 1 ∧ quantifier ≠ .no) →
       values ≠ [] →
       model.tokenOperandListKind? operands = some .enumeration →
       (∀ value ∈ values, model.enumerationLiteralAllowedByAny operands value = true) →
-      FlatConditionLeaf.Legal model (.tokenValueList quantifier operands (.literals values))
+      FlatConditionLeaf.Legal model (.tokenValueList quantifier operands (.literals values) form)
   | tokenFields {quantifier operands valueOperands kind} :
+      (form = .membership → operands.length = 1 ∧ quantifier ≠ .no) →
       model.tokenOperandListKind? operands = some kind →
       model.tokenOperandListKind? valueOperands = some kind →
       tokenOperandListHasDuplicate (operands ++ valueOperands) = false →
-      FlatConditionLeaf.Legal model (.tokenValueList quantifier operands (.fields valueOperands))
+      FlatConditionLeaf.Legal model (.tokenValueList quantifier operands (.fields valueOperands) form)
   | numberLiterals {quantifier operands values} :
+      (form = .membership → operands.length = 1 ∧ quantifier ≠ .no) →
       operands.length = 1 →
       model.admitsNumberOperandList operands = true →
       values ≠ [] →
@@ -215,12 +230,13 @@ inductive FlatConditionLeaf.Legal (model : FlatModel) : FlatConditionLeaf → Pr
       -- with an optional leading minus"; the single-operand bound above is its §B.3 "a multi-field
       -- Number form has no literal-list shape". Neither is a Lean-side narrowing.
       (∀ value ∈ values, value.den = 1) →
-      FlatConditionLeaf.Legal model (.numberValueList quantifier operands (.literals values))
+      FlatConditionLeaf.Legal model (.numberValueList quantifier operands (.literals values) form)
   | numberFields {quantifier operands valueOperands} :
+      (form = .membership → operands.length = 1 ∧ quantifier ≠ .no) →
       model.admitsNumberOperandList operands = true →
       model.admitsNumberOperandList valueOperands = true →
       numberOperandListHasDuplicate (operands ++ valueOperands) = false →
-      FlatConditionLeaf.Legal model (.numberValueList quantifier operands (.fields valueOperands))
+      FlatConditionLeaf.Legal model (.numberValueList quantifier operands (.fields valueOperands) form)
   | fieldFilled {field} :
       model.admitsField field = true →
       FlatConditionLeaf.Legal model (.fieldFilled field)

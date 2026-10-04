@@ -69,9 +69,9 @@ private def peerOperand : FlatNumberField := { id := 2, info := peerInfo }
 private def otherOperand : FlatNumberField := { id := 3, info := otherInfo }
 
 example : coreOf (elaborate model ["Order"] (literalMembership .included)) =
-    some (.numberValueList .atLeastOne [countOperand] (.literals [5, -2])) ∧
+    some (.numberValueList .atLeastOne [countOperand] (.literals [5, -2]) .membership) ∧
     coreOf (elaborate model ["Order"] (literalMembership .notIncluded)) =
-      some (.numberValueList .notAll [countOperand] (.literals [5, -2])) := by
+      some (.numberValueList .notAll [countOperand] (.literals [5, -2]) .membership) := by
   native_decide
 
 example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
@@ -106,9 +106,9 @@ private def fieldMembership (op : ValueListMembershipOp) : SurfaceCondition :=
   .numberFieldValueMembership op (path "Count") [path "Peer"]
 
 example : coreOf (elaborate model ["Order"] (fieldMembership .included)) =
-    some (.numberValueList .atLeastOne [countOperand] (.fields [peerOperand])) ∧
+    some (.numberValueList .atLeastOne [countOperand] (.fields [peerOperand]) .membership) ∧
     coreOf (elaborate model ["Order"] (fieldMembership .notIncluded)) =
-      some (.numberValueList .notAll [countOperand] (.fields [peerOperand])) := by
+      some (.numberValueList .notAll [countOperand] (.fields [peerOperand]) .membership) := by
   native_decide
 
 example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" model world ["Order"]
@@ -209,5 +209,13 @@ example : (FlatCondition.numberValueList .atLeastOne
 example : (FlatCondition.numberValueList .atLeastOne
     [countOperand] (.literals [1 / 2])).wellFormedBool model = false := by
   native_decide
+
+example : errorOf ((FlatCondition.numberValueList .no [countOperand]
+    (.literals [1]) .membership).checkAgainstValidatedModel model ["Order"]
+      (by rfl)) = some .incoherentCore := by native_decide
+
+example : errorOf ((FlatCondition.numberValueList .atLeastOne [countOperand, peerOperand]
+    (.fields [otherOperand]) .membership).checkAgainstValidatedModel model ["Order"]
+      (by rfl)) = some .incoherentCore := by native_decide
 
 end A12Kernel.Conformance.FlatNumberValueList

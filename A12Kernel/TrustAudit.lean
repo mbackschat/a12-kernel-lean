@@ -577,6 +577,10 @@ run_cmd do
 #print axioms A12Kernel.ConditionTree.evalVerdict_and_eq_conj
 #print axioms A12Kernel.ConditionTree.evalVerdict_or_eq_disj
 #print axioms A12Kernel.ConditionTree.evalVerdict_collapseUnknown
+#print axioms A12Kernel.ConditionTree.evalClassificationExcept_pure
+#print axioms A12Kernel.ConditionTree.evalBoolExcept_pure
+#print axioms A12Kernel.ConditionTree.evalBoolExcept_map
+#print axioms A12Kernel.ConditionTree.evalClassificationExcept_map
 #print axioms A12Kernel.Verdict.fires_conj
 #print axioms A12Kernel.Verdict.fires_disj
 #print axioms A12Kernel.ConditionTree.fires_evalVerdict_and

@@ -209,13 +209,22 @@ def FlatNumberValueSide.operands : FlatNumberValueSide → List FlatNumberField
   | .literals _ => []
   | .fields operands => operands
 
+/-- Singular membership and plural quantification share verdicts but differ in generated
+classification eligibility (`IValueListCondition` versus `IEntityListAndValueListCondition`). -/
+inductive ValueListAuthoredForm where
+  | membership
+  | quantifier
+  deriving Repr, DecidableEq
+
 /-- Atomic flat conditions. Connectives live in `ConditionTree`, allowing another resolved leaf family to reuse their exact evaluation without wrapping a second complete condition tree. -/
 inductive FlatConditionLeaf where
   | compare (comparison : FlatComparison)
   | tokenValueList (quantifier : ValueListQuantifier)
       (operands : List FlatTextFieldOperand) (values : FlatTokenValueSide)
+      (form : ValueListAuthoredForm := .quantifier)
   | numberValueList (quantifier : ValueListQuantifier)
       (operands : List FlatNumberField) (values : FlatNumberValueSide)
+      (form : ValueListAuthoredForm := .quantifier)
   | fieldFilled (field : FlatField)
   | fieldNotFilled (field : FlatField)
   deriving Repr, DecidableEq
@@ -229,14 +238,14 @@ abbrev compare (comparison : FlatComparison) : FlatCondition :=
   .leaf (.compare comparison)
 
 abbrev tokenValueList (quantifier : ValueListQuantifier)
-    (operands : List FlatTextFieldOperand) (values : FlatTokenValueSide) :
-    FlatCondition :=
-  .leaf (.tokenValueList quantifier operands values)
+    (operands : List FlatTextFieldOperand) (values : FlatTokenValueSide)
+    (form : ValueListAuthoredForm := .quantifier) : FlatCondition :=
+  .leaf (.tokenValueList quantifier operands values form)
 
 abbrev numberValueList (quantifier : ValueListQuantifier)
-    (operands : List FlatNumberField) (values : FlatNumberValueSide) :
-    FlatCondition :=
-  .leaf (.numberValueList quantifier operands values)
+    (operands : List FlatNumberField) (values : FlatNumberValueSide)
+    (form : ValueListAuthoredForm := .quantifier) : FlatCondition :=
+  .leaf (.numberValueList quantifier operands values form)
 
 abbrev fieldFilled (field : FlatField) : FlatCondition :=
   .leaf (.fieldFilled field)
@@ -264,8 +273,8 @@ abbrev FlatRelevance := FieldId → Bool
 
 @[simp] def FlatConditionLeaf.canFireOnEmpty : FlatConditionLeaf → Bool
   | .compare _ => false
-  | .tokenValueList quantifier _ _ => quantifier.canFireOnEmpty
-  | .numberValueList quantifier _ _ => quantifier.canFireOnEmpty
+  | .tokenValueList quantifier _ _ _ => quantifier.canFireOnEmpty
+  | .numberValueList quantifier _ _ _ => quantifier.canFireOnEmpty
   | .fieldFilled _ => false
   | .fieldNotFilled _ => true
 
@@ -587,9 +596,9 @@ def FlatNumberValueSide.allOperands (values : FlatNumberValueSide)
 /-- Whether one atomic flat condition references a field ID. -/
 def FlatConditionLeaf.referencesField : FlatConditionLeaf → FieldId → Bool
   | .compare comparison, field => comparison.fieldIds.contains field
-  | .tokenValueList _ operands values, field =>
+  | .tokenValueList _ operands values _, field =>
       (values.allOperands operands).any fun operand => operand.field.id == field
-  | .numberValueList _ operands values, field =>
+  | .numberValueList _ operands values _, field =>
       (values.allOperands operands).any fun operand => operand.id == field
   | .fieldFilled referenced, field
   | .fieldNotFilled referenced, field => referenced.id == field
@@ -669,11 +678,11 @@ def FlatField.evalNotFilled (field : FlatField) (context : FlatContext) : Verdic
     (isRelevant : FlatRelevance := fun _ => true) : FlatConditionLeaf → Verdict
   | .compare comparison =>
       if comparison.allRelevant isRelevant then comparison.eval context else .unknown
-  | .tokenValueList quantifier operands values =>
+  | .tokenValueList quantifier operands values _ =>
       quantifier.evalClassified
         (selectedFlatTokenValueListSide operands context isRelevant)
         (values.resolveSelected context isRelevant)
-  | .numberValueList quantifier operands values =>
+  | .numberValueList quantifier operands values _ =>
       quantifier.evalClassified
         (selectedFlatNumberValueListSide operands context isRelevant)
         (values.resolveSelected context isRelevant)

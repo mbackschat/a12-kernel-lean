@@ -107,6 +107,12 @@ theorem checkedFlatCondition_modelWellFormed (checked : CheckedFlatCondition mod
     model.validate.isOk = true :=
   checked.modelWellFormed
 
+private theorem valueListAuthoredForm_admits_iff (form : ValueListAuthoredForm)
+    (quantifier : ValueListQuantifier) (subjectCount : Nat) :
+    form.admits quantifier subjectCount = true ↔
+      (form = .membership → subjectCount = 1 ∧ quantifier ≠ .no) := by
+  cases form <;> cases quantifier <;> simp [ValueListAuthoredForm.admits]
+
 /-- The executable leaf checker decides exactly the declarative legality account. Both
     directions carry weight: right-to-left rejects a checker that refuses a legal leaf, and
     left-to-right rejects one that admits an illegal leaf. -/
@@ -117,112 +123,140 @@ theorem flatConditionLeaf_wellFormedBool_iff_legal
   | compare comparison =>
       simp only [FlatConditionLeaf.wellFormedBool]
       exact ⟨FlatConditionLeaf.Legal.compare, fun legal => by cases legal; assumption⟩
-  | tokenValueList quantifier operands values =>
-      cases values with
-      | literals values =>
-          simp only [FlatConditionLeaf.wellFormedBool]
-          cases kindEq : model.tokenOperandListKind? operands with
-          | none =>
-              exact ⟨fun absurdity => by simp at absurdity,
-                fun legal => by cases legal <;> simp_all⟩
-          | some kind =>
-              cases kind with
-              | string =>
-                  simp only [Bool.and_true]
-                  constructor
-                  · intro checked
-                    have nonempty : values ≠ [] := by
-                      intro empty
-                      simp [empty] at checked
-                    exact .tokenLiteralsString nonempty kindEq
-                  · intro legal
-                    cases legal with
-                    | tokenLiteralsString nonempty _ =>
-                        cases values with
-                        | nil => exact absurd rfl nonempty
-                        | cons _ _ => rfl
-                    | tokenLiteralsEnumeration _ enumEq _ => simp_all
-              | enumeration =>
-                  constructor
-                  · intro checked
-                    have nonempty : values ≠ [] := by
-                      intro empty
-                      simp [empty] at checked
-                    exact .tokenLiteralsEnumeration nonempty kindEq
-                      (by
-                        have allowed := (Bool.and_eq_true _ _ |>.mp checked).2
-                        exact fun value member => List.all_eq_true.mp allowed value member)
-                  · intro legal
-                    cases legal with
-                    | tokenLiteralsString _ stringEq => simp_all
-                    | tokenLiteralsEnumeration nonempty _ allowed =>
-                        refine Bool.and_eq_true _ _ |>.mpr ⟨?_, ?_⟩
-                        · simpa using nonempty
-                        · exact List.all_eq_true.mpr fun value member => allowed value member
-      | fields valueOperands =>
-          simp only [FlatConditionLeaf.wellFormedBool]
-          cases kindEq : model.tokenOperandListKind? operands with
-          | none => exact ⟨fun absurdity => by simp at absurdity,
-              fun legal => by cases legal; simp_all⟩
-          | some kind =>
-              cases valueKindEq : model.tokenOperandListKind? valueOperands with
+  | tokenValueList quantifier operands values form =>
+      cases shapeBool : form.admits quantifier operands.length with
+      | false =>
+          constructor
+          · intro checked
+            cases values <;> simp [FlatConditionLeaf.wellFormedBool, shapeBool] at checked
+          · intro legal
+            have impossible : ¬ (form = .membership → operands.length = 1 ∧ quantifier ≠ .no) := by
+              intro shape
+              have := (valueListAuthoredForm_admits_iff form quantifier operands.length).mpr shape
+              simp [shapeBool] at this
+            cases legal <;> contradiction
+      | true =>
+          have shape := (valueListAuthoredForm_admits_iff form quantifier operands.length).mp shapeBool
+          cases values with
+          | literals values =>
+              simp only [FlatConditionLeaf.wellFormedBool, shapeBool, Bool.true_and]
+              cases kindEq : model.tokenOperandListKind? operands with
+              | none =>
+                  exact ⟨fun absurdity => by simp at absurdity,
+                    fun legal => by cases legal <;> simp_all⟩
+              | some kind =>
+                  cases kind with
+                  | string =>
+                      simp only [Bool.and_true]
+                      constructor
+                      · intro checked
+                        have nonempty : values ≠ [] := by
+                          intro empty
+                          simp [empty] at checked
+                        exact .tokenLiteralsString shape nonempty kindEq
+                      · intro legal
+                        cases legal with
+                        | tokenLiteralsString _ nonempty _ =>
+                            cases values with
+                            | nil => exact absurd rfl nonempty
+                            | cons _ _ => rfl
+                        | tokenLiteralsEnumeration _ _ enumEq _ => simp_all
+                  | enumeration =>
+                      constructor
+                      · intro checked
+                        have nonempty : values ≠ [] := by
+                          intro empty
+                          simp [empty] at checked
+                        exact .tokenLiteralsEnumeration shape nonempty kindEq
+                          (by
+                            have allowed := (Bool.and_eq_true _ _ |>.mp checked).2
+                            exact fun value member => List.all_eq_true.mp allowed value member)
+                      · intro legal
+                        cases legal with
+                        | tokenLiteralsString _ _ stringEq => simp_all
+                        | tokenLiteralsEnumeration _ nonempty _ allowed =>
+                            refine Bool.and_eq_true _ _ |>.mpr ⟨?_, ?_⟩
+                            · simpa using nonempty
+                            · exact List.all_eq_true.mpr fun value member => allowed value member
+          | fields valueOperands =>
+              simp only [FlatConditionLeaf.wellFormedBool, shapeBool, Bool.true_and]
+              cases kindEq : model.tokenOperandListKind? operands with
               | none => exact ⟨fun absurdity => by simp at absurdity,
                   fun legal => by cases legal; simp_all⟩
-              | some valueKind =>
-                  constructor
-                  · intro checked
-                    have parts := Bool.and_eq_true _ _ |>.mp checked
-                    have kindsAgree : kind = valueKind := by
-                      simpa using parts.1
-                    exact .tokenFields kindEq (kindsAgree ▸ valueKindEq)
-                      (by simpa using parts.2)
-                  · intro legal
-                    cases legal with
-                    | tokenFields leftEq rightEq noDuplicate =>
-                        rw [kindEq] at leftEq
-                        rw [valueKindEq] at rightEq
-                        have leftKind := Option.some.inj leftEq
-                        have rightKind := Option.some.inj rightEq
-                        subst leftKind
-                        subst rightKind
-                        refine Bool.and_eq_true _ _ |>.mpr ⟨?_, ?_⟩
-                        · simp
-                        · simpa using noDuplicate
-  | numberValueList quantifier operands values =>
-      cases values with
-      | literals values =>
-          simp only [FlatConditionLeaf.wellFormedBool]
+              | some kind =>
+                  cases valueKindEq : model.tokenOperandListKind? valueOperands with
+                  | none => exact ⟨fun absurdity => by simp at absurdity,
+                      fun legal => by cases legal; simp_all⟩
+                  | some valueKind =>
+                      constructor
+                      · intro checked
+                        have parts := Bool.and_eq_true _ _ |>.mp checked
+                        have kindsAgree : kind = valueKind := by
+                          simpa using parts.1
+                        exact .tokenFields shape kindEq (kindsAgree ▸ valueKindEq)
+                          (by simpa using parts.2)
+                      · intro legal
+                        cases legal with
+                        | tokenFields _ leftEq rightEq noDuplicate =>
+                            rw [kindEq] at leftEq
+                            rw [valueKindEq] at rightEq
+                            have leftKind := Option.some.inj leftEq
+                            have rightKind := Option.some.inj rightEq
+                            subst leftKind
+                            subst rightKind
+                            refine Bool.and_eq_true _ _ |>.mpr ⟨?_, ?_⟩
+                            · simp
+                            · simpa using noDuplicate
+
+  | numberValueList quantifier operands values form =>
+      cases shapeBool : form.admits quantifier operands.length with
+      | false =>
           constructor
           · intro checked
-            have parts := Bool.and_eq_true _ _ |>.mp checked
-            have head := Bool.and_eq_true _ _ |>.mp parts.1
-            exact .numberLiterals (by simpa using (Bool.and_eq_true _ _ |>.mp head.1).1)
-              (Bool.and_eq_true _ _ |>.mp head.1).2 (by simpa using head.2)
-              (fun value member => by
-                have integral := List.all_eq_true.mp parts.2 value member
-                simpa using integral)
+            cases values <;> simp [FlatConditionLeaf.wellFormedBool, shapeBool] at checked
           · intro legal
-            cases legal with
-            | numberLiterals single admitted nonempty integral =>
-                refine Bool.and_eq_true _ _ |>.mpr ⟨?_, ?_⟩
-                · refine Bool.and_eq_true _ _ |>.mpr ⟨?_, ?_⟩
-                  · exact Bool.and_eq_true _ _ |>.mpr ⟨by simpa using single, admitted⟩
-                  · cases values with
-                    | nil => exact absurd rfl nonempty
-                    | cons _ _ => rfl
-                · exact List.all_eq_true.mpr fun value member => by
-                    simpa using integral value member
-      | fields valueOperands =>
-          simp only [FlatConditionLeaf.wellFormedBool]
-          constructor
-          · intro checked
-            have parts := Bool.and_eq_true _ _ |>.mp checked
-            have head := Bool.and_eq_true _ _ |>.mp parts.1
-            exact .numberFields head.1 head.2 (by simpa using parts.2)
-          · intro legal
-            cases legal with
-            | numberFields left right noDuplicate =>
-                simp [left, right, noDuplicate]
+            have impossible : ¬ (form = .membership → operands.length = 1 ∧ quantifier ≠ .no) := by
+              intro shape
+              have := (valueListAuthoredForm_admits_iff form quantifier operands.length).mpr shape
+              simp [shapeBool] at this
+            cases legal <;> contradiction
+      | true =>
+          have shape := (valueListAuthoredForm_admits_iff form quantifier operands.length).mp shapeBool
+          cases values with
+          | literals values =>
+              simp only [FlatConditionLeaf.wellFormedBool, shapeBool, Bool.true_and]
+              constructor
+              · intro checked
+                have parts := Bool.and_eq_true _ _ |>.mp checked
+                have head := Bool.and_eq_true _ _ |>.mp parts.1
+                exact .numberLiterals shape (by simpa using (Bool.and_eq_true _ _ |>.mp head.1).1)
+                  (Bool.and_eq_true _ _ |>.mp head.1).2 (by simpa using head.2)
+                  (fun value member => by
+                    have integral := List.all_eq_true.mp parts.2 value member
+                    simpa using integral)
+              · intro legal
+                cases legal with
+                | numberLiterals _ single admitted nonempty integral =>
+                    refine Bool.and_eq_true _ _ |>.mpr ⟨?_, ?_⟩
+                    · refine Bool.and_eq_true _ _ |>.mpr ⟨?_, ?_⟩
+                      · exact Bool.and_eq_true _ _ |>.mpr ⟨by simpa using single, admitted⟩
+                      · cases values with
+                        | nil => exact absurd rfl nonempty
+                        | cons _ _ => rfl
+                    · exact List.all_eq_true.mpr fun value member => by
+                        simpa using integral value member
+          | fields valueOperands =>
+              simp only [FlatConditionLeaf.wellFormedBool, shapeBool, Bool.true_and]
+              constructor
+              · intro checked
+                have parts := Bool.and_eq_true _ _ |>.mp checked
+                have head := Bool.and_eq_true _ _ |>.mp parts.1
+                exact .numberFields shape head.1 head.2 (by simpa using parts.2)
+              · intro legal
+                cases legal with
+                | numberFields _ left right noDuplicate =>
+                    simp [left, right, noDuplicate]
+
   | fieldFilled field =>
       simp only [FlatConditionLeaf.wellFormedBool]
       exact ⟨FlatConditionLeaf.Legal.fieldFilled, fun legal => by cases legal; assumption⟩

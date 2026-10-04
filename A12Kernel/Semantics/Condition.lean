@@ -47,6 +47,29 @@ def allLeaves (predicate : Leaf → Bool) : ConditionTree Leaf → Bool
   | .and left right => left.evalBool evalLeaf && right.evalBool evalLeaf
   | .or left right => left.evalBool evalLeaf || right.evalBool evalLeaf
 
+/-- Boolean eligibility reaches only the branch needed to decide truth; failure is observable
+only along that path. The generated rule's first pass uses this boundary before classification. -/
+def evalBoolExcept (evalLeaf : Leaf → Except Error Bool) : ConditionTree Leaf → Except Error Bool
+  | .leaf value => evalLeaf value
+  | .and left right => do
+      if ← left.evalBoolExcept evalLeaf then right.evalBoolExcept evalLeaf else pure false
+  | .or left right => do
+      if ← left.evalBoolExcept evalLeaf then pure true else right.evalBoolExcept evalLeaf
+
+/-- Classification evaluates every authored leaf before combining verdicts. Its eager failure
+boundary differs from eligibility (Java/Groovy `CodeGenRuleDefinition_line.st`). -/
+def evalClassificationExcept (evalLeaf : Leaf → Except Error Verdict) :
+    ConditionTree Leaf → Except Error Verdict
+  | .leaf value => evalLeaf value
+  | .and left right => do
+      let left ← left.evalClassificationExcept evalLeaf
+      let right ← right.evalClassificationExcept evalLeaf
+      pure (Verdict.conj left right)
+  | .or left right => do
+      let left ← left.evalClassificationExcept evalLeaf
+      let right ← right.evalClassificationExcept evalLeaf
+      pure (Verdict.disj left right)
+
 /-- Evaluate leaves under the shared A12 connective algebra. `And` skips only after `notFired`; `Or` skips only after `fired value`, because every other verdict can still change through polarity composition. -/
 @[simp] def evalVerdict (evalLeaf : Leaf → Verdict) : ConditionTree Leaf → Verdict
   | .leaf value => evalLeaf value
@@ -61,28 +84,20 @@ def allLeaves (predicate : Leaf → Bool) : ConditionTree Leaf → Bool
       | .fired .value => .fired .value
       | _ => Verdict.disj leftVerdict (right.evalVerdict evalLeaf)
 
-/-- Preserve the verdict algebra with a caller-owned failure channel. The optional right-And
-failure handler separates structural failure from validation runtime failure: a non-holding
-unknown prefix masks the latter (temporal review grid, 2026-10-03), while pure verdicts still
-retain their strong-Kleene distinction. -/
-def evalVerdictExcept (evalLeaf : Leaf → Except Error Verdict)
-    (onAndError : Verdict → Error → Except Error Verdict := fun _ error => .error error) :
+/-- Preserve the verdict algebra with a caller-owned failure channel and its ordinary short-circuit boundary. Runtime truth testing and eager message classification use their own folds (spec/10 §3.1). -/
+def evalVerdictExcept (evalLeaf : Leaf → Except Error Verdict) :
     ConditionTree Leaf → Except Error Verdict
   | .leaf value => evalLeaf value
   | .and left right => do
-      let leftVerdict ← left.evalVerdictExcept evalLeaf onAndError
+      let leftVerdict ← left.evalVerdictExcept evalLeaf
       match leftVerdict with
       | .notFired => pure .notFired
-      | _ => match right.evalVerdictExcept evalLeaf onAndError with
-          | .ok rightVerdict => pure (Verdict.conj leftVerdict rightVerdict)
-          | .error error => onAndError leftVerdict error
+      | _ => pure (Verdict.conj leftVerdict (← right.evalVerdictExcept evalLeaf))
   | .or left right => do
-      let leftVerdict ← left.evalVerdictExcept evalLeaf onAndError
+      let leftVerdict ← left.evalVerdictExcept evalLeaf
       match leftVerdict with
       | .fired .value => pure (.fired .value)
-      | _ =>
-          pure (Verdict.disj leftVerdict
-            (← right.evalVerdictExcept evalLeaf onAndError))
+      | _ => pure (Verdict.disj leftVerdict (← right.evalVerdictExcept evalLeaf))
 
 /-- Evaluate leaves under the shared strong-Kleene connective algebra. This is the filter counterpart of `evalVerdict`; leaf families still own their observation and comparison rules. -/
 @[simp] def evalK (evalLeaf : Leaf → K) : ConditionTree Leaf → K

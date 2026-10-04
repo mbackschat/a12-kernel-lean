@@ -1,0 +1,286 @@
+{
+  "header" : {
+    "id" : "RuleAbort_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "RuleAbort_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Flag",
+                "name" : "Flag",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Stamp",
+                "name" : "Stamp",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateTimeType",
+                    "DateTimeType" : {
+                      "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/Direct",
+                "name" : "Direct",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Stamp",
+                  "errorCode" : "Direct",
+                  "errorCondition" : "[Stamp] < \"31.03.2024T02:30:00\"",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/Unequal",
+                "name" : "Unequal",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Stamp",
+                  "errorCode" : "Unequal",
+                  "errorCondition" : "[Stamp] != \"31.03.2024T02:30:00\"",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/Prefix",
+                "name" : "Prefix",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Stamp",
+                  "errorCode" : "Prefix",
+                  "errorCondition" : "FieldFilled(Flag) Or [Stamp] < \"31.03.2024T02:30:00\"",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/Guard",
+                "name" : "Guard",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Stamp",
+                  "errorCode" : "Guard",
+                  "errorCondition" : "FieldFilled(Flag) And [Stamp] < \"31.03.2024T02:30:00\"",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/Ordinary",
+                "name" : "Ordinary",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Stamp",
+                  "errorCode" : "Ordinary",
+                  "errorCondition" : "[Stamp] < \"31.03.2024T01:30:00\"",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/Independent",
+                "name" : "Independent",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Stamp",
+                  "errorCode" : "Independent",
+                  "errorCondition" : "FieldFilled(Stamp)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/GroupPrefix",
+                "name" : "GroupPrefix",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Flag",
+                  "errorCode" : "GroupPrefix",
+                  "errorCondition" : "GroupFilled(/Form/Rows) And (FieldFilled(Flag) Or Now < \"31.03.2024T02:30:00\")",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/PureGuard",
+                "name" : "PureGuard",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Flag",
+                  "errorCode" : "PureGuard",
+                  "errorCondition" : "FieldFilled(Flag) And Now < \"31.03.2024T02:30:00\"",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/NumberPrefix",
+                "name" : "NumberPrefix",
+                "Rule" : {
+                  "errorEntityRelPath" : "../N",
+                  "errorCode" : "NumberPrefix",
+                  "errorCondition" : "GroupFilled(/Form/Rows) And ([N] > 0 Or Now < \"31.03.2024T02:30:00\")",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/NumberGuard",
+                "name" : "NumberGuard",
+                "Rule" : {
+                  "errorEntityRelPath" : "../N",
+                  "errorCode" : "NumberGuard",
+                  "errorCondition" : "[N] > 0 And Now < \"31.03.2024T02:30:00\"",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/StringPrefix",
+                "name" : "StringPrefix",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Flag",
+                  "errorCode" : "StringPrefix",
+                  "errorCondition" : "GroupFilled(/Form/Rows) And ([Flag] == \"yes\" Or Now < \"31.03.2024T02:30:00\")",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/PurePrefix",
+                "name" : "PurePrefix",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Flag",
+                  "errorCode" : "PurePrefix",
+                  "errorCondition" : "FieldFilled(Flag) Or (FieldFilled(Flag) And Now < \"31.03.2024T02:30:00\")",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/PurePrefixWithGroup",
+                "name" : "PurePrefixWithGroup",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Flag",
+                  "errorCode" : "PurePrefixWithGroup",
+                  "errorCondition" : "GroupFilled(/Form/Rows) And (FieldFilled(Flag) Or (FieldFilled(Flag) And Now < \"31.03.2024T02:30:00\"))",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              }, {
+                "type" : "Rule",
+                "id" : "/Form/Rows/FalseAfterOmission",
+                "name" : "FalseAfterOmission",
+                "Rule" : {
+                  "errorEntityRelPath" : "../Flag",
+                  "errorCode" : "FalseAfterOmission",
+                  "errorCondition" : "(FieldNotFilled(Flag) Or Now < \"31.03.2024T02:30:00\") And FieldFilled(Stamp) And FieldFilled(Flag)",
+                  "severity" : "ERROR",
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "m"
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Content",
+            "name" : "Content",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

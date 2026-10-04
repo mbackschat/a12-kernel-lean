@@ -91,7 +91,7 @@ Physical topology and validation iteration are distinct projections of that same
 
 [`CheckedCell`](../A12Kernel/Cell.lean) retains the facts needed by both phases. `observeCell` projects them through an explicit phase, yielding validation and computation observations without pretending those result domains are interchangeable.
 
-Validation truth uses the closed `K`/`Verdict` algebras. Computation conditions use holds/not-true/poison. The shared tree evaluators preserve the relevant ordered short-circuit behavior, but a validation UNKNOWN is not a computation poison and a public message is not an evaluator result.
+Validation truth uses the closed `K`/`Verdict` algebras. Computation conditions use holds/not-true/poison. Ordinary mixed validation separates short-circuit Boolean truth from statically enabled eager message classification; reached temporal failure in either phase stays outside the verdict algebra. Checked leaves retain classification eligibility, including the authored membership-versus-quantifier form that pure value-list evaluation can erase. The non-firing UNKNOWN projection remains internal information, not another observable kernel pass. A validation UNKNOWN is not a computation poison and a public message is not an evaluator result ([phase owner](../A12Kernel/Elaboration/ValidationCondition/Iteration.lean), [canonical contract](../spec/10-validation-and-polarity.md#31-truth-testing-and-message-classification)).
 
 Rule message emission takes the already-resolved coordinates of its `MessagePointer` after the verdict. Physical error paths specialize that boundary with concrete coordinates; unmatched indexed rows retain unknown coordinates without entering `CellAddr` or document topology.
 

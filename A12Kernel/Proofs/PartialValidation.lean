@@ -443,13 +443,13 @@ theorem partialSelected_agreesOn
             simp_all [FlatComparison.eval, FlatContext.resolveTimeComparisonOperand,
               FlatContext.resolveTemporalFieldBy, FlatContext.observeValidationAt]
       · rfl
-    | tokenValueList quantifier operands values =>
+    | tokenValueList quantifier operands values form =>
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
         FlatConditionLeaf.evalSelected]
       rw [selectedTokenValueListSide_agreesOn operands left right isRelevant
           agreement,
         selectedTokenValueSide_agreesOn values left right isRelevant agreement]
-    | numberValueList quantifier operands values =>
+    | numberValueList quantifier operands values form =>
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
         FlatConditionLeaf.evalSelected]
       rw [selectedNumberValueListSide_agreesOn operands left right isRelevant
@@ -488,7 +488,7 @@ private theorem partialSelected_true_persists_full
       split at partialTrue
       · simpa [FlatComparison.allRelevant] using partialTrue
       · simp [Verdict.truth] at partialTrue
-    | tokenValueList quantifier operands values =>
+    | tokenValueList quantifier operands values form =>
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
         FlatConditionLeaf.evalSelected] at partialTrue ⊢
       rcases (Verdict.truth_eq_tru_iff _).1 partialTrue with
@@ -506,7 +506,7 @@ private theorem partialSelected_true_persists_full
       exact ⟨fullPolarity, by
         rw [fullTokenValueList_eval]
         exact fullFired⟩
-    | numberValueList quantifier operands values =>
+    | numberValueList quantifier operands values form =>
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,
         FlatConditionLeaf.evalSelected] at partialTrue ⊢
       rcases (Verdict.truth_eq_tru_iff _).1 partialTrue with

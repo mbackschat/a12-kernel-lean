@@ -356,7 +356,7 @@ example : coreOf (elaborate fieldModel ["Order"] storedIncluded) = some
     (.tokenValueList .atLeastOne
       [.enumeration {
         field := { id := 20 }, projectionRef := .stored, projection := .stored }]
-      (.literals ["A"])) := by native_decide
+      (.literals ["A"]) .membership) := by native_decide
 
 example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]
     (raw (.parsed (.enum "A"))) true storedIncluded) = some (.fired .value) := by
@@ -388,7 +388,7 @@ example : coreOf (elaborate fieldModel ["Order"]
           projectionRef := .category "Kind"
           projection := .category categoryMapping }]
         (.fields [.enumeration {
-          field := { id := 25 }, projectionRef := .stored, projection := .stored }])) ∧
+          field := { id := 25 }, projectionRef := .stored, projection := .stored }]) .membership) ∧
     coreOf (elaborate fieldModel ["Order"]
       (enumerationFieldMembership .notIncluded)) = some
         (.tokenValueList .notAll
@@ -397,7 +397,7 @@ example : coreOf (elaborate fieldModel ["Order"]
             projectionRef := .category "Kind"
             projection := .category categoryMapping }]
           (.fields [.enumeration {
-            field := { id := 25 }, projectionRef := .stored, projection := .stored }])) := by
+            field := { id := 25 }, projectionRef := .stored, projection := .stored }]) .membership) := by
   native_decide
 
 example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" fieldModel world ["Order"]

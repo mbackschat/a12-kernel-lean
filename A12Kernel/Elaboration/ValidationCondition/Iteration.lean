@@ -458,24 +458,39 @@ def evalWithTemporalResult (condition : ValidationCondition model)
       fun _ => pure context.fields)
     (onTemporalValueFailure : Except Error Verdict := .ok (.fired .value)) :
     Except Error Verdict :=
-  let result : Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
-    condition.evalVerdictExcept (fun leaf => match leaf with
+  let readLeaf : ValidationConditionLeaf model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
+    fun leaf => match leaf with
       | .scalarTemporal comparison =>
           if comparison.fieldIds.all isRelevant then do
             let fields ← (temporalFields comparison).mapError Sum.inl
             (comparison.evalResult .validation fields).mapError Sum.inr
           else pure .unknown
-      | leaf => (evaluate leaf).mapError Sum.inl)
-      (fun left error => match left, error with
-        | .unknown, .inr .dateTimeLabelUnresolved => .ok .unknown
-        | _, error => .error error)
+      | leaf => (evaluate leaf).mapError Sum.inl
+  let result : Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
+    match condition with
+    | .leaf leaf => readLeaf leaf
+    | _ => do
+      let holds ← condition.evalBoolExcept fun leaf => do
+        pure (match ← readLeaf leaf with | .fired _ => true | _ => false)
+      if holds then
+        if condition.anyLeaf ValidationConditionLeaf.requiresClassificationPass then
+          condition.evalClassificationExcept readLeaf
+        else condition.evalVerdictExcept readLeaf
+      else
+        -- Non-firing still retains the theory's UNKNOWN distinction. This projection cannot raise
+        -- a runtime failure the generated Boolean pass has already skipped; context faults remain
+        -- explicit. `CodeGenRuleDefinition.st` enters classification only after a true condition.
+        condition.evalVerdictExcept fun leaf =>
+          match readLeaf leaf with
+          | .error (.inr .dateTimeLabelUnresolved) => .ok .unknown
+          | result => result
   match result with
   | .ok verdict => .ok verdict
   | .error (.inl error) => .error error
   | .error (.inr .dateTimeLabelUnresolved) => onTemporalValueFailure
   | .error (.inr .calendarUnavailable) => onTemporalUnavailable
 
-/-- Evaluate a row-selected mixed tree through the sole connective evaluator. -/
+/-- Evaluate one mixed tree with the rule-owned truth and classification phases. -/
 def evalSelected (condition : ValidationCondition model)
     (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance := fun _ => true) : Verdict :=
@@ -499,7 +514,7 @@ private def addressedTemporalFields (context : AddressedValidationEvaluationCont
   pure { context.scalar.fields with
     read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell }
 
-/-- Evaluate one row-selected checked tree while retaining structural addressing failure outside the verdict algebra. The generic effectful connective fold preserves the ordinary decisive-left short-circuit boundary. -/
+/-- Evaluate one row-selected checked tree while retaining structural addressing failure outside the verdict algebra. Truth testing and conditional classification retain their separate failure boundaries. -/
 def evalAddressed (condition : ValidationCondition model)
     (context : AddressedValidationEvaluationContext model) :
     Except CheckedAddressingError Verdict :=

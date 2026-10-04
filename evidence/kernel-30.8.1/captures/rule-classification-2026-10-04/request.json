@@ -1,0 +1,184 @@
+{
+  "model": "RuleAbort_DM.json",
+  "locale": "en_US",
+  "clock": "2024-03-30T23:00:00Z",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "all-positive",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes",
+              "N": "1"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes",
+              "N": "1"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes",
+              "N": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "failure-middle",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes",
+              "N": "1"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "N": "0"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes",
+              "N": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "failure-first",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "N": "0"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes",
+              "N": "1"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes",
+              "N": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "failure-last",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes",
+              "N": "1"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes",
+              "N": "1"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "N": "0"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "false-all",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "N": "0"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "N": "0"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "N": "0"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unknown-first",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "N": "bad"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes",
+              "N": "1"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "Flag": "yes",
+              "N": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "unknown-all",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": [
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "N": "bad"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "N": "bad"
+            },
+            {
+              "Stamp": "2024-03-31T01:00:00",
+              "N": "bad"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "no-rows",
+      "documentInline": {
+        "Form": {
+          "Content": "yes",
+          "Rows": []
+        }
+      }
+    }
+  ]
+}
