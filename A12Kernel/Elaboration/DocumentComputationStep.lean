@@ -246,6 +246,13 @@ def boolean : BooleanComputationOutcome → CheckedCell
   | .poison _ => poison
   | .value value => checkAdmittedRawCell (classifyStoredBooleanText (toString value))
 
+/-- Constant certificates retain Confirm's stored-value constructor. Reading both target kinds
+as Boolean would make a subsequent Confirm comparison unavailable (spec/02 §A.3). -/
+def booleanConstant (operation : BooleanConstantOperation) (outcome : BooleanComputationOutcome) : CheckedCell :=
+  match operation, outcome with
+  | .confirmTrue, .value value => checkAdmittedRawCell (classifyStoredConfirmText (toString value))
+  | _, other => boolean other
+
 /-- A stored component-omitting Date rendering, read as the earliest date it denotes, the rule
 `dateFragment` states. -/
 def omittingDateText (model : FlatModel) (target : FieldId) (text : String) :
@@ -405,7 +412,7 @@ def ofBooleanConstant (operation : CheckedBooleanConstantComputation model) :
   excludesTarget := rfl
   run _ _ _ :=
     let outcome := operation.execute
-    pure (.boolean outcome, DocumentComputationReadBack.boolean outcome)
+    pure (.boolean outcome, DocumentComputationReadBack.booleanConstant operation.operation.operation outcome)
 
 /-- A field-backed DateTime day shift. -/
 def ofDateTimeDayShift (operation : CheckedDateTimeDayShiftComputation model) :

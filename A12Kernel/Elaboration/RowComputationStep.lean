@@ -180,7 +180,7 @@ def ofRepeatableBooleanConstant (operation : CheckedRepeatableBooleanConstantCom
   run _ _ document := do
     let outcomes ← (operation.execute document).mapError .booleanConstant
     pure (outcomes.map fun entry =>
-      (entry.targetField, .boolean entry.result, DocumentComputationReadBack.boolean entry.result))
+      (entry.targetField, .boolean entry.result, DocumentComputationReadBack.booleanConstant operation.operation.operation entry.result))
 
 /-- The read-back of each addressed outcome, as a fixed target of the same family reads back. -/
 private def readBack {Outcome : Type} (outcomes : List (CellAddr × Outcome))

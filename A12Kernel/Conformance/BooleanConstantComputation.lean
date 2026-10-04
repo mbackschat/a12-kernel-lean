@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.BooleanConstantComputation
 import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.RowComputationStep
 
 /-! # Fixed Boolean and Confirm constant computation locks -/
 
@@ -305,5 +306,26 @@ than one widened gate: the fixed route above still owns that shape. -/
 example : (checkRepeatableBooleanConstantComputation
     repeatableModel ["Probe"] formLevel.id true).toOption.isSome = false := by
   native_decide
+
+private def fixedReadBack (target : FieldId) : Option (Option Value) := do
+  let operation ← checked? target true
+  let input ← document? none false
+  let result ← ((CheckedDocumentComputationStep.ofBooleanConstant operation).run
+    { now := { epochMillis := 0 } } (fun _ => none) input).toOption
+  pure result.2.parsed
+
+private def rowReadBack (target : FieldId) : Option (List (Option Value)) := do
+  let operation ← (checkRepeatableBooleanConstantComputation repeatableModel ["Probe"] target true).toOption
+  let input ← taskRows 2
+  let step : CheckedRowComputationStep repeatableModel builtinStringPatternCompiler :=
+    .ofRepeatableBooleanConstant operation
+  let result ← (step.run { now := { epochMillis := 0 } } repeatablePrepared.patterns input).toOption
+  pure (result.map fun (_, _, cell) => cell.parsed)
+
+example : fixedReadBack confirmTarget.id = some (some (.conf true)) ∧
+    fixedReadBack booleanTarget.id = some (some (.bool true)) := by native_decide
+
+example : rowReadBack taskConfirmed.id = some [some (.conf true), some (.conf true)] ∧
+    rowReadBack taskApproved.id = some [some (.bool true), some (.bool true)] := by native_decide
 
 end A12Kernel.Conformance.BooleanConstantComputation
