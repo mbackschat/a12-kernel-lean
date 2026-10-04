@@ -149,9 +149,9 @@ private def rowVerdicts? (op : EqualityOp) (data : DocumentData) :
 the differing row does not, in document order. -/
 example :
     rowVerdicts? .equal twoRowData =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] ∧
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] ∧
     rowVerdicts? .notEqual twoRowData =
-      some [([(10, 1)], .notFired), ([(10, 2)], .fired .value)] := by
+      some [([(10, 1)], .notFired), ([(10, 2)], .fired .value), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /- An empty operand leaves both directions unfired at the row that holds it, so the row scan does
@@ -161,11 +161,11 @@ example :
     rowVerdicts? .equal {
       instantiatedRows := [{ group := 10, path := [1] }]
       cells := [storedCell existing.id [] "2024-06-01/2024-06-30"] } =
-      some [([(10, 1)], .notFired)] ∧
+      some [([(10, 1)], .notFired), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] ∧
     rowVerdicts? .notEqual {
       instantiatedRows := [{ group := 10, path := [1] }]
       cells := [storedCell existing.id [] "2024-06-01/2024-06-30"] } =
-      some [([(10, 1)], .notFired)] := by
+      some [([(10, 1)], .notFired), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /- The fired row reports on the error field at its own row, which is what an Explain consumer reads
@@ -174,7 +174,7 @@ example :
     (rowOutcomes? .equal twoRowData).map
         (fun rows => rows.map fun row => row.2.2) =
       some [some (MessagePointer.ofCellAddr
-        { field := rowRange.id, path := [1] }), none] := by
+        { field := rowRange.id, path := [1] }), none, none, none, none] := by
   native_decide
 
 /-! ## Selected endpoints read at the iterating row -/
@@ -245,11 +245,11 @@ example :
     endpointRowVerdicts?
         (boundAgainstFixed? ["Form", "Rows"] rowRangePath .start .equal)
         twoRowData =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] ∧
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] ∧
     endpointRowVerdicts?
         (boundAgainstFixed? ["Form", "Rows"] rowRangePath .finish .equal)
         twoRowData =
-      some [([(10, 1)], .notFired), ([(10, 2)], .notFired)] := by
+      some [([(10, 1)], .notFired), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /- The pair compares two endpoints of one row, so a well-ordered row does not fire while its own
@@ -258,11 +258,11 @@ example :
     endpointRowVerdicts?
         (boundPair? ["Form", "Rows"] rowRangePath .finish rowRangePath .start
           .before) twoRowData =
-      some [([(10, 1)], .notFired), ([(10, 2)], .notFired)] ∧
+      some [([(10, 1)], .notFired), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] ∧
     endpointRowVerdicts?
         (boundPair? ["Form", "Rows"] rowRangePath .start rowRangePath .finish
           .before) twoRowData =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .fired .value)] := by
+      some [([(10, 1)], .fired .value), ([(10, 2)], .fired .value), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /-! ## The overlap predicate at an iterating row -/
@@ -372,7 +372,7 @@ private def overlapData : DocumentData := {
 the row that does not stay unfired, which is what separates the row read from a root read. -/
 example :
     overlapRowVerdicts? ["Form", "Rows"] bareRow [scalarExisting] overlapData =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /- The mixed spelling composes the two reads rather than choosing between them: the bare operand
@@ -384,7 +384,7 @@ the current row would read the opposite outcome. -/
 example :
     overlapRowVerdicts? ["Form", "Rows"] bareRow [rowsStar "RowRange"]
         overlapData =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .fired .value)] := by
+      some [([(10, 1)], .fired .value), ([(10, 2)], .fired .value), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /- A row with no stored range skips its slot, so the scan cannot fire on absence. -/
@@ -392,7 +392,7 @@ example :
     overlapRowVerdicts? ["Form", "Rows"] bareRow [scalarExisting] {
       instantiatedRows := [{ group := 10, path := [1] }]
       cells := [storedCell existing.id [] "2024-06-15/2024-07-15"] } =
-      some [([(10, 1)], .notFired)] := by
+      some [([(10, 1)], .notFired), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /-! ## A constructed range compared with a stored range at the iterating row -/
@@ -493,7 +493,7 @@ example :
         constructionCell rowFinish.id [1] "2024-06-30" june30Value,
         constructionCell rowStart.id [2] "2024-06-01" june1Value,
         constructionCell rowFinish.id [2] "2024-07-31" july31Value] } =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /-! ## The plural overlap predicate at an iterating row -/
@@ -548,9 +548,9 @@ private def pluralRowVerdicts? (scalar : SurfaceFieldEntityOperand)
 and the row that does not stay unfired, in either authored arrangement. -/
 example :
     pluralRowVerdicts? bareRow scalarExisting overlapData =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] ∧
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] ∧
     pluralRowVerdicts? scalarExisting bareRow overlapData =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /- An unusable scalar terminates before the list is read, so a row with no stored range does not
@@ -559,7 +559,7 @@ example :
     pluralRowVerdicts? bareRow scalarExisting {
       instantiatedRows := [{ group := 10, path := [1] }]
       cells := [storedCell existing.id [] "2024-06-15/2024-07-15"] } =
-      some [([(10, 1)], .notFired)] := by
+      some [([(10, 1)], .notFired), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /-! ## A constructed range compared with another construction -/
@@ -617,7 +617,7 @@ example :
         constructionCell rowFinish.id [1] "2024-06-30" june30Value,
         constructionCell rowStart.id [2] "2024-06-01" june1Value,
         constructionCell rowFinish.id [2] "2024-07-31" july31Value] } =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /-! ## The same carriers at a non-iterating locus -/

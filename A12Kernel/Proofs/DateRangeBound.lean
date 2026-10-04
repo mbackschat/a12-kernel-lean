@@ -41,7 +41,7 @@ private theorem dateRangeBound_rootRead
   unfold CheckedDateRangeBound.evaluate CheckedDateRangeSourceBound.evaluateAt
     CheckedDateRangeSource.evaluateAt
   rw [operation.scalarSource]
-  rfl
+  cases phase <;> rfl
 
 /-- A reached DateRange value transports the selected exact endpoint through the checked read. -/
 theorem dateRangeBound_evaluate_value

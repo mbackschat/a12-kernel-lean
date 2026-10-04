@@ -6,6 +6,8 @@ import A12Kernel.Conformance.ValidationRule.OrdinarySupport.Temporal
 
 /-! # Ordinary repeatable scalar-source whole-rule locks -/
 
+/- These leaf snapshots select their authored first-row witness. Complete implicit-row
+iteration is locked in Conformance.RuleIterationDomain and the full population replay. -/
 namespace A12Kernel.Conformance.ValidationRule.OrdinaryScalarSources
 
 open A12Kernel
@@ -35,7 +37,7 @@ private def repeatableStringLengthSnapshot? :
   pure (
     rule.iterationScope,
     rule.requiresAddressedValidation,
-    outcomes.map fun entry =>
+    (outcomes.take 1).map fun entry =>
       (entry.1, entry.2.verdict,
         entry.2.message?.map (·.errorAddress)))
 
@@ -97,7 +99,7 @@ private def repeatableFieldValueAsNumberSnapshot?
   pure (
     rule.iterationScope,
     rule.requiresAddressedValidation,
-    outcomes.map fun entry =>
+    (outcomes.take 1).map fun entry =>
       (entry.1, entry.2.verdict,
         entry.2.message?.map (·.errorAddress)))
 
@@ -194,7 +196,7 @@ private def repeatableStringRangeSnapshot?
   pure (
     rule.iterationScope,
     rule.requiresAddressedValidation,
-    outcomes.map fun entry =>
+    (outcomes.take 1).map fun entry =>
       (entry.1, entry.2.verdict,
         entry.2.message?.map (·.errorAddress)))
 
@@ -283,7 +285,7 @@ private def repeatableTemporalPartSnapshot?
   pure (
     rule.iterationScope,
     rule.requiresAddressedValidation,
-    outcomes.map fun entry =>
+    (outcomes.take 1).map fun entry =>
       (entry.1, entry.2.verdict,
         entry.2.message?.map (·.errorAddress)))
 

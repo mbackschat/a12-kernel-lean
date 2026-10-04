@@ -1,0 +1,312 @@
+{
+  "header": {
+    "id": "Iteration_nested-2x2",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "Iteration_nested-2x2",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "UTC",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/Flag",
+                "name": "Flag",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 20
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Form/G1",
+                "name": "G1",
+                "Group": {
+                  "repeatability": 2,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Form/G1/Flag",
+                      "name": "Flag",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 20
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Group",
+                      "id": "/Form/G1/G2",
+                      "name": "G2",
+                      "Group": {
+                        "repeatability": 2,
+                        "elements": [
+                          {
+                            "type": "Field",
+                            "id": "/Form/G1/G2/Flag",
+                            "name": "Flag",
+                            "Field": {
+                              "fieldType": {
+                                "type": "StringType",
+                                "StringType": {
+                                  "maxLength": 20
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Field",
+                            "id": "/Form/G1/G2/S",
+                            "name": "S",
+                            "Field": {
+                              "fieldType": {
+                                "type": "StringType",
+                                "StringType": {
+                                  "maxLength": 20
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Field",
+                            "id": "/Form/G1/G2/N",
+                            "name": "N",
+                            "Field": {
+                              "fieldType": {
+                                "type": "NumberType",
+                                "NumberType": {
+                                  "maxFractionalDigits": 0,
+                                  "positivesOnly": false
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Rule",
+                            "id": "/Form/G1/G2/TextMissing",
+                            "name": "TextMissing",
+                            "Rule": {
+                              "errorEntityRelPath": "../S",
+                              "errorCode": "TextMissing",
+                              "errorCondition": "[S] + \"x\" == \"x\"",
+                              "severity": "ERROR",
+                              "errorMessage": [
+                                {
+                                  "locale": "en_US",
+                                  "text": "Iteration check."
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "Rule",
+                            "id": "/Form/G1/G2/NumberMissing",
+                            "name": "NumberMissing",
+                            "Rule": {
+                              "errorEntityRelPath": "../N",
+                              "errorCode": "NumberMissing",
+                              "errorCondition": "[N] < 1",
+                              "severity": "ERROR",
+                              "errorMessage": [
+                                {
+                                  "locale": "en_US",
+                                  "text": "Iteration check."
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "Rule",
+                            "id": "/Form/G1/G2/TextPresent",
+                            "name": "TextPresent",
+                            "Rule": {
+                              "errorEntityRelPath": "../S",
+                              "errorCode": "TextPresent",
+                              "errorCondition": "FieldFilled(S)",
+                              "severity": "ERROR",
+                              "errorMessage": [
+                                {
+                                  "locale": "en_US",
+                                  "text": "Iteration check."
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "Rule",
+                            "id": "/Form/G1/G2/NumberPresent",
+                            "name": "NumberPresent",
+                            "Rule": {
+                              "errorEntityRelPath": "../N",
+                              "errorCode": "NumberPresent",
+                              "errorCondition": "FieldFilled(N)",
+                              "severity": "ERROR",
+                              "errorMessage": [
+                                {
+                                  "locale": "en_US",
+                                  "text": "Iteration check."
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "type": "Rule",
+                            "id": "/Form/G1/G2/GroupSeen",
+                            "name": "GroupSeen",
+                            "Rule": {
+                              "errorEntityRelPath": "../S",
+                              "errorCode": "GroupSeen",
+                              "errorCondition": "GroupFilled(..)",
+                              "severity": "ERROR",
+                              "errorMessage": [
+                                {
+                                  "locale": "en_US",
+                                  "text": "Iteration check."
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "Group",
+          "id": "/Other",
+          "name": "Other",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Other/Flag",
+                "name": "Flag",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 20
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Other/G1",
+                "name": "G1",
+                "Group": {
+                  "repeatability": 2,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Other/G1/Flag",
+                      "name": "Flag",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 20
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Group",
+                      "id": "/Other/G1/G2",
+                      "name": "G2",
+                      "Group": {
+                        "repeatability": 2,
+                        "elements": [
+                          {
+                            "type": "Field",
+                            "id": "/Other/G1/G2/Flag",
+                            "name": "Flag",
+                            "Field": {
+                              "fieldType": {
+                                "type": "StringType",
+                                "StringType": {
+                                  "maxLength": 20
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Field",
+                            "id": "/Other/G1/G2/S",
+                            "name": "S",
+                            "Field": {
+                              "fieldType": {
+                                "type": "StringType",
+                                "StringType": {
+                                  "maxLength": 20
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "Field",
+                            "id": "/Other/G1/G2/N",
+                            "name": "N",
+                            "Field": {
+                              "fieldType": {
+                                "type": "NumberType",
+                                "NumberType": {
+                                  "maxFractionalDigits": 0,
+                                  "positivesOnly": false
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

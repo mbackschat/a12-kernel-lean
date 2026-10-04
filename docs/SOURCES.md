@@ -1738,10 +1738,10 @@ Update this owner only when an authoritative locus, reusable drill route, source
 
 
 <a id="src-group-presence-conditional-dependencies"></a>
-- [Ancestor group guards: conditional dependencies and live cycle controls](sources/computation-scheduling-probes.md#src-group-presence-conditional-dependencies)
+- [Ancestor group dependencies](sources/computation-scheduling-probes.md#src-group-presence-conditional-dependencies)
 
 <a id="src-group-conditional-profiles"></a>
-- [Conditional group profiles across alternatives, common guards and target scopes](sources/computation-scheduling-probes.md#src-group-conditional-profiles)
+- [Conditional group profiles](sources/computation-scheduling-probes.md#src-group-conditional-profiles)
 
 <a id="src-repeatable-group-profiles"></a>
 - [Implicit guards before repeatable target-profile assembly](sources/computation-scheduling-probes.md#src-repeatable-group-profiles)
@@ -1750,7 +1750,10 @@ Update this owner only when an authoritative locus, reusable drill route, source
 - [Filled-field count expression admission, 2026-10-03](sources/group-list-and-capacity-probes.md#src-filled-field-count-expressions)
 
 <a id="src-compositional-temporal-disposition"></a>
-- [Temporal source slots and runtime wall-label failures](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-disposition), including the peer's already committed seeded-target correction to spec/09.
+- [Temporal source slots and runtime wall-label failures](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-disposition).
 
 <a id="src-string-expression-family"></a>
 - [Shared String expressions](sources/evaluation-and-application-routes.md#src-string-expression-family)
+
+<a id="src-validation-iteration-domain"></a>
+- [Rule iteration](sources/evaluation-and-application-routes.md#src-validation-iteration-domain)

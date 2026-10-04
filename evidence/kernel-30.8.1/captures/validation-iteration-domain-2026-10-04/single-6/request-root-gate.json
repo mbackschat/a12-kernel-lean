@@ -1,0 +1,48 @@
+{
+  "model": "Model_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "empty-root",
+      "documentInline": {
+        "Form": {}
+      }
+    },
+    {
+      "name": "no-flag-empty-tree",
+      "documentInline": {
+        "Form": {
+          "G1": []
+        }
+      }
+    },
+    {
+      "name": "no-flag-two-empty",
+      "documentInline": {
+        "Form": {
+          "G1": [
+            {},
+            {}
+          ]
+        }
+      }
+    },
+    {
+      "name": "no-flag-invalid-last",
+      "documentInline": {
+        "Form": {
+          "G1": [
+            {},
+            {
+              "S": "a",
+              "N": "bad"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

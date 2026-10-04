@@ -15,7 +15,7 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 <a id="cap-ordinary-once-repeatable-execution"></a>
 #### Ordinary/once/repeatable execution
 
-- `boundary`: Once execution plus ordinary validation-row loops over checked flat, numeric, temporal, group, and admitted repeatable leaves; nested implicit contexts are separate from concrete stored topology
+- `boundary`: Once execution and ordinary full-rule loops share root-content dispatch; the declared-product/occupied-prefix iterator supplies implicit contexts without materializing stored rows. The uniqueness relation uses the same traversal in its separate always-occupied mode. [Iteration checkpoint](../sources/evaluation-and-application-routes.md#src-validation-iteration-domain) owns calibration and the partial/global/parallel exclusions.
 - `owner`: [`ValidationCondition/`](../../A12Kernel/Elaboration/ValidationCondition/), [`ValidationRule.lean`](../../A12Kernel/Elaboration/ValidationRule.lean)
 - `assurance`: E/P closed per admitted leaf; selected C/X; upstream L partial
 - `boundary`: Full validation lifts its content gate when the condition's retained field references and structural group operands name multiple roots. `referencedRoots` is a static projection over the whole condition, including unreached connective branches; document content does not supply root membership. Explicit root-instance indices and references omitted from a leaf's inventory remain outside it.

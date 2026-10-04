@@ -78,8 +78,8 @@ private def messages (condition : String) (repeated : Bool := false) : Option Na
     errorCode := "STR", condition, severity := "ERROR" }).toOption
   pure (← (runRule world checked rule).toOption).length
 
-example : messages "RangeAsString(S,1,2) + FieldValueAsString(N) == \"ab1.5\"" true = none := by native_decide
-example : messages "[S] + \"x\" != \"\"" true = none := by native_decide
+example : messages "RangeAsString(S,1,2) + FieldValueAsString(N) == \"ab1.5\"" true = some 2 := by native_decide
+example : messages "[S] + \"x\" != \"\"" true = some 0 := by native_decide
 
 example : messages "RangeAsString(S,1,2) + FieldValueAsString(N) == \"ab1.5\"" = some 1 := by native_decide
 example : messages "[S] + \"x\" != \"\"" = some 0 := by native_decide

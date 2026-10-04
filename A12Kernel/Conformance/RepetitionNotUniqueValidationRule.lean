@@ -437,7 +437,7 @@ example :
     verdicts? weightAndRnuRule? guardedRnuData =
       some [
         ([(10, 1)], .fired .value),
-        ([(10, 2)], .notFired)] := by
+        ([(10, 2)], .notFired), ([(10, 3)], .notFired)] := by
   native_decide
 
 /- Optional empty composite components participate in equality and retain OMISSION through whole-rule emission. -/
@@ -445,7 +445,7 @@ example :
     verdicts? compositeRnuRule? compositeRnuData =
       some [
         ([(10, 1)], .fired .omission),
-        ([(10, 2)], .fired .omission)] := by
+        ([(10, 2)], .fired .omission), ([(10, 3)], .notFired)] := by
   native_decide
 
 /- Every composite-key component must be relevant before a row joins the duplicate relation. Complete relevance fires both omission-valued duplicates; count-only relevance admits both error instances but leaves the RNU leaf UNKNOWN. -/
@@ -579,30 +579,38 @@ example :
     (nestedVerdicts? (nestedRule? (withPhase := true))
         (implicitNestedData) ==
       some [
+        ([(20, 1), (30, 1)], .fired .omission),
+        ([(20, 1), (30, 2)], .notFired),
         ([(20, 2), (30, 1)], .fired .omission),
-        ([(20, 1), (30, 1)], .fired .omission)
+        ([(20, 2), (30, 2)], .notFired)
       ]) = true ∧
     (nestedVerdicts? reversedNestedCompositeRule?
         (implicitNestedData) ==
       some [
+        ([(20, 1), (30, 1)], .fired .omission),
+        ([(20, 1), (30, 2)], .notFired),
         ([(20, 2), (30, 1)], .fired .omission),
-        ([(20, 1), (30, 1)], .fired .omission)
+        ([(20, 2), (30, 2)], .notFired)
       ]) = true ∧
     (nestedVerdicts?
         (nestedRule?
           (nestedFrom ["Project", "Milestones"]) true)
         (implicitNestedData) ==
       some [
+        ([(20, 1), (30, 1)], .fired .omission),
+        ([(20, 1), (30, 2)], .notFired),
         ([(20, 2), (30, 1)], .fired .omission),
-        ([(20, 1), (30, 1)], .fired .omission)
+        ([(20, 2), (30, 2)], .notFired)
       ]) = true ∧
     (nestedVerdicts?
         (reversedNestedCompositeRule?
           (nestedFrom ["Project", "Milestones"]))
         (implicitNestedData) ==
       some [
+        ([(20, 1), (30, 1)], .fired .omission),
+        ([(20, 1), (30, 2)], .notFired),
         ([(20, 2), (30, 1)], .fired .omission),
-        ([(20, 1), (30, 1)], .fired .omission)
+        ([(20, 2), (30, 2)], .notFired)
       ]) = true ∧
     [
       nestedRule? (withPhase := true),
@@ -611,8 +619,10 @@ example :
       reversedNestedCompositeRule? (nestedFrom ["Project", "Milestones"])
     ].all (fun candidate =>
       nestedVerdicts? candidate (implicitNestedData false) == some [
+        ([(20, 1), (30, 1)], .notFired),
+        ([(20, 1), (30, 2)], .notFired),
         ([(20, 2), (30, 1)], .notFired),
-        ([(20, 1), (30, 1)], .notFired)
+        ([(20, 2), (30, 2)], .notFired)
       ]) = true := by
   native_decide
 

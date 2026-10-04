@@ -111,12 +111,13 @@ example :
         })) := by
   native_decide
 
-/- The same synthetic frame remains content-gated in full validation. Neither physical repeatable-row existence nor a rejected root cell substitutes for admitted root value-content, and constructing the address never inserts a row into the immutable document. -/
+/- The same synthetic frame remains content-gated in full validation. Explicit repeated rows dispatch the root, while a rejected root cell alone does not, and constructing the address never inserts a row into the immutable document. -/
 example :
     (snapshot? emptyData ==
       some (.once [10], [(10, 1)], .notFired, none)) = true ∧
     (snapshot? rowOnlyData ==
-      some (.once [10], [(10, 1)], .notFired, none)) = true ∧
+      some (.once [10], [(10, 1)], .fired .omission,
+        some (MessagePointer.ofCellAddr { field := outerAmount.id, path := [1] }))) = true ∧
     (snapshot? rejectedRootData ==
       some (.once [10], [(10, 1)], .notFired, none)) = true := by
   native_decide

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.RuleIterationDomain
 import A12Kernel.Elaboration.ConstructedDateEvaluation
 import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.StarPath
@@ -186,8 +186,8 @@ def addressedCell (checked : CheckedDocument model)
     Except CheckedAddressingError CheckedAddressedCell :=
   checked.addressedCellWithRead checked.read environment field
 
-/-- Read a field in a validation-produced row environment. Concrete addresses use the immutable checked document unchanged. An exact implicit nested-validation environment supplies a clean absent cell without creating physical row or stored content; an arbitrary missing environment still fails structurally. -/
-def validationAddressedCell (checked : CheckedDocument model)
+private def validationAddressedCellWithRows (checked : CheckedDocument model)
+    (rows : List RepeatableLevel → Except ActualRowEnvironmentError (List Env))
     (environment : Env) (field : FieldId) :
     Except CheckedAddressingError CheckedAddressedCell := do
   let declaration ←
@@ -200,7 +200,7 @@ def validationAddressedCell (checked : CheckedDocument model)
     checked.addressedCell environment field
   else
     let validationRows ←
-      (checked.validationRowEnvironments declaration.repeatableScope)
+      (rows declaration.repeatableScope)
         |>.mapError .rowEnvironment
     let projected := declaration.repeatableScope.zip path
     let physical :=
@@ -221,6 +221,19 @@ def validationAddressedCell (checked : CheckedDocument model)
         cell := (checkAdmittedRawCell .empty).withOverRepetitionIf overLimit
       }
 
+/-- The legacy nested/partial validation view admits only its own implicit descendants. -/
+def validationAddressedCell (checked : CheckedDocument model)
+    (environment : Env) (field : FieldId) :
+    Except CheckedAddressingError CheckedAddressedCell :=
+  checked.validationAddressedCellWithRows checked.validationRowEnvironments environment field
+
+/-- Full validation admits exactly the shared rule domain's implicit coordinates while
+preserving physical checked cells and structural failures outside that domain. -/
+def fullValidationAddressedCell (checked : CheckedDocument model)
+    (environment : Env) (field : FieldId) :
+    Except CheckedAddressingError CheckedAddressedCell :=
+  checked.validationAddressedCellWithRows checked.fullValidationRowEnvironments environment field
+
 /-- Correlation reads through one caller-supplied exact-address view and preserve field/address failures separately from semantic UNKNOWN or computation poison. -/
 def resolvingCorrelationContextWithRead (checked : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
@@ -232,13 +245,15 @@ def resolvingCorrelationContextWithRead (checked : CheckedDocument model)
 /-- Correlation reads from the same immutable checked input. -/
 def resolvingCorrelationContext (checked : CheckedDocument model) :
     ResolvingCorrelationContext CheckedAddressingError :=
-  checked.resolvingCorrelationContextWithRead checked.read
+  { read := fun environment field =>
+      (checked.fullValidationAddressedCell environment field).map (·.cell)
+    bindingError := .environment }
 
 /-- Resolve one direct entity-list occurrence through the same model-owned address query as every starred occurrence. -/
 def resolveCheckedDirectEntityOperandCoreAt
     (checked : CheckedDocument model) (outer : Env) (field : FieldId) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
-  let addressed ← checked.validationAddressedCell outer field
+  let addressed ← checked.fullValidationAddressedCell outer field
   pure {
     topology := none
     addressedCells := [addressed]

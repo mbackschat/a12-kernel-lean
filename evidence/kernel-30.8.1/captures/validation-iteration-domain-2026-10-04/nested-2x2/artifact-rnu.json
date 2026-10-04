@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Rnu_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "empty-document",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "root-only",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "empty-tree",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "two-empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/N",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ]
+            },
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/N",
+                "Form/G1/G2[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ]
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/N",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ]
+            },
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/N",
+                "Form/G1/G2[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "third-filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/N",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ]
+            },
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/N",
+                "Form/G1/G2[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ]
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/G1/G2[3]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[3]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/G1/G2[3]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[3]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/G1/G2[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[3]"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/N",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ]
+            },
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/N",
+                "Form/G1/G2[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ]
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/G1/G2[3]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[3]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/G1/G2[3]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[3]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/G1/G2[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[3]"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invalid-last",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/G1/G2[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[2]/N"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/G1/G2[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[2]/N"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "over-capacity",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/N",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ]
+            },
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/N",
+                "Form/G1/G2[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ]
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/G1/G2[3]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[3]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/G1/G2[3]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[3]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/G1/G2[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[3]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/G1/G2[4]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[4]"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/N",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ]
+            },
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/N",
+                "Form/G1/G2[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1/G2[2]/S"
+              ]
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/G1/G2[3]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[3]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/G1/G2[3]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[3]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/G1/G2[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[3]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/G1/G2[4]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2[4]"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sibling-only",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Other/G1/G2[3]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Other/G1/G2[3]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Other/G1/G2[3]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Other/G1/G2[3]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Other/G1/G2[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Other/G1/G2[3]"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Other/G1/G2[3]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Other/G1/G2[3]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Other/G1/G2[3]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Other/G1/G2[3]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Other/G1/G2[3]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Other/G1/G2[3]"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-child",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Duplicate",
+              "field": "Form/G1[2]/G2[2]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2[2]/N"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Duplicate",
+              "field": "Form/G1[2]/G2[2]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2[2]/N"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sibling-fills-missing-child",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Duplicate",
+              "field": "Form/G1[2]/G2[2]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2[2]/N"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Duplicate",
+              "field": "Form/G1[2]/G2[2]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2[2]/N"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "outer-key-only",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "two-outer-keys",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/N",
+                "Form/G1/G2/S",
+                "Form/G1[2]/Flag",
+                "Form/G1[2]/G2/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1[2]/Flag",
+                "Form/G1[2]/G2/S"
+              ]
+            },
+            {
+              "code": "Duplicate",
+              "field": "Form/G1[2]/G2/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1[2]/Flag",
+                "Form/G1[2]/G2/N",
+                "Form/G1[2]/G2/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1[2]/Flag",
+                "Form/G1[2]/G2/S"
+              ]
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Duplicate",
+              "field": "Form/G1/G2/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/N",
+                "Form/G1/G2/S",
+                "Form/G1[2]/Flag",
+                "Form/G1[2]/G2/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1[2]/Flag",
+                "Form/G1[2]/G2/S"
+              ]
+            },
+            {
+              "code": "Duplicate",
+              "field": "Form/G1[2]/G2/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1[2]/Flag",
+                "Form/G1[2]/G2/N",
+                "Form/G1[2]/G2/S"
+              ],
+              "fillToFix": [
+                "Form/G1/Flag",
+                "Form/G1/G2/S",
+                "Form/G1[2]/Flag",
+                "Form/G1[2]/G2/S"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

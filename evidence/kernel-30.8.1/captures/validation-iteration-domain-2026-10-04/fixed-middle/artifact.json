@@ -1,0 +1,1574 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Model_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "empty-document",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "root-only",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-tree",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[1]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/S",
+                "Form/G1/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[1]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/S",
+                "Form/G1/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "two-empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[1]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/S",
+                "Form/G1/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/N"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/S"
+              ]
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[1]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/S",
+                "Form/G1/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/N"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/S"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "third-filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[1]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/S",
+                "Form/G1/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/N"
+              ]
+            },
+            {
+              "code": "NumberPresent",
+              "field": "Form/G1/G2/G3[3]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[3]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/S"
+              ]
+            },
+            {
+              "code": "TextPresent",
+              "field": "Form/G1/G2/G3[3]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[3]/S"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[1]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/S",
+                "Form/G1/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/N"
+              ]
+            },
+            {
+              "code": "NumberPresent",
+              "field": "Form/G1/G2/G3[3]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[3]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/S"
+              ]
+            },
+            {
+              "code": "TextPresent",
+              "field": "Form/G1/G2/G3[3]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[3]/S"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invalid-last",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[1]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/S",
+                "Form/G1/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextPresent",
+              "field": "Form/G1/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/G1/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/N"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[1]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/S",
+                "Form/G1/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextPresent",
+              "field": "Form/G1/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Form/G1/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/N"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "over-capacity",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[1]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/S",
+                "Form/G1/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[3]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[3]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[3]/N"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[3]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[3]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[3]/S"
+              ]
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/G1/G2/G3[4]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[4]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/G1/G2/G3[4]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[4]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/G1/G2/G3[4]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[4]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/G1/G2/G3[5]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[5]"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[1]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[1]/G2[1]/G3[0]/S",
+                "Form/G1/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[3]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[3]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[3]/N"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[3]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[3]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[3]/S"
+              ]
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/G1/G2/G3[4]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[4]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/G1/G2/G3[4]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[4]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/G1/G2/G3[4]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[4]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/G1/G2/G3[5]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[5]"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sibling-only",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[3]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[3]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[3]/N"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[3]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[3]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[3]/S"
+              ]
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[3]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[3]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[3]/N"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[3]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[3]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[3]/S"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-child",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1[2]/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[2]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[2]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[2]/G2[1]/G3[0]/S",
+                "Form/G1[2]/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1[2]/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1[2]/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberPresent",
+              "field": "Form/G1[2]/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3[2]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1[2]/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1[2]/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextPresent",
+              "field": "Form/G1[2]/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3[2]/S"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1[2]/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[2]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[2]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[2]/G2[1]/G3[0]/S",
+                "Form/G1[2]/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1[2]/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1[2]/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberPresent",
+              "field": "Form/G1[2]/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3[2]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1[2]/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1[2]/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextPresent",
+              "field": "Form/G1[2]/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3[2]/S"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sibling-fills-missing-child",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1[2]/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[2]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[2]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[2]/G2[1]/G3[0]/S",
+                "Form/G1[2]/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1[2]/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1[2]/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberPresent",
+              "field": "Form/G1[2]/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3[2]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1[2]/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1[2]/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextPresent",
+              "field": "Form/G1[2]/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3[2]/S"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GroupSeen",
+              "field": "Form/G1[2]/G2/G3/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/G1[2]/G2[1]/G3[0]/Flag",
+                "/Form[1]/G1[2]/G2[1]/G3[0]/N",
+                "/Form[1]/G1[2]/G2[1]/G3[0]/S",
+                "Form/G1[2]/G2/Flag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/N"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/N"
+              ]
+            },
+            {
+              "code": "NumberMissing",
+              "field": "Form/G1[2]/G2/G3/N",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3/N"
+              ],
+              "fillToFix": [
+                "Form/G1[2]/G2/G3/N"
+              ]
+            },
+            {
+              "code": "NumberPresent",
+              "field": "Form/G1[2]/G2/G3[2]/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3[2]/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1/G2/G3[2]/S"
+              ],
+              "fillToFix": [
+                "Form/G1/G2/G3[2]/S"
+              ]
+            },
+            {
+              "code": "TextMissing",
+              "field": "Form/G1[2]/G2/G3/S",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3/S"
+              ],
+              "fillToFix": [
+                "Form/G1[2]/G2/G3/S"
+              ]
+            },
+            {
+              "code": "TextPresent",
+              "field": "Form/G1[2]/G2/G3[2]/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/G1[2]/G2/G3[2]/S"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

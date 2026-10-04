@@ -707,13 +707,17 @@ def resolvedRow (checked : CheckedRepetitionNotUniqueSource model)
 /-- Construct one key row from the immutable checked document in a validation-produced environment, preserving any model, environment, or document addressing failure outside key UNKNOWN. -/
 def resolvedRowChecked
     (checked : CheckedRepetitionNotUniqueSource model)
-    (document : CheckedDocument model) (environment : Env) :
+    (document : CheckedDocument model) (environment : Env)
+    (fullDomain : Bool := false) :
     Except CheckedAddressingError ResolvedRepetitionKeyRow := do
   let key ← checked.keys.mapM fun key => do
     let keyEnvironment := key.environmentPrefix environment
-    let addressed ←
-      document.validationAddressedCell keyEnvironment key.fieldId
-    pure (key.classifyCheckedCell addressed.cell environment)
+    let cell ← if fullDomain then do
+      let declaration ← (model.lookupUniqueId key.fieldId).mapError (.field key.fieldId)
+      let path ← (keyEnvironment.pathForScope declaration.repeatableScope).mapError .environment
+      (document.readDeclared { field := key.fieldId, path }).mapError .document
+      else (document.validationAddressedCell keyEnvironment key.fieldId).map (·.cell)
+    pure (key.classifyCheckedCell cell environment)
   pure { row := environment, key }
 
 /-- Resolve one selected default or explicit `@From` scope, then exclude composite-key rows whose components are not all relevant before reading any key cell. -/
@@ -725,28 +729,31 @@ def resolvedRows (checked : CheckedRepetitionNotUniqueSource model)
   pure ((topology.environments.filter (checked.rowRelevant scope)).map
     (checked.resolvedRow read))
 
-/-- Resolve the selected scope against the immutable checked input. Concrete topology keeps its established canonical relation order; implicit validation descendants are appended from the validation-only domain. Complete-key relevance is filtered before reads, and every reached address failure remains structural. -/
+/-- Resolve the branch-independent key relation. Full rules use the source-backed occupied-prefix duplicate domain, independently of dense enclosing rule slots; partial callers retain their existing concrete/implicit-child view. Complete-key relevance is filtered before reads, and structural failures remain separate from key invalidity. -/
 def resolvedRowsChecked
     (checked : CheckedRepetitionNotUniqueSource model)
     (document : CheckedDocument model) (outer : Env)
-    (scope : ValidationRelevanceScope) :
+    (scope : ValidationRelevanceScope) (fullDomain : Bool := false) :
     Except CheckedAddressingError (List ResolvedRepetitionKeyRow) := do
   let topology ←
     (checked.topology.path.resolveTopology document.source.toDocument outer)
       |>.mapError .addressing
   let levels := checked.topology.path.axes.map (·.level)
-  let validationRows ←
-    (document.validationRowEnvironments levels)
-      |>.mapError .rowEnvironment
   let bound ←
     checked.topology.path.boundEnvironment outer
       |>.mapError .addressing
+  let validationRows ←
+    ((if fullDomain then document.repetitionKeyRowEnvironments levels bound
+      else document.validationRowEnvironments levels))
+      |>.mapError .rowEnvironment
   let implicitRows := validationRows.filter fun environment =>
     environment.take bound.length == bound &&
       !topology.environments.contains environment
-  let environments := topology.environments ++ implicitRows
+  let environments := if fullDomain then
+    validationRows.filter (fun environment => environment.take bound.length == bound)
+    else topology.environments ++ implicitRows
   (environments.filter (checked.rowRelevant scope)).mapM
-    (checked.resolvedRowChecked document)
+    (fun environment => checked.resolvedRowChecked document environment fullDomain)
 
 /-- Evaluate one selected checked scope through the established branch-independent RNU relation. -/
 def evaluate (checked : CheckedRepetitionNotUniqueSource model)
@@ -759,10 +766,10 @@ def evaluate (checked : CheckedRepetitionNotUniqueSource model)
 def evaluateChecked
     (checked : CheckedRepetitionNotUniqueSource model)
     (document : CheckedDocument model) (outer : Env)
-    (scope : ValidationRelevanceScope) :
+    (scope : ValidationRelevanceScope) (fullDomain : Bool := false) :
     Except CheckedAddressingError (List RepetitionNotUniqueResult) := do
   pure (evalRepetitionNotUnique
-    (← checked.resolvedRowsChecked document outer scope))
+    (← checked.resolvedRowsChecked document outer scope fullDomain))
 
 end CheckedRepetitionNotUniqueSource
 

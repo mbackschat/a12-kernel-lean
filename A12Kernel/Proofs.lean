@@ -252,6 +252,7 @@ import A12Kernel.Proofs.SemanticIndexDateRange
 import A12Kernel.Proofs.SemanticIndexElaboration
 import A12Kernel.Proofs.SingleGroupElaboration
 import A12Kernel.Proofs.StarAddressing
+import A12Kernel.Proofs.RuleIterationDomain
 import A12Kernel.Proofs.StarCompleteness
 import A12Kernel.Proofs.StarEnumerationValueList
 import A12Kernel.Proofs.StarGroupElaboration

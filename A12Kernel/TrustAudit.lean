@@ -2971,3 +2971,8 @@ run_cmd do
 #print axioms A12Kernel.ComputationValueListOperator.atLeastOne_emptyCollection
 #print axioms A12Kernel.ComputationValueListOperator.notAll_emptySubjects
 #print axioms A12Kernel.ComputationValueListOperator.scalar_memberPoison
+
+#print axioms A12Kernel.RuleIterationDomain.axis_dense
+#print axioms A12Kernel.RuleIterationDomain.axis_first
+#print axioms A12Kernel.RuleIterationDomain.descend_dense
+#print axioms A12Kernel.RuleIterationDomain.no_dispatched_roots

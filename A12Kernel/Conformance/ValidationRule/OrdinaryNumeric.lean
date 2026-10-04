@@ -80,7 +80,11 @@ example :
           some (MessagePointer.ofCellAddr {
             field := innerAmount.id
             path := [1, 1]
-          }))] := by
+          })),
+        ([(10, 1), (20, 2)], .fired .omission,
+          some (MessagePointer.ofCellAddr { field := innerAmount.id, path := [1, 2] })),
+        ([(10, 2), (20, 2)], .fired .omission,
+          some (MessagePointer.ofCellAddr { field := innerAmount.id, path := [2, 2] }))] := by
   native_decide
 
 /- Validation does not invent an outermost repeatable row merely because the nested rule has an all-one address. -/
@@ -113,7 +117,8 @@ example :
           some (MessagePointer.ofCellAddr {
             field := innerAmount.id
             path := [1, 1]
-          }))])) = true := by
+          })), ([(10, 1), (20, 2)], .notFired, none),
+          ([(10, 2), (20, 1)], .notFired, none), ([(10, 2), (20, 2)], .notFired, none)])) = true := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule.OrdinaryNumeric

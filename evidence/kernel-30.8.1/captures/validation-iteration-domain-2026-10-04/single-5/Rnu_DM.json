@@ -1,0 +1,198 @@
+{
+  "header": {
+    "id": "Iteration_single-5",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "Iteration_single-5",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "UTC",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/Flag",
+                "name": "Flag",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 20
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Form/G1",
+                "name": "G1",
+                "Group": {
+                  "repeatability": 5,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Form/G1/Flag",
+                      "name": "Flag",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 20
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/G1/S",
+                      "name": "S",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 20
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/G1/N",
+                      "name": "N",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0,
+                            "positivesOnly": false
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/Duplicate",
+                "name": "Duplicate",
+                "Rule": {
+                  "errorEntityRelPath": "../G1/S",
+                  "errorCode": "Duplicate",
+                  "errorCondition": "RepetitionNotUnique(G1/S) Or FieldFilled(G1/N)",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Iteration check."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "Group",
+          "id": "/Other",
+          "name": "Other",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Other/Flag",
+                "name": "Flag",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {
+                      "maxLength": 20
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Other/G1",
+                "name": "G1",
+                "Group": {
+                  "repeatability": 5,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Other/G1/Flag",
+                      "name": "Flag",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 20
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Other/G1/S",
+                      "name": "S",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 20
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Other/G1/N",
+                      "name": "N",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0,
+                            "positivesOnly": false
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

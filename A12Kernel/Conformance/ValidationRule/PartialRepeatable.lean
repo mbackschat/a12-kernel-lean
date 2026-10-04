@@ -593,7 +593,7 @@ example :
       some [.notFired] ∧
     fullPartialGroupVerdicts? partialGroupFilledRule?
       (partialGroupData none (some (.parsed (.num 9)))) =
-      some [.fired .value] := by
+      some [.fired .value, .notFired] := by
   native_decide
 
 /- A fully selected instantiated repeatable group remains present through reached formal error

@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.CheckedDocument
+import A12Kernel.Elaboration.RuleIterationDomain
 import A12Kernel.Semantics.DateComparison
 import A12Kernel.Semantics.DateNumeric
 import A12Kernel.Semantics.DateRangeOverlap
@@ -295,7 +295,9 @@ def evaluateAt (operation : CheckedDateRangeSource model) (environment : Env)
     Except DirectDateRangeFault (CellObservation DateRangeCellValue) := do
   let path ← (environment.pathForScope operation.declaration.repeatableScope)
     |>.mapError .environment
-  let cell ← input.read { field := operation.source.id, path }
+  let read := if phase == .validation && !operation.declaration.repeatableScope.isEmpty then
+      input.fullValidationRead else input.read
+  let cell ← read { field := operation.source.id, path }
     |>.mapError .document
   observeRange operation.source.id phase cell
 

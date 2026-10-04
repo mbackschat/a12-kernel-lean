@@ -281,9 +281,11 @@ private def repeatableDateTimeDifferenceConsumerSnapshot? :
     right.address, right.stored, outcome.2.verdict)
 
 private def expectedRepeatableDateDifference
-    (verdict : Verdict) :
+    (verdict : Verdict) (missing : Verdict := .notFired) :
     Option (Option (List RepeatableLevel) × Bool × List (Env × Verdict)) :=
-  some (some [10, 20], true, [([(10, 1), (20, 1)], verdict)])
+  some (some [10, 20], true, [([(10, 1), (20, 1)], verdict),
+    ([(10, 1), (20, 2)], missing), ([(10, 2), (20, 1)], missing),
+    ([(10, 2), (20, 2)], missing)])
 
 /- One addressed ordinary atom now reads two Date operands in authored order. Missing input keeps the symmetric-zero omission account, formal invalidity remains UNKNOWN, and an incomplete structural environment cannot become UNKNOWN. -/
 example :
@@ -303,7 +305,7 @@ example :
       "InnerDate" "InnerEarlierDate" (.ordinary .less) 1
       (repeatableDateDifferenceData "" none "2023-01-25"
         (some (checkedDateRaw 2023 1 25))) ==
-      expectedRepeatableDateDifference (.fired .omission)) = true ∧
+      expectedRepeatableDateDifference (.fired .omission) (.fired .omission)) = true ∧
     (repeatableDateDifferenceSnapshot? .years
       "InnerDate" "InnerEarlierDate" (.ordinary .equal) 1
       (repeatableDateDifferenceData "2024-06-25"
@@ -333,7 +335,7 @@ example :
       (repeatableDayDifferenceRule? date dateTime (.ordinary .less) 2)
       (repeatableDayDifferenceData "" none "2024-06-26T00:00:00"
         (some (checkedDateTimeRawAt 86400000 2024 6 26))) ==
-      expectedRepeatableDateDifference (.fired .omission)) = true ∧
+      expectedRepeatableDateDifference (.fired .omission) (.fired .omission)) = true ∧
     (dateDifferenceRuleSnapshot?
       (repeatableDayDifferenceRule? date dateTime (.ordinary .equal) 1)
       (repeatableDayDifferenceData "2024-06-25"
@@ -375,7 +377,7 @@ example :
       (repeatableDateTimeDifferenceData ""
         none "2024-06-25T00:00:00"
         (some (checkedDateTimeRawAtTime 0 2024 6 25 midnight))) ==
-      expectedRepeatableDateDifference (.fired .omission)) = true ∧
+      expectedRepeatableDateDifference (.fired .omission) (.fired .omission)) = true ∧
     (repeatableDateTimeDifferenceSnapshot? .seconds
       (.ordinary .equal) 1 false
       (repeatableDateTimeDifferenceData "bad"
@@ -418,7 +420,7 @@ example :
         (.field (ordinaryPath ["Order", "Sections", "Items"] "InnerDate"))
         (.ordinary .less) 1)
       (nestedDateDifferenceData "" none "" none) ==
-      expectedRepeatableDateDifference (.fired .omission)) = true ∧
+      expectedRepeatableDateDifference (.fired .omission) (.fired .omission)) = true ∧
     dateDifferenceStructuralFailure?
       (repeatableDateDifferenceRuleWith? .months
         (.field (ordinaryPath ["Order", "Sections"] "OuterDate"))

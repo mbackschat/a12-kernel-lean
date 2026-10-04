@@ -1,0 +1,446 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Model_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "none",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "name": "one",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Both",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Key",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Both",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Key",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "two",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Both",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Key",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Both",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Key",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ]
+            },
+            {
+              "code": "Other",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Other",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Both",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Key",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Both",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Key",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ]
+            },
+            {
+              "code": "Other",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Other",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mixed",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Both",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Key",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Other",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Other",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Both",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Key",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Other",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Other",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "max",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Both",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Key",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Both",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Key",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ]
+            },
+            {
+              "code": "Other",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Other",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Both",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows/Key",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Both",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "Form/Rows[2]/Key",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Max",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ]
+            },
+            {
+              "code": "Other",
+              "field": "Form/Rows/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows/Qty"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Other",
+              "field": "Form/Rows[2]/Qty",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "<redacted>",
+              "referenced": [
+                "/Form[1]/Rows[0]/Qty",
+                "Form/Rows[2]/Qty"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-04-03"></a>
+### `SPEC-2026-10-04-03` — full-rule iteration differs from physical extent and uniqueness cache membership
+
+- `status`: pending
+- `clause`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands).
+- `delta`: ordinary single-root full-rule iteration selects dense declared slots at product ≤ 5 and occupied coordinate prefixes above it, retaining each reset's first coordinate. Root dispatch is separate; occupancy crosses group identities. RNU always uses the occupied-prefix relation over document depth bounds, even inside a dense rule.
+- `evidence`: [Iteration-domain checkpoint](sources/evaluation-and-application-routes.md#src-validation-iteration-domain), pinned Kernel 30.8.1 source and both runtime strategies; manifest pins all inputs/results. The ancestor-key/optional-child controls distinguish uniqueness from the enclosing rule.
+- `redundancy`: peer finding headings and threshold values `MAX_PRUEF_KONTEXT`, capacity 5/6 and products 2×2/2×3 were searched at `35ad604468360640f9f5bd9fcdc2cc6922b0b685`. KF179 owns implicit children but its physical-outer generalization does not cover the small declared domain; KF101 owns all-empty tuple exclusion and participant polarity, retained unchanged.
+- `surfaces`: ordinary full-validation iteration and uniqueness relation membership; partial/global/parallel dispatch remains outside this correction.
+- `acceptance`: reconcile the declared-product and occupied-prefix distinctions against the retained root, nested, foreign-coordinate and RNU separators, or supply contrary evidence. Existing equivalent implementation can be acknowledged without reimplementation.
+- `introducing commit`: resolve using the ledger contract's `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-04-02"></a>
 ### `SPEC-2026-10-04-02` — temporal construction preserves independent absence and relevance states
 

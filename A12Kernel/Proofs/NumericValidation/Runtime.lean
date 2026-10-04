@@ -180,7 +180,7 @@ theorem orderedNumericValidationAtom_firstFilled_checkedDocument_delegates
         } =
       (do
         let result ←
-          source.evaluateCheckedDocumentValidation document outer .full
+          source.evaluateCheckedDocumentValidation document outer .full true
         match result with
         | .nonRelevant => pure (.error .nonRelevant)
         | .evaluated result =>

@@ -302,7 +302,10 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
         | .legacy document read =>
             (source.evaluateValidationIn document context.outer
               .full context.scalar.fields read).mapError .addressing
-        | .checked document | .partialView document _ =>
+        | .checked document =>
+            source.evaluateCheckedDocumentValidation
+              document context.outer .full true
+        | .partialView document _ =>
             source.evaluateCheckedDocumentValidation
               document context.outer .full
       match result with

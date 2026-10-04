@@ -1,0 +1,112 @@
+{
+  "model": "Model_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "empty-document",
+      "documentInline": {}
+    },
+    {
+      "name": "root-only",
+      "documentInline": {
+        "Form": {
+          "Flag": "g"
+        }
+      }
+    },
+    {
+      "name": "empty-tree",
+      "documentInline": {
+        "Form": {
+          "Flag": "g",
+          "G1": []
+        }
+      }
+    },
+    {
+      "name": "two-empty",
+      "documentInline": {
+        "Form": {
+          "Flag": "g",
+          "G1": [
+            {},
+            {}
+          ]
+        }
+      }
+    },
+    {
+      "name": "third-filled",
+      "documentInline": {
+        "Form": {
+          "Flag": "g",
+          "G1": [
+            {},
+            {},
+            {
+              "S": "a",
+              "N": "2"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "invalid-last",
+      "documentInline": {
+        "Form": {
+          "Flag": "g",
+          "G1": [
+            {},
+            {
+              "S": "a",
+              "N": "bad"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "over-capacity",
+      "documentInline": {
+        "Form": {
+          "Flag": "g",
+          "G1": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {
+              "S": "a",
+              "N": "2"
+            },
+            {}
+          ]
+        }
+      }
+    },
+    {
+      "name": "sibling-only",
+      "documentInline": {
+        "Form": {
+          "Flag": "g"
+        },
+        "Other": {
+          "Flag": "g",
+          "G1": [
+            {},
+            {},
+            {
+              "S": "a",
+              "N": "2"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

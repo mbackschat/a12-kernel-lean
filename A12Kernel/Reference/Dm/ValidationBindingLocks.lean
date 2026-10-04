@@ -50,9 +50,9 @@ example : run "AllFieldsFilled(Rows/Qty, Rows/Key)"
       some ["Form/Rows[2]/Qty"] ∧
     run "AllFieldsFilled(Rows/Qty, Rows/Key)" [] = some [] := by native_decide
 
-example : run "AtLeastOneFieldFilled(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows))"
+example : run "FieldFilled(Rows/Qty) And AtLeastOneFieldFilled(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows))"
     [row "5" "A", row "7" "B"] = some ["Form/Rows/Qty", "Form/Rows[2]/Qty"] ∧
-    run "AtLeastOneFieldFilled(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows))"
+    run "FieldFilled(Rows/Qty) And AtLeastOneFieldFilled(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows))"
     [row "5" "A"] = some [] := by native_decide
 
 example : (do
@@ -115,7 +115,7 @@ example : (do
           | _ => false
       | _ => false)) = some true := by native_decide
 
-example : run "MaxValue(Rows/Qty, Rows*/Qty Having CurrentRepetition(Rows) == 1) > 5"
+example : run "FieldFilled(Rows/Qty) And MaxValue(Rows/Qty, Rows*/Qty Having CurrentRepetition(Rows) == 1) > 5"
     [row "1" "A", row "7" "B"] = some ["Form/Rows[2]/Qty"] := by native_decide
 
 example : run "FieldFilled(Rows/Qty) And Sum(Rows/Qty, Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows)) > 0"
@@ -152,5 +152,12 @@ example : (do
       errorEntityRelPath := "../Qty" }).toOption
     pure (checked.condition.core.referencesField 4, checked.condition.core.referencesErrorField 4,
       checked.condition.core.referencesField 2)) = some (true, false, true) := by native_decide
+
+-- The shared full-validation domain may bind an absent row. Both operand orders
+-- must read its direct Number cell as empty while the star retains physical topology.
+example : run "FirstFilledValue(Rows/Qty, Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows)) + 0 > 1"
+    [] = some [] ∧
+    run "FirstFilledValue(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows), Rows/Qty) + 0 > 1"
+    [] = some [] := by native_decide
 
 end A12Kernel.Dm.ValidationBindingLocks

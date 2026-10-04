@@ -1,0 +1,99 @@
+{
+  "model": "Model_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "empty-document",
+      "documentInline": {}
+    },
+    {
+      "name": "root-only",
+      "documentInline": {
+        "Form": [
+          {
+            "Flag": "g"
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty-tree",
+      "documentInline": {
+        "Form": []
+      }
+    },
+    {
+      "name": "two-empty",
+      "documentInline": {
+        "Form": [
+          {},
+          {}
+        ]
+      }
+    },
+    {
+      "name": "third-filled",
+      "documentInline": {
+        "Form": [
+          {},
+          {},
+          {
+            "S": "a",
+            "N": "2"
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid-last",
+      "documentInline": {
+        "Form": [
+          {},
+          {
+            "S": "a",
+            "N": "bad"
+          }
+        ]
+      }
+    },
+    {
+      "name": "over-capacity",
+      "documentInline": {
+        "Form": [
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {
+            "S": "a",
+            "N": "2"
+          },
+          {}
+        ]
+      }
+    },
+    {
+      "name": "sibling-only",
+      "documentInline": {
+        "Form": [
+          {
+            "Flag": "g"
+          }
+        ],
+        "Other": [
+          {},
+          {},
+          {
+            "S": "a",
+            "N": "2"
+          }
+        ]
+      }
+    }
+  ]
+}

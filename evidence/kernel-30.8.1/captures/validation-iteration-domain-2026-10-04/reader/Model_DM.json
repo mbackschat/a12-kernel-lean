@@ -1,0 +1,130 @@
+{
+  "header": {
+    "id": "Iteration_single-2",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "Iteration_single-2",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "UTC",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/Qty",
+                "name": "Qty",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0,
+                      "positivesOnly": false
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Group",
+                "id": "/Form/Rows",
+                "name": "Rows",
+                "Group": {
+                  "repeatability": 3,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Qty",
+                      "name": "Qty",
+                      "Field": {
+                        "fieldType": {
+                          "type": "NumberType",
+                          "NumberType": {
+                            "maxFractionalDigits": 0,
+                            "positivesOnly": false
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Key",
+                      "name": "Key",
+                      "Field": {
+                        "fieldType": {
+                          "type": "StringType",
+                          "StringType": {
+                            "maxLength": 20
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/DirectFirst",
+                "name": "DirectFirst",
+                "Rule": {
+                  "errorEntityRelPath": "../Rows/Qty",
+                  "errorCode": "DirectFirst",
+                  "errorCondition": "FirstFilledValue(Rows/Qty, Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows)) + 0 > 1",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Iteration check."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/DirectLast",
+                "name": "DirectLast",
+                "Rule": {
+                  "errorEntityRelPath": "../Rows/Qty",
+                  "errorCode": "DirectLast",
+                  "errorCondition": "FirstFilledValue(Rows*/Qty Having CurrentRepetition(Rows) != CurrentRepetition($Rows), Rows/Qty) + 0 > 1",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Iteration check."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

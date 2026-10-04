@@ -1,0 +1,86 @@
+{
+  "model": "Model_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "none",
+      "documentInline": {
+        "Form": {
+          "Qty": "9",
+          "Rows": []
+        }
+      }
+    },
+    {
+      "name": "one",
+      "documentInline": {
+        "Form": {
+          "Qty": "9",
+          "Rows": [
+            {
+              "Qty": "5",
+              "Key": "A"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "two",
+      "documentInline": {
+        "Form": {
+          "Qty": "9",
+          "Rows": [
+            {
+              "Qty": "5",
+              "Key": "A"
+            },
+            {
+              "Qty": "7",
+              "Key": "B"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "mixed",
+      "documentInline": {
+        "Form": {
+          "Qty": "9",
+          "Rows": [
+            {
+              "Qty": "2",
+              "Key": "A"
+            },
+            {
+              "Qty": "1",
+              "Key": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "max",
+      "documentInline": {
+        "Form": {
+          "Qty": "9",
+          "Rows": [
+            {
+              "Qty": "1",
+              "Key": "A"
+            },
+            {
+              "Qty": "7",
+              "Key": "B"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -62,7 +62,7 @@ example :
           some (MessagePointer.ofCellAddr {
             field := outerAmount.id
             path := [1]
-          }))])) = true ∧
+          })), ([(10, 2)], .notFired, none)])) = true ∧
       tokenValueCountStructuralFailure? =
         some (.addressing (.missingBinding 10)) := by
   native_decide
@@ -393,10 +393,10 @@ example :
           severity := .error
           messageType := .omission
           text := { text := "" }
-        })] := by
+        }), ([(10, 1), (20, 2)], .notFired), ([(10, 2), (20, 2)], .notFired)] := by
   native_decide
 
-/- Both authored group-reference forms iterate the actual group rows in immutable document order. A created empty row is structural content, while zero rows produce no evaluation. -/
+/- Both group-reference forms preserve physical encounter order. A created empty row dispatches its root; this wholly empty document has no root content to dispatch (the iteration-domain grid separately locks implicit slots). -/
 example :
     (groupRuleVerdicts? outerGroupPathRule? instantiatedEmptySectionsData ==
         some [
@@ -414,13 +414,13 @@ example :
 example :
     (groupRuleVerdicts? detailGroupPathRule?
         (oneSectionDetailData (some (.parsed (.num 7)))) ==
-      some [([(10, 1)], .fired .value)]) = true ∧
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)]) = true ∧
     (groupRuleVerdicts? detailGroupPathRule?
         (oneSectionDetailData none) ==
-      some [([(10, 1)], .notFired)]) = true ∧
+      some [([(10, 1)], .notFired), ([(10, 2)], .notFired)]) = true ∧
     (groupRuleVerdicts? detailGroupPathRule?
         (oneSectionDetailData (some (.rejected .malformed))) ==
-      some [([(10, 1)], .notFired)]) = true := by
+      some [([(10, 1)], .notFired), ([(10, 2)], .notFired)]) = true := by
   native_decide
 
 /- Execute/Transform/Explain consumers recover the exact group and target addresses plus the uncollapsed admitted-content × error × relevance state from the same checked document used by rule execution. -/

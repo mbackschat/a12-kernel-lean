@@ -53,7 +53,7 @@ def readCell (context : AddressedValidationEvaluationContext model)
   match context.input with
   | .legacy _ read => pure (read environment field)
   | .checked document =>
-      (document.validationAddressedCell environment field).map (·.cell)
+      (document.fullValidationAddressedCell environment field).map (·.cell)
   | .partialView _ read => do
       match ← read environment field with
       | some cell => pure cell

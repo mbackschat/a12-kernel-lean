@@ -305,7 +305,7 @@ def verdictOf (condition : IteratedDateRangeCondition model)
           Except CheckedAddressingError CheckedCell := do
         let path ← (outer.pathForScope declaration.repeatableScope).mapError
           CheckedAddressingError.environment
-        (document.read { field := declaration.id, path }).mapError
+        (document.fullValidationRead { field := declaration.id, path }).mapError
           CheckedAddressingError.document
       let start ← readAt comparison.construction.start.checked.declaration
       let finish ← readAt comparison.construction.finish.checked.declaration
@@ -320,7 +320,7 @@ def verdictOf (condition : IteratedDateRangeCondition model)
           Except CheckedAddressingError CheckedCell := do
         let path ← (outer.pathForScope declaration.repeatableScope).mapError
           CheckedAddressingError.environment
-        (document.read { field := declaration.id, path }).mapError
+        (document.fullValidationRead { field := declaration.id, path }).mapError
           CheckedAddressingError.document
       let leftStart ← readAt comparison.left.start.checked.declaration
       let leftFinish ← readAt comparison.left.finish.checked.declaration

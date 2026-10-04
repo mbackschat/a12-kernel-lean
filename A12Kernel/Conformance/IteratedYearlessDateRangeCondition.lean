@@ -109,9 +109,9 @@ private def yearlessData : DocumentData := {
 does not, with the label completion by authored position supplied by the shared yearless owner. -/
 example :
     yearlessRowVerdicts? .start .start yearlessData =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] ∧
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] ∧
     yearlessRowVerdicts? .finish .finish yearlessData =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .fired .value)] := by
+      some [([(10, 1)], .fired .value), ([(10, 2)], .fired .value), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /-! ## The unconfigured yearless overlap at the iterating row -/
@@ -169,7 +169,7 @@ example :
         yearlessCell scalarMonths.id [] "06/09",
         yearlessCell rowMonths.id [1] "08/11",
         yearlessCell rowMonths.id [2] "10/12"] } =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /- A row with no stored label pair skips its slot, so the scan cannot fire on absence. -/
@@ -177,7 +177,7 @@ example :
     yearlessOverlapRowVerdicts? bareMonths [scalarMonthsOperand] {
       instantiatedRows := [{ group := 10, path := [1] }]
       cells := [yearlessCell scalarMonths.id [] "06/09"] } =
-      some [([(10, 1)], .notFired)] := by
+      some [([(10, 1)], .notFired), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /-! ## The plural yearless overlap at the iterating row -/
@@ -244,11 +244,11 @@ example :
         yearlessCell scalarMonths.id [] "06/09",
         yearlessCell rowMonths.id [1] "08/11",
         yearlessCell rowMonths.id [2] "10/12"] } =
-      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] ∧
+      some [([(10, 1)], .fired .value), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] ∧
     yearlessPluralRowVerdicts? bareMonths scalarMonthsOperand {
       instantiatedRows := [{ group := 10, path := [1] }]
       cells := [yearlessCell scalarMonths.id [] "06/09"] } =
-      some [([(10, 1)], .notFired)] := by
+      some [([(10, 1)], .notFired), ([(10, 2)], .notFired), ([(10, 3)], .notFired), ([(10, 4)], .notFired), ([(10, 5)], .notFired)] := by
   native_decide
 
 /-! ## A filter on a yearless overlap operand -/

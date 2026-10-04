@@ -13,11 +13,14 @@ namespace A12Kernel
 
 namespace CheckedDocument
 
-/-- Classify one model-owned Number field instance from the immutable checked input. The caller retains the authored operand and traversal; this query owns only address resolution and phase observation. -/
+/-- Classify one model-owned Number field instance from the immutable checked input. The caller retains the authored operand and traversal; this query owns only address resolution and phase observation. Full-rule validation opts into its implicit-coordinate view (spec/07 §1); the default and computation retain physical addressing. -/
 def numberValueListCellAt (document : CheckedDocument model)
-    (phase : Phase) (environment : Env) (field : FlatNumberField) :
+    (phase : Phase) (environment : Env) (field : FlatNumberField)
+    (fullDomain : Bool := false) :
     Except CheckedAddressingError (ValueListCell .number) := do
-  let addressed ← document.addressedCell environment field.id
+  let addressed ← match fullDomain, phase with
+    | true, .validation => document.fullValidationAddressedCell environment field.id
+    | _, _ => document.addressedCell environment field.id
   pure (observeCell phase addressed.cell).asNumberValueListCell
 
 end CheckedDocument
