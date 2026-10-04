@@ -194,6 +194,23 @@ No semantic question or guessed output branch remains. This qualifies only E1–
 - `wrong-accounts`: reject operand permutation based solely on symmetric interval overlap, eager collection of all payloads, eager evaluation of all filters, target-before-successor filtering, row-major group expansion, stale computed reads, and validation-style invalid-cell skipping in computation.
 - `limit`: report insufficient information for an indexed source whose selected row is unspecified. This is an artifact-only readback, not a Rust implementation, solver integration, general equivalence proof, shipment or consumer qualification. The consumer sees this task through `query-6` and this limit, but not the root-only acceptance/wrong-account rows or linked oracle.
 
+<a id="run-overlap-guard-readback-01"></a>
+### Ordered overlap guards — `overlap-guard-readback-01`
+
+- `task`: [ordered overlap guard readback](#overlap-computation-guard-probe)
+- `status`: green
+- `started-at`: 2026-10-04T16:36:10+02:00
+- `finished-at`: 2026-10-04T16:37:23+02:00
+- `duration-seconds`: 73
+- `semantic-basis`: `b2504261fca642429fa6f583177ceb223d1f367f`
+- `oracle`: all fourteen query decisions agree with the [reader/scheduler locks](../../A12Kernel/Reference/Dm/ComputationOverlapLocks.lean) and the corresponding retained [kernel grid](../sources/computation-scheduling-probes.md#src-overlap-computation-guards). The finite-stream procedure agrees with the executed search and correlation iterator; root reconciliation passed.
+- `consumer-access`: fresh isolated context with only the frozen task and verbatim excerpts from its three allowed canonical sections. No Lean, expected outputs, checkpoint contents, artifacts, siblings, Git history, network or linked references; the consumer read one scratch handover file and returned pseudocode and decisions.
+- `cost`: 73 seconds for the isolated readback; zero executable implementation/test lines, dependencies or retained machinery. Root reconciliation compared existing locks and observations; no new checker or test suite.
+- `result`: recovered any-pair history versus fixed scalar, empty versus invalid target state, declaration-major order, one-kept-successor lookahead, unread payloads and fresh producer scheduling. Named the corresponding state and reachability distinctions an SMT-backed reordering check must preserve.
+- `wrong-accounts`: the query matrix rejects operand permutation from relation symmetry, eager payload/filter evaluation, target-before-successor filtering, row-major groups, stale producer reads and validation-style invalid-cell skipping.
+- `questions-and-guesses`: none within the task. The consumer explicitly withheld general admission, reference/index resolution, full filter semantics, temporal resolution and wider group-dependent scheduling; an unspecified indexed selection returns insufficient information.
+- `exclusions`: artifact-only knowledge transport for the finite task; no Rust execution, solver integration, general equivalence proof, public shipment or broader consumer qualification.
+
 ## Conclusion
 
 Bounded Execute transport works across exact-address application, the admitted generated-table path from selected target evaluation through source-relative public result and separate-destination application, repeatable Number constant execution through that phase boundary, fixed-child row-local counting and validation below a bound repeatable ancestor, selected-preliminary execution across independent carriers and three composition boundaries, immutable topology with prepared or caller-supplied temporal source views, explicit later validation over normalized one- and two-level applied topology, and the exact two-level materialized generated-target continuation. It remains cheap enough to justify continued semantic shipments. The two rejected first attempts, one temporal and one topological, prove that cold implementation plus consumer-local tests is insufficient; authoritative Lean reconciliation is mandatory.
