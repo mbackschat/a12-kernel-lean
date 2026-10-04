@@ -20,7 +20,7 @@ inductive SurfaceScalarTemporalExpression where
   | group (source : SurfaceScalarTemporalExpression)
   | extremum (operator : TemporalExtremumOp) (source : SurfaceFieldEntitySource)
   | combine (operator : TemporalExtremumOp)
-      (left right : SurfaceScalarTemporalExpression)
+      (first : SurfaceScalarTemporalExpression) (rest : List SurfaceScalarTemporalExpression)
   | now
   | today
   | dateLiteral (value : FullDate)

@@ -30,6 +30,11 @@ year supplementation in spec/05; the configured/unconfigured stamp grid locks bo
 private def scalarComponents (model : FlatModel) (components : TemporalComponents) : TemporalComponents :=
   if components.hasDate then components.withBaseYear model.hasBaseYear else components
 
+private def temporalConstant : SurfaceScalarTemporalExpression → Bool
+  | .now | .today | .dateLiteral _ | .timeLiteral _ | .dateTimeLiteral _ => true
+  | .group source => temporalConstant source
+  | _ => false
+
 mutual
 private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
     (targetGroup? : Option GroupPath) (surface : SurfaceScalarTemporalExpression) :
@@ -57,11 +62,15 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       let first :: rest := fields | throw .unsupportedSource
       pure (.apply (.extremum operator) (.atom (.field first))
         (rest.map fun field => .atom (.field field)), scalarComponents model first.components)
-  | .combine operator left right => do
-      let (left, leftComponents) ← resolveScalarTemporalExpression model rowGroup targetGroup? left
-      let (right, rightComponents) ← resolveScalarTemporalExpression model rowGroup targetGroup? right
-      if leftComponents != rightComponents then throw .incompatibleFormats
-      pure (.apply (.extremum operator) left [right], leftComponents)
+  | .combine operator first rest => do
+      if ((first :: rest).filter temporalConstant).length > 1 then throw .unsupportedSource
+      let (first, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? first
+      let rest ← rest.attach.mapM fun operand => do
+        have := List.sizeOf_lt_of_mem operand.property
+        let (core, operandComponents) ← resolveScalarTemporalExpression model rowGroup targetGroup? operand.val
+        if components != operandComponents then throw .incompatibleFormats
+        pure core
+      pure (.apply (.extremum operator) first rest, components)
   | .now => pure (.atom .now, TemporalComponents.now)
   | .today => do pure (.atom (.today (← scalarProfile model)), TemporalComponents.fullDate)
   | .dateLiteral value => do
@@ -207,10 +216,6 @@ def elaborateScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
       let (core, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? surface
       pure { core, components, modelWellFormed := by rw [h]; rfl }
 
-private def temporalConstant : SurfaceScalarTemporalExpression → Bool
-  | .now | .today | .dateLiteral _ | .timeLiteral _ | .dateTimeLiteral _ => true
-  | .group source => temporalConstant source
-  | _ => false
 
 private def ungroupedClock : SurfaceScalarTemporalExpression → Bool
   | .now | .today => true

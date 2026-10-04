@@ -144,12 +144,16 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
           | some value => pure (.dateLiteral value)
           | none => refuse "TemporalExpression" "literal calendar profile"
       | _, _, _ => refuse "TemporalExpression" "literal"
+  | .call "Min" operands none none | .call "Max" operands none none => do
+      let name := expression.construct
+      let first :: rest := operands | refuse name "empty operand list"
+      let lowerOperand : Argument → Lowering SurfaceScalarTemporalExpression
+        | .mk operand none none => lowerScalarTemporalExpressionAt model rowGroup .value operand
+        | _ => refuse name "operand modifier"
+      pure (.combine (if name == "Min" then .minimum else .maximum)
+        (← lowerOperand first) (← rest.mapM lowerOperand))
   | .call name [.mk source none none, .mk amount none none] none none => do
       match name with
-      | "Min" | "Max" =>
-          pure (.combine (if name == "Min" then .minimum else .maximum)
-            (← lowerScalarTemporalExpressionAt model rowGroup .value source)
-            (← lowerScalarTemporalExpressionAt model rowGroup .value amount))
       | "AddDays" | "AddMonths" | "AddYears" =>
           let unit := if name == "AddDays" then DateShiftUnit.days
             else if name == "AddMonths" then .months else .years

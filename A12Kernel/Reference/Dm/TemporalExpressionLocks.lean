@@ -552,4 +552,40 @@ example : (do
     pure (match result with | .error (.checkedDocumentRequired []) => true | _ => false)) =
     some true := by native_decide
 
+example : ["Min", "Max"].all (fun op =>
+    admitted (op ++ "([Stamp]) == [Stamp2]") &&
+    admitted (op ++ "([Stamp], [Stamp2], AddHours(Now,1)) == [Stamp2]") &&
+    operationAdmitted (op ++ "([Stamp2], AddHours(Now,1), AddHours(Now,2))") &&
+    !admitted (op ++ "() == [Stamp2]") &&
+    !admitted (op ++ "([Stamp], [Clock], [Stamp2]) == [Stamp2]") &&
+    !admitted (op ++ "([Stamp], {Now}, Now) == [Stamp2]") &&
+    admitted (op ++ "(" ++ op ++ "([Stamp], Now), Now) == [Stamp2]")) = true := by native_decide
+
+example : stored 7 "Min(AddHours(Now,3), AddHours(Now,2), AddHours(Now,1))" =
+    some "1970-01-01T01:00:00" ∧
+    stored 7 "Max(AddHours(Now,1), AddHours(Now,2), AddHours(Now,3))" =
+    some "1970-01-01T03:00:00" ∧
+    stored 6 "Min(Time(\"3\"), Time(\"2\"), Time(\"1\"))" = some "01:00:00" ∧
+    stored 5 "Max(AddDays(Today,1), AddDays(Today,2), AddDays(Today,3))" =
+    some "1970-01-04" := by native_decide
+
+example : stored 7 "Min(Max(AddHours(Now,1), AddHours(Now,3)), AddHours(Now,2))" =
+    some "1970-01-01T02:00:00" ∧
+    stored 7 "Max([Stamp2])" = some "unavailable" ∧
+    !operationAdmitted "Min(AddHours(Now,1), [Stamp2], [Stamp])" := by native_decide
+
+example : ["Min", "Max"].all (fun op =>
+    (match gapResult 7 (op ++ "(AddHours(Now,1), [Stamp2], \"31.03.2024T02:30:00\")") true with
+      | some (.dateTime (.poison _), _) => true | _ => false) &&
+    (match gapResult 7 (op ++ "(AddHours(Now,1), \"31.03.2024T02:30:00\", [Stamp2])") true with
+      | some (.valueError .dateTime, _) => true | _ => false)) = true := by native_decide
+
+example : runRows "Min([Stamp2], [Stamp], AddHours(Stamp,[Amount])) < [Stamp]"
+      [clockRow "-1", clockRow "1"] = some ["Order/Rows/Stamp2"] ∧
+    runRows "Max([Stamp], [Stamp2], AddHours(Stamp,[Amount])) > [Stamp2]"
+      [clockRow "0", clockRow "3"] = some ["Order/Rows[2]/Stamp2"] := by native_decide
+
+example : numericArms "Min(Max(Min([Anchor],1),2), HoursFromTime(AddHours(Now,1)),3)" =
+    (true, true) := by native_decide
+
 end A12Kernel.Dm.TemporalExpressionLocks

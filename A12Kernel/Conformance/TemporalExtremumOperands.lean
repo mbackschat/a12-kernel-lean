@@ -167,7 +167,8 @@ example :
       some (some .dateTimeLabelUnresolved) ∧
     berlinTemporalResult (.timeFromDateTime (.dateTimeLiteral berlinGap)) =
       some (some .dateTimeLabelUnresolved) ∧
-    berlinTemporalResult (.combine .minimum .now (.dateTimeLiteral berlinGap)) =
+    berlinTemporalResult (.combine .minimum (.subdayShift .seconds .now (.literal { value := 0, authoredScale := 0 }))
+        [.dateTimeLiteral berlinGap]) =
       some (some .dateTimeLabelUnresolved) := by native_decide
 
 private def berlinComparisonResult (left right : SurfaceScalarTemporalExpression)
