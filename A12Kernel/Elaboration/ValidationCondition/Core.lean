@@ -633,7 +633,8 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
 def wellFormedBool (rowGroup : GroupPath) :
     ValidationConditionLeaf model → Bool
-  | .constructedDateValidity _ _ => true
+  | .constructedDateValidity _ source => source.fields.all fun field =>
+      (model.fieldRepeatableScope field).isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
   | .tokenComparison comparison => comparison.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains
   | .stringExpression comparison => comparison.declarations.all fun field =>

@@ -574,6 +574,8 @@ private def generatedGuardCondition (model : FlatModel) (world? : Option World) 
       pure (ValidationCondition.orderedNumericIn
         (if resolved.requiresAddressedValidation then .modelWideCheckedComputation else .modelWideNonrepeatable)
         resolved)
+  | .leaf (.predicate (.dateValidity operation source)) =>
+      pure (.leaf (.constructedDateValidity operation source))
   | .leaf (.predicate (.typeValidity operation operand name)) => do
       let some world := world? | throw .typeValidityRequiresWorld
       pure (.leaf (.customFieldValidity {

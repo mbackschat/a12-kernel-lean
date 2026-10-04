@@ -8,7 +8,7 @@ import A12Kernel.Semantics.String
 
 This capsule certifies direct `Date` components at an explicitly bound reading scope backed by ordinary Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, admitted quoted constants, or matching Date/DateTime/Base-Year/`Today`/`Now` extractors, plus the two-argument Base-Year specialization, for the concrete UTC/GMT/Berlin profiles. Each field position keeps the kernel checker's exact stored-width, numeric-maximum, or Year-only format gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; dynamic point-in-time sources retain the selected model-zone profile without sampling a clock; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
 
-Execution and composition use the shared scalar temporal tree and floor-free legacy calendar model. Direct extensible-enumeration String components, other recursive extractor operands, other model zones and repeatable computation targets remain separate obligations in SG6.
+Execution and composition use the shared scalar temporal tree and floor-free legacy calendar model. Computation consumers bind direct component reads at the target row, including repeated Number/String targets guarded by constructed-Date validity. Direct extensible-enumeration String components, general recursive extractor operands and additional zone profiles remain separate obligations in SG6.
 -/
 
 namespace A12Kernel

@@ -18,6 +18,7 @@ inductive SurfaceScalarMembershipMembers where
   deriving Repr, DecidableEq
 
 inductive SurfaceComputationPredicate where
+  | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceConstructedDateComponents)
   | typeValidity (operation : CustomFieldValidityOp) (source : SurfaceFieldPath) (name : String)
   | stringExpression (operator : EqualityOp) (left right : StringExpr SurfaceFieldPath)
   | temporal (operator : TemporalComparisonOp) (left right : SurfaceScalarTemporalExpression)
@@ -64,6 +65,7 @@ inductive ComputationPredicateError where
 /-- Retain typed source certificates and authored filters; computation traversal keeps reached
 errors distinct from validation's unknown verdict. -/
 inductive CheckedComputationPredicate (model : FlatModel) where
+  | dateValidity (operation : ConstructedDateValidityOp) (source : CheckedConstructedDateComponents model)
   | typeValidity (operation : CustomFieldValidityOp)
       (source : CheckedCustomFieldValidityOperand model) (name : String)
   | stringExpression (source : CheckedStringExpressionComparison model)
@@ -81,6 +83,7 @@ namespace CheckedComputationPredicate
 
 def referencesField (predicate : CheckedComputationPredicate model) (field : FieldId) : Bool :=
   match predicate with
+  | .dateValidity _ source => source.fields.contains field
   | .typeValidity _ source _ => source.source == field
   | .stringExpression source => source.referencesField field
   | .temporal source => source.referencesField field
@@ -93,6 +96,7 @@ def referencesField (predicate : CheckedComputationPredicate model) (field : Fie
 
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
   match predicate with
+  | .dateValidity _ source => source.fields.all (fun field => (model.fieldRepeatableScope field).isPrefixOf scope)
   | .typeValidity _ source _ => source.declaration.repeatableScope.isPrefixOf scope
   | .stringExpression source => source.declarations.all (·.repeatableScope.isPrefixOf scope)
   | .temporal source => (source.left.bindingScopes ++ source.right.bindingScopes).all (·.isPrefixOf scope)
@@ -289,6 +293,14 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   let filterRead := filterRead?.getD (fun row field =>
     (context.addressed.map (fun addressed => addressed.read row field)).getD (context.read field))
   match predicate with
+  | .dateValidity operation source => do
+      let observation ← (source.evaluateComponentsWith (fun component =>
+        component.readWith .computation context.read context.storedText context.world) >>= source.applyProfileReality)
+          |>.mapError (fun _ => .temporalUnavailable)
+      pure (match observation.validityVerdict operation with
+        | .error cause => .poison cause
+        | .ok (.fired _) => .holds
+        | .ok _ => .notTrue)
   | .typeValidity operation source name => do
       let observation := observeCell .computation (context.read source.source)
       match observation with
@@ -361,6 +373,11 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (surface : SurfaceComputationPredicate) :
     Except ComputationPredicateElabError (CheckedComputationPredicate model) := do
   match surface with
+  | .dateValidity operation source => do
+      let checked ← (elaborateConstructedDateSources model source
+        (model.repeatableScopeForGroupPath targetGroup)).mapError (fun error => .temporal (.dateComponents error))
+      if checked.fields.isEmpty then throw .incoherent
+      pure (.dateValidity operation checked)
   | .typeValidity operation path name => do
       let declaration ← (model.resolveComputationFieldValueRead declaringGroup targetGroup path).mapError .read
       let source ← (elaborateCustomFieldValidityOperand model declaration.id).mapError .typeOperand

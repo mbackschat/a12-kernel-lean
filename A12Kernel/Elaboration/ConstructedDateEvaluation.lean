@@ -8,7 +8,7 @@ import A12Kernel.Semantics.DateTimeComparison
 
 This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today`/`Now` resolve only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause. UTC/GMT and pinned Berlin resolve the legacy-hybrid label without imposing the later stored-Date floor.
 
-Exact formal causes and missing provenance remain distinguishable. A fresh real result resolves once under the selected profile and projects that exact instant into the shared temporal comparison domain. Checked shifts and differences have their own execution owners in `ConstructedDateShiftEvaluation` and `ConstructedDateDifferenceEvaluation`. The extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement and other model zones remain outside these source certificates; the scalar temporal expression and target owners compose their certified sources.
+Exact formal causes and missing provenance remain distinguishable. A fresh real result resolves once under the selected profile and projects that exact instant into the shared temporal comparison domain. Checked shifts and differences have their own execution owners in `ConstructedDateShiftEvaluation` and `ConstructedDateDifferenceEvaluation`. Extensible-enumeration String components, general recursive extractor operands and additional zone profiles remain outside these source certificates. Snapshot readers require nonrepeatable fields; `CheckedConstructedDateSource.readWith` lets temporal expressions and computation guards supply the target-row and completed-producer reads required by spec/09 §5.
 -/
 
 namespace A12Kernel
@@ -226,6 +226,21 @@ def read (checked : CheckedConstructedDateSource model)
   | .extractor source => source.read phase input
   | .baseYearExtractor source => source.read phase input
   | .pointInTimeExtractor source => source.read world
+
+/-- Use the caller's row and phase readers without replacing computed cells or their stored text with the input snapshot (spec/09 §5). -/
+def readWith (source : CheckedConstructedDateSource model) (phase : Phase)
+    (readCell : FieldId → CheckedCell) (storedText : FieldId → Option String) (world : Option World) :
+    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
+  match source with
+  | .numberField checked => checked.classify (observeCell phase (readCell checked.source.id))
+  | .stringField checked => checked.classify (observeCell phase (readCell checked.source.id))
+  | .dateYearField checked => checked.classify (observeCell phase (readCell checked.source.id))
+      (storedText checked.source.id)
+  | .constant value => pure (.value value)
+  | .extractor checked => checked.classify (observeCell phase (readCell checked.source.id))
+  | .baseYearExtractor checked => pure (.value
+      (baseYearDateSourceNumericPart checked.year checked.source checked.part).num)
+  | .pointInTimeExtractor checked => checked.read world
 
 end CheckedConstructedDateSource
 

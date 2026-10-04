@@ -1,5 +1,7 @@
 import A12Kernel.Reference.Dm.Replay
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.Compute
+import A12Kernel.Elaboration.GeneratedComputationValidation
 
 namespace A12Kernel.Dm.ConstructedDateValidityLocks
 
@@ -125,5 +127,174 @@ example : [leafResult "Valid(Date(D, M, Y))" [("D", "29"), ("M", "2"), ("Y", "ba
       (fun | some (.ok .unknown) => true | _ => false) = true ∧
     (match leafResult "Valid(Date(D, MonthFromDate(Now), YearFromDate(Now)))" [("D", "30")] with
       | some (.error (.constructedDate .nowWorldRequired)) => true | _ => false) = true := by native_decide
+
+private def computationModel (repeated : Bool) : FlatModel :=
+  let target (id : FieldId) (name : String) := {
+    (number id name 9999) with
+    policy := { kind := .number { scale := 0, signed := true } }
+    numericTargetConstraints := { minimum := some 0, maximum := some 9999 } }
+  { model with fields := (model.fields ++ [target 10 "Out", target 11 "After"]).map fun field =>
+      if repeated && field.id != 6 then
+        { field with groupPath := ["Form", "Rows"], repeatableScope := [10] }
+      else field }
+
+private def compute (guard : String) (rows : List (List (String × String)))
+    (repeated fresh : Bool := false) (now : Int := 0) (stringTarget : Bool := false) : Option (List String) := do
+  let model := computationModel repeated
+  let model := if stringTarget then { model with fields := model.fields.map fun field =>
+    if field.id == 10 then { field with policy := { kind := .string }, numericTargetConstraints := {} } else field } else model
+  let raw := fun values => Json.mkObj ((values ++ [("Out", "9"), ("After", "9")]).map
+    fun (key, value) => (key, Json.str value))
+  let data := if repeated then Json.mkObj [("Rows", .arr (rows.map raw).toArray)]
+    else raw (rows.headD [])
+  let input ← (readDocument {
+    flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (Json.mkObj [("Form", data)])).toOption
+  if !input.refusals.isEmpty then none
+  let world : World := { now := { epochMillis := now } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let path := if repeated then "Rows/" else ""
+  let definition (name target operation : String) (guard : Option String := none) : DmComputation := {
+    group := ["Form"], name, targetRelPath := "../" ++ path ++ target
+    commonPrecondition := guard, alternatives := [{ precondition := none, operation }]
+    errorCodesToSuppress := [] }
+  let definitions := [definition "Guard" "Out" (if stringTarget then "\"yes\"" else "1") (some guard),
+    definition "Dependent" "After" (if stringTarget then s!"Length({path}Out)" else s!"[{path}Out] + 1")] ++
+      if fresh then [definition "Producer" "D" "29"] else []
+  let steps ← definitions.mapM fun definition =>
+    (lowerComputation model .english definition).toOption.map (·.2)
+  pure ((← (runComputations world prepared checked steps).toOption).map (·.outcome))
+
+example : [false, true].all (fun repeated =>
+    let path := if repeated then "Rows/" else ""
+    ["Valid", "Invalid"].all fun operation =>
+      let guard := s!"{operation}(Date({path}D, {path}M, {path}Y))"
+      let valid := operation == "Valid"
+      compute guard [[("D", "29"), ("M", "2"), ("Y", "2024")]] repeated ==
+        some (if valid then ["value 1", "value 2"] else ["cleared", "value 1"]) &&
+      compute guard [[("D", "29"), ("M", "2"), ("Y", "2023")]] repeated ==
+        some (if valid then ["cleared", "value 1"] else ["value 1", "value 2"]) &&
+      compute guard [[]] repeated ==
+        some (if valid then ["cleared", "value 1"] else ["value 1", "value 2"]) &&
+      compute guard [[("D", "29"), ("M", "2"), ("Y", "bad")]] repeated ==
+        some ["cleared", "cleared"] &&
+      compute guard [[("D", "bad"), ("M", "2"), ("Y", "2024")]] repeated true ==
+        some (if valid then ["value 29", "value 1", "value 2"] else
+          ["value 29", "cleared", "value 1"])) := by native_decide
+
+example : compute "Valid(Date(Rows/D, Rows/M, Rows/Y))"
+    [[("D", "29"), ("M", "2"), ("Y", "2024")], [("D", "29"), ("M", "2"), ("Y", "2023")]] true =
+      some ["value 1", "cleared", "value 2", "value 1"] ∧
+    compute "Valid(Date(TextDay, M, Year))" [[("TextDay", "29"), ("M", "2"), ("Year", "2024")]] =
+      some ["value 1", "value 2"] ∧
+    compute "Invalid(Date(D, M))" [[("D", "29"), ("M", "2")]] = some ["cleared", "value 1"] ∧
+    compute "Valid(Date(D, M, C, S))" [[("D", "29"), ("M", "2"), ("C", "20"), ("S", "0")]] =
+      some ["value 1", "value 2"] := by native_decide
+
+example : compute "Valid(Date(D, MonthFromDate(Now), YearFromDate(Now)))" [[("D", "30")]] =
+    some ["value 1", "value 2"] ∧
+    compute "Valid(Date(D, MonthFromDate(Now), YearFromDate(Now)))" [[("D", "30")]] false false 951782400000 =
+      some ["cleared", "value 1"] ∧
+    compute "FieldNotFilled(D) Or Invalid(Date(D, M, Y))" [[("Y", "bad")]] =
+      some ["value 1", "value 2"] ∧
+    compute "FieldFilled(D) And Valid(Date(D, M, Y))" [[("Y", "bad")]] =
+      some ["cleared", "value 1"] := by native_decide
+
+example : compute "Valid(Date(D, M, Y))" [[("D", "29"), ("M", "2"), ("Y", "1500")]] =
+    some ["value 1", "value 2"] ∧
+    compute "Invalid(Date(D, M, Y))" [[("D", "10"), ("M", "10"), ("Y", "1582")]] =
+      some ["value 1", "value 2"] := by native_decide
+
+example : [false, true].all (fun repeated =>
+    let path := if repeated then "Rows/" else ""
+    let guard := s!"Valid(Date({path}D, {path}M, {path}Y))"
+    compute guard [[("D", "29"), ("M", "2"), ("Y", "2024")]] repeated false 0 true ==
+      some ["value yes", "value 3"] &&
+    compute guard [[("D", "29"), ("M", "2"), ("Y", "bad")]] repeated false 0 true ==
+      some ["cleared", "cleared"]) := by native_decide
+
+example : compute "Valid(Date(DayFromDate(Stamp), MonthFromDate(Stamp), YearFromDate(Stamp)))"
+    [[("Stamp", "2024-02-29")]] = some ["value 1", "value 2"] ∧
+    compute "Valid(Date(D, MonthFromDate(BaseYear), YearFromDate(EndOfDateRange(BaseYear))))"
+      [[("D", "1")]] = some ["value 1", "value 2"] := by native_decide
+
+private def guardAdmitted (guard : String) (repeated : Bool := false) : Bool :=
+  let model := computationModel repeated
+  let model := if repeated then { model with fields := model.fields ++ [number 12 "Out" 9999, number 13 "Root" 99] } else model
+  (lowerComputation model .english {
+    group := ["Form"], name := "Guarded", targetRelPath := "../Out"
+    commonPrecondition := some guard, alternatives := [{ precondition := none, operation := "1" }]
+    errorCodesToSuppress := [] }).isOk
+
+example : ["Valid(Date(\"1\", \"2\", \"2024\"))", "Invalid(Date(D))",
+    "Valid(Date(D, M, 2024))", "Valid(Date(D, M, \"24\"))", "Valid(Date(D, M, Out))"].all
+      (fun guard => !guardAdmitted guard) ∧
+    guardAdmitted "Valid(Date(D, M, After))" ∧
+    guardAdmitted "FieldNotFilled(Root)" true ∧
+    !guardAdmitted "Valid(Date(Rows/D, Rows/M, Rows/Y))" true := by native_decide
+
+private def guardScopes : Option (List Bool) := do
+  let model := computationModel true
+  let parsed ← (parseText .english "Valid(Date(Rows/D, Rows/M, Rows/Y))").toOption
+  let surface ← (lowerGuard model ["Form"] false parsed.body (some ["Form", "Rows"])).toOption
+  let guard ← (model.elaborateCheckedComputationCondition ["Form"] ["Form", "Rows"] surface).toOption
+  let .leaf (.predicate predicate) := guard | none
+  pure ([[], [10], [10, 20], [20]].map predicate.rowBoundBool)
+
+example : guardScopes = some [false, true, true, false] := by native_decide
+
+private def generatedScope (repeated : Bool) (name : String) : Option (Bool × Bool) := do
+  let model := computationModel repeated
+  let model := { model with fields := model.fields ++ [number 12 "Fixed" 9999] }
+  let path := if repeated then "Rows/" else ""
+  let binding := if repeated then ["Form", "Rows"] else ["Form"]
+  let parsed ← (parseText .english s!"{name}(Date({path}D, {path}M, {path}Y))").toOption
+  let surface ← (lowerGuard model ["Form"] false parsed.body (some binding)).toOption
+  let guard ← (model.elaborateCheckedComputationCondition ["Form"] binding surface).toOption
+  let .leaf (.predicate predicate) := guard | none
+  let operation ← (elaborateCompleteNumericComputationOperation model ["Form"] 12
+    (.literal { value := 1, authoredScale := 0 }) false).toOption
+  let table : GeneratedComputationTable (CheckedNumericComputationOperation model) (CheckedComputationCondition model) := {
+    targetField := 12, name := "Computed", commonPrecondition := some guard
+    alternatives := .singleton { operation }, messagePlan := { parts := [.text "date result"] } }
+  pure (predicate.rowBoundBool [], (assembleGeneratedNumericOperationTableRule model table).isOk)
+
+example : ["Valid", "Invalid"].all (fun name =>
+    generatedScope false name == some (true, true) &&
+    generatedScope true name == some (false, false)) := by native_decide
+
+private def generatedPhases (operation : String) : Option (Bool × Bool) := do
+  let model := computationModel false
+  let path := ""
+  let targetGroup := ["Form"]
+  let parsed ← (parseText .english s!"{operation}(Date({path}D, {path}M, {path}Y)) Or FieldFilled({path}M)").toOption
+  let surface ← (lowerGuard model ["Form"] false parsed.body (some targetGroup)).toOption
+  let guard ← (model.elaborateCheckedComputationCondition ["Form"] targetGroup surface).toOption
+  let operation ← (elaborateCompleteNumericComputationOperation model ["Form"] 10
+    (.literal { value := 1, authoredScale := 0 }) false).toOption
+  let table : GeneratedComputationTable (CheckedNumericComputationOperation model) (CheckedComputationCondition model) := {
+    targetField := 10, name := "Computed", commonPrecondition := some guard
+    alternatives := .singleton { operation }, messagePlan := { parts := [.text "date result"] } }
+  let row := Json.mkObj [("D", "29"), ("M", "2"), ("Y", "bad"), ("Out", "9")]
+  let data := row
+  let input ← (readDocument {
+      flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (Json.mkObj [("Form", data)])).toOption
+  if !input.refusals.isEmpty then none
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let row : Env := []
+  let computed ← (guard.evalChecked ((document.computationContextAt row).withWorld world)).toOption
+  let rule ← (assembleGeneratedNumericOperationTableRule model table).toOption
+  let validated ← (rule.evalAddressedFull {
+    scalar := { fields := document.flatContext.withWorld world, groups := GroupPresenceContext.unavailable }
+    outer := row, input := .checked document } true).toOption
+  pure (match computed with | .poison _ => true | _ => false,
+    match validated with | .fired _ => true | _ => false)
+
+example : ["Valid", "Invalid"].all (fun operation =>
+    generatedPhases operation == some (true, true)) := by native_decide
 
 end A12Kernel.Dm.ConstructedDateValidityLocks

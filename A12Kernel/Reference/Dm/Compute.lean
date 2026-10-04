@@ -92,6 +92,10 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
   | .call "GroupNotFilled" [.mk group none none] none none => match group.groupReference? with
       | some reference => pure (.groupPresence .notFilled reference)
       | none => refuse "Guard/GroupNotFilled" "group operand"
+  | .call "Valid" [.mk (.call "Date" arguments none none) none none] none none =>
+      (.predicate ∘ .dateValidity .valid) <$> lowerDateComponents model group arguments
+  | .call "Invalid" [.mk (.call "Date" arguments none none) none none] none none =>
+      (.predicate ∘ .dateValidity .invalid) <$> lowerDateComponents model group arguments
   | .call "Valid" [.mk field none none, .mk (.string name) none none] none none => do
       let some path := field.fieldEntity? | refuse "ValidType" "field operand"
       pure (.predicate (.typeValidity .valid path name))

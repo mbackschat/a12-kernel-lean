@@ -363,16 +363,8 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
           let some value := resolvedScalarDate source.profile date | throw .calendarUnavailable
           pure (.value (.date value) true)
   | .dateConstruction components =>
-      let read (source : CheckedConstructedDateSource model) := match source with
-        | .numberField checked => checked.classify (observeCell phase (context.read checked.source.id))
-        | .stringField checked => checked.classify (observeCell phase (context.read checked.source.id))
-        | .dateYearField checked => checked.classify (observeCell phase (context.read checked.source.id))
-            (context.storedText checked.source.id)
-        | .constant value => pure (.value value)
-        | .extractor checked => checked.classify (observeCell phase (context.read checked.source.id))
-        | .baseYearExtractor checked => pure (.value
-            (baseYearDateSourceNumericPart checked.year checked.source checked.part).num)
-        | .pointInTimeExtractor checked => checked.read context.world
+      let read (source : CheckedConstructedDateSource model) :=
+        source.readWith phase context.read context.storedText context.world
       match components.evaluateValueWith read with
       | .ok (.value instant parts notGiven) =>
           pure (.value (.date { instant, parts, basis := .legacyHybrid }) (!notGiven))
