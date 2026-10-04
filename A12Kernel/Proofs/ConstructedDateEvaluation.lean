@@ -52,6 +52,8 @@ theorem checkedConstructedDateComponents_evaluateValue_real
     checked.evaluateValue phase input world =
       .ok (.value instant parts false) := by
   unfold CheckedConstructedDateComponents.evaluateValue
+    CheckedConstructedDateComponents.evaluateValueWith
+  unfold CheckedConstructedDateComponents.evaluateComponents at observed
   rw [observed]
   simp only [bind, Except.bind]
   rw [resolved]
@@ -149,7 +151,7 @@ theorem checkedConstructedDateCentury_read_unavailable
     CheckedConstructedDateYear.read
         (.centuryAndShortYear century shortYear) phase input world =
       .ok (.unavailable cause) := by
-  simp [CheckedConstructedDateYear.read, observed]
+  simp [CheckedConstructedDateYear.read, CheckedConstructedDateYear.readWith, observed]
 
 /-- Two reached fixed split-year parts compose by decimal place, not addition. -/
 theorem checkedConstructedDateCentury_read_values
@@ -164,19 +166,29 @@ theorem checkedConstructedDateCentury_read_values
     CheckedConstructedDateYear.read
         (.centuryAndShortYear century shortYear) phase input world =
       .ok (.value (centuryValue * 100 + shortYearValue)) := by
-  simp [CheckedConstructedDateYear.read, observedCentury, observedShortYear]
+  simp [CheckedConstructedDateYear.read, CheckedConstructedDateYear.readWith, observedCentury, observedShortYear]
 
-/-- A formally unavailable Day prevents every later component read. -/
+/-- A reached Day poison stops the shared component fold, for immutable documents and scalar
+expression contexts alike; the later Month and Year readers are arbitrary. -/
+theorem checkedConstructedDateComponentsWith_day_unavailable
+    (checked : CheckedConstructedDateComponents model)
+    (readSource : CheckedConstructedDateSource model →
+      Except ConstructedDateEvaluationFault CheckedConstructedDateComponent)
+    (cause : FormalCause) (observed : readSource checked.day = .ok (.unavailable cause)) :
+    checked.evaluateComponentsWith readSource = .ok (.unavailable cause) := by
+  simp [CheckedConstructedDateComponents.evaluateComponentsWith, observed]
+
+/-- The document reader specializes the shared ordered component fold. -/
 theorem checkedConstructedDateComponents_day_unavailable
     (checked : CheckedConstructedDateComponents model)
     (phase : Phase) (input : CheckedDocument model) (cause : FormalCause)
     (world : Option World)
-    (observed :
-      checked.day.read phase input world = .ok (.unavailable cause)) :
+    (observed : checked.day.read phase input world = .ok (.unavailable cause)) :
     checked.evaluate phase input world = .ok (.unavailable cause) := by
-  unfold CheckedConstructedDateComponents.evaluate
-    CheckedConstructedDateComponents.evaluateComponents
-  rw [observed]
+  simp [CheckedConstructedDateComponents.evaluate, CheckedConstructedDateComponents.evaluateComponents,
+    checkedConstructedDateComponentsWith_day_unavailable checked
+      (fun source => source.read phase input world) cause observed,
+    CheckedConstructedDateComponents.applyProfileReality]
   rfl
 
 /-- Resolving cause-free checked components cannot manufacture the cause-free UNKNOWN fallback. -/
@@ -225,6 +237,8 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
     checked.evaluateComponents phase input world ≠
       .ok (.resolved .unknown) := by
   unfold CheckedConstructedDateComponents.evaluateComponents
+    CheckedConstructedDateComponents.evaluateComponentsWith
+  dsimp only
   generalize dayRead :
     CheckedConstructedDateSource.read checked.day phase input world = day
   cases day with
@@ -242,8 +256,8 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
               | unavailable cause => simp
               | value amount =>
                   generalize yearRead :
-                    CheckedConstructedDateYear.read
-                      checked.year phase input world = year
+                    CheckedConstructedDateYear.readWith
+                      checked.year (fun source => source.read phase input world) = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -252,8 +266,8 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
                           pure, Except.pure]
               | empty =>
                   generalize yearRead :
-                    CheckedConstructedDateYear.read
-                      checked.year phase input world = year
+                    CheckedConstructedDateYear.readWith
+                      checked.year (fun source => source.read phase input world) = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -270,8 +284,8 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
               | unavailable cause => simp
               | value amount =>
                   generalize yearRead :
-                    CheckedConstructedDateYear.read
-                      checked.year phase input world = year
+                    CheckedConstructedDateYear.readWith
+                      checked.year (fun source => source.read phase input world) = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -280,8 +294,8 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
                           pure, Except.pure]
               | empty =>
                   generalize yearRead :
-                    CheckedConstructedDateYear.read
-                      checked.year phase input world = year
+                    CheckedConstructedDateYear.readWith
+                      checked.year (fun source => source.read phase input world) = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -421,7 +435,7 @@ theorem checkedConstructedDateDifference_second_unavailable
     checked.evaluate phase input world = .ok (.error cause) := by
   simp [CheckedConstructedDateDifference.evaluate, first, second]
 
-/-- A structural first-source failure, including Berlin's explicit pre-floor insufficiency, stops before the second source and remains outside semantic unreal. -/
+/-- A structural first-source failure stops before the second source and remains outside semantic unreal. -/
 theorem checkedConstructedDateDifference_first_fault
     (checked : CheckedConstructedDateDifference model)
     (phase : Phase) (input : CheckedDocument model) (world : Option World)

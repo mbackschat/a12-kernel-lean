@@ -21,6 +21,7 @@ def CheckedComputationConditionError.toNumericFault :
   | .primitive error => .guardBinding error
   | .numeric error => error
   | .predicate .valueFailure => .guardValueFailure
+  | .predicate .temporalUnavailable => .unsupportedDateCalendar
   | .predicate (.fieldKindMismatch field) => .fieldKindMismatch field
   | .predicate .contextRequired => .repeatableContextRequired
   | .predicate (.addressing error) => .repeatableAddressing error

@@ -1,0 +1,36 @@
+{
+  "model": "CalendarFragments_DM.json",
+  "locale": "en_US",
+  "clock": "2024-03-30T23:00:00Z",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "filled",
+      "documentInline": {
+        "Form": {
+          "YM": "2024-02",
+          "MD": "02-28",
+          "Y": "2024",
+          "M": "02",
+          "YMDays": "2024-02",
+          "YMMonths": "2024-02",
+          "YMYears": "2024-02",
+          "MDDays": "02-28",
+          "MDMonths": "02-28",
+          "MDYears": "02-28",
+          "YDays": "2024",
+          "YMonths": "2024",
+          "YYears": "2024",
+          "MDays": "02",
+          "MMonths": "02",
+          "MYears": "02",
+          "After": "9"
+        }
+      }
+    }
+  ]
+}

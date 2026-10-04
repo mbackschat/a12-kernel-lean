@@ -149,6 +149,7 @@ end DocumentTargetFamily
 back in. `targetNotReadable` fails closed where the checked target does not certify as an input field of
 its family, and the two read faults carry the classifier's own context error. -/
 inductive DocumentComputationStepFault where
+  | temporalExpressionUnavailable
   | temporalExpressionTarget (cause : DateTimeTargetEvaluationFault)
   | guardBinding (error : CheckedComputationConditionError)
   | dateTimeDayShift (cause : DateTimeDayShiftComputationFault)
@@ -261,7 +262,7 @@ def omittingDateText (model : FlatModel) (target : FieldId) (text : String) :
   | .rejected cause => pure (checkAdmittedRawCell (.rejected cause))
   | .admitted stored =>
       let date ← (stored.earliestCivil? model.baseYearOrDefault).getDM (throw .targetNotReadable)
-      let value ← (profile.resolveStoredDate? date).getDM (throw .targetNotReadable)
+      let value ← (profile.resolveCompletedDateParts? date.parts).getDM (throw .targetNotReadable)
       pure (checkAdmittedRawCell (.parsed (.temporal (.date value))))
 
 /-- A completed DateFragment target, read as the earliest date it denotes, which is how the Kernel
@@ -328,7 +329,8 @@ def ofScalarTemporalExpression? (expression : CheckedScalarTemporalExpression mo
         run world _ document := do
           let result ← match expression.evalResult .computation (document.flatContext.withWorld world) with
             | .ok result => pure result
-            | .error _ => return (.valueError .time, DocumentComputationReadBack.poison)
+            | .error .calendarUnavailable => throw .temporalExpressionUnavailable
+            | .error .dateTimeLabelUnresolved => return (.valueError .time, DocumentComputationReadBack.poison)
           let outcome := target.evaluate (match result with
             | .value (.time value) _ => .value value
             | .notEvaluated => .noValue
@@ -347,7 +349,8 @@ def ofScalarTemporalExpression? (expression : CheckedScalarTemporalExpression mo
         run world _ document := do
           let result ← match expression.evalResult .computation (document.flatContext.withWorld world) with
             | .ok result => pure result
-            | .error _ => return (.valueError .dateTime, DocumentComputationReadBack.poison)
+            | .error .calendarUnavailable => throw .temporalExpressionUnavailable
+            | .error .dateTimeLabelUnresolved => return (.valueError .dateTime, DocumentComputationReadBack.poison)
           let outcome ← (target.evaluate (match result with
             | .value (.instant value) _ => .value value
             | .notEvaluated => .noValue
@@ -356,8 +359,8 @@ def ofScalarTemporalExpression? (expression : CheckedScalarTemporalExpression mo
           let cell ← DocumentComputationReadBack.dateTime model targetField outcome
           pure (.dateTime outcome, cell)
       }
-    else if expression.components == TemporalComponents.fullDate then
-      let target ← (elaborateFullDateTarget model targetField).toOption
+    else if expression.components.hasDate && !expression.components.hasTime then
+      let target ← (elaborateDateConstantTargetIn model [] targetField expression.components.year).toOption
       pure {
         target := targetField
         family := .fullDate
@@ -366,13 +369,14 @@ def ofScalarTemporalExpression? (expression : CheckedScalarTemporalExpression mo
         run world _ document := do
           let result ← match expression.evalResult .computation (document.flatContext.withWorld world) with
             | .ok result => pure result
-            | .error _ => return (.valueError .fullDate, DocumentComputationReadBack.poison)
+            | .error .calendarUnavailable => throw .temporalExpressionUnavailable
+            | .error .dateTimeLabelUnresolved => return (.valueError .fullDate, DocumentComputationReadBack.poison)
           let outcome := match result with
-            | .value (.date value) _ => target.evaluateCivil value.civil
-            | .notEvaluated => .noValue
+            | .value (.date (some value)) _ | .value (.yearless value _) _ => target.evaluateParts value.parts
+            | .value (.date none) _ | .notEvaluated => .noValue
             | .unknown cause => .poison cause
             | _ => .poison .malformed
-          let cell ← DocumentComputationReadBack.fullDate model targetField outcome
+          let cell ← DocumentComputationReadBack.dateConstant target outcome
           pure (.fullDate outcome, cell)
       }
     else none

@@ -588,6 +588,7 @@ def observeNumberFormalRead (checked : CheckedDocument model)
 
 /-- Existing nonrepeatable evaluators consume the same checked cells. Their checked plans cannot request repeatable fields; a forged request fails closed. -/
 def flatContext (checked : CheckedDocument model) : FlatContext where
+  storedText field := checked.storedTextAt { field, path := [] }
   read field :=
     match checked.read { field, path := [] } with
     | .ok cell => cell
@@ -603,9 +604,21 @@ def computationFillContext (checked : CheckedDocument model) : ComputationFillCo
       (checked.read { field, path }).toOption
     cell.getD malformedCheckedCell
 
+/-- Read a guard's cell and exact stored text at the same model-owned address. The document
+already carries completed target placements (calendar review-control grid, 2026-10-04). -/
+def computationContextAt (checked : CheckedDocument model) (environment : Env) : ScalarComputationContext where
+  read := checked.computationFillContext.read environment
+  storedText field := do
+    let declaration ← (model.lookupUniqueId field).toOption
+    let path ← (environment.pathForScope declaration.repeatableScope).toOption
+    checked.storedTextAt { field, path }
+  row := environment
+  addressed := some checked.computationFillContext
+
 /-- The checked document's complete computation context before a caller supplies its world. -/
 def computationContext (checked : CheckedDocument model) : ScalarComputationContext :=
-  { read := checked.flatContext.read, addressed := some checked.computationFillContext }
+  { read := checked.flatContext.read, storedText := checked.flatContext.storedText,
+    addressed := some checked.computationFillContext }
 
 /-- Project ordinary nonrepeatable computation reads under one explicit world. Heterogeneous computation runs share this immutable source boundary before adding their typed dependency overlay. -/
 def scalarComputationContext (checked : CheckedDocument model)
@@ -637,7 +650,7 @@ classifier-completed date is compared with an actual cell by instant and calenda
 parts, exactly as a complete Date is. -/
 private def canonicalDateCell? (model : FlatModel) (date : CivilDate) : Option RawCell := do
   let profile ← ModelZone.ConcreteProfile.ofId? model.timeZoneId
-  let value ← profile.resolveStoredDate? date
+  let value ← profile.resolveCompletedDateParts? date.parts
   pure (.parsed (.temporal (.date value)))
 
 /-- The cell the owning classifier makes of a temporal declaration's stored text: `none` when no

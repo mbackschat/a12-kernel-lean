@@ -366,11 +366,11 @@ private def evalOrdinaryPartialAdmittedAt
     scope.coversField model field environment
   let resolveGroup (groupPath : GroupPath) (current : Env) :=
     (preliminary.groupPresenceInput groupPath current false).mapError .group
-  let verdict ← rule.condition.core.evalWithTemporalResult context.scalar isRelevant fun leaf =>
+  let verdict ← rule.condition.core.evalWithTemporalResult context.scalar isRelevant (fun leaf =>
     match leaf.evalAddressedPartial? context scope isRelevant resolveGroup
         repetitionNotUniqueResult? with
     | some result => result.mapError .conditionAddressing
-    | none => throw .unsupportedCondition
+    | none => throw .unsupportedCondition) (.error .unsupportedCondition)
   pure (rule.core.emitAt errorPath verdict)
 
 /-- Execute one checked nonrepeatable addressed rule against the normalized partial document view. The scalar iteration plan fixes the empty environment and root error path; filtering and error-field relevance still gate execution before addressed leaf reads, while unsupported shapes and addressing failures remain structural errors outside semantic UNKNOWN. -/

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.ConstructedDateEvaluation
 import A12Kernel.Semantics.TemporalExpression
 import A12Kernel.Elaboration.TemporalExtremumStream
 import A12Kernel.Elaboration.Flat.FieldValueRead
@@ -5,10 +6,10 @@ import A12Kernel.Elaboration.ValueAsDateTimeWorldComponents
 
 /-! # Checked scalar temporal expressions
 
-Fields, clock values and typed literals share an expression tree with extrema, complete-DateTime
-projections and elapsed shifts. Evaluation retains the date/yearless/time/instant domains and
-classified missingness. Calendar shifts and constructed legacy-calendar Dates need their retained
-instant and calendar basis and do not enter this scalar projection boundary (spec/05 §2).
+Fields, clocks, typed literals and constructors share the expression tree with extrema, projections
+and elapsed or calendar shifts. Date values retain exact instants and calendar provenance through
+composition; yearless comparisons additionally retain their declared component key. Storage limits
+are applied by the target, after arithmetic (spec/05 and calendar-expression grid, 2026-10-04).
 -/
 
 namespace A12Kernel
@@ -24,6 +25,9 @@ inductive SurfaceScalarTemporalExpression where
   | dateLiteral (value : FullDate)
   | timeLiteral (value : TimeOfDay)
   | dateTimeLiteral (value : LocalDateTime)
+  | dateConstruction (components : SurfaceConstructedDateComponents)
+  | calendarShift (unit : DateShiftUnit) (source : SurfaceScalarTemporalExpression)
+      (amount : AuthoredNumericExpr SurfaceNumericAtom)
   | timeConstruction (components : SurfaceTimeComponents)
   | dateFromDateTime (source : SurfaceScalarTemporalExpression)
   | timeFromDateTime (source : SurfaceScalarTemporalExpression)
@@ -36,13 +40,14 @@ operation checks its own slot (spec/12 §3, grammar `datumAngabe`/`datumAngabe2`
 def SurfaceScalarTemporalExpression.admittedSourceSlot : SurfaceScalarTemporalExpression → Bool
   | .group _ | .extremum _ _ | .combine _ _ _ => false
   | .field _ | .now | .today | .dateLiteral _ | .timeLiteral _ | .dateTimeLiteral _
-  | .timeConstruction _ | .dateFromDateTime _ | .timeFromDateTime _ | .subdayShift _ _ _ => true
+  | .dateConstruction _ | .calendarShift _ _ _ | .timeConstruction _ | .dateFromDateTime _ | .timeFromDateTime _ | .subdayShift _ _ _ => true
 
 inductive ScalarTemporalExpressionError where
   | model (error : ResolveError)
   | read (error : ResolveError)
   | extremum (error : TemporalExtremumOperandElabError)
   | amount (error : TemporalShiftAmountElabError)
+  | dateComponents (error : ConstructedDateComponentsElabError)
   | timeComponents (error : TimeComponentsElabError)
   | nonTemporal (path : List String)
   | unsupportedSource
@@ -50,8 +55,10 @@ inductive ScalarTemporalExpressionError where
   deriving Repr, DecidableEq
 
 inductive ScalarTemporalValue where
-  | date (value : FullDate)
-  | yearless (value : MonthDayValue)
+  /-- A fixed unreal constructor has no payload but is not a missing input. The surrounding
+  operand retains that independent provenance through extrema (review-control grid, 2026-10-04). -/
+  | date (value : Option DateValue)
+  | yearless (value : DateValue) (key : MonthDayValue)
   | time (value : TimeOfDay)
   | instant (value : Instant)
   deriving Repr, DecidableEq
@@ -59,15 +66,23 @@ inductive ScalarTemporalValue where
 namespace ScalarTemporalValue
 
 def select (operator : TemporalExtremumOp) : ScalarTemporalValue → ScalarTemporalValue → ScalarTemporalValue
-  | .date left, .date right => .date (operator.select left right)
-  | .yearless left, .yearless right => .yearless (operator.selectMonthDay left right)
+  | .date none, .date right => .date right
+  | .date left, .date none => .date left
+  | .date (some left), .date (some right) =>
+      .date (some (match operator with
+        | .minimum => if right.instant.epochMillis < left.instant.epochMillis then right else left
+        | .maximum => if left.instant.epochMillis < right.instant.epochMillis then right else left))
+  | .yearless left leftKey, .yearless right rightKey =>
+      match operator with
+      | .minimum => if rightKey.before leftKey then .yearless right rightKey else .yearless left leftKey
+      | .maximum => if leftKey.before rightKey then .yearless right rightKey else .yearless left leftKey
   | .time left, .time right => .time (operator.selectTime left right)
   | .instant left, .instant right => .instant (operator.selectInstant left right)
   | left, _ => left
 
 def holds (operator : TemporalComparisonOp) : ScalarTemporalValue → ScalarTemporalValue → Bool
-  | .date left, .date right => operator.holds left right
-  | .yearless left, .yearless right => operator.holdsMonthDay left right
+  | .date (some left), .date (some right) => operator.holdsInstant left.instant right.instant
+  | .yearless _ left, .yearless _ right => operator.holdsMonthDay left right
   | .time left, .time right => operator.holdsTime left right
   | .instant left, .instant right => operator.holdsInstant left right
   | _, _ => false
@@ -79,14 +94,19 @@ inductive ScalarTemporalAtom (model : FlatModel) where
   | fixed (value : ScalarTemporalValue)
   | now
   | today (profile : ModelZone.ConcreteProfile)
+  | dateLiteral (profile : ModelZone.ConcreteProfile) (value : FullDate)
   | dateTimeLiteral (profile : ModelZone.ConcreteProfile) (value : LocalDateTime)
+  | dateConstruction (components : CheckedConstructedDateComponents model)
   | timeConstruction (components : CheckedTimeComponents model)
 
 inductive ScalarTemporalEvaluationFault where
   | dateTimeLabelUnresolved
+  | calendarUnavailable
   deriving Repr, DecidableEq
 
 inductive ScalarTemporalTransform (model : FlatModel) where
+  | calendarShift (profile : ModelZone.ConcreteProfile)
+      (unit : DateShiftUnit) (amount : CheckedTemporalShiftAmount model)
   | dateFromDateTime (profile : ModelZone.ConcreteProfile)
   | timeFromDateTime (profile : ModelZone.ConcreteProfile)
   | subdayShift (profile : ModelZone.ConcreteProfile)
@@ -147,11 +167,26 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       pure (.extremum operator left [right], leftComponents)
   | .now => pure (.atom .now, TemporalComponents.now)
   | .today => do pure (.atom (.today (← scalarProfile model)), TemporalComponents.fullDate)
-  | .dateLiteral value => pure (.atom (.fixed (.date value)), TemporalComponents.fullDate)
+  | .dateLiteral value => do
+      pure (.atom (.dateLiteral (← scalarProfile model) value), TemporalComponents.fullDate)
   | .timeLiteral value => pure (.atom (.fixed (.time value)), TemporalComponents.time)
   | .dateTimeLiteral value => do
       let profile ← scalarProfile model
       pure (.atom (.dateTimeLiteral profile value), TemporalComponents.now)
+  | .dateConstruction source => do
+      let components ← (elaborateConstructedDateSources model source).mapError .dateComponents
+      pure (.atom (.dateConstruction components), TemporalComponents.fullDate)
+  | .calendarShift unit source amount => do
+      if !source.admittedSourceSlot then throw .unsupportedSource
+      let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? source
+      let componentPresent := match unit with
+        | .days => components.day
+        | .months => components.month
+        | .years => components.year
+      if !componentPresent || (unit != .days && components.hasTime) then throw .incompatibleFormats
+      let profile ← scalarProfile model
+      let amount ← (elaborateTemporalExpressionShiftAmount model rowGroup amount).mapError .amount
+      pure (.transform (.calendarShift profile unit amount) source, components)
   | .timeConstruction source => do
       let components ← (elaborateTimeComponents model source).mapError .timeComponents
       pure (.atom (.timeConstruction components), TemporalComponents.time)
@@ -234,6 +269,12 @@ private def readScalarTemporalAmount (context : FlatContext) (phase : Phase) :
       | .field source => (context.resolveNumberComparisonOperandAt phase source).toValidationArithmetic
       | _ => .error .groupState
 
+private def resolvedScalarDate (profile : ModelZone.ConcreteProfile) (date : FullDate) :
+    Option DateValue := do
+  let instant ← profile.resolveLocal? {
+    date, time := { hour := 0, minute := 0, second := 0, valid := by decide } }
+  pure { instant, parts := date.civil.parts, basis := .storedGregorian }
+
 private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context : FlatContext)
     (atom : ScalarTemporalAtom model) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
@@ -242,13 +283,35 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       match profile.resolveLocal? value with
       | some instant => pure (.value (.instant instant) true)
       | none => throw .dateTimeLabelUnresolved
+  | .dateLiteral profile value =>
+      match resolvedScalarDate profile value with
+      | some value => pure (.value (.date (some value)) true)
+      | none => throw .dateTimeLabelUnresolved
   | .fixed value => pure (.value value true)
   | .now => pure (match context.world with
       | some world => .value (.instant world.now) true
       | none => .unknown .malformed)
-  | .today profile => pure (match context.world.bind (fun world => profile.localDate? world.now) with
-      | some date => .value (.date date) true
+  | .today profile => pure (match context.world.bind (fun world => profile.localDate? world.now)
+      |>.bind (resolvedScalarDate profile) with
+      | some date => .value (.date (some date)) true
       | none => .unknown .malformed)
+  | .dateConstruction components =>
+      let read (source : CheckedConstructedDateSource model) := match source with
+        | .numberField checked => checked.classify (observeCell phase (context.read checked.source.id))
+        | .stringField checked => checked.classify (observeCell phase (context.read checked.source.id))
+        | .dateYearField checked => checked.classify (observeCell phase (context.read checked.source.id))
+            (context.storedText checked.source.id)
+        | .constant value => pure (.value value)
+        | .extractor checked => checked.classify (observeCell phase (context.read checked.source.id))
+        | .baseYearExtractor checked => pure (.value
+            (baseYearDateSourceNumericPart checked.year checked.source checked.part).num)
+        | .pointInTimeExtractor checked => checked.read context.world
+      match components.evaluateValueWith read with
+      | .ok (.value instant parts notGiven) =>
+          pure (.value (.date (some { instant, parts, basis := .legacyHybrid })) (!notGiven))
+      | .ok (.noValue notGiven) => pure (.value (.date none) (!notGiven))
+      | .ok (.unavailable cause) => pure (.unknown cause)
+      | .error _ => throw .calendarUnavailable
   | .timeConstruction components =>
       let read (component : CheckedTimeComponent model) : Except TimeComponentsFault TimeConstructionComponent :=
         match component with
@@ -277,54 +340,93 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       else if components == TemporalComponents.time then
         liftScalarTemporal .time observation.asTimeExtremumOperand
       else if components.year then
-        liftScalarTemporal .date
-          (observation.asMaskedDateExtremumOperand field.components model.baseYear)
-      else liftScalarTemporal .yearless (observation.asYearlessDateExtremumOperand field.components))
+        match observation with
+        | .empty => .notEvaluated
+        | .unknown cause | .poison cause => .unknown cause
+        | .value (.temporal (.date stored)) =>
+            let (year, month, day) := maskedDateComponents field.components model.baseYear stored.parts
+            let parts : DateParts := { year, month, day }
+            if stored.parts == parts then .value (.date (some stored)) true
+            else match (ModelZone.ConcreteProfile.ofId? model.timeZoneId).bind
+                (fun profile => profile.resolveCompletedDateParts? parts) with
+              | some value => .value (.date (some value)) true
+              | none => .unknown .malformed
+        | _ => .unknown .malformed
+      else match observation.asYearlessDateExtremumOperand field.components, observation with
+        | .value key given, .value (.temporal (.date value)) => .value (.yearless value key) given
+        | .notEvaluated, _ => .notEvaluated
+        | .unknown cause, _ => .unknown cause
+        | _, _ => .unknown .malformed)
 
 private def applyScalarTemporalTransform (phase : Phase) (context : FlatContext)
     (operation : ScalarTemporalTransform model)
     (source : SimpleComparisonOperand ScalarTemporalValue) :
-    SimpleComparisonOperand ScalarTemporalValue :=
+    Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
   match source with
-  | .unknown cause => .unknown cause
+  | .unknown cause => pure (.unknown cause)
   | source => match operation with
-      | .dateFromDateTime profile => match source with
-          | .value (.instant instant) given => match profile.localDate? instant with
-              | some date => .value (.date date) given
-              | none => .unknown .malformed
-          | .notEvaluated => .notEvaluated
-          | _ => .unknown .malformed
-      | .timeFromDateTime profile => match source with
-          | .value (.instant instant) given => match profile.localDateTime? instant with
-              | some value => .value (.time value.time) given
-              | none => .unknown .malformed
-          | .notEvaluated => .notEvaluated
-          | _ => .unknown .malformed
-      | .subdayShift profile unit amount =>
-          let reached : Option ValueAsDateTimeResult := match source with
-            | .notEvaluated => some (.noValue true)
-            | .value (.instant instant) given =>
-                (profile.localDateTime? instant).map fun localDateTime => .value localDateTime instant (!given)
-            | _ => none
-          match reached with
-          | none => .unknown .malformed
-          | some reached => match readScalarTemporalAmount context phase amount with
-              | .error (.formal cause) => .unknown cause
-              | .error _ => .unknown .malformed
-              | .ok amount => match reached.applyShiftedAmount profile unit amount with
-                  | .ok (.value _ instant notGiven) => .value (.instant instant) (!notGiven)
-                  | .ok (.unavailable cause) => .unknown cause
-                  | .ok _ => .notEvaluated
-                  | .error _ => .unknown .malformed
+      | .calendarShift profile unit amount => do
+          match readScalarTemporalAmount context phase amount with
+          | .error (.formal cause) => pure (.unknown cause)
+          | .error _ => throw .calendarUnavailable
+          | .ok .notEvaluated => pure .notEvaluated
+          | .ok (.value amount fillability) =>
+              let shift (instant : Instant) (wrap : LegacyCalendarLabel → Instant → ScalarTemporalValue) (given : Bool) :
+                  Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
+                match profile.shiftCalendar? unit instant (temporalShiftAmountToInt32 amount) with
+                | some (label, instant) => pure (.value
+                    (wrap label instant)
+                    (given && !fillability.canGrow && !fillability.canShrink))
+                | none => throw .calendarUnavailable
+              match source with
+              | .value (.date none) given =>
+                  pure (.value (.date none) (given && !fillability.canGrow && !fillability.canShrink))
+              | .value (.date (some value)) given =>
+                  shift value.instant (fun label instant => .date (some { instant, parts := label.parts, basis := .legacyHybrid })) given
+              | .value (.yearless value _) given =>
+                  shift value.instant (fun label instant => .yearless { instant, parts := label.parts, basis := .legacyHybrid }
+                    { month := label.parts.month, day := label.parts.day }) given
+              | .value (.instant instant) given => shift instant (fun _ instant => .instant instant) given
+              | .notEvaluated => pure .notEvaluated
+              | _ => throw .calendarUnavailable
+      | .dateFromDateTime profile => do
+          match source with
+          | .value (.instant instant) given =>
+              let some label := profile.calendarLabel? instant | throw .calendarUnavailable
+              let midnight := { label with time := { hour := 0, minute := 0, second := 0, valid := by decide } }
+              let some instant := profile.resolveCalendarLabel? midnight | throw .dateTimeLabelUnresolved
+              pure (.value (.date (some { instant, parts := label.parts, basis := .legacyHybrid })) given)
+          | .notEvaluated => pure .notEvaluated
+          | _ => throw .calendarUnavailable
+      | .timeFromDateTime profile => do
+          match source with
+          | .value (.instant instant) given =>
+              let some label := profile.calendarLabel? instant | throw .calendarUnavailable
+              pure (.value (.time label.time) given)
+          | .notEvaluated => pure .notEvaluated
+          | _ => throw .calendarUnavailable
+      | .subdayShift _ unit amount => do
+          match readScalarTemporalAmount context phase amount with
+          | .error (.formal cause) => pure (.unknown cause)
+          | .error _ => throw .calendarUnavailable
+          | .ok .notEvaluated => pure .notEvaluated
+          | .ok (.value amount fillability) =>
+              match source with
+              | .value (.instant instant) given =>
+                  pure (.value (.instant (instant.shift unit (temporalShiftAmountToInt32 amount)))
+                    (given && !fillability.canGrow && !fillability.canShrink))
+              | .notEvaluated => pure .notEvaluated
+              | _ => throw .calendarUnavailable
 
 namespace CheckedScalarTemporalExpression
 
 def fieldIds (expression : CheckedScalarTemporalExpression model) : List FieldId :=
   expression.core.dependencies
     (fun | .field source => [source.id]
+         | .dateConstruction components => components.fields
          | .timeConstruction components => components.toWorld.fieldDependencies
          | _ => [])
-    (fun | .subdayShift _ _ amount => amount.fieldDependencies | _ => [])
+    (fun | .subdayShift _ _ amount | .calendarShift _ _ amount => amount.fieldDependencies | _ => [])
 
 def referencesField (expression : CheckedScalarTemporalExpression model) (field : FieldId) : Bool :=
   expression.fieldIds.contains field
@@ -342,7 +444,8 @@ def evalResult (expression : CheckedScalarTemporalExpression model) (phase : Pha
     (fun atom => do
       let operand ← (readScalarTemporalAtom model phase context atom).mapError Sum.inr
       reached operand)
-    (fun operation source => reached (applyScalarTemporalTransform phase context operation source))
+    (fun operation source => do
+      reached (← (applyScalarTemporalTransform phase context operation source).mapError Sum.inr))
   match result with
   | .ok operand => .ok operand
   | .error (.inl cause) => .ok (.unknown cause)
@@ -358,17 +461,15 @@ def fieldIds (comparison : CheckedScalarTemporalComparison model) : List FieldId
 def referencesField (comparison : CheckedScalarTemporalComparison model) (field : FieldId) : Bool :=
   comparison.fieldIds.contains field
 
-/-- Mixed Date/DateTime ordering embeds the Date at model-zone midnight; same-family comparison
+/-- Mixed Date/DateTime ordering uses the Date's retained instant; same-family comparison
 keeps its existing identity domain (KF386 and the comparison-guard grid, 2026-10-04). -/
 private def readOperand (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
     (context : FlatContext) (expression : CheckedScalarTemporalExpression model) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
   let operand ← expression.evalResult phase context
   match comparison.comparisonZone?, operand with
-  | some profile, .value (.date date) given =>
-      match profile.resolveLocal? { date, time := { hour := 0, minute := 0, second := 0, valid := by decide } } with
-      | some instant => pure (.value (.instant instant) given)
-      | none => throw .dateTimeLabelUnresolved
+  | _, .value (.date none) _ => pure .notEvaluated
+  | some _, .value (.date (some date)) given => pure (.value (.instant date.instant) given)
   | _, _ => pure operand
 
 /-- Temporal guards use the shared ordered computation comparison, preserving label failure as a
@@ -397,7 +498,8 @@ def evalAt (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
     (context : FlatContext) : Verdict :=
   match comparison.evalResult phase context with
   | .ok verdict => verdict
-  | .error _ => .fired .value
+  | .error .dateTimeLabelUnresolved => .fired .value
+  | .error .calendarUnavailable => .unknown
 
 def eval (comparison : CheckedScalarTemporalComparison model) (context : FlatContext) : Verdict :=
   comparison.evalAt .validation context

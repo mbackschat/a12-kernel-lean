@@ -444,7 +444,8 @@ truth algebra as an ordinary fired leaf (temporal review grid, 2026-10-03). Stru
 remain in the caller's error domain. -/
 def evalWithTemporalResult (condition : ValidationCondition model)
     (context : ValidationEvaluationContext) (isRelevant : FlatRelevance)
-    (evaluate : ValidationConditionLeaf model → Except Error Verdict) : Except Error Verdict :=
+    (evaluate : ValidationConditionLeaf model → Except Error Verdict)
+    (onTemporalUnavailable : Except Error Verdict := .ok .unknown) : Except Error Verdict :=
   let result : Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
     condition.evalVerdictExcept (fun leaf => match leaf with
       | .scalarTemporal comparison =>
@@ -453,12 +454,13 @@ def evalWithTemporalResult (condition : ValidationCondition model)
           else pure .unknown
       | leaf => (evaluate leaf).mapError Sum.inl)
       (fun left error => match left, error with
-        | .unknown, .inr _ => .ok .unknown
+        | .unknown, .inr .dateTimeLabelUnresolved => .ok .unknown
         | _, error => .error error)
   match result with
   | .ok verdict => .ok verdict
   | .error (.inl error) => .error error
-  | .error (.inr _) => .ok (.fired .value)
+  | .error (.inr .dateTimeLabelUnresolved) => .ok (.fired .value)
+  | .error (.inr .calendarUnavailable) => onTemporalUnavailable
 
 /-- Evaluate a row-selected mixed tree through the sole connective evaluator. -/
 def evalSelected (condition : ValidationCondition model)
@@ -480,7 +482,8 @@ def evalFull (condition : ValidationCondition model)
 def evalAddressed (condition : ValidationCondition model)
     (context : AddressedValidationEvaluationContext model) :
     Except CheckedAddressingError Verdict :=
-  condition.evalWithTemporalResult context.scalar context.directRelevant fun leaf => leaf.evalAddressed context
+  condition.evalWithTemporalResult context.scalar context.directRelevant
+    (fun leaf => leaf.evalAddressed context) (.error .temporalUnavailable)
 
 /-- Evaluate the same connective tree with one already-prepared current-row RNU result. Duplicate construction remains outside and branch-independent. -/
 def evalAddressedWithRepetitionNotUnique
@@ -488,8 +491,8 @@ def evalAddressedWithRepetitionNotUnique
     (context : AddressedValidationEvaluationContext model)
     (result? : Option RepetitionNotUniqueResult) :
     Except CheckedAddressingError Verdict :=
-  condition.evalWithTemporalResult context.scalar context.directRelevant fun leaf =>
-    leaf.evalAddressedWithRepetitionNotUnique context result?
+  condition.evalWithTemporalResult context.scalar context.directRelevant
+    (fun leaf => leaf.evalAddressedWithRepetitionNotUnique context result?) (.error .temporalUnavailable)
 
 /-- Apply the ordinary full-validation content gate to the addressed tree without sampling any repeatable source on an ineligible empty row. -/
 def evalAddressedFull (condition : ValidationCondition model)

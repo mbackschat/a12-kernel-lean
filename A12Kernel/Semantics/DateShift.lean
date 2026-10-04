@@ -7,6 +7,14 @@ This capsule starts with a complete civil Date and an already converted integer 
 
 namespace A12Kernel
 
+/-- Calendar unit shared by checked `AddDays`, `AddMonths`, and `AddYears` consumers. -/
+inductive DateShiftUnit where
+  | days
+  | months
+  | years
+  deriving Repr, DecidableEq
+
+
 namespace DateParts
 
 namespace Shift

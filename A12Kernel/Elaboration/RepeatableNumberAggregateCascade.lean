@@ -231,7 +231,7 @@ def execute (plan : CheckedRepeatableNumberAggregateScalarCascade model)
   let cascade ← plan.cascade.execute world input |>.mapError .cascade
   let base := input.scalarComputationContext world
   let aggregateField := plan.cascade.total.operation.core.target.id
-  let context : ScalarComputationContext := {
+  let context : ScalarComputationContext := { base with
     read := fun field =>
       if field == aggregateField then
         (NumericDependencyCell.ofOutcome cascade.aggregate.outcome).checked

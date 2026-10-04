@@ -365,18 +365,6 @@ def stringContext (run : CheckedScalarComputationRun model)
           some StringDependencyCell.empty.checked
         else none
 
-/-- Project completed targets for Number consumption, hide suffix-owned pending targets, and delegate ordinary reads to the scalar document context under one unchanged world. A completion may belong to an earlier checked phase rather than to this run. -/
-def numberContext (run : CheckedScalarComputationRun model)
-    (world : World) (state : ScalarComputationRunState)
-    (input : CheckedDocument model) : ScalarComputationContext :=
-  (input.scalarComputationContext world).withFixedOverlay fun field =>
-    match state.find? field with
-    | some completion => some completion.numberCell
-    | none =>
-        if run.targetFields.contains field then
-          some (NumericDependencyCell.ofObservation .empty).checked
-        else none
-
 /-- The whole document a whole-document step reads: each completed target through its Number-family
 cell and formal-read text, each pending one empty. -/
 def documentFor (run : CheckedScalarComputationRun model)
@@ -384,6 +372,20 @@ def documentFor (run : CheckedScalarComputationRun model)
   input.overlayNonrepeatableCells
     (state.completed.map (fun completion => (completion.targetField, some completion.placement)) ++
       (run.targetFields.filter fun field => (state.find? field).isNone).map (·, none))
+
+/-- Guards consume completed cells and stored text from the same document overlay; a Date year
+component must not read the original target's spelling (calendar review-control grid, 2026-10-04). -/
+def numberContext (run : CheckedScalarComputationRun model)
+    (world : World) (state : ScalarComputationRunState)
+    (input : CheckedDocument model) : ScalarComputationContext :=
+  (input.scalarComputationContext world).withFixedOverlay (fun field =>
+    match state.find? field with
+    | some completion => some completion.numberCell
+    | none =>
+        if run.targetFields.contains field then
+          some (NumericDependencyCell.ofObservation .empty).checked
+        else none)
+    (fun field => (state.find? field).bind (·.placement.storedText))
 
 /-- Evaluate one family-tagged table through its matching consumer context and retain its typed completion. -/
 def evaluateStep (run : CheckedScalarComputationRun model)

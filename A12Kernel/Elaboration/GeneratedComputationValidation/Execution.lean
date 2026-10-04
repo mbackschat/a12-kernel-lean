@@ -121,7 +121,7 @@ private def addressedEvaluationContextWithRead
     (input : CheckedDocument model) (world : World)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     NumericComputationEvaluationContext := {
-  scalar := {
+  scalar := { input.computationContextAt [] with
     read := checkedReadAtWith input read []
     world := some world
   }

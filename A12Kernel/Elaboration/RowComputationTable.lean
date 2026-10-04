@@ -156,9 +156,7 @@ def execute (table : CheckedRowComputationTable model) (world : World)
   document.computationRowOutcomes scope .rows
     (fun environment => atRow environment family.noValue DocumentComputationReadBack.empty)
     (fun environment => do
-      let context : ScalarComputationContext := {
-        read := document.computationFillContext.read environment
-        world := some world, row := environment, addressed := some document.computationFillContext }
+      let context := (document.computationContextAt environment).withWorld world
       match CheckedComputationAlternative.selectFirstChecked table.alternatives context with
       | .error (.predicate .valueFailure) => atRow environment (.valueError family) DocumentComputationReadBack.poison
       | .error error => throw (.guardBinding error)

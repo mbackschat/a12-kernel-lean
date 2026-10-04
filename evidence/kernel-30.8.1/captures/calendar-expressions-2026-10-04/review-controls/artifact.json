@@ -1,0 +1,501 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "CalendarExpressions_DM.json",
+    "locale": "en_US",
+    "clock": "2024-03-30T23:00:00Z"
+  },
+  "rows": [
+    {
+      "name": "stale",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MaxIncomplete",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/D",
+                "Form/Day"
+              ],
+              "fillToFix": [
+                "Form/D",
+                "Form/Day"
+              ]
+            },
+            {
+              "code": "MaxReal",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxUnreal",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinIncomplete",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/D",
+                "Form/Day"
+              ],
+              "fillToFix": [
+                "Form/D",
+                "Form/Day"
+              ]
+            },
+            {
+              "code": "MinUnreal",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Producer",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/Y"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/NOut",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/SOut",
+                "cleared": false,
+                "errored": false,
+                "value": "selected"
+              },
+              {
+                "field": "Form/Y",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/NOut",
+                "value": "7"
+              },
+              {
+                "field": "Form/SOut",
+                "value": "selected"
+              },
+              {
+                "field": "Form/Y",
+                "value": "2024"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "D": "2024-03-01",
+                "Day": null,
+                "NOut": 7,
+                "SOut": "selected",
+                "Y": "2024"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MaxIncomplete",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/D",
+                "Form/Day"
+              ],
+              "fillToFix": [
+                "Form/D",
+                "Form/Day"
+              ]
+            },
+            {
+              "code": "MaxReal",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxUnreal",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinIncomplete",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/D",
+                "Form/Day"
+              ],
+              "fillToFix": [
+                "Form/D",
+                "Form/Day"
+              ]
+            },
+            {
+              "code": "MinUnreal",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "Producer",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/Y"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/NOut",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/SOut",
+                "cleared": false,
+                "errored": false,
+                "value": "selected"
+              },
+              {
+                "field": "Form/Y",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/NOut",
+                "value": "7"
+              },
+              {
+                "field": "Form/SOut",
+                "value": "selected"
+              },
+              {
+                "field": "Form/Y",
+                "value": "2024"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "D": "2024-03-01",
+                "Day": null,
+                "NOut": 7,
+                "SOut": "selected",
+                "Y": "2024"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "absent",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "MaxIncomplete",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/D",
+                "Form/Day"
+              ],
+              "fillToFix": [
+                "Form/D",
+                "Form/Day"
+              ]
+            },
+            {
+              "code": "MaxReal",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxUnreal",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinIncomplete",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/D",
+                "Form/Day"
+              ],
+              "fillToFix": [
+                "Form/D",
+                "Form/Day"
+              ]
+            },
+            {
+              "code": "MinUnreal",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/NOut",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/SOut",
+                "cleared": false,
+                "errored": false,
+                "value": "selected"
+              },
+              {
+                "field": "Form/Y",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/NOut",
+                "value": "7"
+              },
+              {
+                "field": "Form/SOut",
+                "value": "selected"
+              },
+              {
+                "field": "Form/Y",
+                "value": "2024"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "D": "2024-03-01",
+                "Day": null,
+                "NOut": 7,
+                "SOut": "selected",
+                "Y": "2024"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "MaxIncomplete",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/D",
+                "Form/Day"
+              ],
+              "fillToFix": [
+                "Form/D",
+                "Form/Day"
+              ]
+            },
+            {
+              "code": "MaxReal",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MaxUnreal",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MinIncomplete",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "referenced": [
+                "Form/D",
+                "Form/Day"
+              ],
+              "fillToFix": [
+                "Form/D",
+                "Form/Day"
+              ]
+            },
+            {
+              "code": "MinUnreal",
+              "field": "Form/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/D"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/NOut",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/SOut",
+                "cleared": false,
+                "errored": false,
+                "value": "selected"
+              },
+              {
+                "field": "Form/Y",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/NOut",
+                "value": "7"
+              },
+              {
+                "field": "Form/SOut",
+                "value": "selected"
+              },
+              {
+                "field": "Form/Y",
+                "value": "2024"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "D": "2024-03-01",
+                "Day": null,
+                "NOut": 7,
+                "SOut": "selected",
+                "Y": "2024"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

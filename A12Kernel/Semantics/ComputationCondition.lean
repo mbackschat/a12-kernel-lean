@@ -18,20 +18,23 @@ namespace A12Kernel
 /-- Pure checked-cell reads plus the optional explicit evaluation world shared by scalar computation fragments. Model and path checking remain outside this context; a clock-dependent checked expression fails structurally when `world` is absent. -/
 structure ScalarComputationContext where
   read : FieldId → CheckedCell
+  storedText : FieldId → Option String := fun _ => none
   world : Option World := none
   /-- The repeatable target row being computed, empty for a fixed target. Only a structural
   `CurrentRepetition` operand reads it; every field read is already addressed by `read`. -/
   row : Env := []
   addressed : Option ComputationFillContext := none
 
-/-- Apply fixed-target overrides to both read channels. Group guards and expanded fill lists
+/-- Apply fixed-target overrides to both cell read channels, discarding stale source text. Group guards and expanded fill lists
 use addressed reads, so they must share the pending/completed policy of direct operands;
 ordinary fields retain their original environment-sensitive reader. -/
 def ScalarComputationContext.withFixedOverlay
-    (context : ScalarComputationContext) (overlay : FieldId → Option CheckedCell) :
+    (context : ScalarComputationContext) (overlay : FieldId → Option CheckedCell)
+    (stored : FieldId → Option String := fun _ => none) :
     ScalarComputationContext :=
   { context with
     read := fun field => (overlay field).getD (context.read field)
+    storedText := fun field => if (overlay field).isSome then stored field else context.storedText field
     addressed := context.addressed.map fun addressed =>
       { addressed with
         read := fun row field => (overlay field).getD (addressed.read row field) } }

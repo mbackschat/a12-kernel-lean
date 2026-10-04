@@ -16,6 +16,12 @@ namespace TemporalTargetText
 def twoDigits (value : Nat) : String :=
   if value < 10 then "0" ++ toString value else toString value
 
+/-- Year patterns have a minimum of four digits, without truncating overflow (calendar-expression
+short-year and upper-year boundary probes, 2026-10-04). -/
+def year (value : Int) : String :=
+  let text := toString value
+  String.ofList (List.replicate (4 - text.length) '0') ++ text
+
 end TemporalTargetText
 
 /-- The only format this bounded Time computation target owns. -/
@@ -54,17 +60,19 @@ def ofSource? : String → Option FullDateTargetFormat
   | _ => none
 
 /-- Render one real civil Date. The year is untruncated; day and month are always two digits, matching the kernel's computed-Date store before its later target checks. -/
-def renderCivilText (format : FullDateTargetFormat) (date : CivilDate) : String :=
-  let parts := date.parts
+def renderPartsText (format : FullDateTargetFormat) (parts : DateParts) : String :=
   match format with
   | .dayMonthYearDots =>
       TemporalTargetText.twoDigits parts.day ++ "." ++
         TemporalTargetText.twoDigits parts.month ++ "." ++
-        toString parts.year
+        TemporalTargetText.year parts.year
   | .yearMonthDayDashes =>
-      toString parts.year ++ "-" ++
+      TemporalTargetText.year parts.year ++ "-" ++
         TemporalTargetText.twoDigits parts.month ++ "-" ++
         TemporalTargetText.twoDigits parts.day
+
+def renderCivilText (format : FullDateTargetFormat) (date : CivilDate) : String :=
+  format.renderPartsText date.parts
 
 /-- Compatibility renderer for an already floor-admitted full Date. -/
 def renderText (format : FullDateTargetFormat) (date : FullDate) : String :=
@@ -114,13 +122,12 @@ abbrev StoredDate := StoredTemporalText .date
 namespace FullDateTargetFormat
 
 /-- Render one real civil Date into the exact nonempty attempt that the target basic check will consume. -/
+def renderParts (format : FullDateTargetFormat) (parts : DateParts) : StoredDate :=
+  { text := format.renderPartsText parts
+    nonempty := by cases format <;> simp [renderPartsText, TemporalTargetText.twoDigits] }
+
 def renderCivil (format : FullDateTargetFormat) (date : CivilDate) : StoredDate :=
-  {
-    text := format.renderCivilText date
-    nonempty := by
-      cases format <;>
-        simp [renderCivilText, TemporalTargetText.twoDigits]
-  }
+  format.renderParts date.parts
 
 /-- Render an admitted Date into a nonempty target attempt. -/
 def render (format : FullDateTargetFormat) (date : FullDate) : StoredDate :=
@@ -191,14 +198,13 @@ target does not receive the source's text, so this position renders rather than 
 row stores `31.01.`, where a day of 31 cannot be read as a month at all. The exhaustive round-trip case in
 [`Conformance/OmittingDateInput.lean`](../Conformance/OmittingDateInput.lean) keeps this direction
 agreeing with the reading one. -/
-def renderCivilText (format : OmittingDateFormat) (date : CivilDate) : String :=
-  let parts := date.parts
+def renderPartsText (format : OmittingDateFormat) (parts : DateParts) : String :=
   match format with
-  | .year => toString parts.year
+  | .year => TemporalTargetText.year parts.year
   | .yearMonthDashed =>
-      toString parts.year ++ "-" ++ TemporalTargetText.twoDigits parts.month
+      TemporalTargetText.year parts.year ++ "-" ++ TemporalTargetText.twoDigits parts.month
   | .yearMonthConcatenated =>
-      toString parts.year ++ TemporalTargetText.twoDigits parts.month
+      TemporalTargetText.year parts.year ++ TemporalTargetText.twoDigits parts.month
   | .month => TemporalTargetText.twoDigits parts.month
   | .monthDay =>
       TemporalTargetText.twoDigits parts.month ++ "-" ++
@@ -211,28 +217,34 @@ def renderCivilText (format : OmittingDateFormat) (date : CivilDate) : String :=
       TemporalTargetText.twoDigits parts.day ++ "." ++
         TemporalTargetText.twoDigits parts.month ++ "."
 
+def renderCivilText (format : OmittingDateFormat) (date : CivilDate) : String :=
+  format.renderPartsText date.parts
+
 /-- Render into the exact nonempty attempt a component-omitting target stores. -/
-def renderCivil (format : OmittingDateFormat) (date : CivilDate) : StoredDate :=
+def renderParts (format : OmittingDateFormat) (parts : DateParts) : StoredDate :=
   {
-    text := format.renderCivilText date
+    text := format.renderPartsText parts
     nonempty := by
       cases format
       case month =>
-        simpa [renderCivilText] using twoDigits_ne_empty date.parts.month
+        simpa [renderPartsText] using twoDigits_ne_empty parts.month
       case monthDayConcatenated =>
-        simp only [renderCivilText]
+        simp only [renderPartsText]
         intro contra
         exact absurd (String.append_eq_empty_iff.mp contra).1
-          (twoDigits_ne_empty date.parts.month)
+          (twoDigits_ne_empty parts.month)
       case dayMonthConcatenated =>
-        simp only [renderCivilText]
+        simp only [renderPartsText]
         intro contra
         exact absurd (String.append_eq_empty_iff.mp contra).1
-          (twoDigits_ne_empty date.parts.day)
+          (twoDigits_ne_empty parts.day)
       all_goals
-        simp [renderCivilText, TemporalTargetText.twoDigits,
-          intRepr_ne_empty date.parts.year]
+        simp [renderPartsText, TemporalTargetText.twoDigits,
+          TemporalTargetText.year, intRepr_ne_empty parts.year]
   }
+
+def renderCivil (format : OmittingDateFormat) (date : CivilDate) : StoredDate :=
+  format.renderParts date.parts
 
 end OmittingDateFormat
 
@@ -247,6 +259,7 @@ inductive TemporalComputationResult where
 inductive FullDateTargetError where
   | beforeGregorianFloor
   | before1900
+  | renderingRejected (cause : BaseFormalCause)
   deriving Repr, DecidableEq
 
 /-- Rich full-Date target result before delta classification or application. -/
@@ -291,10 +304,9 @@ def ofSource? : String → Option DateTimeTargetFormat
   | _ => none
 
 /-- Render one admitted local DateTime wall label. The exact source instant may retain finer precision than this text. -/
-def renderText (format : DateTimeTargetFormat)
-    (dateTime : LocalDateTime) : String :=
-  let date := dateTime.date.civil.parts
-  let seconds := dateTime.time.secondsSinceMidnight
+def renderPartsText (format : DateTimeTargetFormat)
+    (date : DateParts) (time : TimeOfDay) : String :=
+  let seconds := time.secondsSinceMidnight
   let hour := seconds / 3600
   let minute := (seconds % 3600) / 60
   let second := seconds % 60
@@ -304,9 +316,12 @@ def renderText (format : DateTimeTargetFormat)
       TemporalTargetText.twoDigits second
   match format with
   | .yearMonthDayTime =>
-      toString date.year ++ "-" ++
+      TemporalTargetText.year date.year ++ "-" ++
         TemporalTargetText.twoDigits date.month ++ "-" ++
         TemporalTargetText.twoDigits date.day ++ "T" ++ timeText
+
+def renderText (format : DateTimeTargetFormat) (dateTime : LocalDateTime) : String :=
+  format.renderPartsText dateTime.date.civil.parts dateTime.time
 
 end DateTimeTargetFormat
 
@@ -316,16 +331,16 @@ abbrev StoredDateTime := StoredTemporalText .dateTime
 namespace DateTimeTargetFormat
 
 /-- Render an admitted local DateTime into a nonempty target value. -/
-def render (format : DateTimeTargetFormat)
-    (dateTime : LocalDateTime) : StoredDateTime :=
-  {
-    text := format.renderText dateTime
+def renderParts (format : DateTimeTargetFormat) (parts : DateParts) (time : TimeOfDay) : StoredDateTime :=
+  { text := format.renderPartsText parts time
     nonempty := by
       cases format
       intro empty
       have emptyLength := congrArg String.length empty
-      simp [renderText] at emptyLength
-  }
+      simp [renderPartsText] at emptyLength }
+
+def render (format : DateTimeTargetFormat) (dateTime : LocalDateTime) : StoredDateTime :=
+  format.renderParts dateTime.date.civil.parts dateTime.time
 
 end DateTimeTargetFormat
 
@@ -373,7 +388,7 @@ def render (format : DateRangeFormat)
   nonempty := by
     cases format <;>
     simp [renderText, FullDateTargetFormat.renderText,
-      FullDateTargetFormat.renderCivilText, TemporalTargetText.twoDigits]
+      FullDateTargetFormat.renderCivilText]
 }
 
 end DateRangeFormat

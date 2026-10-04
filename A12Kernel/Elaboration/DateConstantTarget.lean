@@ -27,6 +27,13 @@ def renderCivil (target : CheckedDateConstantTarget model sourceCarriesYear)
   | .complete target _ => target.format.renderCivil date
   | .omittedComponent target => target.format.renderCivil date
 
+/-- All Date renderers consume calendar parts before applying declaration-owned storage gates. -/
+def evaluateParts (target : CheckedDateConstantTarget model sourceCarriesYear)
+    (parts : DateParts) : FullDateTargetOutcome :=
+  match target with
+  | .complete target _ => target.evaluateParts parts
+  | .omittedComponent target => target.evaluateParts parts
+
 /-- Render and check one literal date against whichever shape the declaration selected. -/
 def evaluateCivil (target : CheckedDateConstantTarget model sourceCarriesYear)
     (date : CivilDate) : FullDateTargetOutcome :=

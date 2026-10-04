@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.PartialDateInput
 import A12Kernel.Semantics.DateRangeOverlap
+import A12Kernel.Semantics.LegacyCalendarExpression
 
 /-! # Checked component-omitting Date input
 
@@ -27,11 +28,11 @@ has no `PartiallyKnownDateValue` form. They classify into the `MonthDayValue` th
 already uses for exactly this, reached here through a local two-armed result rather than by widening the
 partial-Date domain with a shape most of its consumers could not resolve.
 
-**One executable rejection cause.** The classifier maps every parse or calendar failure to `dateFormat`
-and has no `dateInvalid` constructor arm, because these formats carry no complete date whose position it
-could compare with the Gregorian floor. The retained Kernel matrix establishes the named width,
-extra-component, separator, component-order, month-range, and greatest-day rows; other stored texts remain
-external evidence pending.
+Formal completion precedes the stored-Date position check. Year-bearing formats supply January and/or
+day one; month-day formats append the Base Year (default 2000), while month-only formal checking uses
+the parser's 1970 default. Runtime completion remains separate and uses the model's Base Year. The
+calendar-expression fragment-limit matrix (2026-10-04) separates these stages and retains `dateInvalid`
+for a completed label below the floor, alongside `dateFormat` for syntax and reality failures.
 
 **The separator is exact in both directions.** `yyyy-MM` refuses `202006` and `yyyyMM` refuses
 `2020-06`, so the two spellings are separate formats rather than one lenient parser.
@@ -48,7 +49,7 @@ namespace A12Kernel
 namespace OmittingDateFormat
 
 /-- One exact fixed-width digit run. Every width violation and every non-digit fails here, which is why
-one cause suffices for the whole family. -/
+these failures share the format cause. -/
 private def digitsOfWidth? (part : String) (width : Nat) : Option Nat :=
   if part.length == width && part.all Char.isDigit then part.toNat? else none
 
@@ -205,29 +206,42 @@ inductive OmittingDateInputCell where
   | admitted (value : OmittingDateStoredValue)
   deriving Repr, DecidableEq
 
-/-- Classify stored text under a certified component-omitting declaration and the model's Base Year.
-Every failure is the one measured cause; an unreal completion is a spelling question here exactly as it
-is for a complete date. The Base Year is a parameter rather than a field of the certificate because it
-belongs to the model and not to the declaration, and only the yearless day bound reads it. -/
+/-- Classify the rendered or authored text, including the format-specific formal completion before
+position checks. Kernel `DateUtil.completeDateAndFormat` appends the Base Year only when both day and
+month are present; the fragment-limit grid (2026-10-04) separates that from runtime completion. -/
+def OmittingDateFormat.classifyStored (format : OmittingDateFormat) (baseYear : Option Int)
+    (youngerThan1900Check : Bool) (text : String) : Except FullDateTargetError OmittingDateStoredValue := do
+  let formatError := FullDateTargetError.renderingRejected .dateFormat
+  let (parts, value) ← if format.carriesYear then do
+      let (parsedYear, parsedMonth) ← (format.parseYearComponents? text).getDM (throw formatError)
+      pure (({ year := parsedYear, month := parsedMonth.getD 1, day := 1 } : DateParts), none)
+    else do
+      let value ← (format.parseYearlessComponents? baseYear text).getDM (throw formatError)
+      let year := if format == .month then 1970 else baseYear.getD 2000
+      pure (({ year, month := value.month, day := value.day } : DateParts), some value)
+  if !DateParts.LegacyHybrid.isReal parts then throw formatError
+  if youngerThan1900Check && parts.Before FullDate.year1900Start.civil.parts then
+    throw .before1900
+  if parts.Before CivilDate.gregorianFloor.parts then throw .beforeGregorianFloor
+  match value with
+  | some value => pure (.yearless value)
+  | none =>
+      if format == .year then
+        pure (.yearBearing (.omittedMonth (← (OmittedMonthDate.ofYear? parts.year).getDM
+          (throw formatError))))
+      else
+        pure (.yearBearing (.omittedDay (← (OmittedDayDate.ofYearMonth? parts.year parts.month).getDM
+          (throw formatError))))
+
+/-- Stored input and computed rendering use the same format-owned classifier. Empty input is handled
+before formal checking, and position failures retain the distinct `dateInvalid` observation. -/
 def CheckedOmittingDateInputField.classifyStoredForModel
     (checked : CheckedOmittingDateInputField) (baseYear : Option Int)
     (text : String) : OmittingDateInputCell :=
-  if text.isEmpty then
-    .presentEmpty
-  else if checked.format.carriesYear then
-    match checked.format.parseYearComponents? text with
-    | none => .rejected .dateFormat
-    | some (year, none) =>
-        match OmittedMonthDate.ofYear? year with
-        | none => .rejected .dateFormat
-        | some value => .admitted (.yearBearing (.omittedMonth value))
-    | some (year, some month) =>
-        match OmittedDayDate.ofYearMonth? year month with
-        | none => .rejected .dateFormat
-        | some value => .admitted (.yearBearing (.omittedDay value))
-  else
-    match checked.format.parseYearlessComponents? baseYear text with
-    | none => .rejected .dateFormat
-    | some value => .admitted (.yearless value)
+  if text.isEmpty then .presentEmpty
+  else match checked.format.classifyStored baseYear checked.policy.youngerThan1900Check text with
+    | .ok value => .admitted value
+    | .error (.renderingRejected cause) => .rejected cause
+    | .error .before1900 | .error .beforeGregorianFloor => .rejected .dateInvalid
 
 end A12Kernel

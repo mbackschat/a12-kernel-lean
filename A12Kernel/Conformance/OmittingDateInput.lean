@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.OmittingDateInput
 A DATE declaration may carry a format that omits components, so its stored text is shorter than a
 complete date and its value denotes an interval or a yearless calendar position. All seven declarations are Kernel-measured, and this capsule owns all seven through the two existing value shapes.
 
-Every named admission and refusal below is read off the kernel's own `validateFull` on **both** codegen strategies, with the compact additions also agreeing with the interpreter. Every retained failure reports `datumFormatFalsch`; the executable classifier has no second rejection arm. Stored texts outside the retained matrix remain externally unverified.
+Every named admission and refusal below is read off the kernel's own `validateFull` on **both** codegen strategies, with the compact additions also agreeing with the interpreter. Width and reality failures report the format cause; the calendar-expression fragment-limit matrix additionally retains position failures. Stored texts outside the retained matrix remain externally unverified.
 
 The four **yearless** formats classify into the `MonthDayValue` the DateRange family already uses, because
 a month without a year denotes no interval of concrete dates. Their day bound is the month's greatest
@@ -106,7 +106,7 @@ example :
       classify? "yyyy-MM" "2021-02" = .interval 2021 2 1 2021 2 28 := by
   native_decide
 
-/- The executable classifier has one rejection cause. These retained width, extra-component, and range
+/- These retained width, extra-component, and range
 failures all report the format finding and none reports the date finding. -/
 example :
     classify? "yyyy" "20" = .rejected .dateFormat ∧
@@ -133,6 +133,16 @@ example :
     classify? "yyyy-MM-dd" "2020-06-15" = .unowned ∧
       classify? "dd.MM.yyyy" "15.06.2020" = .unowned ∧
       classify? "yyyyMMdd" "20200615" = .unowned := by
+  native_decide
+
+/- The calendar-expression fragment-limit matrix (2026-10-04) separates formal completion
+from computation completion: month-only validation does not append the model's Base Year. -/
+example :
+    classify? "yyyy" "1583" = .rejected .dateInvalid ∧
+      classify? "yyyy-MM" "1583-10" = .rejected .dateInvalid ∧
+      classifyUnder? (some 1583) "MM-dd" "01-01" = .rejected .dateInvalid ∧
+      classifyUnder? (some 1583) "MM" "01" = .yearless 1 1 ∧
+      classify? "yyyy" "10000" = .rejected .dateFormat := by
   native_decide
 
 /-! ## Yearless formats -/
@@ -174,7 +184,7 @@ example :
       classify? "ddMM" "15-06" = .rejected .dateFormat := by
   native_decide
 
-/- The retained width, range, and separator failures all reach the classifier's sole format cause. -/
+/- The retained width, range, and separator failures all reach the classifier's format cause. -/
 example :
     classify? "MM" "06-15" = .rejected .dateFormat ∧
       classify? "MM" "00" = .rejected .dateFormat ∧

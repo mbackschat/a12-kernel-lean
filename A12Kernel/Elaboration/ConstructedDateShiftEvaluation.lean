@@ -38,56 +38,16 @@ structure CheckedConstructedDateShift (model : FlatModel) where
 
 namespace CheckedConstructedDateShift
 
-private def shiftResolved? (unit : DateShiftUnit)
-    (result : DateConstructionResult) (offset : Int) :
-    Option DateConstructionResult :=
-  match unit with
-  | .days => result.addLegacyDays? offset
-  | .months => result.addLegacyMonths? offset
-  | .years => result.addLegacyYears? offset
-
-/-- Apply one real shift to an exact already-resolved source. UTC/GMT retain the
-    carried legacy-hybrid parts; Berlin decodes the source wall label from the exact
-    instant before applying its unit-specific field mutation. -/
+/-- Calendar mutation consumes the carried instant without re-resolving its label; target
+storage restrictions belong to the later consumer (spec/05 and calendar-expression grid). -/
 private def applyResolvedRealAmount
     (checked : CheckedConstructedDateShift model)
     (sourceInstant : Instant) (parts : DateParts)
     (offset : Int) (notGiven : Bool) :
     Except ConstructedDateShiftFault ConstructedDateShiftResult :=
-  match checked.source.profile with
-  | .utc =>
-      if offset = 0 then
-        pure (.value sourceInstant parts notGiven)
-      else
-        match shiftResolved? checked.unit (.real parts) offset with
-        | some (.real shifted) =>
-            match DateParts.LegacyHybrid.midnightInstant? shifted with
-            | some instant => pure (.value instant shifted notGiven)
-            | none => throw (.landingUnavailable checked.unit parts offset)
-        | some .incomplete => pure (.noValue notGiven)
-        | some .unreal => pure (.noValue notGiven)
-        | some .unknown => pure (.noValue notGiven)
-        | none => throw (.landingUnavailable checked.unit parts offset)
-  | .europeBerlin =>
-      match checked.source.profile.localDateTime? sourceInstant with
-      | none => throw (.landingUnavailable checked.unit parts offset)
-      | some sourceLocal =>
-          let landing :=
-            match checked.unit with
-            | .days =>
-                EuropeBerlinLegacyProfile.calendarDayLanding?
-                  sourceLocal sourceInstant offset
-            | .months =>
-                EuropeBerlinLegacyProfile.calendarMonthLanding?
-                  sourceLocal sourceInstant offset
-            | .years =>
-                EuropeBerlinLegacyProfile.calendarYearLanding?
-                  sourceLocal sourceInstant offset
-          match landing with
-          | none =>
-              throw (.landingUnavailable checked.unit parts offset)
-          | some (shifted, shiftedInstant) =>
-              pure (.value shiftedInstant shifted.date.civil.parts notGiven)
+  match checked.source.profile.shiftCalendar? checked.unit sourceInstant offset with
+  | some (label, instant) => pure (.value instant label.parts notGiven)
+  | none => throw (.landingUnavailable checked.unit parts offset)
 
 /-- Apply an outer amount to one already-evaluated shift result. Its exact instant
     is the next calendar source; it is never reconstructed from the carried date

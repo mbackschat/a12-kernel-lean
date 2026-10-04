@@ -1,3 +1,4 @@
+import A12Kernel.Proofs.LegacyCalendarExpression
 import A12Kernel.Proofs.AddressedDateFromDateTime
 import A12Kernel.Proofs.AddressedDateFromDateTimeFormalInput
 import A12Kernel.Proofs.AddressedDateRangeBoundPart

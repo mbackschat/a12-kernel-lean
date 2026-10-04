@@ -52,7 +52,8 @@ theorem checkedRepeatableDateTimeConstantComputation_renderingAgreesWithResolved
     (operation : CheckedRepeatableDateTimeConstantComputation model)
     (instant : Instant)
     (resolves :
-      operation.dateTimeTarget.profile.localDateTime? instant = some operation.constant)
+      operation.dateTimeTarget.profile.calendarLabel? instant =
+        some (LegacyCalendarLabel.ofLocal operation.constant))
     (value : Value)
     (readable :
       operation.dateTimeTarget.format.classifyStoredIn operation.dateTimeTarget.profile
@@ -60,7 +61,8 @@ theorem checkedRepeatableDateTimeConstantComputation_renderingAgreesWithResolved
     operation.dateTimeTarget.evaluate (.value instant) =
       .ok (.accepted
         (DateTimeTargetFormat.render operation.dateTimeTarget.format operation.constant)) := by
-  simp only [CheckedDateTimeFormatTarget.evaluate, resolves, readable]
+  simp only [DateTimeTargetFormat.render] at readable ⊢
+  simp only [CheckedDateTimeFormatTarget.evaluate, resolves, LegacyCalendarLabel.ofLocal, readable]
   rfl
 
 end A12Kernel

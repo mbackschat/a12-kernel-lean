@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "CalendarFragments_DM.json",
+    "locale": "en_US",
+    "clock": "2024-03-30T23:00:00Z"
+  },
+  "rows": [
+    {
+      "name": "filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterComp",
+              "field": "Form/After",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/After",
+                "Form/MDMonths"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDDaysComp",
+              "field": "Form/MDDays",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/MD",
+                "Form/MDDays"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDMonthsComp",
+              "field": "Form/MDMonths",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/MDMonths"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDYearsComp",
+              "field": "Form/MDYears",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/MDYears"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/After",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDDays",
+                "cleared": false,
+                "errored": true,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MDMonths",
+                "cleared": false,
+                "errored": true,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MDYears",
+                "cleared": false,
+                "errored": false,
+                "value": "03-01"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/MDYears",
+                "value": "03-01"
+              }
+            ],
+            "errored": [
+              {
+                "field": "Form/MDDays",
+                "value": "02-29",
+                "errorMessage": {
+                  "code": "datumFormatFalsch",
+                  "field": "Form/MDDays",
+                  "severity": "ERROR",
+                  "type": "VALUE_ERROR",
+                  "referenced": [
+                    "Form/MDDays"
+                  ],
+                  "fillToFix": []
+                }
+              },
+              {
+                "field": "Form/MDMonths",
+                "value": "02-29",
+                "errorMessage": {
+                  "code": "datumFormatFalsch",
+                  "field": "Form/MDMonths",
+                  "severity": "ERROR",
+                  "type": "VALUE_ERROR",
+                  "referenced": [
+                    "Form/MDMonths"
+                  ],
+                  "fillToFix": []
+                }
+              }
+            ],
+            "applied": {
+              "Form": {
+                "After": null,
+                "M": "02",
+                "MD": "02-28",
+                "MDDays": null,
+                "MDMonths": null,
+                "MDYears": "03-01",
+                "MDays": "02",
+                "MMonths": "02",
+                "MYears": "02",
+                "Y": "2024",
+                "YDays": "2024",
+                "YM": "2024-02",
+                "YMDays": "2024-02",
+                "YMMonths": "2024-02",
+                "YMYears": "2024-02",
+                "YMonths": "2024",
+                "YYears": "2024"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterComp",
+              "field": "Form/After",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/After",
+                "Form/MDMonths"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDDaysComp",
+              "field": "Form/MDDays",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/MD",
+                "Form/MDDays"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDMonthsComp",
+              "field": "Form/MDMonths",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/MDMonths"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "MDYearsComp",
+              "field": "Form/MDYears",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "referenced": [
+                "Form/MDYears"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/After",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/MDDays",
+                "cleared": false,
+                "errored": true,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MDMonths",
+                "cleared": false,
+                "errored": true,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/MDYears",
+                "cleared": false,
+                "errored": false,
+                "value": "03-01"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/MDYears",
+                "value": "03-01"
+              }
+            ],
+            "errored": [
+              {
+                "field": "Form/MDDays",
+                "value": "02-29",
+                "errorMessage": {
+                  "code": "datumFormatFalsch",
+                  "field": "Form/MDDays",
+                  "severity": "ERROR",
+                  "type": "VALUE_ERROR",
+                  "referenced": [
+                    "Form/MDDays"
+                  ],
+                  "fillToFix": []
+                }
+              },
+              {
+                "field": "Form/MDMonths",
+                "value": "02-29",
+                "errorMessage": {
+                  "code": "datumFormatFalsch",
+                  "field": "Form/MDMonths",
+                  "severity": "ERROR",
+                  "type": "VALUE_ERROR",
+                  "referenced": [
+                    "Form/MDMonths"
+                  ],
+                  "fillToFix": []
+                }
+              }
+            ],
+            "applied": {
+              "Form": {
+                "After": null,
+                "M": "02",
+                "MD": "02-28",
+                "MDDays": null,
+                "MDMonths": null,
+                "MDYears": "03-01",
+                "MDays": "02",
+                "MMonths": "02",
+                "MYears": "02",
+                "Y": "2024",
+                "YDays": "2024",
+                "YM": "2024-02",
+                "YMDays": "2024-02",
+                "YMMonths": "2024-02",
+                "YMYears": "2024-02",
+                "YMonths": "2024",
+                "YYears": "2024"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

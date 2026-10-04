@@ -109,6 +109,15 @@ private def temporalExpressionOutcome (source : SurfaceScalarTemporalExpression)
   let context : FlatContext := { read, world := some { now := { epochMillis := 0 } } }
   (checked.evalResult .computation context).toOption
 
+-- Internal preservation lock: scalar transport must not reconstruct an exact Date from its label.
+example :
+    let value : DateValue := {
+      instant := { epochMillis := 1 }, parts := { year := 1970, month := 1, day := 1 }
+      basis := .legacyHybrid }
+    temporalExpressionOutcome (.field { base := .relative 0, groups := [], field := "IsoDate" })
+      (fun _ => { rawPresent := true, parsed := some (.temporal (.date value)), findings := [] }) =
+        some (.value (.date (some value)) true) := by native_decide
+
 example :
     let amount : AuthoredNumericExpr SurfaceNumericAtom :=
       .atom (.field { base := .relative 0, groups := [], field := "Amount" })

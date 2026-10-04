@@ -8,7 +8,7 @@ import A12Kernel.Semantics.String
 
 This capsule certifies direct nonrepeatable `Date` components backed by ordinary Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, admitted quoted constants, or matching Date/DateTime/Base-Year/`Today`/`Now` extractors, plus the two-argument Base-Year specialization, for the concrete UTC/GMT/Berlin profiles. Each field position keeps the kernel checker's exact stored-width, numeric-maximum, or Year-only format gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; dynamic point-in-time sources retain the selected model-zone profile without sampling a clock; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
 
-Berlin execution remains bounded to post-floor Gregorian labels; its pre-floor hybrid-calendar identity, the extensible-enumeration String alternative, other recursive extractor operands, other model zones, repeatable placement, targets, and a general temporal-expression tree remain outside.
+Execution and composition use the shared scalar temporal tree and floor-free legacy calendar model. Direct extensible-enumeration String components, other recursive extractor operands, other model zones and repeatable constructor placement remain separate obligations in SG6.
 -/
 
 namespace A12Kernel

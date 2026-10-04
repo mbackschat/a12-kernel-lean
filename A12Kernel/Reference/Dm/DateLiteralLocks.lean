@@ -68,11 +68,13 @@ example : [false, true].all (fun repeated =>
     run "yyyy-MM-dd" "11.06." (some 2024) repeated == stored "2024-06-11" &&
     run "MM-dd" "29.02." (some 2024) repeated == none) := by native_decide
 
+/- Year loss is checked in the target format, including leap reality (calendar-expression
+fragment-leap matrix, 2026-10-04); the dependent inherits poison. -/
 example : [false, true].all (fun repeated =>
     [("MM-dd", "02-29"), ("dd.MM.", "29.02.")].all (fun (format, stored) =>
       run format "29.02.2024" (some 2023) repeated ==
-        some (if repeated then [s!"value {stored}", s!"value {stored}", "cleared"]
-          else [s!"value {stored}"]))) := by native_decide
+        some (if repeated then [s!"errored {stored}", s!"errored {stored}", "cleared"]
+          else [s!"errored {stored}"]))) := by native_decide
 
 private def downstream (rejected : Bool) (leap : Bool := false) : Option (List String) := do
   let format := if leap then "MM-dd" else if rejected then "yyyy-MM-dd" else "MM"
@@ -103,6 +105,6 @@ private def downstream (rejected : Bool) (leap : Bool := false) : Option (List S
 
 example : downstream false = some ["value 03", "value 3"] ∧
     downstream true = some ["errored 1899-12-31", "cleared"] ∧
-    downstream false true = some ["value 02-29", "cleared"] := by native_decide
+    downstream false true = some ["errored 02-29", "cleared"] := by native_decide
 
 end A12Kernel.Dm.DateLiteralLocks

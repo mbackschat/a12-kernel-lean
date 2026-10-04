@@ -1,0 +1,1 @@
+{"model":"CalendarBoundaries_DM.json","locale":"en_US","clock":"2024-03-30T23:00:00Z","observe":["validateFull","compute","computeResults"],"rows":[{"name":"boundaries","documentInline":{"Form":{"D1":"1583-10-16","Z1":"1583-10-16T12:30:00","BelowFloor":"2000-01-01","ReturnDate":"2000-01-01","ReturnStamp":"2000-01-01T00:00:00","ConstructedReturn":"2000-01-01"}}}]}

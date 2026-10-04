@@ -96,6 +96,7 @@ run_cmd do
 #print axioms A12Kernel.temporalExtremum_unknown_head
 #print axioms A12Kernel.temporalExtremum_fixed_singleton
 #print axioms A12Kernel.temporalExtremum_empty_prefix_marks_missing
+#print axioms A12Kernel.temporalExtremum_neutral_prefix
 #print axioms A12Kernel.dateExtremum_select_of_before
 #print axioms A12Kernel.dateExtremum_select_eq_left_or_right
 #print axioms A12Kernel.dateExtremum_empty
@@ -449,6 +450,7 @@ run_cmd do
 #print axioms A12Kernel.berlinLegacy_resolve_prefers_3600
 #print axioms A12Kernel.berlinLegacy_resolve_prefers_7200
 #print axioms A12Kernel.berlin_differenceResolvedInDays_self
+#print axioms A12Kernel.calendarShift_zero
 #print axioms A12Kernel.berlin_calendarDayLanding_zero
 #print axioms A12Kernel.berlin_calendarMonthLanding_zero
 #print axioms A12Kernel.berlin_calendarYearLanding_zero
@@ -2413,6 +2415,7 @@ run_cmd do
 #print axioms A12Kernel.checkedPartialPreliminary_silent_is_relevant
 #print axioms A12Kernel.checkedPartialPreliminary_groupPresence_relevance
 #print axioms A12Kernel.checkedConstructedDateComponents_profile
+#print axioms A12Kernel.checkedConstructedDateComponentsWith_day_unavailable
 #print axioms A12Kernel.checkedConstructedDateComponents_day_unavailable
 #print axioms A12Kernel.checkedConstructedDateBaseYear_read
 #print axioms A12Kernel.checkedConstructedDateConstant_read

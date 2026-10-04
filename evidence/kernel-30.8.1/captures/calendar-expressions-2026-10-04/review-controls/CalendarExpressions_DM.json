@@ -1,0 +1,273 @@
+{
+  "header": {
+    "id": "CalendarExpressions_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "CalendarExpressions_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/Y",
+                "name": "Y",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/D",
+                "name": "D",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Day",
+                "name": "Day",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0,
+                      "maxIntegerDigits": 2,
+                      "positivesOnly": true,
+                      "maxLength": 2
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/NOut",
+                "name": "NOut",
+                "Field": {
+                  "fieldType": {
+                    "type": "NumberType",
+                    "NumberType": {
+                      "maxFractionalDigits": 0,
+                      "positivesOnly": false
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/SOut",
+                "name": "SOut",
+                "Field": {
+                  "fieldType": {
+                    "type": "StringType",
+                    "StringType": {}
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/Producer",
+                "name": "Producer",
+                "Computation": {
+                  "computedFieldRelPath": "../Y",
+                  "computationAlternatives": [
+                    {
+                      "operation": "\"01.01.2024\""
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Check calendar result."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/NumberConsumer",
+                "name": "NumberConsumer",
+                "Computation": {
+                  "computedFieldRelPath": "../NOut",
+                  "computationAlternatives": [
+                    {
+                      "operation": "7",
+                      "precondition": "Date(\"01\",\"01\",Y) == \"01.01.2024\""
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Check calendar result."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/StringConsumer",
+                "name": "StringConsumer",
+                "Computation": {
+                  "computedFieldRelPath": "../SOut",
+                  "computationAlternatives": [
+                    {
+                      "operation": "\"selected\"",
+                      "precondition": "Date(\"01\",\"01\",Y) == \"01.01.2024\""
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Check calendar result."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MinUnreal",
+                "name": "MinUnreal",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "MinUnreal",
+                  "errorCondition": "Min(Date(\"31\",\"02\",\"2024\"),[D]) == [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Check calendar comparison."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MinIncomplete",
+                "name": "MinIncomplete",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "MinIncomplete",
+                  "errorCondition": "Min(Date(Day,\"02\",\"2024\"),[D]) == [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Check calendar comparison."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MinReal",
+                "name": "MinReal",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "MinReal",
+                  "errorCondition": "Min(Date(\"29\",\"02\",\"2024\"),[D]) == [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Check calendar comparison."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MaxUnreal",
+                "name": "MaxUnreal",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "MaxUnreal",
+                  "errorCondition": "Max(Date(\"31\",\"02\",\"2024\"),[D]) == [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Check calendar comparison."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MaxIncomplete",
+                "name": "MaxIncomplete",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "MaxIncomplete",
+                  "errorCondition": "Max(Date(Day,\"02\",\"2024\"),[D]) == [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Check calendar comparison."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Rule",
+                "id": "/Form/MaxReal",
+                "name": "MaxReal",
+                "Rule": {
+                  "errorEntityRelPath": "../D",
+                  "errorCode": "MaxReal",
+                  "errorCondition": "Max(Date(\"29\",\"02\",\"2024\"),[D]) == [D]",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Check calendar comparison."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

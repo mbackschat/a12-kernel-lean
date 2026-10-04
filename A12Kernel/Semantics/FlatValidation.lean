@@ -251,6 +251,7 @@ end FlatCondition
     still treats an inconsistent value kind defensively as malformed. -/
 structure FlatContext where
   read : FieldId → CheckedCell
+  storedText : FieldId → Option String := fun _ => none
   world : Option World := none
 
 /-- Supply the explicit evaluation world only to consumers that support clock-dependent operands. -/

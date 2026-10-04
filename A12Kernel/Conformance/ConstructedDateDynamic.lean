@@ -139,11 +139,10 @@ private def nowMissingWorld? : Option Bool := do
   let result ← evaluateSources? nowSources none
   pure (match result with | .error .nowWorldRequired => true | _ => false)
 
-private def berlinPreFloorUnsupported? : Option Bool := do
+private def berlinPreFloorConstructed? : Option Bool := do
   let result ← evaluateBerlinSources? preFloorSources none
   pure (match result with
-    | .error (.profileDateUnsupported "Europe/Berlin"
-        { year := 1583, month := 10, day := 15 }) => true
+    | .ok (.resolved (.real { year := 1583, month := 10, day := 15 })) => true
     | _ => false)
 
 private def berlinShift?
@@ -411,9 +410,9 @@ example : (do
       { year := 2024, month := 7, day := 1 }) := by
   native_decide
 
-/- Berlin stays explicitly bounded at the stored-Date floor; UTC's separate Julian-side
-   account is not silently reused. -/
-example : berlinPreFloorUnsupported? = some true := by
+/- The calendar boundary grid (2026-10-04) constructs this real label; the target owns
+   its later stored-Date-floor rejection. -/
+example : berlinPreFloorConstructed? = some true := by
   native_decide
 
 /- Day addition carries the source offset: adjacent CEST selects the earlier overlap instant, while a long addition from CET selects the later instant at the same wall label. -/

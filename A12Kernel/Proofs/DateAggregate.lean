@@ -46,6 +46,17 @@ theorem temporalExtremum_empty_prefix_marks_missing
     } = .value value false := by
   rfl
 
+/-- A selector-neutral payload and a missing input are independent: selection drops the payload,
+but preserves exactly the two authored provenance flags (calendar review-control matrix, 2026-10-04). -/
+theorem temporalExtremum_neutral_prefix
+    (select : α → α → α) (neutral value : α) (neutralGiven valueGiven : Bool)
+    (selects : select neutral value = value) :
+    evalTemporalExtremumAggregate select {
+      operands := [.value neutral neutralGiven, .value value valueGiven]
+      hasUninstantiatedTail := false, hasHaving := false
+    } = .value value (neutralGiven && valueGiven) := by
+  simp [evalTemporalExtremumAggregate, scanTemporalExtremumOperands, selects]
+
 /-- On a strict chronological pair, minimum selects the earlier Date and maximum the later Date. -/
 theorem dateExtremum_select_of_before (left right : FullDate)
     (before : left.before right = true) :

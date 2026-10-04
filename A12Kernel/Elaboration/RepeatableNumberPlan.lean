@@ -116,7 +116,8 @@ def executeFixed (table : CheckedNumericComputationTable model) (world : World)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) :
     Except RepeatableNumberPlanFault (SourcedNumericTargetOutcome CellAddr) := do
   let outcome ← supportedOutcome table <| table.evaluateIn {
-      scalar := { read := cellAt input read [], world := some world }
+      scalar := { input.computationContextAt [] with
+        read := cellAt input read [], world := some world }
       document := input.source.toDocument
       outer := []
       filterRead := cellAt input read
@@ -145,7 +146,8 @@ def executeRows (table : CheckedNumericComputationTable model) (world : World)
     (fun environment => do
       let target ← addressAt environment
       let outcome ← supportedOutcome table <| table.evaluateIn {
-          scalar := { read := cellAt input read environment, world := some world, row := environment }
+          scalar := { input.computationContextAt environment with
+            read := cellAt input read environment, world := some world }
           document := input.source.toDocument
           outer := environment
           filterRead := cellAt input read

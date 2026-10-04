@@ -35,6 +35,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-04-01"></a>
+### `SPEC-2026-10-04-01` — component-omitting Date checking completes the stored format after rendering
+
+- `status`: pending
+- `clause`: [spec/05 component-omitting formats](../spec/05-dates-and-time.md#1-constant-format-and-the-stringdate-literal-ambiguity-).
+- `delta`: replace the no-position-error claim with format-specific formal completion and position checking. Computed fragment targets are classified after rendering, so discarded years can cause floor or leap-reality failure; the attempted text remains errored and dependents are poisoned. Arithmetic retains intermediate calendar values before storage checks.
+- `evidence`: the [calendar family checkpoint](sources/temporal-runtime-fold-probes.md#src-calendar-expression-family) retains the separating floor, year-overflow and leap-loss rows on both Kernel 30.8.1 engines, the clean producer identity and manifest. The checkpoint names the source path that distinguishes formal completion from runtime completion.
+- `redundancy`: peer headings and the values `1583`, `10000`, and `02-29` were searched at `35ad604468360640f9f5bd9fcdc2cc6922b0b685`. KF39 owns the general floor and KF247 the Base-Year day bound. KF196’s no-position-error account for component-omitting input conflicts with these retained floor rows. The peer’s range-format month-only exemption is a related mechanism on a different carrier, not discharge of these scalar outcomes.
+- `surfaces`: component-omitting stored-input and computed-target classification; preserve the distinction from runtime year completion and intermediate arithmetic.
+- `acceptance`: reconcile KF196 and scalar target handling with the retained year/year-month floor, month-day versus month-only Base-Year controls, five-digit attempts, and leap-loss producer/dependent pair, or provide contrary evidence. No universal correspondence claim, wider-zone request or nonpositive-era extension.
+- `introducing commit`: resolve with the ledger contract’s `git log --reverse -S` recipe.
+
 <a id="spec-2026-10-03-06"></a>
 ### `SPEC-2026-10-03-06` — temporal failures preserve operand order and the validation rule boundary
 

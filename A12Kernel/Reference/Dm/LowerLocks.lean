@@ -98,7 +98,8 @@ private def temporalCell (value : Value) : CheckedCell :=
 
 private def temporalDate (month : Nat) : CheckedCell :=
   temporalCell (.temporal (.date {
-    instant := { epochMillis := 0 }, parts := { year := 2024, month, day := 1 },
+    instant := (DateParts.LegacyHybrid.midnightInstant? { year := 2024, month, day := 1 }).getD { epochMillis := 0 },
+    parts := { year := 2024, month, day := 1 },
     basis := .storedGregorian }))
 
 private def temporalEval (dm : FlatModel) (text : String)

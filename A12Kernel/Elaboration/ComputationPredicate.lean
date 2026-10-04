@@ -36,6 +36,7 @@ inductive ComputationPredicateError where
   /-- Runtime failure at a reached guard becomes the target's calculation-value error, separately
   from inherited operand poison (comparison-guard grid, 2026-10-04). -/
   | valueFailure
+  | temporalUnavailable
   | fieldKindMismatch (field : FieldId)
   | contextRequired
   | addressing (error : StarAddressingError)
@@ -182,8 +183,10 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   let filterRead := filterRead?.getD (fun row field =>
     (context.addressed.map (fun addressed => addressed.read row field)).getD (context.read field))
   match predicate with
-  | .temporal source => (source.evalComputation { read := context.read, world := context.world }).mapError (fun _ => .valueFailure)
-  | .fieldComparison source => (source.evalComputation { read := context.read, world := context.world }).mapError .fieldKindMismatch
+  | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError (fun
+      | .dateTimeLabelUnresolved => .valueFailure
+      | .calendarUnavailable => .temporalUnavailable)
+  | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
   | .valueList source => evalValueList (.quantified source.quantifier) source context filterRead
   | .scalarValueList operator source => evalValueList (.scalar operator) source context filterRead
   | .scalarNumberLiterals operator source values =>

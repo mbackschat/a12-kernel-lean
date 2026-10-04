@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.CalendarExpressionLocks
 import A12Kernel.Reference.Dm.ParallelComputationLocks
 import A12Kernel.Reference.Dm.CrossRootValidationLocks
 import A12Kernel.Reference.Dm.ValidationBindingLocks

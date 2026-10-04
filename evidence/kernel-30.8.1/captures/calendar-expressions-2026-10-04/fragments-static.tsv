@@ -1,0 +1,25 @@
+profile	operation	admitted	codes
+fragments	AddDays(YM,1)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+fragments	AddMonths(YM,1)	true	
+fragments	AddYears(YM,1)	true	
+fragments	AddDays(MD,1)	true	
+fragments	AddMonths(MD,1)	true	
+fragments	AddYears(MD,1)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+fragments	AddDays(Y,1)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+fragments	AddMonths(Y,1)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+fragments	AddYears(Y,1)	true	
+fragments	AddDays(M,1)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+fragments	AddMonths(M,1)	true	
+fragments	AddYears(M,1)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+fragments-base-year	AddDays(YM,1)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+fragments-base-year	AddMonths(YM,1)	true	
+fragments-base-year	AddYears(YM,1)	true	
+fragments-base-year	AddDays(MD,1)	true	
+fragments-base-year	AddMonths(MD,1)	true	
+fragments-base-year	AddYears(MD,1)	true	
+fragments-base-year	AddDays(Y,1)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+fragments-base-year	AddMonths(Y,1)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+fragments-base-year	AddYears(Y,1)	true	
+fragments-base-year	AddDays(M,1)	false	MVK_WRONG_DATE_FORMAT_FOR_OP
+fragments-base-year	AddMonths(M,1)	true	
+fragments-base-year	AddYears(M,1)	true	

@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.DateShift
 import A12Kernel.Elaboration.CheckedDocument
 import A12Kernel.Elaboration.NumericValidation.Evaluation
 
@@ -13,13 +14,6 @@ affect their own result domains.
 -/
 
 namespace A12Kernel
-
-/-- Calendar unit shared by checked `AddDays`, `AddMonths`, and `AddYears` consumers. -/
-inductive DateShiftUnit where
-  | days
-  | months
-  | years
-  deriving Repr, DecidableEq
 
 /-- Authored position of a checked shift result in one bounded binary difference. -/
 inductive ShiftDifferencePosition where

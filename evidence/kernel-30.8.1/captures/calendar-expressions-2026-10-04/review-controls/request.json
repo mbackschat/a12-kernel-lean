@@ -1,0 +1,36 @@
+{
+  "model": "CalendarExpressions_DM.json",
+  "locale": "en_US",
+  "clock": "2024-03-30T23:00:00Z",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "stale",
+      "documentInline": {
+        "Form": {
+          "Y": "2023",
+          "D": "2024-03-01",
+          "Day": "",
+          "NOut": "9",
+          "SOut": "old"
+        }
+      }
+    },
+    {
+      "name": "absent",
+      "documentInline": {
+        "Form": {
+          "Y": "",
+          "D": "2024-03-01",
+          "Day": "",
+          "NOut": "9",
+          "SOut": "old"
+        }
+      }
+    }
+  ]
+}

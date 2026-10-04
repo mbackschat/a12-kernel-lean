@@ -1,4 +1,6 @@
+import A12Kernel.Semantics.LegacyCalendarExpression
 import A12Kernel.Elaboration.DateTimeInput
+import A12Kernel.Elaboration.OmittingDateInput
 import A12Kernel.Elaboration.Flat.Model
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.TemporalTarget
@@ -254,16 +256,21 @@ inductive FullDateTargetEvaluationFault where
 namespace CheckedDateFormatTarget
 
 /-- Render one real civil result before applying the target's ordered additional-check and universal-floor gates. The attempted text survives either rejection. -/
-def evaluateCivil (target : CheckedDateFormatTarget model)
-    (date : CivilDate) : FullDateTargetOutcome :=
-  let stored := target.format.renderCivil date
+def evaluateParts (target : CheckedDateFormatTarget model)
+    (parts : DateParts) : FullDateTargetOutcome :=
+  let stored := target.format.renderParts parts
   if target.checked.policy.youngerThan1900Check &&
-      date.Before FullDate.year1900Start.civil then
+      parts.Before FullDate.year1900Start.civil.parts then
     .errored stored .before1900
-  else if date.Before CivilDate.gregorianFloor then
+  else if parts.Before CivilDate.gregorianFloor.parts then
     .errored stored .beforeGregorianFloor
+  else if target.format.parseLegacyParts? stored.text == none then
+    .errored stored (.renderingRejected .dateFormat)
   else
     .accepted stored
+
+def evaluateCivil (target : CheckedDateFormatTarget model) (date : CivilDate) : FullDateTargetOutcome :=
+  target.evaluateParts date.parts
 
 /-- Render and basic-check one already-selected full-Date computation result without classifying a delta or mutating a document. -/
 def evaluate
@@ -274,7 +281,9 @@ def evaluate
   | .poison cause => pure (.poison cause)
   | .value instant =>
       match target.profile.localDate? instant with
-      | none => throw (.localDateUnavailable instant)
+      | none => match target.profile.calendarLabel? instant with
+          | some label => pure (target.evaluateParts label.parts)
+          | none => throw (.localDateUnavailable instant)
       | some date =>
           pure (target.evaluateCivil date.civil)
 
@@ -350,24 +359,17 @@ def elaborateOmittedComponentDateTargetIn
 
 namespace CheckedOmittedComponentDateTarget
 
-/-- Render one literal civil Date into this target's declared component subset, then apply the
-declaration's **own** ordered additional-check and floor gates.
+/-- Render before formal checking: omitted components are completed from the stored format, not
+from the expression's intermediate date (calendar-expression fragment-limit grid, 2026-10-04). -/
+def evaluateParts (target : CheckedOmittedComponentDateTarget model sourceCarriesYear)
+    (parts : DateParts) : FullDateTargetOutcome :=
+  let stored := target.format.renderParts parts
+  match target.format.classifyStored model.baseYear target.checked.policy.youngerThan1900Check stored.text with
+  | .ok _ => .accepted stored
+  | .error cause => .errored stored cause
 
-    Reusing those gates here is an assumption rather than a measurement: the component-omitting
-    constant rows covered only targets with no additional check, so what a `yyyy` target declaring
-    the pre-1900 check does with a 1899 constant is unobserved. The gates are declaration-owned and
-    the flag sits on the policy whatever the format, which is why they are applied rather than
-    dropped; the exclusion is recorded beside the carrier's coverage entry. -/
 def evaluateCivil (target : CheckedOmittedComponentDateTarget model sourceCarriesYear)
-    (date : CivilDate) : FullDateTargetOutcome :=
-  let stored := target.format.renderCivil date
-  if target.checked.policy.youngerThan1900Check &&
-      date.Before FullDate.year1900Start.civil then
-    .errored stored .before1900
-  else if date.Before CivilDate.gregorianFloor then
-    .errored stored .beforeGregorianFloor
-  else
-    .accepted stored
+    (date : CivilDate) : FullDateTargetOutcome := target.evaluateParts date.parts
 
 end CheckedOmittedComponentDateTarget
 
@@ -483,10 +485,10 @@ def evaluate
   | .noValue => pure .noValue
   | .poison cause => pure (.poison cause)
   | .value instant =>
-      match target.profile.localDateTime? instant with
+      match target.profile.calendarLabel? instant with
       | none => throw (.localDateTimeUnavailable instant)
       | some dateTime =>
-          let rendered := target.format.render dateTime
+          let rendered := target.format.renderParts dateTime.parts dateTime.time
           match target.format.classifyStoredIn target.profile rendered.text with
           | .error cause => throw (.renderingUnresolvable cause)
           | .ok (.rejected cause) => pure (.errored rendered (.renderingRejected cause))

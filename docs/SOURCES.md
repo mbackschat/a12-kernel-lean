@@ -1709,13 +1709,16 @@ Update this owner only when an authoritative locus, reusable drill route, source
 - [Numeric computation guards read empty as zero and distinguish arithmetic failure from reached poison](sources/computation-scheduling-probes.md#src-numeric-computation-guards)
 
 <a id="src-comparison-computation-guards"></a>
-- [Typed comparison guards preserve ordered failures and model-zone identity](sources/computation-scheduling-probes.md#src-comparison-computation-guards)
+- [Typed comparison guards](sources/computation-scheduling-probes.md#src-comparison-computation-guards)
 
 <a id="src-compositional-computation-guards"></a>
-- [Shared computation guards preserve typed reads, subject prefixes and group content](sources/computation-scheduling-probes.md#src-compositional-computation-guards)
+- [Shared computation guards](sources/computation-scheduling-probes.md#src-compositional-computation-guards)
+
+<a id="src-calendar-expression-family"></a>
+- [Calendar expressions](sources/temporal-runtime-fold-probes.md#src-calendar-expression-family)
 
 <a id="src-compositional-temporal-expressions"></a>
-- [Temporal expression compositions reach scalar targets with model-zone rendering](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-expressions)
+- [Scalar temporal expressions](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-expressions)
 
 <a id="src-peer-ba-computations-replay"></a>
 - [Six transferred peer computation models replay on 30 runtime documents](sources/evaluation-and-application-routes.md#src-peer-ba-computations-replay)

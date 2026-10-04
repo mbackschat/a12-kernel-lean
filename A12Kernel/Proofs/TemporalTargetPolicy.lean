@@ -21,8 +21,10 @@ theorem fullDateTarget_evaluate_pre1900
   have before' :
       date.civil.Before FullDate.year1900Start.civil := by
     simpa [FullDate.before1900, FullDate.before] using before
+  simp only [CivilDate.Before] at before'
   simp [CheckedDateFormatTarget.evaluate, localDate,
-    CheckedDateFormatTarget.evaluateCivil, check, before',
+    CheckedDateFormatTarget.evaluateCivil, CheckedDateFormatTarget.evaluateParts,
+    FullDateTargetFormat.renderCivil, check, before',
     FullDateTargetFormat.render]
   rfl
 
@@ -34,7 +36,9 @@ theorem fullDateTarget_evaluateCivil_beforeGregorianFloor
     (beforeFloor : date.Before CivilDate.gregorianFloor) :
     target.evaluateCivil date =
       .errored (target.format.renderCivil date) .beforeGregorianFloor := by
-  simp [CheckedDateFormatTarget.evaluateCivil, noAdditionalCheck,
+  simp only [CivilDate.Before] at beforeFloor
+  simp [CheckedDateFormatTarget.evaluateCivil, CheckedDateFormatTarget.evaluateParts,
+    FullDateTargetFormat.renderCivil, noAdditionalCheck,
     beforeFloor]
 
 /-- Every executable computed-Date target carries the FULL-precision authoring certificate. -/
@@ -46,14 +50,14 @@ theorem fullDateTarget_evaluateCivil_beforeGregorianFloor
 /-- DateTime rendering uses the local wall label selected from the exact input instant; no caller-supplied label or host zone can replace it. -/
 theorem dateTimeTarget_evaluate_value
     (target : CheckedDateTimeTarget model)
-    (instant : Instant) (dateTime : LocalDateTime) (value : Value)
+    (instant : Instant) (dateTime : LegacyCalendarLabel) (value : Value)
     (decoded :
-      target.profile.localDateTime? instant = some dateTime)
+      target.profile.calendarLabel? instant = some dateTime)
     (readable :
-      target.format.classifyStoredIn target.profile (target.format.render dateTime).text =
+      target.format.classifyStoredIn target.profile (target.format.renderParts dateTime.parts dateTime.time).text =
         .ok (.parsed value)) :
     target.evaluate (.value instant) =
-      .ok (.accepted (target.format.render dateTime)) := by
+      .ok (.accepted (target.format.renderParts dateTime.parts dateTime.time)) := by
   simp [CheckedDateTimeFormatTarget.evaluate, decoded, readable]
   rfl
 
@@ -61,14 +65,14 @@ theorem dateTimeTarget_evaluate_value
 cause, never accepted; the Kernel reports such a target errored. -/
 theorem dateTimeTarget_evaluate_rejected
     (target : CheckedDateTimeTarget model)
-    (instant : Instant) (dateTime : LocalDateTime) (cause : BaseFormalCause)
+    (instant : Instant) (dateTime : LegacyCalendarLabel) (cause : BaseFormalCause)
     (decoded :
-      target.profile.localDateTime? instant = some dateTime)
+      target.profile.calendarLabel? instant = some dateTime)
     (rejected :
-      target.format.classifyStoredIn target.profile (target.format.render dateTime).text =
+      target.format.classifyStoredIn target.profile (target.format.renderParts dateTime.parts dateTime.time).text =
         .ok (.rejected cause)) :
     target.evaluate (.value instant) =
-      .ok (.errored (target.format.render dateTime) (.renderingRejected cause)) := by
+      .ok (.errored (target.format.renderParts dateTime.parts dateTime.time) (.renderingRejected cause)) := by
   simp [CheckedDateTimeFormatTarget.evaluate, decoded, rejected]
   rfl
 
@@ -84,7 +88,7 @@ theorem omittingDateFormat_yearless_renderCivilText_yearIrrelevant
     (sameDay : left.parts.day = right.parts.day) :
     format.renderCivilText left = format.renderCivilText right := by
   cases format <;> simp_all [OmittingDateFormat.carriesYear,
-    OmittingDateFormat.renderCivilText]
+    OmittingDateFormat.renderCivilText, OmittingDateFormat.renderPartsText]
 
 /-- For the year-bearing-source specialization, a yearless target requires a Base Year. The
 yearless-source specialization instead uses the literal/target pair agreement. -/

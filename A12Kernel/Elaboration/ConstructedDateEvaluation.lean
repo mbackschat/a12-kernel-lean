@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.LegacyCalendarExpression
 import A12Kernel.Elaboration.ConstructedDateComponents
 import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.ConstructedDateDay
@@ -5,9 +6,9 @@ import A12Kernel.Semantics.DateTimeComparison
 
 /-! # Checked constructed-Date component execution
 
-This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today`/`Now` resolve only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause. UTC/GMT retain the established hybrid-calendar reality; pinned Berlin additionally requires a post-floor local-midnight label admitted by its selected profile.
+This capsule evaluates one certified direct constructed Date in generated component order. Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, and direct Date/DateTime extractors read the immutable checked document; constants and direct/range-selected Base-Year extractors are fixed inputs; and `Today`/`Now` resolve only from the execution's explicit optional `World`. The two-argument form uses the model Base Year, and the four-argument form reads Century before Short-Year and combines them only when both are present. It wraps the existing cause-free construction result only to retain the first reached formal cause. UTC/GMT and pinned Berlin resolve the legacy-hybrid label without imposing the later stored-Date floor.
 
-Exact formal causes and missing provenance remain distinguishable. A fresh real result resolves once under the selected profile and projects that exact instant into the shared temporal comparison domain. Checked shifts and differences have their own execution owners in `ConstructedDateShiftEvaluation` and `ConstructedDateDifferenceEvaluation`. Berlin's pre-floor hybrid identity, the extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement, targets, and a general temporal-expression tree remain outside.
+Exact formal causes and missing provenance remain distinguishable. A fresh real result resolves once under the selected profile and projects that exact instant into the shared temporal comparison domain. Checked shifts and differences have their own execution owners in `ConstructedDateShiftEvaluation` and `ConstructedDateDifferenceEvaluation`. The extensible-enumeration String alternative, other recursive extractor operands, another model zone, repeatable placement and other model zones remain outside these source certificates; the scalar temporal expression and target owners compose their certified sources.
 -/
 
 namespace A12Kernel
@@ -231,19 +232,19 @@ end CheckedConstructedDateSource
 namespace CheckedConstructedDateYear
 
 /-- Read one checked year form with the caller's explicit optional world. Split-year evaluation preserves Century-before-Short-Year formal precedence, while any ordinary empty component keeps the construction incomplete. -/
-def read (checked : CheckedConstructedDateYear model)
-    (phase : Phase) (input : CheckedDocument model)
-    (world : Option World) :
+def readWith (checked : CheckedConstructedDateYear model)
+    (readSource : CheckedConstructedDateSource model →
+      Except ConstructedDateEvaluationFault CheckedConstructedDateComponent) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
   match checked with
-  | .complete source => source.read phase input world
+  | .complete source => readSource source
   | .baseYear year => pure (.value year)
   | .centuryAndShortYear century shortYear =>
-      match century.read phase input world with
+      match readSource century with
       | .error error => .error error
       | .ok (.unavailable cause) => .ok (.unavailable cause)
       | .ok centuryPart =>
-          match shortYear.read phase input world with
+          match readSource shortYear with
           | .error error => .error error
           | .ok (.unavailable cause) => .ok (.unavailable cause)
           | .ok shortYearPart =>
@@ -251,6 +252,11 @@ def read (checked : CheckedConstructedDateYear model)
               | .value century, .value shortYear =>
                   .ok (.value (century * 100 + shortYear))
               | _, _ => .ok .empty
+
+def read (checked : CheckedConstructedDateYear model)
+    (phase : Phase) (input : CheckedDocument model) (world : Option World) :
+    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
+  checked.readWith (fun source => source.read phase input world)
 
 end CheckedConstructedDateYear
 
@@ -360,21 +366,13 @@ namespace CheckedConstructedDateComponents
     Exact consumers retain this instant instead of reducing the value to calendar
     parts and resolving it again at a later boundary. -/
 def resolveFreshInstant (checked : CheckedConstructedDateComponents model)
-    (parts : DateParts) :
-    Except ConstructedDateEvaluationFault (Option Instant) :=
-  match checked.profile with
-  | .utc => pure (DateParts.LegacyHybrid.midnightInstant? parts)
-  | .europeBerlin =>
-      match LocalDateTime.ofYmdHms?
-          parts.year parts.month parts.day 0 0 0 with
-      | none =>
-          throw (.profileDateUnsupported model.timeZoneId parts)
-      | some dateTime =>
-          pure (checked.profile.resolveLocal? dateTime)
+    (parts : DateParts) : Except ConstructedDateEvaluationFault (Option Instant) :=
+  pure (checked.profile.resolveCalendarLabel? {
+    parts, time := { hour := 0, minute := 0, second := 0, valid := by decide } })
 
 /-- Decide whether one already hybrid-real Date also exists at local midnight in the
-    selected profile. UTC retains the established pre-floor hybrid account; Berlin is
-    deliberately bounded to labels admitted by `FullDate` before zone resolution. -/
+    selected profile. The calendar label remains independent of the stored-Date floor,
+    which only a later target may apply (calendar boundary grid, 2026-10-04). -/
 def profileAcceptsDate (checked : CheckedConstructedDateComponents model)
     (parts : DateParts) :
     Except ConstructedDateEvaluationFault Bool := do
@@ -399,25 +397,30 @@ private def availableAmount? : CheckedConstructedDateComponent → Option Int
 /-- Read Day, Month, and Year in generated argument order before applying a profile
     consumer. A reached formal component stops before later reads and retains its
     exact cause. -/
-def evaluateComponents (checked : CheckedConstructedDateComponents model)
-    (phase : Phase) (input : CheckedDocument model)
-    (world : Option World) :
+def evaluateComponentsWith (checked : CheckedConstructedDateComponents model)
+    (readSource : CheckedConstructedDateSource model →
+      Except ConstructedDateEvaluationFault CheckedConstructedDateComponent) :
     Except ConstructedDateEvaluationFault ConstructedDateObservation :=
-  match checked.day.read phase input world with
+  match readSource checked.day with
   | .error error => .error error
   | .ok (.unavailable cause) => .ok (.unavailable cause)
   | .ok day =>
-      match checked.month.read phase input world with
+      match readSource checked.month with
       | .error error => .error error
       | .ok (.unavailable cause) => .ok (.unavailable cause)
       | .ok month =>
-          match checked.year.read phase input world with
+          match checked.year.readWith readSource with
           | .error error => .error error
           | .ok (.unavailable cause) => .ok (.unavailable cause)
           | .ok year =>
               pure (ConstructedDateObservation.ofAvailableComponents
                 (availableAmount? day) (availableAmount? month)
                 (availableAmount? year))
+
+def evaluateComponents (checked : CheckedConstructedDateComponents model)
+    (phase : Phase) (input : CheckedDocument model) (world : Option World) :
+    Except ConstructedDateEvaluationFault ConstructedDateObservation :=
+  checked.evaluateComponentsWith (fun source => source.read phase input world)
 
 /-- Evaluate checked components and apply the selected profile's local-midnight
     reality for validity and component consumers. -/
@@ -431,11 +434,11 @@ def evaluate (checked : CheckedConstructedDateComponents model)
 /-- Evaluate a constructed Date into the shared exact value boundary. A real local
     label is resolved exactly once here; later comparison, shift, and difference
     consumers receive that retained instant rather than resolving `parts` again. -/
-def evaluateValue (checked : CheckedConstructedDateComponents model)
-    (phase : Phase) (input : CheckedDocument model)
-    (world : Option World) :
+def evaluateValueWith (checked : CheckedConstructedDateComponents model)
+    (readSource : CheckedConstructedDateSource model →
+      Except ConstructedDateEvaluationFault CheckedConstructedDateComponent) :
     Except ConstructedDateEvaluationFault ConstructedDateValue := do
-  match ← checked.evaluateComponents phase input world with
+  match ← checked.evaluateComponentsWith readSource with
   | .unavailable cause => pure (.unavailable cause)
   | .resolved (.real parts) =>
       match ← checked.resolveFreshInstant parts with
@@ -444,6 +447,11 @@ def evaluateValue (checked : CheckedConstructedDateComponents model)
   | .resolved .incomplete => pure (.noValue true)
   | .resolved .unreal => pure (.noValue false)
   | .resolved .unknown => pure (.unavailable .malformed)
+
+def evaluateValue (checked : CheckedConstructedDateComponents model)
+    (phase : Phase) (input : CheckedDocument model) (world : Option World) :
+    Except ConstructedDateEvaluationFault ConstructedDateValue :=
+  checked.evaluateValueWith (fun source => source.read phase input world)
 
 /-- Evaluate checked `Valid(Date(...))` with one explicit optional world, keeping document faults and formal causes in their separate channels. -/
 def evaluateValid (checked : CheckedConstructedDateComponents model)

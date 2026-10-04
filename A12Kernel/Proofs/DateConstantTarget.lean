@@ -25,21 +25,21 @@ theorem checkedDateConstantTarget_accepted_rendersInTargetFormat
   cases hTarget : target with
   | complete target _ =>
       simp only [hTarget, CheckedDateConstantTarget.evaluateCivil,
-        CheckedDateFormatTarget.evaluateCivil] at accepted
+        CheckedDateFormatTarget.evaluateCivil, CheckedDateFormatTarget.evaluateParts] at accepted
       simp only [CheckedDateConstantTarget.renderCivil]
       split at accepted
       · exact absurd accepted (by simp)
       · split at accepted
         · exact absurd accepted (by simp)
-        · exact (FullDateTargetOutcome.accepted.inj accepted).symm
+        · split at accepted
+          · exact absurd accepted (by simp)
+          · exact (FullDateTargetOutcome.accepted.inj accepted).symm
   | omittedComponent target =>
       simp only [hTarget, CheckedDateConstantTarget.evaluateCivil,
-        CheckedOmittedComponentDateTarget.evaluateCivil] at accepted
+        CheckedOmittedComponentDateTarget.evaluateCivil, CheckedOmittedComponentDateTarget.evaluateParts] at accepted
       simp only [CheckedDateConstantTarget.renderCivil]
       split at accepted
+      · exact (FullDateTargetOutcome.accepted.inj accepted).symm
       · exact absurd accepted (by simp)
-      · split at accepted
-        · exact absurd accepted (by simp)
-        · exact (FullDateTargetOutcome.accepted.inj accepted).symm
 
 end A12Kernel

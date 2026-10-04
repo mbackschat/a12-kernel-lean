@@ -1,5 +1,5 @@
 import A12Kernel.Semantics.DateShift
-import A12Kernel.Semantics.ModelZone
+import A12Kernel.Semantics.LegacyCalendarExpression
 
 /-! # Berlin legacy calendar arithmetic
 
@@ -10,127 +10,34 @@ The stateful residual day-count algorithm, profile dispatch, parsing, Date-versu
 
 namespace A12Kernel.EuropeBerlinLegacyProfile
 
-/-- Millisecond component retained by a calendar field mutation. Lean's integer remainder is nonnegative, including before the Unix epoch. -/
-private def millisecondPart (instant : Instant) : Int :=
-  instant.epochMillis % 1000
-
-/-- Interpret a whole-second wall label under one assumed offset without dropping the source calendar's millisecond field. -/
-private def candidateInstantWithMillisecond (dateTime : LocalDateTime)
-    (offsetSeconds millisecond : Int) : Instant :=
-  { epochMillis :=
-      (candidateInstant dateTime offsetSeconds).epochMillis + millisecond }
-
-/-- Offset used when `GregorianCalendar.computeTime` resolves a month or year field mutation. Valid overlaps choose the smaller offset and therefore the later instant. In a gap, the largest candidate below the actual offset produces the post-gap wall label. -/
-private def computeTimeOffset? (dateTime : LocalDateTime)
-    (millisecond : Int) : Option Int :=
-  match candidateOffsets.find? fun offsetSeconds =>
-      offsetSecondsAt?
-          (candidateInstantWithMillisecond
-            dateTime offsetSeconds millisecond) ==
-        some offsetSeconds with
-  | some offsetSeconds => some offsetSeconds
-  | none =>
-      candidateOffsets.reverse.find? fun offsetSeconds =>
-        match offsetSecondsAt?
-            (candidateInstantWithMillisecond
-              dateTime offsetSeconds millisecond) with
-        | some actualOffset => offsetSeconds < actualOffset
-        | none => false
-
-/-- Decode one selected calendar instant under the offset actually in force there. The exact instant retains milliseconds even though the decoded wall label is whole-second. -/
-private def decodeLanding? (landing : Instant) :
+/-- Adapt calendar arithmetic to consumers whose contract requires a stored-Date-admitted
+label. The expression mechanism itself retains pre-floor results for its target to check. -/
+private def admittedLanding? (unit : DateShiftUnit) (instant : Instant) (offset : Int) :
     Option (LocalDateTime × Instant) := do
-  let actualOffset ← offsetSecondsAt? landing
-  let next ← LocalDateTime.atOffset? landing actualOffset
-  pure (next, landing)
+  let (label, landing) ← ModelZone.ConcreteProfile.europeBerlin.shiftCalendar? unit instant offset
+  pure (← label.toLocal?, landing)
 
-/-- Resolve one month or year field mutation through `GregorianCalendar.computeTime`. This policy is independent of the signed amount; a gap may decode to a different wall label. -/
-private def computeTimeLanding? (date : FullDate) (time : TimeOfDay)
-    (millisecond : Int) : Option (LocalDateTime × Instant) := do
-  let nominal : LocalDateTime := { date, time }
-  let offset ← computeTimeOffset? nominal millisecond
-  decodeLanding?
-    (candidateInstantWithMillisecond nominal offset millisecond)
-
-/-- Resolve the clock and exact instant for one already selected day-mutation target. The nominal target first keeps the source instant's own offset. When the offset actually in force there differs, the target is re-fitted to that offset only if the decoded civil date is preserved; otherwise the first candidate remains authoritative. -/
+/-- Day target selection uses the same source-relative calendar mutation as expression shifts. -/
 def calendarDayTargetLanding? (current : LocalDateTime)
-    (currentInstant : Instant) (nextDate : FullDate) :
-    Option (TimeOfDay × Instant) := do
-  let sourceOffset ← offsetSecondsAt? currentInstant
-  let millisecond := millisecondPart currentInstant
-  let nominal : LocalDateTime := { date := nextDate, time := current.time }
-  let first :=
-    candidateInstantWithMillisecond
-      nominal sourceOffset millisecond
-  let firstActualOffset ← offsetSecondsAt? first
-  let landing ←
-    if firstActualOffset == sourceOffset then
-      some first
-    else
-      let refitted :=
-        candidateInstantWithMillisecond
-          nominal firstActualOffset millisecond
-      let refittedActualOffset ← offsetSecondsAt? refitted
-      let refittedLabel ←
-        LocalDateTime.atOffset? refitted refittedActualOffset
-      pure (if refittedLabel.date == nextDate then refitted else first)
-  let result ← decodeLanding? landing
-  if result.1.date == nextDate then
-    pure (result.1.time, result.2)
-  else
-    none
+    (currentInstant : Instant) (nextDate : FullDate) : Option (TimeOfDay × Instant) := do
+  let days := nextDate.unixEpochDay - current.date.unixEpochDay
+  let (label, landing) ← admittedLanding? .days currentInstant days
+  if label.date == nextDate then pure (label.time, landing) else none
 
-/-- Apply signed `Calendar.DAY_OF_MONTH` mutation. Travel direction selects the target date but not the landing offset. -/
-def calendarDayLanding? (current : LocalDateTime)
-    (currentInstant : Instant) (days : Int) :
+def calendarDayLanding? (current : LocalDateTime) (currentInstant : Instant) (days : Int) :
     Option (LocalDateTime × Instant) := do
-  if days = 0 then
-    pure (current, currentInstant)
-  else
+  if days = 0 then pure (current, currentInstant) else do
     let nextDate ← current.date.addDays? days
-    let (time, landing) ←
-      calendarDayTargetLanding? current currentInstant nextDate
+    let (time, landing) ← calendarDayTargetLanding? current currentInstant nextDate
     pure ({ date := nextDate, time }, landing)
 
-/-- Apply signed `Calendar.MONTH` mutation, including the leap-to-nonleap February-28 clock reset. Month mutation has no nonleap-to-leap promotion. -/
-def calendarMonthLanding? (current : LocalDateTime)
-    (currentInstant : Instant) (months : Int) :
-    Option (LocalDateTime × Instant) := do
-  if months = 0 then
-    pure (current, currentInstant)
-  else
-    let nextDate ← current.date.addMonths? months
-    let source := current.date.civil.parts
-    let target := nextDate.civil.parts
-    let clearClock :=
-      source.month == 2 && source.day == 28 &&
-        DateParts.isLeapYear source.year &&
-        target.month == 2 && target.day == 28 &&
-        !DateParts.isLeapYear target.year
-    let time ← if clearClock then TimeOfDay.ofHms? 0 0 0 else some current.time
-    let millisecond :=
-      if clearClock then 0 else millisecondPart currentInstant
-    computeTimeLanding? nextDate time millisecond
+def calendarMonthLanding? (current : LocalDateTime) (currentInstant : Instant) (months : Int) :
+    Option (LocalDateTime × Instant) :=
+  if months = 0 then some (current, currentInstant) else admittedLanding? .months currentInstant months
 
-/-- Apply signed `Calendar.YEAR` mutation with both legacy February-28 corrections. `FullDate.addYears?` folds the nonleap-to-leap extra-day mutation into its target date; the explicit branch below clears the clock for leap-to-nonleap February 28. Compute-time resolution selects the later overlap instant and post-gap wall label independently of sign. -/
-def calendarYearLanding? (current : LocalDateTime)
-    (currentInstant : Instant) (years : Int) :
-    Option (LocalDateTime × Instant) := do
-  if years = 0 then
-    pure (current, currentInstant)
-  else
-    let nextDate ← current.date.addYears? years
-    let source := current.date.civil.parts
-    let target := nextDate.civil.parts
-    let clearClock :=
-      source.month == 2 && source.day == 28 &&
-        DateParts.isLeapYear source.year &&
-        target.month == 2 && target.day == 28 &&
-        !DateParts.isLeapYear target.year
-    let time ← if clearClock then TimeOfDay.ofHms? 0 0 0 else some current.time
-    let millisecond :=
-      if clearClock then 0 else millisecondPart currentInstant
-    computeTimeLanding? nextDate time millisecond
+def calendarYearLanding? (current : LocalDateTime) (currentInstant : Instant) (years : Int) :
+    Option (LocalDateTime × Instant) :=
+  if years = 0 then some (current, currentInstant) else admittedLanding? .years currentInstant years
 
 /-- Whole completed years between ordered exact instants, using the same final-landing rule as legacy calendar year addition. -/
 def wholeYearsForward? (earlier : LocalDateTime) (earlierInstant : Instant)
