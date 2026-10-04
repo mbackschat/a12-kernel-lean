@@ -575,6 +575,7 @@ private def generatedGuardCondition (model : FlatModel) (target : FieldId)
         resolved)
   | .leaf (.predicate (.temporal source)) => pure (.leaf (.scalarTemporal source))
   | .leaf (.predicate (.fieldFill operator source)) => pure (.leaf (.fieldFill operator source.source))
+  | .leaf (.predicate (.uniqueness source)) => pure (.leaf (.valuesNotUnique source))
   | .leaf (.predicate (.overlap source)) => pure (.leaf (.iteratedDateRange source.toValidation))
   | .leaf (.predicate (.stringExpression source)) => pure (.leaf (.stringExpression source))
   | .leaf (.predicate (.fieldComparison (.boolean source))) =>

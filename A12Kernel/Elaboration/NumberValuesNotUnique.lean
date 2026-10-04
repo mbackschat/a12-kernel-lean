@@ -25,10 +25,10 @@ inductive NumberValuesNotUniqueElabError where
     refusal, Number-category homogeneity, then the existing Number certificate. -/
 def elaborateNumberValuesNotUniqueSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumberValuesNotUniqueSource)
-    (writtenGroup : GroupPath := declaringGroup) :
+    (writtenGroup : GroupPath := declaringGroup) (targetGroup? : Option GroupPath := none) :
     Except NumberValuesNotUniqueElabError
       (CheckedNumberValuesNotUniqueSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
+  let shape ← elaborateFieldEntityShape model declaringGroup authored (fixedTargetGroup? := targetGroup?) (writtenGroup := writtenGroup)
       (categoryGate := .behindRootGate)
     |>.mapError .shape
   match firstFieldListKindRefusal? shape.operands with

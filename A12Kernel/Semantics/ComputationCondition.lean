@@ -40,7 +40,8 @@ def ScalarComputationContext.withFixedOverlay
     numberText := fun field => if (overlay field).isSome then stored field else context.numberText field
     addressed := context.addressed.map fun addressed =>
       { addressed with
-        read := fun row field => (overlay field).getD (addressed.read row field) } }
+        read := fun row field => (overlay field).getD (addressed.read row field)
+        storedText := fun row field => if (overlay field).isSome then stored field else addressed.storedText row field } }
 
 /-- Supply the explicit evaluation world without changing the checked-cell read policy. -/
 def ScalarComputationContext.withWorld

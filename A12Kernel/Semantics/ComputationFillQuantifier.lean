@@ -32,6 +32,8 @@ def ComputationFillSource.field : ComputationFillSource → FieldId
 structure ComputationFillContext where
   document : Document
   read : Env → FieldId → CheckedCell
+  /-- Exact current storage paired with checked reads; temporal uniqueness compares this identity. -/
+  storedText : Env → FieldId → Option String := fun _ _ => none
 
 inductive ComputationFillError where
   | declaredCapacityRequired

@@ -48,10 +48,10 @@ structure CheckedTokenValuesNotUniqueSource (model : FlatModel) where
     or Enumeration category, then the existing token certificate. -/
 def elaborateTokenValuesNotUniqueSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceTokenValuesNotUniqueSource)
-    (writtenGroup : GroupPath := declaringGroup) :
+    (writtenGroup : GroupPath := declaringGroup) (targetGroup? : Option GroupPath := none) :
     Except TokenValuesNotUniqueElabError
       (CheckedTokenValuesNotUniqueSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
+  let shape ← elaborateFieldEntityShape model declaringGroup authored (fixedTargetGroup? := targetGroup?) (writtenGroup := writtenGroup)
       (categoryGate := .behindRootGate)
     |>.mapError fun error => .source (.shape error)
   match firstFieldListKindRefusal? shape.operands with

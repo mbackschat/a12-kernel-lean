@@ -607,6 +607,7 @@ def flatContext (checked : CheckedDocument model) : FlatContext where
 /-- Expose immutable topology with the checked document's current overlay to addressed guards. -/
 def computationFillContext (checked : CheckedDocument model) : ComputationFillContext where
   document := checked.source.toDocument
+  storedText := checked.storedTextIn
   read environment field :=
     let cell := do
       let declaration ← (model.lookupUniqueId field).toOption

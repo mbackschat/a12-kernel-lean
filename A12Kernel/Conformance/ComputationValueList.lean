@@ -48,4 +48,15 @@ example : ValueListMembershipOp.included.evalComputation [side [.unknown .malfor
 example : [ValueListMembershipOp.included, .notIncluded].all (fun op =>
     op.evalComputation [side [.empty]] [side [.present "x"]] == .notTrue) := by decide
 
+example : ValueListCell.duplicateComputationStep (kind := .number) [1]
+    (.present (1 + 1 / (10 ^ 20 : Rat))) = .inr (.ok ()) ∧
+    ValueListCell.duplicateComputationStep (kind := .token) ["A"] (.present "a") = .inl ["a", "A"] ∧
+    ValueListCell.duplicateComputationStep (kind := .token) ["A"] (.present "A") = .inr (.ok ()) := by native_decide
+
+example : ValueListCell.duplicateComputationStep (kind := .number) [] .empty = .inl [] ∧
+    ValueListCell.duplicateComputationStep (kind := .number) [1] (.unknown .malformed) =
+      .inr (.error .malformed) ∧
+    ValueListCell.duplicateComputationStep (kind := .token) ["x"] (.unknown .declaredConstraint) =
+      .inr (.error .declaredConstraint) := by native_decide
+
 end A12Kernel.Conformance.ComputationValueList

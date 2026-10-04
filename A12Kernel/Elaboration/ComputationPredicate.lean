@@ -6,6 +6,7 @@ import A12Kernel.Elaboration.ScalarFieldComparison
 import A12Kernel.Elaboration.TemporalExpression
 import A12Kernel.Elaboration.ComputationOverlap
 import A12Kernel.Elaboration.ComputationFieldFill
+import A12Kernel.Elaboration.ValuesNotUniqueCondition
 
 namespace A12Kernel
 
@@ -24,6 +25,7 @@ inductive SurfaceComputationPredicate where
   | entityValueList (source : SurfaceNumberEntityValueListSource)
   | tokenLiteralValueList (source : SurfaceTokenEntityStringLiteralValueListSource)
   | fieldFill (operator : FieldFillQuantifier) (source : SurfaceFieldEntitySource)
+  | uniqueness (source : SurfaceFieldEntitySource)
   | overlap (source : SurfaceFieldEntitySource)
   | scalarOverlap (source : SurfaceAtLeastOneDateRangeOverlapsSource)
 
@@ -33,6 +35,8 @@ inductive ComputationPredicateElabError where
   | comparison (error : ScalarFieldComparisonElabError)
   | read (error : ResolveError)
   | number (error : NumberEntityElabError)
+  | uniqueness (number : NumberValuesNotUniqueElabError)
+      (token : TokenValuesNotUniqueElabError) (temporal : TemporalValuesNotUniqueElabError)
   | emptyMembers
   | incoherent
   | token (error : TokenEntityValueListElabError)
@@ -64,6 +68,7 @@ inductive CheckedComputationPredicate (model : FlatModel) where
   | scalarNumberLiterals (operator : ValueListMembershipOp)
       (subject : CheckedNumberEntityField model) (values : List Int)
   | fieldFill (operator : FieldFillQuantifier) (source : CheckedComputationFieldFill model)
+  | uniqueness (source : CheckedValuesNotUniqueCondition model)
   | overlap (source : CheckedComputationOverlap model)
 
 namespace CheckedComputationPredicate
@@ -76,6 +81,7 @@ def referencesField (predicate : CheckedComputationPredicate model) (field : Fie
   | .valueList source | .scalarValueList _ source => source.referencesField field
   | .scalarNumberLiterals _ source _ => source.field.id == field
   | .fieldFill _ source => source.referencesField field
+  | .uniqueness source => source.referencesField field
   | .overlap source => source.referencesField field
 
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
@@ -87,6 +93,7 @@ def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List R
   | .valueList source | .scalarValueList _ source => source.bindingScopes.all (·.isPrefixOf scope)
   | .scalarNumberLiterals _ source _ => source.declaration.repeatableScope.isPrefixOf scope
   | .fieldFill _ source => source.rowBoundBool scope
+  | .uniqueness source => source.bindingScopes.all (·.isPrefixOf scope)
   | .overlap source => source.rowBoundBool scope
 
 private def addressed (context : ScalarComputationContext) : Except ComputationPredicateError ComputationFillContext :=
@@ -157,6 +164,78 @@ private def scanOperands
       | .terminated result => pure (.terminated result)
       | .poison cause => pure (.poison cause)
 
+private def temporalIdentity (field : FieldId) (cell : CheckedCell) (stored : Option String) :
+    Except ComputationPredicateError (ValueListCell .token) :=
+  match observeCell .computation cell with
+  | .empty => pure .empty
+  | .unknown cause | .poison cause => pure (.unknown cause)
+  | .value _ => match stored with
+      | some text => pure (.present text)
+      | none => throw (.fieldKindMismatch field)
+
+private def scanTemporalSlots
+    (read : Slot → Except ComputationPredicateError (ValueListCell .token)) :
+    List Slot → List String → Except ComputationPredicateError
+      (ComputationHavingScanResult (List String) (Except FormalCause Unit))
+  | [], seen => pure (.exhausted seen)
+  | slot :: rest, seen => do
+      match ValueListCell.duplicateComputationStep (kind := .token) seen (← read slot) with
+      | .inl next => scanTemporalSlots read rest next
+      | .inr result => pure (.terminated result)
+
+private def scanTemporal (context : ScalarComputationContext)
+    (filterRead : Env → FieldId → CheckedCell)
+    (source : CheckedTemporalUniquenessOperand model) (seen : List String) :
+    Except ComputationPredicateError
+      (ComputationHavingScanResult (List String) (Except FormalCause Unit)) := do
+  let direct := fun (declaration : FlatFieldDecl) => temporalIdentity declaration.id
+    (context.read declaration.id) (context.storedText declaration.id)
+  match source with
+  | .field source => scanTemporalSlots direct [source.declaration] seen
+  | .star path source filter =>
+      let contextRead ← addressed context
+      let resolved ← (path.path.resolveInCapacity contextRead.document context.row).mapError .addressing
+      let read := fun row => temporalIdentity source.declaration.id
+        (contextRead.read row source.declaration.id) (contextRead.storedText row source.declaration.id)
+      match filter with
+      | none => scanTemporalSlots read resolved.environments seen
+      | some having =>
+          having.scanComputationResolving
+            { read := fun row field => pure (filterRead row field)
+              bindingError := fun error => .addressing error.toStarAddressingError }
+            context.row (fun seen row => ValueListCell.duplicateComputationStep (kind := .token) seen <$> read row)
+            resolved.environments seen
+  | .group source =>
+      scanOperands (fun declaration seen => do
+        if declaration.repeatableScope.isEmpty then scanTemporalSlots direct [declaration] seen
+        else
+          let contextRead ← addressed context
+          let rows ← (model.groupOperandEnvironments contextRead.document context.row
+            source.source.boundLevelCount declaration.repeatableScope).mapError .addressing
+          scanTemporalSlots (fun row => temporalIdentity declaration.id
+            (contextRead.read row declaration.id) (contextRead.storedText row declaration.id)) rows seen)
+        source.declarations seen
+
+private def uniquenessResult : ComputationHavingScanResult State (Except FormalCause Unit) →
+    ComputationConditionResult
+  | .exhausted _ => .notTrue
+  | .poison cause | .terminated (.error cause) => .poison cause
+  | .terminated (.ok ()) => .holds
+
+private def evalUniqueness (source : CheckedValuesNotUniqueCondition model)
+    (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell) :
+    Except ComputationPredicateError ComputationConditionResult := do
+  match source with
+  | .number source =>
+      uniquenessResult <$> scanOperands
+        (scanNumber context filterRead ValueListCell.duplicateComputationStep) source.operands []
+  | .token source =>
+      uniquenessResult <$> scanOperands
+        (scanToken context filterRead ValueListCell.duplicateComputationStep) source.source.operands []
+  | .temporal source =>
+      uniquenessResult <$> scanOperands
+        (scanTemporal context filterRead) source.operands []
+
 private def collectStep (values : List (ValueListAtom kind)) :
     ValueListCell kind → List (ValueListAtom kind) ⊕ FormalCause
   | .empty => .inl values
@@ -213,6 +292,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
       | .contextRequired => .contextRequired
       | .addressing error => .addressing error
       | .fieldKindMismatch field => .fieldKindMismatch field
+  | .uniqueness source => evalUniqueness source context filterRead
   | .valueList source => evalValueList (.quantified source.quantifier) source context filterRead
   | .scalarValueList operator source => evalValueList (.scalar operator) source context filterRead
   | .scalarNumberLiterals operator source values =>
@@ -259,6 +339,16 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (surface : SurfaceComputationPredicate) :
     Except ComputationPredicateElabError (CheckedComputationPredicate model) := do
   match surface with
+  | .uniqueness source =>
+      match elaborateNumberValuesNotUniqueSource model declaringGroup source targetGroup (some targetGroup) with
+      | .ok source => pure (.uniqueness (.number source))
+      | .error numberError =>
+          match elaborateTokenValuesNotUniqueSource model declaringGroup source targetGroup (some targetGroup) with
+          | .ok source => pure (.uniqueness (.token source))
+          | .error tokenError =>
+              match elaborateTemporalValuesNotUniqueSource model declaringGroup source targetGroup (some targetGroup) with
+              | .ok source => pure (.uniqueness (.temporal source))
+              | .error temporalError => throw (.uniqueness numberError tokenError temporalError)
   | .fieldFill operator source =>
       .fieldFill operator <$> (CheckedComputationFieldFill.elaborate model declaringGroup targetGroup source).mapError .fieldFill
   | .overlap source =>

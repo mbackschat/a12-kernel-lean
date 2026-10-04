@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-04-07"></a>
+### SPEC-2026-10-04-07 — uniqueness computation guards propagate reached invalidity
+
+- `status`: pending; not forwarded.
+- `claim`: `FieldValuesNotUnique` skips invalid operands in validation, but a computation precondition propagates reached formal/calculation poison. An earlier duplicate excludes a later poison; filtered iteration retains its one-row lookahead.
+- `basis`: [checkpoint and retained capture](sources/computation-scheduling-probes.md#src-uniqueness-computation-guards), six documents, both Kernel strategies, clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`. Dependent targets separate poison from clean clearing. The peer findings were checked for an existing computation-phase account before this entry.
+- `canonical`: [spec/07](../spec/07-repetition-and-iteration.md) now qualifies the invalid-cell skip by phase.
+- `acceptance`: reconcile the phase-qualified ordered scan and filter lookahead against the retained outcomes; preserve the validation-only skip account and the capture's explicit kind/scope limits.
+
 <a id="spec-2026-10-04-06"></a>
 ### SPEC-2026-10-04-06 — validation reaches a failing shift amount after an unavailable source
 

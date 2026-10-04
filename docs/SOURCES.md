@@ -1730,14 +1730,14 @@ Edit the source shard when its provenance or drill route changes; change this hu
 - [String and Enumeration computation guards suppress empty operands and poison on reached invalid reads](sources/computation-scheduling-probes.md#src-text-computation-guards)
 
 <a id="src-peer-computation-shapes-replay"></a>
-- [Five transferred peer invoice computation models replay on 26 runtime documents](sources/evaluation-and-application-routes.md#src-peer-computation-shapes-replay)
+- [Peer invoice computation replay](sources/evaluation-and-application-routes.md#src-peer-computation-shapes-replay)
 
 <a id="src-field-fill-computation-guards"></a>
-- [Seven computation field-fill guards: prefix decisions, restart and declaration order](sources/computation-scheduling-probes.md#src-field-fill-computation-guards)
+- [Field-fill computation guards](sources/computation-scheduling-probes.md#src-field-fill-computation-guards)
 
 
 <a id="src-group-presence-computation-guards"></a>
-- [Computation group presence: stored invalidity, failed producers, self-group reads and bound rows](sources/computation-scheduling-probes.md#src-group-presence-computation-guards)
+- [Group-presence computation guards](sources/computation-scheduling-probes.md#src-group-presence-computation-guards)
 
 
 <a id="src-group-presence-conditional-dependencies"></a>
@@ -1763,3 +1763,6 @@ Edit the source shard when its provenance or drill route changes; change this hu
 
 <a id="src-recursive-temporal-numeric-expression"></a>
 - [Recursive temporal numeric expressions and phase-specific shift effects](sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression)
+
+<a id="src-uniqueness-computation-guards"></a>
+- [Uniqueness computation guards](sources/computation-scheduling-probes.md#src-uniqueness-computation-guards)

@@ -1,0 +1,3994 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Uniqueness_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "duplicates",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterComputedLateComp",
+              "field": "G/AfterComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterComputedLate",
+                "G/ComputedLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterDLateComp",
+              "field": "G/AfterDLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterDLate",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFilteredRowsComp",
+              "field": "G/AfterFilteredRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterFilteredRows",
+                "G/FilteredRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNLateComp",
+              "field": "G/AfterNLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNLate",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterSLateComp",
+              "field": "G/AfterSLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterSLate",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedEarlyComp",
+              "field": "G/ComputedEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedEarly",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedLateComp",
+              "field": "G/ComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedLate",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DEarlyComp",
+              "field": "G/DEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DLateComp",
+              "field": "G/DLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredRowsComp",
+              "field": "G/FilteredRows",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ]
+            },
+            {
+              "code": "NEarlyComp",
+              "field": "G/NEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NLateComp",
+              "field": "G/NLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows/Out",
+                "G/Rows/V",
+                "G/Rows/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows[3]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[3]/Out",
+                "G/Rows[3]/V",
+                "G/Rows[3]/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PlainRowsComp",
+              "field": "G/PlainRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/V",
+                "G/PlainRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SEarlyComp",
+              "field": "G/SEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SLateComp",
+              "field": "G/SLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterDLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterFilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterNLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterSLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/ComputedBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/ComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/DLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/FilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/PlainRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[2]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Rows[3]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[4]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/SLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ComputedBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/ComputedBad"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterComputedLateComp",
+              "field": "G/AfterComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterComputedLate",
+                "G/ComputedLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterDLateComp",
+              "field": "G/AfterDLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterDLate",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFilteredRowsComp",
+              "field": "G/AfterFilteredRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterFilteredRows",
+                "G/FilteredRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNLateComp",
+              "field": "G/AfterNLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNLate",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterSLateComp",
+              "field": "G/AfterSLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterSLate",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedEarlyComp",
+              "field": "G/ComputedEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedEarly",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedLateComp",
+              "field": "G/ComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedLate",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DEarlyComp",
+              "field": "G/DEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DLateComp",
+              "field": "G/DLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredRowsComp",
+              "field": "G/FilteredRows",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ]
+            },
+            {
+              "code": "NEarlyComp",
+              "field": "G/NEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NLateComp",
+              "field": "G/NLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows/Out",
+                "G/Rows/V",
+                "G/Rows/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows[3]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[3]/Out",
+                "G/Rows[3]/V",
+                "G/Rows[3]/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PlainRowsComp",
+              "field": "G/PlainRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/V",
+                "G/PlainRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SEarlyComp",
+              "field": "G/SEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SLateComp",
+              "field": "G/SLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterDLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterFilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterNLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterSLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/ComputedBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/ComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/DLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/FilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/PlainRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[2]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Rows[3]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[4]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/SLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ComputedBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/ComputedBad"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "distinct",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterComputedLateComp",
+              "field": "G/AfterComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterComputedLate",
+                "G/ComputedLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterDLateComp",
+              "field": "G/AfterDLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterDLate",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFilteredRowsComp",
+              "field": "G/AfterFilteredRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterFilteredRows",
+                "G/FilteredRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNLateComp",
+              "field": "G/AfterNLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNLate",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterSLateComp",
+              "field": "G/AfterSLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterSLate",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredRowsComp",
+              "field": "G/FilteredRows",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ]
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows/Out",
+                "G/Rows/V",
+                "G/Rows/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows[3]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[3]/Out",
+                "G/Rows[3]/V",
+                "G/Rows[3]/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PlainRowsComp",
+              "field": "G/PlainRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/V",
+                "G/PlainRows"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterDLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterFilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterNLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterSLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/ComputedBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/NLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/PlainRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[2]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Rows[3]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[4]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SLate",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ComputedBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/ComputedBad"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterComputedLateComp",
+              "field": "G/AfterComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterComputedLate",
+                "G/ComputedLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterDLateComp",
+              "field": "G/AfterDLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterDLate",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFilteredRowsComp",
+              "field": "G/AfterFilteredRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterFilteredRows",
+                "G/FilteredRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNLateComp",
+              "field": "G/AfterNLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNLate",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterSLateComp",
+              "field": "G/AfterSLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterSLate",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredRowsComp",
+              "field": "G/FilteredRows",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ]
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows/Out",
+                "G/Rows/V",
+                "G/Rows/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows[3]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[3]/Out",
+                "G/Rows[3]/V",
+                "G/Rows[3]/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PlainRowsComp",
+              "field": "G/PlainRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/V",
+                "G/PlainRows"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterDLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterFilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterNLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterSLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/ComputedBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/NLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/PlainRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[2]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Rows[3]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[4]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SLate",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ComputedBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/ComputedBad"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "formal_poison",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterComputedLateComp",
+              "field": "G/AfterComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterComputedLate",
+                "G/ComputedLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterDLateComp",
+              "field": "G/AfterDLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterDLate",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFilteredRowsComp",
+              "field": "G/AfterFilteredRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterFilteredRows",
+                "G/FilteredRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNLateComp",
+              "field": "G/AfterNLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNLate",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterSLateComp",
+              "field": "G/AfterSLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterSLate",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedEarlyComp",
+              "field": "G/ComputedEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedEarly",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedLateComp",
+              "field": "G/ComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedLate",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DEarlyComp",
+              "field": "G/DEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DLateComp",
+              "field": "G/DLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredRowsComp",
+              "field": "G/FilteredRows",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ]
+            },
+            {
+              "code": "NEarlyComp",
+              "field": "G/NEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NLateComp",
+              "field": "G/NLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows/Out",
+                "G/Rows/V",
+                "G/Rows/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows[3]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[3]/Out",
+                "G/Rows[3]/V",
+                "G/Rows[3]/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PlainRowsComp",
+              "field": "G/PlainRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/V",
+                "G/PlainRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SEarlyComp",
+              "field": "G/SEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SLateComp",
+              "field": "G/SLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/DBad",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/DBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringZuLang",
+              "field": "G/SBad",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/SBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/NBad",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/NBad"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterDLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterFilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterNLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterSLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/ComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/DLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/PlainRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[2]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Rows[3]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[4]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/SLate",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ComputedBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/ComputedBad"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/DBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/DBad"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringZuLang",
+                "field": "G/SBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/SBad"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/NBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/NBad"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterComputedLateComp",
+              "field": "G/AfterComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterComputedLate",
+                "G/ComputedLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterDLateComp",
+              "field": "G/AfterDLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterDLate",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFilteredRowsComp",
+              "field": "G/AfterFilteredRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterFilteredRows",
+                "G/FilteredRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNLateComp",
+              "field": "G/AfterNLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNLate",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterSLateComp",
+              "field": "G/AfterSLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterSLate",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedEarlyComp",
+              "field": "G/ComputedEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedEarly",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedLateComp",
+              "field": "G/ComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedLate",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DEarlyComp",
+              "field": "G/DEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DLateComp",
+              "field": "G/DLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredRowsComp",
+              "field": "G/FilteredRows",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ]
+            },
+            {
+              "code": "NEarlyComp",
+              "field": "G/NEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NLateComp",
+              "field": "G/NLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows/Out",
+                "G/Rows/V",
+                "G/Rows/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows[3]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[3]/Out",
+                "G/Rows[3]/V",
+                "G/Rows[3]/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PlainRowsComp",
+              "field": "G/PlainRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/V",
+                "G/PlainRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SEarlyComp",
+              "field": "G/SEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SLateComp",
+              "field": "G/SLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "G/DBad",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/DBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringZuLang",
+              "field": "G/SBad",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/SBad"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/NBad",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/NBad"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterDLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterFilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterNLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterSLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/ComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/DLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/PlainRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[2]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Rows[3]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[4]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/SLate",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ComputedBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/ComputedBad"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "G/DBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/DBad"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "stringZuLang",
+                "field": "G/SBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/SBad"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/NBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/NBad"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterComputedLateComp",
+              "field": "G/AfterComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterComputedLate",
+                "G/ComputedLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterDLateComp",
+              "field": "G/AfterDLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterDLate",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFilteredRowsComp",
+              "field": "G/AfterFilteredRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterFilteredRows",
+                "G/FilteredRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNLateComp",
+              "field": "G/AfterNLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNLate",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterSLateComp",
+              "field": "G/AfterSLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterSLate",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterDLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterFilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterNLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterSLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/ComputedBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FilteredRows",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/NEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/NLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/PlainRows",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SLate",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ComputedBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/ComputedBad"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterComputedLateComp",
+              "field": "G/AfterComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterComputedLate",
+                "G/ComputedLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterDLateComp",
+              "field": "G/AfterDLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterDLate",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFilteredRowsComp",
+              "field": "G/AfterFilteredRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterFilteredRows",
+                "G/FilteredRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNLateComp",
+              "field": "G/AfterNLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNLate",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterSLateComp",
+              "field": "G/AfterSLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterSLate",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterDLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterFilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterNLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterSLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/ComputedBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/FilteredRows",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/NEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/NLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/PlainRows",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SEarly",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SLate",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ComputedBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/ComputedBad"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "prefetched_poison",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterComputedLateComp",
+              "field": "G/AfterComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterComputedLate",
+                "G/ComputedLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterDLateComp",
+              "field": "G/AfterDLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterDLate",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFilteredRowsComp",
+              "field": "G/AfterFilteredRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterFilteredRows",
+                "G/FilteredRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNLateComp",
+              "field": "G/AfterNLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNLate",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterSLateComp",
+              "field": "G/AfterSLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterSLate",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedEarlyComp",
+              "field": "G/ComputedEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedEarly",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedLateComp",
+              "field": "G/ComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedLate",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DEarlyComp",
+              "field": "G/DEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DLateComp",
+              "field": "G/DLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredRowsComp",
+              "field": "G/FilteredRows",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ]
+            },
+            {
+              "code": "NEarlyComp",
+              "field": "G/NEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NLateComp",
+              "field": "G/NLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows/Out",
+                "G/Rows/V",
+                "G/Rows/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows[3]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[3]/Out",
+                "G/Rows[3]/V",
+                "G/Rows[3]/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PlainRowsComp",
+              "field": "G/PlainRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/V",
+                "G/PlainRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SEarlyComp",
+              "field": "G/SEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SLateComp",
+              "field": "G/SLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/Rows[3]/Keep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[3]/Keep"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterDLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterFilteredRows",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterNLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterSLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/ComputedBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/ComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/DLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/FilteredRows",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/NEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/PlainRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[2]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Rows[3]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[4]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/SLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ComputedBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/ComputedBad"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/Rows[3]/Keep",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Rows[3]/Keep"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterComputedLateComp",
+              "field": "G/AfterComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterComputedLate",
+                "G/ComputedLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterDLateComp",
+              "field": "G/AfterDLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterDLate",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFilteredRowsComp",
+              "field": "G/AfterFilteredRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterFilteredRows",
+                "G/FilteredRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNLateComp",
+              "field": "G/AfterNLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNLate",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterSLateComp",
+              "field": "G/AfterSLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterSLate",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedEarlyComp",
+              "field": "G/ComputedEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedEarly",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedLateComp",
+              "field": "G/ComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedLate",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DEarlyComp",
+              "field": "G/DEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DLateComp",
+              "field": "G/DLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredRowsComp",
+              "field": "G/FilteredRows",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ]
+            },
+            {
+              "code": "NEarlyComp",
+              "field": "G/NEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NLateComp",
+              "field": "G/NLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows/Out",
+                "G/Rows/V",
+                "G/Rows/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows[3]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[3]/Out",
+                "G/Rows[3]/V",
+                "G/Rows[3]/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PlainRowsComp",
+              "field": "G/PlainRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/V",
+                "G/PlainRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SEarlyComp",
+              "field": "G/SEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SLateComp",
+              "field": "G/SLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/Rows[3]/Keep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[3]/Keep"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterDLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterFilteredRows",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterNLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterSLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/ComputedBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/ComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/DLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/FilteredRows",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/NEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/PlainRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[2]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Rows[3]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[4]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/SLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ComputedBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/ComputedBad"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/Rows[3]/Keep",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Rows[3]/Keep"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "unreached_poison",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterComputedLateComp",
+              "field": "G/AfterComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterComputedLate",
+                "G/ComputedLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterDLateComp",
+              "field": "G/AfterDLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterDLate",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFilteredRowsComp",
+              "field": "G/AfterFilteredRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterFilteredRows",
+                "G/FilteredRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNLateComp",
+              "field": "G/AfterNLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNLate",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterSLateComp",
+              "field": "G/AfterSLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterSLate",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedEarlyComp",
+              "field": "G/ComputedEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedEarly",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedLateComp",
+              "field": "G/ComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedLate",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DEarlyComp",
+              "field": "G/DEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DLateComp",
+              "field": "G/DLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredRowsComp",
+              "field": "G/FilteredRows",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ]
+            },
+            {
+              "code": "NEarlyComp",
+              "field": "G/NEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NLateComp",
+              "field": "G/NLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows/Out",
+                "G/Rows/V",
+                "G/Rows/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows[3]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[3]/Out",
+                "G/Rows[3]/V",
+                "G/Rows[3]/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PlainRowsComp",
+              "field": "G/PlainRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/V",
+                "G/PlainRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SEarlyComp",
+              "field": "G/SEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SLateComp",
+              "field": "G/SLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/Rows[4]/Keep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[4]/Keep"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterDLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterFilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterNLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterSLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/ComputedBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/ComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/DLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/FilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/PlainRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[2]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Rows[3]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[4]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/SLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ComputedBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/ComputedBad"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/Rows[4]/Keep",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Rows[4]/Keep"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterComputedLateComp",
+              "field": "G/AfterComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterComputedLate",
+                "G/ComputedLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterDLateComp",
+              "field": "G/AfterDLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterDLate",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterFilteredRowsComp",
+              "field": "G/AfterFilteredRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterFilteredRows",
+                "G/FilteredRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNLateComp",
+              "field": "G/AfterNLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNLate",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterSLateComp",
+              "field": "G/AfterSLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterSLate",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedEarlyComp",
+              "field": "G/ComputedEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedEarly",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ComputedLateComp",
+              "field": "G/ComputedLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/ComputedBad",
+                "G/ComputedLate",
+                "G/N1",
+                "G/N2"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DEarlyComp",
+              "field": "G/DEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "DLateComp",
+              "field": "G/DLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/D1",
+                "G/D2",
+                "G/DBad",
+                "G/DLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "FilteredRowsComp",
+              "field": "G/FilteredRows",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ],
+              "fillToFix": [
+                "/G[1]/Rows[0]/Keep",
+                "/G[1]/Rows[0]/V",
+                "G/FilteredRows"
+              ]
+            },
+            {
+              "code": "NEarlyComp",
+              "field": "G/NEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "NLateComp",
+              "field": "G/NLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/N1",
+                "G/N2",
+                "G/NBad",
+                "G/NLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows/Out",
+                "G/Rows/V",
+                "G/Rows/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "OutComp",
+              "field": "G/Rows[3]/Out",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[3]/Out",
+                "G/Rows[3]/V",
+                "G/Rows[3]/W"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "PlainRowsComp",
+              "field": "G/PlainRows",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "/G[1]/Rows[0]/V",
+                "G/PlainRows"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SEarlyComp",
+              "field": "G/SEarly",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SEarly"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "SLateComp",
+              "field": "G/SLate",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S1",
+                "G/S2",
+                "G/SBad",
+                "G/SLate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "G/Rows[4]/Keep",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/Rows[4]/Keep"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterDLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterFilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterNLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterSLate",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/ComputedBad",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/ComputedEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/ComputedLate",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/DEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/DLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/FilteredRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/NLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/PlainRows",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[2]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Rows[3]/Out",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/Rows[4]/Out",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/SEarly",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/SLate",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/ComputedBad",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/ComputedBad"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "G/Rows[4]/Keep",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Rows[4]/Keep"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

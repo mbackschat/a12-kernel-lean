@@ -40,6 +40,15 @@ theorem anyComputation_emptyCells (predicate : ValueListAtom kind → Bool)
       subst cell
       exact ih (fun c member => emptyCells c (by simp [member]))
 
+/-- A uniqueness decision means precisely a prior equal identity; Number and token readers
+instantiate the same law without changing their equality projection. -/
+theorem duplicateComputationStep_decides_iff (seen : List (ValueListAtom kind))
+    (value : ValueListAtom kind) :
+    duplicateComputationStep seen (.present value) = .inr (.ok ()) ↔
+      seen.any (ValueListAtom.equal value) = true := by
+  unfold duplicateComputationStep
+  split <;> simp_all
+
 end ValueListCell
 
 namespace ComputationValueListOperator

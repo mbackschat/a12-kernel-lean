@@ -15,6 +15,16 @@ def anyComputation (predicate : ValueListAtom kind → Bool) :
   | .present value :: rest =>
       if predicate value then .ok true else anyComputation predicate rest
 
+/-- Computation uniqueness stops at a duplicate or reached poison. The validation scan skips
+unavailable cells instead (uniqueness guard grid, 2026-10-04); empty cells add no identity. -/
+def duplicateComputationStep (seen : List (ValueListAtom kind)) :
+    ValueListCell kind → List (ValueListAtom kind) ⊕ Except FormalCause Unit
+  | .empty => .inl seen
+  | .unknown cause => .inr (.error cause)
+  | .present value =>
+      if seen.any (ValueListAtom.equal value) then .inr (.ok ())
+      else .inl (value :: seen)
+
 end ValueListCell
 
 namespace ValueListQuantifier

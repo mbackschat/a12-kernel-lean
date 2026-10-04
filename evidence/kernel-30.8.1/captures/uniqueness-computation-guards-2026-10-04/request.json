@@ -1,0 +1,323 @@
+{
+  "model": "Uniqueness_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "duplicates",
+      "documentInline": {
+        "G": {
+          "NEarly": 9,
+          "NLate": 9,
+          "SEarly": 9,
+          "SLate": 9,
+          "DEarly": 9,
+          "DLate": 9,
+          "PlainRows": 9,
+          "FilteredRows": 9,
+          "ComputedEarly": 9,
+          "ComputedLate": 9,
+          "ComputedBad": 9,
+          "N1": 1,
+          "N2": 1,
+          "NBad": 3,
+          "S1": "x",
+          "S2": "x",
+          "SBad": "z",
+          "D1": "2024-01-01",
+          "D2": "2024-01-01",
+          "DBad": "2024-01-03",
+          "Rows": [
+            {
+              "V": 1,
+              "W": 1,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 1,
+              "W": 2,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 2,
+              "W": 2,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 3,
+              "W": 4,
+              "Keep": 1,
+              "Out": 9
+            }
+          ],
+          "AfterNLate": 9,
+          "AfterSLate": 9,
+          "AfterDLate": 9,
+          "AfterComputedLate": 9,
+          "AfterFilteredRows": 9
+        }
+      }
+    },
+    {
+      "name": "distinct",
+      "documentInline": {
+        "G": {
+          "NEarly": 9,
+          "NLate": 9,
+          "SEarly": 9,
+          "SLate": 9,
+          "DEarly": 9,
+          "DLate": 9,
+          "PlainRows": 9,
+          "FilteredRows": 9,
+          "ComputedEarly": 9,
+          "ComputedLate": 9,
+          "ComputedBad": 9,
+          "N1": 1,
+          "N2": 2,
+          "NBad": 3,
+          "S1": "x",
+          "S2": "y",
+          "SBad": "z",
+          "D1": "2024-01-01",
+          "D2": "2024-01-02",
+          "DBad": "2024-01-03",
+          "Rows": [
+            {
+              "V": 1,
+              "W": 1,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 1,
+              "W": 2,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 2,
+              "W": 2,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 3,
+              "W": 4,
+              "Keep": 1,
+              "Out": 9
+            }
+          ],
+          "AfterNLate": 9,
+          "AfterSLate": 9,
+          "AfterDLate": 9,
+          "AfterComputedLate": 9,
+          "AfterFilteredRows": 9
+        }
+      }
+    },
+    {
+      "name": "formal_poison",
+      "documentInline": {
+        "G": {
+          "NEarly": 9,
+          "NLate": 9,
+          "SEarly": 9,
+          "SLate": 9,
+          "DEarly": 9,
+          "DLate": 9,
+          "PlainRows": 9,
+          "FilteredRows": 9,
+          "ComputedEarly": 9,
+          "ComputedLate": 9,
+          "ComputedBad": 9,
+          "N1": 1,
+          "N2": 1,
+          "NBad": "bad",
+          "S1": "x",
+          "S2": "x",
+          "SBad": "bad",
+          "D1": "2024-01-01",
+          "D2": "2024-01-01",
+          "DBad": "2024-02-30",
+          "Rows": [
+            {
+              "V": 1,
+              "W": 1,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 1,
+              "W": 2,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 2,
+              "W": 2,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 3,
+              "W": 4,
+              "Keep": 1,
+              "Out": 9
+            }
+          ],
+          "AfterNLate": 9,
+          "AfterSLate": 9,
+          "AfterDLate": 9,
+          "AfterComputedLate": 9,
+          "AfterFilteredRows": 9
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "G": {
+          "NEarly": 9,
+          "NLate": 9,
+          "SEarly": 9,
+          "SLate": 9,
+          "DEarly": 9,
+          "DLate": 9,
+          "PlainRows": 9,
+          "FilteredRows": 9,
+          "ComputedEarly": 9,
+          "ComputedLate": 9,
+          "ComputedBad": 9,
+          "AfterNLate": 9,
+          "AfterSLate": 9,
+          "AfterDLate": 9,
+          "AfterComputedLate": 9,
+          "AfterFilteredRows": 9
+        }
+      }
+    },
+    {
+      "name": "prefetched_poison",
+      "documentInline": {
+        "G": {
+          "NEarly": 9,
+          "NLate": 9,
+          "SEarly": 9,
+          "SLate": 9,
+          "DEarly": 9,
+          "DLate": 9,
+          "PlainRows": 9,
+          "FilteredRows": 9,
+          "ComputedEarly": 9,
+          "ComputedLate": 9,
+          "ComputedBad": 9,
+          "N1": 1,
+          "N2": 1,
+          "NBad": 3,
+          "S1": "x",
+          "S2": "x",
+          "SBad": "z",
+          "D1": "2024-01-01",
+          "D2": "2024-01-01",
+          "DBad": "2024-01-03",
+          "Rows": [
+            {
+              "V": 1,
+              "W": 1,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 1,
+              "W": 2,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 2,
+              "W": 2,
+              "Keep": "bad",
+              "Out": 9
+            },
+            {
+              "V": 3,
+              "W": 4,
+              "Keep": 1,
+              "Out": 9
+            }
+          ],
+          "AfterNLate": 9,
+          "AfterSLate": 9,
+          "AfterDLate": 9,
+          "AfterComputedLate": 9,
+          "AfterFilteredRows": 9
+        }
+      }
+    },
+    {
+      "name": "unreached_poison",
+      "documentInline": {
+        "G": {
+          "NEarly": 9,
+          "NLate": 9,
+          "SEarly": 9,
+          "SLate": 9,
+          "DEarly": 9,
+          "DLate": 9,
+          "PlainRows": 9,
+          "FilteredRows": 9,
+          "ComputedEarly": 9,
+          "ComputedLate": 9,
+          "ComputedBad": 9,
+          "N1": 1,
+          "N2": 1,
+          "NBad": 3,
+          "S1": "x",
+          "S2": "x",
+          "SBad": "z",
+          "D1": "2024-01-01",
+          "D2": "2024-01-01",
+          "DBad": "2024-01-03",
+          "Rows": [
+            {
+              "V": 1,
+              "W": 1,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 1,
+              "W": 2,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 2,
+              "W": 2,
+              "Keep": 1,
+              "Out": 9
+            },
+            {
+              "V": 3,
+              "W": 4,
+              "Keep": "bad",
+              "Out": 9
+            }
+          ],
+          "AfterNLate": 9,
+          "AfterSLate": 9,
+          "AfterDLate": 9,
+          "AfterComputedLate": 9,
+          "AfterFilteredRows": 9
+        }
+      }
+    }
+  ]
+}

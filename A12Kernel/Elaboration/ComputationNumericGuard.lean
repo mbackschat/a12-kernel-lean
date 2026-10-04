@@ -82,7 +82,15 @@ def evalCheckedIn (condition : CheckedComputationCondition model)
     Except CheckedComputationConditionError ComputationConditionResult :=
   let scalar := { context.scalar with
     row := context.outer
-    addressed := some { document := context.document, read := context.starRead } }
+    addressed := some {
+      document := context.document
+      read := context.starRead
+      storedText := fun row field => match context.scalar.addressed with
+        | some addressed => addressed.storedText row field
+        | none => do
+            let declaration ← (model.lookupUniqueId field).toOption
+            let path ← (row.pathForScope declaration.repeatableScope).toOption
+            context.document.rawCells { field, path } } }
   ComputationConditionOf.evalCheckedWith condition scalar CheckedComputationConditionError.primitive
     (fun atom => (context.readCheckedNumericComputationAtom atom).mapError .numeric)
     (fun source => (source.evalChecked scalar (some context.filterRead)).mapError .predicate)

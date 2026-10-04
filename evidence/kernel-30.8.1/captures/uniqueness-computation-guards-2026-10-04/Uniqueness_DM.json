@@ -1,0 +1,648 @@
+{
+  "header" : {
+    "id" : "Uniqueness_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Uniqueness_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/G",
+        "name" : "G",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/G/N1",
+            "name" : "N1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/N2",
+            "name" : "N2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/NBad",
+            "name" : "NBad",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 2
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/NEarly",
+            "name" : "NEarly",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/NLate",
+            "name" : "NLate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/S1",
+            "name" : "S1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/S2",
+            "name" : "S2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/SBad",
+            "name" : "SBad",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/SEarly",
+            "name" : "SEarly",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/SLate",
+            "name" : "SLate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/D1",
+            "name" : "D1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/D2",
+            "name" : "D2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/DBad",
+            "name" : "DBad",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/DEarly",
+            "name" : "DEarly",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/DLate",
+            "name" : "DLate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/G/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 4,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/G/Rows/V",
+                "name" : "V",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/W",
+                "name" : "W",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/Keep",
+                "name" : "Keep",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/G/Rows/Out",
+                "name" : "Out",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/G/Rows/OutComp",
+                "name" : "OutComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../Out",
+                  "computationAlternatives" : [ {
+                    "operation" : "1",
+                    "precondition" : "FieldValuesNotUnique(V, W)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "duplicate"
+                  } ]
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/PlainRows",
+            "name" : "PlainRows",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/FilteredRows",
+            "name" : "FilteredRows",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/DEarlyComp",
+            "name" : "DEarlyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DEarly",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValuesNotUnique(D1, D2, DBad)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "duplicate"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/DLateComp",
+            "name" : "DLateComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DLate",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValuesNotUnique(DBad, D1, D2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "duplicate"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/FilteredRowsComp",
+            "name" : "FilteredRowsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FilteredRows",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValuesNotUnique(Rows*/V Having [Rows/Keep] > 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "duplicate"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/NEarlyComp",
+            "name" : "NEarlyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NEarly",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValuesNotUnique(N1, N2, NBad)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "duplicate"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/NLateComp",
+            "name" : "NLateComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NLate",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValuesNotUnique(NBad, N1, N2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "duplicate"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/PlainRowsComp",
+            "name" : "PlainRowsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PlainRows",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValuesNotUnique(Rows*/V)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "duplicate"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/SEarlyComp",
+            "name" : "SEarlyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SEarly",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValuesNotUnique(S1, S2, SBad)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "duplicate"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/SLateComp",
+            "name" : "SLateComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SLate",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValuesNotUnique(SBad, S1, S2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "duplicate"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/ComputedBad",
+            "name" : "ComputedBad",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ComputedBadComp",
+            "name" : "ComputedBadComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ComputedBad",
+              "computationAlternatives" : [ {
+                "operation" : "1 / 0"
+              } ],
+              "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "duplicate"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/ComputedEarly",
+            "name" : "ComputedEarly",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ComputedEarlyComp",
+            "name" : "ComputedEarlyComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ComputedEarly",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValuesNotUnique(N1, N2, ComputedBad)"
+              } ],
+              "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "duplicate"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/ComputedLate",
+            "name" : "ComputedLate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/ComputedLateComp",
+            "name" : "ComputedLateComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ComputedLate",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldValuesNotUnique(ComputedBad, N1, N2)"
+              } ],
+              "errorCodesToSuppress" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "duplicate"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterNLate",
+            "name" : "AfterNLate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterNLateComp",
+            "name" : "AfterNLateComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNLate",
+              "computationAlternatives" : [ {
+                "operation" : "[NLate] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterSLate",
+            "name" : "AfterSLate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterSLateComp",
+            "name" : "AfterSLateComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterSLate",
+              "computationAlternatives" : [ {
+                "operation" : "[SLate] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterDLate",
+            "name" : "AfterDLate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterDLateComp",
+            "name" : "AfterDLateComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterDLate",
+              "computationAlternatives" : [ {
+                "operation" : "[DLate] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterComputedLate",
+            "name" : "AfterComputedLate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterComputedLateComp",
+            "name" : "AfterComputedLateComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterComputedLate",
+              "computationAlternatives" : [ {
+                "operation" : "[ComputedLate] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterFilteredRows",
+            "name" : "AfterFilteredRows",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterFilteredRowsComp",
+            "name" : "AfterFilteredRowsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterFilteredRows",
+              "computationAlternatives" : [ {
+                "operation" : "[FilteredRows] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
