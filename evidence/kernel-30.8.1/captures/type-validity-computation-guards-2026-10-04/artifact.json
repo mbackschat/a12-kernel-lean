@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "TypeValidity_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "filled",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterLazyNoComp",
+              "field": "G/AfterLazyNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterLazyNo",
+                "G/LazyNo"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterLazyYesComp",
+              "field": "G/AfterLazyYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterLazyYes",
+                "G/LazyYes"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNoComp",
+              "field": "G/AfterNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNo",
+                "G/No"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterYesComp",
+              "field": "G/AfterYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterYes",
+                "G/Yes"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LazyYesComp",
+              "field": "G/LazyYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "NoComp",
+              "field": "G/No",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "YesComp",
+              "field": "G/Yes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterLazyNo",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterLazyYes",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterNo",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterYes",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LazyNo",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LazyYes",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/No",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Yes",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/No",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/No"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Yes",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Yes"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterLazyNoComp",
+              "field": "G/AfterLazyNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterLazyNo",
+                "G/LazyNo"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterLazyYesComp",
+              "field": "G/AfterLazyYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterLazyYes",
+                "G/LazyYes"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNoComp",
+              "field": "G/AfterNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNo",
+                "G/No"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterYesComp",
+              "field": "G/AfterYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterYes",
+                "G/Yes"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LazyYesComp",
+              "field": "G/LazyYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "NoComp",
+              "field": "G/No",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "YesComp",
+              "field": "G/Yes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterLazyNo",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterLazyYes",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "G/AfterNo",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterYes",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LazyNo",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LazyYes",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/No",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Yes",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/No",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/No"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "G/Yes",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/Yes"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterLazyNoComp",
+              "field": "G/AfterLazyNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterLazyNo",
+                "G/LazyNo"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterLazyYesComp",
+              "field": "G/AfterLazyYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterLazyYes",
+                "G/LazyYes"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNoComp",
+              "field": "G/AfterNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNo",
+                "G/No"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterYesComp",
+              "field": "G/AfterYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterYes",
+                "G/Yes"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterLazyNo",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterLazyYes",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterNo",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterYes",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/LazyNo",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LazyYes",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/No",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Yes",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterLazyNoComp",
+              "field": "G/AfterLazyNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterLazyNo",
+                "G/LazyNo"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterLazyYesComp",
+              "field": "G/AfterLazyYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterLazyYes",
+                "G/LazyYes"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNoComp",
+              "field": "G/AfterNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNo",
+                "G/No"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterYesComp",
+              "field": "G/AfterYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterYes",
+                "G/Yes"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterLazyNo",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterLazyYes",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterNo",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/AfterYes",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "G/LazyNo",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LazyYes",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/No",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Yes",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "invalid",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "AfterLazyNoComp",
+              "field": "G/AfterLazyNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterLazyNo",
+                "G/LazyNo"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterLazyYesComp",
+              "field": "G/AfterLazyYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterLazyYes",
+                "G/LazyYes"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNoComp",
+              "field": "G/AfterNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNo",
+                "G/No"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterYesComp",
+              "field": "G/AfterYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterYes",
+                "G/Yes"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringZuLang",
+              "field": "G/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterLazyNo",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterLazyYes",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterNo",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterYes",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LazyNo",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LazyYes",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/No",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Yes",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringZuLang",
+                "field": "G/S",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/S"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "AfterLazyNoComp",
+              "field": "G/AfterLazyNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterLazyNo",
+                "G/LazyNo"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterLazyYesComp",
+              "field": "G/AfterLazyYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterLazyYes",
+                "G/LazyYes"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterNoComp",
+              "field": "G/AfterNo",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterNo",
+                "G/No"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "AfterYesComp",
+              "field": "G/AfterYes",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/AfterYes",
+                "G/Yes"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "stringZuLang",
+              "field": "G/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "G/S"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "G/AfterLazyNo",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterLazyYes",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterNo",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/AfterYes",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LazyNo",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/LazyYes",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/No",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "G/Yes",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "stringZuLang",
+                "field": "G/S",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "G/S"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

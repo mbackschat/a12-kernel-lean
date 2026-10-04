@@ -7,6 +7,7 @@ import A12Kernel.Elaboration.TemporalExpression
 import A12Kernel.Elaboration.ComputationOverlap
 import A12Kernel.Elaboration.ComputationFieldFill
 import A12Kernel.Elaboration.ValuesNotUniqueCondition
+import A12Kernel.Elaboration.CustomFieldValidity
 
 namespace A12Kernel
 
@@ -17,6 +18,7 @@ inductive SurfaceScalarMembershipMembers where
   deriving Repr, DecidableEq
 
 inductive SurfaceComputationPredicate where
+  | typeValidity (operation : CustomFieldValidityOp) (source : SurfaceFieldPath) (name : String)
   | stringExpression (operator : EqualityOp) (left right : StringExpr SurfaceFieldPath)
   | temporal (operator : TemporalComparisonOp) (left right : SurfaceScalarTemporalExpression)
   | fieldComparison (operator : SurfaceComparisonOp) (left right : SurfaceFieldPath)
@@ -30,6 +32,8 @@ inductive SurfaceComputationPredicate where
   | scalarOverlap (source : SurfaceAtLeastOneDateRangeOverlapsSource)
 
 inductive ComputationPredicateElabError where
+  | typeOperand (error : CustomFieldValidityOperandElabError)
+  | typeName (error : CustomFieldValidityElabError)
   | stringExpression (error : StringComputationElabError)
   | temporal (error : ScalarTemporalExpressionError)
   | comparison (error : ScalarFieldComparisonElabError)
@@ -60,6 +64,8 @@ inductive ComputationPredicateError where
 /-- Retain typed source certificates and authored filters; computation traversal keeps reached
 errors distinct from validation's unknown verdict. -/
 inductive CheckedComputationPredicate (model : FlatModel) where
+  | typeValidity (operation : CustomFieldValidityOp)
+      (source : CheckedCustomFieldValidityOperand model) (name : String)
   | stringExpression (source : CheckedStringExpressionComparison model)
   | temporal (source : CheckedScalarTemporalComparison model)
   | fieldComparison (source : CheckedScalarFieldComparison model)
@@ -75,6 +81,7 @@ namespace CheckedComputationPredicate
 
 def referencesField (predicate : CheckedComputationPredicate model) (field : FieldId) : Bool :=
   match predicate with
+  | .typeValidity _ source _ => source.source == field
   | .stringExpression source => source.referencesField field
   | .temporal source => source.referencesField field
   | .fieldComparison source => source.referencesField field
@@ -86,6 +93,7 @@ def referencesField (predicate : CheckedComputationPredicate model) (field : Fie
 
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
   match predicate with
+  | .typeValidity _ source _ => source.declaration.repeatableScope.isPrefixOf scope
   | .stringExpression source => source.declarations.all (·.repeatableScope.isPrefixOf scope)
   | .temporal source => source.fieldIds.all fun field =>
       (model.lookupUniqueId field).toOption.any (·.repeatableScope.isPrefixOf scope)
@@ -282,6 +290,21 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   let filterRead := filterRead?.getD (fun row field =>
     (context.addressed.map (fun addressed => addressed.read row field)).getD (context.read field))
   match predicate with
+  | .typeValidity operation source name => do
+      let observation := observeCell .computation (context.read source.source)
+      match observation with
+      | .empty => pure .notTrue
+      | .unknown cause | .poison cause => pure (.poison cause)
+      | .value _ =>
+          let some stored := context.storedText source.source | throw .contextRequired
+          if stored.isEmpty then return .notTrue
+          let some world := context.world | throw .contextRequired
+          let checked : CheckedCustomFieldValidity := { name, validator? := world.resolveCustomFieldValidator? name }
+          match checked.evalComputation operation (.value stored) with
+          | .holds => pure .holds
+          | .notTrue => pure .notTrue
+          | .poison cause => pure (.poison cause)
+          | .validatorUnavailable => throw .valueFailure
   | .stringExpression source => (source.evalComputation { read := context.read } context.numberText).mapError .stringExpression
   | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError (fun
       | .dateTimeLabelUnresolved => .valueFailure
@@ -339,6 +362,11 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (surface : SurfaceComputationPredicate) :
     Except ComputationPredicateElabError (CheckedComputationPredicate model) := do
   match surface with
+  | .typeValidity operation path name => do
+      let declaration ← (model.resolveComputationFieldValueRead declaringGroup targetGroup path).mapError .read
+      let source ← (elaborateCustomFieldValidityOperand model declaration.id).mapError .typeOperand
+      if name.isEmpty then throw (.typeName .emptyTypeName)
+      pure (.typeValidity operation source name)
   | .uniqueness source =>
       match elaborateNumberValuesNotUniqueSource model declaringGroup source targetGroup (some targetGroup) with
       | .ok source => pure (.uniqueness (.number source))

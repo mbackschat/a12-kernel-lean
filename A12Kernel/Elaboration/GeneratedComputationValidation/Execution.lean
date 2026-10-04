@@ -210,7 +210,7 @@ def evaluateNumeric (computation : GeneratedComputationTable
     (context : ScalarComputationContext) :
     Except GeneratedNumericComputationEvaluationError
       GeneratedNumericComputationEvaluation :=
-  match admitGeneratedNumericOperationTable model computation with
+  match admitGeneratedNumericOperationTable model computation context.world with
   | .error cause => .error (.validation cause)
   | .ok admission => admission.evaluate context
 
@@ -219,7 +219,7 @@ def evaluateNumericTarget (computation : GeneratedComputationTable
     (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (context : ScalarComputationContext) :
     Except GeneratedNumericComputationEvaluationError NumericTargetCheckResult :=
-  match admitGeneratedNumericOperationTable model computation with
+  match admitGeneratedNumericOperationTable model computation context.world with
   | .error cause => .error (.validation cause)
   | .ok admission =>
       (admission.evaluate context).map
@@ -231,7 +231,7 @@ def executeNumericTargetResult (computation : GeneratedComputationTable
     (world : World) (input : CheckedDocument model) :
     Except GeneratedNumericComputationEvaluationError
       GeneratedNumericComputationTargetResult :=
-  match admitGeneratedNumericOperationTable model computation with
+  match admitGeneratedNumericOperationTable model computation (some world) with
   | .error cause => .error (.validation cause)
   | .ok admission => admission.executeTargetResult world input
 
@@ -244,7 +244,7 @@ def executeNumericResult (computation : GeneratedComputationTable
     Except GeneratedNumericComputationRunResultError
       (NumericComputationRunView
         (ComputationFormalMessage Payload) CellAddr) :=
-  match admitGeneratedNumericOperationTable model computation with
+  match admitGeneratedNumericOperationTable model computation (some world) with
   | .error cause => .error (.execution (.validation cause))
   | .ok admission => admission.executeResult world input payloadAt supplied
 

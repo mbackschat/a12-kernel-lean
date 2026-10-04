@@ -192,6 +192,7 @@ inductive GeneratedComputationGuardPosition where
 inductive GeneratedComputationValidationError where
   | resolve (error : ResolveError)
   | wrongRoundingMode
+  | typeValidityRequiresWorld
   | numericGuardRequiresConditionTree
   | fieldFillGuardRequiresConditionTree
   | groupGuardRequiresConditionTree
@@ -559,7 +560,7 @@ private def generatedGroupStarOperand (model : FlatModel) (rowGroup : GroupPath)
                       firstStarWithin := hFirst, pathValid := hPath }
   throw (.conditionAssembly .incoherentCore)
 
-private def generatedGuardCondition (model : FlatModel) (target : FieldId)
+private def generatedGuardCondition (model : FlatModel) (world? : Option World) (target : FieldId)
     (position : GeneratedComputationGuardPosition)
     (condition : CheckedComputationCondition model) :
     Except GeneratedComputationValidationError (ValidationCondition model) := do
@@ -573,6 +574,11 @@ private def generatedGuardCondition (model : FlatModel) (target : FieldId)
       pure (ValidationCondition.orderedNumericIn
         (if resolved.requiresAddressedValidation then .modelWideCheckedComputation else .modelWideNonrepeatable)
         resolved)
+  | .leaf (.predicate (.typeValidity operation operand name)) => do
+      let some world := world? | throw .typeValidityRequiresWorld
+      pure (.leaf (.customFieldValidity {
+        operand, operation
+        validity := { name, validator? := world.resolveCustomFieldValidator? name } }))
   | .leaf (.predicate (.temporal source)) => pure (.leaf (.scalarTemporal source))
   | .leaf (.predicate (.fieldFill operator source)) => pure (.leaf (.fieldFill operator source.source))
   | .leaf (.predicate (.uniqueness source)) => pure (.leaf (.valuesNotUnique source))
@@ -612,10 +618,10 @@ private def generatedGuardCondition (model : FlatModel) (target : FieldId)
           let operand ← generatedGroupStarOperand model targetDeclaration.groupPath source path
           pure (ValidationCondition.groupList
             (match operator with | .filled => .atLeastOneGroupFilled | .notFilled => .noGroupFilled) [operand])
-  | .and left right => pure (.and (← generatedGuardCondition model target position left)
-      (← generatedGuardCondition model target position right))
-  | .or left right => pure (.or (← generatedGuardCondition model target position left)
-      (← generatedGuardCondition model target position right))
+  | .and left right => pure (.and (← generatedGuardCondition model world? target position left)
+      (← generatedGuardCondition model world? target position right))
+  | .or left right => pure (.or (← generatedGuardCondition model world? target position left)
+      (← generatedGuardCondition model world? target position right))
 
 private def generatedNumericOperationMismatchCondition (target : FlatNumberField)
     (alternativeIndex : Nat)
@@ -629,18 +635,18 @@ private def generatedNumericOperationMismatchCondition (target : FlatNumberField
   pure (ValidationCondition.orderedNumericIn
     mismatch.operandScope mismatch.core)
 
-private def generatedNumericMismatch (model : FlatModel)
+private def generatedNumericMismatch (model : FlatModel) (world? : Option World)
     (target : FlatNumberField) (alternativeIndex : Nat)
     (alternative : GeneratedComputationAlternative
       (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) :
     Except GeneratedComputationValidationError (ValidationCondition model) := do
-  let guard ← generatedGuardCondition model target.id
+  let guard ← generatedGuardCondition model world? target.id
     (.alternative alternativeIndex) alternative.precondition
   let mismatch ← generatedNumericOperationMismatchCondition target
     alternativeIndex alternative.operation alternative.tolerance
   pure (.and guard mismatch)
 
-private def generatedNumericMismatches (model : FlatModel)
+private def generatedNumericMismatches (model : FlatModel) (world? : Option World)
     (target : FlatNumberField) :
     Nat → List (GeneratedComputationAlternative
       (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) →
@@ -648,12 +654,12 @@ private def generatedNumericMismatches (model : FlatModel)
         (List (ValidationCondition model))
   | _, [] => pure []
   | alternativeIndex, alternative :: remaining => do
-      let first ← generatedNumericMismatch model target alternativeIndex alternative
-      let rest ← generatedNumericMismatches model target
+      let first ← generatedNumericMismatch model world? target alternativeIndex alternative
+      let rest ← generatedNumericMismatches model world? target
         (alternativeIndex + 1) remaining
       pure (first :: rest)
 
-private def singleGeneratedNumericMismatch (model : FlatModel)
+private def singleGeneratedNumericMismatch (model : FlatModel) (world? : Option World)
     (target : FlatNumberField)
     (alternative : SingleGeneratedComputationAlternative
       (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) :
@@ -663,20 +669,20 @@ private def singleGeneratedNumericMismatch (model : FlatModel)
   match alternative.precondition with
   | none => pure mismatch
   | some precondition => do
-      let guard ← generatedGuardCondition model target.id
+      let guard ← generatedGuardCondition model world? target.id
         (.alternative 1) precondition
       pure (.and guard mismatch)
 
-private def generatedNumericAlternatives (model : FlatModel)
+private def generatedNumericAlternatives (model : FlatModel) (world? : Option World)
     (target : FlatNumberField) :
     GeneratedComputationAlternatives
       (CheckedNumericComputationOperation model) (CheckedComputationCondition model) →
       Except GeneratedComputationValidationError (ValidationCondition model)
   | .singleton alternative =>
-      singleGeneratedNumericMismatch model target alternative
+      singleGeneratedNumericMismatch model world? target alternative
   | .guarded alternatives => do
-      let first ← generatedNumericMismatch model target 1 alternatives.first
-      let remaining ← generatedNumericMismatches model target 2
+      let first ← generatedNumericMismatch model world? target 1 alternatives.first
+      let remaining ← generatedNumericMismatches model world? target 2
         (alternatives.second :: alternatives.remaining)
       pure (remaining.foldl .or first)
 
@@ -695,10 +701,11 @@ structure AdmittedGeneratedNumericOperationTable (model : FlatModel)
   targetPolicyOwned :
     targetDeclaration.toNumericTargetPolicy? = some targetPolicy
 
-/-- Admit the complete generated validation twin and retain its resolved target policy. Computation selection remains the generic first-match scan; this route retains every guarded mismatch in declaration order under one optional common guard and target-filled gate. -/
+/-- Admit the complete generated validation twin and retain its resolved target policy. Named-type guards require an explicit world to resolve their validator registry; unrelated guards need no world. Computation selection remains the generic first-match scan; this route retains every guarded mismatch in declaration order under one optional common guard and target-filled gate. -/
 def admitGeneratedNumericOperationTable (model : FlatModel)
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) :
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
+    (world? : Option World := none) :
     Except GeneratedComputationValidationError
       (AdmittedGeneratedNumericOperationTable model computation) :=
   match hModel : model.validate with
@@ -709,12 +716,12 @@ def admitGeneratedNumericOperationTable (model : FlatModel)
         model.resolveGeneratedNumberTarget computation.targetField
       let targetDeclaration := resolvedTarget.declaration
       let target := resolvedTarget.target
-      let alternatives ← generatedNumericAlternatives model target
+      let alternatives ← generatedNumericAlternatives model world? target
         computation.alternatives
       let commonGuard ← match computation.commonPrecondition with
         | none => pure none
         | some common => do
-            let checkedCommon ← generatedGuardCondition model target.id .common common
+            let checkedCommon ← generatedGuardCondition model world? target.id .common common
             pure (some checkedCommon)
       let core := generatedConditionWithGate
         (ValidationCondition.flat (.fieldFilled (.number target)))
@@ -736,10 +743,11 @@ def admitGeneratedNumericOperationTable (model : FlatModel)
 /-- Project the admitted generated validation twin for callers that do not consume runtime target policy. -/
 def assembleGeneratedNumericOperationTableRule (model : FlatModel)
     (computation : GeneratedComputationTable
-      (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) :
+      (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
+    (world? : Option World := none) :
     Except GeneratedComputationValidationError
       (CheckedResolvedValidationRule model) :=
-  (admitGeneratedNumericOperationTable model computation).map (·.rule)
+  (admitGeneratedNumericOperationTable model computation world?).map (·.rule)
 
 /-- Assemble the generated validation twin of one checked unconditional numeric operation through the same singleton-table route used by guarded operations. -/
 def assembleGeneratedNumericOperationRule (model : FlatModel)

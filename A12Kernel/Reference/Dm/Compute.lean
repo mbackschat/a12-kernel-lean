@@ -92,6 +92,12 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
   | .call "GroupNotFilled" [.mk group none none] none none => match group.groupReference? with
       | some reference => pure (.groupPresence .notFilled reference)
       | none => refuse "Guard/GroupNotFilled" "group operand"
+  | .call "Valid" [.mk field none none, .mk (.string name) none none] none none => do
+      let some path := field.fieldEntity? | refuse "ValidType" "field operand"
+      pure (.predicate (.typeValidity .valid path name))
+  | .call "Invalid" [.mk field none none, .mk (.string name) none none] none none => do
+      let some path := field.fieldEntity? | refuse "InvalidType" "field operand"
+      pure (.predicate (.typeValidity .invalid path name))
   | .call "FieldValuesNotUnique" arguments none none =>
       (.predicate ∘ .uniqueness) <$> lowerEntitySource model group arguments
   | .call "DateRangesOverlap" arguments none none =>

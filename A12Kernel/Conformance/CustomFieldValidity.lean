@@ -112,4 +112,18 @@ example :
     } := by
   native_decide
 
+example : ({ name := "Missing", validator? := none } : CheckedCustomFieldValidity).evalComputation
+    .valid (.value "x") = .validatorUnavailable ∧
+    ({ name := "Missing", validator? := none } : CheckedCustomFieldValidity).evalComputation
+      .invalid .empty = .notTrue ∧
+    ({ name := "Missing", validator? := none } : CheckedCustomFieldValidity).evalComputation
+      .valid (.poison .malformed) = .poison .malformed := by native_decide
+
+example : ({ name := "ProjectCode", validator? := some validator } : CheckedCustomFieldValidity).evalComputation
+    .valid (.value "ok") = .holds ∧
+    ({ name := "ProjectCode", validator? := some validator } : CheckedCustomFieldValidity).evalComputation
+      .invalid (.value "bad") = .holds ∧
+    ({ name := "ProjectCode", validator? := some validator } : CheckedCustomFieldValidity).evalComputation
+      .valid (.value "bad") = .notTrue := by native_decide
+
 end A12Kernel.Conformance.CustomFieldValidity

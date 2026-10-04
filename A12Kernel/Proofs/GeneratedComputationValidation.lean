@@ -15,7 +15,7 @@ theorem generatedNumericComputationEvaluation_noMatch
       (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
     (context : ScalarComputationContext)
     (admission : AdmittedGeneratedNumericOperationTable model computation)
-    (admitted : admitGeneratedNumericOperationTable model computation =
+    (admitted : admitGeneratedNumericOperationTable model computation context.world =
       .ok admission)
     (selection : CheckedComputationAlternative.selectFirstChecked computation.outputNumericAlternatives context = .ok .noMatch) :
     computation.evaluateNumeric context = .ok .noMatch := by
@@ -32,7 +32,7 @@ theorem generatedNumericComputationEvaluation_guardPoison
     (context : ScalarComputationContext)
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (cause : FormalCause)
-    (admitted : admitGeneratedNumericOperationTable model computation =
+    (admitted : admitGeneratedNumericOperationTable model computation context.world =
       .ok admission)
     (selection : CheckedComputationAlternative.selectFirstChecked computation.outputNumericAlternatives context = .ok (.poison cause)) :
     computation.evaluateNumeric context = .ok (.guardPoison cause) := by
@@ -50,7 +50,7 @@ theorem generatedNumericComputationEvaluation_selected
     (operation : CheckedNumericComputationOperation model)
     (rounding : Option ComputationRoundingMode)
     (admission : AdmittedGeneratedNumericOperationTable model computation)
-    (admitted : admitGeneratedNumericOperationTable model computation =
+    (admitted : admitGeneratedNumericOperationTable model computation context.world =
       .ok admission)
     (selection : CheckedComputationAlternative.selectFirstChecked computation.outputNumericAlternatives context = .ok (.selected (operation, rounding))) :
     computation.evaluateNumeric context =
@@ -129,7 +129,7 @@ theorem generatedNumericComputationTarget_usesDeclarationPolicy
     (context : ScalarComputationContext)
     (evaluation : GeneratedNumericComputationEvaluation)
     (admission : AdmittedGeneratedNumericOperationTable model computation)
-    (admitted : admitGeneratedNumericOperationTable model computation =
+    (admitted : admitGeneratedNumericOperationTable model computation context.world =
       .ok admission)
     (executed : admission.evaluate context = .ok evaluation) :
     computation.evaluateNumericTarget context =
@@ -226,7 +226,7 @@ theorem generatedNumericAppliedValidation_admissionError
     (payloadAt : CellAddr → Payload)
     (supplied : List (ComputationFormalMessage Payload))
     (cause : GeneratedComputationValidationError)
-    (rejected : admitGeneratedNumericOperationTable model computation =
+    (rejected : admitGeneratedNumericOperationTable model computation (some validationWorld) =
       .error cause) :
     computation.executeNumericAppliedValidation executionWorld validationWorld
       source destination payloadAt supplied =
@@ -245,7 +245,7 @@ theorem generatedNumericOperationTable_executeResultWithFormalInputs_exact
     (prepared : ComputationFormalInputPreparation model)
     (numeric : NumericComputationRunView
       (ComputationFormalMessage Unit) CellAddr)
-    (admitted : admitGeneratedNumericOperationTable model computation =
+    (admitted : admitGeneratedNumericOperationTable model computation (some world) =
       .ok admission)
     (planned : admission.formalInputPlan = .ok inputPlan)
     (preparation : inputPlan.prepare input = .ok prepared)
@@ -269,7 +269,7 @@ theorem generatedNumericOperationTable_executeResultWithFormalInputs_failure_exa
     (inputPlan : CheckedComputationFormalInputPlan model)
     (prepared : ComputationFormalInputPreparation model)
     (fault : GeneratedNumericComputationRunResultError)
-    (admitted : admitGeneratedNumericOperationTable model computation =
+    (admitted : admitGeneratedNumericOperationTable model computation (some world) =
       .ok admission)
     (planned : admission.formalInputPlan = .ok inputPlan)
     (preparation : inputPlan.prepare input = .ok prepared)
@@ -295,7 +295,7 @@ theorem generatedNumericFormalInputAppliedValidation_success_result_exact
     (numeric : NumericComputationRunView
       (ComputationFormalMessage Unit) CellAddr)
     (view : GeneratedComputationTable.FormalInputAppliedValidationView model)
-    (admitted : admitGeneratedNumericOperationTable model computation =
+    (admitted : admitGeneratedNumericOperationTable model computation (some validationWorld) =
       .ok admission)
     (planned : admission.formalInputPlan = .ok inputPlan)
     (preparation : inputPlan.prepare source = .ok prepared)

@@ -41,6 +41,13 @@ def elaborateCustomFieldValidity (world : World) (name : String) :
   else
     .ok { name, validator? := world.resolveCustomFieldValidator? name }
 
+inductive CustomFieldValidityComputationResult where
+  | notTrue
+  | holds
+  | poison (cause : FormalCause)
+  | validatorUnavailable
+  deriving Repr, DecidableEq
+
 namespace CheckedCustomFieldValidity
 
 /-- Evaluate one checked explicit validity predicate.
@@ -65,6 +72,20 @@ def eval (checked : CheckedCustomFieldValidity)
             | .valid, some _ => .notFired
             | .invalid, none => .notFired
             | .invalid, some _ => .fired .value
+
+/-- Computation preserves reached source invalidity and missing-validator failure; validation's
+unregistered double firing is phase-specific (computation probe, 2026-10-04). -/
+def evalComputation (checked : CheckedCustomFieldValidity) (operation : CustomFieldValidityOp) :
+    CellObservation String → CustomFieldValidityComputationResult
+  | .empty => .notTrue
+  | .unknown cause | .poison cause => .poison cause
+  | .value value =>
+      if value.isEmpty then .notTrue
+      else match checked.validator? with
+        | none => .validatorUnavailable
+        | some _ => match checked.eval operation (.value value) with
+            | .fired _ => .holds
+            | _ => .notTrue
 
 end CheckedCustomFieldValidity
 

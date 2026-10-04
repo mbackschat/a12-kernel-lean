@@ -120,4 +120,17 @@ theorem customFieldValidity_rejection_fires_invalid
     checked.eval .invalid (.value value) = .fired .value := by
   simp [CheckedCustomFieldValidity.eval, nonempty, resolved, rejected]
 
+/-- With a resolved validator and a filled value, computation holds exactly when validation fires.
+The missing-validator and invalid-cell separators prevent extending this bridge unconditionally. -/
+theorem customFieldValidity_computation_agrees_when_resolved
+    (checked : CheckedCustomFieldValidity) (operation : CustomFieldValidityOp)
+    (value : String) (validator : RegisteredCustomFieldValidator)
+    (nonempty : value.isEmpty = false) (resolved : checked.validator? = some validator) :
+    checked.evalComputation operation (.value value) = .holds ↔
+      checked.eval operation (.value value) = .fired .value := by
+  cases result : validator value explicitCustomFieldValidationContext <;>
+    cases operation <;>
+    simp [CheckedCustomFieldValidity.evalComputation, CheckedCustomFieldValidity.eval,
+      nonempty, resolved, result]
+
 end A12Kernel

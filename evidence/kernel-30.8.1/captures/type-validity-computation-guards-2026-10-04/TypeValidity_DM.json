@@ -1,0 +1,264 @@
+{
+  "header" : {
+    "id" : "TypeValidity_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "TypeValidity_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/G",
+        "name" : "G",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/G/S",
+            "name" : "S",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "maxLength" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/Yes",
+            "name" : "Yes",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/YesComp",
+            "name" : "YesComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Yes",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "Valid(S, \"Missing\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "type result"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterYes",
+            "name" : "AfterYes",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterYesComp",
+            "name" : "AfterYesComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterYes",
+              "computationAlternatives" : [ {
+                "operation" : "[Yes] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/No",
+            "name" : "No",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/NoComp",
+            "name" : "NoComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../No",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "Invalid(S, \"Missing\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "type result"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterNo",
+            "name" : "AfterNo",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterNoComp",
+            "name" : "AfterNoComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNo",
+              "computationAlternatives" : [ {
+                "operation" : "[No] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/LazyYes",
+            "name" : "LazyYes",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/LazyYesComp",
+            "name" : "LazyYesComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../LazyYes",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldFilled(S) Or Valid(S, \"Missing\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "type result"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterLazyYes",
+            "name" : "AfterLazyYes",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterLazyYesComp",
+            "name" : "AfterLazyYesComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterLazyYes",
+              "computationAlternatives" : [ {
+                "operation" : "[LazyYes] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/LazyNo",
+            "name" : "LazyNo",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/LazyNoComp",
+            "name" : "LazyNoComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../LazyNo",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(S) And Invalid(S, \"Missing\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "type result"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/G/AfterLazyNo",
+            "name" : "AfterLazyNo",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/G/AfterLazyNoComp",
+            "name" : "AfterLazyNoComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterLazyNo",
+              "computationAlternatives" : [ {
+                "operation" : "[LazyNo] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "dependent"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

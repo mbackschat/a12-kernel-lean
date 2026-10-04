@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-04-08"></a>
+### SPEC-2026-10-04-08 — missing named validators fail computation guards
+
+- `status`: pending
+- `delta`: qualify missing-name double firing as validation behavior. In computation, a filled valid operand makes either polarity fail with target-local calculation error and poisoned dependent readback; empty input clears cleanly and source invalidity precedes lookup. Retain lazy connective evaluation and the stored XML-value projection.
+- `basis`: [checkpoint and retained capture](sources/computation-scheduling-probes.md#src-type-validity-computation-guards), three documents, both Kernel strategies, clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`; source owns the stored Enumeration token projection. KF51's validation-only account was checked before this entry.
+- `canonical`: [spec/06](../spec/06-strings-and-enumerations.md#a3-custom-field-type-validation).
+- `acceptance`: reconcile the phase-qualified missing-validator and source-invalidity outcomes; do not transfer validation double firing to computation. Registered-validator and Enumeration runtime calibration remain outside this capture.
+
 <a id="spec-2026-10-04-07"></a>
 ### SPEC-2026-10-04-07 — uniqueness computation guards propagate reached invalidity
 

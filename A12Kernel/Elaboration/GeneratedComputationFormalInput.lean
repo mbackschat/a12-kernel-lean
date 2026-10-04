@@ -87,10 +87,11 @@ namespace GeneratedComputationTable
 
 /-- Admit the generated-validation shell first, then bind its complete common, row-guard, and checked-operation dependency union to the shared target-excluding formal-input plan. -/
 def formalInputPlan (computation : GeneratedComputationTable
-    (CheckedNumericComputationOperation model) (CheckedComputationCondition model)) :
+    (CheckedNumericComputationOperation model) (CheckedComputationCondition model))
+    (world? : Option World := none) :
     Except GeneratedNumericComputationFormalInputPlanError
       (CheckedComputationFormalInputPlan model) := do
-  let admission ← admitGeneratedNumericOperationTable model computation
+  let admission ← admitGeneratedNumericOperationTable model computation world?
     |>.mapError .validation
   admission.formalInputPlan |>.mapError .formalInput
 
@@ -100,7 +101,7 @@ def executeNumericResultWithFormalInputs (computation : GeneratedComputationTabl
     (world : World) (input : CheckedDocument model) :
     Except GeneratedNumericComputationFormalInputRunError
       (NumericComputationFormalInputRunView model CellAddr) := do
-  let admission ← admitGeneratedNumericOperationTable model computation
+  let admission ← admitGeneratedNumericOperationTable model computation (some world)
     |>.mapError .validation
   let inputPlan ← admission.formalInputPlan |>.mapError .formalInput
   let prepared ← inputPlan.prepare input |>.mapError .preliminary

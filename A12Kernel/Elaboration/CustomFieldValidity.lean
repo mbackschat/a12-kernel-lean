@@ -40,7 +40,7 @@ inductive CustomFieldValidityOperandElabError where
 
 /-- One field declaration admitted into a value-validation predicate's operand slot.
 
-    The retained declaration is what a later runtime clause reads the observation from; nothing here chooses that projection, and for an Enumeration operand it is still open which of the stored token and the display label the validator receives. -/
+    The retained declaration owns the checked observation. Enumeration evaluation passes its stored token to the named validator, as the runtime’s XML-value read requires. -/
 structure CheckedCustomFieldValidityOperand (model : FlatModel) where
   source : FieldId
   declaration : FlatFieldDecl
@@ -110,14 +110,17 @@ namespace CheckedCustomFieldValidityLeaf
 
     The operand is read through the **checked** observation, so a formally invalid cell reaches the predicate as unavailable and never reaches the validator: a validator answering about the stored text of a cell the rest of the theory cannot read would contradict every other consumer of that cell.
 
-    `CellObservation.asText` maps a non-String payload to formally unavailable rather than absent. It sits beside the observation type because the semantic index's exact-text key read needs the identical meaning; this is its second user.
+    `CellObservation.asText` preserves String availability and refuses unrelated payloads. Enumeration tokens use their own admitted projection before that fallback.
 
-    **This function decides nothing about an Enumeration operand.** It forwards whatever payload the cell carries, so which text a validator sees for an Enumeration — the stored token or the display value — stays the caller's, and remains the open half of this family rather than being settled here by the projection's shape.
+    Enumeration cells retain their stored token. RuntimeController’s predefined-type predicates read the XML value, so display labels must not replace that token (source checkpoint: named-type computation guards, 2026-10-04).
 
     Both routes into the predicate — the scalar context read and the addressed partial one — end here, so a covered cell gets one answer by construction rather than by two arms happening to agree. -/
 def evalCell (leaf : CheckedCustomFieldValidityLeaf model) (phase : Phase)
     (cell : CheckedCell) : Verdict :=
-  leaf.validity.eval leaf.operation (observeCell phase cell).asText
+  let observation := observeCell phase cell
+  leaf.validity.eval leaf.operation (match observation with
+    | .value (.enum token) => .value token
+    | other => other.asText)
 
 /-- Evaluate the predicate against one flat context, reading its own operand. -/
 def evalAt (leaf : CheckedCustomFieldValidityLeaf model)

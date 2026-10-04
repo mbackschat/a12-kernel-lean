@@ -2018,6 +2018,7 @@ run_cmd do
 #print axioms A12Kernel.explicitCustomFieldValidationContext_exact
 #print axioms A12Kernel.elaborateCustomFieldValidity_emptyName
 #print axioms A12Kernel.elaborateCustomFieldValidity_admits
+#print axioms A12Kernel.customFieldValidity_computation_agrees_when_resolved
 #print axioms A12Kernel.customFieldValidity_empty_unknown
 #print axioms A12Kernel.customFieldValidity_valueEmpty_unknown
 #print axioms A12Kernel.customFieldValidity_unavailable_unknown

@@ -1614,7 +1614,7 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [Custom field type SPI: full-check raise and the codec's single opt-in caller](sources/evaluation-and-application-routes.md#src-custom-field-type-spi)
 
 <a id="src-custom-validity-route"></a>
-- [Custom validity source route](sources/evaluation-and-application-routes.md#src-custom-validity-route)
+- [Named-type validation](sources/evaluation-and-application-routes.md#src-custom-validity-route)
 <a id="src-field-values-not-unique-route"></a>
 - [`FieldValuesNotUnique` source route](sources/evaluation-and-application-routes.md#src-field-values-not-unique-route)
 <a id="src-fieldless-numeric-computation"></a>
@@ -1730,24 +1730,24 @@ Edit the source shard when its provenance or drill route changes; change this hu
 - [String and Enumeration computation guards suppress empty operands and poison on reached invalid reads](sources/computation-scheduling-probes.md#src-text-computation-guards)
 
 <a id="src-peer-computation-shapes-replay"></a>
-- [Peer invoice computation replay](sources/evaluation-and-application-routes.md#src-peer-computation-shapes-replay)
+- [Invoice replay](sources/evaluation-and-application-routes.md#src-peer-computation-shapes-replay)
 
 <a id="src-field-fill-computation-guards"></a>
 - [Field-fill computation guards](sources/computation-scheduling-probes.md#src-field-fill-computation-guards)
 
 
 <a id="src-group-presence-computation-guards"></a>
-- [Group-presence computation guards](sources/computation-scheduling-probes.md#src-group-presence-computation-guards)
+- [Group-presence guards](sources/computation-scheduling-probes.md#src-group-presence-computation-guards)
 
 
 <a id="src-group-presence-conditional-dependencies"></a>
-- [Ancestor group dependencies](sources/computation-scheduling-probes.md#src-group-presence-conditional-dependencies)
+- [Group dependencies](sources/computation-scheduling-probes.md#src-group-presence-conditional-dependencies)
 
 <a id="src-group-conditional-profiles"></a>
-- [Conditional group profiles](sources/computation-scheduling-probes.md#src-group-conditional-profiles)
+- [Group profiles](sources/computation-scheduling-probes.md#src-group-conditional-profiles)
 
 <a id="src-repeatable-group-profiles"></a>
-- [Implicit guards before repeatable target-profile assembly](sources/computation-scheduling-probes.md#src-repeatable-group-profiles)
+- [Repeatable target-profile guards](sources/computation-scheduling-probes.md#src-repeatable-group-profiles)
 
 <a id="src-filled-field-count-expressions"></a>
 - [Filled-field count expression admission, 2026-10-03](sources/group-list-and-capacity-probes.md#src-filled-field-count-expressions)
@@ -1765,4 +1765,7 @@ Edit the source shard when its provenance or drill route changes; change this hu
 - [Recursive temporal numeric expressions and phase-specific shift effects](sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression)
 
 <a id="src-uniqueness-computation-guards"></a>
-- [Uniqueness computation guards](sources/computation-scheduling-probes.md#src-uniqueness-computation-guards)
+- [Uniqueness guards](sources/computation-scheduling-probes.md#src-uniqueness-computation-guards)
+
+<a id="src-type-validity-computation-guards"></a>
+- [Named-type computation guards](sources/computation-scheduling-probes.md#src-type-validity-computation-guards)

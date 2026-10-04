@@ -87,7 +87,7 @@ def executeNumericAppliedValidation (computation : GeneratedComputationTable
     (supplied : List (ComputationFormalMessage Payload)) :
     Except AppliedValidationError (AppliedValidationView model Payload) := do
   let admission ←
-    (admitGeneratedNumericOperationTable model computation)
+    (admitGeneratedNumericOperationTable model computation (some validationWorld))
       |>.mapError .admission
   let result ←
     (admission.executeAddressedResultWithRead executionWorld source source.read
@@ -113,7 +113,7 @@ def executeNumericFormalInputAppliedValidation
     Except FormalInputAppliedValidationError
       (FormalInputAppliedValidationView model) := do
   let admission ←
-    (admitGeneratedNumericOperationTable model computation)
+    (admitGeneratedNumericOperationTable model computation (some validationWorld))
       |>.mapError .admission
   let inputPlan ← admission.formalInputPlan |>.mapError .formalInput
   let prepared ← inputPlan.prepare source |>.mapError .preliminary
