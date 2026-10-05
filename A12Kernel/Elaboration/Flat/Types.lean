@@ -228,8 +228,7 @@ inductive SurfaceCondition where
   | or (left right : SurfaceCondition)
   deriving Repr, DecidableEq
 
-/-- One expanded field declaration. `repeatableScope` lists every repeatable ancestor;
-    the current capsule accepts exactly the empty list. -/
+/-- One expanded field declaration. `repeatableScope` lists every repeatable ancestor. -/
 structure FlatFieldDecl where
   id : FieldId
   groupPath : GroupPath
