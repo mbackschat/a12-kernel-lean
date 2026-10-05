@@ -193,6 +193,7 @@ inductive GeneratedComputationValidationError where
   | resolve (error : ResolveError)
   | wrongRoundingMode
   | typeValidityRequiresWorld
+  | patternGuardRequiresOrdinaryValidation
   | numericGuardRequiresConditionTree
   | fieldFillGuardRequiresConditionTree
   | groupGuardRequiresConditionTree
@@ -586,6 +587,11 @@ private def generatedGuardCondition (model : FlatModel) (world? : Option World) 
   | .leaf (.predicate (.uniqueness source)) => pure (.leaf (.valuesNotUnique source))
   | .leaf (.predicate (.overlap source)) => pure (.leaf (.iteratedDateRange source.toValidation))
   | .leaf (.predicate (.stringExpression source)) => pure (.leaf (.stringExpression source))
+  | .leaf (.predicate (.pattern source)) => do
+      let targetDeclaration ← (model.lookupUniqueId target).mapError GeneratedComputationValidationError.resolve
+      let some leaf := source.toOrdinaryValidation? targetDeclaration.groupPath
+        | throw .patternGuardRequiresOrdinaryValidation
+      pure (.leaf (.stringPattern leaf))
   | .leaf (.predicate (.fieldComparison (.boolean source))) =>
       pure (ValidationCondition.flat (.compare source.toFlat))
   | .leaf (.predicate (.fieldComparison (.range source))) =>

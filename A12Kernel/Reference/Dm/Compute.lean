@@ -67,11 +67,25 @@ private def lowerScalarMembership (operator : ValueListMembershipOp)
       let some fields := members.mapM guardTextField? | refuse "Guard/Membership" "bracketed members"
       pure (.scalarMembership operator subject (.fields fields))
 
+private def patternConstant? : Expr → Option String
+  | .string source => some source
+  | .braces body => patternConstant? body
+  | _ => none
+
+private def lowerPatternGuard (op : StringPatternOp) (left right : Expr) :
+    Lowering (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) := do
+  let .value { path, index := none, category := none } := left | refuse "Guard/Pattern" "direct field"
+  let some field := path.toFieldPath? | refuse "Guard/Pattern" "field path"
+  let some source := patternConstant? right | refuse "Guard/Pattern" "constant source"
+  pure (.predicate (.pattern { op, field, source }))
+
 /-- Lower typed guards into the shared computation condition tree. Unsupported atoms remain explicit refusals during model resolution. -/
 partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool := false)
     (expression : Expr) (targetGroup? : Option GroupPath := none) :
     Lowering (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) :=
   match expression with
+  | .compare .patternMatched left right => lowerPatternGuard .matched left right
+  | .compare .patternViolated left right => lowerPatternGuard .violated left right
   | .parens body => lowerGuard model group suppress body targetGroup?
   | .logic op (first :: rest) => do
       let join := match op with

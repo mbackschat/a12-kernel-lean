@@ -2,7 +2,7 @@ import A12Kernel.Semantics.FlatValidation
 
 /-! # A12Kernel.Semantics.StringPattern — resolved whole-value pattern conditions
 
-This capsule begins after an authored pattern has passed Java compilation and the kernel's additional admission gate. The admitted pattern is injected as a pure whole-value matcher, keeping Java `Pattern` compilation and syntax outside Lean while preserving the validation semantics that consume its result.
+This capsule begins after an authored pattern has passed Java compilation and the kernel's additional admission gate. The admitted pattern is injected as a pure whole-value matcher, keeping Java `Pattern` compilation and syntax outside Lean while preserving the phase-specific semantics that consume its result.
 -/
 
 namespace A12Kernel
@@ -28,6 +28,15 @@ def evalResolved (op : StringPatternOp) (wholeValueMatches : String → Bool) :
   | .unknown _ => .unknown
   | .value actual _ =>
       if op.acceptsMatchResult (wholeValueMatches actual) then .fired .value else .notFired
+
+/-- Computation consumes the same match decision but retains a reached formal cause as poison,
+as required by the shared computation-condition phase contract. -/
+def evalComputationResolved (op : StringPatternOp) (wholeValueMatches : String → Bool) :
+    SimpleComparisonOperand String → ComputationConditionResult
+  | .notEvaluated => .notTrue
+  | .unknown cause => .poison cause
+  | .value actual _ =>
+      if op.acceptsMatchResult (wholeValueMatches actual) then .holds else .notTrue
 
 end StringPatternOp
 

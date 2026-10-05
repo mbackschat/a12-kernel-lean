@@ -271,4 +271,59 @@ example : categoryReadError .string (.category "Kind") .raw =
       some (.resolve (.rawFieldValueRead ["Form", "Rows", "Code"])) ∧
     categoryReadError .string .stored = none := by native_decide
 
+example : run "[Flag] PatternMatched \"[0-9]+\"" .string (.parsed (.str "123")) = some ["value 2"] ∧
+    run "[Flag] PatternViolated \"[0-9]+\"" .string (.parsed (.str "123")) = some ["cleared"] ∧
+    run "[Flag] PatternViolated {\"[0-9]+\"}" .string (.parsed (.str "x123")) = some ["value 2"] ∧
+    run "[Flag] PatternMatched \"[0-9]+\"" .string (.rejected .malformed) .empty .empty true "\"123\"" =
+      some ["value 123", "value 2"] := by native_decide
+
+example : run "[Flag] PatternMatched {{\"[0-9]+\"}}" .string (.parsed (.str "123")) = some ["value 2"] := by native_decide
+
+example : ["{[Flag]} PatternMatched \"[0-9]+\"", "[Flag] + \"x\" PatternMatched \"[0-9]+\"",
+    "[Flag] PatternMatched [Flag]"].all (fun guard =>
+      (run guard .string (.parsed (.str "123"))).isNone) := by native_decide
+
+private def patternRows (second : String) (fresh : Bool := false)
+    (alternatives : Bool := false) : Option (List String) := do
+  let model : FlatModel := {
+    fields := [
+      { id := 1, groupPath := ["Form", "Rows"], name := "Flag", repeatableScope := [10]
+        policy := { kind := .string }, stringPolicy := { maxLength := some 3 } },
+      { id := 2, groupPath := ["Form", "Rows"], name := "Out", repeatableScope := [10]
+        policy := { kind := numericKind } },
+      { id := 3, groupPath := ["Form", "Rows"], name := "After", repeatableScope := [10]
+        policy := { kind := numericKind } }]
+    repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 2 }] }
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let row (flag : String) := Lean.Json.mkObj [("Flag", .str flag), ("Out", .str "9"), ("After", .str "9")]
+  let input ← (readDocument { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (Lean.Json.mkObj [("Form", Lean.Json.mkObj [("Rows", .arr #[row "123", row second])])])).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let matched := "[Rows/Flag] PatternMatched \"[0-9]+\""
+  let consumer : DmComputation := {
+    name := "Consumer", group := ["Form"], targetRelPath := "../Rows/Out"
+    commonPrecondition := if alternatives then none else some matched
+    alternatives := if alternatives then [
+      { precondition := some matched, operation := "1" },
+      { precondition := some "[Rows/Flag] PatternViolated \"[0-9]+\"", operation := "2" }]
+      else [{ precondition := none, operation := "1" }]
+    errorCodesToSuppress := [] }
+  let dependent : DmComputation := {
+    name := "Dependent", group := ["Form"], targetRelPath := "../Rows/After"
+    commonPrecondition := none, alternatives := [{ precondition := none, operation := "[Rows/Out] + 1" }]
+    errorCodesToSuppress := [] }
+  let producer : DmComputation := {
+    name := "Producer", group := ["Form"], targetRelPath := "../Rows/Flag"
+    commonPrecondition := none, alternatives := [{ precondition := none, operation := "\"123\"" }]
+    errorCodesToSuppress := [] }
+  let steps ← ([consumer, dependent] ++ if fresh then [producer] else []).mapM fun definition =>
+    (lowerComputation model .english definition).toOption.map (·.2)
+  pure ((← (runComputations world prepared checked steps).toOption).map (·.outcome))
+
+example : patternRows "x" = some ["value 1", "cleared", "value 2", "value 1"] ∧
+    patternRows "long" = some ["value 1", "cleared", "value 2", "cleared"] ∧
+    patternRows "long" true = some ["value 123", "value 1", "value 1", "value 2", "value 2"] ∧
+    patternRows "x" false true = some ["value 1", "value 2", "value 2", "value 3"] := by native_decide
+
 end A12Kernel.Dm.ComputationPredicateGuardLocks

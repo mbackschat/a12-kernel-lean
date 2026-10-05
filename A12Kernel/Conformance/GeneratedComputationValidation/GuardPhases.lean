@@ -52,6 +52,64 @@ example : (do
     pure (selected, outcome)) = some (.poison .malformed, .fired (expectedMessage .value)) := by
   native_decide
 
+private def patternPhases (op : StringPatternOp) (rawText : RawCell)
+    (healthyBranch : Bool := true) (pattern : String := "[0-9]+")
+    (compiler : StringPatternCompiler := builtinStringPatternCompiler) := do
+  let predicate ← (model.elaborateComputationPredicate ["Form"] ["Form"]
+    (.pattern { field := absolutePath ["Form"] "TextGuard", op, source := pattern }) compiler).toOption
+  let guard : CheckedComputationCondition model :=
+    .or (.leaf (.predicate predicate)) (.fieldFilled gate.id)
+  let operation ← (elaborateNumericComputationOperation model ["Form"] target.id
+    (.literal { value := 3, authoredScale := 0 })).toOption
+  let table : GeneratedComputationTable (CheckedNumericComputationOperation model) (CheckedComputationCondition model) := {
+    targetField := target.id, name := "computedTarget", commonPrecondition := some guard
+    alternatives := .singleton { operation }, messagePlan }
+  let rule ← (assembleGeneratedNumericOperationTableRule model table).toOption
+  let prepared ← (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler model).toOption
+  let raw : RawFlatContext := { read := fun field =>
+    if field == textGuard.id then rawText
+    else if field == target.id || (healthyBranch && field == gate.id) then .parsed (.num 1) else .empty }
+  let selected ← (guard.evalChecked { read := (model.checkContext raw).read }).toOption
+  let outcome ← (rule.evalFull prepared "en_US" raw GroupPresenceContext.unavailable true).toOption
+  pure (selected, outcome)
+
+example : ([.matched, .violated] : List StringPatternOp).all (fun op =>
+    patternPhases op (.rejected .malformed) ==
+      some (.poison .malformed, .fired (expectedMessage .value))) = true := by native_decide
+
+private def exactXCompiler : StringPatternCompiler := fun source =>
+  if source == "x" then some (fun value => value == "x") else none
+
+example : patternPhases .matched (.parsed (.str "x")) false "x" exactXCompiler =
+    some (.holds, .fired (expectedMessage .value)) ∧
+    patternPhases .violated (.parsed (.str "x")) false "x" exactXCompiler =
+    some (.notTrue, .notFired) ∧
+    patternPhases .violated .empty false = some (.notTrue, .notFired) := by native_decide
+
+private def customPatternRefusal : Bool :=
+  let source := { model with fields := model.fields.map fun field =>
+    if field.id == textGuard.id then { field with customType := some { name := "HostType" } }
+    else field }
+  match (do
+    let predicate ← (source.elaborateComputationPredicate ["Form"] ["Form"]
+      (.pattern { field := absolutePath ["Form"] "TextGuard", op := .matched, source := "[0-9]+" })).toOption
+    let operation ← (elaborateNumericComputationOperation source ["Form"] target.id
+      (.literal { value := 3, authoredScale := 0 })).toOption
+    let table : GeneratedComputationTable (CheckedNumericComputationOperation source) (CheckedComputationCondition source) := {
+      targetField := target.id, name := "computedTarget", commonPrecondition := some (.leaf (.predicate predicate))
+      alternatives := .singleton { operation }, messagePlan }
+    pure (match assembleGeneratedNumericOperationTableRule source table with
+      | .error .patternGuardRequiresOrdinaryValidation => true
+      | _ => false)) with
+  | some result => result
+  | none => false
+
+example : customPatternRefusal = true ∧
+    ((elaborateComputationStringPattern builtinStringPatternCompiler repeatableModel
+      ["Form", "Rows"] ["Form", "Rows"] {
+        field := absolutePath ["Form", "Rows"] "Code", op := .matched, source := "[0-9]+" }).toOption.map
+      fun checked => (checked.toOrdinaryValidation? ["Form", "Rows"]).isNone) = some true := by native_decide
+
 private def comparisonModel : FlatModel := { model with fields := model.fields ++ [
   { id := 7, groupPath := ["Form"], name := "B1", policy := { kind := .boolean } },
   { id := 8, groupPath := ["Form"], name := "B2", policy := { kind := .boolean } },

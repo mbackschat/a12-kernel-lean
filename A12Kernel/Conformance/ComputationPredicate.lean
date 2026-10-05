@@ -158,4 +158,62 @@ example : [number, FieldKind.string].all (fun kind =>
     filteredRun kind .notAll 3 == some (.poison .declaredConstraint) &&
     filteredRun kind .atLeastOne 0 true == some (.poison .malformed)) := by native_decide
 
+private def pattern (op : StringPatternOp) : SurfaceComputationPredicate :=
+  .pattern { op, field := path "A", source := "[0-9]+" }
+
+example : [false, true].all (fun repeated =>
+    run .string repeated (pattern .matched) (context .string (.parsed (.str "123")) .empty) == some .holds &&
+    run .string repeated (pattern .violated) (context .string (.parsed (.str "123")) .empty) == some .notTrue &&
+    run .string repeated (pattern .matched) (context .string (.parsed (.str "x123")) .empty) == some .notTrue &&
+    run .string repeated (pattern .violated) (context .string (.parsed (.str "x123")) .empty) == some .holds) := by native_decide
+
+example : [StringPatternOp.matched, .violated].all (fun op =>
+    run .string true (pattern op) (context .string .empty .empty) == some .notTrue &&
+    run .string true (pattern op) (context .string .presentEmpty .empty) == some .notTrue &&
+    run .string true (pattern op) (context .string (.rejected .malformed) .empty) == some (.poison .malformed) &&
+    (run number true (pattern op) (context number (.parsed (.num 123)) .empty)).isNone) := by native_decide
+
+example : (((model .string true).elaborateComputationPredicate ["Form"] ["Form", "Rows"]
+    (pattern .matched)).toOption.map fun checked =>
+      (checked.referencesField 1, checked.referencesField 2, checked.rowBoundBool [10], checked.rowBoundBool [])) =
+    some (true, false, true, false) := by native_decide
+
+private def patternCompiler : StringPatternCompiler := fun source =>
+  if source == "x" then some (· == "x")
+  else if source == "" then some String.isEmpty
+  else if source == "x++" then some (fun text => !text.isEmpty && text.toList.all (· == 'x'))
+  else none
+
+private def hostPattern (op : StringPatternOp) (source : String) :=
+  (model .string true).elaborateComputationPredicate ["Form"] ["Form", "Rows"]
+    (.pattern { op, field := path "A", source }) patternCompiler
+
+example : ((hostPattern .matched "x").toOption.bind fun checked =>
+    (checked.evalChecked (context .string (.parsed (.str "x")) .empty)).toOption) = some .holds ∧
+    ((hostPattern .violated "").toOption.bind fun checked =>
+      (checked.evalChecked (context .string (.parsed (.str "x")) .empty)).toOption) = some .holds ∧
+    ((hostPattern .violated "").toOption.bind fun checked =>
+      (checked.evalChecked (context .string .empty .empty)).toOption) = some .notTrue := by native_decide
+
+example : ((match hostPattern .matched "*" with
+    | .error (.pattern (.pattern .javaSyntax)) => true | _ => false) : Bool) = true ∧
+    ((match hostPattern .matched "x++" with
+    | .error (.pattern (.pattern .kernelRestriction)) => true | _ => false) : Bool) = true := by native_decide
+
+private def patternProfile (raw custom : Bool) :
+    Except ComputationPredicateElabError (Option ComputationConditionResult) := do
+  let fixture := model .string true
+  let fixture : FlatModel := { fixture with fields := fixture.fields.map fun field =>
+    if field.id == 1 then { field with
+      stringValueMode := if raw then .raw else .evaluated
+      stringPolicy := { lineBreaksPermitted := raw }
+      customType := if custom then some { name := "HostType" } else none }
+    else field }
+  let checked ← fixture.elaborateComputationPredicate ["Form"] ["Form", "Rows"] (pattern .matched)
+  pure (checked.evalChecked (context .string (.parsed (.str "123")) .empty)).toOption
+
+example : ((match patternProfile true false with
+    | .error (.pattern (.field (.resolve (.rawFieldValueRead _)))) => true | _ => false) : Bool) = true ∧
+    (patternProfile false true).toOption = some (some .holds) := by native_decide
+
 end A12Kernel.Conformance.ComputationPredicate

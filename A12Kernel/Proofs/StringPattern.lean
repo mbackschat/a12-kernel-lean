@@ -7,6 +7,30 @@ These laws concern consumption of an already-admitted whole-value matcher. Java 
 
 namespace A12Kernel
 
+/-- Forgetting the computation's retained poison cause yields the same resolved pattern verdict. -/
+theorem stringPattern_evalComputation_bridge (op : StringPatternOp)
+    (matcher : String → Bool) (operand : SimpleComparisonOperand String) :
+    (match op.evalComputationResolved matcher operand with
+      | .holds => Verdict.fired .value
+      | .notTrue => .notFired
+      | .poison _ => .unknown) = op.evalResolved matcher operand := by
+  cases operand with
+  | notEvaluated => rfl
+  | unknown cause => rfl
+  | value actual given =>
+      cases outcome : op.acceptsMatchResult (matcher actual) <;>
+        simp [StringPatternOp.evalComputationResolved, StringPatternOp.evalResolved, outcome]
+
+theorem stringPattern_evalComputation_poison_iff (op : StringPatternOp)
+    (matcher : String → Bool) (operand : SimpleComparisonOperand String) (cause : FormalCause) :
+    op.evalComputationResolved matcher operand = .poison cause ↔ operand = .unknown cause := by
+  cases operand with
+  | notEvaluated => simp [StringPatternOp.evalComputationResolved]
+  | unknown actual => simp [StringPatternOp.evalComputationResolved]
+  | value actual given =>
+      cases outcome : op.acceptsMatchResult (matcher actual) <;>
+        simp [StringPatternOp.evalComputationResolved, outcome]
+
 @[simp]
 theorem stringPattern_evalResolved_notEvaluated
     (op : StringPatternOp) (wholeValueMatches : String → Bool) :

@@ -8,6 +8,7 @@ import A12Kernel.Elaboration.ComputationOverlap
 import A12Kernel.Elaboration.ComputationFieldFill
 import A12Kernel.Elaboration.ValuesNotUniqueCondition
 import A12Kernel.Elaboration.CustomFieldValidity
+import A12Kernel.Elaboration.ComputationStringPattern
 
 namespace A12Kernel
 
@@ -18,6 +19,7 @@ inductive SurfaceScalarMembershipMembers where
   deriving Repr, DecidableEq
 
 inductive SurfaceComputationPredicate where
+  | pattern (source : SurfaceStringPatternCondition)
   | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceConstructedDateComponents)
   | typeValidity (operation : CustomFieldValidityOp) (source : SurfaceFieldPath) (name : String)
   | stringExpression (operator : EqualityOp) (left right : StringExpr SurfaceFieldPath)
@@ -33,6 +35,7 @@ inductive SurfaceComputationPredicate where
   | scalarOverlap (source : SurfaceAtLeastOneDateRangeOverlapsSource)
 
 inductive ComputationPredicateElabError where
+  | pattern (error : ComputationStringPatternElabError)
   | typeOperand (error : CustomFieldValidityOperandElabError)
   | typeName (error : CustomFieldValidityElabError)
   | stringExpression (error : StringComputationElabError)
@@ -65,6 +68,7 @@ inductive ComputationPredicateError where
 /-- Retain typed source certificates and authored filters; computation traversal keeps reached
 errors distinct from validation's unknown verdict. -/
 inductive CheckedComputationPredicate (model : FlatModel) where
+  | pattern (source : CheckedComputationStringPattern model)
   | dateValidity (operation : ConstructedDateValidityOp) (source : CheckedConstructedDateComponents model)
   | typeValidity (operation : CustomFieldValidityOp)
       (source : CheckedCustomFieldValidityOperand model) (name : String)
@@ -83,6 +87,7 @@ namespace CheckedComputationPredicate
 
 def referencesField (predicate : CheckedComputationPredicate model) (field : FieldId) : Bool :=
   match predicate with
+  | .pattern source => source.source.referencesField field
   | .dateValidity _ source => source.fields.contains field
   | .typeValidity _ source _ => source.source == field
   | .stringExpression source => source.referencesField field
@@ -96,6 +101,7 @@ def referencesField (predicate : CheckedComputationPredicate model) (field : Fie
 
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
   match predicate with
+  | .pattern source => source.source.declarations.all (·.repeatableScope.isPrefixOf scope)
   | .dateValidity _ source => source.fields.all (fun field => (model.fieldRepeatableScope field).isPrefixOf scope)
   | .typeValidity _ source _ => source.declaration.repeatableScope.isPrefixOf scope
   | .stringExpression source => source.declarations.all (·.repeatableScope.isPrefixOf scope)
@@ -293,6 +299,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   let filterRead := filterRead?.getD (fun row field =>
     (context.addressed.map (fun addressed => addressed.read row field)).getD (context.read field))
   match predicate with
+  | .pattern source => (source.eval { read := context.read }).mapError .stringExpression
   | .dateValidity operation source => do
       let observation ← (source.evaluateComponentsWith (fun component =>
         component.readWith .computation context.read context.storedText context.world) >>= source.applyProfileReality)
@@ -370,9 +377,12 @@ private def elaborateEntityMembership (model : FlatModel) (declaringGroup target
         (targetGroup? := some targetGroup)).mapError .token
 
 def FlatModel.elaborateComputationPredicate (model : FlatModel)
-    (declaringGroup targetGroup : GroupPath) (surface : SurfaceComputationPredicate) :
+    (declaringGroup targetGroup : GroupPath) (surface : SurfaceComputationPredicate)
+    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
     Except ComputationPredicateElabError (CheckedComputationPredicate model) := do
   match surface with
+  | .pattern source => CheckedComputationPredicate.pattern <$>
+      (elaborateComputationStringPattern compilePattern model declaringGroup targetGroup source).mapError .pattern
   | .dateValidity operation source => do
       let checked ← (elaborateConstructedDateSources model source
         (model.repeatableScopeForGroupPath targetGroup)).mapError (fun error => .temporal (.dateComponents error))
