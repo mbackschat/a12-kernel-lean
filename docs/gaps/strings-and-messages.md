@@ -138,6 +138,7 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 - `prerequisite`: reuse addressed operands, kept-successor traversal, repeatable expansion, and checked RNU topology. Audit dynamic domain ownership before widening.
 - `consumer`: Execute and Transform require positional categories, union admission, many-to-one identity, and directional empty or unknown behavior.
 - `completion-gate`: every legal declaration profile, projection, domain rule, repeated access, value-list operation, and uniqueness use is checked with display, domain, and category distinctions preserved.
+- `remaining`: Category-literal computation filters now share the checked ordinary projection, including captured/current-row selection and producer overlays ([owner](../implementation/strings-and-enumerations.md#cap-enumeration-identity-and-categories)). Text field-to-field filters, indexed filter references and broader runtime calibration remain open; the entity-list category-class obligations above are unchanged.
 - `route-state`: discovery-required
 
 <a id="gap-sg10"></a>

@@ -49,12 +49,22 @@ structure HavingNumberRef where
   field : FlatNumberField
   deriving Repr, DecidableEq
 
-/-- A String filter reference. Its own kind is carried here rather than being widened out of the
-    numeric reference, because the two resolve through different operand domains. -/
+/-- A text filter reference retains its domain because String empty-literal suppression and
+    Enumeration projection use distinct comparison semantics. -/
 structure HavingStringRef where
   origin : HavingOrigin
-  field : FlatStringField
+  operand : FlatTextFieldOperand
   deriving Repr, DecidableEq
+
+def HavingStringRef.field (reference : HavingStringRef) : FlatField := reference.operand.field
+
+/-- Direct String comparison suppresses an empty literal; Enumeration comparisons retain their
+checked projection's literal domain (`FlatComparison`'s separate String/Enumeration branches). -/
+def HavingStringRef.compareResolved (reference : HavingStringRef)
+    (value : SimpleComparisonOperand String) (op : EqualityOp) (expected : String) : Verdict :=
+  match reference.operand with
+  | .string _ => value.evalDirectString op expected
+  | .enumeration _ => op.evalSimple (· == ·) value expected
 
 /-- A presence filter reference. Presence reads only whether a cell carries a value, so it is
     kind-neutral and needs the field id alone rather than a typed field. -/
@@ -317,24 +327,25 @@ def HavingNumberRef.resolveInAtResolving (reference : HavingNumberRef)
     | .value amount _ => .value amount
     | .unknown cause => .unknown cause)
 
-/-- Resolve one String filter reference through the selected environment and phase. There are no
-    empty String values, so an absent and a present-empty cell both arrive as `notEvaluated` and
-    neither can satisfy an equality; formal invalidity keeps its cause. -/
+/-- Resolve text through the selected environment and phase using its owning domain's observation
+    projection, preserving unavailable values and formal invalidity. -/
 def HavingStringRef.resolveInAt (reference : HavingStringRef) (phase : Phase)
     (context : CorrelationContext) (frame : CorrelationFrame) :
     SimpleComparisonOperand String :=
   let rowContext : FlatContext :=
     { read := context.read (frame.envAt reference.origin) }
-  rowContext.resolveStringComparisonOperandAt phase reference.field
+  match reference.operand with
+  | .string field => rowContext.resolveStringComparisonOperandAt phase field
+  | .enumeration operand => operand.projection.resolveOperand (rowContext.observeAt phase operand.field.id)
 
-/-- Resolve the same String reference without collapsing a structural addressed-read failure into a formal cell observation. -/
+/-- Resolve the same text reference without collapsing a structural addressed-read failure into a formal cell observation. -/
 def HavingStringRef.resolveInAtResolving (reference : HavingStringRef)
     (phase : Phase) (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) :
     Except Error (SimpleComparisonOperand String) := do
   let cell ← context.read (frame.envAt reference.origin) reference.field.id
   let rowContext : FlatContext := { read := fun _ => cell }
-  pure (rowContext.resolveStringComparisonOperandAt phase reference.field)
+  pure (reference.resolveInAt phase { read := fun _ => rowContext.read } frame)
 
 /-- Observe one presence reference's cell at a chosen phase. Presence needs the observation itself,
     not a comparison operand, so it reads the phase view directly. -/
@@ -453,7 +464,7 @@ def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
         (comparison.evalWith (HavingNumericAtom.readValidation context frame))
   | .compareStringLiteral op reference expected =>
       CorrelatedHavingLeaf.verdictTruth
-        ((reference.resolveInAt .validation context frame).evalDirectString op expected)
+        (reference.compareResolved (reference.resolveInAt .validation context frame) op expected)
   | .presence polarity reference =>
       CorrelatedHavingLeaf.verdictTruth
         (polarity.evalObservation (reference.observeInAt .validation context frame))
@@ -475,7 +486,7 @@ def CorrelatedHavingLeaf.evalTruthInResolving
           NumericComparisonOf (Except Unit NumericArithmeticOutcome)).evalWith id))
   | .compareStringLiteral op reference expected => do
       pure (CorrelatedHavingLeaf.verdictTruth
-        ((← reference.resolveInAtResolving .validation context frame).evalDirectString
+        (reference.compareResolved (← reference.resolveInAtResolving .validation context frame)
           op expected))
   | .presence polarity reference => do
       pure (CorrelatedHavingLeaf.verdictTruth
@@ -503,7 +514,7 @@ def CorrelatedHavingLeaf.evalComputationIn (context : CorrelationContext)
       | .unknown cause => .poison cause
       | .notEvaluated => .notTrue
       | .value actual given =>
-          match (SimpleComparisonOperand.value actual given).evalDirectString op expected with
+          match reference.compareResolved (.value actual given) op expected with
           | .fired _ => .holds
           | _ => .notTrue
   | .presence polarity reference =>
@@ -534,7 +545,7 @@ def CorrelatedHavingLeaf.evalComputationInResolving
       | .notEvaluated => pure .notTrue
       | .value actual given =>
           pure (match
-              (SimpleComparisonOperand.value actual given).evalDirectString op expected with
+              reference.compareResolved (.value actual given) op expected with
             | .fired _ => .holds
             | _ => .notTrue)
   | .presence polarity reference => do
@@ -675,7 +686,7 @@ def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
         comparison.op.evalArithmeticWith left right = .fired messagePolarity
   | .compareStringLiteral op reference expected =>
       ∃ messagePolarity,
-        (reference.resolveInAt .validation context frame).evalDirectString op expected
+        reference.compareResolved (reference.resolveInAt .validation context frame) op expected
           = .fired messagePolarity
   | .presence polarity reference =>
       ∃ messagePolarity,

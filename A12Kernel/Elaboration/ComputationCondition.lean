@@ -195,11 +195,9 @@ private def FlatModel.elaborateComputationTextGuard (model : FlatModel)
     | .inr expected => match leftOperand with
         | .string field => pure (.string equality field expected)
         | .enumeration operand =>
-            let some source := declaration.enumeration | throw .incoherentCore
-            let .ok checked := elaborateEnumeration source | throw .incoherentCore
-            match classifyEnumerationLiteral checked operand.projectionRef equality expected with
-            | .rejected error => throw (.enumerationOperand declaration.path error)
-            | .accepted projection => pure (.enumeration equality { operand with projection } expected)
+            let .compare comparison ← elaborateEnumerationCore declaration op operand.projectionRef expected
+              | throw .incoherentCore
+            pure comparison
   if model.admitsTextComparisonIn (model.repeatableScopeForGroupPath targetGroup) comparison then
     pure (.leaf (.text comparison))
   else throw .incoherentCore

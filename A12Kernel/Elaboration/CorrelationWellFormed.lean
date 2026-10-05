@@ -95,17 +95,15 @@ private def FlatModel.admitsHavingNumberInEnvironment (model : FlatModel)
         repeatableScopeAvailable declaration.repeatableScope
           (reference.origin.availableLevels candidateLevels outerLevels)
 
-/-- The String counterpart. It uses the model-owned String **value** projection, so a raw-mode
-    String declaration is refused here exactly as it is at every other checked String consumer. -/
+/-- Recheck the model-owned text projection and literal domain so a forged filter cannot bypass
+    the same admission used by ordinary comparisons. -/
 private def FlatModel.admitsHavingStringInEnvironment (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel)
-    (reference : HavingStringRef) : Bool :=
-  match model.lookupUniqueId reference.field.id with
-  | .error _ => false
-  | .ok declaration =>
-      declaration.toStringValueField? == some reference.field &&
-        repeatableScopeAvailable declaration.repeatableScope
-          (reference.origin.availableLevels candidateLevels outerLevels)
+    (reference : HavingStringRef) (op : EqualityOp) (expected : String) : Bool :=
+  let comparison := match reference.operand with
+    | .string field => FlatComparison.string op field expected
+    | .enumeration operand => FlatComparison.enumeration op operand expected
+  model.admitsTextComparisonIn (reference.origin.availableLevels candidateLevels outerLevels) comparison
 
 def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) :
@@ -113,8 +111,8 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
   | .numeric comparison => comparison.havingAdmitted fun
       | .field reference => model.admitsHavingNumberInEnvironment candidateLevels outerLevels reference
       | .repetition reference => reference.availableIn model candidateLevels outerLevels
-  | .compareStringLiteral _ reference _ =>
-      model.admitsHavingStringInEnvironment candidateLevels outerLevels reference
+  | .compareStringLiteral op reference expected =>
+      model.admitsHavingStringInEnvironment candidateLevels outerLevels reference op expected
   | .presence _ reference =>
       match model.lookupUniqueId reference.field with
       | .error _ => false

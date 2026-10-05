@@ -707,7 +707,7 @@ private def presenceAt (origin : HavingOrigin) : CorrelatedHaving :=
 
 private def stringAt (origin : HavingOrigin) : CorrelatedHaving :=
   CorrelatedHaving.compareStringLiteral .equal
-    { origin, field := { id := marker.id } } "K"
+    { origin, operand := .string { id := marker.id } } "K"
 
 /-- Candidate row 1's operand is empty and captured row 9's is filled, so only the outer-origin
     presence leaf holds. -/
@@ -757,7 +757,7 @@ example :
 
 private def stringHaving (expected : String) : CorrelatedHaving :=
   CorrelatedHaving.compareStringLiteral .equal
-    { origin := .inner, field := { id := marker.id } } expected
+    { origin := .inner, operand := .string { id := marker.id } } expected
 
 private def textCell (value : String) : CheckedCell :=
   { rawPresent := true, parsed := some (.str value), findings := [] }

@@ -5,7 +5,8 @@ import A12Kernel.Elaboration.Flat.FieldValueRead
 
 namespace A12Kernel
 
-private def elaborateEnumerationCore (declaration : FlatFieldDecl)
+/-- Share projection and literal-domain admission across ordinary comparisons, guards and filters. -/
+def elaborateEnumerationCore (declaration : FlatFieldDecl)
     (op : SurfaceComparisonOp) (projectionRef : EnumerationProjectionRef)
     (expected : String) : Except ElabError FlatCondition := do
   let equality ← match op.toEquality? with

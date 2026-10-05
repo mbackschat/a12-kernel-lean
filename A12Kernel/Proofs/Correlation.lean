@@ -386,10 +386,9 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
           cases verdict : comparison.op.evalArithmeticWith l r <;>
             simp [CorrelatedHavingLeaf.verdictTruth, verdict]
       | compareStringLiteral op reference expected =>
-          -- The String leaf's truth is a projection of the shared direct-String verdict, so the
-          -- bridge is decided by that verdict alone rather than by the operand's own cases.
+          -- Both text domains use the same verdict-to-truth projection in evalTruthIn and HoldsIn.
           cases verdict :
-              (reference.resolveInAt .validation context frame).evalDirectString op expected <;>
+              reference.compareResolved (reference.resolveInAt .validation context frame) op expected <;>
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
               CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
               CorrelatedHavingLeaf.verdictTruth, verdict]

@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Elaboration.ValidationCondition.Reference
 
 /-! # Computation predicate guard composition
 
@@ -146,5 +147,128 @@ example : [false, true].all (fun enumeration =>
       capturedMembership enumeration guard == some ["cleared", "value 1", "value 1", "value 2"] &&
       capturedMembership enumeration guard "bad" == some ["cleared", "cleared", "value 1", "cleared"] &&
       capturedMembership enumeration guard "0" == some ["cleared", "cleared", "value 1", "value 1"]) := by native_decide
+
+private def categoryDomain : EnumerationDeclaration := {
+  storedTokens := ["A", "B"]
+  categories := [{ name := "Kind", tokens := ["X", "Y"] }] }
+
+private def categoryModel : FlatModel := {
+  fields := [
+    { id := 1, name := "Code", groupPath := ["Form"], policy := { kind := .enumeration }, enumeration := some categoryDomain },
+    { id := 2, name := "Code", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .enumeration }, enumeration := some categoryDomain },
+    { id := 3, name := "Qty", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 4, name := "Out", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 5, name := "Out", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .number { scale := 0, signed := true } } }]
+  repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 2 }] }
+
+private def categoryRun (operation : String) (guard : Option String := none)
+    (fresh : Bool := false) (rowTarget : Bool := false) (secondCode : String := "B") : Option (List String) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler categoryModel).toOption
+  let dm : DmModel := { flat := categoryModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Lean.Json.mkObj [("Form", Lean.Json.mkObj [
+    ("Code", .str "A"), ("Out", .str "0"), ("Rows", .arr #[
+      Lean.Json.mkObj [("Code", .str "A"), ("Qty", .str "2"), ("Out", .str "0")],
+      Lean.Json.mkObj [("Code", .str secondCode), ("Qty", .str "7"), ("Out", .str "0")]])])])).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let consumer : DmComputation := {
+    name := "Consumer", group := ["Form"], targetRelPath := if rowTarget then "../Rows/Out" else "../Out", commonPrecondition := guard,
+    alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }
+  let producer : DmComputation := {
+    name := "Producer", group := ["Form"], targetRelPath := "../Rows/Code", commonPrecondition := none,
+    alternatives := [{ precondition := none, operation := "\"A\"" }], errorCodesToSuppress := [] }
+  let steps ← (consumer :: if fresh then [producer] else []).mapM fun definition =>
+    (lowerComputation categoryModel .english definition).toOption.map (·.2)
+  pure ((← (runComputations world prepared checked steps).toOption).map (·.outcome))
+
+example : categoryModel.validate.isOk = true := by native_decide
+example : categoryRun "1" (some "[Code -> Kind] == \"X\"") = some ["value 1"] := by native_decide
+example : categoryRun "Sum(Rows*/Qty Having [Rows/Code -> Kind] == \"X\")" = some ["value 2"] := by native_decide
+example : categoryRun "NumberOfFilledFields(Rows*/Qty Having [Rows/Code -> Kind] == \"Y\")" = some ["value 1"] := by native_decide
+example : categoryRun "Sum(Rows*/Qty Having [Rows/Code -> Kind] == \"X\")" none true =
+    some ["value A", "value 9"] := by native_decide
+
+example : categoryRun "Sum(Rows*/Qty Having \"X\" == [Rows/Code -> Kind])" =
+    some ["value 2"] ∧
+    categoryRun "Sum(Rows*/Qty Having \"X\" != [Rows/Code -> Kind])" =
+      some ["value 7"] := by native_decide
+
+example : ["[Rows/Code -> Kind] == \"A\"", "[Rows/Code -> Missing] == \"X\"",
+    "[Rows/Qty -> Kind] == \"X\""].all (fun predicate =>
+      (categoryRun s!"Sum(Rows*/Qty Having {predicate})").isNone) = true := by native_decide
+
+example : categoryRun "Sum(Rows*/Qty Having [Rows/Code] == \"A\")" = some ["value 2"] ∧
+    categoryRun "Sum(Rows*/Qty Having [Rows/Code -> Kind] == \"X\")" none false false "bad" =
+      some ["cleared"] ∧
+    categoryRun "Sum(Rows*/Qty Having [Rows/Code -> Kind] == \"X\")" none false false "" =
+      some ["value 2"] := by native_decide
+
+example : categoryRun "Sum(Rows*/Qty Having ([Rows/Code -> Kind] == \"X\" Or [$Rows/Code -> Kind] == \"Y\"))"
+    none false true = some ["value 2", "value 9"] ∧
+    categoryRun "1" (some "[Rows/Code -> Kind] == \"X\"") false true =
+      some ["value 1", "cleared"] := by native_decide
+
+private def categoryCertificate (literal : String) (projectionRef : EnumerationProjectionRef)
+    (origin : HavingOrigin) (outerLevels : List RepeatableLevel) : Option Bool := do
+  let declaration ← categoryModel.fields[1]?
+  let .compare (.enumeration _ operand _) ←
+    (elaborateEnumerationCore declaration .equal (.category "Kind") "X").toOption | none
+  let condition := CorrelatedHaving.compareStringLiteral .equal
+    { origin, operand := .enumeration { operand with projectionRef } } literal
+  pure (condition.wellFormedForEnvironments categoryModel [10] outerLevels)
+
+example : categoryCertificate "X" (.category "Kind") .inner [] = some true ∧
+    categoryCertificate "A" (.category "Kind") .inner [] = some false ∧
+    categoryCertificate "X" .stored .inner [] = some false ∧
+    categoryCertificate "A" .stored .inner [] = some false ∧
+    categoryCertificate "X" (.category "Kind") .outer [] = some false ∧
+    categoryCertificate "X" (.category "Kind") .outer [10] = some true := by native_decide
+
+example : CorrelationElabError.diagnostic?
+    (.text (.enumerationOperand ["Form", "Rows", "Code"] (.invalidLiteral "A"))) =
+      some .invalidStringConstantForEnumComparison := rfl
+
+private def categoryPointers : Option (List MessagePointer) := do
+  let leaf (origin : HavingOrigin) := SurfaceCorrelatedHaving.compareStrings .equal
+    { origin, field := { base := .absolute, groups := ["Form", "Rows"], field := "Code" }
+      projectionRef := .category "Kind" } "X"
+  let source ← (elaborateTokenValueCountSource categoryModel ["Form", "Rows"] "A" {
+    first := .starHaving
+      { base := .absolute, groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+        field := "Code" } .stored (.and (leaf .inner) (leaf .outer))
+    rest := [] }).toOption
+  (source.referencePointers [(10, 2)]).toOption
+
+example : categoryPointers = some [
+    { field := 2, coordinates := [.wildcard] },
+    { field := 2, coordinates := [.wildcard] },
+    { field := 2, coordinates := [.concrete 2] }] := by native_decide
+
+private def categoryReadError (kind : FieldKind) (projectionRef : EnumerationProjectionRef)
+    (stringValueMode : StringValueMode := .evaluated) : Option CorrelationElabError :=
+  let model := { categoryModel with fields := categoryModel.fields.map fun declaration =>
+    if declaration.id == 2 then
+      { declaration with
+        policy := { kind }
+        enumeration := none
+        stringValueMode := stringValueMode
+        stringPolicy := { lineBreaksPermitted := kind == .string } }
+    else declaration }
+  let checked : Except CorrelationElabError CorrelatedHaving := do
+    let star ← (elaborateStarFieldPath model ["Form"]
+      { base := .absolute, groups := [{ name := "Form" }, { name := "Rows", starred := true }]
+        field := "Qty" }).mapError fun _ => .incoherentCore
+    pure (← elaborateStarHavingCore model ["Form"] star (.compareStrings .equal
+      { origin := .inner, field := { base := .absolute, groups := ["Form", "Rows"], field := "Code" }, projectionRef }
+      "X")).condition
+  match checked with | .error error => some error | .ok _ => none
+
+example : categoryReadError .string (.category "Kind") .raw =
+    some (.resolve (.categoryReadOfNonEnumeration ["Form", "Rows", "Code"])) ∧
+    categoryReadError (.temporal .date { TemporalComponents.fullDate with day := false }) (.category "Kind") =
+      some (.resolve (.categoryReadOfNonEnumeration ["Form", "Rows", "Code"])) ∧
+    categoryReadError .string .stored .raw =
+      some (.resolve (.rawFieldValueRead ["Form", "Rows", "Code"])) ∧
+    categoryReadError .string .stored = none := by native_decide
 
 end A12Kernel.Dm.ComputationPredicateGuardLocks

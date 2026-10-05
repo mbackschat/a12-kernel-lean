@@ -78,11 +78,14 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
   | .compare op left right => do
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
       match left, right with
-      | .value { path, index := none, category := none }, .string expected =>
+      | .value { path, index := none, category }, .string expected
+      | .string expected, .value { path, index := none, category } =>
           if isTemporalConstant expected then refuse "Having" "temporal constant" else
           match path.havingField?, surfaceOp with
-          | some (origin, field), .equal => pure (.compareStrings .equal { origin, field } expected)
-          | some (origin, field), .notEqual => pure (.compareStrings .notEqual { origin, field } expected)
+          | some (origin, field), .equal => pure (.compareStrings .equal
+              { origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored } expected)
+          | some (origin, field), .notEqual => pure (.compareStrings .notEqual
+              { origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored } expected)
           | _, _ => refuse "Having" "String comparison"
       | _, _ => pure (.numeric surfaceOp (← lowerNumericExpr lowerHavingNumericAtom (fun _ => refuse "Having" "numeric field form") left)
           (← lowerNumericExpr lowerHavingNumericAtom (fun _ => refuse "Having" "numeric field form") right))

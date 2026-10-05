@@ -152,14 +152,14 @@ private def havingNumberReferencePointer (source : CheckedStarFieldPath model)
     | .error _ => throw (.incoherentHavingField reference.field.id)
   havingFieldPointerFor source environment declaration reference.origin
 
-/-- The String counterpart. Only the coherence projection differs from the numeric reference, so
+/-- The text counterpart. Only the coherence projection differs from the numeric reference, so
     the pointer choice itself stays in one place. -/
 private def havingStringReferencePointer (source : CheckedStarFieldPath model)
     (environment : Env) (reference : HavingStringRef) :
     Except ReferenceProjectionError MessagePointer := do
   let declaration ← match model.lookupUniqueId reference.field.id with
     | .ok declaration =>
-        if declaration.toStringValueField? == some reference.field then
+        if (declaration.textComparisonProfileFor? reference.operand).isSome then
           pure declaration
         else
           throw (.incoherentHavingField reference.field.id)

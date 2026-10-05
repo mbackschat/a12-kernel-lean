@@ -72,7 +72,7 @@ private def nestedLeaves : CorrelatedHaving :=
     (.or
       (CorrelatedHaving.presence .filled { origin := .inner, field := payload.id })
       (CorrelatedHaving.compareStringLiteral .equal
-        { origin := .inner, field := { id := marker.id } } "K"))
+        { origin := .inner, operand := .string { id := marker.id } } "K"))
 
 private def flattenedToConjunction : CorrelatedHaving :=
   .and
@@ -80,7 +80,7 @@ private def flattenedToConjunction : CorrelatedHaving :=
     (.and
       (CorrelatedHaving.presence .filled { origin := .inner, field := payload.id })
       (CorrelatedHaving.compareStringLiteral .equal
-        { origin := .inner, field := { id := marker.id } } "K"))
+        { origin := .inner, operand := .string { id := marker.id } } "K"))
 
 private def flattenedToDisjunction : CorrelatedHaving :=
   .or
@@ -88,7 +88,7 @@ private def flattenedToDisjunction : CorrelatedHaving :=
     (.or
       (CorrelatedHaving.presence .filled { origin := .inner, field := payload.id })
       (CorrelatedHaving.compareStringLiteral .equal
-        { origin := .inner, field := { id := marker.id } } "K"))
+        { origin := .inner, operand := .string { id := marker.id } } "K"))
 
 private def nestedCandidates : List Env :=
   (List.range 4).map fun index => nestedRow (index + 1)
@@ -113,7 +113,7 @@ private def threeLevelNesting : CorrelatedHaving :=
       (CorrelatedHaving.presence .filled { origin := .inner, field := payload.id })
       (.and
         (CorrelatedHaving.compareStringLiteral .equal
-          { origin := .inner, field := { id := marker.id } } "K")
+          { origin := .inner, operand := .string { id := marker.id } } "K")
         (CorrelatedHaving.presence .notFilled { origin := .inner, field := count.id })))
 
 /-- The leftward-associated misreading of the shape above: `(A And B) Or (C And notA)`. -/
@@ -124,7 +124,7 @@ private def threeLevelLeftAssociated : CorrelatedHaving :=
       (CorrelatedHaving.presence .filled { origin := .inner, field := payload.id }))
     (.and
       (CorrelatedHaving.compareStringLiteral .equal
-        { origin := .inner, field := { id := marker.id } } "K")
+        { origin := .inner, operand := .string { id := marker.id } } "K")
       (CorrelatedHaving.presence .notFilled { origin := .inner, field := count.id }))
 
 /- **Bracketing is honoured at three levels, and the depth is what the ladder separates.** The
