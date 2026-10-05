@@ -81,6 +81,13 @@ def Expr.fieldValue? : Expr → Option SurfaceFieldPath
   | .value { path, index := none, category := none } => path.toFieldPath?
   | _ => none
 
+/-- A bracketed stored or category field read, shared by validation and computation membership. -/
+def Expr.textFieldValue? : Expr → Option SurfaceTextFieldOperand
+  | .value { path, index := none, category } => do
+      let field ← path.toFieldPath?
+      pure (match category with | none => .direct field | some name => .category field name)
+  | _ => none
+
 /-- A group in a group slot: a bare path, or `RuleGroup`. -/
 def Expr.groupReference? : Expr → Option SurfaceGroupReference
   | .constant "RuleGroup" => some (.ruleGroup false)

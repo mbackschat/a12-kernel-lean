@@ -65,15 +65,15 @@ private def membership (model : FlatModel) (rowGroup : GroupPath) (op : ValueLis
   | some .enumeration, _ =>
       match stringLiterals? values with
       | some literals => some (.enumerationValueMembership op operand literals)
-      | none => (values.mapM textOperand?).map (.enumerationFieldValueMembership op operand)
+      | none => (values.mapM Expr.textFieldValue?).map (.enumerationFieldValueMembership op operand)
   | some .string, .direct _ =>
       match stringLiterals? values with
       | some literals => some (.stringValueMembership op field literals)
-      | none => (values.mapM Expr.fieldEntity?).map (.stringFieldValueMembership op field)
+      | none => (values.mapM Expr.fieldValue?).map (.stringFieldValueMembership op field)
   | some .number, .direct _ =>
       match integers? values with
       | some numbers => some (.numberValueMembership op field numbers)
-      | none => (values.mapM Expr.fieldEntity?).map (.numberFieldValueMembership op field)
+      | none => (values.mapM Expr.fieldValue?).map (.numberFieldValueMembership op field)
   | _, _ => none
 
 /-- `AtLeastOneFieldValueIncludedInValueList(f1, f2 In v1, v2)`: fields, then after `In` values. -/

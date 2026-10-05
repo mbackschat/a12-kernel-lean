@@ -32,12 +32,6 @@ structure ComputedOutcome where
 instance : ToString ComputedOutcome where
   toString computed := s!"{computed.pointer}={computed.outcome}"
 
-private def guardTextField? : Expr → Option SurfaceTextFieldOperand
-  | .value { path, index := none, category } => do
-      let field ← path.toFieldPath?
-      pure (match category with | none => .direct field | some name => .category field name)
-  | _ => none
-
 private def scalarMembershipOp? : String → Option ValueListMembershipOp
   | "FieldValueIncludedInValueList" => some .included
   | "FieldValueNotIncludedInValueList" => some .notIncluded
@@ -64,7 +58,7 @@ private def lowerScalarMembership (operator : ValueListMembershipOp)
   | some values, _ => pure (.scalarMembership operator subject (.numbers values))
   | _, some values => pure (.scalarMembership operator subject (.tokens values))
   | _, _ =>
-      let some fields := members.mapM guardTextField? | refuse "Guard/Membership" "bracketed members"
+      let some fields := members.mapM Expr.textFieldValue? | refuse "Guard/Membership" "bracketed members"
       pure (.scalarMembership operator subject (.fields fields))
 
 private def lowerPatternGuard (op : StringPatternOp) (left right : Expr) :
@@ -144,8 +138,8 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
             (.fieldComparison op left right))
         | _ => none
       let textPair := do
-        let left ← guardTextField? left
-        let right ← guardTextField? right
+        let left ← Expr.textFieldValue? left
+        let right ← Expr.textFieldValue? right
         let op ← op.toSurface?
         let declaration ← (model.resolveFieldDeclarationUnchecked group left.reference).toOption
         if declaration.toTextFieldComparison?.isSome || left.projectionRef != EnumerationProjectionRef.stored then
