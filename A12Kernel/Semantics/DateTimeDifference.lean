@@ -45,7 +45,7 @@ def difference (first : Instant) (unit : DateTimeSubdayUnit)
 
 end Instant
 
-/-- One runtime sub-day difference operand after phase observation. Static checking has already restricted this boundary to DateTime fields. -/
+/-- One runtime sub-day difference operand after phase observation. Static admission checks temporal formats; runtime values retain exact DateTime instants regardless of the declared temporal kind. -/
 inductive DateTimeDifferenceOperand where
   | empty
   | value (instant : Instant)
