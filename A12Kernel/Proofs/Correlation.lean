@@ -345,6 +345,11 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
               CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
               CorrelatedHavingLeaf.verdictTruth, verdict]
+      | fieldMembership operator source =>
+          cases verdict : source.evalValidation operator (fun origin => context.read (frame.envAt origin)) <;>
+            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
+              CorrelatedHavingLeaf.verdictTruth, verdict]
       | literalMembership origin operator source =>
           cases verdict : source.evalValidation operator (context.read (frame.envAt origin) source.field.id) <;>
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
@@ -799,6 +804,11 @@ theorem correlatedHaving_referencesMarkedField_referencesField
     | compareStringLiteral op reference expected =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
       split at marked <;> simp_all
+    | fieldMembership operator source =>
+      simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds,
+        List.mem_eraseDups, List.mem_map, List.mem_filter] at marked ⊢
+      obtain ⟨ref, ⟨member, _⟩, projected⟩ := marked
+      exact ⟨ref, member, projected⟩
     | literalMembership origin operator source =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
       split at marked <;> simp_all

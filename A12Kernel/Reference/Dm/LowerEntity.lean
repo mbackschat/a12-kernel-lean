@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.LowerFlat
 import A12Kernel.Reference.Dm.LowerCore
 import A12Kernel.Elaboration.IndexKeyShape
 import A12Kernel.Semantics.NumericInput
@@ -62,6 +63,20 @@ private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
       | none => refuse "Having" "CurrentRepetition"
   | other => refuse "Having" other.construct
 
+private def havingMember? : Expr → Option SurfaceHavingDirectFieldOperand
+  | .value { path, index := none, category } => do
+      let (origin, field) ← path.havingField?
+      pure { origin, field, form := category.map FieldEntityReadForm.projected |>.getD .stored }
+  | _ => none
+
+private def havingEntity? : Expr → Option SurfaceHavingDirectFieldOperand
+  | .entity reference => havingMember? (.value reference)
+  | _ => none
+
+private def havingMembers (expressions : List Expr) : Lowering SurfaceHavingDirectFieldSource := do
+  let some (first :: rest) := expressions.mapM havingEntity? | refuse "Having" "direct membership fields"
+  pure { first, rest }
+
 /-- A filter comparison uses the shared numeric expression reader over correlated field and
 repetition atoms. Typed field pairs, Boolean/text literals and presence retain their operand domains. -/
 partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
@@ -71,6 +86,13 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
       let mut result ← lowerHaving first
       for part in rest do result := join result (← lowerHaving part)
       pure result
+  | .call id arguments (some members) none => do
+      let some operator := valueListQuantifier? id | refuse "Having" id
+      let plain (arguments : List Argument) := arguments.mapM fun
+        | .mk expression none none => pure expression
+        | _ => refuse "Having" "direct membership fields"
+      pure (.fieldMembership (.quantified operator)
+        (← havingMembers (← plain arguments)) (← havingMembers (← plain members)))
   | .call id arguments none none => do
       if id == "FieldValueIncludedInValueList" || id == "FieldValueNotIncludedInValueList" then
         let operator := if id == "FieldValueIncludedInValueList" then ValueListMembershipOp.included else .notIncluded
@@ -80,6 +102,10 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
         let values ← rest.mapM fun | .mk expression none none => pure expression | _ => refuse "Having" "membership member"
         let reference : SurfaceHavingStringRef := {
           origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored }
+        if let some (first :: rest) := values.mapM havingMember? then
+          return .fieldMembership (.scalar operator)
+            { first := { origin, field, form := category.map FieldEntityReadForm.projected |>.getD .stored }, rest := [] }
+            { first, rest }
         if let some strings := values.mapM (fun | .string value => some value | _ => none) then
           return .literalMembership operator reference (.inr strings)
         let integers ← values.mapM fun expression => do

@@ -50,6 +50,8 @@ inductive SurfaceCorrelatedHaving where
       project models nowhere, so this is consistency rather than a local narrowing. -/
   | compareStrings (op : EqualityOp) (reference : SurfaceHavingStringRef)
       (expected : String)
+  | fieldMembership (operator : ComputationValueListOperator)
+      (subjects members : SurfaceHavingDirectFieldSource)
   | literalMembership (operator : ValueListMembershipOp) (reference : SurfaceHavingStringRef)
       (values : Sum (List Int) (List String))
   | fieldFill (operator : FieldFillQuantifier) (source : SurfaceHavingDirectFieldSource)
@@ -86,6 +88,8 @@ structure SurfaceSingleCorrelatedRule where
   deriving Repr, DecidableEq
 
 inductive CorrelationElabError where
+  | membershipKind (path : List String)
+  | membershipBaseType (path : List String)
   | fieldFill (error : FieldEntityShapeElabError)
   | text (error : ElabError)
   | resolve (error : ResolveError)
@@ -183,6 +187,8 @@ and [field-reference checkpoint](../../docs/sources/having-filter-probes.md#src-
 The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
+  | .membershipKind _ => some .onlyStringEnumNumberAllowed
+  | .membershipBaseType _ => some .varyingTypesNotAllowed
   | .fieldFill error => error.diagnostic?
   | .dateRangeComponentsMismatch _ _ => some .invalidCompareToDateRange
   | .text (.enumerationOperand _ (.invalidLiteral _)) =>

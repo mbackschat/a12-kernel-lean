@@ -148,6 +148,127 @@ example : run "FieldValueIncludedInValueList($Expected, \"keep\") And [Rows/Tag]
     run "FieldValueNotIncludedInValueList($Expected, \"drop\") And [Rows/Tag] == \"keep\"" true =
       some (.fired .omission, ["value drop", "value 0"]) := by native_decide
 
+private def fieldMembershipFilters : List String := [
+  "FieldValueIncludedInValueList(Rows/Tag, [$Expected])",
+  "FieldValueNotIncludedInValueList(Rows/Tag, [$Expected])",
+  "AtLeastOneFieldValueIncludedInValueList(Rows/Tag In $Expected)",
+  "NoFieldValueIncludedInValueList(Rows/Tag In $Expected)",
+  "NotAllFieldValuesIncludedInValueList(Rows/Tag In $Expected)"]
+
+private def membershipResults : List (Option (Verdict × List String)) := [
+  some (.fired .omission, ["value 9"]), some (.notFired, ["value 5"]),
+  some (.fired .omission, ["value 9"]), some (.notFired, ["value 5"]),
+  some (.notFired, ["value 5"])]
+
+example : fieldMembershipFilters.map (fun filter => run filter) = membershipResults ∧
+    fieldMembershipFilters.map (fun filter => run filter false
+      (.number { scale := 0, signed := true }) "2" "2" "5") = membershipResults ∧
+    fieldMembershipFilters.map (fun filter => run filter false
+      .enumeration "keep" "keep" "drop" (some domain)) = membershipResults := by native_decide
+
+private def membershipDiagnostic (model : FlatModel) (filter : String) : Option (Option KernelStaticDiagnostic) := do
+  let parsed ← (parseText .english filter).toOption
+  let authored ← (lowerHaving parsed.body).toOption
+  let source ← (elaborateStarFieldPath model ["Form"] {
+    base := .relative 0, groups := [{ name := "Rows", starred := true }], field := "N" }).toOption
+  pure (match elaborateStarHavingCore model ["Form"] source authored with
+    | .ok _ => none
+    | .error error => error.diagnostic?)
+
+private def categoryModel : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == 2 || field.id == 3 then
+    { field with policy := { kind := .enumeration }, enumeration := some domain }
+  else field }
+
+example : [
+    "FieldValueIncludedInValueList(Rows/Tag, [$Expected -> Missing])",
+    "FieldValueNotIncludedInValueList(Rows/Tag -> Missing, [$Expected])",
+    "AtLeastOneFieldValueIncludedInValueList(Rows/Tag -> Missing In $Expected)",
+    "NoFieldValueIncludedInValueList(Rows/Tag -> Missing, Rows/N In $Expected)",
+    "NotAllFieldValuesIncludedInValueList(Rows/Tag In $Expected -> Missing, $Expected -> Missing)"
+  ].map (membershipDiagnostic categoryModel) = List.replicate 5 (some (some .categoryUnknown)) ∧
+    membershipDiagnostic categoryModel
+      "AtLeastOneFieldValueIncludedInValueList(Rows/Tag -> Swap In $Expected)" = some none := by native_decide
+
+private def temporalMembershipModel : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == 2 || field.id == 3 then
+    { field with policy := {
+        kind := .temporal (if field.id == 2 then .time else .date)
+          (TemporalComponents.ofFormat (if field.id == 2 then "HH:mm:ss" else "yyyy-MM-dd")) } }
+  else field }
+
+example : [
+    "AtLeastOneFieldValueIncludedInValueList(Rows/Tag, $Expected In Rows/N)",
+    "NoFieldValueIncludedInValueList($Expected, Rows/Tag In Rows/N)",
+    "NotAllFieldValuesIncludedInValueList(Rows/Tag In Rows/N)"
+  ].map (membershipDiagnostic temporalMembershipModel) =
+    List.replicate 3 (some (some .onlyStringEnumNumberAllowed)) ∧
+    membershipDiagnostic temporalMembershipModel
+      "AtLeastOneFieldValueIncludedInValueList(Rows/Tag, Rows/N In $Expected)" =
+      some (some .varyingTypesNotAllowed) := by native_decide
+
+private def reversedMembershipResults : List (Option (Verdict × List String)) := [
+  some (.notFired, ["value 5"]), some (.fired .omission, ["value 9"]),
+  some (.notFired, ["value 5"]), some (.fired .omission, ["value 9"]),
+  some (.fired .omission, ["value 9"])]
+
+example : fieldMembershipFilters.map (fun filter => run (filter.replace "Rows/Tag" "Rows/Tag -> Swap")
+      false .enumeration "keep" "keep" "drop" (some domain)) = reversedMembershipResults ∧
+    fieldMembershipFilters.map (fun filter => run (filter.replace "$Expected" "$Expected -> Swap")
+      false .enumeration "keep" "keep" "drop" (some domain)) = reversedMembershipResults ∧
+    fieldMembershipFilters.map (fun filter => run ((filter.replace "Rows/Tag" "Rows/Tag -> Swap").replace "$Expected" "$Expected -> Swap")
+      false .enumeration "keep" "keep" "drop" (some domain)) = membershipResults := by native_decide
+
+example : fieldMembershipFilters.map (fun filter => (run filter true).map (·.2)) =
+    [some ["value drop", "value 5"], some ["value drop", "value 9"],
+     some ["value drop", "value 5"], some ["value drop", "value 9"],
+     some ["value drop", "value 9"]] := by native_decide
+
+private def emptySubjectResults : List (Option (Verdict × List String)) := [
+  some (.notFired, ["value 5"]), some (.notFired, ["value 0"]),
+  some (.notFired, ["value 5"]), some (.fired .omission, ["value 9"]),
+  some (.notFired, ["value 0"])]
+
+example : fieldMembershipFilters.map (fun filter => run filter false .string "keep" "" "keep") = emptySubjectResults ∧
+    fieldMembershipFilters.map (fun filter => run filter false
+      (.number { scale := 0, signed := true }) "0" "" "0") = emptySubjectResults ∧
+    fieldMembershipFilters.map (fun filter => (run filter false
+      (.number { scale := 0, signed := true }) "2" "bad" "2").map (·.2)) =
+      [some [], some [], some [], some [], some []] := by native_decide
+
+example : run "FieldValueIncludedInValueList(Rows/Tag, [Rows/Tag])" = none ∧
+    run "AtLeastOneFieldValueIncludedInValueList(Rows/Tag, Rows/Tag In $Expected)" = none ∧
+    run "NoFieldValueIncludedInValueList(Rows/Tag In $Expected, $Expected)" = none := by native_decide
+
+private def differentEnumerationDomains : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == 2 || field.id == 3 then
+    { field with policy := { kind := .enumeration }, enumeration := some {
+      storedTokens := if field.id == 2 then ["keep", "other"] else ["keep", "drop"] } }
+  else field }
+
+example : fieldMembershipFilters.map (fun filter =>
+    runModel differentEnumerationDomains filter false "keep" "keep" "drop") = membershipResults := by native_decide
+
+example : ["AtLeastOneFieldValueIncludedInValueList", "NoFieldValueIncludedInValueList",
+      "NotAllFieldValuesIncludedInValueList"].map (fun operator =>
+      (run (operator ++ "(Rows/Tag, Rows/N In $Expected)") false
+        (.number { scale := 0, signed := true }) "2" "2" "5").map (·.2)) =
+    [some ["value 9"], some ["value 5"], some ["value 12"]] ∧
+    (run "FieldValueIncludedInValueList(Rows/Tag, [$Expected], [Rows/N])" false
+      (.number { scale := 0, signed := true }) "2" "2" "5").map (·.2) = some ["value 14"] ∧
+    run "FieldValueIncludedInValueList(Rows/Tag, [Rows/N], [$Expected])" false
+      (.number { scale := 0, signed := true }) "bad" "2" "5" = some (.notFired, []) := by native_decide
+
+example : (run "AtLeastOneFieldValueIncludedInValueList(Rows/Tag In Rows/Tag -> Swap)" false
+      .enumeration "keep" "keep" "drop" (some domain)).map (·.2) = some ["value 0"] ∧
+    (run "NotAllFieldValuesIncludedInValueList(Rows/Tag In Rows/Tag -> Swap)" false
+      .enumeration "keep" "keep" "drop" (some domain)).map (·.2) = some ["value 14"] := by native_decide
+
+example : run "FieldValueIncludedInValueList(Rows/Tag, $Expected)" = none ∧
+    run "FieldValueNotIncludedInValueList(Rows/Tag, $Expected)" = none ∧
+    run "AtLeastOneFieldValueIncludedInValueList([Rows/Tag] In $Expected)" = none ∧
+    run "NotAllFieldValuesIncludedInValueList(Rows/Tag In [$Expected])" = none := by native_decide
+
 private def referencesFor (filter : String) : Option (Bool × Bool) := do
   let parsed ← (parseText .english
     ("FieldValuesNotUnique(/Form/Rows*/Tag Having " ++ filter ++ ")")).toOption
@@ -160,6 +281,11 @@ example : referencesFor "[/Form/Rows/Tag] == [$/Form/Rows/Tag]" = some (true, tr
 
 example : referencesFor
     "FieldValueIncludedInValueList(/Form/Rows/Tag, \"keep\") And FieldValueNotIncludedInValueList($/Form/Rows/Tag, \"drop\")" =
+      some (true, true) := by native_decide
+
+example : referencesFor "FieldValueIncludedInValueList(/Form/Rows/Tag, [$/Form/Rows/Tag])" =
+      some (true, true) ∧
+    referencesFor "NotAllFieldValuesIncludedInValueList(/Form/Rows/Tag In $/Form/Rows/Tag)" =
       some (true, true) := by native_decide
 
 private def temporalRun (filter : String) (leftKind rightKind : TemporalKind)

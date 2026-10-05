@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.HavingFieldValueList
 import A12Kernel.Elaboration.CorrelationSurface
 import A12Kernel.Elaboration.Flat.Condition.Surface
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
@@ -34,6 +35,8 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
   | .literalMembership _ reference _ => field reference.origin reference.field
+  | .fieldMembership _ subjects members =>
+      (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field
   | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
   | .presence _ reference => field reference.origin reference.field
   | .and left right | .or left right =>
@@ -141,6 +144,8 @@ private structure HavingLeafResolvers where
     Except CorrelationElabError HavingStringRef
   literalMembership : SurfaceHavingStringRef → Sum (List Int) (List String) →
     Except CorrelationElabError FlatLiteralMembership
+  fieldMembership : ComputationValueListOperator → SurfaceHavingDirectFieldSource → SurfaceHavingDirectFieldSource →
+    Except CorrelationElabError HavingFieldValueList
   fieldFill : SurfaceHavingDirectFieldSource → Except CorrelationElabError (List HavingPresenceRef)
   presence : HavingOrigin → SurfaceFieldPath →
     Except CorrelationElabError HavingPresenceRef
@@ -244,6 +249,8 @@ private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
         (← resolvers.string op reference expected) expected)
   | .literalMembership operator reference values => do
       pure (.leaf (.literalMembership reference.origin operator (← resolvers.literalMembership reference values)))
+  | .fieldMembership operator subjects members => do
+      pure (.leaf (.fieldMembership operator (← resolvers.fieldMembership operator subjects members)))
   | .fieldFill operator source => do
       pure (.leaf (.fieldFill operator (← resolvers.fieldFill source)))
   | .presence polarity reference => do
@@ -282,7 +289,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .and left right | .or left right =>
       left.readsGroupNumber model declaringGroup group ||
         right.readsGroupNumber model declaringGroup group
-  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .presence _ _ => false
+  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .presence _ _ => false
 
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
     body in authored order, so each leaf's reads and comparison class answer as it closes; the
@@ -307,6 +314,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
         (model.havingGroupRead declaringGroup reference.field)).mapError .resolve
       throw .stringLeafOutsideStarRoute
     literalMembership := fun _ _ => throw .stringLeafOutsideStarRoute
+    fieldMembership := fun _ _ _ => throw .stringLeafOutsideStarRoute
     fieldFill := fun _ => throw .stringLeafOutsideStarRoute
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
   let readsGroup := authored.readsGroupNumber model declaringGroup group
@@ -318,6 +326,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     -- Preserve the legacy numeric fragment; richer leaves belong to the checked star route.
     string := fun _ _ _ => throw .stringLeafOutsideStarRoute
     literalMembership := fun _ _ => throw .stringLeafOutsideStarRoute
+    fieldMembership := fun _ _ _ => throw .stringLeafOutsideStarRoute
     fieldFill := fun _ => throw .stringLeafOutsideStarRoute
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored).mapError fun
       | .fieldOutsideGroup origin fieldPath expectedGroup =>
@@ -361,13 +370,23 @@ private def FlatModel.resolveHavingFieldValueRead (model : FlatModel) (declaring
   | some refusal => throw (.resolve refusal)
   | none => pure declaration
 
+private def FlatModel.resolveHavingMembershipRead (model : FlatModel)
+    (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
+    (reference : SurfaceHavingStringRef) (valueRead : Bool := false) : Except CorrelationElabError FlatFieldDecl := do
+  let declaration ← (displaceGroupRead (model.resolveFieldDeclarationUnchecked declaringGroup reference.field)
+    (model.havingGroupRead declaringGroup reference.field)).mapError .resolve
+  requireOuterFieldAvailable reference.origin outerLevels declaration
+  (declaration.checkEntityCategoryRead (match reference.projectionRef with
+    | .stored => .stored | .category category => .projected category)).mapError .fieldFill
+  if valueRead then
+    if let some refusal := declaration.projectedReadRefusal? reference.projectionRef then throw (.resolve refusal)
+  pure declaration
+
 private def FlatModel.resolveHavingLiteralMembership (model : FlatModel)
     (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
     (reference : SurfaceHavingStringRef) (values : Sum (List Int) (List String)) :
     Except CorrelationElabError FlatLiteralMembership := do
-  let declaration ← (displaceGroupRead (model.resolveFieldDeclarationUnchecked declaringGroup reference.field)
-    (model.havingGroupRead declaringGroup reference.field)).mapError .resolve
-  requireOuterFieldAvailable reference.origin outerLevels declaration
+  let declaration ← model.resolveHavingMembershipRead declaringGroup outerLevels reference
   (elaborateLiteralMembershipCore declaration reference.projectionRef values).mapError .text
 
 private def FlatModel.resolveHavingNumberInEnvironment (model : FlatModel)
@@ -541,6 +560,8 @@ def CorrelatedHaving.outerIterationScopes
       [outerHavingFieldIterationScope model reference.origin reference.field.id]
   | .leaf (.literalMembership origin _ source) =>
       [outerHavingFieldIterationScope model origin source.field.id]
+  | .leaf (.fieldMembership _ source) =>
+      source.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
   | .leaf (.fieldFill _ references) =>
       references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
   | .leaf (.presence _ reference) =>
@@ -581,6 +602,8 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
   | .literalMembership _ reference _ => field reference.origin reference.field
+  | .fieldMembership _ subjects members =>
+      (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field
   | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
   | .presence _ reference => field reference.origin reference.field
   | .and left right | .or left right =>
@@ -616,6 +639,12 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels
     string := model.resolveHavingStringInEnvironment declaringGroup outerLevels
     literalMembership := model.resolveHavingLiteralMembership declaringGroup outerLevels
+    fieldMembership := fun operator subjects members =>
+      let read (valueRead : Bool) (ref : SurfaceHavingDirectFieldOperand) :=
+        model.resolveHavingMembershipRead declaringGroup outerLevels {
+          origin := ref.origin, field := ref.field, projectionRef := match ref.form with
+            | .stored => .stored | .projected category => .category category } valueRead
+      elaborateHavingFieldValueList (model := model) operator subjects members (read false) (read true)
     fieldFill := fun source => do
       let checked ← elaborateHavingDirectFieldSource model declaringGroup candidateLevels outerLevels source .deferCandidate
         |>.mapError .fieldFill

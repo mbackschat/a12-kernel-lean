@@ -441,14 +441,7 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   -- ([inbound](../../docs/SOURCES.md#inbound-2026-09-26h-list-reads)); on the other carriers its
   -- position rests on the peer's source reading that the check answers wherever the operand's spec
   -- stands ([`kf482`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf482)).
-  let categoryRead (declaration : FlatFieldDecl) (form : FieldEntityReadForm) :
-      Except FieldEntityShapeElabError Unit :=
-    match form, declaration.categoryReadRefusal? with
-    | .projected _, some refusal => throw (.resolve refusal)
-    | .projected category, none =>
-        if declaration.enumeration.any (·.categories.any (·.name == category)) then pure ()
-        else throw (.unknownCategory declaration.path category)
-    | .stored, _ => pure ()
+  let categoryRead := FlatFieldDecl.checkEntityCategoryRead
   match authored with
   | .indexed source =>
       (elaborateSemanticIndexSource model declaringGroup source).map .indexed |>.mapError .semanticIndex

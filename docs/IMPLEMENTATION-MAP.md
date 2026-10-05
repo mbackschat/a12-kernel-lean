@@ -288,6 +288,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-having-literal-membership"></a>
 - [Scalar literal membership inside Having](implementation/repetition-and-paths.md#cap-having-literal-membership)
 
+<a id="cap-having-field-membership"></a>
+- [Field-valued membership inside Having](implementation/repetition-and-paths.md#cap-having-field-membership)
+
 <a id="cap-simple-having-comparisons"></a>
 - [Simple comparisons inside Having](implementation/repetition-and-paths.md#cap-simple-having-comparisons)
 

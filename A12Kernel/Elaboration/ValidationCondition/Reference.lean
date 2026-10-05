@@ -189,6 +189,9 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
   | .leaf (.literalMembership origin _ membership) => do
       let declaration ← (model.lookupUniqueId membership.field.id).mapError fun _ => .incoherentHavingField membership.field.id
       pure [← havingFieldPointerFor source environment declaration origin]
+  | .leaf (.fieldMembership _ membership) => membership.references.mapM fun ref => do
+      let declaration ← (model.lookupUniqueId ref.field).mapError fun _ => .incoherentHavingField ref.field
+      havingFieldPointerFor source environment declaration ref.origin
   | .leaf (.fieldFill _ references) => references.mapM fun reference => do
       let declaration ← (model.lookupUniqueId reference.field).mapError fun _ => .incoherentHavingField reference.field
       havingFieldPointerFor source environment declaration reference.origin

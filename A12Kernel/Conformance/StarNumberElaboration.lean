@@ -879,4 +879,27 @@ example : havingErrorOf ["Shop"] source (memberAt otherAmount) =
         { origin := .inner, field := { base := .absolute, groups := amount.groupPath, field := amount.name } })) =
       some (.having (.orderingFieldNotNumber otherName.path .string .number)) := by native_decide
 
+private def membershipOf (subject member : FlatFieldDecl)
+    (operator : ComputationValueListOperator := .scalar .included) : SurfaceCorrelatedHaving :=
+  .fieldMembership operator
+    { first := { origin := .inner, field := { base := .absolute, groups := subject.groupPath, field := subject.name } }, rest := [] }
+    { first := { origin := .inner, field := { base := .absolute, groups := member.groupPath, field := member.name } }, rest := [] }
+
+example : havingErrorOf ["Shop"] source (membershipOf amount otherAmount) =
+      some (.having (.fieldOutsideEnvironment .inner otherAmount.path [10, 20] [30])) ∧
+    havingErrorOf ["Shop"] source (membershipOf amount extraValue) =
+      some (.having (.fieldOutsideEnvironment .inner extraValue.path [10, 20] [10, 40])) ∧
+    havingErrorOf ["Shop"] source (membershipOf flag amount) = some (.having (.membershipKind flag.path)) ∧
+    havingErrorOf ["Shop"] source (membershipOf amount note) = some (.having (.membershipBaseType note.path)) ∧
+    havingErrorOf ["Shop"] source (membershipOf amount amount) = some (.having (.fieldFill (.duplicateOperand amount.id))) := by native_decide
+
+example : havingErrorOf ["Shop"] source (.and (membershipOf amount otherAmount)
+    (.compareNumbers .less
+      { origin := .inner, field := { base := .absolute, groups := otherName.groupPath, field := otherName.name } }
+      { origin := .inner, field := { base := .absolute, groups := amount.groupPath, field := amount.name } })) =
+      some (.having (.orderingFieldNotNumber otherName.path .string .number)) := by native_decide
+
+example : bodyDiagnostic? (membershipOf flag { amount with name := "Missing" }) = some .invalidEntity ∧
+    bodyDiagnostic? (membershipOf flag { amount with name := "Missing" } (.quantified .no)) = some .invalidEntity := by native_decide
+
 end A12Kernel.Conformance.StarNumberElaboration

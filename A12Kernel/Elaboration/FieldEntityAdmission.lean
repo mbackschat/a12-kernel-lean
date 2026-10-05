@@ -1,7 +1,8 @@
+import A12Kernel.Elaboration.Flat.FieldValueRead
 import A12Kernel.Elaboration.SemanticIndex
 import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.StaticDiagnostic
-import A12Kernel.Semantics.Correlation
+import A12Kernel.Semantics.CorrelationInputs
 
 /-! Kind-neutral entity-list admission and correlated direct-list certificates. -/
 
@@ -80,6 +81,17 @@ def FieldEntityShapeElabError.diagnostic? :
   | .groupReference error => error.diagnostic?
   | .starredGroup error => error.diagnostic?
   | .starPath error => error.diagnostic?
+
+/-- A category's read gates precede enclosing list gates, including duplicates and base type
+(spec/06 §B.3 and the list-read account in docs/SOURCES.md#inbound-2026-09-26h-list-reads). -/
+def FlatFieldDecl.checkEntityCategoryRead (declaration : FlatFieldDecl) (form : FieldEntityReadForm) :
+    Except FieldEntityShapeElabError Unit :=
+  match form, declaration.categoryReadRefusal? with
+  | .projected _, some refusal => throw (.resolve refusal)
+  | .projected category, none =>
+      if declaration.enumeration.any (·.categories.any (·.name == category)) then pure ()
+      else throw (.unknownCategory declaration.path category)
+  | .stored, _ => pure ()
 
 /-- Report the first exact duplicate whose second occurrence completes in authored encounter order. -/
 private def firstDuplicateInEncounterOrderFrom? [BEq β]

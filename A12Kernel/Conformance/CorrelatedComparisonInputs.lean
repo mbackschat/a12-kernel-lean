@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.HavingFieldValueList
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Semantics.ScalarEquality
 
@@ -161,5 +162,62 @@ example : numericMembership.evalValidation .included cleanEmpty = .notFired ∧
     numericMembership.evalComputation .included cleanEmpty = .notTrue ∧
     numericMembership.evalValidation .notIncluded invalid = .notFired ∧
     numericMembership.evalComputation .notIncluded invalid = .poison .malformed := by native_decide
+
+private def fieldMembership : HavingFieldValueList := .token
+  [{ origin := .inner, operand := .string { id := 1 } }]
+  [{ origin := .outer, operand := .string { id := 1 } }]
+
+private def membershipOperators : List ComputationValueListOperator :=
+  [.scalar .included, .scalar .notIncluded, .quantified .atLeastOne, .quantified .no, .quantified .notAll]
+
+example : membershipOperators.map (fun op => fieldMembership.evalComputationRead op
+      (fun _ _ => Except.ok (ε := String) (text "match"))) =
+    [.ok .holds, .ok .notTrue, .ok .holds, .ok .notTrue, .ok .notTrue] := by native_decide
+
+example : membershipOperators.map (fun op => fieldMembership.evalComputationRead op
+      (fun origin _ => if origin == .inner then .ok cleanEmpty else Except.error "members")) =
+    [.error "members", .error "members", .error "members", .error "members", .ok .notTrue] := by native_decide
+
+example : membershipOperators.map (fun op => fieldMembership.evalComputationRead op
+      (fun origin _ => if origin == .outer then .ok cleanEmpty else Except.error "subject")) =
+    [.error "subject", .error "subject", .ok .notTrue, .error "subject", .error "subject"] := by native_decide
+
+example : membershipOperators.map (fun op => fieldMembership.evalValidationRead op
+      (fun _ _ => Except.ok (ε := String) (text "match"))) =
+    [.ok (.fired .value), .ok .notFired, .ok (.fired .value), .ok .notFired, .ok .notFired] ∧
+    fieldMembership.references = [{ origin := .inner, field := 1 }, { origin := .outer, field := 1 }] := by native_decide
+
+private def fieldMembershipLeaf : CorrelatedHavingLeaf := .fieldMembership (.scalar .included) fieldMembership
+
+example : fieldMembershipLeaf.evalTruthIn context frame = .fls ∧
+    fieldMembershipLeaf.evalComputationIn context frame = .notTrue ∧
+    fieldMembershipLeaf.evalComputationInResolving failingFillContext frame = .error "captured read" ∧
+    fieldMembershipLeaf.wellFormedForEnvironments model [10] [10] = true ∧
+    fieldMembershipLeaf.wellFormedForEnvironments model [10] [] = false ∧
+    CorrelatedHaving.markedFieldIds (.leaf fieldMembershipLeaf) = [1] := by native_decide
+
+example : (HavingFieldValueList.token
+      [{ origin := .inner, operand := .string { id := 1 } }]
+      [{ origin := .inner, operand := .string { id := 1 } }]).wellFormedForEnvironments
+        (.scalar .included) model [10] [10] = false ∧
+    (HavingFieldValueList.token [] [{ origin := .inner, operand := .string { id := 1 } }]).wellFormedForEnvironments
+        (.quantified .no) model [10] [10] = false := by native_decide
+
+example : membershipOperators.map (fun op => fieldMembership.evalValidationRead op
+      (fun origin _ => Except.error (if origin == .inner then "subject" else "members"))) =
+    [.error "members", .error "subject", .error "members", .error "members", .error "subject"] := by native_decide
+
+example : membershipOperators.map (fun op => fieldMembership.evalComputationRead op
+      (fun origin _ => Except.ok (ε := String) (if origin == .inner then emptyRequired else text "match"))) =
+    [.ok .notTrue, .ok .notTrue, .ok .notTrue, .ok .holds, .ok .notTrue] := by native_decide
+
+private def membershipPrefix : HavingFieldValueList := .token
+  [{ origin := .inner, operand := .string { id := 1 } }, { origin := .inner, operand := .string { id := 2 } }]
+  [{ origin := .outer, operand := .string { id := 1 } }]
+
+example : [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
+    membershipPrefix.evalComputationRead (.quantified operator)
+      (fun _ field => if field == 2 then Except.error "late subject" else .ok (text "match"))) =
+    [.ok .holds, .ok .notTrue, .error "late subject"] := by native_decide
 
 end A12Kernel.Conformance.CorrelatedComparisonInputs
