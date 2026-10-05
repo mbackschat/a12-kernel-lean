@@ -122,6 +122,7 @@ def executeFixed (table : CheckedNumericComputationTable model) (world : World)
       outer := []
       filterRead := cellAt input read
       starRead := cellAt input read
+      indexColumn? := some (input.resolveSemanticIndexColumnWith read)
     }
   let target : CellAddr := { field := table.targetField, path := [] }
   pure { targetField := target, outcome, source := input.numericTargetPlacementStateAt target }
@@ -152,6 +153,7 @@ def executeRows (table : CheckedNumericComputationTable model) (world : World)
           outer := environment
           filterRead := cellAt input read
           starRead := cellAt input read
+          indexColumn? := some (input.resolveSemanticIndexColumnWith read)
         }
       pure { targetField := target, outcome, source := input.numericTargetPlacementStateAt target })
 

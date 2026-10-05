@@ -144,6 +144,86 @@ private def duplicateSupplyData : DocumentData := {
         input
 }
 
+private def currentTarget (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
+  pure {
+    rawPresent := true
+    parsed := some (.num (if address.field != 4 then 99 else if address.path == [1] then 41 else 52))
+    findings := [] }
+
+private def currentColumn (source : DocumentData) : Option ResolvedSemanticIndexColumn := do
+  let preliminary ← preliminaryFor model source
+  let column ← (preliminary.resolveIndexColumn supply).toOption
+  (column.toSemanticIndexColumnWith currentTarget 4).toOption
+
+example : ((currentColumn data).map fun column =>
+    [column.lookupValue .computation "Sales", column.lookupValue .computation "Ops",
+      column.lookupValue .computation "Absent"]) =
+    some [.value (.num 41), .value (.num 52), .empty] := by
+  native_decide
+
+example : ((currentColumn invalidSupplyData).map fun column =>
+    [column.lookupValue .validation "Sales", column.lookupValue .computation "Sales",
+      column.lookupValue .validation "Absent"]) =
+    some [.value (.num 41), .poison .required, .unknown .required] := by
+  native_decide
+
+example : ((currentColumn duplicateSupplyData).map fun column =>
+    [column.lookupValue .validation "Sales", column.lookupValue .computation "Sales"]) =
+    some [.unknown .duplicateIndex, .poison .duplicateIndex] := by
+  native_decide
+
+private def replacedTargetLookup (target : CheckedCell) (phase : Phase) : Option CellObservation := do
+  let preliminary ← preliminaryFor model data
+  let column ← (preliminary.resolveIndexColumn supply).toOption
+  let semantic ← (column.toSemanticIndexColumnWith (fun _ => pure target) 4).toOption
+  pure (semantic.lookupValue phase "Sales")
+
+example : [
+    replacedTargetLookup { rawPresent := false, parsed := none, findings := [] } .computation,
+    replacedTargetLookup { rawPresent := true, parsed := none, findings := [.computedDependency] }
+      .computation,
+    replacedTargetLookup { rawPresent := true, parsed := none, findings := [.computedDependency] }
+      .validation] = [some .empty, some (.poison .computedDependency),
+        some (.unknown .computedDependency)] := by
+  native_decide
+
+private def keyedModel : FlatModel := {
+  model with fields := model.fields ++ [{
+    id := 5, groupPath := ["Order"], name := "Key", policy := { kind := .string } }] }
+
+private def wrongKeyedModel : FlatModel := {
+  keyedModel with fields := keyedModel.fields.map fun declaration =>
+    if declaration.id == 5 then { declaration with policy := { kind := .boolean } } else declaration }
+
+example : wrongKeyedModel.validate.isOk = true := by native_decide
+
+example : (elaborateSemanticIndexSource wrongKeyedModel ["Order"] {
+      target := { base := .absolute, groups := ["Order", "Supply"], field := "Headcount" }
+      key := .field { base := .absolute, groups := ["Order"], field := "Key" }
+    }).isOk = false := by native_decide
+
+private def currentKeyLookup (source : DocumentData) (key : CellObservation)
+    (phase : Phase) : Option CellObservation := do
+  let preliminary ← preliminaryFor keyedModel source
+  let selector ← (elaborateSemanticIndexSource keyedModel ["Order"] {
+    target := { base := .absolute, groups := ["Order", "Supply"], field := "Headcount" }
+    key := .field { base := .absolute, groups := ["Order"], field := "Key" }
+  }).toOption
+  (selector.lookupPreliminaryValueWith preliminary currentTarget
+    (fun declaration => if declaration.id == 5 then key else .unknown .malformed) phase).toOption
+
+example : [currentKeyLookup data (.value (.str "Sales")) .computation,
+    currentKeyLookup data (.value (.str "Ops")) .computation,
+    currentKeyLookup data .empty .computation,
+    currentKeyLookup data (.poison .computedDependency) .computation,
+    currentKeyLookup invalidSupplyData (.value (.str "Sales")) .validation,
+    currentKeyLookup invalidSupplyData (.value (.str "Sales")) .computation,
+    currentKeyLookup invalidSupplyData .empty .computation] =
+    [some (.value (.num 41)), some (.value (.num 52)), some .empty,
+      some (.poison .computedDependency), some (.value (.num 41)),
+      some (.poison .required), some (.poison .required)] := by
+  native_decide
+
 private def duplicateBothData : DocumentData := {
   data with
     cells := data.cells.map fun input =>
@@ -223,6 +303,7 @@ private def checkedNumber :
     indexOwned := by native_decide
     targetOwned := by native_decide
     keyOwned := by native_decide
+    keyAgrees := by native_decide
   }
   indexNumber := by native_decide
   targetNumber := by native_decide

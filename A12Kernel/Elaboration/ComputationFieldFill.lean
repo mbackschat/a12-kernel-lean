@@ -102,6 +102,7 @@ private def scanStar (kind : ScanKind) (context : ScalarComputationContext)
 private def scanOperand (kind : ScanKind) (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell) :
     CheckedFieldFillOperand model → Bool → Except ComputationFillError SearchResult
+  | .indexed _, _ => throw .indexedOperandNotSupported
   | .field declaration, seen =>
       if (context.read declaration.id).findings.contains .overRepetition then pure (.exhausted seen)
       else pure (scanValues kind (fun _ => observe (context.read declaration.id)) [()] seen)

@@ -47,11 +47,14 @@ def FlatModel.admitsNumericComputationOperand
   | .filledFieldCount source =>
       !source.operands.isEmpty && source.rowBoundBool scope &&
         source.operands.all fun operand =>
-          let structural : CheckedFieldFillOperand model := match operand with
-            | .star source => .star (.plain source.declaringGroup source.source)
-            | other => other
-          (CheckedFieldFillList.computationSources { operands := [structural] }).toOption.any
-            (fun sources => !sources.isEmpty && sources.all (·.admitted model scope))
+          match operand with
+          | .indexed _ => true
+          | operand =>
+            let structural : CheckedFieldFillOperand model := match operand with
+              | .star source => .star (.plain source.declaringGroup source.source)
+              | other => other
+            (CheckedFieldFillList.computationSources { operands := [structural] }).toOption.any
+              (fun sources => !sources.isEmpty && sources.all (·.admitted model scope))
   | .firstFilled source | .valueCount _ source =>
       source.bindingScopes.all (·.isPrefixOf scope)
   | .tokenDistinctCount source => source.bindingScopes.all (·.isPrefixOf scope)
@@ -328,7 +331,7 @@ def FlatModel.elaborateNumericComputationAtom
         (elaborateTemporalNumericExpression model declaringGroup source part (some targetGroup)).map .temporalPart
           |>.mapError .temporalExpression
     | .filledFieldCount source =>
-        (elaborateComputationFieldFillList model declaringGroup targetGroup source).map .filledFieldCount
+        (elaborateComputationFieldFillList model declaringGroup targetGroup source .count).map .filledFieldCount
           |>.mapError .fieldFill
     | .firstFilled source => do
         let checked ←

@@ -183,6 +183,7 @@ private def certifyBooleanValueCountOperand (model : FlatModel)
     ResolvedFieldEntityOperand model →
       Except BooleanValueCountElabError
         (CheckedBooleanValueCountOperand model expected)
+  | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
   | .field declaration _ =>
       if hKind :
           booleanValueCountKindAllowed expected declaration.policy.kind = true then

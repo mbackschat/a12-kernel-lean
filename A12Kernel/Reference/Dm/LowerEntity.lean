@@ -1,4 +1,6 @@
 import A12Kernel.Reference.Dm.LowerCore
+import A12Kernel.Elaboration.IndexKeyShape
+import A12Kernel.Semantics.NumericInput
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.TokenEntityList
 import A12Kernel.Elaboration.NumericAggregate.Fields
@@ -90,10 +92,42 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
 def namesField (model : FlatModel) (group : GroupPath) (path : SurfaceFieldPath) : Bool :=
   (model.resolveFieldDeclarationUnchecked group path).toOption.isSome
 
+private def lowerIndexedEntity (model : FlatModel) (group : GroupPath)
+    (path : Path) (key : IndexKey) : Lowering SurfaceFieldEntityOperand := do
+  let some target := path.toFieldPath? | refuse "SemanticIndex" "target path"
+  let declaration ← elaborated "SemanticIndex" (model.resolveFieldDeclarationUnchecked group target)
+  let selectedGroup ← elaborated "SemanticIndex" (model.lookupUniqueRepeatablePath declaration.groupPath)
+  let some indexId := selectedGroup.indexField | refuse "SemanticIndex" "missing index"
+  let index ← elaborated "SemanticIndex" (model.lookupUniqueId indexId)
+  let key ← match key with
+    | .literal authored => do
+        let spelling := normalizeLinebreaks authored
+        if spelling.isEmpty then refuse "SemanticIndex" "empty key"
+        let matcher : String → Bool ← match index.stringPatternSource with
+          | none => pure (fun (_ : String) => true)
+          | some pattern => match locallyExecutableStringPatternMatcher? pattern with
+              | some matcher => pure matcher
+              | none => refuse "SemanticIndex" "unsupported key pattern"
+        if index.indexKeyFits? matcher spelling != some true then
+          refuse "SemanticIndex" "invalid key shape"
+        let token ← match index.policy.kind with
+          | .number _ => do
+              let some decoded := parseNumericFormalRead? (spelling.replace "," ".")
+                | refuse "SemanticIndex" "numeric key"
+              pure (SemanticIndexKey.number decoded.value)
+          | _ => pure (.text spelling)
+        pure (SurfaceSemanticIndexKey.literal token (some spelling))
+    | .path authored => do
+        let some field := authored.toFieldPath? | refuse "SemanticIndex" "key path"
+        pure (.field field)
+  pure (.indexed { target, key })
+
 /-- One entity-list operand. -/
 def lowerEntityOperand (model : FlatModel) (group : GroupPath) :
     Argument → Lowering SurfaceFieldEntityOperand
   | .mk (.constant "RuleGroup") none none => pure (.group (.ruleGroup false))
+  | .mk (.entity { path, index := some key, category := none }) none none =>
+      lowerIndexedEntity model group path key
   | .mk (.entity { path, index := none, category }) none filter => do
       if path.correlated then refuse "EntityOperand" "correlated"
       let terminalStar := path.segments.getLast?.any (·.star)

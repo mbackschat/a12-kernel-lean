@@ -58,6 +58,7 @@ inductive CheckedNumericComputationAtom (model : FlatModel) where
 
 /-- Fail-closed faults outside the admitted numeric computation-expression fragment. -/
 inductive NumericComputationFault where
+  | indexSelection (error : CheckedAddressingError)
   | temporalExpression (fault : ScalarTemporalEvaluationFault)
   | guardBinding (error : ComputationConditionError)
   | stringExpression (error : StringComputationFault)
@@ -87,6 +88,7 @@ structure NumericComputationEvaluationContext where
   outer : Env
   filterRead : Env → FieldId → CheckedCell
   starRead : Env → FieldId → CheckedCell
+  indexColumn? : Option SemanticIndexColumnReader := none
 
 inductive NumericComputationElabError where
   | temporalExpression (error : TemporalNumericExpressionError)

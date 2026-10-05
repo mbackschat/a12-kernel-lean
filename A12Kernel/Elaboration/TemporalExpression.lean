@@ -680,7 +680,7 @@ def evalAt (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
   match comparison.evalResult phase context addressed row with
   | .ok verdict => verdict
   | .error .dateTimeLabelUnresolved => .fired .value
-  | .error .calendarUnavailable => .unknown
+  | .error .calendarUnavailable | .error .indexedOperandNotSupported => .unknown
 
 def eval (comparison : CheckedScalarTemporalComparison model) (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := []) : Verdict :=
   comparison.evalAt .validation context addressed row

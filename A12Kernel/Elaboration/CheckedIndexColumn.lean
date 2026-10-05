@@ -594,8 +594,8 @@ end ResolvedParallelIndexRow
 namespace ResolvedCheckedIndexColumn
 
 /-- Project the shared checked column to semantic-index's clean-entry contract. Every duplicate participant is removed, while the column cause remains available to the phase-specific evaluator. -/
-def toSemanticIndexColumn (column : ResolvedCheckedIndexColumn model)
-    (preliminary : CheckedIndexPreliminary model) (target : FieldId) :
+def toSemanticIndexColumnWith (column : ResolvedCheckedIndexColumn model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (target : FieldId) :
     Except CheckedIndexColumnError ResolvedSemanticIndexColumn := do
   let declaration ← model.lookupUniqueId target |>.mapError .model
   if !column.group.path.isPrefixOf declaration.groupPath then
@@ -604,10 +604,16 @@ def toSemanticIndexColumn (column : ResolvedCheckedIndexColumn model)
     column.admitsSemanticKey entry.key).mapM fun entry => do
       let path ← entry.environment.pathForScope declaration.repeatableScope
         |>.mapError .environment
-      let target ← preliminary.readAuthoredValidation { field := target, path }
+      let target ← read { field := target, path }
         |>.mapError .document
       pure { token := entry.key, target }
   pure { entries, unavailableKey := column.unavailableKey }
+
+/-- The immutable validation view is the current-reader projection specialized to preliminary cells. -/
+def toSemanticIndexColumn (column : ResolvedCheckedIndexColumn model)
+    (preliminary : CheckedIndexPreliminary model) (target : FieldId) :
+    Except CheckedIndexColumnError ResolvedSemanticIndexColumn :=
+  column.toSemanticIndexColumnWith preliminary.readAuthoredValidation target
 
 end ResolvedCheckedIndexColumn
 

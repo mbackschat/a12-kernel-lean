@@ -493,7 +493,7 @@ def evalWithTemporalResult (condition : ValidationCondition model)
   | .ok verdict => .ok verdict
   | .error (.inl error) => .error error
   | .error (.inr .dateTimeLabelUnresolved) => onTemporalValueFailure
-  | .error (.inr .calendarUnavailable) => onTemporalUnavailable
+  | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported) => onTemporalUnavailable
 
 /-- Evaluate one mixed tree with the rule-owned truth and classification phases. -/
 def evalSelected (condition : ValidationCondition model)

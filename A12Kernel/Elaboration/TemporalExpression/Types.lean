@@ -100,6 +100,7 @@ def holds (operator : TemporalComparisonOp) : ScalarTemporalValue → ScalarTemp
 end ScalarTemporalValue
 
 inductive ScalarTemporalEvaluationFault where
+  | indexedOperandNotSupported
   | dateTimeLabelUnresolved
   | calendarUnavailable
   deriving Repr, DecidableEq

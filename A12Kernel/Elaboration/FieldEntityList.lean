@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.SemanticIndex
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarGroup
@@ -24,6 +25,7 @@ inductive FieldEntityReadForm where
 /-- One parser-independent field entity-list slot. A filter belongs to its exact authored wildcard occurrence, and a group slot retains its authored path rather than its expansion, because the wildcard gate reads the path that was written. -/
 inductive SurfaceFieldEntityOperand where
   | field (path : SurfaceFieldPath) (form : FieldEntityReadForm := .stored)
+  | indexed (source : SurfaceSemanticIndex)
   | star (path : SurfaceStarFieldPath)
   | starHaving (path : SurfaceStarFieldPath) (having : SurfaceCorrelatedHaving)
   | group (reference : SurfaceGroupReference)
@@ -58,6 +60,7 @@ structure SurfaceHavingDirectFieldSource where
     A starred group retains the terminal-repeatable source only. A star above a nonrepeatable terminal is a third repetition shape that no retained observation covers on this carrier, so resolution refuses it without naming a class. -/
 inductive ResolvedFieldEntityOperand (model : FlatModel) where
   | field (declaration : FlatFieldDecl) (form : FieldEntityReadForm)
+  | indexed (source : CheckedSemanticIndexSource model)
   | star (source : CheckedStarFieldPath model)
   | starHaving (source : CheckedStarFieldPath model)
       (having : SurfaceCorrelatedHaving)
@@ -69,18 +72,18 @@ namespace ResolvedFieldEntityOperand
 
 /-- Whether one authored slot already satisfies the multiple-operand requirement by itself. A star denotes a row set and a group denotes a field scope, so both are already-many; this is exactly why one group slot is admitted where its single expanded field authored alone reports `MVK_PARAMSIZE_INVALIDN`. -/
 def isAlreadyMany : ResolvedFieldEntityOperand model → Bool
-  | .field .. => false
+  | .field .. | .indexed _ => false
   | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
       .starredGroupPresence _ => true
 
 def directFieldId? : ResolvedFieldEntityOperand model → Option FieldId
   | .field declaration _ => some declaration.id
-  | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
+  | .indexed _ | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
       .starredGroupPresence _ => none
 
 /-- The group subtree a slot denotes, or `none` for a slot that denotes one field. Only the indirect duplicate arm and the expansion consult it. -/
 def subtreePath? : ResolvedFieldEntityOperand model → Option GroupPath
-  | .field .. | .star _ | .starHaving _ _ => none
+  | .field .. | .indexed _ | .star _ | .starHaving _ _ => none
   | .group reference => some reference.path
   | .starredGroup source => some source.group.path
   | .starredGroupPresence source => some source.groupPath
@@ -89,6 +92,7 @@ def subtreePath? : ResolvedFieldEntityOperand model → Option GroupPath
 def expansionDeclarations : ResolvedFieldEntityOperand model →
     List FlatFieldDecl
   | .field declaration _ => [declaration]
+  | .indexed source => [source.targetDeclaration]
   | .star source | .starHaving source _ => [source.declaration]
   | .group reference => model.groupSubtreeFields reference.path
   | .starredGroup source => model.groupSubtreeFields source.group.path
@@ -98,7 +102,7 @@ def expansionDeclarations : ResolvedFieldEntityOperand model →
     measured; a starred root would need a repeatable root, and no row places one on an entity list. -/
 def rootGroupPath? : ResolvedFieldEntityOperand model → Option GroupPath
   | .group reference => if reference.isRoot then some reference.path else none
-  | .field .. | .star _ | .starHaving _ _ | .starredGroup _ |
+  | .field .. | .indexed _ | .star _ | .starHaving _ _ | .starredGroup _ |
       .starredGroupPresence _ => none
 
 /-- The Enumeration a category slot reads, for a carrier's category gate. A category of a field
@@ -106,18 +110,19 @@ def rootGroupPath? : ResolvedFieldEntityOperand model → Option GroupPath
     slot resolved, and a starred slot spells no category on this surface. -/
 def categoryPath? : ResolvedFieldEntityOperand model → Option (List String)
   | .field declaration (.projected _) => some declaration.path
-  | .field _ .stored | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
+  | .field _ .stored | .indexed _ | .star _ | .starHaving _ _ | .group _ | .starredGroup _ |
       .starredGroupPresence _ => none
 
 /-- The authored path each slot occupies for the indirect duplicate arm. -/
 def entityPath : ResolvedFieldEntityOperand model → List String
   | .field declaration _ => declaration.path
+  | .indexed source => source.targetDeclaration.path
   | .star source | .starHaving source _ => source.declaration.path
   | .group reference => reference.path
   | .starredGroup source => source.group.path
   | .starredGroupPresence source => source.groupPath
 
-/-- The **indirect** duplicate arm. Two group operands overlap only by strict ancestry, so the same starred group written twice stays two independent authored occurrences while a starred group beside its own starred descendant is rejected. A group also overlaps any field-denoting slot inside it.
+/-- The **indirect** duplicate arm. Two group operands overlap only by strict ancestry, so the same starred group written twice stays two independent authored occurrences while a starred group beside its own starred descendant is rejected. A group also overlaps an unindexed field-denoting slot inside it. An indexed field carries a different semantic-index identity from these unindexed groups (`CheckEntityListenUtils.isEntityIndirectlyReferenced`, kernel 30.8.1).
 
     Two field-denoting slots never reach this arm: a field path cannot be an ancestor of another, and their repetition belongs to the direct arm above, which skips wildcarded references. -/
 def overlaps (left right : ResolvedFieldEntityOperand model) : Bool :=
@@ -130,13 +135,13 @@ def overlaps (left right : ResolvedFieldEntityOperand model) : Bool :=
       | .field declaration _ => leftPath.isPrefixOf declaration.groupPath
       | .star source | .starHaving source _ =>
           leftPath.isPrefixOf source.declaration.groupPath
-      | .group _ | .starredGroup _ | .starredGroupPresence _ => false
+      | .indexed _ | .group _ | .starredGroup _ | .starredGroupPresence _ => false
   | none, some rightPath =>
       match left with
       | .field declaration _ => rightPath.isPrefixOf declaration.groupPath
       | .star source | .starHaving source _ =>
           rightPath.isPrefixOf source.declaration.groupPath
-      | .group _ | .starredGroup _ | .starredGroupPresence _ => false
+      | .indexed _ | .group _ | .starredGroup _ | .starredGroupPresence _ => false
   | none, none => false
 
 /-- The repeatable levels this operand leaves for its evaluation to bind: a direct field's own
@@ -145,34 +150,13 @@ def overlaps (left right : ResolvedFieldEntityOperand model) : Bool :=
     scope. -/
 def bindingScope : ResolvedFieldEntityOperand model → List RepeatableLevel
   | .field declaration _ => declaration.repeatableScope
+  | .indexed _ => []
   | .star source | .starHaving source _ => source.bindingScope
   | .group reference => reference.boundRepeatableScope
   | .starredGroup source => source.path.bindingScope
   | .starredGroupPresence source => source.path.bindingScope
 
 end ResolvedFieldEntityOperand
-
-/-- Whether two declared kinds share the base type the Kernel's field-list checker compares before
-    any kind gate, on the value-list quantifiers and on the plural DateRange overlap's scalar slot.
-
-    The four temporal kinds share one base type, and every other kind is its own. A custom
-    declaration shares String's, because it carries the String kind (`customTypeRequiresString`).
-    Measured: a Date beside a date fragment, a Time beside a DateTime and a String beside a custom
-    declaration share one ([inbound](../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)).
-    Every cross pair measured differs. On the field list, an Enumeration beside a String and a
-    Boolean beside a Confirm in both orders, and a Number beside a Date, a Number before a String, a
-    date range beside a String and a Boolean beside a Date in the order measured
-    ([checkpoint](../../docs/SOURCES.md#src-value-list-base-type-cross-pairs)); a String beside a
-    Number (the inbound above) and beside a Date
-    ([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
-    Opposite a field value list, a String and an Enumeration in either direction, an Enumeration
-    opposite a Number and a Number opposite a String (the cross-pair checkpoint), and a String
-    opposite a Number or a Time (the inbound). The pairs no row reaches follow the Kernel's per-type
-    base-type match, read rather than measured. -/
-def SurfaceScalarKind.sharesValueListBaseType :
-    SurfaceScalarKind → SurfaceScalarKind → Bool
-  | .temporal _, .temporal _ => true
-  | left, right => left == right
 
 /-- The path of the first declaration whose base type differs from `expected`'s. The Kernel compares
     each declaration with the one before it, which finds the same first declaration here because
@@ -354,6 +338,8 @@ inductive EntityListCategoryGate where
 
 /-- The source-shape failures shared by every homogeneous aggregate family. -/
 inductive FieldEntityShapeElabError where
+  | unsupportedIndexedOperand (path : List String)
+  | semanticIndex (error : SemanticIndexElabError)
   | resolve (error : ResolveError)
   | starPath (error : StarPathElabError)
   | groupReference (error : FixedGroupReferenceError)
@@ -386,6 +372,8 @@ quantifiers accept a *sole unstarred field* operand, where the entity-list carri
 each carrier passes the `EntityListArity` it applies. -/
 def FieldEntityShapeElabError.diagnostic? :
     FieldEntityShapeElabError → Option KernelStaticDiagnostic
+  | .unsupportedIndexedOperand _ => none
+  | .semanticIndex error => error.diagnostic?
   | .tooFewFields => some .paramSizeInvalidN
   | .duplicateOperand _ => some .duplicateParam1
   | .duplicateGroupOperand _ => some .duplicateParam1
@@ -416,15 +404,17 @@ def firstDuplicateDirectField? (directFieldId? : α → Option FieldId) :
   firstDuplicateOptionalIdentity? directFieldId?
 
 /-- One exact non-wildcard operand identity. Field reading form is semantic identity, while fixed
-    groups identify by path. Starred occurrences intentionally have no exact identity. -/
+    groups identify by path. An indexed field retains the key, including literal spelling. Starred occurrences intentionally have no exact identity. -/
 inductive ResolvedFieldEntityIdentity where
   | field (identity : FieldId × FieldEntityReadForm)
+  | indexed (identity : FieldId × CheckedSemanticIndexKey)
   | fixedGroup (path : GroupPath)
   deriving Repr, DecidableEq
 
 def ResolvedFieldEntityOperand.exactIdentity? :
     ResolvedFieldEntityOperand model → Option ResolvedFieldEntityIdentity
   | .field declaration form => some (.field (declaration.id, form))
+  | .indexed source => some (.indexed (source.targetDeclaration.id, source.key))
   | .group reference => some (.fixedGroup reference.path)
   | .star _ | .starHaving _ _ | .starredGroup _ |
       .starredGroupPresence _ => none
@@ -550,6 +540,8 @@ def resolveFieldEntityOperandIn (model : FlatModel)
         else throw (.unknownCategory declaration.path category)
     | .stored, _ => pure ()
   match authored with
+  | .indexed source =>
+      (elaborateSemanticIndexSource model declaringGroup source).map .indexed |>.mapError .semanticIndex
   | .field path form => do
       let resolved ←
         model.resolveFieldDeclarationUnchecked declaringGroup path
@@ -642,7 +634,7 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
         if let some path := (first :: rest).findSome? ResolvedFieldEntityOperand.categoryPath? then
           throw (.categoryNotAllowed path)
       match hDuplicate : firstDuplicateResolvedEntityOperand? (first :: rest) with
-      | some (.field (field, _)) => throw (.duplicateOperand field)
+      | some (.field (field, _)) | some (.indexed (field, _)) => throw (.duplicateOperand field)
       | some (.fixedGroup path) => throw (.duplicateGroupOperand path)
       | none =>
           match hOverlap : firstResolvedOperandOverlap? (first :: rest) with
@@ -789,6 +781,10 @@ theorem resolveFieldEntityOperandIn_declaringGroupValid
     GroupPath.isValid declaringGroup = true := by
   unfold resolveFieldEntityOperandIn at ok
   cases authored with
+  | indexed source =>
+      cases hSource : elaborateSemanticIndexSource model declaringGroup source with
+      | error error => simp [hSource, Except.map, Except.mapError] at ok
+      | ok checked => exact elaborateSemanticIndexSource_declaringGroupValid hSource
   | field path form =>
       cases hResolved :
         model.resolveFieldDeclarationUnchecked declaringGroup path with

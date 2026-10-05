@@ -36,6 +36,7 @@ structure ComputationFillContext where
   storedText : Env → FieldId → Option String := fun _ _ => none
 
 inductive ComputationFillError where
+  | indexedOperandNotSupported
   | declaredCapacityRequired
   | contextRequired
   | addressing (error : StarAddressingError)

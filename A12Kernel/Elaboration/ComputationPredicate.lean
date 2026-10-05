@@ -319,7 +319,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   | .stringExpression source => (source.evalComputation { read := context.read } context.numberText).mapError .stringExpression
   | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError (fun
       | .dateTimeLabelUnresolved => .valueFailure
-      | .calendarUnavailable => .temporalUnavailable)
+      | .calendarUnavailable | .indexedOperandNotSupported => .temporalUnavailable)
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
   | .fieldFill operator source => (source.evalChecked operator context filterRead).mapError .fieldFill
   | .overlap source => (source.evalChecked context filterRead).mapError fun

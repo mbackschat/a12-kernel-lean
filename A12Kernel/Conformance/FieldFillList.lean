@@ -201,4 +201,58 @@ example : count { first := direct "A", rest := [selectedFirst] }
     count { first := selectedFirst, rest := [direct "A"] }
     [{ group := 4, path := [1] }] [cell 1 [] 1] = some (.value 1 .growOnly) := by native_decide
 
+private def indexedListModel : FlatModel := {
+  listModel with
+  fields := (listModel.fields.map fun declaration =>
+    if declaration.id == 4 then { declaration with policy := { kind := .number { scale := 1, signed := true } } }
+    else declaration) ++ [{
+    id := 7, groupPath := ["Probe", "Rows"], name := "Value",
+    policy := { kind := .string }, repeatableScope := [4] }]
+  repeatableGroups := [{
+    level := 4, path := ["Probe", "Rows"], repeatability := some 2, indexField := some 4 }] }
+
+private def indexedValue (key : Rat) (spelling : String) : SurfaceFieldEntityOperand :=
+  .indexed {
+    target := { base := .absolute, groups := ["Probe", "Rows"], field := "Value" }
+    key := .literal (.number key) (some spelling) }
+
+private def indexListAdmitted (first : SurfaceFieldEntityOperand)
+    (rest : List SurfaceFieldEntityOperand) : Bool :=
+  (elaborateFieldEntityShape indexedListModel ["Probe"] { first, rest }
+    (writtenGroup := ["Probe"])).isOk
+
+example : indexListAdmitted (indexedValue 1 "1") [direct "A"] = true := by native_decide
+example : indexListAdmitted (indexedValue 1 "1") [] = false := by native_decide
+example : indexListAdmitted (indexedValue 1 "1") [indexedValue 1 "1"] = false := by native_decide
+example : indexListAdmitted (indexedValue 1 "1") [indexedValue 2 "2"] = true := by native_decide
+example : indexListAdmitted (indexedValue 1 "1") [indexedValue 1 "1.0"] = true := by native_decide
+example : indexListAdmitted (indexedValue 1 "1")
+    [.starredGroup { base := .absolute, groups := [⟨"Probe", false⟩, ⟨"Rows", true⟩] }] = true := by native_decide
+
+private def indexedListData (secondKey : Rat := 2) (badTarget : Bool := false) : DocumentData := {
+  instantiatedRows := [1, 2, 3].map fun row => { group := 4, path := [row] }
+  cells := [
+    { address := { field := 4, path := [1] }, stored := "1", raw := .parsed (.num 1) },
+    { address := { field := 4, path := [2] }, stored := toString secondKey,
+      raw := .parsed (.num secondKey) },
+    { address := { field := 4, path := [3] }, stored := "3", raw := .parsed (.num 3) },
+    { address := { field := 7, path := [1] }, stored := "filled",
+      raw := if badTarget then .rejected .malformed else .parsed (.str "filled") },
+    { address := { field := 7, path := [3] }, stored := "overflow", raw := .parsed (.str "overflow") }] }
+
+private def indexedValidationCount (key : Rat) (secondKey : Rat := 2) (badTarget : Bool := false) :
+    Option (Option NumericOperand) := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler indexedListModel).toOption
+  let document ← (checkDocument prepared "en_US" (indexedListData secondKey badTarget)).toOption
+  let source ← (elaborateFieldFillList indexedListModel ["Probe"] {
+    first := indexedValue key (toString key), rest := [direct "A"] }).toOption
+  (source.evaluateCountOperand? document []).toOption
+
+example : indexedValidationCount 1 = some (some (.value 1 .growOnly)) := by native_decide
+example : indexedValidationCount 2 = some (some (.value 0 .growOnly)) := by native_decide
+example : indexedValidationCount 3 = some (some (.value 0 .growOnly)) := by native_decide
+example : indexedValidationCount 1 1 = some none := by native_decide
+example : indexedValidationCount 1 2 true = some none := by native_decide
+
 end A12Kernel

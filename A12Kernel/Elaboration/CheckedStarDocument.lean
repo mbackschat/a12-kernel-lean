@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.SemanticIndex
 import A12Kernel.Elaboration.RuleIterationDomain
 import A12Kernel.Elaboration.ConstructedDateEvaluation
 import A12Kernel.Elaboration.CheckedGroupPresence
@@ -12,6 +13,9 @@ This boundary joins the immutable checked input to the existing checked star pat
 namespace A12Kernel
 
 inductive CheckedAddressingError where
+  | unsupportedIndexedFillQuantifier
+  | semanticIndex (cause : SemanticIndexContextError)
+  | indexPreliminary (cause : CheckedIndexPreliminaryError)
   | stringExpression (cause : StringComputationFault)
   | temporalUnavailable
   | constructedDate (cause : ConstructedDateEvaluationFault)
@@ -31,6 +35,11 @@ inductive CheckedAddressingError where
   silently dropped it would be two accounts of one certificate. -/
   | operandPayload (address : CellAddr)
   deriving Repr, DecidableEq
+
+/-- A model-independent computation context asks its checked document to resolve a column;
+the document retains index preparation and exact selected addresses. -/
+abbrev SemanticIndexColumnReader := RepeatableGroupDecl → FieldId → Env →
+  Except CheckedAddressingError ResolvedSemanticIndexColumn
 
 /-- Compatibility name for the original one-star projection API. -/
 abbrev CheckedStarDocumentError := CheckedAddressingError
@@ -155,6 +164,20 @@ def checkedCellWithRead (checked : CheckedDocument model)
     Except CheckedAddressingError CheckedCell := do
   let address ← checked.cellAddress environment field
   read address |>.mapError .document
+
+/-- Keep generated index preparation while reading selected computation payloads from the current
+dependency view. An index field itself uses its prepared cell because computation targets cannot
+be index fields (`spec/09`). -/
+def resolveSemanticIndexColumnWith (checked : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) : SemanticIndexColumnReader :=
+  fun group target outer => do
+    let preliminary ← checked.applySelectedFullIndexPreliminary group.indexField.toList
+      |>.mapError .indexPreliminary
+    let column ← preliminary.resolveIndexColumn group outer
+      |>.mapError (CheckedAddressingError.semanticIndex ∘ SemanticIndexContextError.checkedColumn)
+    column.toSemanticIndexColumnWith
+      (if group.indexField == some target then preliminary.readComputation else read) target
+      |>.mapError (CheckedAddressingError.semanticIndex ∘ SemanticIndexContextError.checkedColumn)
 
 /-- One field's checked cell at an environment through a caller-supplied exact-address view, the
 computation scans' read. An address the environment cannot form reads as malformed: each scanning

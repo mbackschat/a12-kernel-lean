@@ -254,6 +254,7 @@ def certifyTemporalUniquenessOperand (model : FlatModel)
       Except TemporalValuesNotUniqueElabError
         (CheckedTemporalUniquenessOperand model) :=
   match operand with
+  | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
   | .field declaration _ =>
       do pure (.field (← certifyTemporalUniquenessField declaration))
   | .star source =>

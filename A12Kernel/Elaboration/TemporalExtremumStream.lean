@@ -61,6 +61,7 @@ namespace A12Kernel
     Every arm is this module's own boundary rather than a Kernel refusal, so none projects a
     diagnostic class: each names a shape the Kernel accepts and this slice does not yet evaluate. -/
 inductive TemporalExtremumStreamError where
+  | indexedOperandNotSupported (path : List String)
   /-- The agreed component set is not the one this reader was asked for, so its element type cannot hold the operands. Carries both so a consumer can see which family declined and why. -/
   | componentsMismatch (expected found : TemporalComponents)
   /-- A star, group, or filtered operand, which needs the addressed context the flat route does not take. -/
@@ -73,6 +74,7 @@ namespace TemporalExtremumStream
 private def directDeclaration :
     ResolvedFieldEntityOperand model →
       Except TemporalExtremumStreamError FlatFieldDecl
+  | .indexed source => throw (.indexedOperandNotSupported source.targetDeclaration.path)
   | .field declaration _ => pure declaration
   | .star source => throw (.operandNeedsAddressing source.declaration.path)
   | .starHaving source _ => throw (.operandNeedsAddressing source.declaration.path)
@@ -260,6 +262,7 @@ private def operandExtent (document : CheckedDocument model) (outer : Env)
     (filter : Option CorrelatedHaving) :
     ResolvedFieldEntityOperand model →
       Except TemporalExtremumStreamFault ResolvedCheckedEntityOperandCore
+  | .indexed source => throw (.declined (.indexedOperandNotSupported source.targetDeclaration.path))
   | .field declaration _ =>
       (document.resolveCheckedDirectEntityOperandCore declaration.id).mapError .addressing
   | .star source =>
@@ -372,11 +375,11 @@ end TemporalExtremumStream
 
 namespace TemporalExtremumStreamError
 
-/-- No arm claims a Kernel class. Both name shapes the Kernel admits and this slice declines, which
+/-- No arm claims a Kernel class. These name shapes the Kernel admits and this slice declines, which
     this vocabulary reports as absent coverage rather than as a refusal. -/
 def diagnostic? : TemporalExtremumStreamError → Option KernelStaticDiagnostic
   | .componentsMismatch _ _ => none
-  | .operandNeedsAddressing _ => none
+  | .operandNeedsAddressing _ | .indexedOperandNotSupported _ => none
 
 end TemporalExtremumStreamError
 

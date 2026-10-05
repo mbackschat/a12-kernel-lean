@@ -686,7 +686,7 @@ def wellFormedBool (rowGroup : GroupPath) :
   | .customFieldValidity leaf => leaf.operand.declaration.repeatableScope.isEmpty
   -- The rule's row must bind every level the operand leaves unstarred above its own depth.
   | .fieldFill _ source =>
-      source.bindingScope.all (model.repeatableScopeForGroupPath rowGroup).contains
+      !source.hasIndexed && source.bindingScope.all (model.repeatableScopeForGroupPath rowGroup).contains
   | .stringPattern leaf => model.admitsOrdinaryStringPatternField leaf.condition.field
 
 

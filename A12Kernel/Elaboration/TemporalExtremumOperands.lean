@@ -147,6 +147,7 @@ def componentsOf? (declaration : FlatFieldDecl) : Option TemporalComponents :=
 private def operandDeclarations (model : FlatModel) :
     ResolvedFieldEntityOperand model →
       Except TemporalExtremumOperandElabError (List FlatFieldDecl)
+  | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
   | .field declaration _ => pure [declaration]
   | .star source | .starHaving source _ => pure [source.declaration]
   | .group reference =>
@@ -179,7 +180,7 @@ private def certifiedFilter? (model : FlatModel) (declaringGroup bindingGroup : 
   | .starHaving source having =>
       (elaborateStarHavingCore model declaringGroup source having bindingGroup).toOption.map
         (·.condition)
-  | .field .. | .star _ | .group _ | .starredGroup _
+  | .indexed _ | .field .. | .star _ | .group _ | .starredGroup _
   | .starredGroupPresence _ => none
 
 /-- The lifted component set of one declaration, or the refusal its **position** earns. The two

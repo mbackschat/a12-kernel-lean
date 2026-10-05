@@ -172,7 +172,7 @@ def firstDateRangesOverlapGroup? :
     | .group reference => some reference.path
     | .starredGroup source => some source.group.path
     | .starredGroupPresence source => some source.groupPath
-    | .field .. | .star _ | .starHaving _ _ => none
+    | .indexed _ | .field .. | .star _ | .starHaving _ _ => none
 
 /-- Both overlap operators' field walk: every field the operands expand to, in authored order, must be
 a DateRange declaration without a year interpretation. It completes before the uniform-year gate over
@@ -253,6 +253,7 @@ def certifyDateRangesOverlapOperand (model : FlatModel)
     (declaringGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except DateRangesOverlapElabError
         (CheckedDateRangesOverlapOperand model)
+  | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
   | .field declaration .stored =>
       .field <$> certifyDateRangesOverlapField declaration
   | .field declaration form =>

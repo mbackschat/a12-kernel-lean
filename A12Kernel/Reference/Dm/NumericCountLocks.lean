@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.GeneratedComputationValidation.Execution
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Parser
 import A12Kernel.Reference.Dm.Replay
@@ -226,5 +227,137 @@ private def countFault (filteredFirst directPoison : Bool) : Option NumericCompu
 example : countFault false false = some (.poison .dateFormat) ∧
     countFault false true = some (.poison .malformed) ∧
     countFault true true = some (.poison .dateFormat) := by native_decide
+
+private def indexedModel : FlatModel := {
+  filteredModel with repeatableGroups := [{
+    level := 10, path := ["Form", "Rows"], repeatability := some 2, indexField := some 3 }] }
+
+private def indexedInput (keep : String) (badTarget : Bool) : DocumentData :=
+  let source := filteredInput keep badTarget
+  { source with cells := source.cells.map fun cell =>
+      if cell.address.field == 3 && cell.address.path != [1] then
+        { cell with raw := if keep == "bad" then .rejected .malformed
+            else .parsed (.num (if keep == "1" then 1 else 2)) }
+      else cell }
+
+private def indexedRun (key keep : String) (badTarget : Bool := false)
+    (freshKey : Bool := false) (clearValue : Bool := false)
+    (presenceDependent : Bool := false) (skipCount : Bool := false) : Option (List String) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler indexedModel).toOption
+  let checked ← (checkDocument prepared "en_US" (indexedInput keep badTarget)).toOption
+  let dependent := if presenceDependent then
+    { definition "Down" "../Down" "1" with commonPrecondition := some "FieldFilled(Out) Or FieldNotFilled(Out)" }
+    else definition "Down" "../Down" "[Out] + 1"
+  let count := { definition "Count" "../Out" s!"NumberOfFilledFields(Anchor, Rows/Qty For {key})" with
+    commonPrecondition := if skipCount then some "[Anchor] < 0" else none }
+  let authored := [dependent, count] ++
+      (if freshKey then [definition "Key" "../Anchor" "1"] else []) ++
+      (if clearValue then [definition "Value" "../Rows/Qty" "\"\""] else [])
+  let steps ← authored.mapM fun computation =>
+    (lowerComputation indexedModel .english computation).toOption.map (·.2)
+  let outcomes ← (runComputations world prepared checked steps).toOption
+  pure ((outcomes.filter fun outcome => !clearValue ||
+    outcome.pointer == "Form/Out" || outcome.pointer == "Form/Down").map (·.outcome))
+
+example : indexedRun "\"1\"" "2" = some ["value 2", "value 3"] := by native_decide
+example : indexedRun "\"3\"" "2" = some ["value 1", "value 2"] := by native_decide
+example : indexedRun "\"1\"" "bad" = some ["cleared", "cleared"] := by native_decide
+example : indexedRun "\"1\"" "1" = some ["cleared", "cleared"] := by native_decide
+example : indexedRun "\"2\"" "2" true = some ["cleared", "cleared"] := by native_decide
+example : indexedRun "Anchor" "2" = some ["value 1", "value 2"] := by native_decide
+example : indexedRun "Anchor" "2" false true = some ["value 1", "value 2", "value 3"] := by native_decide
+
+example : indexedRun "\"1\"" "2" false false true = some ["value 1", "value 2"] := by native_decide
+
+example : indexedRun "\"1\"" "bad" false false false true = some ["cleared", "cleared"] ∧
+    indexedRun "\"1\"" "1" false false false true = some ["cleared", "cleared"] ∧
+    indexedRun "\"2\"" "2" true false false true = some ["cleared", "cleared"] ∧
+    indexedRun "\"1\"" "2" false false false true true = some ["cleared", "value 1"] := by native_decide
+
+private def indexedComparison (keep : String) (badTarget expected : Bool) : Option (List String) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler indexedModel).toOption
+  let checked ← (checkDocument prepared "en_US" (indexedInput keep badTarget)).toOption
+  let rule : DmRule := {
+    group := ["Form"], name := "Count", errorEntityRelPath := "../Anchor", errorCode := "COUNT",
+    condition := "NumberOfFilledFields(Anchor, Rows/Qty For \"1\") == 2", severity := "ERROR" }
+  let dm : DmModel := { flat := indexedModel, rules := [rule], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let messages := if expected then [{ code := "COUNT", pointer := "Form/Anchor", messageType := "VALUE_ERROR", severity := "ERROR" }] else []
+  pure ((replayRules dm .english world checked messages).map (·.status.tier))
+
+example : indexedComparison "2" false true = some ["match"] := by native_decide
+example : indexedComparison "bad" false true = some ["match"] := by native_decide
+example : indexedComparison "1" false false = some ["match"] := by native_decide
+
+example : (lowerComputation indexedModel .english
+    (definition "SelfKey" "../Out" "NumberOfFilledFields(Anchor, Rows/Qty For Out)")).isOk = false := by
+  native_decide
+
+example : (lowerComputation indexedModel .english
+    (definition "WrongKeyType" "../Out" "NumberOfFilledFields(Anchor, Rows/Qty For Rows/Qty)")).isOk = false := by
+  native_decide
+
+private def booleanIndexedModel : FlatModel := {
+  indexedModel with fields := indexedModel.fields.map fun declaration =>
+    if declaration.id == 1 || declaration.id == 3 then
+      { declaration with policy := { kind := .boolean } }
+    else declaration }
+
+private def booleanIndexedRun (key : String) : Option (List String) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler booleanIndexedModel).toOption
+  let base := indexedInput "2" false
+  let input := { base with cells := base.cells.map fun cell =>
+    if cell.address.field == 1 || cell.address.field == 3 then
+      let value := cell.address.field == 3 && cell.address.path == [1]
+      { cell with stored := if value then "true" else "false", raw := .parsed (.bool value) }
+    else cell }
+  let checked ← (checkDocument prepared "en_US" input).toOption
+  let step ← (lowerComputation booleanIndexedModel .english
+    (definition "Count" "../Out" s!"NumberOfFilledFields(Anchor, Rows/Qty For {key})")).toOption
+  pure ((← (runComputations world prepared checked [step.2]).toOption).map (·.outcome))
+
+example : booleanIndexedRun "\"false\"" = some ["value 2"] := by native_decide
+example : booleanIndexedRun "Anchor" = some ["value 2"] := by native_decide
+
+private def indexedSurface : SurfaceFieldEntitySource := {
+  first := .field { base := .absolute, groups := ["Form"], field := "Anchor" }
+  rest := [.indexed {
+    target := { base := .absolute, groups := ["Form", "Rows"], field := "Qty" }
+    key := .literal (.number 1) }] }
+
+private def indexedQuantifierRefused (operator : FieldFillQuantifier) : Option (Bool × Bool) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler indexedModel).toOption
+  let input ← (checkDocument prepared "en_US" (indexedInput "2" false)).toOption
+  let source ← (elaborateFieldFillList indexedModel ["Form"] indexedSurface).toOption
+  pure (!(CheckedValidationCondition.checkCore indexedModel ["Form"] (.leaf (.fieldFill operator source)) (by native_decide)).isOk,
+    !(source.evaluateFill? operator input []).isOk)
+
+example : indexedQuantifierRefused .atLeastOneFieldFilled = some (true, true) ∧
+    indexedQuantifierRefused .noFieldFilled = some (true, true) := by native_decide
+
+example : [CheckedSemanticIndexKey.literal (.text "wrong"),
+    .field { id := 1, groupPath := ["Form"], name := "Anchor", policy := { kind := .boolean } }].all
+    (fun key => !key.agreesWith { id := 3, groupPath := ["Form", "Rows"], name := "Keep", policy := { kind := .number { scale := 0, signed := true } }, repeatableScope := [10] }) = true := by
+  native_decide
+
+private def generatedIndexedCount (key : Rat) : Option NumericTargetCheckResult := do
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler indexedModel).toOption
+  let input ← (checkDocument prepared "en_US" (indexedInput "2" false)).toOption
+  let (_, .number parsed _) ← (lowerComputation indexedModel .english
+    (definition "Generated" "../Out" s!"NumberOfFilledFields(Anchor, Rows/Qty For \"{key}\")")).toOption | none
+  let operation := parsed.first.operation.operation
+  let table : GeneratedComputationTable (CheckedNumericComputationOperation indexedModel)
+      (CheckedComputationCondition indexedModel) := {
+    targetField := 4, name := "IndexedCount", alternatives := .singleton { operation }
+    messagePlan := { parts := [] } }
+  let admission ← (admitGeneratedNumericOperationTable indexedModel table (some world)).toOption
+  pure (← (admission.executeAddressedTargetResultWithRead world input input.read).toOption).targetCheck
+
+example : generatedIndexedCount 1 = some (.supported (.accepted { unscaled := 2, scale := 0 })) ∧
+    generatedIndexedCount 3 = some (.supported (.accepted { unscaled := 1, scale := 0 })) := by native_decide
 
 end A12Kernel.Dm.NumericCountLocks

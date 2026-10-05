@@ -107,6 +107,7 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
 private def readOperand (phase : Phase) (context : ScalarComputationContext)
     (filter : Option CorrelatedHaving) : ResolvedFieldEntityOperand model →
     Except ScalarTemporalEvaluationFault (ResolvedTemporalAggregateSide ScalarTemporalValue)
+  | .indexed _ => throw .indexedOperandNotSupported
   | .field declaration _ => do
       pure { operands := [← readField model phase declaration (context.read declaration.id)]
              hasUninstantiatedTail := false, hasHaving := false }

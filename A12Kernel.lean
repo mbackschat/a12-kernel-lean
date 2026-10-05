@@ -182,6 +182,7 @@ import A12Kernel.Elaboration.GeneratedComputationAppliedValidation
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.ValidationContext
 import A12Kernel.Elaboration.SemanticIndex
+import A12Kernel.Elaboration.IndexedGroupFieldFill
 import A12Kernel.Elaboration.SemanticIndexDateRange
 import A12Kernel.Elaboration.NumericStar
 import A12Kernel.Elaboration.StarPath

@@ -266,6 +266,7 @@ def CheckedFieldFillList.referencePointers (source : CheckedFieldFillList model)
     (environment : Env) : Except ReferenceProjectionError (List MessagePointer) :=
   if source.hasHaving then .error .filteredStarOperand else
   (·.flatten) <$> source.operands.mapM fun
+    | .indexed _ => throw .unclassifiedOperand
     | .field declaration => (concreteFieldPointer declaration environment).map ([·])
     | .star star => (starFieldPointer star.source environment).map ([·])
     | .group group => group.source.referencePointers environment

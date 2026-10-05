@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.IndexedGroupFieldFill
 import A12Kernel.Elaboration.SemanticIndex
 import A12Kernel.Elaboration.FieldEntityList
 
@@ -300,6 +301,7 @@ private def checked : CheckedNumberSemanticIndexSource model :=
       indexOwned := by native_decide
       targetOwned := by native_decide
       keyOwned := by native_decide
+      keyAgrees := by native_decide
     }
     indexNumber := by native_decide
     targetNumber := by native_decide
@@ -318,6 +320,7 @@ private def fieldChecked : CheckedNumberSemanticIndexSource model :=
       indexOwned := by native_decide
       targetOwned := by native_decide
       keyOwned := by native_decide
+      keyAgrees := by native_decide
     }
     indexNumber := by native_decide
     targetNumber := by native_decide
@@ -650,7 +653,7 @@ example :
     }
     semanticIndexErrorOf
       (elaborateNumberSemanticIndexSource stringModel ["Order"] fieldAuthored) =
-        some (.keyFieldNotNumber ["Order", "RequestedLine"]) := by
+        some (.keyAdmission .indexTypeInconsistent) := by
   native_decide
 
 /- A key field read from inside the indexed group carries its own measured placement class rather

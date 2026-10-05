@@ -102,21 +102,21 @@ theorem checkedFieldFillList_tally_uninstantiated_zero
           refine hypothesis _ ?_
           cases head <;> simp [ValidationFillTally.combine, CellObservation.asValidationFillTally, zero]
 
-/-- With retained capacity, every operator over an unfiltered list is the shared validation evaluator on the
+/-- With retained capacity, every operator over an unfiltered, unindexed list is the shared validation evaluator on the
 same instantiated classifications plus the missing declared slots. This also preserves the four
 operators whose result ignores the tail. -/
 theorem checkedFieldFillList_fill_with_declared_capacity
     (list : CheckedFieldFillList model)
     (document : CheckedDocument model) (outer : Env)
     (operator : FieldFillQuantifier) (tally : ValidationFillTally) (capacity : Nat)
-    (unfiltered : list.hasHaving = false)
+    (unfiltered : list.hasHaving = false) (unindexed : list.hasIndexed = false)
     (resolved : list.validationFillTally document outer = .ok tally)
     (available : list.fillCapacity? = some capacity) :
     list.evaluateFill? operator document outer =
       .ok (some (operator.evalValidation { tally with
         uninstantiated := capacity - (tally.filled + tally.empty + tally.unknown) })) := by
   cases operator <;>
-    simp [CheckedFieldFillList.evaluateFill?, unfiltered, resolved, available, FieldFillQuantifier.evalValidation,
+    simp [CheckedFieldFillList.evaluateFill?, unfiltered, unindexed, resolved, available, FieldFillQuantifier.evalValidation,
       bind, Except.bind, pure, Except.pure]
 
 /-- A group operand's list reads the group source's own declared slots, so the capacity theorem

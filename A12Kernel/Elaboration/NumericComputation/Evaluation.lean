@@ -10,9 +10,20 @@ def NumericOperand.toComputationResult : NumericOperand → NumericComputationRe
   | .unknown cause => .poison cause
 
 private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFillOperand model)
-    (context : ScalarComputationContext) (filterRead? : Option (Env → FieldId → CheckedCell)) :
+    (context : ScalarComputationContext) (filterRead? : Option (Env → FieldId → CheckedCell))
+    (indexColumn? : Option SemanticIndexColumnReader) :
     Except NumericComputationFault (Except FormalCause Nat) := do
   match operand with
+  | .indexed source => do
+      let some readColumn := indexColumn? | throw .repeatableContextRequired
+      let column ← readColumn source.group source.targetDeclaration.id context.row
+        |>.mapError .indexSelection
+      let key ← source.observeCurrentKey .computation context.read context.storedText
+        |>.mapError (NumericComputationFault.indexSelection ∘ CheckedAddressingError.semanticIndex)
+      return match column.lookupObservationForIndex .computation source.numericIndex key with
+        | .value _ => .ok 1
+        | .empty => .ok 0
+        | .unknown cause | .poison cause => .error cause
   | .star source =>
       if let some filter := source.filter then
         let some addressed := context.addressed
@@ -43,11 +54,12 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
 /-- Each filtered operand reuses the computation iterator's lookahead and poison timing
 (spec/09 §5). Finish its selected count before reaching the next authored operand. -/
 def CheckedFieldFillList.evaluateComputationCount (source : CheckedFieldFillList model)
-    (context : ScalarComputationContext) (filterRead? : Option (Env → FieldId → CheckedCell) := none) :
+    (context : ScalarComputationContext) (filterRead? : Option (Env → FieldId → CheckedCell) := none)
+    (indexColumn? : Option SemanticIndexColumnReader := none) :
     Except NumericComputationFault NumericComputationResult := do
   let mut total := 0
   for operand in source.operands do
-    match ← operand.countComputation context filterRead? with
+    match ← operand.countComputation context filterRead? indexColumn? with
     | .error cause => return .poison cause
     | .ok count => total := total + count
   pure (.value total)
@@ -502,7 +514,7 @@ def readCheckedNumericComputationAtom
   | .filledFieldCount source =>
       source.evaluateComputationCount { context.scalar with
         row := context.outer
-        addressed := some { document := context.document, read := context.starRead } } (some context.filterRead)
+        addressed := some { document := context.document, read := context.starRead } } (some context.filterRead) context.indexColumn?
   | .firstFilled source => do
       let result ←
         (source.evaluateComputationFirstFilled context.document context.outer
@@ -619,7 +631,9 @@ def fixedGroupCountOperandFault? (model : FlatModel) (reference : ResolvedGroupR
 def CheckedNumericComputationAtom.numericComputationFault? :
     CheckedNumericComputationAtom model → Option NumericComputationFault
   | .filledFieldCount source => source.operands.findSome? fun operand =>
-      if operand.hasHaving then none else
+      match operand with
+      | .indexed _ => none
+      | operand => if operand.hasHaving then none else
         match CheckedFieldFillList.computationSources { operands := [operand] } with
         | .ok _ => none
         | .error error => some (.fieldFillSource error)

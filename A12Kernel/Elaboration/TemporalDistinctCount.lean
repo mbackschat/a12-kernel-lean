@@ -266,7 +266,7 @@ private def groupSlotSource? :
   | .group reference => some (.fixed reference)
   | .starredGroup source => some (.starred source)
   | .starredGroupPresence source => some (.starredPresence source)
-  | .field .. | .star _ | .starHaving _ _ => none
+  | .indexed _ | .field .. | .star _ | .starHaving _ _ => none
 
 /-- Certify one group slot against **this** operator's component-set gate. -/
 private def certifyDistinctCountGroup (model : FlatModel)

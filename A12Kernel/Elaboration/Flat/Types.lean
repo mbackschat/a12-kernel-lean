@@ -135,6 +135,28 @@ def FieldKind.surfaceKind : FieldKind → SurfaceScalarKind
   | .temporal kind _ => .temporal kind
   | .dateRange => .dateRange
 
+/-- Whether two declared kinds share the base type the Kernel's field-list checker compares before
+    any kind gate, on the value-list quantifiers and on the plural DateRange overlap's scalar slot.
+
+    The four temporal kinds share one base type, and every other kind is its own. A custom
+    declaration shares String's, because it carries the String kind (`customTypeRequiresString`).
+    Measured: a Date beside a date fragment, a Time beside a DateTime and a String beside a custom
+    declaration share one ([inbound](../../../docs/SOURCES.md#inbound-2026-09-25e-value-list-base-type)).
+    Every cross pair measured differs. On the field list, an Enumeration beside a String and a
+    Boolean beside a Confirm in both orders, and a Number beside a Date, a Number before a String, a
+    date range beside a String and a Boolean beside a Date in the order measured
+    ([checkpoint](../../../docs/SOURCES.md#src-value-list-base-type-cross-pairs)); a String beside a
+    Number (the inbound above) and beside a Date
+    ([checkpoint](../../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)).
+    Opposite a field value list, a String and an Enumeration in either direction, an Enumeration
+    opposite a Number and a Number opposite a String (the cross-pair checkpoint), and a String
+    opposite a Number or a Time (the inbound). The pairs no row reaches follow the Kernel's per-type
+    base-type match, read rather than measured. -/
+def SurfaceScalarKind.sharesValueListBaseType :
+    SurfaceScalarKind → SurfaceScalarKind → Bool
+  | .temporal _, .temporal _ => true
+  | left, right => left == right
+
 /-- Whether a String declaration exposes an evaluation value. Raw Strings retain storage presence but close every checked value-reading route. -/
 inductive StringValueMode where
   | evaluated

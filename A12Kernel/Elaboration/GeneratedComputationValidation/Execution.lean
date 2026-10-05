@@ -130,6 +130,7 @@ private def addressedEvaluationContextWithRead
   outer := []
   filterRead := checkedReadAtWith input read
   starRead := checkedReadAtWith input read
+  indexColumn? := some (input.resolveSemanticIndexColumnWith read)
 }
 
 /-- Evaluate one admitted scalar-target table through a caller-supplied exact-address source view. Guards and operations consume the same source view through their checked addressed evaluators, and target placement remains immutable source state. -/

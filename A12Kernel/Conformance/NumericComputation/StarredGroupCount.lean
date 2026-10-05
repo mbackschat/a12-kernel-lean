@@ -422,7 +422,7 @@ private def twoLevelCount (rows : List RowAddr) : Option NumericComputationResul
       | .atom atom =>
           ((⟨{ read := fun _ => emptyCell },
              { instantiatedRows := rows, rawCells := fun _ => none },
-             [], fun _ _ => emptyCell, fun _ _ => emptyCell⟩ :
+             [], fun _ _ => emptyCell, fun _ _ => emptyCell, none⟩ :
             NumericComputationEvaluationContext).readCheckedNumericComputationAtom
               (model := twoLevelModel) atom).toOption
       | _ => none

@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.CheckedIndexColumn
-import A12Kernel.Elaboration.FieldEntityList
+import A12Kernel.Elaboration.SemanticIndexAdmission
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.RepetitionNotUnique
@@ -18,20 +18,21 @@ stays a Number-index, Number-target instance, because it rebuilds the column fro
 rather than projecting the shared one; the **immutable generated-preliminary route** serves the
 general case and only needs the target's id.
 
-Two boundaries stay outside deliberately. This project performs no lexing, so an authored literal key
-reaches the surface already decoded into the identity its index field uses, and the Kernel's
-declaration-format check on that token — `MVK_INDEX_VALUE_INVALID`, which rejects `For "250"` against
-a `minFractionalDigits = 2` field — is [`IndexKeyShape`](IndexKeyShape.lean)'s, which this decoded
-surface does not consume. Repeatable field-valued
-keys, nested indices, and concrete syntax also remain outside.
+This checked surface starts after literal decoding. The entity-list reader consumes
+[`IndexKeyShape`](IndexKeyShape.lean) before supplying the decoded identity and original spelling.
+Direct callers own the same declaration-format precondition. Repeatable field-valued keys and
+nested indices remain outside this one-group certificate.
 -/
 
 namespace A12Kernel
 
 inductive SurfaceSemanticIndexKey where
   /-- A declaration-admitted literal, already decoded into the identity its declared index field
-  uses. The Kernel's format check on the authored token sits outside this project's boundary. -/
-  | literal (token : SemanticIndexKey)
+  uses. `spelling` retains the unescaped, line-normalized token for authored operand identity:
+  numeric equality does not make differently spelled entity-list parameters duplicates
+  (`CheckEntityListenUtils` and `SemanticIndexRef`, kernel 30.8.1). The declaration-format check
+  remains the caller's responsibility. -/
+  | literal (token : SemanticIndexKey) (spelling : Option String := none)
   /-- A field whose checked current value supplies the lookup key. -/
   | field (reference : SurfaceFieldPath)
   deriving Repr, DecidableEq
@@ -65,36 +66,18 @@ structure SurfaceStarredNumberSemanticIndexUse where
   token : String
   deriving Repr, DecidableEq
 
-/-- The two reviewed field-fill carriers that accept one index-selected group followed by one direct
-field. Keeping the operator closed here prevents the static admission from transferring to another
-quantifier ([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
-inductive IndexedGroupFieldFillOperator where
-  | allFieldsFilled
-  | noFieldFilled
-  deriving Repr, DecidableEq
-
-/-- The exact reviewed indexed-group/direct-field authoring shape. Stars, filters, selected fields,
-additional operands, and reversed order have no representation in this certificate
-([checkpoint](../../docs/SOURCES.md#src-pr2-semantic-index-carrier-matrix)). -/
-structure SurfaceIndexedGroupFieldFillPair where
-  operator : IndexedGroupFieldFillOperator
-  group : SurfaceGroupPath
-  token : String
-  field : SurfaceFieldPath
-  deriving Repr, DecidableEq
-
 /-- The Number surface retained for the reduced raw-context route, whose literal is a numeric value. -/
 abbrev SurfaceNumberSemanticIndexKey := SurfaceSemanticIndexKey
 abbrev SurfaceNumberSemanticIndex := SurfaceSemanticIndex
 
 inductive SemanticIndexElabError where
+  | keyAdmission (diagnostic : KernelStaticDiagnostic)
   | resolve (error : ResolveError)
   | group (error : SingleGroupElabError)
   | missingIndexField (groupPath : GroupPath)
   /-- The literal key's identity domain disagrees with the declared index field's: a numeric literal
   against a text-identity index, or a text literal against a Number one. -/
   | indexKeyDomainMismatch (path : List String) (key : SemanticIndexKey)
-  | keyFieldNotNumber (path : List String)
   /-- The reduced raw-context route needs a Number index and a Number target; the general
   preliminary route does not. -/
   | reducedRouteNeedsNumber (path : List String)
@@ -106,19 +89,20 @@ inductive SemanticIndexElabError where
 
 namespace SemanticIndexElabError
 
-/-- Project the two refusals with measured Kernel diagnostics.
+/-- Project the source-derived key-admission and containment diagnostics.
 
 Every other form is named rather than caught by a wildcard, so that a new arm cannot be absorbed
 into this project's boundary without a decision. `reducedRouteNeedsNumber` and `incoherentCore` are
 that boundary — the reduced raw-context route is narrower than the Kernel by construction. The
-remaining four are unmeasured Kernel refusals: `missingIndexField` carries a measured class on the
+remaining unmapped forms are unmeasured Kernel refusals: `missingIndexField` carries a measured class on the
 `RuleGroup` suffix alone, through `ruleGroupDiagnostic?` below, and the other carriers need their
 own evidence before inheriting it. -/
 def diagnostic? : SemanticIndexElabError → Option KernelStaticDiagnostic
+  | .keyAdmission diagnostic => some diagnostic
   | .keyContainedInIndexedGroup _ _ => some .semanticIndexContainedInIndex
   | .resolve error => error.diagnostic?
   | .group _ | .missingIndexField _ | .indexKeyDomainMismatch _ _
-  | .keyFieldNotNumber _ | .reducedRouteNeedsNumber _ | .incoherentCore => none
+  | .reducedRouteNeedsNumber _ | .incoherentCore => none
 
 /-- Exact diagnostic projection measured for the `RuleGroup` literal suffix. A missing index on
 other carriers requires its own evidence before it can inherit this code
@@ -137,13 +121,6 @@ inductive FilledFieldCountSemanticIndexPairElabError where
   | incoherentCore
   deriving Repr, DecidableEq
 
-inductive IndexedGroupFieldFillPairElabError where
-  | groupReference (error : SingleGroupElabError)
-  | semanticIndex (error : SemanticIndexElabError)
-  | fieldEntity (error : FieldEntityShapeElabError)
-  | incoherentCore
-  deriving Repr, DecidableEq
-
 inductive StarredNumberSemanticIndexRefusalError where
   | starPath (error : StarPathElabError)
   | semanticIndex (error : SemanticIndexElabError)
@@ -154,7 +131,7 @@ inductive StarredNumberSemanticIndexRefusalError where
   deriving Repr, DecidableEq
 
 inductive CheckedSemanticIndexKey where
-  | literal (token : SemanticIndexKey)
+  | literal (token : SemanticIndexKey) (spelling : Option String := none)
   | field (source : FlatFieldDecl)
   deriving Repr, DecidableEq
 
@@ -163,20 +140,37 @@ namespace CheckedSemanticIndexKey
 /-- The dynamic key field must be the exact nonrepeatable declaration retained by the checked model. A literal has no additional model owner. -/
 def admittedBy (key : CheckedSemanticIndexKey) (model : FlatModel) : Bool :=
   match key with
-  | .literal _ => true
+  | .literal _ _ => true
   | .field source =>
       match model.lookupUniqueId source.id with
       | .ok admitted => admitted == source && source.repeatableScope.isEmpty
       | .error _ => false
 
-/-- Apply declaration-owned checking to a dynamic key and retain the requested phase. A literal
-bypasses the raw context, rendered into the value domain the shared lookup dispatch consumes. -/
+/-- Key identity must match the index declaration even when a checked source is constructed
+without the surface elaborator (`SemanticIndexAdmission.keyAgreementRefusal`). -/
+def agreesWith (key : CheckedSemanticIndexKey) (index : FlatFieldDecl) : Bool :=
+  match key with
+  | .literal token _ => match token, index.policy.kind with
+    | .number _, .number _ => true
+    | .text _, .number _ => false
+    | .number _, _ => false
+    | .text _, _ => true
+  | .field source => source.policy.kind.surfaceKind.sharesValueListBaseType index.policy.kind.surfaceKind
+
+/-- Retain the certified key declaration when reading a current computation or validation view.
+Literal identity is independent of the reader; a dynamic key must retain its phase and formal cause
+for the shared column lookup (`ResolvedSemanticIndexColumn.lookupObservationForIndex`). -/
+def observeWith (key : CheckedSemanticIndexKey)
+    (read : FlatFieldDecl → CellObservation) : CellObservation :=
+  match key with
+  | .literal (.number value) _ => .value (.num value)
+  | .literal (.text token) _ => .value (.str token)
+  | .field source => read source
+
+/-- Apply declaration-owned checking to a dynamic key and retain the requested phase. -/
 def observe (key : CheckedSemanticIndexKey) (model : FlatModel)
     (raw : RawFlatContext) (phase : Phase) : CellObservation :=
-  match key with
-  | .literal (.number value) => .value (.num value)
-  | .literal (.text token) => .value (.str token)
-  | .field source => observeCell phase ((model.checkContext raw).read source.id)
+  key.observeWith fun source => observeCell phase ((model.checkContext raw).read source.id)
 
 end CheckedSemanticIndexKey
 
@@ -191,6 +185,7 @@ structure CheckedSemanticIndexSelection (model : FlatModel) where
   indexDeclared : (group.indexField == some indexDeclaration.id) = true
   indexOwned : model.admitsSingleGroupDeclaration group indexDeclaration = true
   keyOwned : key.admittedBy model = true
+  keyAgrees : key.agreesWith indexDeclaration = true
 
 /-- A literal semantic index statically selecting the exact group that contains the authored rule.
 Runtime row presence remains outside this certificate. -/
@@ -216,6 +211,7 @@ structure CheckedSemanticIndexSource (model : FlatModel) where
   targetOwned :
     model.admitsSingleGroupDeclaration group targetDeclaration = true
   keyOwned : key.admittedBy model = true
+  keyAgrees : key.agreesWith indexDeclaration = true
 
 namespace CheckedSemanticIndexSource
 
@@ -240,21 +236,6 @@ structure CheckedFilledFieldCountSemanticIndexPair (model : FlatModel) where
   firstKeyRetained : (first.key == .literal (.text token)) = true
   secondKeyRetained : (second.key == .literal (.text token)) = true
   distinctTargets : (first.targetDeclaration.id != second.targetDeclaration.id) = true
-
-/-- Static authoring certificate for the reviewed indexed-group/direct-field pair. It retains the
-operator and authored order together with the selected group, index declaration, exact-text key, and
-direct nonrepeatable field; it supplies no field-fill evaluator. -/
-structure CheckedIndexedGroupFieldFillPair (model : FlatModel) where
-  operator : IndexedGroupFieldFillOperator
-  groupPath : GroupPath
-  token : String
-  selection : CheckedSemanticIndexSelection model
-  field : FlatFieldDecl
-  groupSelected : (selection.group.path == groupPath) = true
-  keyRetained : (selection.key == .literal (.text token)) = true
-  fieldOwned : model.fields.contains field = true
-  fieldNonrepeatable : field.repeatableScope.isEmpty = true
-  fieldOutsideSelection : (!selection.group.path.isPrefixOf field.groupPath) = true
 
 /-- One valid starred Number field and one valid exact-text semantic-index selection certified as
 the same one-level target before the path-specific refusal is projected. It supplies no indexed
@@ -308,15 +289,20 @@ private def elaborateSemanticIndexSelectionWithValidatedModel
     | .number _ => true
     | _ => false
   let key ← match authored with
-    | .literal token =>
+    | .literal token spelling =>
         -- The literal identity domain is owned by the declared index column, not by its carrier.
         match token, numericIndex with
-        | .number _, true | .text _, false => pure (.literal token)
+        | .number _, true | .text _, false => pure (.literal token spelling)
         | _, _ =>
             throw (.indexKeyDomainMismatch indexDeclaration.path token)
     | .field reference =>
         let declaration ← model.resolveFieldDeclarationUnchecked
           declaringGroup reference |>.mapError .resolve
+        let keyShape : SemanticIndexAdmissionKey := .reference {
+          baseTypeMatchesIndexField :=
+            declaration.policy.kind.surfaceKind.sharesValueListBaseType indexDeclaration.policy.kind.surfaceKind }
+        if let some diagnostic := keyAgreementRefusal keyShape then
+          throw (.keyAdmission diagnostic)
         if group.path.isPrefixOf declaration.groupPath then
           throw (.keyContainedInIndexedGroup declaration.path group.path)
         else
@@ -329,16 +315,20 @@ private def elaborateSemanticIndexSelectionWithValidatedModel
       if hIndexOwned :
           model.admitsSingleGroupDeclaration group indexDeclaration = true then
         if hKeyOwned : key.admittedBy model = true then
-          pure {
-            group
-            indexDeclaration
-            key
-            modelWellFormed := by rw [hModel]; rfl
-            groupOwned := hGroup
-            indexDeclared := hDeclared
-            indexOwned := hIndexOwned
-            keyOwned := hKeyOwned
-          }
+          if hKeyAgrees : key.agreesWith indexDeclaration = true then
+            pure {
+              group
+              indexDeclaration
+              key
+              modelWellFormed := by rw [hModel]; rfl
+              groupOwned := hGroup
+              indexDeclared := hDeclared
+              indexOwned := hIndexOwned
+              keyOwned := hKeyOwned
+              keyAgrees := hKeyAgrees
+            }
+          else
+            throw .incoherentCore
         else
           throw .incoherentCore
       else
@@ -437,9 +427,22 @@ def elaborateSemanticIndexSource (model : FlatModel)
           indexOwned := selection.indexOwned
           targetOwned := hTargetOwned
           keyOwned := selection.keyOwned
+          keyAgrees := selection.keyAgrees
         }
       else
         throw .incoherentCore
+
+theorem elaborateSemanticIndexSource_declaringGroupValid
+    {model : FlatModel} {declaringGroup : GroupPath} {authored : SurfaceSemanticIndex}
+    {checked : CheckedSemanticIndexSource model}
+    (ok : elaborateSemanticIndexSource model declaringGroup authored = .ok checked) :
+    GroupPath.isValid declaringGroup = true := by
+  unfold elaborateSemanticIndexSource at ok
+  split at ok
+  · cases ok
+  · cases hTarget : model.resolveFieldDeclarationUnchecked declaringGroup authored.target with
+    | error error => simp [hTarget, Except.mapError, bind, Except.bind] at ok
+    | ok declaration => exact FlatModel.resolveFieldDeclarationUnchecked_declaringGroupValid hTarget
 
 /-- Certify the exact reviewed pair of index-selected fields for `NumberOfFilledFields`. The two
 ordinary sources are checked independently, then narrowed to one group/index/token identity and two
@@ -481,50 +484,6 @@ def elaborateFilledFieldCountSemanticIndexPair (model : FlatModel)
       throw .incoherentCore
   else
     throw (.differentGroup first.group.path second.group.path)
-
-/-- Certify the reviewed `AllFieldsFilled`/`NoFieldFilled` indexed-group pair. Group selection and
-direct-field resolution reuse their existing checked owners, while this carrier retains order and
-prevents the direct operand from collapsing into the selected group's expansion. Runtime truth and
-polarity remain outside the certificate. -/
-def elaborateIndexedGroupFieldFillPair (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceIndexedGroupFieldFillPair)
-    (writtenGroup : GroupPath := declaringGroup) :
-    Except IndexedGroupFieldFillPairElabError
-      (CheckedIndexedGroupFieldFillPair model) :=
-  match hModel : model.validate with
-  | .error error => .error (.semanticIndex (.resolve error))
-  | .ok () => do
-      let groupPath ← authored.group.resolveAgainst declaringGroup
-        |>.mapError .groupReference
-      let checkedGroup ← elaborateTextSemanticIndexGroupSelectionWithValidatedModel model
-        declaringGroup groupPath authored.token hModel
-        |>.mapError .semanticIndex
-      let resolvedField ← resolveFieldEntityOperandIn model declaringGroup []
-        (.field authored.field .stored) (writtenGroup := writtenGroup) |>.mapError .fieldEntity
-      let field ← match resolvedField with
-        | .field declaration .stored => pure declaration
-        | _ => throw .incoherentCore
-      if hOwned : model.fields.contains field = true then
-        if hNonrepeatable : field.repeatableScope.isEmpty = true then
-          if hOutside :
-              (!checkedGroup.selection.group.path.isPrefixOf field.groupPath) = true then
-            pure {
-              operator := authored.operator
-              groupPath := checkedGroup.groupPath
-              token := checkedGroup.token
-              selection := checkedGroup.selection
-              field
-              groupSelected := checkedGroup.groupSelected
-              keyRetained := checkedGroup.keyRetained
-              fieldOwned := hOwned
-              fieldNonrepeatable := hNonrepeatable
-              fieldOutsideSelection := hOutside }
-          else
-            throw .incoherentCore
-        else
-          throw .incoherentCore
-      else
-        throw .incoherentCore
 
 /-- Certify the exact one-level starred Number target and its otherwise-valid literal text
 semantic-index selection before returning the measured wildcard/index refusal. -/
@@ -597,20 +556,10 @@ def elaborateNumberSemanticIndexSource (model : FlatModel)
   let checked ← elaborateSemanticIndexSource model declaringGroup authored
   if hIndex : checked.indexDeclaration.toNumberField?.isSome = true then
     if hTarget : checked.targetDeclaration.toNumberField?.isSome = true then
-      match checked.key with
-      | .field source =>
-          if source.toNumberField?.isSome then
-            pure {
-              toCheckedSemanticIndexSource := checked
-              indexNumber := hIndex
-              targetNumber := hTarget }
-          else
-            throw (.keyFieldNotNumber source.path)
-      | .literal _ =>
-          pure {
-            toCheckedSemanticIndexSource := checked
-            indexNumber := hIndex
-            targetNumber := hTarget }
+      pure {
+        toCheckedSemanticIndexSource := checked
+        indexNumber := hIndex
+        targetNumber := hTarget }
     else
       throw (.reducedRouteNeedsNumber checked.targetDeclaration.path)
   else
@@ -675,17 +624,46 @@ private def NumberIndexCandidates.toColumn
 
 namespace CheckedSemanticIndexSource
 
+/-- Dynamic non-Number keys compare by exact stored text, as the column does; a checked Boolean,
+Enumeration or temporal payload cannot recover that identity. Preserve empty and formal failure
+before consulting spelling, so failed producers retain their computation poison. -/
+def observeCurrentKey (checked : CheckedSemanticIndexSource model) (phase : Phase)
+    (read : FieldId → CheckedCell) (stored : FieldId → Option String) :
+    Except SemanticIndexContextError CellObservation := do
+  let observation := checked.key.observeWith fun declaration => observeCell phase (read declaration.id)
+  if checked.numericIndex then return observation
+  match checked.key, observation with
+  | .field declaration, .value _ =>
+      match stored declaration.id with
+      | some token => pure (.value (.str token))
+      | none => throw (.checkedColumn (.missingStoredValue { field := declaration.id, path := [] }))
+  | _, _ => pure observation
+
 /-- Project the shared generated-preliminary index column into semantic-index's clean unique-entry
 policy without rebuilding topology, defaults, or generated findings. This route needs only the
 selected target's id, so it serves every target kind. -/
 def resolvePreliminaryColumn
     (checked : CheckedSemanticIndexSource model)
-    (preliminary : CheckedIndexPreliminary model) (outer : Env := []) :
+    (preliminary : CheckedIndexPreliminary model) (outer : Env := [])
+    (read : CellAddr → Except CheckedDocumentError CheckedCell := preliminary.readAuthoredValidation) :
     Except SemanticIndexContextError ResolvedSemanticIndexColumn := do
   let column ← preliminary.resolveIndexColumn checked.group outer
     |>.mapError .checkedColumn
-  column.toSemanticIndexColumn preliminary checked.targetDeclaration.id
+  column.toSemanticIndexColumnWith read checked.targetDeclaration.id
     |>.mapError .checkedColumn
+
+/-- Keep the prepared index column fixed while reading the selected target and dynamic key from
+current views. Computation targets cannot be index fields (`spec/09`), but their values may supply
+lookup keys or selected payloads; selection must therefore retain addresses rather than stored values. -/
+def lookupPreliminaryValueWith
+    (checked : CheckedSemanticIndexSource model)
+    (preliminary : CheckedIndexPreliminary model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (keyRead : FlatFieldDecl → CellObservation) (phase : Phase) (outer : Env := []) :
+    Except SemanticIndexContextError CellObservation := do
+  let column ← checked.resolvePreliminaryColumn preliminary outer read
+  pure (column.lookupObservationForIndex phase checked.numericIndex
+    (checked.key.observeWith keyRead))
 
 /-- Evaluate a literal or dynamic key over the immutable checked preliminary document through the
 common resolved-column evaluator, under the identity the declared index field uses. -/
@@ -693,10 +671,9 @@ def lookupPreliminaryValue
     (checked : CheckedSemanticIndexSource model)
     (preliminary : CheckedIndexPreliminary model)
     (keyRaw : RawFlatContext) (phase : Phase) (outer : Env := []) :
-    Except SemanticIndexContextError CellObservation := do
-  let column ← checked.resolvePreliminaryColumn preliminary outer
-  pure (column.lookupObservationForIndex phase checked.numericIndex
-    (checked.key.observe model keyRaw phase))
+    Except SemanticIndexContextError CellObservation :=
+  checked.lookupPreliminaryValueWith preliminary preliminary.readAuthoredValidation
+    (fun source => observeCell phase ((model.checkContext keyRaw).read source.id)) phase outer
 
 end CheckedSemanticIndexSource
 

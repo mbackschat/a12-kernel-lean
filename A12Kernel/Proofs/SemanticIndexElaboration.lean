@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.IndexedGroupFieldFill
 import A12Kernel.Elaboration.SemanticIndex
 import A12Kernel.Proofs.SemanticIndex
 
@@ -112,6 +113,7 @@ theorem checkedSemanticIndex_preliminary_delegates
       .ok (column.lookupObservationForIndex phase checked.numericIndex
         (checked.key.observe model keyRaw phase)) := by
   unfold CheckedSemanticIndexSource.lookupPreliminaryValue
+    CheckedSemanticIndexSource.lookupPreliminaryValueWith
   rw [resolved]
   rfl
 
