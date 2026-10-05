@@ -88,7 +88,7 @@ def presence (polarity : HavingPresencePolarity)
 /-- Fields read by the filter in first authored occurrence order. Repetition-only leaves contribute no field dependency, and a String leaf contributes its single reference. -/
 def fieldIds : CorrelatedHaving → List FieldId
   | .leaf (.numeric comparison) =>
-      ((comparison.left.atoms ++ comparison.right.atoms).filterMap (·.fieldId?)).eraseDups
+      ((comparison.left.atoms ++ comparison.right.atoms).flatMap (·.fieldOrigins) |>.map (·.2)).eraseDups
   | .leaf (.simpleComparison _ _ comparison) => comparison.fields.map (·.id) |>.eraseDups
   | .leaf (.compareStringLiteral _ reference _) => [reference.field.id]
   | .leaf (.literalMembership _ _ source) => [source.field.id]
@@ -106,8 +106,8 @@ def referencesField (condition : CorrelatedHaving) (field : FieldId) : Bool :=
     rule's error-field gates ([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
 def markedFieldIds : CorrelatedHaving → List FieldId
   | .leaf (.numeric comparison) =>
-      ((comparison.left.atoms ++ comparison.right.atoms).filter (·.origin? == some .outer)
-        |>.filterMap (·.fieldId?)).eraseDups
+      ((comparison.left.atoms ++ comparison.right.atoms).flatMap (·.fieldOrigins)
+        |>.filter (·.1 == .outer) |>.map (·.2)).eraseDups
   | .leaf (.simpleComparison left right comparison) =>
       ((if left == .outer then comparison.inputFields.1 else []) ++
         (if right == .outer then comparison.inputFields.2 else [])).map (·.id) |>.eraseDups
@@ -139,7 +139,7 @@ private def HavingOrigin.isOuter : HavingOrigin → Bool
 
 private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
-      comparison.left.anyAtom (·.origin?.any HavingOrigin.isInner) || comparison.right.anyAtom (·.origin?.any HavingOrigin.isInner)
+      comparison.left.anyAtom (·.origins.any HavingOrigin.isInner) || comparison.right.anyAtom (·.origins.any HavingOrigin.isInner)
   | .simpleComparison left right comparison =>
       (left.isInner && !comparison.inputFields.1.isEmpty) ||
         (right.isInner && !comparison.inputFields.2.isEmpty)
@@ -151,7 +151,7 @@ private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
 
 private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
-      comparison.left.anyAtom (·.origin?.any HavingOrigin.isOuter) || comparison.right.anyAtom (·.origin?.any HavingOrigin.isOuter)
+      comparison.left.anyAtom (·.origins.any HavingOrigin.isOuter) || comparison.right.anyAtom (·.origins.any HavingOrigin.isOuter)
   | .simpleComparison left right comparison =>
       (left.isOuter && !comparison.inputFields.1.isEmpty) ||
         (right.isOuter && !comparison.inputFields.2.isEmpty)

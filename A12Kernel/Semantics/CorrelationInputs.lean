@@ -3,6 +3,7 @@ import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.Iteration
 import A12Kernel.Semantics.NumericExpression
 import A12Kernel.Semantics.NumericConversion
+import A12Kernel.Semantics.DateTimeDifference
 
 /-! Correlated operand identities, binding frames and phase-specific checked reads. -/
 
@@ -94,8 +95,14 @@ structure HavingRepetitionRef where
   source : HavingRepetitionSource
   deriving Repr, DecidableEq
 
+structure HavingTemporalRef where
+  origin : HavingOrigin
+  field : FlatTemporalField
+  deriving Repr, DecidableEq
+
 /-- Model constants carry no row origin, so arithmetic cannot make them satisfy a filter reference requirement (spec/07 §3). Field and repetition atoms retain their own origins. -/
 inductive HavingNumericAtom where
+  | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : HavingTemporalRef)
   | baseYear (year : Int)
   | baseYearDatePart (year : Int) (source : BaseYearDateSource) (part : DateNumericPart)
   | fieldValueAsNumber (origin : HavingOrigin) (source : ResolvedFieldValueAsNumberSource)
@@ -107,22 +114,26 @@ inductive HavingNumericAtom where
   | repetition (reference : HavingRepetitionRef)
   deriving Repr, DecidableEq
 
-def HavingNumericAtom.origin? : HavingNumericAtom → Option HavingOrigin
-  | .baseYear _ | .baseYearDatePart _ _ _ => none
-  | .field reference => some reference.origin
-  | .dateRangeBoundPart origin _ _ _ | .fieldValueAsNumber origin _ | .stringLength origin _ | .stringRange origin _ _ _ | .temporalPart origin _ _ => some origin
-  | .repetition reference => some reference.origin
+def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
+  | .dateTimeDifference _ left right => [left.origin, right.origin]
+  | .baseYear _ | .baseYearDatePart _ _ _ => []
+  | .field reference => [reference.origin]
+  | .dateRangeBoundPart origin _ _ _ | .fieldValueAsNumber origin _ | .stringLength origin _
+      | .stringRange origin _ _ _ | .temporalPart origin _ _ => [origin]
+  | .repetition reference => [reference.origin]
 
-def HavingNumericAtom.fieldId? : HavingNumericAtom → Option FieldId
-  | .baseYear _ | .baseYearDatePart _ _ _ => none
-  | .dateRangeBoundPart _ source _ _ => some source.id
-  | .fieldValueAsNumber _ source => some source.fieldId
-  | .field reference => some reference.field.id
-  | .stringLength _ source | .stringRange _ source _ _ => some source.id
-  | .temporalPart _ source _ => some source.id
-  | .repetition _ => none
+/-- Preserve each read's own origin inside a multi-source numeric atom (spec/07 §3). -/
+def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin × FieldId)
+  | .dateTimeDifference _ left right => [(left.origin, left.field.id), (right.origin, right.field.id)]
+  | .baseYear _ | .baseYearDatePart _ _ _ | .repetition _ => []
+  | .dateRangeBoundPart origin source _ _ => [(origin, source.id)]
+  | .fieldValueAsNumber origin source => [(origin, source.fieldId)]
+  | .field reference => [(reference.origin, reference.field.id)]
+  | .stringLength origin source | .stringRange origin source _ _ => [(origin, source.id)]
+  | .temporalPart origin source _ => [(origin, source.id)]
 
 def HavingNumericAtom.summary : HavingNumericAtom → NumericScaleSummary
+  | .dateTimeDifference _ _ _ => .field 0
   | .baseYear _ | .baseYearDatePart _ _ _ => .field 0
   | .fieldValueAsNumber _ source => .field source.scale
   | .field reference => .field reference.field.info.scale
@@ -278,10 +289,23 @@ private def havingArithmetic : NumericOperand → Except Unit NumericArithmeticO
   | .value amount fillability => .ok (.value amount fillability)
   | .unknown _ => .error ()
 
+private def readHavingSubdayDifference (phase : Phase)
+    (read : Env → FieldId → Except Error CheckedCell) (frame : CorrelationFrame)
+    (unit : DateTimeSubdayUnit) (left right : HavingTemporalRef) : Except Error NumericOperand := do
+  let first ← read (frame.envAt left.origin) left.field.id
+  let second ← read (frame.envAt right.origin) right.field.id
+  pure (DateTimeDifferenceOperand.evaluate unit
+    (DateTimeDifferenceOperand.ofObservation (observeCell phase first))
+    (DateTimeDifferenceOperand.ofObservation (observeCell phase second)))
+
 /-- Filter Number atoms apply comparison-local empty zero before ordinary arithmetic. Missing raw
     repetition bindings remain unknown; checked addressed readers report them structurally. -/
 def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : CorrelationFrame) :
     HavingNumericAtom → Except Unit NumericArithmeticOutcome
+  | .dateTimeDifference unit left right =>
+      havingArithmetic (DateTimeDifferenceOperand.evaluate unit
+        (DateTimeDifferenceOperand.ofObservation (observeCell .validation (context.read (frame.envAt left.origin) left.field.id)))
+        (DateTimeDifferenceOperand.ofObservation (observeCell .validation (context.read (frame.envAt right.origin) right.field.id))))
   | .dateRangeBoundPart origin source bound part =>
       havingArithmetic ((observeCell .validation (context.read (frame.envAt origin) source.id)).asDateRangeBoundNumericOperand bound part)
   | .baseYear year => .ok (.value year .fixed)
@@ -306,6 +330,8 @@ def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : Cor
 def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) :
     HavingNumericAtom → Except Error (Except Unit NumericArithmeticOutcome)
+  | .dateTimeDifference unit left right => do
+      pure (havingArithmetic (← readHavingSubdayDifference .validation context.read frame unit left right))
   | .dateRangeBoundPart origin source bound part => do
       let cell ← context.read (frame.envAt origin) source.id
       pure (havingArithmetic ((observeCell .validation cell).asDateRangeBoundNumericOperand bound part))
@@ -332,6 +358,10 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
 
 def HavingNumericAtom.readComputation (context : CorrelationContext) (frame : CorrelationFrame) :
     HavingNumericAtom → NumericComputationResult
+  | .dateTimeDifference unit left right =>
+      (DateTimeDifferenceOperand.evaluate unit
+        (DateTimeDifferenceOperand.ofObservation (observeCell .computation (context.read (frame.envAt left.origin) left.field.id)))
+        (DateTimeDifferenceOperand.ofObservation (observeCell .computation (context.read (frame.envAt right.origin) right.field.id)))).toComputationResult
   | .dateRangeBoundPart origin source bound part =>
       ((observeCell .computation (context.read (frame.envAt origin) source.id)).asDateRangeBoundNumericOperand bound part).toComputationResult
   | .baseYear year => .value year
@@ -355,6 +385,8 @@ def HavingNumericAtom.readComputation (context : CorrelationContext) (frame : Co
 
 def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) : HavingNumericAtom → Except Error NumericComputationResult
+  | .dateTimeDifference unit left right => do
+      pure ((← readHavingSubdayDifference .computation context.read frame unit left right).toComputationResult)
   | .dateRangeBoundPart origin source bound part => do
       let cell ← context.read (frame.envAt origin) source.id
       pure (((observeCell .computation cell).asDateRangeBoundNumericOperand bound part).toComputationResult)

@@ -33,7 +33,13 @@ structure SurfaceHavingPresenceRef where
   field : SurfaceFieldPath
   deriving Repr, DecidableEq
 
+structure SurfaceHavingTemporalRef where
+  origin : HavingOrigin
+  field : SurfaceFieldPath
+  deriving Repr, DecidableEq
+
 inductive SurfaceHavingNumericAtom where
+  | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : SurfaceHavingTemporalRef)
   | baseYear
   | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
   | fieldValueAsNumber (reference : SurfaceHavingStringRef)

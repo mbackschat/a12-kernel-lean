@@ -30,6 +30,8 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
     SurfaceCorrelatedHaving → Option (List String × UnboundOperandLevel)
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
+        | .dateTimeDifference _ left right =>
+            (field left.origin left.field).orElse fun _ => field right.origin right.field
         | .baseYear | .baseYearDatePart _ _ => none
         | .fieldValueAsNumber reference => field reference.origin reference.field
         | .field reference => field reference.origin reference.field
@@ -140,7 +142,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
         (model.resolveNumberInGroup declaringGroup group reference.field).isOk
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).any fun
-        | .baseYear | .baseYearDatePart _ _ | .fieldValueAsNumber _
+        | .dateTimeDifference _ _ _ | .baseYear | .baseYearDatePart _ _ | .fieldValueAsNumber _
             | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
         | .field reference => reference.origin == .inner &&
             (model.resolveNumberInGroup declaringGroup group reference.field).isOk
@@ -168,6 +170,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     fieldValueAsNumber := fun _ => throw .stringLeafOutsideStarRoute
     boolean := fun _ _ _ => throw .stringLeafOutsideStarRoute
     stringValue := fun _ _ => throw .stringLeafOutsideStarRoute
+    dateTimeDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dateRangeBoundPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
     fields := fun _ _ _ => pure none
@@ -188,6 +191,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     fieldValueAsNumber := fun _ => throw .stringLeafOutsideStarRoute
     boolean := fun _ _ _ => throw .stringLeafOutsideStarRoute
     stringValue := fun _ _ => throw .stringLeafOutsideStarRoute
+    dateTimeDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dateRangeBoundPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
     fields := fun _ _ _ => pure none
@@ -421,14 +425,16 @@ def CorrelatedHaving.outerIterationScopes
     (model : FlatModel) :
     CorrelatedHaving → List (Option (List RepeatableLevel))
   | .leaf (.numeric comparison) =>
-      (comparison.left.atoms ++ comparison.right.atoms).map fun
-        | .baseYear _ | .baseYearDatePart _ _ _ => none
-        | .fieldValueAsNumber origin source => outerHavingFieldIterationScope model origin source.fieldId
-        | .field reference => outerHavingNumberIterationScope model reference
-        | .stringLength origin field | .stringRange origin field _ _ => outerHavingFieldIterationScope model origin field.id
-        | .dateRangeBoundPart origin field _ _ => outerHavingFieldIterationScope model origin field.id
-        | .temporalPart origin field _ => outerHavingFieldIterationScope model origin field.id
-        | .repetition reference => outerHavingRepetitionIterationScope model reference
+      (comparison.left.atoms ++ comparison.right.atoms).flatMap fun
+        | .dateTimeDifference _ left right => [left, right].map fun reference =>
+            outerHavingFieldIterationScope model reference.origin reference.field.id
+        | .baseYear _ | .baseYearDatePart _ _ _ => [none]
+        | .fieldValueAsNumber origin source => [outerHavingFieldIterationScope model origin source.fieldId]
+        | .field reference => [outerHavingNumberIterationScope model reference]
+        | .stringLength origin field | .stringRange origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
+        | .dateRangeBoundPart origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
+        | .temporalPart origin field _ => [outerHavingFieldIterationScope model origin field.id]
+        | .repetition reference => [outerHavingRepetitionIterationScope model reference]
   | .leaf (.simpleComparison left right comparison) =>
       comparison.inputFields.1.map (fun field => outerHavingFieldIterationScope model left field.id) ++
         comparison.inputFields.2.map (fun field => outerHavingFieldIterationScope model right field.id)
@@ -472,6 +478,8 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
     SurfaceCorrelatedHaving → Option CorrelationElabError
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
+        | .dateTimeDifference _ left right =>
+            (field left.origin left.field).orElse fun _ => field right.origin right.field
         | .baseYear | .baseYearDatePart _ _ => none
         | .fieldValueAsNumber reference => field reference.origin reference.field
         | .field reference => field reference.origin reference.field
@@ -522,6 +530,16 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       match declaration.toStringValueField? with
       | some field => pure field
       | none => throw (.text (.lengthOperandKindMismatch declaration.path declaration.policy.kind.surfaceKind))
+    dateTimeDifference := fun unit left right => do
+      let resolve (reference : SurfaceHavingTemporalRef) : Except CorrelationElabError HavingTemporalRef := do
+        let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels { origin := reference.origin, field := reference.field }
+        let some source := declaration.toTemporalField? | throw .numericExpressionUnsupported
+        if !unit.admittedBy source.components then throw .numericExpressionUnsupported
+        pure { origin := reference.origin, field := source }
+      let first ← resolve left
+      let second ← resolve right
+      if !unit.compatible first.field.components second.field.components then throw .numericExpressionUnsupported
+      pure (.dateTimeDifference unit first second)
     dateRangeBoundPart := fun origin reference part => do
       let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels { origin, field := reference }
       let source : FlatDateRangeField := { id := declaration.id }

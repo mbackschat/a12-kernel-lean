@@ -72,7 +72,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
     (model : FlatModel) (group : RepeatableGroupDecl) : CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
       | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
-      | .fieldValueAsNumber _ _ => false
+      | .dateTimeDifference _ _ _ | .fieldValueAsNumber _ _ => false
       | .field reference => model.admitsSingleGroupNumber group reference.field
       | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
       | .repetition reference => reference.source == .repeatable group.level
@@ -145,6 +145,10 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) :
     CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
+      | .dateTimeDifference unit left right => unit.compatible left.field.components right.field.components &&
+          [left, right].all fun reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
+            declaration.toTemporalField? == some reference.field &&
+              repeatableScopeAvailable declaration.repeatableScope (reference.origin.availableLevels candidateLevels outerLevels)
       | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
       | .fieldValueAsNumber origin source => (model.certifiedFieldValueAsNumberDeclaration? source).any fun declaration =>
           repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
@@ -221,6 +225,9 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
     (reopenedLevels : List RepeatableLevel) : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
       (comparison.left.atoms ++ comparison.right.atoms).any fun
+        | .dateTimeDifference _ left right => [left, right].any fun reference => reference.origin == .inner &&
+            (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
+              declaration.repeatableScope.any reopenedLevels.contains
         | .baseYear _ | .baseYearDatePart _ _ _ => false
         | .fieldValueAsNumber origin source => origin == .inner &&
             (model.certifiedFieldValueAsNumberDeclaration? source).any fun declaration =>

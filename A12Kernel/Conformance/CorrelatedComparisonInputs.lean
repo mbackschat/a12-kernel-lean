@@ -401,4 +401,33 @@ example : (rangeNumericLeaf .inner .month).wellFormedForEnvironments rangeNumeri
     (rangeNumericLeaf .inner .month).wellFormedForEnvironments model [10] [] = false ∧
     (rangeNumericLeaf .outer .month).wellFormedForEnvironments rangeNumericModel [10] [] = false := by native_decide
 
+private def subdayRef (origin : HavingOrigin) : HavingTemporalRef := {
+  origin, field := { id := 1, kind := .dateTime, components := TemporalComponents.ofFormat "yyyy-MM-dd'T'HH:mm:ss" } }
+private def subdayAtom : HavingNumericAtom := .dateTimeDifference .hours (subdayRef .inner) (subdayRef .outer)
+private def subdayCondition : CorrelatedHaving := .leaf (.numeric {
+  op := .ordinary .equal, left := .atom subdayAtom, right := .literal { value := 0, authoredScale := 0 } })
+
+example : subdayCondition.fieldIds = [1] ∧ subdayCondition.markedFieldIds = [1] ∧
+    subdayCondition.usesInner = true ∧ subdayCondition.usesOuter = true ∧
+    subdayAtom.fieldOrigins = [(.inner, 1), (.outer, 1)] := by native_decide
+
+example : subdayAtom.readValidationResolving toleranceRead frame = .error "captured read" ∧
+    subdayAtom.readComputationResolving toleranceRead frame = .error "captured read" ∧
+    subdayAtom.readValidationResolving { toleranceRead with read := fun _ _ => .error "first read" } frame = .error "first read" ∧
+    subdayAtom.readComputationResolving { toleranceRead with read := fun _ _ => .error "first read" } frame = .error "first read" := by native_decide
+
+example : subdayAtom.readValidation { read := fun _ _ => { emptyRequired with findings := [] } } frame = .ok (.value 0 .both) ∧
+    subdayAtom.readComputation { read := fun _ _ => emptyRequired } frame = .value 0 ∧
+    subdayAtom.readValidation { read := fun _ _ => invalid } frame = .error () ∧
+    subdayAtom.readComputation { read := fun _ _ => invalid } frame = .poison .malformed := by native_decide
+
+private def subdayModel : FlatModel := { model with fields := model.fields.map fun field => { field with
+  policy := { kind := .temporal .dateTime (subdayRef .inner).field.components },
+  temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } } }
+
+example : subdayCondition.wellFormedForEnvironments subdayModel [10] [10] = true ∧
+    subdayCondition.wellFormedForEnvironments subdayModel [10] [] = false ∧
+    subdayCondition.wellFormedForEnvironments model [10] [10] = false ∧
+    CorrelatedHaving.outerIterationScopes subdayModel subdayCondition = [none, some [10]] := by native_decide
+
 end A12Kernel.Conformance.CorrelatedComparisonInputs

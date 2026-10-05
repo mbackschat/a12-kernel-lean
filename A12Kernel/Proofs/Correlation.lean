@@ -794,7 +794,7 @@ theorem correlatedHaving_referencesMarkedField_referencesField
     cases leaf with
     | numeric comparison =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds,
-        List.mem_eraseDups, List.mem_filterMap, List.mem_filter] at marked ⊢
+        List.mem_eraseDups, List.mem_map, List.mem_filter] at marked ⊢
       obtain ⟨atom, ⟨member, _⟩, projected⟩ := marked
       exact ⟨atom, member, projected⟩
     | simpleComparison left right comparison =>

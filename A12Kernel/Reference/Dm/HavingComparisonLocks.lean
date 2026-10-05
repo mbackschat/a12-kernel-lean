@@ -423,9 +423,8 @@ private def toleranceReferences : Option (Bool × Bool) := do
 
 example : toleranceReferences = some (true, true) := by native_decide
 
-private def temporalRun (filter : String) (leftKind rightKind : TemporalKind)
-    (leftFormat rightFormat expected first second : String)
-    (partialMode : TemporalPartialMode := .full) (baseYear : Option Int := none) : Option (Verdict × List String) :=
+private def temporalModel (leftKind rightKind : TemporalKind) (leftFormat rightFormat : String)
+    (partialMode : TemporalPartialMode := .full) (baseYear : Option Int := none) : FlatModel :=
   let fields := model.fields.map fun field =>
     if field.id == 2 || field.id == 3 then
       let kind := if field.id == 3 then leftKind else rightKind
@@ -434,7 +433,12 @@ private def temporalRun (filter : String) (leftKind rightKind : TemporalKind)
         policy := { kind := .temporal kind (TemporalComponents.ofFormat format) }
         temporalTargetPolicy := some { format, partialMode } }
     else field
-  runModel { model with fields, baseYear } filter false expected first second
+  { model with fields, baseYear }
+
+private def temporalRun (filter : String) (leftKind rightKind : TemporalKind)
+    (leftFormat rightFormat expected first second : String)
+    (partialMode : TemporalPartialMode := .full) (baseYear : Option Int := none) : Option (Verdict × List String) :=
+  runModel (temporalModel leftKind rightKind leftFormat rightFormat partialMode baseYear) filter false expected first second
 
 private def dateRun (filter : String) (first : String := "2024-01-01") := temporalRun filter .date .date
   "yyyy-MM-dd" "yyyy-MM-dd" "2024-01-02" first "2024-01-03"
@@ -755,5 +759,69 @@ example : runModel rangeProducerModel
     "2024-01-01/2024-02-01" "2024-01-01/2024-02-01" "2024-01-01/2024-03-01" "DateRange(Start, Finish)"
     [("Start", Json.str "2024-01-01"), ("Finish", Json.str "2024-03-01")] =
       some (.fired .omission, ["value 2024-01-01/2024-03-01", "value 5"]) := by native_decide
+
+example : [("DifferenceInHours", "1"), ("DifferenceInMinutes", "90"), ("DifferenceInSeconds", "5401")].all
+    (fun (operator, amount) => temporalRun s!"{operator}(Rows/Tag, $Expected) == {amount}" .dateTime .dateTime
+      "yyyy-MM-dd'T'HH:mm:ss" "yyyy-MM-dd'T'HH:mm:ss" "2024-04-12T12:30:01" "2024-04-12T11:00:00" "2024-04-12T12:00:00" ==
+        some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : temporalRun "DifferenceInHours($Expected, Rows/Tag) == -1" .dateTime .dateTime
+      "yyyy-MM-dd'T'HH:mm:ss" "yyyy-MM-dd'T'HH:mm:ss" "2024-04-12T12:30:01" "2024-04-12T11:00:00" "2024-04-12T12:00:00" =
+      some (.fired .omission, ["value 9"]) ∧
+    temporalRun "DifferenceInMinutes(Rows/Tag, $Expected) + 1 == 91" .date .time
+      "yyyy-MM-dd'T'HH:mm:ss" "yyyy-MM-dd'T'HH:mm:ss" "2024-04-12T12:30:01" "2024-04-12T11:00:00" "2024-04-12T12:00:00" =
+      some (.fired .omission, ["value 9"]) := by native_decide
+
+example : temporalRun "DifferenceInHours(Rows/Tag, $Expected) == 0" .dateTime .dateTime
+      "yyyy-MM-dd'T'HH:mm:ss" "yyyy-MM-dd'T'HH:mm:ss" "2024-04-12T12:30:01" "" "2024-04-12T10:00:00" =
+      some (.fired .omission, ["value 9"]) ∧
+    temporalRun "DifferenceInHours(Rows/Tag, $Expected) > 0" .dateTime .dateTime
+      "yyyy-MM-dd'T'HH:mm:ss" "yyyy-MM-dd'T'HH:mm:ss" "2024-04-12T12:30:01" "bad" "2024-04-12T10:00:00" =
+      some (.notFired, []) := by native_decide
+
+example : temporalRun "DifferenceInHours(Rows/Tag, $Expected) == 1" .dateTime .dateTime
+      "HH:mm:ss" "HH:mm:ss" "12:30:01" "11:00:00" "12:00:00" = none ∧
+    temporalRun "DifferenceInSeconds(Rows/Tag, $Expected) == 1" .dateTime .dateTime
+      "yyyy-MM-dd'T'HH:mm" "yyyy-MM-dd'T'HH:mm:ss" "2024-04-12T12:30:01" "2024-04-12T11:00" "2024-04-12T12:00" = none ∧
+    temporalRun "DifferenceInHours(Rows/Tag, $Expected) == 1" .dateTime .dateTime
+      "MM-dd'T'HH:mm:ss" "yyyy-MM-dd'T'HH:mm:ss" "2024-04-12T12:30:01" "04-12T11:00:00" "04-12T12:00:00" .full (some 2024) = none := by native_decide
+
+private def subdayModel := temporalModel .dateTime .dateTime "yyyy-MM-dd'T'HH:mm:ss" "yyyy-MM-dd'T'HH:mm:ss"
+
+example : ["DifferenceInHours([Rows/Tag], $Expected)", "DifferenceInHours(Rows*/Tag, $Expected)",
+    "DifferenceInHours(Rows/Tag, Now)", "DifferenceInHours(Rows/Tag, BaseYear)",
+    "DifferenceInHours($Expected, $Expected)"].all (fun expression =>
+      (runModel subdayModel (expression ++ " == 1") false
+        "2024-04-12T12:30:01" "2024-04-12T11:00:00" "2024-04-12T12:00:00").isNone) = true := by native_decide
+
+example : toleranceRanges.all (fun band =>
+    runModel subdayModel s!"DifferenceInHours(Rows/Tag, $Expected) * 2 * {band} DiffersWithToleranceRange{band} 0" false
+      "2024-04-12T12:30:01" "2024-04-12T11:00:00" "2024-04-12T12:00:00" ==
+        some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : referencesFor "DifferenceInHours(/Form/Rows/Tag, $/Form/Rows/Tag) == 0"
+    { subdayModel with fields := subdayModel.fields ++ [{
+        id := 6, name := "Token", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } }] }
+    "Token" = some (true, true) := by native_decide
+
+private def subdayProducerModel : FlatModel := { subdayModel with fields := subdayModel.fields ++ [{
+  id := 6, name := "Source", groupPath := ["Form"], policy := { kind := .temporal .dateTime (TemporalComponents.ofFormat "yyyy-MM-dd'T'HH:mm:ss") },
+  temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } }] }
+
+example : runModel subdayProducerModel "DifferenceInHours(Rows/Tag, $Expected) == 1" true
+    "2024-04-12T12:30:01" "2024-04-12T11:00:00" "2024-04-12T12:00:00" "AddHours(Source, 1)"
+    [("Source", Json.str "2024-04-12T12:30:01")] =
+      some (.fired .omission, ["value 2024-04-12T13:30:01", "value 5"]) := by native_decide
+
+private def subdayFormatAdmitted (operator format : String) : Bool :=
+  let checked := do
+    let parsed ← (parseText .english s!"Sum(Rows*/N Having {operator}(Rows/Tag, $Expected) == 1) == 9").toOption
+    (lowerCondition (temporalModel .dateTime .dateTime format format) ["Form"] false parsed.body).toOption
+  checked.isSome
+
+example : subdayFormatAdmitted "DifferenceInHours" "yyyy-MM-dd'T'HH" = true ∧
+    subdayFormatAdmitted "DifferenceInMinutes" "yyyy-MM-dd'T'HH:mm" = true ∧
+    subdayFormatAdmitted "DifferenceInMinutes" "yyyy-MM-dd'T'HH" = false ∧
+    subdayFormatAdmitted "DifferenceInSeconds" "yyyy-MM-dd'T'HH:mm" = false := by native_decide
 
 end A12Kernel.Dm.HavingComparisonLocks

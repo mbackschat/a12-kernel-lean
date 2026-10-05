@@ -52,6 +52,12 @@ private def presencePolarity? : String → Option HavingPresencePolarity
   | _ => none
 
 private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
+  | .call id [.mk (.entity { path := left, index := none, category := none }) none none,
+      .mk (.entity { path := right, index := none, category := none }) none none] none none => do
+      let some unit := subdayUnit? id | refuse "Having" "difference unit"
+      let some (leftOrigin, leftField) := left.havingField? | refuse "Having" "difference left"
+      let some (rightOrigin, rightField) := right.havingField? | refuse "Having" "difference right"
+      pure (.dateTimeDifference unit { origin := leftOrigin, field := leftField } { origin := rightOrigin, field := rightField })
   | .constant "BaseYear" => pure .baseYear
   | .call id [.mk (.constant "BaseYear") none none] none none => do
       let some part := datePart? id | refuse "Having" "BaseYear component"

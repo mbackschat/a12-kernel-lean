@@ -19,12 +19,6 @@ def aggregateOp? : String → Option NumericAggregateOp
   | "NumberOfDifferentValues" => some .distinctCount
   | _ => none
 
-private def subdayUnit? : String → Option DateTimeSubdayUnit
-  | "DifferenceInHours" => some .hours
-  | "DifferenceInMinutes" => some .minutes
-  | "DifferenceInSeconds" => some .seconds
-  | _ => none
-
 private def calendarUnit? : String → Option DateDifferenceUnit
   | "DifferenceInMonths" => some .months
   | "DifferenceInYears" => some .years

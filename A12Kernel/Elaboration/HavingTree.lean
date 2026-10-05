@@ -29,6 +29,7 @@ structure HavingLeafResolvers where
     Except CorrelationElabError (Option FlatComparison)
 
   stringValue : HavingOrigin → SurfaceFieldPath → Except CorrelationElabError FlatStringField
+  dateTimeDifference : DateTimeSubdayUnit → SurfaceHavingTemporalRef → SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
   dateRangeBoundPart : HavingOrigin → SurfaceFieldPath → DateNumericPart → Except CorrelationElabError FlatDateRangeField
   temporalPart : HavingOrigin → SurfaceFieldPath → TemporalNumericPart → Except CorrelationElabError FlatTemporalField
   number : HavingOrigin → SurfaceFieldPath →
@@ -67,6 +68,7 @@ private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
     (op : NumericValidationOp) (left right : AuthoredNumericExpr SurfaceHavingNumericAtom) :
     Except CorrelationElabError CorrelatedHaving := do
   let resolve : SurfaceHavingNumericAtom → Except CorrelationElabError HavingNumericAtom
+    | .dateTimeDifference unit left right => resolvers.dateTimeDifference unit left right
     | .baseYear => HavingNumericAtom.baseYear <$> resolvers.baseYear
     | .baseYearDatePart source part => (fun year => .baseYearDatePart year source part) <$> resolvers.baseYear
     | .fieldValueAsNumber reference => (.fieldValueAsNumber reference.origin ·) <$> resolvers.fieldValueAsNumber reference

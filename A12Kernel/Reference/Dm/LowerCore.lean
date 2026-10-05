@@ -345,4 +345,10 @@ def Expr.construct : Expr → String
   | .logic .or _ => "Or"
   | .parens _ => "Parens"
 
+def subdayUnit? : String → Option DateTimeSubdayUnit
+  | "DifferenceInHours" => some .hours
+  | "DifferenceInMinutes" => some .minutes
+  | "DifferenceInSeconds" => some .seconds
+  | _ => none
+
 end A12Kernel.Dm
