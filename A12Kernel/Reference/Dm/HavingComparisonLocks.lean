@@ -15,7 +15,7 @@ private def model : FlatModel := {
   repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
 
 private def runModel (model : FlatModel) (filter : String) (fresh : Bool)
-    (expected first second : String) : Option (Verdict × List String) := do
+    (expected first second : String) (producerOperation : String := "\"drop\"") : Option (Verdict × List String) := do
   let dm : DmModel := {
     flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let row := fun (tag n : String) => Json.mkObj [("Tag", Json.str tag), ("N", Json.str n)]
@@ -39,7 +39,7 @@ private def runModel (model : FlatModel) (filter : String) (fresh : Bool)
   let computations ← if fresh then do
       let (_, producer) ← (lowerComputation model .english {
         group := ["Form"], name := "Expected", targetRelPath := "../Expected", commonPrecondition := none,
-        alternatives := [{ precondition := none, operation := "\"drop\"" }], errorCodesToSuppress := [] }).toOption
+        alternatives := [{ precondition := none, operation := producerOperation }], errorCodesToSuppress := [] }).toOption
       pure [computation, producer]
     else pure [computation]
   let outcomes ← (runComputations world prepared document computations).toOption
@@ -370,6 +370,57 @@ example : referencesFor "FieldValueIncludedInValueList(/Form/Rows/Tag, [$/Form/R
 example : referencesFor
     "NotAllFieldValuesIncludedInValueList(/Form/Rows/Tag, $/Form/Rows/Tag In \"keep\")" =
       some (true, true) := by native_decide
+
+private def toleranceRanges : List Nat := [1, 2, 5, 10]
+
+example : toleranceRanges.map (fun band =>
+    (run s!"[Rows/Tag] * {band} DiffersWithToleranceRange{band} [$Expected] * {band}"
+      false (.number { scale := 0, signed := true }) "3" "2" "5").map (·.2)) =
+    List.replicate 4 (some ["value 5"]) ∧
+    toleranceRanges.map (fun band =>
+      (run s!"3 * {band} DiffersWithToleranceRange{band} [Rows/N] * {band}").map (·.2)) =
+    List.replicate 4 (some ["value 12"]) := by native_decide
+
+example : run "[Rows/Tag] DiffersWithToleranceRange1 0" false
+      (.number { scale := 1, signed := true }) "0" "1.0" "1.1" =
+      some (.notFired, ["value 5"]) ∧
+    run "[Rows/Tag] DiffersWithToleranceRange1 1" false
+      (.number { scale := 0, signed := true }) "0" "" "3" =
+      some (.notFired, ["value 5"]) ∧
+    run "[Rows/Tag] DiffersWithToleranceRange1 1" false
+      (.number { scale := 0, signed := true }) "0" "bad" "3" =
+      some (.notFired, []) := by native_decide
+
+example : run "[Rows/N] DiffersWithToleranceRange3 0" = none ∧
+    run "1 DiffersWithToleranceRange1 0" = none ∧
+    run "[Rows/Tag] DiffersWithToleranceRange1 0" = none := by native_decide
+
+example : toleranceRanges.map (fun band =>
+    (run s!"CurrentRepetition(Rows) * {band} DiffersWithToleranceRange{band} {band}").map (·.2)) =
+      List.replicate 4 (some ["value 7"]) := by native_decide
+
+private def toleranceModel : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == 2 || field.id == 3 then
+    { field with policy := { kind := .number { scale := if field.id == 2 then 0 else 1, signed := true } } }
+  else field }
+
+example : runModel toleranceModel "[Rows/Tag] DiffersWithToleranceRange1 [$Expected]"
+      false "3" "2.0" "5.0" = some (.notFired, ["value 5"]) ∧
+    runModel toleranceModel "[$Expected] DiffersWithToleranceRange1 [Rows/Tag]"
+      false "3" "2.0" "5.0" = some (.notFired, ["value 5"]) ∧
+    runModel toleranceModel "[Rows/Tag] == [$Expected]" false "3" "2.0" "5.0" = none ∧
+    runModel toleranceModel "[Rows/Tag] DiffersWithToleranceRange1 [$Expected]"
+      true "3" "2.0" "5.0" "0" = some (.notFired, ["value 0", "value 14"]) := by native_decide
+
+private def toleranceReferences : Option (Bool × Bool) := do
+  let parsed ← (parseText .english
+    "FieldValuesNotUnique(/Form/Rows*/Tag Having [/Form/Rows/N] DiffersWithToleranceRange1 [$/Form/Rows/N])").toOption
+  let checked ← (lowerCondition model ["Form", "Rows"] false parsed.body).toOption
+  let pointers ← (checked.core.referencePointers [(10, 2)]).toOption
+  pure (pointers.contains { field := 4, coordinates := [.wildcard] },
+    pointers.contains { field := 4, coordinates := [.concrete 2] })
+
+example : toleranceReferences = some (true, true) := by native_decide
 
 private def temporalRun (filter : String) (leftKind rightKind : TemporalKind)
     (leftFormat rightFormat expected first second : String)

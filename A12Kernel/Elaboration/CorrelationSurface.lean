@@ -41,6 +41,8 @@ inductive SurfaceHavingNumericAtom where
 inductive SurfaceCorrelatedHaving where
   | compareBoolean (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : Bool)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceHavingStringRef)
+  | tolerance (range : NumericToleranceRange)
+      (left right : AuthoredNumericExpr SurfaceHavingNumericAtom)
   | numeric (op : SurfaceComparisonOp)
       (left right : AuthoredNumericExpr SurfaceHavingNumericAtom)
   /-- A String or Enumeration projection against a literal. The operator slot is an `EqualityOp`, so a text ordering

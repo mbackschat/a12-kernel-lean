@@ -253,4 +253,23 @@ example : [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
       tokenLiteralList.evalComputationRead (.quantified operator) (fun _ _ => Except.ok (ε := String) invalid)) =
     [.ok (.poison .malformed), .ok (.poison .malformed), .ok (.poison .malformed)] := by native_decide
 
+private def toleranceComparison (range : NumericToleranceRange) : NumericComparisonOf HavingNumericAtom := {
+  op := .tolerance range
+  left := .atom (.field { origin := .inner, field := { id := 1, info := { scale := 1, signed := true } } })
+  right := .atom (.field { origin := .outer, field := { id := 1, info := { scale := 0, signed := true } } }) }
+
+example : [NumericToleranceRange.range1, .range2, .range5, .range10].all (fun range =>
+    (toleranceComparison range).havingAdmitted (fun _ => true)) = true ∧
+    ({ toleranceComparison .range1 with suppressExactScaleWarning := true }).havingAdmitted (fun _ => true) = false := by native_decide
+
+private def toleranceRead : ResolvingCorrelationContext String := {
+  read := fun env _ => if env == frame.innerEnv then .ok invalid else .error "captured read"
+  bindingError := fun _ => "binding" }
+
+example : (CorrelatedHavingLeaf.numeric (toleranceComparison .range1)).evalTruthInResolving toleranceRead frame =
+      .error "captured read" ∧
+    (CorrelatedHavingLeaf.numeric (toleranceComparison .range1)).evalComputationInResolving toleranceRead frame =
+      .ok (.poison .malformed) ∧
+    CorrelatedHaving.markedFieldIds (.leaf (.numeric (toleranceComparison .range1))) = [1] := by native_decide
+
 end A12Kernel.Conformance.CorrelatedComparisonInputs

@@ -282,6 +282,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Named environments and addresses](implementation/repetition-and-paths.md#reopened-star-structural-completeness-and-addressing)
 <a id="cap-named-environments-and-addresses"></a>
 - [Named environments and addresses](implementation/repetition-and-paths.md#cap-named-environments-and-addresses)
+<a id="cap-having-tolerance"></a>
+- [Numeric tolerance inside Having](implementation/repetition-and-paths.md#cap-having-tolerance)
+
 <a id="cap-having-direct-field-fill"></a>
 - [Direct field-fill lists inside Having](implementation/repetition-and-paths.md#cap-having-direct-field-fill)
 

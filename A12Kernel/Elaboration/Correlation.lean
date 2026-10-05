@@ -27,7 +27,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath)
     (bound : List RepeatableLevel := model.repeatableScopeForGroupPath declaringGroup) :
     SurfaceCorrelatedHaving → Option (List String × UnboundOperandLevel)
-  | .numeric _ left right =>
+  | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
         | .field reference => field reference.origin reference.field
         | .repetition reference => group reference.origin reference.group
@@ -168,6 +168,27 @@ private def orderingSides (left right : Except CorrelationElabError ResolvedNumb
       throw (.orderingFieldNotNumber path actual .number)
   | .ok _, .error error => throw error
 
+private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
+    (op : NumericValidationOp) (left right : AuthoredNumericExpr SurfaceHavingNumericAtom) :
+    Except CorrelationElabError CorrelatedHaving := do
+  let resolve : SurfaceHavingNumericAtom → Except CorrelationElabError HavingNumericAtom
+    | .field reference => do
+        let resolved ← (resolvers.number reference.origin reference.field).mapError fun
+          | .fieldNotNumber path actual => .numericOperandFieldNotNumber path actual
+          | error => error
+        pure (.field resolved.core)
+    | .repetition reference =>
+        (.repetition ·) <$> resolvers.repetition reference.origin reference.group
+  let leftCore ← left.mapM resolve
+  let rightCore ← right.mapM resolve
+  if leftCore.isImmediateLiteral && rightCore.isImmediateLiteral then
+    throw .constantNumericComparison
+  let comparison : NumericComparisonOf HavingNumericAtom :=
+    { op := op, left := leftCore, right := rightCore }
+  if !comparison.havingAdmitted (fun _ => true) then
+    throw .numericExpressionUnsupported
+  pure (.leaf (.numeric comparison))
+
 private def elaborateHavingNumeric (resolvers : HavingLeafResolvers)
     (op : SurfaceComparisonOp) (left right : AuthoredNumericExpr SurfaceHavingNumericAtom) :
     Except CorrelationElabError CorrelatedHaving := do
@@ -211,24 +232,7 @@ private def elaborateHavingNumeric (resolvers : HavingLeafResolvers)
       pure (.compareRepetitions coreOp
         (← resolvers.repetition left.origin left.group)
         (← resolvers.repetition right.origin right.group))
-  | _, _ =>
-      let resolve : SurfaceHavingNumericAtom → Except CorrelationElabError HavingNumericAtom
-        | .field reference => do
-            let resolved ← (resolvers.number reference.origin reference.field).mapError fun
-              | .fieldNotNumber path actual => .numericOperandFieldNotNumber path actual
-              | error => error
-            pure (.field resolved.core)
-        | .repetition reference =>
-            (.repetition ·) <$> resolvers.repetition reference.origin reference.group
-      let leftCore ← left.mapM resolve
-      let rightCore ← right.mapM resolve
-      if leftCore.isImmediateLiteral && rightCore.isImmediateLiteral then
-        throw .constantNumericComparison
-      let comparison : NumericComparisonOf HavingNumericAtom :=
-        { op := .ordinary op.toCorrelation.toNumeric, left := leftCore, right := rightCore }
-      if !comparison.havingAdmitted (fun _ => true) then
-        throw .numericExpressionUnsupported
-      pure (.leaf (.numeric comparison))
+  | _, _ => elaborateHavingNumericExpression resolvers (.ordinary op.toCorrelation.toNumeric) left right
 
 private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
     SurfaceCorrelatedHaving → Except CorrelationElabError CorrelatedHaving
@@ -245,6 +249,7 @@ private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
               (.atom (.field { origin := left.origin, field := left.field }))
               (.atom (.field { origin := right.origin, field := right.field }))
   | .numeric op left right => elaborateHavingNumeric resolvers op left right
+  | .tolerance range left right => elaborateHavingNumericExpression resolvers (.tolerance range) left right
   | .compareStrings op reference expected => do
       pure (.compareStringLiteral op
         (← resolvers.string op reference expected) expected)
@@ -284,7 +289,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .compareFields _ left right =>
       [left, right].any fun reference => reference.origin == .inner &&
         (model.resolveNumberInGroup declaringGroup group reference.field).isOk
-  | .numeric _ left right =>
+  | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).any fun
         | .field reference => reference.origin == .inner &&
             (model.resolveNumberInGroup declaringGroup group reference.field).isOk
@@ -599,7 +604,7 @@ def CheckedStarHaving.condition
 def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
     (declaringGroup : GroupPath) (candidateLevels : List RepeatableLevel) :
     SurfaceCorrelatedHaving → Option CorrelationElabError
-  | .numeric _ left right =>
+  | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
         | .field reference => field reference.origin reference.field
         | .repetition reference => group reference.origin reference.group

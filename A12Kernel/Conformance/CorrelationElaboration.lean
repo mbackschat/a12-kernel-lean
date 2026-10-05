@@ -436,6 +436,14 @@ example : [SurfaceComparisonOp.lessEqual, .greater, .greaterEqual].all (fun op =
     (elaborateSingleCorrelatedRule model ["Order"] (absoluteRule (mismatched op))).isOk) = true := by
   native_decide
 
+example : [NumericToleranceRange.range1, .range2, .range5, .range10].all (fun range =>
+    match elaborateSingleCorrelatedRule model ["Order"] (absoluteRule (.tolerance range
+        (.atom (.field (numberRef .inner (absolute items.path "Count"))))
+        (.atom (.field (numberRef .outer (absolute items.path "Weight")))))) with
+    | .ok checked => checked.core.star.having.condition.equalityScalesAgree
+    | .error _ => false) = true := by
+  native_decide
+
 example : errorOf (elaborateSingleCorrelatedRule model ["Order"]
     (absoluteRule (.compareNumbers .equal
       (numberRef .inner (absolute items.path "Flag"))

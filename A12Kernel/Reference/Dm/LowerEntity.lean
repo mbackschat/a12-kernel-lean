@@ -131,6 +131,11 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
         | _ => refuse "Having" "field-fill operand"
       let first :: rest := references | refuse "Having" "field-fill arity"
       pure (.fieldFill operator { first, rest })
+  | .compare op@(.tolerance _) left right => do
+      let some (.tolerance range) := op.toNumeric? | refuse "Having" "tolerance band"
+      pure (.tolerance range
+        (← lowerNumericExpr lowerHavingNumericAtom (fun _ => refuse "Having" "numeric field form") left)
+        (← lowerNumericExpr lowerHavingNumericAtom (fun _ => refuse "Having" "numeric field form") right))
   | .compare op left right => do
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
       match left, right with

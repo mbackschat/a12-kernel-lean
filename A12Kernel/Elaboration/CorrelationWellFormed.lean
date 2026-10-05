@@ -45,13 +45,12 @@ def HavingRepetitionRef.availableIn (reference : HavingRepetitionRef) (model : F
   (reference.scope? model).any fun scope =>
     repeatableScopeAvailable scope (reference.origin.availableLevels candidateLevels outerLevels)
 
-/-- Only ordinary, unsuppressed numeric comparisons belong to the current filter surface. -/
+/-- Filter comparisons share numeric admission while retaining the unsuppressed surface boundary. -/
 def NumericComparisonOf.havingAdmitted (comparison : NumericComparisonOf HavingNumericAtom)
     (admitted : HavingNumericAtom → Bool) : Bool :=
-  (match comparison.op with | .ordinary _ => true | .tolerance _ => false) &&
-    !comparison.suppressExactScaleWarning && comparison.admittedWith admitted HavingNumericAtom.summary
+  !comparison.suppressExactScaleWarning && comparison.admittedWith admitted HavingNumericAtom.summary
 
-/-- Operator-specific static scale law for one filter leaf: `==` and `!=` are gated, ordering is exempt. -/
+/-- Operator-specific static scale law for one filter leaf: `==` and `!=` are gated; ordering and tolerance are exempt (spec/04 §4). -/
 def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
       match comparison.left.summary? HavingNumericAtom.summary,
