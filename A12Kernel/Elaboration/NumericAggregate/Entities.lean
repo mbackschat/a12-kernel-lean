@@ -146,8 +146,8 @@ def resolvedComputationAggregateSide
             starRead environment with
         | .unknown cause => .inr cause
         | cell => .inl (cell :: cells)
-      match source.having.scanComputation filterContext outer consume
-          resolved.environments [] with
+      match ← (source.having.scanComputation filterContext outer consume
+          resolved.environments []).mapError (fun _ => .unsupportedDateCalendar) with
       | .exhausted reversed =>
           pure (.inl {
             cells := reversed.reverse

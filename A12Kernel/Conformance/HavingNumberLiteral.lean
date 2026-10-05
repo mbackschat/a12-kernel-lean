@@ -13,6 +13,12 @@ malformed one is unknown on validation and poison on computation.
 
 namespace A12Kernel.Conformance.HavingNumberLiteral
 
+local instance [DecidableEq ε] [DecidableEq α] : DecidableEq (Except ε α)
+  | .ok a, .ok b => decidable_of_iff (a = b) (by simp)
+  | .error a, .error b => decidable_of_iff (a = b) (by simp)
+  | .ok _, .error _ => isFalse (by intro h; cases h)
+  | .error _, .ok _ => isFalse (by intro h; cases h)
+
 open A12Kernel
 
 private def rows : RepeatableLevel := 10
@@ -131,7 +137,7 @@ example :
     ([1, 2, 4].map fun row =>
       (CorrelatedHaving.compareNumberLiteral .lessThan reference (literal 6)).evalComputationIn
         context (frame row)) =
-      [.holds, .holds, .poison .malformed] := by
+      [.ok .holds, .ok .holds, .ok (.poison .malformed)] := by
   native_decide
 
 private def arithmeticFilter : CorrelatedHaving :=
@@ -147,7 +153,7 @@ example :
 
 example :
     ([1, 2, 4].map fun row => arithmeticFilter.evalComputationIn context (frame row)) =
-      [.notTrue, .holds, .poison .malformed] := by
+      [.ok .notTrue, .ok .holds, .ok (.poison .malformed)] := by
   native_decide
 
 private def surfaceField (name : String) : AuthoredNumericExpr SurfaceHavingNumericAtom :=
@@ -223,6 +229,7 @@ private def failureComparison : CorrelatedHaving :=
 private def resolvingContext (left : RawCell) : ResolvingCorrelationContext String where
   read _ id := if id == 0 then .ok (checkedNumber left) else .error "right read"
   bindingError _ := "binding"
+  unsupportedDateCalendar := "calendar"
 
 example : (match failureComparison.evalTruthInResolving
     (resolvingContext (.rejected .malformed)) (frame 1) with

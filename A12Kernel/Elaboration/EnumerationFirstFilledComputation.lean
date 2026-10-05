@@ -380,13 +380,13 @@ private def scanFilteredEnumerationFirstFilledStar
     (filterRead : Env → FieldId → CheckedCell)
     (starRead : Env → FieldId → RawCell) (outer : Env)
     (resolved : ResolvedStarTopology) (state : FirstFilledScanState) :
-    FirstFilledScanState ⊕ FirstFilledTokenResult :=
-  match scanFilteredComputationFirstFilled having.condition
+    Except Unit (FirstFilledScanState ⊕ FirstFilledTokenResult) := do
+  match ← scanFilteredComputationFirstFilled having.condition
       { read := filterRead } outer
       (source.valueListCellAt .computation starRead)
       resolved.environments resolved.domain.hasOpenTail state with
-  | .inl next => .inl next
-  | .inr result => .inr result.asToken
+  | .inl next => pure (.inl next)
+  | .inr result => pure (.inr result.asToken)
 
 private def scanEnumerationFirstFilledOperand
     (document : Document) (outer : Env) (direct : FlatContext)
@@ -408,8 +408,8 @@ private def scanEnumerationFirstFilledOperand
             (state.enterSelection resolved.environments.isEmpty
               resolved.domain.hasOpenTail false))
       | some having =>
-          pure (scanFilteredEnumerationFirstFilledStar source having filterRead
-            starRead outer resolved state)
+          (scanFilteredEnumerationFirstFilledStar source having filterRead
+            starRead outer resolved state).mapError (fun _ => .unsupportedDateCalendar)
 
 private def scanEnumerationFirstFilledOperands
     (document : Document) (outer : Env) (direct : FlatContext)

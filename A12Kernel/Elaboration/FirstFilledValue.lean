@@ -216,7 +216,7 @@ def evaluateComputationFirstFilled
     (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell) :
     Except StarAddressingError FirstFilledNumberResult := do
-  match ← scanComputationFirstFilledSelections outer
+  match ← scanComputationFirstFilledSelections outer .unsupportedDateCalendar
       (·.computationSelection document outer { read := directRead } filterRead starRead)
       checked.operands {} with
   | .inl state => pure state.finish

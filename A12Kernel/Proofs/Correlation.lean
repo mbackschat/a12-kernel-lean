@@ -585,13 +585,13 @@ theorem computationHavingScan_poisonedSuccessor_precedesCurrent
     (outer first second : Env) (consume : State → Env → State ⊕ Result)
     (initial : State) (cause : FormalCause)
     (firstHolds : condition.evalComputationIn context
-      { innerEnv := first, outerEnv := outer } = .holds)
+      { innerEnv := first, outerEnv := outer } = .ok .holds)
     (secondPoisons : condition.evalComputationIn context
-      { innerEnv := second, outerEnv := outer } = .poison cause) :
+      { innerEnv := second, outerEnv := outer } = .ok (.poison cause)) :
     condition.scanComputation context outer consume [first, second] initial =
-      .poison cause := by
+      .ok (.poison cause) := by
   simp [CorrelatedHaving.scanComputation,
-    CorrelatedHaving.scanComputationCandidates, firstHolds, secondPoisons]
+    CorrelatedHaving.scanComputationCandidates, bind, Except.bind, pure, Except.pure, firstHolds, secondPoisons]
 
 /-- After one successor has been kept, a terminal current target hides every later filter. This separates one-candidate lookahead from eager whole-selection filtering. -/
 theorem computationHavingScan_terminalCurrent_hidesAfterSuccessor
@@ -600,15 +600,25 @@ theorem computationHavingScan_terminalCurrent_hidesAfterSuccessor
     (consume : State → Env → State ⊕ Result) (initial : State)
     (result : Result)
     (firstHolds : condition.evalComputationIn context
-      { innerEnv := first, outerEnv := outer } = .holds)
+      { innerEnv := first, outerEnv := outer } = .ok .holds)
     (secondHolds : condition.evalComputationIn context
-      { innerEnv := second, outerEnv := outer } = .holds)
+      { innerEnv := second, outerEnv := outer } = .ok .holds)
     (currentTerminates : consume initial first = .inr result) :
     condition.scanComputation context outer consume
-        [first, second, third] initial = .terminated result := by
+        [first, second, third] initial = .ok (.terminated result) := by
   simp [CorrelatedHaving.scanComputation,
-    CorrelatedHaving.scanComputationCandidates, firstHolds, secondHolds,
+    CorrelatedHaving.scanComputationCandidates, bind, Except.bind, pure, Except.pure, firstHolds, secondHolds,
     currentTerminates]
+
+/-- A calendar support failure during successor lookahead aborts before the pending target, just as an addressed read failure does. -/
+theorem computationHavingScan_failedSuccessor_precedesCurrent
+    (condition : CorrelatedHaving) (context : CorrelationContext)
+    (outer first second : Env) (consume : State → Env → State ⊕ Result) (initial : State)
+    (firstHolds : condition.evalComputationIn context { innerEnv := first, outerEnv := outer } = .ok .holds)
+    (secondFails : condition.evalComputationIn context { innerEnv := second, outerEnv := outer } = .error ()) :
+    condition.scanComputation context outer consume [first, second] initial = .error () := by
+  simp [CorrelatedHaving.scanComputation, CorrelatedHaving.scanComputationCandidates,
+    firstHolds, secondFails, bind, Except.bind, pure, Except.pure]
 
 /-- Addressed computation preserves a structural failure found while prefetching the successor before it can consume the current target. -/
 theorem computationHavingResolvingScan_failedSuccessor_precedesCurrent

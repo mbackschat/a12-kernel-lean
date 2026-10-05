@@ -263,6 +263,7 @@ def resolvingCorrelationContextWithRead (checked : CheckedDocument model)
     ResolvingCorrelationContext CheckedAddressingError where
   read environment field :=
     checked.checkedCellWithRead read environment field
+  unsupportedDateCalendar := .temporalUnavailable
   bindingError := .environment
 
 /-- Correlation reads from the same immutable checked input. -/
@@ -270,6 +271,7 @@ def resolvingCorrelationContext (checked : CheckedDocument model) :
     ResolvingCorrelationContext CheckedAddressingError :=
   { read := fun environment field =>
       (checked.fullValidationAddressedCell environment field).map (·.cell)
+    unsupportedDateCalendar := .temporalUnavailable
     bindingError := .environment }
 
 /-- Resolve one direct entity-list occurrence through the same model-owned address query as every starred occurrence. -/

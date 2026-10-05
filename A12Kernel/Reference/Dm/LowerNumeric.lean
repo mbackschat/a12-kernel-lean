@@ -12,11 +12,6 @@ and `BaseYear`, mean the same on both arms and are lowered once.
 
 namespace A12Kernel.Dm
 
-private def calendarUnit? : String → Option DateDifferenceUnit
-  | "DifferenceInMonths" => some .months
-  | "DifferenceInYears" => some .years
-  | _ => none
-
 def entityTextOperand? : Expr → Option SurfaceTextFieldOperand
   | .entity { path, index := none, category := none } => (path.toFieldPath?).map .direct
   | .entity { path, index := none, category := some name } => (path.toFieldPath?).map (.category · name)

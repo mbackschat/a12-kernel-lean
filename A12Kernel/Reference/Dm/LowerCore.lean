@@ -349,6 +349,11 @@ def Expr.construct : Expr → String
   | .logic .or _ => "Or"
   | .parens _ => "Parens"
 
+def calendarUnit? : String → Option DateDifferenceUnit
+  | "DifferenceInMonths" => some .months
+  | "DifferenceInYears" => some .years
+  | _ => none
+
 def subdayUnit? : String → Option DateTimeSubdayUnit
   | "DifferenceInHours" => some .hours
   | "DifferenceInMinutes" => some .minutes

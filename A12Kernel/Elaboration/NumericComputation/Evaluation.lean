@@ -28,6 +28,7 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
           (NumericComputationFault.guardBinding ∘ ComputationConditionError.fieldFill ∘ ComputationFillError.addressing)
         let result ← (filter.condition.scanComputationResolving
           { read := fun row field => pure ((filterRead?.getD addressed.read) row field)
+            unsupportedDateCalendar := .addressing .unsupportedDateCalendar
             bindingError := fun error => ComputationFillError.addressing error.toStarAddressingError }
           context.row (fun count row => pure (match observeCell .computation
               (addressed.read row source.source.declaration.id) with

@@ -48,7 +48,7 @@ private def context : CorrelationContext := {
   read := fun env _ => text (if env == frame.innerEnv then "candidate" else "captured") }
 
 example : pair.evalTruthIn context frame = .fls ∧
-    pair.evalComputationIn context frame = .notTrue ∧
+    pair.evalComputationIn context frame = .ok .notTrue ∧
     pair.fieldIds = [1] ∧ pair.markedFieldIds = [1] := by native_decide
 
 private def model : FlatModel := {
@@ -118,11 +118,12 @@ private def fillContext : CorrelationContext := {
 
 example : (fill .allFieldsFilled).evalTruthIn fillContext frame = .unknown ∧
     (fill .atLeastOneFieldFilled).evalTruthIn fillContext frame = .tru ∧
-    (fill .moreThanOneFieldFilled).evalComputationIn fillContext frame = .notTrue ∧
+    (fill .moreThanOneFieldFilled).evalComputationIn fillContext frame = .ok .notTrue ∧
     CorrelatedHaving.fieldIds (.leaf (fill .allFieldsFilled)) = [1] ∧
     CorrelatedHaving.markedFieldIds (.leaf (fill .allFieldsFilled)) = [1] := by native_decide
 
 private def failingFillContext : ResolvingCorrelationContext String := {
+  unsupportedDateCalendar := "calendar"
   bindingError := fun _ => "binding"
   read := fun env _ => if env == frame.innerEnv then .ok (text "filled") else .error "captured read" }
 
@@ -143,7 +144,7 @@ private def membership (origin : HavingOrigin) (operator : ValueListMembershipOp
 
 example : (membership .inner .included).evalTruthIn fillContext frame = .tru ∧
     (membership .outer .included).evalTruthIn fillContext frame = .fls ∧
-    (membership .outer .notIncluded).evalComputationIn fillContext frame = .notTrue ∧
+    (membership .outer .notIncluded).evalComputationIn fillContext frame = .ok .notTrue ∧
     (membership .outer .included).evalTruthInResolving failingFillContext frame = .error "captured read" ∧
     (membership .outer .notIncluded).evalComputationInResolving failingFillContext frame = .error "captured read" ∧
     CorrelatedHaving.markedFieldIds (.leaf (membership .outer .included)) = [1] ∧
@@ -190,7 +191,7 @@ example : membershipOperators.map (fun op => fieldMembership.evalValidationRead 
 private def fieldMembershipLeaf : CorrelatedHavingLeaf := .fieldMembership (.scalar .included) fieldMembership
 
 example : fieldMembershipLeaf.evalTruthIn context frame = .fls ∧
-    fieldMembershipLeaf.evalComputationIn context frame = .notTrue ∧
+    fieldMembershipLeaf.evalComputationIn context frame = .ok .notTrue ∧
     fieldMembershipLeaf.evalComputationInResolving failingFillContext frame = .error "captured read" ∧
     fieldMembershipLeaf.wellFormedForEnvironments model [10] [10] = true ∧
     fieldMembershipLeaf.wellFormedForEnvironments model [10] [] = false ∧
@@ -226,7 +227,7 @@ private def tokenLiteralList : HavingFieldValueList := .tokenLiterals
 
 example : [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
     (CorrelatedHavingLeaf.fieldMembership (.quantified operator) tokenLiteralList).evalComputationIn context frame) =
-      [.holds, .notTrue, .holds] ∧
+      [.ok .holds, .ok .notTrue, .ok .holds] ∧
     tokenLiteralList.references = [{ origin := .inner, field := 1 }, { origin := .outer, field := 1 }] ∧
     CorrelatedHaving.markedFieldIds (.leaf (.fieldMembership (.quantified .notAll) tokenLiteralList)) = [1] := by native_decide
 
@@ -264,6 +265,7 @@ example : [NumericToleranceRange.range1, .range2, .range5, .range10].all (fun ra
 
 private def toleranceRead : ResolvingCorrelationContext String := {
   read := fun env _ => if env == frame.innerEnv then .ok invalid else .error "captured read"
+  unsupportedDateCalendar := "calendar"
   bindingError := fun _ => "binding" }
 
 example : (CorrelatedHavingLeaf.numeric (toleranceComparison .range1)).evalTruthInResolving toleranceRead frame =
@@ -283,7 +285,7 @@ example : (HavingNumericAtom.stringLength .inner { id := 1 }).readValidation
     (HavingNumericAtom.stringLength .inner { id := 1 }).readValidation
       { read := fun _ _ => emptyRequired } frame = .error () ∧
     (HavingNumericAtom.stringLength .inner { id := 1 }).readComputation
-      { read := fun _ _ => emptyRequired } frame = .value 0 ∧
+      { read := fun _ _ => emptyRequired } frame = .ok (.value 0) ∧
     (HavingNumericAtom.stringLength .inner { id := 1 }).readValidation
       { read := fun _ _ => { rawPresent := true, parsed := some (.str "😀"), findings := [] } } frame = .ok (.value 2 .fixed) := by native_decide
 
@@ -300,9 +302,9 @@ private def projectedAtoms : List HavingNumericAtom := [
 example : projectedAtoms.map (·.readValidation { read := fun _ _ => { emptyRequired with findings := [] } } frame) =
       [.ok (.value 0 .growOnly), .ok (.value 0 .both)] ∧
     projectedAtoms.map (·.readComputation { read := fun _ _ => emptyRequired } frame) =
-      [.value 0, .value 0] ∧
+      [.ok (.value 0), .ok (.value 0)] ∧
     projectedAtoms.map (·.readComputation { read := fun _ _ => invalid } frame) =
-      [.poison .malformed, .poison .malformed] := by native_decide
+      [.ok (.poison .malformed), .ok (.poison .malformed)] := by native_decide
 
 example : (HavingNumericAtom.stringRange .inner { id := 1 } 3 4).readValidation
       { read := fun _ _ => { rawPresent := true, parsed := some (.str "😀12"), findings := [] } } frame =
@@ -336,7 +338,7 @@ example : (conversionCondition .inner conversionSource).wellFormedForEnvironment
 example : (HavingNumericAtom.fieldValueAsNumber .inner conversionSource).readValidation
       { read := fun _ _ => { emptyRequired with findings := [] } } frame = .ok (.value 0 .both) ∧
     (HavingNumericAtom.fieldValueAsNumber .inner conversionSource).readComputation
-      { read := fun _ _ => emptyRequired } frame = .value 0 ∧
+      { read := fun _ _ => emptyRequired } frame = .ok (.value 0) ∧
     (conversionCondition .inner conversionSource).evalComputationInResolving toleranceRead frame =
       .ok (.poison .malformed) := by native_decide
 
@@ -373,10 +375,10 @@ private def rangeNumericPair : CorrelatedHavingLeaf := .numeric {
 
 example : (rangeNumeric .inner .start .month).readValidation { read := fun _ _ => rangeCell 8 } frame =
       .ok (.value 1 .fixed) ∧
-    (rangeNumeric .inner .finish .month).readComputation { read := fun _ _ => rangeCell 8 } frame = .value 8 ∧
+    (rangeNumeric .inner .finish .month).readComputation { read := fun _ _ => rangeCell 8 } frame = .ok (.value 8) ∧
     (rangeNumeric .inner .start .month).readValidation
       { read := fun _ _ => { emptyRequired with findings := [] } } frame = .ok (.value 0 .both) ∧
-    (rangeNumeric .inner .start .month).readComputation { read := fun _ _ => emptyRequired } frame = .value 0 ∧
+    (rangeNumeric .inner .start .month).readComputation { read := fun _ _ => emptyRequired } frame = .ok (.value 0) ∧
     (rangeNumeric .inner .start .month).readValidation { read := fun _ _ => text "wrong kind" } frame = .error () := by native_decide
 
 example : rangeNumericPair.evalTruthInResolving toleranceRead frame = .error "captured read" ∧
@@ -417,9 +419,9 @@ example : subdayAtom.readValidationResolving toleranceRead frame = .error "captu
     subdayAtom.readComputationResolving { toleranceRead with read := fun _ _ => .error "first read" } frame = .error "first read" := by native_decide
 
 example : subdayAtom.readValidation { read := fun _ _ => { emptyRequired with findings := [] } } frame = .ok (.value 0 .both) ∧
-    subdayAtom.readComputation { read := fun _ _ => emptyRequired } frame = .value 0 ∧
+    subdayAtom.readComputation { read := fun _ _ => emptyRequired } frame = .ok (.value 0) ∧
     subdayAtom.readValidation { read := fun _ _ => invalid } frame = .error () ∧
-    subdayAtom.readComputation { read := fun _ _ => invalid } frame = .poison .malformed := by native_decide
+    subdayAtom.readComputation { read := fun _ _ => invalid } frame = .ok (.poison .malformed) := by native_decide
 
 private def subdayModel : FlatModel := { model with fields := model.fields.map fun field => { field with
   policy := { kind := .temporal .dateTime (subdayRef .inner).field.components },
@@ -446,6 +448,7 @@ example : (aggregateAtom .sum).readValidation aggregateRead frame = .ok (.value 
     (aggregateAtom .distinctCount).readValidation aggregateRead frame = .ok (.value 1 .growOnly) := by native_decide
 
 private def aggregateStructuralRead : ResolvingCorrelationContext String := {
+  unsupportedDateCalendar := "calendar"
   bindingError := fun _ => "binding"
   read := fun env _ => if env == frame.innerEnv then
     .ok { emptyRequired with findings := [] }

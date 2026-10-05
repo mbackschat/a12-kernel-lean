@@ -619,8 +619,8 @@ def resolvedComputationSide
             match starCellAt source .computation starRead environment with
             | .unknown cause => .inr cause
             | cell => .inl (cell :: cells)
-          match having.condition.scanComputation filterContext outer consume
-              resolved.environments [] with
+          match ← (having.condition.scanComputation filterContext outer consume
+              resolved.environments []).mapError (fun _ => .unsupportedDateCalendar) with
           | .exhausted reversed =>
               pure (.inl {
                 cells := reversed.reverse

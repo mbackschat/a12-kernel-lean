@@ -76,15 +76,15 @@ theorem filteredComputationFirstFilled_poisonedSuccessor_precedesCurrent
     (cell : Env → ValueListCell kind) (state : FirstFilledScanState)
     (cause : FormalCause)
     (firstHolds : condition.evalComputationIn filterContext
-      { innerEnv := first, outerEnv := outer } = .holds)
+      { innerEnv := first, outerEnv := outer } = .ok .holds)
     (secondPoisons : condition.evalComputationIn filterContext
-      { innerEnv := second, outerEnv := outer } = .poison cause) :
+      { innerEnv := second, outerEnv := outer } = .ok (.poison cause)) :
     scanFilteredComputationFirstFilled condition filterContext outer cell
       [first, second] hasUninstantiatedTail state =
-        .inr (.unavailable cause) := by
+        .ok (.inr (.unavailable cause)) := by
   simp [scanFilteredComputationFirstFilled,
     CorrelatedHaving.scanComputation,
-    CorrelatedHaving.scanComputationCandidates,
+    CorrelatedHaving.scanComputationCandidates, bind, Except.bind, pure, Except.pure,
     firstHolds, secondPoisons]
 
 private def firstFilledSide

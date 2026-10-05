@@ -144,17 +144,17 @@ def scanFilteredComputationFirstFilled
     (outer : Env) (cell : Env → ValueListCell kind)
     (environments : List Env) (hasUninstantiatedTail : Bool)
     (state : FirstFilledScanState) :
-    FirstFilledScanState ⊕ FirstFilledScanResult kind :=
+    Except Unit (FirstFilledScanState ⊕ FirstFilledScanResult kind) := do
   let entered := state.enter hasUninstantiatedTail true
   let consume := fun current environment =>
     match current.step (cell environment) with
     | .continue next => .inl next
     | .done result => .inr result
-  match condition.scanComputation filterContext outer consume
+  match ← condition.scanComputation filterContext outer consume
       environments entered with
-  | .exhausted next => .inl next
-  | .terminated result => .inr result
-  | .poison cause => .inr (.unavailable cause)
+  | .exhausted next => pure (.inl next)
+  | .terminated result => pure (.inr result)
+  | .poison cause => pure (.inr (.unavailable cause))
 
 /-- Addressed filtered computation delegates filter and target failure timing to the shared one-kept-successor scan. Structural failures stay in `Except`; formal poison remains semantic unavailability. -/
 def scanFilteredComputationFirstFilledResolving
@@ -190,30 +190,30 @@ namespace FirstFilledComputationSelection
 /-- Scan one reached selection: a star with no row reached is a not-given prefix, and a filter owns
 its candidates' order and poison timing. -/
 def scan (outer : Env) (state : FirstFilledScanState) :
-    FirstFilledComputationSelection kind → FirstFilledScanState ⊕ FirstFilledScanResult kind
+    FirstFilledComputationSelection kind → Except Unit (FirstFilledScanState ⊕ FirstFilledScanResult kind)
   | .cell reached => match state.step reached with
-      | .continue next => .inl next
-      | .done result => .inr result
+      | .continue next => pure (.inl next)
+      | .done result => pure (.inr result)
   | .rows environments hasUninstantiatedTail classify =>
-      scanFirstFilledItems classify environments
-        (state.enterSelection environments.isEmpty hasUninstantiatedTail false)
+      pure (scanFirstFilledItems classify environments
+        (state.enterSelection environments.isEmpty hasUninstantiatedTail false))
   | .filtered condition filterContext environments hasUninstantiatedTail classify =>
       scanFilteredComputationFirstFilled condition filterContext outer classify environments
         hasUninstantiatedTail state
-  | .side resolved => scanFirstFilledItems id resolved.cells (state.enterOperand resolved)
+  | .side resolved => pure (scanFirstFilledItems id resolved.cells (state.enterOperand resolved))
 
 end FirstFilledComputationSelection
 
 /-- Scan authored operands in order, resolving each only once every earlier one has fallen through,
 so a later operand's structural failure is never reached past a selected value. The caller closes an
 exhausted scan with its family's identity. -/
-def scanComputationFirstFilledSelections (outer : Env)
+def scanComputationFirstFilledSelections (outer : Env) (unsupportedDateCalendar : Error)
     (resolve : α → Except Error (FirstFilledComputationSelection kind)) :
     List α → FirstFilledScanState → Except Error (FirstFilledScanState ⊕ FirstFilledScanResult kind)
   | [], state => pure (.inl state)
   | operand :: remaining, state => do
-      match (← resolve operand).scan outer state with
-      | .inl next => scanComputationFirstFilledSelections outer resolve remaining next
+      match ← ((← resolve operand).scan outer state).mapError (fun _ => unsupportedDateCalendar) with
+      | .inl next => scanComputationFirstFilledSelections outer unsupportedDateCalendar resolve remaining next
       | .inr result => pure (.inr result)
 
 private def scanFirstFilledCells

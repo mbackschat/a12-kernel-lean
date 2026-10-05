@@ -182,7 +182,7 @@ def evaluateAt (operation : CheckedStringFirstFilledComputation model)
     Except StringFirstFilledComputationFault StringFirstFilledComputationOutcome := do
   let targetPath ← environment.pathForScope operation.target.repeatableScope
     |>.mapError .targetEnvironment
-  let selected ← scanComputationFirstFilledSelections environment
+  let selected ← scanComputationFirstFilledSelections environment .unsupportedDateCalendar
       (·.computationSelection input.source.toDocument environment (input.computationCellAt read))
       operation.source.operands {}
     |>.mapError .source

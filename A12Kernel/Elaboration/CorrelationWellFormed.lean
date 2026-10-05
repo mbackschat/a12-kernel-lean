@@ -72,7 +72,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
     (model : FlatModel) (group : RepeatableGroupDecl) : CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
       | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
-      | .aggregate _ _ _ | .dateTimeDifference _ _ _ | .fieldValueAsNumber _ _ => false
+      | .aggregate _ _ _ | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ | .fieldValueAsNumber _ _ => false
       | .field reference => model.admitsSingleGroupNumber group reference.field
       | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
       | .repetition reference => reference.source == .repeatable group.level
@@ -147,6 +147,16 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
   | .numeric comparison => comparison.havingAdmitted fun
       | .aggregate _ first rest => !rest.isEmpty && havingAggregateUnique first rest &&
           (first :: rest).all (model.admitsHavingNumberInEnvironment candidateLevels outerLevels)
+      | .dateDifference unit left right => unit.compatible model.hasBaseYear left.field.components right.field.components &&
+          [left, right].all fun reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
+            declaration.toTemporalField? == some reference.field &&
+              repeatableScopeAvailable declaration.repeatableScope (reference.origin.availableLevels candidateLevels outerLevels)
+      | .dayDifference profile left right => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
+          CalendarDayDifference.admittedBy left.field.components && CalendarDayDifference.admittedBy right.field.components &&
+          CalendarDayDifference.yearCompatible model.hasBaseYear left.field.components right.field.components &&
+          [left, right].all fun reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
+            declaration.toTemporalField? == some reference.field &&
+              repeatableScopeAvailable declaration.repeatableScope (reference.origin.availableLevels candidateLevels outerLevels)
       | .dateTimeDifference unit left right => unit.compatible left.field.components right.field.components &&
           [left, right].all fun reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
             declaration.toTemporalField? == some reference.field &&
@@ -228,7 +238,7 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
   | .numeric comparison =>
       (comparison.left.atoms ++ comparison.right.atoms).any fun
         | .aggregate _ first rest => (first :: rest).any (·.reachesReopenedLevel model reopenedLevels)
-        | .dateTimeDifference _ left right => [left, right].any fun reference => reference.origin == .inner &&
+        | .dateDifference _ left right | .dayDifference _ left right | .dateTimeDifference _ left right => [left, right].any fun reference => reference.origin == .inner &&
             (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
         | .baseYear _ | .baseYearDatePart _ _ _ => false

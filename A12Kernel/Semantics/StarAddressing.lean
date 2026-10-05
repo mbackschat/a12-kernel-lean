@@ -49,6 +49,8 @@ structure StarPath where
   deriving Repr, DecidableEq
 
 inductive StarAddressingError where
+  /-- Reached filter arithmetic can exceed the implemented calendar profile; this is a support fault, not a cell finding. -/
+  | unsupportedDateCalendar
   | invalidStarPosition (firstStar axisCount : Nat)
   | duplicateAxis (level : RepeatableLevel)
   | invalidRepeatability (level : RepeatableLevel)

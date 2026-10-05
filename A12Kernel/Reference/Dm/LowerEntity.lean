@@ -66,10 +66,14 @@ where
   lowerNonAggregateHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
     | .call id [.mk (.entity { path := left, index := none, category := none }) none none,
         .mk (.entity { path := right, index := none, category := none }) none none] none none => do
-        let some unit := subdayUnit? id | refuse "Having" "difference unit"
         let some (leftOrigin, leftField) := left.havingField? | refuse "Having" "difference left"
         let some (rightOrigin, rightField) := right.havingField? | refuse "Having" "difference right"
-        pure (.dateTimeDifference unit { origin := leftOrigin, field := leftField } { origin := rightOrigin, field := rightField })
+        let left : SurfaceHavingTemporalRef := { origin := leftOrigin, field := leftField }
+        let right : SurfaceHavingTemporalRef := { origin := rightOrigin, field := rightField }
+        if id == "DifferenceInDays" then return .dayDifference left right
+        if let some unit := calendarUnit? id then return .dateDifference unit left right
+        let some unit := subdayUnit? id | refuse "Having" "difference unit"
+        pure (.dateTimeDifference unit left right)
     | .constant "BaseYear" => pure .baseYear
     | .call id [.mk (.constant "BaseYear") none none] none none => do
         let some part := datePart? id | refuse "Having" "BaseYear component"

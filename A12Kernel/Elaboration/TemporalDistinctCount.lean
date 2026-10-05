@@ -672,7 +672,7 @@ private def computationSide (operation : CheckedTemporalDistinctCountRun model)
           let consume := fun cells environment => match read environment with
             | .unknown cause => .inr cause
             | cell => .inl (cell :: cells)
-          match having.scanComputation { read := filterRead } outer consume resolved.environments [] with
+          match ← (having.scanComputation { read := filterRead } outer consume resolved.environments []).mapError (fun _ => .unsupportedDateCalendar) with
           | .exhausted reversed => pure (.inl {
               cells := reversed.reverse
               hasUninstantiatedTail := resolved.domain.hasOpenTail

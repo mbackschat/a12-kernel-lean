@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.ScalarMembershipLocks
 import A12Kernel.Reference.Dm.HavingComparisonLocks
+import A12Kernel.Reference.Dm.HavingCalendarLocks
 import A12Kernel.Reference.Dm.StringExpressionLocks
 import A12Kernel.Reference.Dm.CalendarExpressionLocks
 import A12Kernel.Reference.Dm.RangeExpressionLocks
