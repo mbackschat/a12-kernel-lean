@@ -59,11 +59,9 @@ inductive SurfaceCorrelatedHaving where
       (left right : AuthoredNumericExpr SurfaceHavingNumericAtom)
   | numeric (op : SurfaceComparisonOp)
       (left right : AuthoredNumericExpr SurfaceHavingNumericAtom)
-  /-- A String or Enumeration projection against a literal. The operator slot is an `EqualityOp`, so a text ordering
-      comparison is unrepresentable here rather than refused during elaboration — the same
-      treatment the ordinary String comparison surface gives it, and what `spec/04`'s
-      equality-only rule states. The kernel's `MVK_INVALID_TYPE_FOR_COMPARISON` is a class this
-      project models nowhere, so this is consistency rather than a local narrowing. -/
+  /-- A String or Enumeration projection against a literal retains an equality-only operator
+      (spec/04). Text-literal ordering is therefore unrepresentable on this filter surface;
+      SG17 owns integration of the existing comparison-entry refusal into this route. -/
   | compareStrings (op : EqualityOp) (reference : SurfaceHavingStringRef)
       (expected : String)
   | literalList (quantifier : ValueListQuantifier) (subjects : SurfaceHavingDirectFieldSource)
