@@ -849,4 +849,20 @@ example : entityDiagnostic .minimum (starOperand "Amount") [starOperand "Cust"] 
     some .notSortable := by
   native_decide
 
+private def filledPair (other : FlatFieldDecl) : SurfaceCorrelatedHaving :=
+  .fieldFill .allFieldsFilled {
+    first := { origin := .inner, field := { base := .absolute, groups := amount.groupPath, field := amount.name } }
+    rest := [{ origin := .inner, field := { base := .absolute, groups := other.groupPath, field := other.name } }] }
+
+example : havingErrorOf ["Shop"] source (filledPair otherAmount) =
+      some (.having (.fieldOutsideEnvironment .inner otherAmount.path [10, 20] [30])) ∧
+    havingErrorOf ["Shop"] source (filledPair extraValue) =
+      some (.having (.fieldOutsideEnvironment .inner extraValue.path [10, 20] [10, 40])) := by native_decide
+
+example : havingErrorOf ["Shop"] source (.and (filledPair otherAmount)
+    (.compareNumbers .less
+      { origin := .inner, field := { base := .absolute, groups := otherName.groupPath, field := otherName.name } }
+      { origin := .inner, field := { base := .absolute, groups := amount.groupPath, field := amount.name } })) =
+      some (.having (.orderingFieldNotNumber otherName.path .string .number)) := by native_decide
+
 end A12Kernel.Conformance.StarNumberElaboration

@@ -110,4 +110,31 @@ example : partialModel.admitsHavingSimpleComparison [10] [10]
     (CorrelationElabError.dateRangeComponentsMismatch ["Left"] ["Right"]).diagnostic? =
       some .invalidCompareToDateRange := by native_decide
 
+private def fill (operator : FieldFillQuantifier) : CorrelatedHavingLeaf :=
+  .fieldFill operator [{ origin := .inner, field := 1 }, { origin := .outer, field := 1 }]
+private def fillContext : CorrelationContext := {
+  read := fun env _ => if env == frame.innerEnv then text "filled" else emptyRequired }
+
+example : (fill .allFieldsFilled).evalTruthIn fillContext frame = .unknown ∧
+    (fill .atLeastOneFieldFilled).evalTruthIn fillContext frame = .tru ∧
+    (fill .moreThanOneFieldFilled).evalComputationIn fillContext frame = .notTrue ∧
+    CorrelatedHaving.fieldIds (.leaf (fill .allFieldsFilled)) = [1] ∧
+    CorrelatedHaving.markedFieldIds (.leaf (fill .allFieldsFilled)) = [1] := by native_decide
+
+private def failingFillContext : ResolvingCorrelationContext String := {
+  bindingError := fun _ => "binding"
+  read := fun env _ => if env == frame.innerEnv then .ok (text "filled") else .error "captured read" }
+
+example : (fill .atLeastOneFieldFilled).evalComputationInResolving failingFillContext frame = .ok .holds ∧
+    (fill .noFieldFilled).evalComputationInResolving failingFillContext frame = .ok .notTrue ∧
+    (fill .atLeastOneFieldFilled).evalTruthInResolving failingFillContext frame = .error "captured read" ∧
+    (fill .fieldsNotCollectivelyFilled).evalComputationInResolving failingFillContext frame = .error "captured read" := by native_decide
+
+example : (fill .allFieldsFilled).wellFormedForEnvironments model [10] [10] = true ∧
+    (fill .allFieldsFilled).wellFormedForEnvironments model [10] [] = false ∧
+    (CorrelatedHavingLeaf.fieldFill .allFieldsFilled [{ origin := .inner, field := 1 },
+      { origin := .inner, field := 1 }]).wellFormedForEnvironments model [10] [10] = false ∧
+    (CorrelationElabError.fieldFill .tooFewFields).diagnostic? = some .paramSizeInvalidN ∧
+    (CorrelationElabError.fieldFill (.duplicateOperand 1)).diagnostic? = some .duplicateParam1 := by native_decide
+
 end A12Kernel.Conformance.CorrelatedComparisonInputs

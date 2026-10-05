@@ -177,4 +177,36 @@ example : rangeRun "==" "yyyy" "yyyy" "2024/2025" "2024/2025" "2024/2026" =
     rangeRun "==" "MM" "MM" "01/02" "0102" "0103" (some "") =
       some (.fired .omission, ["value 9"]) := by native_decide
 
+private def fillOperators := ["AllFieldsFilled", "NoFieldFilled", "AtLeastOneFieldFilled",
+  "MoreThanOneFieldFilled", "NotAllFieldsFilled", "NotExactlyOneFieldFilled", "FieldsNotCollectivelyFilled"]
+
+example : fillOperators.map (fun op =>
+    run (op ++ "(Rows/Tag, $Expected)") false .string "keep" "keep" "") =
+      [some (.fired .omission, ["value 9"]), some (.notFired, ["value 0"]),
+       some (.notFired, ["value 14"]), some (.fired .omission, ["value 9"]),
+       some (.notFired, ["value 5"]), some (.fired .omission, ["value 9"]),
+       some (.notFired, ["value 5"])] := by native_decide
+
+example : fillOperators.map (fun op =>
+    (run (op ++ "(Rows/Tag, $Expected)") false .string "" "" "keep").map (·.2)) =
+      [some ["value 0"], some ["value 9"], some ["value 5"], some ["value 0"],
+       some ["value 14"], some ["value 9"], some ["value 5"]] := by native_decide
+
+example : run "AtLeastOneFieldFilled(Rows/Tag, $Expected)" false .boolean "true" "bad" "false" =
+      some (.notFired, []) ∧
+    run "AtLeastOneFieldFilled($Expected, Rows/Tag)" false .boolean "true" "bad" "false" =
+      some (.notFired, ["value 14"]) ∧
+    run "AllFieldsFilled(Rows/Tag)" = none ∧
+    run "AllFieldsFilled(Rows/Tag, Rows/Tag)" = none := by native_decide
+
+private def fillReferences : Option (Bool × Bool) := do
+  let parsed ← (parseText .english
+    "FieldValuesNotUnique(/Form/Rows*/Tag Having AllFieldsFilled(/Form/Rows/Tag, $/Form/Rows/Tag))").toOption
+  let checked ← (lowerCondition model ["Form", "Rows"] false parsed.body).toOption
+  let pointers ← (checked.core.referencePointers [(10, 2)]).toOption
+  pure (pointers.contains { field := 3, coordinates := [.wildcard] },
+    pointers.contains { field := 3, coordinates := [.concrete 2] })
+
+example : fillReferences = some (true, true) := by native_decide
+
 end A12Kernel.Dm.HavingComparisonLocks

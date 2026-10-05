@@ -26,12 +26,6 @@ def CorrelationComparisonOp.acceptsLiteralScale (op : CorrelationComparisonOp)
 def repeatableScopeAvailable (required available : List RepeatableLevel) : Bool :=
   required.isPrefixOf available
 
-def HavingOrigin.availableLevels (origin : HavingOrigin)
-    (candidateLevels outerLevels : List RepeatableLevel) : List RepeatableLevel :=
-  match origin with
-  | .inner => candidateLevels
-  | .outer => outerLevels
-
 /-- Resolve the complete binding scope from the model, including fixed-group ancestry.
     A forged fixed reference to a repeatable group cannot certify a constant index. -/
 def HavingRepetitionRef.scope? (reference : HavingRepetitionRef) (model : FlatModel) :
@@ -66,7 +60,7 @@ def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
       | _, _ => false
   -- Text, Boolean/Confirm and presence carry no declared scale; their kind gates belong to
   -- wellFormedForEnvironments.
-  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .presence _ _ => true
+  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .presence _ _ => true
 
 /-- Every leaf under the shared connective tree satisfies the static scale law. -/
 def CorrelatedHaving.equalityScalesAgree (condition : CorrelatedHaving) : Bool :=
@@ -80,7 +74,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
   -- The legacy one-group adapter admits only the leaves it was built for. The other
   -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
   -- extending an adapter no current consumer needs them on.
-  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .presence _ _ => false
+  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .presence _ _ => false
 
 def CorrelatedHaving.wellFormedForSingleGroup (condition : CorrelatedHaving)
     (model : FlatModel) (group : RepeatableGroupDecl) : Bool :=
@@ -154,6 +148,11 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
         (right.availableLevels candidateLevels outerLevels) comparison
   | .compareStringLiteral op reference expected =>
       model.admitsHavingStringInEnvironment candidateLevels outerLevels reference op expected
+  | .fieldFill _ references =>
+      references.length >= 2 && references.eraseDups.length == references.length &&
+        references.all fun ref => (model.lookupUniqueId ref.field).toOption.any fun declaration =>
+          repeatableScopeAvailable declaration.repeatableScope
+            (ref.origin.availableLevels candidateLevels outerLevels)
   | .presence _ reference =>
       match model.lookupUniqueId reference.field with
       | .error _ => false
@@ -197,6 +196,9 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
             declaration.repeatableScope.any reopenedLevels.contains
   | .compareStringLiteral _ reference _ =>
       reference.reachesReopenedLevel model reopenedLevels
+  | .fieldFill _ references => references.any fun ref =>
+      ref.origin == .inner && (model.lookupUniqueId ref.field).toOption.any fun declaration =>
+        declaration.repeatableScope.any reopenedLevels.contains
   | .presence _ reference =>
       match reference.origin, model.lookupUniqueId reference.field with
       | .inner, .ok declaration =>

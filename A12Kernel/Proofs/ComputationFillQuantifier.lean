@@ -189,6 +189,15 @@ theorem computationFillScan_deciding_prefix (kind : FieldFillQuantifier.ScanKind
     FieldFillQuantifier.scanRead kind read (first :: rest) seen = .inr result := by
   simp [FieldFillQuantifier.scanRead, decides]
 
+/-- A deciding successful read excludes every later structural failure as well as later poison. -/
+theorem computationFillScanM_deciding_prefix (kind : FieldFillQuantifier.ScanKind)
+    (read : Slot → Except Error ComputationFillSlot) (first : Slot) (rest : List Slot)
+    (seen : Bool) (slot : ComputationFillSlot) (result : FieldFillQuantifier.ScanResult)
+    (observed : read first = .ok slot)
+    (decides : FieldFillQuantifier.step kind seen slot = .inr result) :
+    FieldFillQuantifier.scanReadM kind read (first :: rest) seen = .ok result := by
+  simp [FieldFillQuantifier.scanReadM, observed, bind, Except.bind, decides, pure, Except.pure]
+
 /-- A failed first scan prevents a composite guard from starting its other range. -/
 theorem computationFillRestart_poison (operator : FieldFillQuantifier)
     (scan : FieldFillQuantifier.ScanKind → Except Error FieldFillQuantifier.ScanResult)

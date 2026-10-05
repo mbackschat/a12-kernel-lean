@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.FieldEntityAdmission
 import A12Kernel.Elaboration.SemanticIndex
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.SingleGroup
@@ -16,12 +17,6 @@ Slot resolution admits the shape; a family's own certification decides whether t
 
 namespace A12Kernel
 
-/-- How one direct slot reads its field. Most families can read a field only one way and leave every slot `.stored`; an Enumeration list may read one field both plainly and through a category projection. The Kernel counts those two reads as distinct operands rather than a repeated one, so this discriminator is part of operand identity and must survive path resolution. -/
-inductive FieldEntityReadForm where
-  | stored
-  | projected (category : String)
-  deriving Repr, DecidableEq
-
 /-- One parser-independent field entity-list slot. A filter belongs to its exact authored wildcard occurrence, and a group slot retains its authored path rather than its expansion, because the wildcard gate reads the path that was written. -/
 inductive SurfaceFieldEntityOperand where
   | field (path : SurfaceFieldPath) (form : FieldEntityReadForm := .stored)
@@ -36,23 +31,6 @@ inductive SurfaceFieldEntityOperand where
 structure SurfaceFieldEntitySource where
   first : SurfaceFieldEntityOperand
   rest : List SurfaceFieldEntityOperand
-  deriving Repr, DecidableEq
-
-/-- One direct field operand authored inside a `Having` expression. The origin is part of the
-    operand rather than ambient filter state because `$P` and `P` are different exact operands even
-    when both paths resolve to the same declaration
-    ([checkpoint](../../docs/SOURCES.md#src-pr2-correlated-operand-identity)). -/
-structure SurfaceHavingDirectFieldOperand where
-  origin : HavingOrigin
-  field : SurfaceFieldPath
-  form : FieldEntityReadForm := .stored
-  deriving Repr, DecidableEq
-
-/-- A nonempty direct field list nested inside `Having`. Carrier-specific kind gates remain outside
-    this shared authoring shape. -/
-structure SurfaceHavingDirectFieldSource where
-  first : SurfaceHavingDirectFieldOperand
-  rest : List SurfaceHavingDirectFieldOperand
   deriving Repr, DecidableEq
 
 /-- One kind-neutral resolved slot. Family-specific certification occurs only after the complete list has passed the star, duplicate, and cardinality gates.
@@ -336,57 +314,6 @@ inductive EntityListCategoryGate where
   | behindRootGate
   deriving Repr, DecidableEq
 
-/-- The source-shape failures shared by every homogeneous aggregate family. -/
-inductive FieldEntityShapeElabError where
-  | unsupportedIndexedOperand (path : List String)
-  | semanticIndex (error : SemanticIndexElabError)
-  | resolve (error : ResolveError)
-  | starPath (error : StarPathElabError)
-  | groupReference (error : FixedGroupReferenceError)
-  | starredGroup (error : StarredGroupElabError)
-  | tooFewFields
-  | duplicateOperand (field : FieldId)
-  | duplicateGroupOperand (path : GroupPath)
-  | overlappingOperands (ancestor descendant : List String)
-  /-- A fixed root group in a list that passed both duplicate scans. Every entity of a model lies
-      under its root, so this arm is reached only by a root alone or beside another root's entities
-      ([checkpoint](../../docs/SOURCES.md#inbound-2026-09-23-entity-list-root-group-gate)). -/
-  | rootGroupOperand (path : GroupPath)
-  /-- On a fixed-target arm, an operand leaves a repeatable level for its evaluation to bind. The
-      whole list is judged before the duplicate scans, as the Kernel's missing-star bar is
-      ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)). -/
-  | unboundOperandLevel (unbound : UnboundOperandLevel)
-  /-- An Enumeration's category in a list whose carrier asks the category gate. -/
-  | categoryNotAllowed (path : List String)
-  /-- A category the Enumeration does not declare, refused as the slot is read. -/
-  | unknownCategory (path : List String) (category : String)
-  deriving Repr, DecidableEq
-
-/-- The gates this shared checker owns, projected once. The **classes** do not vary by carrier, and
-a row measured at one carrier fixes the code everywhere.
-
-**Whether a gate fires does vary, and the arity gate is measured to.** All three value-list
-quantifiers accept a *sole unstarred field* operand, where the entity-list carriers refuse one with
-`MVK_PARAMSIZE_INVALIDN`
-([checkpoint](../../docs/SOURCES.md#src-value-list-quantifier-kind-gate-partitions-three-ways)), so
-each carrier passes the `EntityListArity` it applies. -/
-def FieldEntityShapeElabError.diagnostic? :
-    FieldEntityShapeElabError → Option KernelStaticDiagnostic
-  | .unsupportedIndexedOperand _ => none
-  | .semanticIndex error => error.diagnostic?
-  | .tooFewFields => some .paramSizeInvalidN
-  | .duplicateOperand _ => some .duplicateParam1
-  | .duplicateGroupOperand _ => some .duplicateParam1
-  | .overlappingOperands _ _ => some .duplicateParam2
-  | .rootGroupOperand _ => some .rootGroupReferenced
-  | .categoryNotAllowed _ => some .categoryNotAllowed
-  | .unknownCategory _ _ => some .categoryUnknown
-  | .unboundOperandLevel unbound => unbound.diagnostic?
-  | .resolve error => error.diagnostic?
-  | .groupReference error => error.diagnostic?
-  | .starredGroup error => error.diagnostic?
-  | .starPath error => error.diagnostic?
-
 def firstDuplicateOptionalIdentity? [BEq β] (identity? : α → Option β) :
     List α → Option β
   | [] => none
@@ -418,23 +345,6 @@ def ResolvedFieldEntityOperand.exactIdentity? :
   | .group reference => some (.fixedGroup reference.path)
   | .star _ | .starHaving _ _ | .starredGroup _ |
       .starredGroupPresence _ => none
-
-/-- Report the first exact duplicate whose second occurrence completes in authored encounter order. -/
-private def firstDuplicateInEncounterOrderFrom? [BEq β]
-    (identity? : α → Option β) (seen : List β) : List α → Option β
-  | [] => none
-  | operand :: remaining =>
-      match identity? operand with
-      | none => firstDuplicateInEncounterOrderFrom? identity? seen remaining
-      | some identity =>
-          if seen.contains identity then some identity
-          else firstDuplicateInEncounterOrderFrom? identity? (identity :: seen) remaining
-
-/-- Report the identity whose repeated occurrence arrives first. Unlike a lookahead scan, this
-    preserves authored encounter order when two different identities both repeat. -/
-def firstDuplicateInEncounterOrder? [BEq β] (identity? : α → Option β)
-    (operands : List α) : Option β :=
-  firstDuplicateInEncounterOrderFrom? identity? [] operands
 
 def firstDuplicateResolvedEntityOperand? :
     List (ResolvedFieldEntityOperand model) → Option ResolvedFieldEntityIdentity :=
@@ -669,101 +579,6 @@ def elaborateFieldEntityShape (model : FlatModel)
     Except FieldEntityShapeElabError (CheckedFieldEntityShape model) :=
   elaborateFieldEntityShapeIn model declaringGroup [] authored arity fixedTargetGroup? writtenGroup
     categoryGate
-
-/-- One direct `Having` operand after origin-sensitive scope resolution. The resolved declaration,
-    read form, and origin together are its exact authored identity. -/
-structure ResolvedHavingDirectFieldOperand (model : FlatModel) where
-  origin : HavingOrigin
-  declaration : FlatFieldDecl
-  form : FieldEntityReadForm
-  deriving Repr, DecidableEq
-
-structure HavingDirectFieldIdentity where
-  origin : HavingOrigin
-  field : FieldId
-  form : FieldEntityReadForm
-  deriving Repr, DecidableEq
-
-def ResolvedHavingDirectFieldOperand.exactIdentity
-    (operand : ResolvedHavingDirectFieldOperand model) : HavingDirectFieldIdentity :=
-  { origin := operand.origin, field := operand.declaration.id, form := operand.form }
-
-def firstDuplicateResolvedHavingDirectField? :
-    List (ResolvedHavingDirectFieldOperand model) → Option HavingDirectFieldIdentity :=
-  firstDuplicateInEncounterOrder? fun operand => some operand.exactIdentity
-
-/-- A resolved direct list nested in `Having`. It retains both environment scopes for Analyze and
-    Transform consumers while certifying model validity, list multiplicity, and exact uniqueness. -/
-structure CheckedHavingDirectFieldSource (model : FlatModel) where
-  first : ResolvedHavingDirectFieldOperand model
-  rest : List (ResolvedHavingDirectFieldOperand model)
-  candidateLevels : List RepeatableLevel
-  capturedLevels : List RepeatableLevel
-  modelWellFormed : model.validate.isOk = true
-  requiredMultiplicity : (!rest.isEmpty) = true
-  uniqueExactOperands :
-    firstDuplicateResolvedHavingDirectField? (first :: rest) = none
-
-namespace CheckedHavingDirectFieldSource
-
-def operands (checked : CheckedHavingDirectFieldSource model) :
-    List (ResolvedHavingDirectFieldOperand model) :=
-  checked.first :: checked.rest
-
-end CheckedHavingDirectFieldSource
-
-private def resolveHavingDirectFieldOperand (model : FlatModel)
-    (declaringGroup : GroupPath) (candidateLevels capturedLevels : List RepeatableLevel)
-    (authored : SurfaceHavingDirectFieldOperand) :
-    Except FieldEntityShapeElabError (ResolvedHavingDirectFieldOperand model) := do
-  let resolved ← model.resolveFieldDeclarationUnchecked declaringGroup authored.field
-    |>.mapError .resolve
-  let declaration ← resolved.requireRepetitionBoundBy
-      (authored.origin.availableLevels candidateLevels capturedLevels)
-    |>.mapError .resolve
-  pure { origin := authored.origin, declaration, form := authored.form }
-
-private def resolveHavingDirectFieldOperands (model : FlatModel)
-    (declaringGroup : GroupPath) (candidateLevels capturedLevels : List RepeatableLevel) :
-    List SurfaceHavingDirectFieldOperand →
-      Except FieldEntityShapeElabError
-        (List (ResolvedHavingDirectFieldOperand model))
-  | [] => pure []
-  | operand :: remaining => do
-      pure ((← resolveHavingDirectFieldOperand model declaringGroup candidateLevels
-        capturedLevels operand) ::
-        (← resolveHavingDirectFieldOperands model declaringGroup candidateLevels
-          capturedLevels remaining))
-
-/-- Check a direct field list nested inside `Having`. Resolution selects the candidate or captured
-    scope per operand before one shared exact-identity scan; carrier-specific kind and runtime gates
-    intentionally remain with the containing aggregate. -/
-def elaborateHavingDirectFieldSource (model : FlatModel)
-    (declaringGroup : GroupPath) (candidateLevels capturedLevels : List RepeatableLevel)
-    (authored : SurfaceHavingDirectFieldSource) :
-    Except FieldEntityShapeElabError (CheckedHavingDirectFieldSource model) :=
-  match hModel : model.validate with
-  | .error error => .error (.resolve error)
-  | .ok () => do
-      let first ← resolveHavingDirectFieldOperand model declaringGroup candidateLevels
-        capturedLevels authored.first
-      let rest ← resolveHavingDirectFieldOperands model declaringGroup candidateLevels
-        capturedLevels authored.rest
-      match hDuplicate :
-          firstDuplicateResolvedHavingDirectField? (first :: rest) with
-      | some identity => throw (.duplicateOperand identity.field)
-      | none =>
-          if hMultiplicity : !rest.isEmpty then
-            pure {
-              first
-              rest
-              candidateLevels
-              capturedLevels
-              modelWellFormed := by rw [hModel]; rfl
-              requiredMultiplicity := hMultiplicity
-              uniqueExactOperands := hDuplicate }
-          else
-            throw .tooFewFields
 
 /-- Every operand kind resolves only against a representable declaring group, so a checked
     entity-list shape certifies its declaring group without re-testing it.

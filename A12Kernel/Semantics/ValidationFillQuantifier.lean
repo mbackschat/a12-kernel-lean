@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.Observation
 import A12Kernel.Cell
 import A12Kernel.Core
 import A12Kernel.Semantics.FieldFillQuantifier
@@ -119,6 +120,15 @@ def evalValidation (operator : FieldFillQuantifier)
         .fired .omission
       else
         .falseOrUnknown
+
+/-- Direct correlated lists reuse the ordinary tally, preserving eager structural reads before
+filter selection discards non-true outcomes (spec/07 §3). -/
+def evalValidationRead [Monad m] (operator : FieldFillQuantifier)
+    (read : slot → m CellObservation) (slots : List slot) : m Verdict := do
+  let tally ← slots.foldlM (fun tally slot => do
+    pure (tally.combine (← read slot).asValidationFillTally))
+    ({ filled := 0, empty := 0, unknown := 0, uninstantiated := 0 } : ValidationFillTally)
+  pure (operator.evalValidation tally).asConservativeVerdict
 
 /-- Evaluate an ordered list of selected validation ranges. Firing uses the shared tally law;
 VALUE polarity depends on the decisive witnesses, except `AllFieldsFilled`, whose successful scan

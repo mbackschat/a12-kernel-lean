@@ -341,7 +341,7 @@ private def correlationElaborationResult : CorrelationElabError →
   -- presence leaf, DateRange pair, or a disjunction, and none of these arms is reachable on this route. Reaching one means the checked
   -- core and the wire vocabulary disagree, which is what `incoherentCore` reports; the public
   -- diagnostic vocabulary is deliberately left unchanged rather than widened for unreachable arms.
-  | .text _ | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
+  | .fieldFill _ | .text _ | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute | .literalScaleMismatch _ _ _
   | .constantNumericComparison | .numericExpressionUnsupported
   | .numericOperandFieldNotNumber _ _ | .dateRangeComponentsMismatch _ _ => throw .incoherentCore

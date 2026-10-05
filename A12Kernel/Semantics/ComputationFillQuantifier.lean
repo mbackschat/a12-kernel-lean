@@ -183,6 +183,20 @@ def evalComputationUsing [Monad m] (operator : FieldFillQuantifier)
           | .exhausted => pure .notTrue
           | .poison cause => pure (.poison cause)
 
+/-- Effectful direct reads share the scan transition; a deciding prefix cannot reach a later
+addressing failure or poison (spec/09 §3.2). -/
+def scanReadM [Monad m] (kind : ScanKind) (read : slot → m ComputationFillSlot) :
+    List slot → Bool → m ScanResult
+  | [], _ => pure .exhausted
+  | slot :: rest, seen => do
+      match step kind seen (← read slot) with
+      | .inl next => scanReadM kind read rest next
+      | .inr result => pure result
+
+def evalComputationRead [Monad m] (operator : FieldFillQuantifier)
+    (read : slot → m ComputationFillSlot) (slots : List slot) : m ComputationConditionResult :=
+  operator.evalComputationUsing fun kind => scanReadM kind read slots false
+
 /-- Materialized and addressed consumers execute the same scan program. -/
 def evalComputation (operator : FieldFillQuantifier)
     (slots : List ComputationFillSlot) : ComputationConditionResult :=

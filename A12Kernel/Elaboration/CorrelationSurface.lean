@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.FieldEntityAdmission
 import A12Kernel.Elaboration.Flat.Condition.Surface
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.SingleGroup
@@ -49,6 +50,7 @@ inductive SurfaceCorrelatedHaving where
       project models nowhere, so this is consistency rather than a local narrowing. -/
   | compareStrings (op : EqualityOp) (reference : SurfaceHavingStringRef)
       (expected : String)
+  | fieldFill (operator : FieldFillQuantifier) (source : SurfaceHavingDirectFieldSource)
   /-- `FieldFilled` or `FieldNotFilled`. The negative polarity is authorable here because the
       kernel admits it inside a filter without the iteration-negativity refusal that governs a
       rule's own condition. -/
@@ -82,6 +84,7 @@ structure SurfaceSingleCorrelatedRule where
   deriving Repr, DecidableEq
 
 inductive CorrelationElabError where
+  | fieldFill (error : FieldEntityShapeElabError)
   | text (error : ElabError)
   | resolve (error : ResolveError)
   | invalidGroupReference (reference : SurfaceGroupPath)
@@ -180,6 +183,7 @@ and [field-reference checkpoint](../../docs/sources/having-filter-probes.md#src-
 The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
+  | .fieldFill error => error.diagnostic?
   | .dateRangeComponentsMismatch _ _ => some .invalidCompareToDateRange
   | .text (.enumerationOperand _ (.invalidLiteral _)) =>
       some .invalidStringConstantForEnumComparison

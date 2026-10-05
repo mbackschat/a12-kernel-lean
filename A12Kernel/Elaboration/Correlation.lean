@@ -33,6 +33,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
   | .presence _ reference => field reference.origin reference.field
   | .and left right | .or left right =>
       (left.unboundOuterReference? model declaringGroup writtenGroup bound).orElse fun _ =>
@@ -137,6 +138,7 @@ private structure HavingLeafResolvers where
     Except CorrelationElabError HavingRepetitionRef
   string : EqualityOp → SurfaceHavingStringRef → String →
     Except CorrelationElabError HavingStringRef
+  fieldFill : SurfaceHavingDirectFieldSource → Except CorrelationElabError (List HavingPresenceRef)
   presence : HavingOrigin → SurfaceFieldPath →
     Except CorrelationElabError HavingPresenceRef
 
@@ -237,6 +239,8 @@ private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
   | .compareStrings op reference expected => do
       pure (.compareStringLiteral op
         (← resolvers.string op reference expected) expected)
+  | .fieldFill operator source => do
+      pure (.leaf (.fieldFill operator (← resolvers.fieldFill source)))
   | .presence polarity reference => do
       pure (.presence polarity
         (← resolvers.presence reference.origin reference.field))
@@ -273,7 +277,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .and left right | .or left right =>
       left.readsGroupNumber model declaringGroup group ||
         right.readsGroupNumber model declaringGroup group
-  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .presence _ _ => false
+  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .fieldFill _ _ | .presence _ _ => false
 
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
     body in authored order, so each leaf's reads and comparison class answer as it closes; the
@@ -297,6 +301,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       discard <| (checkFieldValueRead (model.resolveFieldDeclarationUnchecked declaringGroup reference.field)
         (model.havingGroupRead declaringGroup reference.field)).mapError .resolve
       throw .stringLeafOutsideStarRoute
+    fieldFill := fun _ => throw .stringLeafOutsideStarRoute
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
   let readsGroup := authored.readsGroupNumber model declaringGroup group
   let condition ← (elaborateHavingCoreWith {
@@ -306,6 +311,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     repetition := resolveHavingRepetitionInGroup declaringGroup group
     -- The legacy one-group route admits neither newer leaf; both fail closed here.
     string := fun _ _ _ => throw .stringLeafOutsideStarRoute
+    fieldFill := fun _ => throw .stringLeafOutsideStarRoute
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored).mapError fun
       | .fieldOutsideGroup origin fieldPath expectedGroup =>
           if readsGroup then .constantLeafBesideIteratedLeaf origin fieldPath expectedGroup
@@ -517,6 +523,8 @@ def CorrelatedHaving.outerIterationScopes
         comparison.inputFields.2.map (fun field => outerHavingFieldIterationScope model right field.id)
   | .leaf (.compareStringLiteral _ reference _) =>
       [outerHavingFieldIterationScope model reference.origin reference.field.id]
+  | .leaf (.fieldFill _ references) =>
+      references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
   | .leaf (.presence _ reference) =>
       [outerHavingFieldIterationScope model reference.origin reference.field]
   | .and left right | .or left right =>
@@ -554,6 +562,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
   | .presence _ reference => field reference.origin reference.field
   | .and left right | .or left right =>
       (left.candidateEnvironmentRefusal? model declaringGroup candidateLevels).orElse fun _ =>
@@ -587,6 +596,12 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels
     repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels
     string := model.resolveHavingStringInEnvironment declaringGroup outerLevels
+    fieldFill := fun source => do
+      let checked ← elaborateHavingDirectFieldSource model declaringGroup candidateLevels outerLevels source .deferCandidate
+        |>.mapError .fieldFill
+      checked.operands.mapM fun operand => do
+        if operand.form != .stored then throw .incoherentCore
+        pure { origin := operand.origin, field := operand.declaration.id }
     presence := model.resolveHavingPresenceInEnvironment declaringGroup outerLevels } authored
   if let some refusal := authored.candidateEnvironmentRefusal? model declaringGroup candidateLevels then
     throw refusal

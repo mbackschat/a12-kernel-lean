@@ -71,10 +71,22 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
       let mut result ← lowerHaving first
       for part in rest do result := join result (← lowerHaving part)
       pure result
-  | .call id [.mk (.entity { path, index := none, category := none }) none none] none none =>
-      match presencePolarity? id, path.havingField? with
-      | some polarity, some (origin, field) => pure (.presence polarity { origin, field })
-      | _, _ => refuse "Having" id
+  | .call id arguments none none => do
+      if let some polarity := presencePolarity? id then
+        match arguments with
+        | [.mk (.entity { path, index := none, category := none }) none none] =>
+            let some (origin, field) := path.havingField? | refuse "Having" "presence path"
+            return .presence polarity { origin, field }
+        | _ => refuse "Having" "presence arity"
+      let some operator := fieldFillOp? id | refuse "Having" id
+      let references ← arguments.mapM fun argument => match argument with
+        | .mk (.entity { path, index := none, category := none }) none none =>
+            match path.havingField? with
+            | some (origin, field) => pure ({ origin, field } : SurfaceHavingDirectFieldOperand)
+            | none => refuse "Having" "field-fill path"
+        | _ => refuse "Having" "field-fill operand"
+      let first :: rest := references | refuse "Having" "field-fill arity"
+      pure (.fieldFill operator { first, rest })
   | .compare op left right => do
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
       match left, right with

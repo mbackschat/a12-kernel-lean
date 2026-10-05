@@ -345,6 +345,11 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
               CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
               CorrelatedHavingLeaf.verdictTruth, verdict]
+      | fieldFill operator references =>
+          cases verdict : evalHavingFieldFillValidation operator references context frame <;>
+            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
+              CorrelatedHavingLeaf.verdictTruth, verdict]
       | presence polarity reference =>
           -- Same shape: presence truth is the same verdict projection over the shared observation
           -- consumers, so the verdict alone decides the bridge.
@@ -789,6 +794,11 @@ theorem correlatedHaving_referencesMarkedField_referencesField
     | compareStringLiteral op reference expected =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
       split at marked <;> simp_all
+    | fieldFill operator references =>
+      simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds,
+        List.mem_eraseDups, List.mem_map, List.mem_filter] at marked ⊢
+      obtain ⟨ref, ⟨member, _⟩, projected⟩ := marked
+      exact ⟨ref, member, projected⟩
     | presence polarity reference =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
       split at marked <;> simp_all
