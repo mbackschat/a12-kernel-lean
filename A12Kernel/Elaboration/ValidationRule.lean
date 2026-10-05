@@ -482,7 +482,7 @@ private def evalOrdinaryRepeatableAt
   | .ok verdict => pure (.next environment (rule.core.emitAt errorCell.address.path verdict))
   | .error (.inl error) => throw (.conditionAddressing error)
   | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported) => throw (.conditionAddressing .temporalUnavailable)
-  | .error (.inr .dateTimeLabelUnresolved) =>
+  | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid) =>
       pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
 
 /-- Execute a checked ordinary nonparallel repeatable rule over the validation row domain. The root dispatcher and declared-capacity/occupied-prefix iterator own the domain (iteration grid, 2026-10-04). Every repeated read and the error target use the validation-only addressed view without materializing stored topology. A runtime-aborted pair retains the failing environment, while its message points to the iterator’s first error address. -/

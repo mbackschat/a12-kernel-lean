@@ -239,6 +239,8 @@ structure FlatFieldDecl where
   stringPolicy : StringFieldPolicy := {}
   /-- Exact declared pattern source retained independently of condition-pattern execution. String-value consumers receive the declaration capability here and rely on their prepared or caller-checked context for pattern execution. -/
   stringPatternSource : Option String := none
+  /-- Client-SPI String capability that bypasses constructor digit-pattern admission (spec/05 §3). This is not an Enumeration declaration or a DM-JSON property. -/
+  stringExtensibleEnum : Bool := false
   customType : Option CustomFieldTypeDeclaration := none
   enumeration : Option EnumerationDeclaration := none
   /-- A global field is auto-added with all repetition indices wildcarded to every partial-validation relevant set before rule admission or condition reads. -/

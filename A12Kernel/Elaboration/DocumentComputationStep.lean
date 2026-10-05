@@ -337,7 +337,7 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
               { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
             | .ok result => pure result
             | .error .calendarUnavailable | .error .indexedOperandNotSupported => throw .temporalExpressionUnavailable
-            | .error .dateTimeLabelUnresolved => return (.valueError .time, DocumentComputationReadBack.poison)
+            | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return (.valueError .time, DocumentComputationReadBack.poison)
           let outcome := target.evaluate (match result with
             | .value (.time value) _ => .value value
             | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue
@@ -359,7 +359,7 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
               { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
             | .ok result => pure result
             | .error .calendarUnavailable | .error .indexedOperandNotSupported => throw .temporalExpressionUnavailable
-            | .error .dateTimeLabelUnresolved => return (.valueError .dateTime, DocumentComputationReadBack.poison)
+            | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return (.valueError .dateTime, DocumentComputationReadBack.poison)
           let outcome ← (target.evaluate (match result with
             | .value (.instant value) _ => .value value
             | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue
@@ -381,7 +381,7 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
               { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
             | .ok result => pure result
             | .error .calendarUnavailable | .error .indexedOperandNotSupported => throw .temporalExpressionUnavailable
-            | .error .dateTimeLabelUnresolved => return (.valueError .fullDate, DocumentComputationReadBack.poison)
+            | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return (.valueError .fullDate, DocumentComputationReadBack.poison)
           let outcome := match result with
             | .value (.date value) _ | .value (.yearless value _) _ => target.evaluateParts value.parts
             | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue

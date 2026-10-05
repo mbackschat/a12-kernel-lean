@@ -11,11 +11,10 @@ namespace A12Kernel
     (TimeComponentPrefix.empty : TimeComponentPrefix Component).evaluateWith read =
       .ok (TimeConstructionArity.zero.evaluate .empty .empty .empty) := rfl
 
-/-- A reached, checked digit String contributes the exact natural-number component; no
-    truncating numeric operation is introduced by the constructor adapter. -/
+/-- A reached checked String contributes its decoded and narrowed host-integer component. -/
 @[simp] theorem checkedTimeStringField_classify_value
-    (checked : CheckedTimeStringField model) (text : String) (amount : Nat)
-    (parsed : parseAsciiNatural? text = some amount) :
+    (checked : CheckedTimeStringField model) (text : String) (amount : Int)
+    (parsed : parseTemporalComponentInt32? text = some amount) :
     checked.classify (.value (.str text)) = .ok (.value amount) := by
   simp [CheckedTimeStringField.classify,
     CheckedTimeStringField.classifyTimeStringComponent, parsed]

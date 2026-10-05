@@ -4,15 +4,14 @@ import A12Kernel.Elaboration.ValueAsDateTimeExtraction
 /-! # Partial-Date and checked `Time(...)` components
 
 This capsule checks and executes one mixed prefix of ordinary Number fields at a bound reading scope,
-pattern-backed String fields, and matching time-component extractors over ordinary Time
+pattern-backed or extensible String fields, and matching time-component extractors over ordinary Time
 or DateTime fields. A bounded nonliteral extractor may instead consume the shared checked
 field-backed DateTime shift. Each declaration retains its branch-specific static
 certificate. Execution reads the immutable checked document in Hour/Minute/Second order
 and delegates defaults and clock classification to `TimeConstructionResult`.
 
-The String branch covers the six checker-recognized digit patterns. The separate
-extensible-enumeration alternative remains excluded because the flat declaration does not
-retain that fact. Wider recursive temporal-expression sources remain outside.
+The String branch covers the six checker-recognized digit patterns and the client-SPI
+extensible String capability. Wider recursive temporal-expression sources remain outside.
 -/
 
 namespace A12Kernel
@@ -87,7 +86,7 @@ structure CheckedTimeNumberField (model : FlatModel) where
 def isTimeComponentDigitPattern (source : String) : Bool :=
   isTemporalComponentDigitPattern 2 source
 
-/-- Placement-neutral pattern-backed String declaration gate shared by scalar and addressed `Time(...)` components. Extensible-enumeration admission is deliberately not represented here. -/
+/-- Placement-neutral pattern-backed String declaration gate shared by scalar and addressed `Time(...)` components. The client-SPI extensible-String alternative bypasses only the pattern gate. -/
 def FlatModel.admitsTimeStringComponentField (model : FlatModel)
     (source : FlatStringField) : Bool :=
   match model.lookupUniqueId source.id with
@@ -97,7 +96,7 @@ def FlatModel.admitsTimeStringComponentField (model : FlatModel)
         declaration.customType.isNone &&
         declaration.enumeration.isNone &&
         declaration.stringPolicy.maxLength == some 2 &&
-        declaration.stringPatternSource.any isTimeComponentDigitPattern
+        (declaration.stringExtensibleEnum || declaration.stringPatternSource.any isTimeComponentDigitPattern)
 
 /-- Scope-bound specialization of the shared String-component policy gate. -/
 def FlatModel.admitsTimeStringField (model : FlatModel)
@@ -315,7 +314,7 @@ def elaborateShiftedTimeExtractorExpression
   elaborateShiftedTimeExtractor model position part
     sourceField unit checkedAmount
 
-/-- Structural failure outside the reason-bearing `TimeConstructionResult` domain. -/
+/-- Conversion failure or incoherent host input, kept outside `TimeConstructionResult`. A reached `stringNotConvertible` is a runtime failure under spec/05 §3. -/
 inductive TimeComponentsFault where
   | document (error : CheckedDocumentError)
   | payloadKind (field : FieldId)
@@ -360,7 +359,7 @@ end CheckedTimeNumberField
 
 namespace CheckedTimeStringField
 
-/-- Convert one already checked digit String through the existing ASCII-natural parser. Pattern and maximum-length checking happened when the document was constructed. The classifier is placement-neutral; scalar and addressed readers supply the exact field identity. -/
+/-- Convert one already checked digit String through the bounded host-decimal conversion. Pattern and maximum-length checking happened when the document was constructed. The classifier is placement-neutral; scalar and addressed readers supply the exact field identity. -/
 def classifyTimeStringComponent (field : FieldId)
     (observation : CellObservation Value) :
     Except TimeComponentsFault TimeConstructionComponent :=
@@ -368,7 +367,7 @@ def classifyTimeStringComponent (field : FieldId)
   | .empty => pure .empty
   | .unknown cause | .poison cause => pure (.unavailable cause)
   | .value (.str value) =>
-      match parseAsciiNatural? value with
+      match parseTemporalComponentInt32? value with
       | some amount => pure (.value amount)
       | none => throw (.stringNotConvertible field value)
   | .value _ => throw (.payloadKind field)
@@ -530,11 +529,12 @@ def referencesFieldWith (checked : TimeComponentPrefix Component)
         referencesField minuteComponent field ||
         referencesField secondComponent field
 
-/-- Evaluate one supplied prefix through its carrier-specific reader. A reached formal
-    component stops before every later read; omitted trailing slots remain fixed zeroes. -/
+/-- Evaluate one supplied prefix through its carrier-specific reader. Computation stops on formal poison; validation still evaluates later arguments
+    before projecting formal state (spec/05 §3). Omitted trailing slots remain fixed zeroes. -/
 @[simp]
 def evaluateWithSubterm [SizeOf Component] (checked : TimeComponentPrefix Component)
-    (read : (component : Component) → sizeOf component < sizeOf checked → Except Error TimeConstructionComponent) :
+    (read : (component : Component) → sizeOf component < sizeOf checked → Except Error TimeConstructionComponent)
+    (phase : Phase := .computation) :
     Except Error TimeConstructionResult :=
   match checked with
   | .empty =>
@@ -545,18 +545,27 @@ def evaluateWithSubterm [SizeOf Component] (checked : TimeComponentPrefix Compon
   | .minute hourField minuteField => do
       let hourValue ← read hourField (by simp +arith)
       match hourValue with
-      | .unavailable cause => pure (.unavailable cause)
+      | .unavailable cause =>
+          if phase == .validation then (read minuteField (by simp +arith)).map (fun _ => .unavailable cause)
+          else pure (.unavailable cause)
       | hourValue =>
           let minuteValue ← read minuteField (by simp +arith)
           pure (TimeConstructionArity.minute.evaluate hourValue minuteValue .empty)
   | .second hourField minuteField secondField => do
       let hourValue ← read hourField (by simp +arith)
       match hourValue with
-      | .unavailable cause => pure (.unavailable cause)
+      | .unavailable cause =>
+          if phase == .validation then do
+            let _ ← read minuteField (by simp +arith)
+            let _ ← read secondField (by simp +arith)
+            pure (.unavailable cause)
+          else pure (.unavailable cause)
       | hourValue =>
           let minuteValue ← read minuteField (by simp +arith)
           match minuteValue with
-          | .unavailable cause => pure (.unavailable cause)
+          | .unavailable cause =>
+              if phase == .validation then (read secondField (by simp +arith)).map (fun _ => .unavailable cause)
+              else pure (.unavailable cause)
           | minuteValue =>
               let secondValue ← read secondField (by simp +arith)
               pure (TimeConstructionArity.second.evaluate
@@ -564,9 +573,10 @@ def evaluateWithSubterm [SizeOf Component] (checked : TimeComponentPrefix Compon
 
 /-- The ordinary reader specializes the same ordered prefix evaluation. -/
 def evaluateWith (checked : TimeComponentPrefix Component)
-    (read : Component → Except Error TimeConstructionComponent) :
+    (read : Component → Except Error TimeConstructionComponent)
+    (phase : Phase := .computation) :
     Except Error TimeConstructionResult :=
-  checked.evaluateWithSubterm (fun component _ => read component)
+  checked.evaluateWithSubterm (fun component _ => read component) phase
 
 end TimeComponentPrefix
 
@@ -581,7 +591,7 @@ def referencesField (checked : CheckedTimeComponents model)
 def evaluate (checked : CheckedTimeComponents model)
     (phase : Phase) (input : CheckedDocument model) :
     Except TimeComponentsFault TimeConstructionResult :=
-  checked.evaluateWith fun component => component.read phase input
+  checked.evaluateWith (fun component => component.read phase input) phase
 
 end CheckedTimeComponents
 

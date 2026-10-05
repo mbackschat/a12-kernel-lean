@@ -422,4 +422,12 @@ example :
         some (.unavailable .declaredConstraint) := by
   native_decide
 
+example :
+    let field := { (stringComponentField 6) with stringExtensibleEnum := true, stringPatternSource := none }
+    let model : FlatModel := { fields := [field] }
+    (elaborateTimeComponents model (.hour (.string 6))).isOk ∧
+    (elaborateTimeComponents model (.minute (.string 6) (.string 6))).isOk ∧
+    (elaborateTimeComponents model (.second (.string 6) (.string 6) (.string 6))).isOk ∧
+    !({ fields := [{ field with stringPolicy := { maxLength := some 3 } }] } : FlatModel).admitsTimeStringComponentField { id := 6 } := by native_decide
+
 end A12Kernel.Conformance.ValueAsDateTimeComponents

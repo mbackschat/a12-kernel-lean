@@ -130,7 +130,7 @@ def fieldDependencies : CheckedWorldTimeComponents model → List FieldId
 def evaluate (checked : CheckedWorldTimeComponents model)
     (phase : Phase) (world : World) (input : CheckedDocument model) :
     Except TimeComponentsFault TimeConstructionResult :=
-  checked.evaluateWith fun component => component.read phase world input
+  checked.evaluateWith (fun component => component.read phase world input) phase
 
 end CheckedWorldTimeComponents
 

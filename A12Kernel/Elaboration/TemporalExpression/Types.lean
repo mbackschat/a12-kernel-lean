@@ -102,6 +102,7 @@ end ScalarTemporalValue
 inductive ScalarTemporalEvaluationFault where
   | indexedOperandNotSupported
   | dateTimeLabelUnresolved
+  | componentNumberInvalid
   | calendarUnavailable
   deriving Repr, DecidableEq
 

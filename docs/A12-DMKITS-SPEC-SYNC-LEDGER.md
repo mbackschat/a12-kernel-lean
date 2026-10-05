@@ -35,6 +35,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-05-01"></a>
+### SPEC-2026-10-05-01 — extensible String constructor conversion and phase effects
+
+- `status`: pending
+- `delta`: distinguish the client-SPI extensible String capability from an Enumeration declaration; retain positional width while bypassing only the digit-pattern gate. Constructor field reads use decimal conversion and signed 32-bit truncation, with a reached nonnumeric token becoming runtime failure. Validation continues argument evaluation after formal unavailability; computation stops on poison. Fresh Date construction retains the separate nonzero-Century gate and requires an instant within the strict host calendar’s signed 64-bit millisecond range.
+- `basis`: [construction source follow-up](sources/temporal-and-message-probes.md#src-temporal-construction-route), kernel `cb66e51`, source-only; no DM-JSON flag or new runtime capture is claimed.
+- `canonical`: [spec/05 §3](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity).
+- `acceptance`: reconcile the client-interface boundary and conversion/effect account. A future client-SPI capture should separate signed, fractional, exponent, BMP-digit and nonnumeric text, including a formally unavailable first component followed by failed conversion. No new producer capability is requested or assumed here.
+
+
 <a id="spec-2026-10-04-08"></a>
 ### SPEC-2026-10-04-08 — missing named validators fail computation guards
 

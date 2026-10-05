@@ -110,6 +110,33 @@ def parseJava21BmpNatural? (value : String) : Option Nat :=
   | [] => none
   | characters => parseJava21BmpNaturalAux 0 characters
 
+/-- Decode the at-most-four-code-unit String components admitted by Date/Time declarations.
+The kernel converts their stored text through BigDecimal (comma normalized to dot), then
+`intValue`: truncate toward zero and retain the signed low 32 bits (spec/05 §3). Width bounds
+make every mantissa exact under the host precision; this is not a general decimal parser. -/
+def parseTemporalComponentInt32? (text : String) : Option Int := do
+  if utf16CodeUnitLength text > 4 then none else do
+    let signed (chars : List Char) : Bool × List Char := match chars with
+      | '-' :: rest => (true, rest)
+      | '+' :: rest => (false, rest)
+      | rest => (false, rest)
+    let (negative, chars) := signed text.toList
+    let (mantissa, suffix) := chars.span (fun c => c != 'e' && c != 'E')
+    let exponent : Int ← match suffix with
+      | [] => some 0
+      | _ :: rest => do
+          let (negative, digits) := signed rest
+          let magnitude ← parseJava21BmpNatural? (String.ofList digits)
+          pure (if negative then -(magnitude : Int) else magnitude)
+    let (whole, decimal) := mantissa.span (fun c => c != '.' && c != ',')
+    let fraction := match decimal with | [] => [] | _ :: rest => rest
+    let magnitude ← parseJava21BmpNatural? (String.ofList (whole ++ fraction))
+    let unscaled : Int := if negative then -(magnitude : Int) else magnitude
+    let power := exponent - (fraction.length : Int)
+    let integer := if power < 0 then unscaled.tdiv (10 ^ power.natAbs)
+      else unscaled * 10 ^ power.toNat
+    pure (Int32.ofInt integer).toInt
+
 /-- The exact declared Java-pattern source whose complete runtime language is already executable without embedding a regex engine. This is model metadata, not a `FieldValueAsNumber` eligibility flag. -/
 def asciiDigitsPatternSource : String := "[0-9]+"
 

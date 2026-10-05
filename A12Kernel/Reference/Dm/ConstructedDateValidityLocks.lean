@@ -46,8 +46,10 @@ example : ["Valid(Date(D))", "Valid(Date(D, M, Y, C, S))",
 private def dm : DmModel := {
   flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
 
-private def checkedDocument (values : List (String × String)) (rows : Bool := false) :
-    Option (CheckedDocument model) := do
+private def checkedDocument (values : List (String × String)) (rows : Bool := false)
+    (fixture : FlatModel := model) : Option (CheckedDocument fixture) := do
+  let model := fixture
+  let dm := { dm with flat := model }
   let row := Json.mkObj [("E", "present")]
   let members := (values.map fun (key, value) => (key, Json.str value)) ++
     (if rows then [("Rows", Json.arr #[row, row])] else [])
@@ -58,12 +60,14 @@ private def checkedDocument (values : List (String × String)) (rows : Bool := f
   (checkDocument prepared "en_US" input.data).toOption
 
 private def runWorlds (text : String) (values : List (String × String))
-    (errorPath : String) (times : List Int) (rows : Bool := false) :
-    Option (List (List (String × String))) := do
+    (errorPath : String) (times : List Int) (rows : Bool := false)
+    (fixture : FlatModel := model) : Option (List (List (String × String))) := do
+  let model := fixture
+  let dm := { dm with flat := model }
   let rule : DmRule := {
     group := ["Form"], name := "Rule", errorCode := "R"
     errorEntityRelPath := errorPath, condition := text, severity := "ERROR" }
-  let document ← checkedDocument values rows
+  let document ← checkedDocument values rows fixture
   let checked ← (checkRule dm .english rule { now := { epochMillis := 0 } }).toOption
   times.mapM fun now => do
     let messages ← (runRule { now := { epochMillis := now } } document checked).toOption
@@ -139,8 +143,11 @@ private def computationModel (repeated : Bool) : FlatModel :=
       else field }
 
 private def compute (guard : String) (rows : List (List (String × String)))
-    (repeated fresh : Bool := false) (now : Int := 0) (stringTarget : Bool := false) : Option (List String) := do
+    (repeated fresh : Bool := false) (now : Int := 0) (stringTarget : Bool := false)
+    (extensible : Bool := false) : Option (List String) := do
   let model := computationModel repeated
+  let model := if extensible then { model with fields := model.fields.map fun field =>
+    if field.id == 7 then { field with stringExtensibleEnum := true, stringPatternSource := none } else field } else model
   let model := if stringTarget then { model with fields := model.fields.map fun field =>
     if field.id == 10 then { field with policy := { kind := .string }, numericTargetConstraints := {} } else field } else model
   let raw := fun values => Json.mkObj ((values ++ [("Out", "9"), ("After", "9")]).map
@@ -296,5 +303,26 @@ private def generatedPhases (operation : String) : Option (Bool × Bool) := do
 
 example : ["Valid", "Invalid"].all (fun operation =>
     generatedPhases operation == some (true, true)) := by native_decide
+
+private def extensibleFixture : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == 7 then { field with stringExtensibleEnum := true, stringPatternSource := none } else field }
+
+example : runWorlds "Valid(Date(TextDay,M,Y)) And FieldFilled(D)"
+    [("TextDay", "x"), ("M", "2"), ("Y", "2024")] "../TextDay" [0] false extensibleFixture =
+      some [[("Form/TextDay", "VALUE_ERROR")]] := by native_decide
+
+example : runWorlds "Invalid(Date(TextDay,M,Y)) Or FieldFilled(D)"
+    [("TextDay", "?"), ("M", "2"), ("Y", "2024")] "../TextDay" [0] false extensibleFixture =
+      some [[("Form/TextDay", "VALUE_ERROR")]] ∧
+    runWorlds "FieldFilled(D) And Valid(Date(TextDay,M,Y))"
+    [("TextDay", "x"), ("M", "2"), ("Y", "2024")] "../TextDay" [0] false extensibleFixture =
+      some [[]] := by native_decide
+
+example : [false, true].all (fun repeated =>
+    let path := if repeated then "Rows/" else ""
+    ["Valid", "Invalid"].all fun operation =>
+      compute s!"{operation}(Date({path}TextDay,{path}M,{path}Y))"
+        [[("TextDay", "x"), ("M", "2"), ("Y", "2024")]] repeated false 0 false true ==
+        some ["cleared", "cleared"]) := by native_decide
 
 end A12Kernel.Dm.ConstructedDateValidityLocks

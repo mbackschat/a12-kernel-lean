@@ -303,7 +303,9 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   | .dateValidity operation source => do
       let observation ← (source.evaluateComponentsWith (fun component =>
         component.readWith .computation context.read context.storedText context.world) >>= source.applyProfileReality)
-          |>.mapError (fun _ => .temporalUnavailable)
+          |>.mapError (fun
+            | .stringNotConvertible _ _ => .valueFailure
+            | _ => .temporalUnavailable)
       pure (match observation.validityVerdict operation with
         | .error cause => .poison cause
         | .ok (.fired _) => .holds
@@ -325,7 +327,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
           | .validatorUnavailable => throw .valueFailure
   | .stringExpression source => (source.evalComputation { read := context.read } context.numberText).mapError .stringExpression
   | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError (fun
-      | .dateTimeLabelUnresolved => .valueFailure
+      | .dateTimeLabelUnresolved | .componentNumberInvalid => .valueFailure
       | .calendarUnavailable | .indexedOperandNotSupported => .temporalUnavailable)
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
   | .fieldFill operator source => (source.evalChecked operator context filterRead).mapError .fieldFill

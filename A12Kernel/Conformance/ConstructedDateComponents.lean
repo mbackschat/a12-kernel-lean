@@ -392,4 +392,27 @@ example :
         (.centuryAndShortYear (.constant "19") (.constant "0")) = false := by
   native_decide
 
+private def extensibleStringModel (width : Nat := 2) (extensible : Bool := true) : FlatModel := {
+  fields := [{ (stringComponentField 90 width) with
+    stringPatternSource := none, stringExtensibleEnum := extensible }]
+}
+
+example : [ConstructedDateComponentPosition.day, .month, .century, .shortYear].all
+    (fun position => (extensibleStringModel).admitsConstructedDateStringField position { id := 90 }) = true ∧
+    (extensibleStringModel 4).admitsConstructedDateStringField .year { id := 90 } = true ∧
+    (extensibleStringModel 3).admitsConstructedDateStringField .day { id := 90 } = false ∧
+    (extensibleStringModel 2 false).admitsConstructedDateStringField .day { id := 90 } = false := by native_decide
+
+example : ["+1", "1.", "1,5", "١", "2e3", "1E+2", "-.5", "3e9"].map
+    parseTemporalComponentInt32? =
+      [some 1, some 1, some 1, some 1, some 2000, some 100, some 0, some (-1294967296)] ∧
+    ["", "x", " 1", "1e", "1..2", "𐒡"].map parseTemporalComponentInt32? =
+      List.replicate 6 none := by native_decide
+
+example : [
+    { (stringComponentField 90 2) with stringExtensibleEnum := true, stringValueMode := .raw },
+    { (stringComponentField 90 2) with stringExtensibleEnum := true, policy := { kind := .enumeration } },
+    { (stringComponentField 90 2) with stringExtensibleEnum := true, repeatableScope := [10] }].all
+    (fun field => !({ fields := [field] } : FlatModel).admitsConstructedDateStringField .day { id := 90 }) := by native_decide
+
 end A12Kernel.Conformance.ConstructedDateComponents

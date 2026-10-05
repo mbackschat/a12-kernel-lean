@@ -458,9 +458,11 @@ def evalWithTemporalResult (condition : ValidationCondition model)
     (onTemporalUnavailable : Except Error Verdict := .ok .unknown)
     (temporalFields : CheckedScalarTemporalComparison model → Except Error FlatContext :=
       fun _ => pure context.fields)
-    (onTemporalValueFailure : Except Error Verdict := .ok (.fired .value))
+    (onTemporalValueFailure : ScalarTemporalEvaluationFault → Except Error Verdict :=
+      fun _ => .ok (.fired .value))
     (numericResult : OrderedNumericComparison model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
-      fun comparison => (comparison.evalSelectedResult context isRelevant).mapError Sum.inr) :
+      fun comparison => (comparison.evalSelectedResult context isRelevant).mapError Sum.inr)
+    (leafRuntimeFault? : Error → Option ScalarTemporalEvaluationFault := fun _ => none) :
     Except Error Verdict :=
   let readLeaf : ValidationConditionLeaf model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
     fun leaf => match leaf with
@@ -472,6 +474,10 @@ def evalWithTemporalResult (condition : ValidationCondition model)
       | leaf@(.orderedNumeric _ comparison) =>
           if comparison.hasTemporalExpression then numericResult comparison
           else (evaluate leaf).mapError Sum.inl
+      | leaf@(.constructedDateValidity _ _) => (evaluate leaf).mapError fun error =>
+          match leafRuntimeFault? error with
+          | some fault => .inr fault
+          | none => .inl error
       | leaf => (evaluate leaf).mapError Sum.inl
   let result : Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
     match condition with
@@ -489,12 +495,13 @@ def evalWithTemporalResult (condition : ValidationCondition model)
         -- explicit. `CodeGenRuleDefinition.st` enters classification only after a true condition.
         condition.evalVerdictExcept fun leaf =>
           match readLeaf leaf with
-          | .error (.inr .dateTimeLabelUnresolved) => .ok .unknown
+          | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid) => .ok .unknown
           | result => result
   match result with
   | .ok verdict => .ok verdict
   | .error (.inl error) => .error error
-  | .error (.inr .dateTimeLabelUnresolved) => onTemporalValueFailure
+  | .error (.inr fault@(.dateTimeLabelUnresolved))
+  | .error (.inr fault@(.componentNumberInvalid)) => onTemporalValueFailure fault
   | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported) => onTemporalUnavailable
 
 /-- Evaluate one mixed tree with the rule-owned truth and classification phases. -/
@@ -530,6 +537,12 @@ private def addressedTemporalFields (context : AddressedValidationEvaluationCont
     storedText
     read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell }
 
+/-- A legal extensible String can fail numeric conversion at runtime; the generated rule
+handler catches that failure outside the Boolean tree (spec/05 §3), unlike a missing host input. -/
+private def constructedComponentRuntimeFault? : CheckedAddressingError → Option ScalarTemporalEvaluationFault
+  | .constructedDate (.stringNotConvertible _ _) => some .componentNumberInvalid
+  | _ => none
+
 /-- Evaluate one row-selected checked tree while retaining structural addressing failure outside the verdict algebra. Truth testing and conditional classification retain their separate failure boundaries. -/
 def evalAddressed (condition : ValidationCondition model)
     (context : AddressedValidationEvaluationContext model) :
@@ -538,6 +551,7 @@ def evalAddressed (condition : ValidationCondition model)
     (fun leaf => leaf.evalAddressed context) (.error .temporalUnavailable)
     (addressedTemporalFields context)
     (numericResult := fun comparison => comparison.evalAddressedResult context)
+    (leafRuntimeFault? := constructedComponentRuntimeFault?)
 
 /-- Evaluate the same connective tree with one already-prepared current-row RNU result. Duplicate construction remains outside and branch-independent. -/
 def evalAddressedWithRepetitionNotUnique
@@ -549,6 +563,7 @@ def evalAddressedWithRepetitionNotUnique
     (fun leaf => leaf.evalAddressedWithRepetitionNotUnique context result?) (.error .temporalUnavailable)
     (addressedTemporalFields context)
     (numericResult := fun comparison => comparison.evalAddressedResult context)
+    (leafRuntimeFault? := constructedComponentRuntimeFault?)
 
 /-- Keep reached temporal failure distinct from a row verdict until the rule's iteration handler.
 The generated Java `CodeGenRuleDefinition.st` catches outside its row loop. -/
@@ -561,10 +576,13 @@ def evalAddressedWithRepetitionNotUniqueResult
     (fun leaf => (leaf.evalAddressedWithRepetitionNotUnique context result?).mapError Sum.inl)
     (.error (.inl .temporalUnavailable))
     (fun comparison => (addressedTemporalFields context comparison).mapError Sum.inl)
-    (.error (.inr .dateTimeLabelUnresolved))
+    (fun fault => .error (.inr fault))
     (numericResult := fun comparison => (comparison.evalAddressedResult context).mapError fun
       | .inl error => .inl (.inl error)
       | .inr fault => .inr fault)
+    (leafRuntimeFault? := fun
+      | .inl error => constructedComponentRuntimeFault? error
+      | .inr fault => some fault)
 
 /-- Apply the ordinary full-validation content gate to the addressed tree without sampling any repeatable source on an ineligible empty row. -/
 def evalAddressedFull (condition : ValidationCondition model)

@@ -110,11 +110,11 @@ theorem checkedConstructedDateNowExtractor_read
     CheckedConstructedDatePointInTimeExtractor.project, isNow, decoded]
   rfl
 
-/-- A reached checked digit String contributes its exact natural-number component without numeric truncation. -/
+/-- A reached checked String contributes its decoded and narrowed host-integer component. -/
 @[simp] theorem checkedConstructedDateString_classify_value
     (checked : CheckedConstructedDateStringField model)
-    (text : String) (amount : Nat)
-    (parsed : parseAsciiNatural? text = some amount) :
+    (text : String) (amount : Int)
+    (parsed : parseTemporalComponentInt32? text = some amount) :
     checked.classify (.value (.str text)) = .ok (.value amount) := by
   simp [CheckedConstructedDateStringField.classify, parsed]
   rfl
@@ -141,19 +141,20 @@ theorem checkedConstructedDateExtractor_classify_empty_unavailable
   · rfl
   · constructor <;> rfl
 
-/-- A formally unavailable Century stops the split year before Short-Year is consulted. -/
+/-- Computation poison at Century stops the split year before Short-Year is consulted. -/
 theorem checkedConstructedDateCentury_read_unavailable
     (century shortYear : CheckedConstructedDateSource model)
-    (phase : Phase) (input : CheckedDocument model) (cause : FormalCause)
+    (phase : Phase) (computation : phase = .computation) (input : CheckedDocument model) (cause : FormalCause)
     (world : Option World)
     (observed :
       century.read phase input world = .ok (.unavailable cause)) :
     CheckedConstructedDateYear.read
         (.centuryAndShortYear century shortYear) phase input world =
       .ok (.unavailable cause) := by
+  subst phase
   simp [CheckedConstructedDateYear.read, CheckedConstructedDateYear.readWith, observed]
 
-/-- Two reached fixed split-year parts compose by decimal place, not addition. -/
+/-- Two reached split-year parts retain the zero-Century gate before decimal-place composition. -/
 theorem checkedConstructedDateCentury_read_values
     (century shortYear : CheckedConstructedDateSource model)
     (phase : Phase) (input : CheckedDocument model)
@@ -165,7 +166,7 @@ theorem checkedConstructedDateCentury_read_values
       shortYear.read phase input world = .ok (.value shortYearValue)) :
     CheckedConstructedDateYear.read
         (.centuryAndShortYear century shortYear) phase input world =
-      .ok (.value (centuryValue * 100 + shortYearValue)) := by
+      .ok (.value (if centuryValue == 0 then 0 else centuryValue * 100 + shortYearValue)) := by
   simp [CheckedConstructedDateYear.read, CheckedConstructedDateYear.readWith, observedCentury, observedShortYear]
 
 /-- A reached Day poison stops the shared component fold, for immutable documents and scalar
@@ -181,13 +182,14 @@ theorem checkedConstructedDateComponentsWith_day_unavailable
 /-- The document reader specializes the shared ordered component fold. -/
 theorem checkedConstructedDateComponents_day_unavailable
     (checked : CheckedConstructedDateComponents model)
-    (phase : Phase) (input : CheckedDocument model) (cause : FormalCause)
+    (phase : Phase) (computation : phase = .computation) (input : CheckedDocument model) (cause : FormalCause)
     (world : Option World)
     (observed : checked.day.read phase input world = .ok (.unavailable cause)) :
     checked.evaluate phase input world = .ok (.unavailable cause) := by
+  subst phase
   simp [CheckedConstructedDateComponents.evaluate, CheckedConstructedDateComponents.evaluateComponents,
     checkedConstructedDateComponentsWith_day_unavailable checked
-      (fun source => source.read phase input world) cause observed,
+      (fun source => source.read .computation input world) cause observed,
     CheckedConstructedDateComponents.applyProfileReality]
   rfl
 
@@ -245,7 +247,13 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
   | error error => simp
   | ok day =>
       cases day with
-      | unavailable cause => simp
+      | unavailable cause =>
+          simp
+          split
+          · cases hm : checked.month.read phase input world <;>
+              cases hy : checked.year.readWith (fun source => source.read phase input world) phase <;>
+              simp [bind, Except.bind, Functor.map, Except.map]
+          · simp
       | value amount =>
           generalize monthRead :
             CheckedConstructedDateSource.read checked.month phase input world = month
@@ -253,11 +261,16 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
           | error error => simp
           | ok month =>
               cases month with
-              | unavailable cause => simp
+              | unavailable cause =>
+                  simp
+                  split
+                  · cases hy : checked.year.readWith (fun source => source.read phase input world) phase <;>
+                      simp [Except.map]
+                  · simp
               | value amount =>
                   generalize yearRead :
                     CheckedConstructedDateYear.readWith
-                      checked.year (fun source => source.read phase input world) = year
+                      checked.year (fun source => source.read phase input world) phase = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -267,7 +280,7 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
               | empty =>
                   generalize yearRead :
                     CheckedConstructedDateYear.readWith
-                      checked.year (fun source => source.read phase input world) = year
+                      checked.year (fun source => source.read phase input world) phase = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -281,11 +294,16 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
           | error error => simp
           | ok month =>
               cases month with
-              | unavailable cause => simp
+              | unavailable cause =>
+                  simp
+                  split
+                  · cases hy : checked.year.readWith (fun source => source.read phase input world) phase <;>
+                      simp [Except.map]
+                  · simp
               | value amount =>
                   generalize yearRead :
                     CheckedConstructedDateYear.readWith
-                      checked.year (fun source => source.read phase input world) = year
+                      checked.year (fun source => source.read phase input world) phase = year
                   cases year with
                   | error error => simp
                   | ok year =>
@@ -295,7 +313,7 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
               | empty =>
                   generalize yearRead :
                     CheckedConstructedDateYear.readWith
-                      checked.year (fun source => source.read phase input world) = year
+                      checked.year (fun source => source.read phase input world) phase = year
                   cases year with
                   | error error => simp
                   | ok year =>

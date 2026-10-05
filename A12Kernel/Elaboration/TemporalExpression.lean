@@ -365,11 +365,12 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
   | .dateConstruction components =>
       let read (source : CheckedConstructedDateSource model) :=
         source.readWith phase context.read context.storedText context.world
-      match components.evaluateValueWith read with
+      match components.evaluateValueWith read phase with
       | .ok (.value instant parts notGiven) =>
           pure (.value (.date { instant, parts, basis := .legacyHybrid }) (!notGiven))
       | .ok (.noValue notGiven) => pure (.value .noValue (!notGiven))
       | .ok (.unavailable cause) => pure (.unknown cause)
+      | .error (.stringNotConvertible _ _) => throw .componentNumberInvalid
       | .error _ => throw .calendarUnavailable
   | .timeConstruction components => do
       pure (match ← readRecursiveTimeComponents phase context components with
@@ -492,10 +493,12 @@ termination_by (sizeOf amount, 0)
 private def readRecursiveTimeComponents (phase : Phase) (context : ScalarComputationContext)
     (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model))) :
     Except ScalarTemporalEvaluationFault TimeConstructionResult :=
-  components.evaluateWithSubterm fun component _ => do
+  components.evaluateWithSubterm (fun component _ => do
     match component with
-    | .inl source => pure (match readScalarTimeComponent { read := context.read, storedText := context.storedText, world := context.world } phase source with
-        | .ok value => value | .error _ => .unavailable .malformed)
+    | .inl source => match readScalarTimeComponent { read := context.read, storedText := context.storedText, world := context.world } phase source with
+        | .ok value => pure value
+        | .error (.stringNotConvertible _ _) => throw .componentNumberInvalid
+        | .error _ => pure (.unavailable .malformed)
     | .inr source =>
         match ← readRecursiveScalarAtom phase context source with
         | .error (.formal cause) => pure (.unavailable cause)
@@ -504,7 +507,7 @@ private def readRecursiveTimeComponents (phase : Phase) (context : ScalarComputa
         | .ok .notEvaluated => pure .empty
         | .ok (.value value fillability) =>
             pure (if fillability.canGrow || fillability.canShrink then .empty
-              else .value (temporalShiftAmountToInt32 value))
+              else .value (temporalShiftAmountToInt32 value))) phase
 termination_by (sizeOf components, 0)
 decreasing_by
   all_goals first | decreasing_tactic | (apply Prod.Lex.left; simp_all +arith <;> omega)
@@ -679,7 +682,7 @@ def evalAt (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
     (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := []) : Verdict :=
   match comparison.evalResult phase context addressed row with
   | .ok verdict => verdict
-  | .error .dateTimeLabelUnresolved => .fired .value
+  | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => .fired .value
   | .error .calendarUnavailable | .error .indexedOperandNotSupported => .unknown
 
 def eval (comparison : CheckedScalarTemporalComparison model) (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := []) : Verdict :=

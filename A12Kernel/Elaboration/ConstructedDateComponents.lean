@@ -6,9 +6,9 @@ import A12Kernel.Semantics.String
 
 /-! # Checked direct constructed Dates
 
-This capsule certifies direct `Date` components at an explicitly bound reading scope backed by ordinary Number fields, pattern-backed String fields, the complete-Year `yyyy` Date field, admitted quoted constants, or matching Date/DateTime/Base-Year/`Today`/`Now` extractors, plus the two-argument Base-Year specialization, for the concrete UTC/GMT/Berlin profiles. Each field position keeps the kernel checker's exact stored-width, numeric-maximum, or Year-only format gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; dynamic point-in-time sources retain the selected model-zone profile without sampling a clock; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
+This capsule certifies direct `Date` components at an explicitly bound reading scope backed by ordinary Number fields, pattern-backed or extensible String fields, the complete-Year `yyyy` Date field, admitted quoted constants, or matching Date/DateTime/Base-Year/`Today`/`Now` extractors, plus the two-argument Base-Year specialization, for the concrete UTC/GMT/Berlin profiles. Each field position keeps the kernel checker's exact stored-width, numeric-maximum, or Year-only format gate; each constant keeps the pinned Java host's decimal-digit profile and its positional width and range gate; each extractor reuses the shared temporal component admission; dynamic point-in-time sources retain the selected model-zone profile without sampling a clock; the omitted year is the fixed model Base Year; and the split year is `century * 100 + shortYear`.
 
-Execution and composition use the shared scalar temporal tree and floor-free legacy calendar model. Computation consumers bind direct component reads at the target row, including repeated Number/String targets guarded by constructed-Date validity. Direct extensible-enumeration String components, general recursive extractor operands and additional zone profiles remain separate obligations in SG6.
+Execution and composition use the shared scalar temporal tree and floor-free legacy calendar model. Computation consumers bind direct component reads at the target row, including repeated Number/String targets guarded by constructed-Date validity. General recursive extractor operands and additional zone profiles remain separate obligations in SG6.
 -/
 
 namespace A12Kernel
@@ -121,7 +121,7 @@ structure CheckedConstructedDateNumberField (model : FlatModel) where
   source : FlatNumberField
   admitted : model.admitsConstructedDateNumberField position source scope = true
 
-/-- Exact pattern-backed String declaration gate for one direct Date component. Extensible-enumeration admission is deliberately not represented here. -/
+/-- Exact pattern-backed String declaration gate for one direct Date component. The client-SPI extensible-String alternative bypasses only the pattern gate. -/
 def FlatModel.admitsConstructedDateStringField (model : FlatModel)
     (position : ConstructedDateComponentPosition)
     (source : FlatStringField) (scope : List RepeatableLevel := []) : Bool :=
@@ -133,8 +133,8 @@ def FlatModel.admitsConstructedDateStringField (model : FlatModel)
         declaration.customType.isNone &&
         declaration.enumeration.isNone &&
         declaration.stringPolicy.maxLength == some position.storedWidth &&
-        declaration.stringPatternSource.any
-          (isTemporalComponentDigitPattern position.storedWidth)
+        (declaration.stringExtensibleEnum || declaration.stringPatternSource.any
+          (isTemporalComponentDigitPattern position.storedWidth))
 
 /-- One ordinary checked String field under the position's exact digit-pattern and stored-width gate. -/
 structure CheckedConstructedDateStringField (model : FlatModel) where

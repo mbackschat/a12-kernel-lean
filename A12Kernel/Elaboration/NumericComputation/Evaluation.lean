@@ -279,7 +279,7 @@ def readTemporalNumericExpression (context : ScalarComputationContext)
   let result ← match source.evalResult .computation {
       read := context.read, storedText := context.storedText, world := context.world } with
     | .ok result => pure result
-    | .error .dateTimeLabelUnresolved => return .domainFailure
+    | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return .domainFailure
     | .error fault => throw (.temporalExpression fault)
   match result with
   | .ok (.value amount _) => pure (.value amount)

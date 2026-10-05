@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.Replay
 
 namespace A12Kernel.Dm.CalendarExpressionLocks
 
@@ -109,5 +110,102 @@ private def completedYearGuard (initial : String) : Option (List String) := do
 -- Both consumer kinds must see the completed year's spelling, even when no source spelling exists.
 example : completedYearGuard "2023" = some ["value 2024", "value 7", "value selected"] ∧
     completedYearGuard "" = some ["value 2024", "value 7", "value selected"] := by native_decide
+
+private def extensibleComponents (repeated : Bool) (values : List String) (arity : Nat := 3)
+    (year : String := "2e3") (minute : String := "0") (century : String := "20") :
+    Option (List String × List (List String)) := do
+  let group := if repeated then ["Form", "Rows"] else ["Form"]
+  let scope := if repeated then [10] else []
+  let field (id : FieldId) (name : String) (kind : FieldKind) : FlatFieldDecl := {
+    id, name, groupPath := group, repeatableScope := scope, policy := { kind } }
+  let model : FlatModel := {
+    fields := [
+      { (field 1 "C" .string) with stringExtensibleEnum := true, stringPolicy := { maxLength := some 2 } },
+      { (field 2 "Y" .string) with stringExtensibleEnum := true, stringPolicy := { maxLength := some 4 } },
+      { (field 3 "D" (.temporal .date TemporalComponents.fullDate)) with
+        temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+      { (field 4 "T" (.temporal .time TemporalComponents.time)) with
+        temporalTargetPolicy := some { format := "HH:mm:ss" } },
+      field 5 "N" (.number { scale := 0, signed := true }),
+      field 6 "H" (.number { scale := 0, signed := true }),
+      { (field 7 "M" .string) with stringExtensibleEnum := true, stringPolicy := { maxLength := some 2 } },
+      { (field 8 "Century" .string) with stringExtensibleEnum := true, stringPolicy := { maxLength := some 2 } }]
+    timeZoneId := "UTC", baseYear := some 2000
+    repeatableGroups := if repeated then [{ level := 10, path := group, repeatability := some 4 }] else [] }
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let row (value : String) := Lean.Json.mkObj [
+    ("C", Lean.toJson value), ("Y", Lean.toJson year), ("M", Lean.toJson minute), ("Century", Lean.toJson century), ("D", "2001-01-01"), ("T", "09:00:00"), ("N", "9"), ("H", "9")]
+  let data := if repeated then Lean.Json.mkObj [("Rows", .arr (values.map row).toArray)]
+    else row (values.headD "")
+  let input ← (readDocument dm (Lean.Json.mkObj [("Form", data)])).toOption
+  if !input.refusals.isEmpty then none
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let dateOperation := match arity with
+    | 2 => "Date(C,\"02\")"
+    | 4 => "Date(C,\"02\",Century,C)"
+    | _ => "Date(C,\"02\",Y)"
+  let steps ← [("D", dateOperation), ("T", "Time(C,M)"),
+    ("N", "DayFromDate(D)"), ("H", "HoursFromTime(T)")].mapM fun (target, operation) =>
+    (lowerComputation model .english {
+      group, name := target ++ "Comp", targetRelPath := "../" ++ target
+      commonPrecondition := none, alternatives := [{ operation, precondition := none }]
+      errorCodesToSuppress := [] }).toOption.map (·.2)
+  let outcomes ← (runComputations world prepared checked steps).toOption
+  let messages ← ["Date(C,\"02\",Y) == \"01.02.2000\"", "Time(C,M) == \"01:00:00\""].mapM fun condition => do
+    let rule ← (checkRule dm .english {
+      group, name := "Rule", errorCode := "R", errorEntityRelPath := "../C", condition, severity := "ERROR" } world).toOption
+    pure ((← (runRule world checked rule).toOption).map fun message =>
+      (observe model message).pointer ++ ":" ++ (observe model message).messageType)
+  pure (outcomes.map (fun outcome => outcome.pointer ++ ":" ++ outcome.outcome), messages)
+
+example : extensibleComponents false ["+1"] = some (
+    ["Form/D:value 2000-02-01", "Form/T:value 01:00:00", "Form/N:value 1", "Form/H:value 1"],
+    [["Form/C:VALUE_ERROR"], ["Form/C:VALUE_ERROR"]]) := by native_decide
+
+example : extensibleComponents true ["+1", "2"] = some (
+    ["Form/Rows/D:value 2000-02-01", "Form/Rows[2]/D:value 2000-02-02",
+     "Form/Rows/T:value 01:00:00", "Form/Rows[2]/T:value 02:00:00",
+     "Form/Rows/N:value 1", "Form/Rows[2]/N:value 2", "Form/Rows/H:value 1", "Form/Rows[2]/H:value 2"],
+    [["Form/Rows/C:VALUE_ERROR"], ["Form/Rows/C:VALUE_ERROR"]]) := by native_decide
+
+example : extensibleComponents false [""] = some (
+    ["Form/D:cleared", "Form/T:cleared", "Form/N:value 0", "Form/H:value 0"], [[], []]) ∧
+    extensibleComponents false ["x"] = some (
+    ["Form/D:cleared", "Form/T:cleared", "Form/N:cleared", "Form/H:cleared"],
+    [["Form/C:VALUE_ERROR"], ["Form/C:VALUE_ERROR"]]) ∧
+    extensibleComponents false ["123"] = some (
+    ["Form/D:cleared", "Form/T:cleared", "Form/N:cleared", "Form/H:cleared"], [[], []]) := by native_decide
+
+example : extensibleComponents false [".5"] = some (
+    ["Form/D:cleared", "Form/T:value 00:00:00", "Form/N:value 0", "Form/H:value 0"], [[], []]) ∧
+    extensibleComponents false ["١"] = extensibleComponents false ["+1"] ∧
+    extensibleComponents false ["+1"] 2 = extensibleComponents false ["+1"] := by native_decide
+
+example : (extensibleComponents false ["+1"] 4).map (·.1) = some (
+    ["Form/D:value 2001-02-01", "Form/T:value 01:00:00", "Form/N:value 1", "Form/H:value 1"]) := by native_decide
+
+example : (extensibleComponents false ["123"] 3 "x" "x").map (·.2) =
+    some [["Form/C:VALUE_ERROR"], ["Form/C:VALUE_ERROR"]] := by native_decide
+
+example : extensibleComponents true ["2", "x"] = some (
+    ["Form/Rows/D:value 2000-02-02", "Form/Rows[2]/D:cleared",
+     "Form/Rows/T:value 02:00:00", "Form/Rows[2]/T:cleared",
+     "Form/Rows/N:value 2", "Form/Rows[2]/N:cleared", "Form/Rows/H:value 2", "Form/Rows[2]/H:cleared"],
+    [["Form/Rows/C:VALUE_ERROR"], ["Form/Rows/C:VALUE_ERROR"]]) := by native_decide
+
+example : ["3e8", "2e9"].all (fun year =>
+    extensibleComponents false ["+1"] 3 year == some (
+      ["Form/D:cleared", "Form/T:value 01:00:00", "Form/N:value 0", "Form/H:value 1"],
+      [[], ["Form/C:VALUE_ERROR"]])) := by native_decide
+
+example : extensibleComponents false ["+1"] 3 "2e8" = some (
+    ["Form/D:errored 200000000-02-01", "Form/T:value 01:00:00", "Form/N:cleared", "Form/H:value 1"],
+    [[], ["Form/C:VALUE_ERROR"]]) := by native_decide
+
+example : [(".5", "1"), ("-0", "2")].all (fun (century, day) =>
+    (extensibleComponents false [day] 4 "2e3" "0" century).map (·.1) == some (
+      ["Form/D:cleared", "Form/T:value 0" ++ day ++ ":00:00", "Form/N:value 0", "Form/H:value " ++ day])) := by native_decide
 
 end A12Kernel.Dm.CalendarExpressionLocks
