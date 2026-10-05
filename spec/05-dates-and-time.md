@@ -392,7 +392,7 @@ The date **extractors** (`DayFromDate`, …) accept a DateTime operand and see i
 
 ## Checklist for §6
 
-- [ ] Literal kind (`dateConst` vs `strConst`) resolved at **lex/type** time by shape; ISO always a string; omitted-year needs a Base Year.
+- [ ] Apply the canonical [constant-format, literal-typing and year-agreement rules in §1](#1-constant-format-and-the-stringdate-literal-ambiguity-).
 - [ ] `AddMonths` (day-preserving + end-of-month clamp) vs `AddYears` (last-of-Feb-preserving, corrects into leap years) — **different** conventions; every shift amount truncates then narrows to signed 32 bits before any sub-day unit multiplication. Preserve a constructed Date's legacy hybrid-calendar identity through legal month/year addition and difference rather than erasing it into a separately modeled ordinary-date function.
 - [ ] Sub-day diffs = epoch-seconds `/ unit`, **truncated toward zero**, order `b − a`.
 - [ ] Direct numeric `BaseYear`, temporal components, Base-Year-derived components, and Date-only month/year differences are scale-0 Number operations admitted beneath operation-form rounding/`Abs`; preserve symmetric empty rounding versus grow-only empty magnitude, fixed Base-Year values, and exact formal propagation.
