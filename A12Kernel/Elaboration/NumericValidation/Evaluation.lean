@@ -40,12 +40,7 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
   | .stringLength field =>
       (context.fields.resolveStringLengthOperand field).toValidationArithmetic
   | .stringRange field start finish =>
-      match context.fields.observeValidationAt field.id with
-      | .empty => .ok (.value 0 .growOnly)
-      | .value (.str value) =>
-          .ok (.value (utf16RangeAsNatural value start finish) .fixed)
-      | .value _ => .error (.formal .malformed)
-      | .unknown cause | .poison cause => .error (.formal cause)
+      ((context.fields.observeValidationAt field.id).asStringRangeOperand start finish).toValidationArithmetic
   | .fieldValueAsNumber source =>
       match context.fields.observeValidationAt source.fieldId with
       | .empty => .ok (.value 0 .both)

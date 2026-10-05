@@ -19,19 +19,6 @@ def aggregateOp? : String → Option NumericAggregateOp
   | "NumberOfDifferentValues" => some .distinctCount
   | _ => none
 
-def datePart? : String → Option DateNumericPart
-  | "YearFromDate" => some .year
-  | "MonthFromDate" => some .month
-  | "DayFromDate" => some .day
-  | "QuarterFromDate" => some .quarter
-  | _ => none
-
-private def timePart? : String → Option TimeNumericPart
-  | "HoursFromTime" => some .hour
-  | "MinutesFromTime" => some .minute
-  | "SecondsFromTime" => some .second
-  | _ => none
-
 private def subdayUnit? : String → Option DateTimeSubdayUnit
   | "DifferenceInHours" => some .hours
   | "DifferenceInMinutes" => some .minutes

@@ -364,6 +364,13 @@ def CellObservation.asStringLengthOperand :
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
 
+/-- Project the checked 1-based inclusive range through the shared UTF-16 numeric conversion (spec/06). -/
+def CellObservation.asStringRangeOperand (start finish : Nat) : CellObservation → NumericOperand
+  | .empty => .value 0 .growOnly
+  | .value (.str text) => .value (utf16RangeAsNatural text start finish) .fixed
+  | .value _ => .unknown .malformed
+  | .unknown cause | .poison cause => .unknown cause
+
 def FlatContext.resolveStringLengthOperand (context : FlatContext) (field : FlatStringField) :
     NumericOperand :=
   (context.observeValidationAt field.id).asStringLengthOperand
@@ -402,13 +409,13 @@ def FlatContext.resolveTimeComparisonOperand (context : FlatContext)
 /-- Resolve one checked temporal field to one numeric component for direct extraction: empty is the
 symmetric zero, and a value its field does not hold, or one without the projected component, is
 malformed. -/
-def FlatContext.resolveTemporalNumericOperandBy (context : FlatContext)
+def CellObservation.asTemporalNumericOperand (observation : CellObservation)
     (field : FlatTemporalField) (project : TemporalValue → Option Rat) : NumericOperand :=
-  match context.observeValidationAt field.id with
+  match observation with
   | .empty => .value 0 .both
-  | .value (.temporal value) =>
-      if field.holdsValue value then
-        match project value with
+  | .value (.temporal temporalValue) =>
+      if field.holdsValue temporalValue then
+        match project temporalValue with
         | some amount => .value amount .fixed
         | none => .unknown .malformed
       else
@@ -416,6 +423,10 @@ def FlatContext.resolveTemporalNumericOperandBy (context : FlatContext)
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause
+
+def FlatContext.resolveTemporalNumericOperandBy (context : FlatContext)
+    (field : FlatTemporalField) (project : TemporalValue → Option Rat) : NumericOperand :=
+  (context.observeValidationAt field.id).asTemporalNumericOperand field project
 
 /-- Resolve one checked field holding a date for direct numeric date-component extraction. -/
 def FlatContext.resolveDateNumericOperand (context : FlatContext)
@@ -426,6 +437,43 @@ def FlatContext.resolveDateNumericOperand (context : FlatContext)
 def FlatContext.resolveTimeNumericOperand (context : FlatContext)
     (field : FlatTemporalField) (part : TimeNumericPart) : NumericOperand :=
   context.resolveTemporalNumericOperandBy field fun value => value.time?.map part.extract
+
+/-- The seven direct scalar temporal component functions, grouped by the source half they project. -/
+inductive TemporalNumericPart where
+  | date (part : DateNumericPart)
+  | time (part : TimeNumericPart)
+  deriving Repr, DecidableEq
+
+namespace TemporalNumericPart
+
+/-- Static **component** admission for one direct temporal numeric function.
+
+    The declared kind is deliberately not read. Measured on both extraction families with each kind
+    on both sides of both outcomes: `HoursFromTime` admits a DATE-declared `HH:mm:ss` field and
+    refuses a TIME-declared `yyyy-MM-dd` one, `YearFromDate` does the exact opposite, and the
+    Kernel's own code names the format — `MVK_WRONG_DATE_FORMAT_FOR_OP`
+    ([checkpoint](../../docs/SOURCES.md#src-temporal-operand-family-is-the-formats-not-the-kinds)).
+    The component test was already the whole rule; the kind conjunct this replaced refused two of
+    those four rows for a reason the Kernel does not have. -/
+def admittedBy (part : TemporalNumericPart) (field : FlatTemporalField)
+    (hasBaseYear : Bool) : Bool :=
+  match part with
+  | .date datePart => datePart.admittedBy hasBaseYear field.components
+  | .time timePart => timePart.admittedBy field.components
+
+/-- Extract the selected amount from the matching decoded payload half. -/
+def project? (part : TemporalNumericPart) (value : TemporalValue) : Option Rat :=
+  match part with
+  | .date datePart => value.dateParts?.map datePart.extract
+  | .time timePart => value.time?.map timePart.extract
+
+end TemporalNumericPart
+
+/-- Validation-phase projection through the existing Date and Time operand owners. -/
+def FlatContext.resolveTemporalNumericOperand (context : FlatContext)
+    (field : FlatTemporalField) : TemporalNumericPart → NumericOperand
+  | .date part => context.resolveDateNumericOperand field part
+  | .time part => context.resolveTimeNumericOperand field part
 
 /-- Resolve one already-selected local calendar label through the injected model-zone capability without imposing stored-Date admission. -/
 def FlatContext.resolveLocalDateComparisonOperand

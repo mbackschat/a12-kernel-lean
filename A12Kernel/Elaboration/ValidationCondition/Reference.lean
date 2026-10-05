@@ -172,8 +172,15 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
   | .leaf (.numeric comparison) => do
       let pointers ← (comparison.left.atoms ++ comparison.right.atoms).mapM fun
         | .field reference => do pure [← havingNumberReferencePointer source environment reference]
-        | .stringLength origin field => do
+        | .stringLength origin field | .stringRange origin field _ _ => do
             pure [← havingStringReferencePointer source environment { origin, operand := .string field }]
+        | .temporalPart origin field _ => do
+            let declaration ← match model.lookupUniqueId field.id with
+              | .ok declaration =>
+                  if declaration.toTemporalField? == some field then pure declaration
+                  else throw (.incoherentHavingField field.id)
+              | .error _ => throw (.incoherentHavingField field.id)
+            pure [← havingFieldPointerFor source environment declaration origin]
         | .repetition _ => pure []
       pure pointers.flatten
   | .leaf (.simpleComparison left right comparison) => do
@@ -207,7 +214,7 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
       pure ((← correlatedHavingReferencePointers source environment left) ++
         (← correlatedHavingReferencePointers source environment right))
 
-/- Project the Number-field dependencies of one checked token filter. Keeping this operation at the token source makes its carrier boundary type-enforced: Number and Boolean/Confirm sources cannot call it merely because they also contain a `CheckedStarHaving`. -/
+/- Project the field dependencies of one checked token filter. Keeping this operation at the token source makes its carrier boundary type-enforced: Number and Boolean/Confirm sources cannot call it merely because they also contain a `CheckedStarHaving`. -/
 private def tokenFilterReferencePointers
     (source : CheckedTokenStarSource model) (environment : Env) :
     Except ReferenceProjectionError (List MessagePointer) :=
@@ -224,7 +231,7 @@ def CheckedTokenStarSource.referencePointers (source : CheckedTokenStarSource mo
 
 /-- A projection-bearing token operand references its **declaring** field. The stored-versus-category choice is not part of a reference: `MessagePointer` has no projection slot, and the channel reports field instances.
 
-    A measured filtered star adds the filter's Number-field operands. Unmarked references at or below the reopened level keep the candidate wildcard, while `$` references use the captured firing environment and stay concrete. Repetition-only leaves contribute no field pointer. This is intentionally token-specific: the Number and Boolean/Confirm carriers remain refused until their own observations establish that the same assignment crosses those representation boundaries.
+    A measured filtered star adds the filter's field operands. Unmarked references at or below the reopened level keep the candidate wildcard, while `$` references use the captured firing environment and stay concrete. Repetition-only leaves contribute no field pointer. This is intentionally token-specific: the Number and Boolean/Confirm carriers remain refused until their own observations establish that the same assignment crosses those representation boundaries.
 
     A group slot contributes its whole recursive expansion through the shared projection, which is why this is list-valued where a field-denoting slot contributes exactly one pointer. -/
 def CheckedTokenEntityOperand.referencePointers (environment : Env) :

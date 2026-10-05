@@ -97,22 +97,25 @@ structure HavingRepetitionRef where
 inductive HavingNumericAtom where
   | field (reference : HavingNumberRef)
   | stringLength (origin : HavingOrigin) (field : FlatStringField)
+  | stringRange (origin : HavingOrigin) (source : FlatStringField) (start finish : Nat)
+  | temporalPart (origin : HavingOrigin) (source : FlatTemporalField) (part : TemporalNumericPart)
   | repetition (reference : HavingRepetitionRef)
   deriving Repr, DecidableEq
 
 def HavingNumericAtom.origin : HavingNumericAtom → HavingOrigin
   | .field reference => reference.origin
-  | .stringLength origin _ => origin
+  | .stringLength origin _ | .stringRange origin _ _ _ | .temporalPart origin _ _ => origin
   | .repetition reference => reference.origin
 
 def HavingNumericAtom.fieldId? : HavingNumericAtom → Option FieldId
   | .field reference => some reference.field.id
-  | .stringLength _ source => some source.id
+  | .stringLength _ source | .stringRange _ source _ _ => some source.id
+  | .temporalPart _ source _ => some source.id
   | .repetition _ => none
 
 def HavingNumericAtom.summary : HavingNumericAtom → NumericScaleSummary
   | .field reference => .field reference.field.info.scale
-  | .repetition _ | .stringLength _ _ => .field 0
+  | .repetition _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => .field 0
 
 /-- One correlated filter frame. Both candidate and captured rule environments are
     explicit full repetition contexts. -/
@@ -260,14 +263,20 @@ def HavingNumberRef.resolve (reference : HavingNumberRef)
     CorrelatedNumberOperand :=
   reference.resolveIn context.asCorrelationContext (frame.toCorrelationFrame context)
 
+private def havingArithmetic : NumericOperand → Except Unit NumericArithmeticOutcome
+  | .value amount fillability => .ok (.value amount fillability)
+  | .unknown _ => .error ()
+
 /-- Filter Number atoms apply comparison-local empty zero before ordinary arithmetic. Missing raw
     repetition bindings remain unknown; checked addressed readers report them structurally. -/
 def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : CorrelationFrame) :
     HavingNumericAtom → Except Unit NumericArithmeticOutcome
   | .stringLength origin source =>
-      match (observeCell .validation (context.read (frame.envAt origin) source.id)).asStringLengthOperand with
-      | .value amount fillability => .ok (.value amount fillability)
-      | .unknown _ => .error ()
+      havingArithmetic ((observeCell .validation (context.read (frame.envAt origin) source.id)).asStringLengthOperand)
+  | .stringRange origin source start finish =>
+      havingArithmetic ((observeCell .validation (context.read (frame.envAt origin) source.id)).asStringRangeOperand start finish)
+  | .temporalPart origin source part =>
+      havingArithmetic ((observeCell .validation (context.read (frame.envAt origin) source.id)).asTemporalNumericOperand source part.project?)
   | .field reference =>
       match reference.resolveIn context frame with
       | .value amount => .ok (.value amount .fixed)
@@ -282,9 +291,13 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
     HavingNumericAtom → Except Error (Except Unit NumericArithmeticOutcome)
   | .stringLength origin source => do
       let cell ← context.read (frame.envAt origin) source.id
-      pure (match (observeCell .validation cell).asStringLengthOperand with
-        | .value amount fillability => .ok (.value amount fillability)
-        | .unknown _ => .error ())
+      pure (havingArithmetic ((observeCell .validation cell).asStringLengthOperand))
+  | .stringRange origin source start finish => do
+      let cell ← context.read (frame.envAt origin) source.id
+      pure (havingArithmetic ((observeCell .validation cell).asStringRangeOperand start finish))
+  | .temporalPart origin source part => do
+      let cell ← context.read (frame.envAt origin) source.id
+      pure (havingArithmetic ((observeCell .validation cell).asTemporalNumericOperand source part.project?))
   | .field reference => do
       pure (match ← reference.resolveInAtResolving .validation context frame with
         | .value amount => .ok (.value amount .fixed)
@@ -296,6 +309,10 @@ def HavingNumericAtom.readComputation (context : CorrelationContext) (frame : Co
     HavingNumericAtom → NumericComputationResult
   | .stringLength origin source =>
       (observeCell .computation (context.read (frame.envAt origin) source.id)).asStringLengthOperand.toComputationResult
+  | .stringRange origin source start finish =>
+      ((observeCell .computation (context.read (frame.envAt origin) source.id)).asStringRangeOperand start finish).toComputationResult
+  | .temporalPart origin source part =>
+      ((observeCell .computation (context.read (frame.envAt origin) source.id)).asTemporalNumericOperand source part.project?).toComputationResult
   | .field reference =>
       match reference.resolveInAt .computation context frame with
       | .value amount => .value amount
@@ -310,6 +327,12 @@ def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationCo
   | .stringLength origin source => do
       let cell ← context.read (frame.envAt origin) source.id
       pure ((observeCell .computation cell).asStringLengthOperand.toComputationResult)
+  | .stringRange origin source start finish => do
+      let cell ← context.read (frame.envAt origin) source.id
+      pure (((observeCell .computation cell).asStringRangeOperand start finish).toComputationResult)
+  | .temporalPart origin source part => do
+      let cell ← context.read (frame.envAt origin) source.id
+      pure (((observeCell .computation cell).asTemporalNumericOperand source part.project?).toComputationResult)
   | .field reference => do
       pure (match ← reference.resolveInAtResolving .computation context frame with
         | .value amount => .value amount

@@ -16,6 +16,20 @@ in those carriers. Refusals name the construct and shape the replay ledger clust
 
 namespace A12Kernel.Dm
 
+def datePart? : String → Option DateNumericPart
+  | "YearFromDate" => some .year
+  | "MonthFromDate" => some .month
+  | "DayFromDate" => some .day
+  | "QuarterFromDate" => some .quarter
+  | _ => none
+
+def timePart? : String → Option TimeNumericPart
+  | "HoursFromTime" => some .hour
+  | "MinutesFromTime" => some .minute
+  | "SecondsFromTime" => some .second
+  | _ => none
+
+
 def Expr.patternConstant? : Expr → Option String
   | .string source => some source
   | .braces body => body.patternConstant?

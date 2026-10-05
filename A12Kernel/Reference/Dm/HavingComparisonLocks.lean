@@ -348,10 +348,10 @@ example : run "FieldValueIncludedInValueList(Rows/Tag, $Expected)" = none ∧
     run "AtLeastOneFieldValueIncludedInValueList([Rows/Tag] In $Expected)" = none ∧
     run "NotAllFieldValuesIncludedInValueList(Rows/Tag In [$Expected])" = none := by native_decide
 
-private def referencesFor (filter : String) : Option (Bool × Bool) := do
+private def referencesFor (filter : String) (modelOverride : FlatModel := model) (carrier : String := "Tag") : Option (Bool × Bool) := do
   let parsed ← (parseText .english
-    ("FieldValuesNotUnique(/Form/Rows*/Tag Having " ++ filter ++ ")")).toOption
-  let checked ← (lowerCondition model ["Form", "Rows"] false parsed.body).toOption
+    ("FieldValuesNotUnique(/Form/Rows*/" ++ carrier ++ " Having " ++ filter ++ ")")).toOption
+  let checked ← (lowerCondition modelOverride ["Form", "Rows"] false parsed.body).toOption
   let pointers ← (checked.core.referencePointers [(10, 2)]).toOption
   pure (pointers.contains { field := 3, coordinates := [.wildcard] },
     pointers.contains { field := 3, coordinates := [.concrete 2] })
@@ -424,7 +424,7 @@ example : toleranceReferences = some (true, true) := by native_decide
 
 private def temporalRun (filter : String) (leftKind rightKind : TemporalKind)
     (leftFormat rightFormat expected first second : String)
-    (partialMode : TemporalPartialMode := .full) : Option (Verdict × List String) :=
+    (partialMode : TemporalPartialMode := .full) (baseYear : Option Int := none) : Option (Verdict × List String) :=
   let fields := model.fields.map fun field =>
     if field.id == 2 || field.id == 3 then
       let kind := if field.id == 3 then leftKind else rightKind
@@ -433,7 +433,7 @@ private def temporalRun (filter : String) (leftKind rightKind : TemporalKind)
         policy := { kind := .temporal kind (TemporalComponents.ofFormat format) }
         temporalTargetPolicy := some { format, partialMode } }
     else field
-  runModel { model with fields } filter false expected first second
+  runModel { model with fields, baseYear } filter false expected first second
 
 private def dateRun (filter : String) (first : String := "2024-01-01") := temporalRun filter .date .date
   "yyyy-MM-dd" "yyyy-MM-dd" "2024-01-02" first "2024-01-03"
@@ -575,5 +575,69 @@ example : toleranceRanges.all (fun band =>
     run "Length(Rows/Tag) < 2.5" false .string "x" "ab" "abc" =
       some (.fired .omission, ["value 9"]) ∧
     run "Length(Rows/Tag) > 0" false .enumeration "keep" "keep" "drop" (some domain) = none := by native_decide
+
+example : [("YearFromDate", "2024"), ("MonthFromDate", "4"), ("QuarterFromDate", "2"),
+    ("DayFromDate", "12")].all (fun (operator, expected) =>
+    temporalRun s!"{operator}(Rows/Tag) == {expected}" .date .date
+      "yyyy-MM-dd" "yyyy-MM-dd" "2024-04-12" "2024-04-12" "2023-01-01" ==
+        some (.fired .omission, ["value 9"])) = true ∧
+    [("HoursFromTime", "12"), ("MinutesFromTime", "34"), ("SecondsFromTime", "56")].all (fun (operator, expected) =>
+    temporalRun s!"{operator}(Rows/Tag) == {expected}" .time .time
+      "HH:mm:ss" "HH:mm:ss" "12:34:56" "12:34:56" "01:02:03" ==
+        some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : run "RangeAsNumber(Rows/Tag, 2, 3) == 12" false .string "x12" "a12z" "a45z" =
+      some (.fired .omission, ["value 9"]) ∧
+    run "RangeAsNumber(Rows/Tag, 2, 3) + 1 == 13" false .string "x12" "a12z" "a45z" =
+      some (.fired .omission, ["value 9"]) := by native_decide
+
+example : temporalRun "DayFromDate(Rows/Tag) == 12" .date .date
+      "yyyy-MM-dd" "yyyy-MM-dd" "2024-04-12" "2024-04-12" "2023-01-01" .dayOptional =
+      some (.fired .omission, ["value 9"]) ∧
+    temporalRun "HoursFromTime(Rows/Tag) == 12" .date .date
+      "HH:mm:ss" "HH:mm:ss" "12:34:56" "12:34:56" "01:02:03" =
+      some (.fired .omission, ["value 9"]) ∧
+    temporalRun "YearFromDate(Rows/Tag) == 2024" .time .time
+      "yyyy-MM-dd" "yyyy-MM-dd" "2024-04-12" "2024-04-12" "2023-01-01" =
+      some (.fired .omission, ["value 9"]) ∧
+    temporalRun "YearFromDate(Rows/Tag) == 2024" .date .date
+      "HH:mm:ss" "HH:mm:ss" "12:34:56" "12:34:56" "01:02:03" = none ∧
+    temporalRun "HoursFromTime(Rows/Tag) == 12" .time .time
+      "yyyy-MM-dd" "yyyy-MM-dd" "2024-04-12" "2024-04-12" "2023-01-01" = none := by native_decide
+
+example : temporalRun "MonthFromDate(Rows/Tag) == 4" .date .date
+      "MM-dd" "MM-dd" "04-12" "04-12" "01-01" = some (.fired .omission, ["value 9"]) ∧
+    temporalRun "YearFromDate(Rows/Tag) == 2024" .date .date
+      "MM-dd" "MM-dd" "04-12" "04-12" "01-01" = none ∧
+    (temporalRun "YearFromDate(Rows/Tag) == 2024" .date .date
+      "MM-dd" "MM-dd" "04-12" "04-12" "01-01" .full (some 2024)).map (·.2) = some ["value 14"] ∧
+    dateRun "DayFromDate(Rows/Tag) + 1 == DayFromDate($Expected)" = some (.fired .omission, ["value 9"]) ∧
+    (dateRun "DayFromDate(Rows/Tag) > 0" "bad").map (·.2) = some [] := by native_decide
+
+private def componentPointerModel : FlatModel := { model with fields := (model.fields.map fun field =>
+  if field.id == 3 then { field with
+    policy := { kind := .temporal .date TemporalComponents.fullDate }
+    temporalTargetPolicy := some { format := "yyyy-MM-dd" } } else field)
+  ++ [{ id := 6, groupPath := ["Form", "Rows"], name := "Token", policy := { kind := .string }, repeatableScope := [10] }] }
+
+example : referencesFor "DayFromDate(/Form/Rows/Tag) == DayFromDate($/Form/Rows/Tag)" componentPointerModel "Token" =
+      some (true, true) ∧
+    referencesFor "RangeAsNumber(/Form/Rows/Tag, 1, 2) == RangeAsNumber($/Form/Rows/Tag, 1, 2)" =
+      some (true, true) ∧
+    run "RangeAsNumber(Rows/Tag, 2, 3) == RangeAsNumber($Expected, 2, 3)" true .string "a12" "a12" "xro" =
+      some (.fired .omission, ["value drop", "value 5"]) := by native_decide
+
+example : run "RangeAsNumber(Rows/Tag, 2, 3) == 0" false .string "x" "aXz" "a12" =
+      some (.fired .omission, ["value 9"]) ∧
+    run "RangeAsNumber(Rows/Tag, 2, 3) == 0" false .string "x" "a1" "a12" =
+      some (.fired .omission, ["value 9"]) ∧
+    ["0, 2", "3, 2", "1.0, 2"].all (fun bounds =>
+      (run s!"RangeAsNumber(Rows/Tag, {bounds}) > 0").isNone) = true ∧
+    run "RangeAsNumber(Rows/N, 1, 2) > 0" = none ∧
+    run "YearFromDate(Rows/Tag) == 2024" = none ∧
+    run "RangeAsNumber($Expected, 1, 2) > 0" = none ∧
+    runModel constrainedLengthModel "RangeAsNumber(Rows/Tag, 1, 2) > 0" false "x" "12" "long" =
+      some (.fired .omission, []) := by native_decide
+
 
 end A12Kernel.Dm.HavingComparisonLocks

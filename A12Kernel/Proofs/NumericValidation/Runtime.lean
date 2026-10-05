@@ -325,7 +325,8 @@ theorem numericValidation_stringRange_empty_growOnly
   context.resolveNumericValidationAtom (.stringRange field start finish) =
       .ok (.value 0 .growOnly) := by
   simp [FlatContext.resolveNumericValidationAtom,
-    ValidationEvaluationContext.resolveNumericValidationAtom, observed]
+    ValidationEvaluationContext.resolveNumericValidationAtom, CellObservation.asStringRangeOperand,
+    NumericOperand.toValidationArithmetic, observed]
 
 /-- Once the String source is present, digits-only conversion or fallback zero is fixed; substring content does not itself carry omission potential. -/
 theorem numericValidation_stringRange_value_fixed
@@ -335,7 +336,8 @@ theorem numericValidation_stringRange_value_fixed
   context.resolveNumericValidationAtom (.stringRange field start finish) =
       .ok (.value (utf16RangeAsNatural value start finish) .fixed) := by
   simp [FlatContext.resolveNumericValidationAtom,
-    ValidationEvaluationContext.resolveNumericValidationAtom, observed]
+    ValidationEvaluationContext.resolveNumericValidationAtom, CellObservation.asStringRangeOperand,
+    NumericOperand.toValidationArithmetic, observed]
 
 /-- A reached formal cause survives the range conversion rather than becoming fallback zero. -/
 theorem numericValidation_stringRange_unknown_preservesCause
@@ -345,7 +347,8 @@ theorem numericValidation_stringRange_unknown_preservesCause
     context.resolveNumericValidationAtom (.stringRange field start finish) =
       .error (.formal cause) := by
   simp [FlatContext.resolveNumericValidationAtom,
-    ValidationEvaluationContext.resolveNumericValidationAtom, observed]
+    ValidationEvaluationContext.resolveNumericValidationAtom, CellObservation.asStringRangeOperand,
+    NumericOperand.toValidationArithmetic, observed]
 
 /-- Missing admitted String or Enumeration/category conversion is numeric zero with both possible movement directions. -/
 theorem numericValidation_fieldValueAsNumber_empty_both

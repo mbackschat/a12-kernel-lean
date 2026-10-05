@@ -65,6 +65,17 @@ private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
       match path.havingGroup? with
       | some (origin, group) => pure (.repetition { origin, group })
       | none => refuse "Having" "CurrentRepetition"
+  | .call "RangeAsNumber" [.mk (.entity { path, index := none, category := none }) none none,
+        .mk (.number start) none none, .mk (.number finish) none none] none none => do
+      let some (origin, field) := path.havingField? | refuse "Having" "range field"
+      let some start := start.toNat? | refuse "Having" "range start"
+      let some finish := finish.toNat? | refuse "Having" "range finish"
+      pure (.stringRange origin field start finish)
+  | .call id [.mk (.entity { path, index := none, category := none }) none none] none none => do
+      let some (origin, field) := path.havingField? | refuse "Having" "temporal field"
+      let some part := (datePart? id).map TemporalNumericPart.date |>.orElse
+        (fun _ => (timePart? id).map TemporalNumericPart.time) | refuse "Having" "numeric source"
+      pure (.temporalPart origin field part)
   | other => refuse "Having" other.construct
 
 private def havingMember? : Expr → Option SurfaceHavingDirectFieldOperand

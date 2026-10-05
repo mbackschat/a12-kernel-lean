@@ -293,4 +293,30 @@ example : (CorrelatedHavingLeaf.numeric lengthComparison).evalTruthInResolving t
       .ok (.poison .malformed) ∧
     CorrelatedHaving.markedFieldIds (.leaf (.numeric lengthComparison)) = [1] := by native_decide
 
+private def projectedAtoms : List HavingNumericAtom := [
+  .stringRange .inner { id := 1 } 1 2,
+  .temporalPart .inner { id := 1, kind := .date, components := TemporalComponents.fullDate } (.date .year) ]
+
+example : projectedAtoms.map (·.readValidation { read := fun _ _ => { emptyRequired with findings := [] } } frame) =
+      [.ok (.value 0 .growOnly), .ok (.value 0 .both)] ∧
+    projectedAtoms.map (·.readComputation { read := fun _ _ => emptyRequired } frame) =
+      [.value 0, .value 0] ∧
+    projectedAtoms.map (·.readComputation { read := fun _ _ => invalid } frame) =
+      [.poison .malformed, .poison .malformed] := by native_decide
+
+example : (HavingNumericAtom.stringRange .inner { id := 1 } 3 4).readValidation
+      { read := fun _ _ => { rawPresent := true, parsed := some (.str "😀12"), findings := [] } } frame =
+      .ok (.value 12 .fixed) ∧
+    (HavingNumericAtom.stringRange .inner { id := 1 } 1 1).readValidation
+      { read := fun _ _ => { rawPresent := true, parsed := some (.str "😀12"), findings := [] } } frame =
+      .ok (.value 0 .fixed) := by native_decide
+
+example : projectedAtoms.all (fun source =>
+    let comparison : CorrelatedHavingLeaf := .numeric {
+      op := .ordinary .equal
+      left := .atom source
+      right := .atom (.stringLength .outer { id := 1 }) }
+    comparison.evalTruthInResolving toleranceRead frame == .error "captured read" &&
+      comparison.evalComputationInResolving toleranceRead frame == .ok (.poison .malformed)) = true := by native_decide
+
 end A12Kernel.Conformance.CorrelatedComparisonInputs

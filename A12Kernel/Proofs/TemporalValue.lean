@@ -20,7 +20,7 @@ theorem flatTemporalDate_projects_instant_and_component
   simp only [FlatContext.observeValidationAt, FlatContext.observeAt] at observed
   simp [FlatContext.observeValidationAt, FlatContext.observeAt,
     FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy,
-    FlatTemporalField.holdsValue, FlatContext.resolveDateNumericOperand, FlatContext.resolveTemporalNumericOperandBy, observed, family,
+    FlatTemporalField.holdsValue, FlatContext.resolveDateNumericOperand, FlatContext.resolveTemporalNumericOperandBy, CellObservation.asTemporalNumericOperand, observed, family,
     TemporalValue.kind, TemporalValue.instant, TemporalValue.dateParts?]
 
 /-- The universal range reaches the established resolved range whenever both endpoint projections succeed. -/
@@ -63,7 +63,7 @@ theorem flatTemporalDateTime_projects_all_consumers
   simp only [FlatContext.observeValidationAt, FlatContext.observeAt] at observed
   simp [FlatContext.observeValidationAt, FlatContext.observeAt,
     FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy,
-    FlatTemporalField.holdsValue, FlatContext.resolveDateNumericOperand, FlatContext.resolveTemporalNumericOperandBy,
+    FlatTemporalField.holdsValue, FlatContext.resolveDateNumericOperand, FlatContext.resolveTemporalNumericOperandBy, CellObservation.asTemporalNumericOperand,
     FlatContext.resolveTimeNumericOperand, observed, family,
     TemporalValue.kind, TemporalValue.instant, TemporalValue.dateParts?,
     TemporalValue.time?]
