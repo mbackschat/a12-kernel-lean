@@ -63,6 +63,14 @@ private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
         | "EndOfDateRange" => pure (.range .finish)
         | _ => refuse "Having" "BaseYear endpoint"
       pure (.baseYearDatePart source part)
+  | .call id [.mk (.call bound [.mk (.entity { path, index := none, category := none }) none none] none none) none none] none none => do
+      let some part := datePart? id | refuse "Having" "DateRange component"
+      let some (origin, field) := path.havingField? | refuse "Having" "DateRange field"
+      let bound ← match bound with
+        | "StartOfDateRange" => pure DateRangeBound.start
+        | "EndOfDateRange" => pure DateRangeBound.finish
+        | _ => refuse "Having" "DateRange endpoint"
+      pure (.dateRangeBoundPart origin field bound part)
   | .call "FieldValueAsNumber" [.mk (.entity { path, index := none, category }) none none] none none => do
       let some (origin, field) := path.havingField? | refuse "Having" "conversion field"
       pure (.fieldValueAsNumber {

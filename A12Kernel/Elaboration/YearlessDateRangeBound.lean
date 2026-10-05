@@ -18,19 +18,7 @@ bound-versus-bound comparison, and every configured profile keep their existing 
 
 namespace A12Kernel
 
-/-- One extracted endpoint of a yearless range: only the labels the declaration retains. -/
-inductive YearlessDateRangeBoundValue where
-  | month (month : Nat)
-  | monthDay (value : MonthDayValue)
-  deriving Repr, DecidableEq
-
 namespace YearlessDateRangeBoundValue
-
-/-- Project the retained labels into the shared calendar-part carrier. An absent component is
-the literal zero a partially known Date uses; the static component gate keeps it unobservable. -/
-def parts : YearlessDateRangeBoundValue → DateParts
-  | .month value => { year := 0, month := value, day := 0 }
-  | .monthDay value => { year := 0, month := value.month, day := value.day }
 
 /-- Complete one retained endpoint label into a comparable yearless date by its authored
 position. A month-only label completes to the first day at a start and to the greatest day that

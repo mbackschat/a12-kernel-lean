@@ -363,4 +363,42 @@ example : (configuredYearCondition 2024).wellFormedForEnvironments conversionMod
     (configuredYearCondition 2024).usesOuter = false ∧
     (configuredYearCondition 2024).fieldIds = [] := by native_decide
 
+private def rangeNumeric (origin : HavingOrigin) (bound : DateRangeBound) (part : DateNumericPart) : HavingNumericAtom :=
+  .dateRangeBoundPart origin { id := 1 } bound part
+
+private def rangeNumericPair : CorrelatedHavingLeaf := .numeric {
+  op := .ordinary .equal
+  left := .atom (rangeNumeric .inner .start .month)
+  right := .atom (rangeNumeric .outer .finish .month) }
+
+example : (rangeNumeric .inner .start .month).readValidation { read := fun _ _ => rangeCell 8 } frame =
+      .ok (.value 1 .fixed) ∧
+    (rangeNumeric .inner .finish .month).readComputation { read := fun _ _ => rangeCell 8 } frame = .value 8 ∧
+    (rangeNumeric .inner .start .month).readValidation
+      { read := fun _ _ => { emptyRequired with findings := [] } } frame = .ok (.value 0 .both) ∧
+    (rangeNumeric .inner .start .month).readComputation { read := fun _ _ => emptyRequired } frame = .value 0 ∧
+    (rangeNumeric .inner .start .month).readValidation { read := fun _ _ => text "wrong kind" } frame = .error () := by native_decide
+
+example : rangeNumericPair.evalTruthInResolving toleranceRead frame = .error "captured read" ∧
+    rangeNumericPair.evalComputationInResolving toleranceRead frame = .ok (.poison .malformed) ∧
+    (rangeNumeric .inner .start .month).readValidationResolving
+      { toleranceRead with read := fun _ _ => .error "address" } frame = .error "address" ∧
+    (rangeNumeric .inner .start .month).readComputationResolving
+      { toleranceRead with read := fun _ _ => .error "address" } frame = .error "address" ∧
+    CorrelatedHaving.fieldIds (.leaf rangeNumericPair) = [1] ∧
+    CorrelatedHaving.markedFieldIds (.leaf rangeNumericPair) = [1] := by native_decide
+
+private def rangeNumericModel : FlatModel := { model with fields := model.fields.map fun field =>
+  { field with policy := { kind := .dateRange }, dateRangePolicy := some { format := "MM", separator := "/" } } }
+
+private def rangeNumericLeaf (origin : HavingOrigin) (part : DateNumericPart) : CorrelatedHavingLeaf :=
+  .numeric { op := .ordinary .equal, left := .atom (rangeNumeric origin .start part), right := .literal { value := 1, authoredScale := 0 } }
+
+example : (rangeNumericLeaf .inner .month).wellFormedForEnvironments rangeNumericModel [10] [] = true ∧
+    (rangeNumericLeaf .inner .day).wellFormedForEnvironments rangeNumericModel [10] [] = false ∧
+    (rangeNumericLeaf .inner .year).wellFormedForEnvironments rangeNumericModel [10] [] = false ∧
+    (rangeNumericLeaf .inner .year).wellFormedForEnvironments { rangeNumericModel with baseYear := some 2024 } [10] [] = true ∧
+    (rangeNumericLeaf .inner .month).wellFormedForEnvironments model [10] [] = false ∧
+    (rangeNumericLeaf .outer .month).wellFormedForEnvironments rangeNumericModel [10] [] = false := by native_decide
+
 end A12Kernel.Conformance.CorrelatedComparisonInputs

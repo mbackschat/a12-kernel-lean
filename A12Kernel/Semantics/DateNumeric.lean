@@ -2,7 +2,7 @@ import A12Kernel.Semantics.DateConstructionNumeric
 import A12Kernel.Semantics.DateTime
 import A12Kernel.Semantics.Observation
 
-/-! # Typed Date and DateTime numeric-component projection
+/-! # Typed Date, DateTime and DateRange numeric-component projection
 
 This capsule consumes an already phase-classified typed Date or DateTime observation for `DayFromDate`, `MonthFromDate`, `QuarterFromDate`, or `YearFromDate`. Present values expose the selected component as fixed. Empty input substitutes numeric zero with symmetric fillability, while formal unavailability preserves its exact cause.
 
@@ -38,5 +38,63 @@ def fromDateTimeObservation (part : DateNumericPart) :
   part.fromObservation (·.date.civil.parts)
 
 end DateNumericPart
+
+/-- One extracted endpoint of a yearless range: only the labels the declaration retains. -/
+inductive YearlessDateRangeBoundValue where
+  | month (month : Nat)
+  | monthDay (value : MonthDayValue)
+  deriving Repr, DecidableEq
+
+/-- Project the retained labels into the shared calendar-part carrier. An absent component is
+the literal zero a partially known Date uses; the static component gate keeps it unobservable. -/
+def YearlessDateRangeBoundValue.parts : YearlessDateRangeBoundValue → DateParts
+  | .month value => { year := 0, month := value, day := 0 }
+  | .monthDay value => { year := 0, month := value.month, day := value.day }
+
+/-- One endpoint selected from whichever runtime carrier its declaration produced. -/
+inductive DateRangeBoundObservation where
+  | exact (value : DateValue)
+  | yearless (value : YearlessDateRangeBoundValue)
+  deriving Repr, DecidableEq
+
+/-- The calendar-part view both endpoint carriers expose. A yearless carrier's absent labels are
+the same literal zeroes a partially known Date uses, and the static component gate is what keeps
+them unobservable. -/
+def DateRangeBoundObservation.parts : DateRangeBoundObservation → DateParts
+  | .exact value => value.parts
+  | .yearless value => value.parts
+
+/-- Every runtime carrier selects an endpoint, so a component read needs no profile refusal of its
+own. `dateRangeCellValue_selectBoundObservation_yearless` locks this against the yearless owner's
+own selection. -/
+def DateRangeCellValue.selectBoundObservation (bound : DateRangeBound) :
+    DateRangeCellValue → DateRangeBoundObservation
+  | .exact value => .exact (value.select bound)
+  | .yearlessMonth start finish =>
+      .yearless (.month (match bound with | .start => start | .finish => finish))
+  | .yearlessMonthDay start finish =>
+      .yearless
+        (.monthDay (match bound with | .start => start | .finish => finish))
+
+/-- The selected endpoint's calendar parts, independent of which carrier supplied them. -/
+def DateRangeCellValue.selectBoundParts (value : DateRangeCellValue)
+    (bound : DateRangeBound) : DateParts :=
+  (value.selectBoundObservation bound).parts
+
+/-- Project a typed endpoint observation with symmetric validation fillability. Keyed reads consume
+this clause directly; `resolveDateRangeBoundNumericOperand_factors` proves the ordinary heterogeneous
+read agrees with it, including empty and unavailable observations. -/
+def DateNumericPart.fromDateRangeBoundObservation (part : DateNumericPart)
+    (bound : DateRangeBound) :
+    CellObservation DateRangeCellValue → NumericOperand :=
+  part.fromObservation (·.selectBoundParts bound)
+
+/-- Keep the declared endpoint labels and ordinary component fillability (spec/05); a wrong cell kind stays malformed. -/
+def CellObservation.asDateRangeBoundNumericOperand (bound : DateRangeBound) (part : DateNumericPart) :
+    CellObservation → NumericOperand
+  | .empty => .value 0 .both
+  | .value (.dateRange rangeValue) => .value (part.extract (rangeValue.selectBoundParts bound)) .fixed
+  | .value _ => .unknown .malformed
+  | .unknown cause | .poison cause => .unknown cause
 
 end A12Kernel

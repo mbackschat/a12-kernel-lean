@@ -15,13 +15,14 @@ private def model : FlatModel := {
   repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
 
 private def runModel (model : FlatModel) (filter : String) (fresh : Bool)
-    (expected first second : String) (producerOperation : String := "\"drop\"") : Option (Verdict × List String) := do
+    (expected first second : String) (producerOperation : String := "\"drop\"")
+    (extra : List (String × Json) := []) : Option (Verdict × List String) := do
   let dm : DmModel := {
     flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let row := fun (tag n : String) => Json.mkObj [("Tag", Json.str tag), ("N", Json.str n)]
-  let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+  let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj ([
     ("Error", Json.str "ready"), ("Expected", Json.str expected),
-    ("Rows", Json.arr #[row first "2", row second "5", row first "7"])])])).toOption
+    ("Rows", Json.arr #[row first "2", row second "5", row first "7"])] ++ extra))])).toOption
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
@@ -690,5 +691,69 @@ example : run "FieldValueAsNumber(Rows/Tag) == 1.5" false .enumeration "1.5" "1.
     run "FieldValueAsNumber(Rows/Tag -> Missing) == 1.5" false
       .enumeration "keep" "keep" "drop" (some numericCategoryDomain) = none ∧
     runModel modelWithBaseYear "HoursFromTime(BaseYear) == 0 And [Rows/N] != 5" false "x" "x" "y" = none := by native_decide
+
+private def rangeFilterModel (format : String) (baseYear : Option Int := none) : FlatModel :=
+  { model with baseYear, fields := model.fields.map fun field =>
+    if field.id == 2 || field.id == 3 then
+      { field with policy := { kind := .dateRange }, dateRangePolicy := some { format, separator := "/" } }
+    else field }
+
+private def rangeFilterRun (filter format expected first second : String)
+    (baseYear : Option Int := none) : Option (Verdict × List String) :=
+  runModel (rangeFilterModel format baseYear) filter false expected first second
+
+example : [("YearFromDate", "2024", "2025"), ("MonthFromDate", "2", "8"),
+    ("QuarterFromDate", "1", "3"), ("DayFromDate", "3", "9")].all (fun (operator, start, finish) =>
+      [("StartOfDateRange", start), ("EndOfDateRange", finish)].all (fun (bound, amount) =>
+        rangeFilterRun s!"{operator}({bound}(Rows/Tag)) == {amount}" "yyyy-MM-dd"
+          "2024-02-03/2025-08-09" "2024-02-03/2025-08-09" "2023-04-10/2026-11-12" ==
+            some (.fired .omission, ["value 9"]))) = true := by native_decide
+
+example : rangeFilterRun "MonthFromDate(EndOfDateRange(Rows/Tag)) == 8" "MM" "02/08" "02/08" "03/09" =
+      some (.fired .omission, ["value 9"]) ∧
+    rangeFilterRun "DayFromDate(EndOfDateRange(Rows/Tag)) == 9" "MM" "02/08" "02/08" "03/09" = none ∧
+    rangeFilterRun "YearFromDate(StartOfDateRange(Rows/Tag)) == 2024" "MM" "02/08" "02/08" "03/09" = none ∧
+    rangeFilterRun "YearFromDate(StartOfDateRange(Rows/Tag)) == 2024 And [Rows/N] != 5" "MM"
+      "02/08" "02/08" "03/09" (some 2024) = some (.fired .omission, ["value 9"]) := by native_decide
+
+example : rangeFilterRun "DayFromDate(EndOfDateRange(Rows/Tag)) + 1 == 10" "MM-dd"
+      "02-03/08-09" "02-03/08-09" "04-10/11-12" = some (.fired .omission, ["value 9"]) ∧
+    rangeFilterRun "MonthFromDate(StartOfDateRange(Rows/Tag)) == MonthFromDate(EndOfDateRange($Expected))"
+      "MM" "01/02" "02/08" "03/09" = some (.fired .omission, ["value 9"]) ∧
+    rangeFilterRun "MonthFromDate(StartOfDateRange(Rows/Tag)) == 0" "MM" "01/02" "" "03/09" =
+      some (.fired .omission, ["value 9"]) ∧
+    rangeFilterRun "MonthFromDate(StartOfDateRange(Rows/Tag)) > 0" "MM" "01/02" "bad" "03/09" =
+      some (.notFired, []) := by native_decide
+
+example : toleranceRanges.all (fun band =>
+    rangeFilterRun s!"MonthFromDate(EndOfDateRange(Rows/Tag)) * {band} DiffersWithToleranceRange{band} MonthFromDate(EndOfDateRange($Expected)) * {band}"
+      "MM" "01/03" "02/08" "01/03" == some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : run "MonthFromDate(StartOfDateRange(Rows/Tag)) == 2" = none ∧
+    rangeFilterRun "HoursFromTime(StartOfDateRange(Rows/Tag)) == 2" "MM" "01/02" "02/08" "03/09" = none ∧
+    rangeFilterRun "MonthFromDate(StartOfDateRange([Rows/Tag])) == 2" "MM" "01/02" "02/08" "03/09" = none ∧
+    rangeFilterRun "MonthFromDate(StartOfDateRange(Rows*/Tag)) == 2" "MM" "01/02" "02/08" "03/09" = none ∧
+    rangeFilterRun "MonthFromDate(StartOfDateRange($Expected)) == 1" "MM" "01/02" "02/08" "03/09" = none := by native_decide
+
+private def rangePointerModel : FlatModel :=
+  let ranges := rangeFilterModel "MM"
+  { ranges with fields := ranges.fields ++ [{
+      id := 6, groupPath := ["Form", "Rows"], name := "Token",
+      policy := { kind := .string }, repeatableScope := [10] }] }
+
+example : referencesFor "MonthFromDate(StartOfDateRange(/Form/Rows/Tag)) == MonthFromDate(EndOfDateRange($/Form/Rows/Tag))"
+    rangePointerModel "Token" = some (true, true) := by native_decide
+
+private def rangeProducerModel : FlatModel :=
+  let ranges := rangeFilterModel "yyyy-MM-dd"
+  { ranges with fields := ranges.fields ++ [(6, "Start"), (7, "Finish")].map fun (id, name) => {
+    id, name, groupPath := ["Form"], policy := { kind := .temporal .date TemporalComponents.fullDate },
+    temporalTargetPolicy := some { format := "yyyy-MM-dd" } } }
+
+example : runModel rangeProducerModel
+    "MonthFromDate(EndOfDateRange(Rows/Tag)) == MonthFromDate(EndOfDateRange($Expected))" true
+    "2024-01-01/2024-02-01" "2024-01-01/2024-02-01" "2024-01-01/2024-03-01" "DateRange(Start, Finish)"
+    [("Start", Json.str "2024-01-01"), ("Finish", Json.str "2024-03-01")] =
+      some (.fired .omission, ["value 2024-01-01/2024-03-01", "value 5"]) := by native_decide
 
 end A12Kernel.Dm.HavingComparisonLocks

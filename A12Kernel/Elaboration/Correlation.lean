@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.HavingTree
 import A12Kernel.Elaboration.HavingFieldValueList
 import A12Kernel.Elaboration.CorrelationSurface
 import A12Kernel.Elaboration.Flat.Condition.Surface
@@ -32,7 +33,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
         | .baseYear | .baseYearDatePart _ _ => none
         | .fieldValueAsNumber reference => field reference.origin reference.field
         | .field reference => field reference.origin reference.field
-        | .stringLength origin reference | .stringRange origin reference _ _ | .temporalPart origin reference _ => field origin reference
+        | .dateRangeBoundPart origin reference _ _ | .stringLength origin reference | .stringRange origin reference _ _ | .temporalPart origin reference _ => field origin reference
         | .repetition reference => group reference.origin reference.group
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
@@ -70,18 +71,6 @@ def SurfaceCorrelatedHaving.requireOuterReferencesBound (model : FlatModel)
   | some (path, unbound) => throw (.outerLevelUnbound path unbound)
   | none => pure ()
 
-private def SurfaceComparisonOp.toCorrelation : SurfaceComparisonOp → CorrelationComparisonOp
-  | .equal => .equal
-  | .notEqual => .notEqual
-  | .less => .lessThan
-  | .lessEqual => .lessEqual
-  | .greater => .greaterThan
-  | .greaterEqual => .greaterEqual
-
-private structure ResolvedNumberRef where
-  declaration : FlatFieldDecl
-  core : HavingNumberRef
-
 /-- Whether a resolved filter uses only leaves and conjunction. This is narrower than the authored
 surface, which also carries `.or`. The legacy one-group route is the only consumer, at both its
 elaboration arm and its own well-formedness predicate; the star route takes the full surface. -/
@@ -117,7 +106,7 @@ private def FlatModel.havingGroupRead (model : FlatModel) (declaringGroup : Grou
 private def FlatModel.resolveHavingNumberInGroup (model : FlatModel)
     (declaringGroup : GroupPath) (group : RepeatableGroupDecl)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) :
-    Except CorrelationElabError ResolvedNumberRef := do
+    Except CorrelationElabError ResolvedHavingNumberRef := do
   let (declaration, field) ← model.resolveNumberInGroup declaringGroup group reference
     |>.mapError (.ofSingleGroup origin)
   pure { declaration, core := { origin, field } }
@@ -131,170 +120,11 @@ private def resolveHavingRepetitionInGroup
     throw (.repetitionGroupMismatch group.path resolved.path)
   pure { origin, source := .repeatable group.level }
 
-/-- The per-leaf reference resolvers one filter route supplies. They travel as a bundle because
-    each route chooses all of them together, and a route that admits no String or presence leaf
-    supplies a refusing resolver rather than a different combinator. -/
-private structure HavingLeafResolvers where
-  baseYear : Except CorrelationElabError Int
-  fieldValueAsNumber : SurfaceHavingStringRef → Except CorrelationElabError ResolvedFieldValueAsNumberSource
-  boolean : EqualityOp → SurfaceHavingStringRef → Bool → Except CorrelationElabError FlatComparison
-  fields : SurfaceComparisonOp → SurfaceHavingStringRef → SurfaceHavingStringRef →
-    Except CorrelationElabError (Option FlatComparison)
-
-  stringValue : HavingOrigin → SurfaceFieldPath → Except CorrelationElabError FlatStringField
-  temporalPart : HavingOrigin → SurfaceFieldPath → TemporalNumericPart → Except CorrelationElabError FlatTemporalField
-  number : HavingOrigin → SurfaceFieldPath →
-    Except CorrelationElabError ResolvedNumberRef
-  repetition : HavingOrigin → SurfaceGroupReference →
-    Except CorrelationElabError HavingRepetitionRef
-  string : EqualityOp → SurfaceHavingStringRef → String →
-    Except CorrelationElabError HavingStringRef
-  literalMembership : SurfaceHavingStringRef → Sum (List Int) (List String) →
-    Except CorrelationElabError FlatLiteralMembership
-  literalList : SurfaceHavingDirectFieldSource → List String → Except CorrelationElabError HavingFieldValueList
-  fieldMembership : ComputationValueListOperator → SurfaceHavingDirectFieldSource → SurfaceHavingDirectFieldSource →
-    Except CorrelationElabError HavingFieldValueList
-  fieldFill : SurfaceHavingDirectFieldSource → Except CorrelationElabError (List HavingPresenceRef)
-  presence : HavingOrigin → SurfaceFieldPath →
-    Except CorrelationElabError HavingPresenceRef
-
-/-- Both sides of an ordering comparison, a kind refusal carrying its partner's kind. A side whose
-    read fails answers ahead of both kind gates, the left one first, so a left kind refusal meeting a
-    right read failure raises the right's error. -/
-private def orderingSides (left right : Except CorrelationElabError ResolvedNumberRef) :
-    Except CorrelationElabError (ResolvedNumberRef × ResolvedNumberRef) :=
-  match left, right with
-  | .ok leftResolved, .ok rightResolved => pure (leftResolved, rightResolved)
-  | .error (.fieldNotNumber path actual), .ok _ =>
-      throw (.orderingFieldNotNumber path actual .number)
-  | .error (.fieldNotNumber path actual), .error (.fieldNotNumber _ partner) =>
-      throw (.orderingFieldNotNumber path actual partner)
-  | .error (.fieldNotNumber _ _), .error error => throw error
-  | .error error, _ => throw error
-  | .ok _, .error (.fieldNotNumber path actual) =>
-      throw (.orderingFieldNotNumber path actual .number)
-  | .ok _, .error error => throw error
-
-private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
-    (op : NumericValidationOp) (left right : AuthoredNumericExpr SurfaceHavingNumericAtom) :
-    Except CorrelationElabError CorrelatedHaving := do
-  let resolve : SurfaceHavingNumericAtom → Except CorrelationElabError HavingNumericAtom
-    | .baseYear => HavingNumericAtom.baseYear <$> resolvers.baseYear
-    | .baseYearDatePart source part => (fun year => .baseYearDatePart year source part) <$> resolvers.baseYear
-    | .fieldValueAsNumber reference => (.fieldValueAsNumber reference.origin ·) <$> resolvers.fieldValueAsNumber reference
-    | .stringLength origin reference => (.stringLength origin ·) <$> resolvers.stringValue origin reference
-    | .stringRange origin reference start finish => do
-        let source ← (resolvers.stringValue origin reference).mapError fun
-          | .text (.lengthOperandKindMismatch _ _) => .numericExpressionUnsupported
-          | error => error
-        if !validStringRange start finish then throw .numericExpressionUnsupported
-        pure (.stringRange origin source start finish)
-    | .temporalPart origin reference part =>
-        (fun source => .temporalPart origin source part) <$> resolvers.temporalPart origin reference part
-    | .field reference => do
-        let resolved ← (resolvers.number reference.origin reference.field).mapError fun
-          | .fieldNotNumber path actual => .numericOperandFieldNotNumber path actual
-          | error => error
-        pure (.field resolved.core)
-    | .repetition reference =>
-        (.repetition ·) <$> resolvers.repetition reference.origin reference.group
-  let leftCore ← left.mapM resolve
-  let rightCore ← right.mapM resolve
-  if leftCore.isImmediateLiteral && rightCore.isImmediateLiteral then
-    throw .constantNumericComparison
-  let comparison : NumericComparisonOf HavingNumericAtom :=
-    { op := op, left := leftCore, right := rightCore }
-  if !comparison.havingAdmitted (fun _ => true) then
-    throw .numericExpressionUnsupported
-  pure (.leaf (.numeric comparison))
-
-private def elaborateHavingNumeric (resolvers : HavingLeafResolvers)
-    (op : SurfaceComparisonOp) (left right : AuthoredNumericExpr SurfaceHavingNumericAtom) :
-    Except CorrelationElabError CorrelatedHaving := do
-  match left, right with
-  | .atom (.field left), .atom (.field right) => do
-      let coreOp := op.toCorrelation
-      let resolve (reference : SurfaceHavingNumberRef) :=
-        resolvers.number reference.origin reference.field
-      let (leftResolved, rightResolved) ← match coreOp with
-        | .lessThan | .lessEqual | .greaterThan | .greaterEqual =>
-            orderingSides (resolve left) (resolve right)
-        | .equal | .notEqual => do
-            let side (reference : SurfaceHavingNumberRef) :=
-              (resolve reference).mapError fun
-                | .fieldNotNumber path actual => .equalityFieldNotNumber path actual
-                | error => error
-            pure (← side left, ← side right)
-      if !coreOp.acceptsScales leftResolved.core.field rightResolved.core.field then
-        throw (.equalityScaleMismatch
-          leftResolved.declaration.path leftResolved.core.field.info.scale
-          rightResolved.declaration.path rightResolved.core.field.info.scale)
-      pure (.compareNumbers coreOp leftResolved.core rightResolved.core)
-  | .atom (.field reference), .literal literal
-  | .literal literal, .atom (.field reference) => do
-      let coreOp := op.toCorrelation
-      let resolved ← (resolvers.number reference.origin reference.field).mapError fun
-        | .fieldNotNumber path actual =>
-            match coreOp with
-            | .equal | .notEqual => .literalEqualityFieldNotNumber path actual
-            | _ => .orderingFieldNotNumber path actual .number
-        | error => error
-      if !coreOp.acceptsLiteralScale resolved.core.field literal then
-        throw (.literalScaleMismatch resolved.declaration.path resolved.core.field.info.scale
-          literal.authoredScale)
-      pure (.leaf (.numeric
-        { op := .ordinary coreOp.toNumeric
-          left := left.map (fun _ => .field resolved.core)
-          right := right.map (fun _ => .field resolved.core) }))
-  | .atom (.repetition left), .atom (.repetition right) => do
-      let coreOp := op.toCorrelation
-      pure (.compareRepetitions coreOp
-        (← resolvers.repetition left.origin left.group)
-        (← resolvers.repetition right.origin right.group))
-  | _, _ => elaborateHavingNumericExpression resolvers (.ordinary op.toCorrelation.toNumeric) left right
-
-private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
-    SurfaceCorrelatedHaving → Except CorrelationElabError CorrelatedHaving
-  | .compareBoolean op reference expected => do
-      pure (.leaf (.simpleComparison reference.origin .inner (← resolvers.boolean op reference expected)))
-  | .compareFields op left right => do
-      match ← resolvers.fields op left right with
-      | some comparison => pure (.leaf (.simpleComparison left.origin right.origin comparison))
-      | none =>
-          if left.projectionRef != .stored || right.projectionRef != .stored then
-            throw .stringLeafOutsideStarRoute
-          else
-            elaborateHavingNumeric resolvers op
-              (.atom (.field { origin := left.origin, field := left.field }))
-              (.atom (.field { origin := right.origin, field := right.field }))
-  | .numeric op left right => elaborateHavingNumeric resolvers op left right
-  | .tolerance range left right => elaborateHavingNumericExpression resolvers (.tolerance range) left right
-  | .compareStrings op reference expected => do
-      pure (.compareStringLiteral op
-        (← resolvers.string op reference expected) expected)
-  | .literalMembership operator reference values => do
-      pure (.leaf (.literalMembership reference.origin operator (← resolvers.literalMembership reference values)))
-  | .literalList quantifier subjects values => do
-      pure (.leaf (.fieldMembership (.quantified quantifier) (← resolvers.literalList subjects values)))
-  | .fieldMembership operator subjects members => do
-      pure (.leaf (.fieldMembership operator (← resolvers.fieldMembership operator subjects members)))
-  | .fieldFill operator source => do
-      pure (.leaf (.fieldFill operator (← resolvers.fieldFill source)))
-  | .presence polarity reference => do
-      pure (.presence polarity
-        (← resolvers.presence reference.origin reference.field))
-  | .and left right => do
-      pure (.and (← elaborateHavingCoreWith resolvers left)
-        (← elaborateHavingCoreWith resolvers right))
-  | .or left right => do
-      pure (.or (← elaborateHavingCoreWith resolvers left)
-        (← elaborateHavingCoreWith resolvers right))
-
 /-- A filter body's bracketed read on the single-group route, without the route's placement
     requirement: the read's gates, then the Number kind the leaf needs. -/
 private def FlatModel.resolveHavingNumberRead (model : FlatModel) (declaringGroup : GroupPath)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) :
-    Except CorrelationElabError ResolvedNumberRef := do
+    Except CorrelationElabError ResolvedHavingNumberRef := do
   let declaration ← (checkFieldValueRead (model.resolveFieldDeclarationUnchecked declaringGroup reference)
     (model.havingGroupRead declaringGroup reference)).mapError .resolve
   match declaration.toNumberField? with
@@ -311,7 +141,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).any fun
         | .baseYear | .baseYearDatePart _ _ | .fieldValueAsNumber _
-            | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
+            | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
         | .field reference => reference.origin == .inner &&
             (model.resolveNumberInGroup declaringGroup group reference.field).isOk
         | .repetition _ => false
@@ -338,6 +168,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     fieldValueAsNumber := fun _ => throw .stringLeafOutsideStarRoute
     boolean := fun _ _ _ => throw .stringLeafOutsideStarRoute
     stringValue := fun _ _ => throw .stringLeafOutsideStarRoute
+    dateRangeBoundPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
     fields := fun _ _ _ => pure none
     number := model.resolveHavingNumberRead declaringGroup
@@ -357,6 +188,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     fieldValueAsNumber := fun _ => throw .stringLeafOutsideStarRoute
     boolean := fun _ _ _ => throw .stringLeafOutsideStarRoute
     stringValue := fun _ _ => throw .stringLeafOutsideStarRoute
+    dateRangeBoundPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
     fields := fun _ _ _ => pure none
     number := model.resolveHavingNumberInGroup declaringGroup group
@@ -431,7 +263,7 @@ private def FlatModel.resolveHavingLiteralMembership (model : FlatModel)
 private def FlatModel.resolveHavingNumberInEnvironment (model : FlatModel)
     (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
     (origin : HavingOrigin) (reference : SurfaceFieldPath) :
-    Except CorrelationElabError ResolvedNumberRef := do
+    Except CorrelationElabError ResolvedHavingNumberRef := do
   let declaration ← model.resolveHavingFieldValueRead declaringGroup outerLevels origin reference
   let field ← match declaration.toNumberField? with
     | some field => pure field
@@ -594,6 +426,7 @@ def CorrelatedHaving.outerIterationScopes
         | .fieldValueAsNumber origin source => outerHavingFieldIterationScope model origin source.fieldId
         | .field reference => outerHavingNumberIterationScope model reference
         | .stringLength origin field | .stringRange origin field _ _ => outerHavingFieldIterationScope model origin field.id
+        | .dateRangeBoundPart origin field _ _ => outerHavingFieldIterationScope model origin field.id
         | .temporalPart origin field _ => outerHavingFieldIterationScope model origin field.id
         | .repetition reference => outerHavingRepetitionIterationScope model reference
   | .leaf (.simpleComparison left right comparison) =>
@@ -642,7 +475,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
         | .baseYear | .baseYearDatePart _ _ => none
         | .fieldValueAsNumber reference => field reference.origin reference.field
         | .field reference => field reference.origin reference.field
-        | .stringLength origin reference | .stringRange origin reference _ _ | .temporalPart origin reference _ => field origin reference
+        | .dateRangeBoundPart origin reference _ _ | .stringLength origin reference | .stringRange origin reference _ _ | .temporalPart origin reference _ => field origin reference
         | .repetition reference => group reference.origin reference.group
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
@@ -689,6 +522,11 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       match declaration.toStringValueField? with
       | some field => pure field
       | none => throw (.text (.lengthOperandKindMismatch declaration.path declaration.policy.kind.surfaceKind))
+    dateRangeBoundPart := fun origin reference part => do
+      let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels { origin, field := reference }
+      let source : FlatDateRangeField := { id := declaration.id }
+      if !model.exposesDateRangeBoundPart source part then throw .numericExpressionUnsupported
+      pure source
     temporalPart := fun origin reference part => do
       let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels { origin, field := reference }
       let some source := declaration.toTemporalField? | throw .numericExpressionUnsupported

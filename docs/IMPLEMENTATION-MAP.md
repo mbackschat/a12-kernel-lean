@@ -285,6 +285,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-having-configured-numeric-sources"></a>
 - [Configured numeric sources inside Having](implementation/repetition-and-paths.md#cap-having-configured-numeric-sources)
 
+<a id="cap-having-date-range-components"></a>
+- [DateRange endpoint components inside Having](implementation/repetition-and-paths.md#cap-having-date-range-components)
+
 <a id="cap-having-scalar-projections"></a>
 - [Direct scalar numeric projections inside Having](implementation/repetition-and-paths.md#cap-having-scalar-projections)
 

@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.HavingFieldValueList
 import A12Kernel.Elaboration.Flat.FieldValueRead
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.NumericSource
+import A12Kernel.Elaboration.DateRangeBoundComponent
 import A12Kernel.Semantics.Correlation
 
 /-! # Static well-formedness of a resolved filter tree
@@ -73,7 +74,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
       | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
       | .fieldValueAsNumber _ _ => false
       | .field reference => model.admitsSingleGroupNumber group reference.field
-      | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
+      | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
       | .repetition reference => reference.source == .repeatable group.level
   -- The legacy one-group adapter admits only the leaves it was built for. The other
   -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
@@ -155,6 +156,9 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
           (model.lookupUniqueId field.id).toOption.any fun declaration =>
             declaration.toStringValueField? == some field && declaration.fieldValueReadRefusal?.isNone &&
               repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
+      | .dateRangeBoundPart origin field _ part => model.exposesDateRangeBoundPart field part &&
+          (model.lookupUniqueId field.id).toOption.any fun declaration =>
+            repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
       | .temporalPart origin field part => part.admittedBy field model.hasBaseYear &&
           (model.lookupUniqueId field.id).toOption.any fun declaration =>
             declaration.toTemporalField? == some field &&
@@ -223,6 +227,9 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
               declaration.repeatableScope.any reopenedLevels.contains
         | .field reference => reference.reachesReopenedLevel model reopenedLevels
         | .stringLength origin field | .stringRange origin field _ _ => origin == .inner &&
+            (model.lookupUniqueId field.id).toOption.any fun declaration =>
+              declaration.repeatableScope.any reopenedLevels.contains
+        | .dateRangeBoundPart origin field _ _ => origin == .inner &&
             (model.lookupUniqueId field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
         | .temporalPart origin field _ => origin == .inner &&

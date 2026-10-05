@@ -102,6 +102,7 @@ inductive HavingNumericAtom where
   | field (reference : HavingNumberRef)
   | stringLength (origin : HavingOrigin) (field : FlatStringField)
   | stringRange (origin : HavingOrigin) (source : FlatStringField) (start finish : Nat)
+  | dateRangeBoundPart (origin : HavingOrigin) (source : FlatDateRangeField) (bound : DateRangeBound) (part : DateNumericPart)
   | temporalPart (origin : HavingOrigin) (source : FlatTemporalField) (part : TemporalNumericPart)
   | repetition (reference : HavingRepetitionRef)
   deriving Repr, DecidableEq
@@ -109,11 +110,12 @@ inductive HavingNumericAtom where
 def HavingNumericAtom.origin? : HavingNumericAtom → Option HavingOrigin
   | .baseYear _ | .baseYearDatePart _ _ _ => none
   | .field reference => some reference.origin
-  | .fieldValueAsNumber origin _ | .stringLength origin _ | .stringRange origin _ _ _ | .temporalPart origin _ _ => some origin
+  | .dateRangeBoundPart origin _ _ _ | .fieldValueAsNumber origin _ | .stringLength origin _ | .stringRange origin _ _ _ | .temporalPart origin _ _ => some origin
   | .repetition reference => some reference.origin
 
 def HavingNumericAtom.fieldId? : HavingNumericAtom → Option FieldId
   | .baseYear _ | .baseYearDatePart _ _ _ => none
+  | .dateRangeBoundPart _ source _ _ => some source.id
   | .fieldValueAsNumber _ source => some source.fieldId
   | .field reference => some reference.field.id
   | .stringLength _ source | .stringRange _ source _ _ => some source.id
@@ -124,7 +126,7 @@ def HavingNumericAtom.summary : HavingNumericAtom → NumericScaleSummary
   | .baseYear _ | .baseYearDatePart _ _ _ => .field 0
   | .fieldValueAsNumber _ source => .field source.scale
   | .field reference => .field reference.field.info.scale
-  | .repetition _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => .field 0
+  | .dateRangeBoundPart _ _ _ _ | .repetition _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => .field 0
 
 /-- One correlated filter frame. Both candidate and captured rule environments are
     explicit full repetition contexts. -/
@@ -280,6 +282,8 @@ private def havingArithmetic : NumericOperand → Except Unit NumericArithmeticO
     repetition bindings remain unknown; checked addressed readers report them structurally. -/
 def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : CorrelationFrame) :
     HavingNumericAtom → Except Unit NumericArithmeticOutcome
+  | .dateRangeBoundPart origin source bound part =>
+      havingArithmetic ((observeCell .validation (context.read (frame.envAt origin) source.id)).asDateRangeBoundNumericOperand bound part)
   | .baseYear year => .ok (.value year .fixed)
   | .baseYearDatePart year source part => .ok (.value (baseYearDateSourceNumericPart year source part) .fixed)
   | .fieldValueAsNumber origin source =>
@@ -302,6 +306,9 @@ def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : Cor
 def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) :
     HavingNumericAtom → Except Error (Except Unit NumericArithmeticOutcome)
+  | .dateRangeBoundPart origin source bound part => do
+      let cell ← context.read (frame.envAt origin) source.id
+      pure (havingArithmetic ((observeCell .validation cell).asDateRangeBoundNumericOperand bound part))
   | .baseYear year => pure (.ok (.value year .fixed))
   | .baseYearDatePart year source part => pure (.ok (.value (baseYearDateSourceNumericPart year source part) .fixed))
   | .fieldValueAsNumber origin source => do
@@ -325,6 +332,8 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
 
 def HavingNumericAtom.readComputation (context : CorrelationContext) (frame : CorrelationFrame) :
     HavingNumericAtom → NumericComputationResult
+  | .dateRangeBoundPart origin source bound part =>
+      ((observeCell .computation (context.read (frame.envAt origin) source.id)).asDateRangeBoundNumericOperand bound part).toComputationResult
   | .baseYear year => .value year
   | .baseYearDatePart year source part => .value (baseYearDateSourceNumericPart year source part)
   | .fieldValueAsNumber origin source =>
@@ -346,6 +355,9 @@ def HavingNumericAtom.readComputation (context : CorrelationContext) (frame : Co
 
 def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) : HavingNumericAtom → Except Error NumericComputationResult
+  | .dateRangeBoundPart origin source bound part => do
+      let cell ← context.read (frame.envAt origin) source.id
+      pure (((observeCell .computation cell).asDateRangeBoundNumericOperand bound part).toComputationResult)
   | .baseYear year => pure (.value year)
   | .baseYearDatePart year source part => pure (.value (baseYearDateSourceNumericPart year source part))
   | .fieldValueAsNumber origin source => do

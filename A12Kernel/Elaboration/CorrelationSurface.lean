@@ -40,6 +40,7 @@ inductive SurfaceHavingNumericAtom where
   | field (reference : SurfaceHavingNumberRef)
   | stringLength (origin : HavingOrigin) (field : SurfaceFieldPath)
   | stringRange (origin : HavingOrigin) (field : SurfaceFieldPath) (start finish : Nat)
+  | dateRangeBoundPart (origin : HavingOrigin) (field : SurfaceFieldPath) (bound : DateRangeBound) (part : DateNumericPart)
   | temporalPart (origin : HavingOrigin) (field : SurfaceFieldPath) (part : TemporalNumericPart)
   | repetition (reference : SurfaceHavingRepetitionRef)
   deriving Repr, DecidableEq

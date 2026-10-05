@@ -177,6 +177,10 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
         | .field reference => do pure [← havingNumberReferencePointer source environment reference]
         | .stringLength origin field | .stringRange origin field _ _ => do
             pure [← havingStringReferencePointer source environment { origin, operand := .string field }]
+        | .dateRangeBoundPart origin field _ part => do
+            if !model.exposesDateRangeBoundPart field part then throw (.incoherentHavingField field.id)
+            let declaration ← (model.lookupUniqueId field.id).mapError (fun _ => .incoherentHavingField field.id)
+            pure [← havingFieldPointerFor source environment declaration origin]
         | .temporalPart origin field _ => do
             let declaration ← match model.lookupUniqueId field.id with
               | .ok declaration =>

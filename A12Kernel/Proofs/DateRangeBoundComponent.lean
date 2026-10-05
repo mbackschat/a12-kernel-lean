@@ -37,7 +37,20 @@ theorem resolveDateRangeBoundNumericOperand_factors
       (context.read source.id) = .ok observed) :
     context.resolveDateRangeBoundNumericOperand source bound part =
       part.fromDateRangeBoundObservation bound observed := by
-  simp [FlatContext.resolveDateRangeBoundNumericOperand, reached]
+  cases observedCell : observeCell .validation (context.read source.id) with
+  | value cellValue =>
+      cases cellValue <;> simp [CheckedDateRangeSource.observeRange, CheckedDateRangeSource.projectRange,
+        observedCell] at reached
+      subst observed
+      simp [FlatContext.resolveDateRangeBoundNumericOperand, observedCell,
+        CellObservation.asDateRangeBoundNumericOperand, DateNumericPart.fromDateRangeBoundObservation,
+        DateNumericPart.fromObservation, symmetricValidationNumericOperand]
+  | _ =>
+      simp [CheckedDateRangeSource.observeRange, CheckedDateRangeSource.projectRange, observedCell] at reached
+      subst observed
+      simp [FlatContext.resolveDateRangeBoundNumericOperand, observedCell,
+        CellObservation.asDateRangeBoundNumericOperand, DateNumericPart.fromDateRangeBoundObservation,
+        DateNumericPart.fromObservation, symmetricValidationNumericOperand]
 
 /-- A cell whose kind is not a DateRange at all stays formally unavailable. The static gate makes
 this unreachable, so it exists to keep a malformed checked document from acquiring a zero. -/
@@ -49,7 +62,7 @@ theorem resolveDateRangeBoundNumericOperand_wrongKind
     context.resolveDateRangeBoundNumericOperand source bound part =
       .unknown .malformed := by
   unfold FlatContext.resolveDateRangeBoundNumericOperand
-  rw [CheckedDateRangeSource.observeRange, observed]
+  rw [observed]
   cases value with
   | dateRange range => exact absurd rfl (notRange range)
   | _ => rfl
