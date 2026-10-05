@@ -19,6 +19,7 @@ inductive CheckedRowComputationOperation (model : FlatModel) where
   | booleanConstant (operation : CheckedRepeatableBooleanConstantComputation model)
   | fixedBooleanConstant (operation : CheckedBooleanConstantComputation model)
   | temporalExpression (operation : CheckedTemporalExpressionComputation model)
+  | dateRangeConstruction (operation : CheckedBoundDateRangeConstructionComputation model)
 
 namespace CheckedRowComputationOperation
 
@@ -28,6 +29,7 @@ def target : CheckedRowComputationOperation model → FieldId
   | .enumeration operation => operation.target.field
   | .booleanConstant operation => operation.checkedTarget.targetField
   | .fixedBooleanConstant operation => operation.target.id
+  | .dateRangeConstruction operation => operation.target.source.id
   | .temporalExpression operation => operation.target
 
 def scope : CheckedRowComputationOperation model → List RepeatableLevel
@@ -36,18 +38,21 @@ def scope : CheckedRowComputationOperation model → List RepeatableLevel
   | .enumeration operation => operation.target.declaration.repeatableScope
   | .booleanConstant operation => operation.checkedTarget.declaration.repeatableScope
   | .fixedBooleanConstant _ => []
+  | .dateRangeConstruction operation => operation.target.declaration.repeatableScope
   | .temporalExpression operation => operation.scope
 
 def family : CheckedRowComputationOperation model → DocumentTargetFamily
   | .stringExpression _ | .stringConstant _ => .string
   | .enumeration _ => .enumeration
   | .booleanConstant _ | .fixedBooleanConstant _ => .boolean
+  | .dateRangeConstruction _ => .dateRange
   | .temporalExpression operation => operation.family
 
 def referencesField : CheckedRowComputationOperation model → FieldId → Bool
   | .stringExpression operation, field => operation.expression.referencesField field
   | .stringConstant _, _ | .booleanConstant _, _ | .fixedBooleanConstant _, _ => false
   | .enumeration operation, field => operation.source.referencesField field
+  | .dateRangeConstruction operation, field => operation.referencesField field
   | .temporalExpression operation, field => operation.expression.referencesField field
 
 end CheckedRowComputationOperation
@@ -126,6 +131,7 @@ inductive RowComputationTableFault where
   | environment (cause : EnvBindingError)
   | guardBinding (cause : CheckedComputationConditionError)
   | targetPatternUnavailable (field : FieldId)
+  | dateRangeConstruction (cause : DateRangeConstructionComputationFault)
   | enumeration (cause : AddressedEnumerationComputationFault)
   | readBack (cause : DocumentComputationStepFault)
   deriving Repr, DecidableEq
@@ -159,6 +165,9 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
   | .temporalExpression operation =>
       let context := document.computationContextAt environment
       (operation.run (context.withWorld world)).mapError .readBack
+  | .dateRangeConstruction operation =>
+      let outcome ← (operation.evaluateWith (document.computationContextAt environment).read).mapError .dateRangeConstruction
+      pure (.dateRange outcome, ← (DocumentComputationReadBack.dateRange model operation.target.policy outcome).mapError .readBack)
   | .enumeration operation =>
       let result ← (operation.evaluateAtWithRead document.read environment).mapError .enumeration
       let outcome := result.result.asExactStringTargetOutcome

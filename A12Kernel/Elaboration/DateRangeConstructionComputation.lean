@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.DateRangeConstructionComparison
 import A12Kernel.Elaboration.DateRangeTargetPresentation
 import A12Kernel.Elaboration.TemporalComputationResult
@@ -150,5 +151,51 @@ def executeResult (operation : CheckedDateRangeConstructionComputation model)
     [(operation.target.source.id, result.outcome)])
 
 end CheckedDateRangeConstructionComputation
+
+inductive BoundDateRangeConstructionElabError where
+  | resolve (cause : ResolveError)
+  | placement (cause : AddressedRepeatableTargetElabError)
+  | construction (cause : DateRangeConstructionElabError)
+  | target (cause : DirectDateRangeElabError)
+  | profileMismatch
+  deriving Repr, DecidableEq
+
+/-- A constructor bound to a fixed or repeated target, preserving the existing endpoint and target profiles. -/
+structure CheckedBoundDateRangeConstructionComputation (model : FlatModel) where
+  private mk ::
+  construction : CheckedDateRangeConstruction model
+  target : CheckedDateRangeSource model
+  format : DateRangeConstructionTargetFormat
+  profileOwned : DateRangeConstructionTargetFormat.ofProfiles?
+    construction.start.format target.format = some format
+
+/-- Resolve authored endpoints at the lexical group and bind their reads at the target (spec/05, spec/09). -/
+def checkBoundDateRangeConstructionComputation (model : FlatModel) (group : GroupPath)
+    (targetField : FieldId) (start finish : SurfaceFieldPath) :
+    Except BoundDateRangeConstructionElabError (CheckedBoundDateRangeConstructionComputation model) := do
+  let declaration ← (model.lookupUniqueId targetField).mapError .resolve
+  if !GroupPath.isValid group then throw (.resolve (.invalidRuleGroup group))
+  if !declaration.repeatableScope.isEmpty then
+    let _ ← (checkAddressedRepeatableTarget model group targetField).mapError .placement
+  let start ← (model.resolveFieldDeclarationUnchecked group start).mapError .resolve
+  let finish ← (model.resolveFieldDeclarationUnchecked group finish).mapError .resolve
+  let construction ← (elaborateDateRangeConstructionIn model declaration.repeatableScope start.id finish.id).mapError .construction
+  let target ← (elaborateDateRangeSourceIn model declaration.repeatableScope targetField).mapError .target
+  match owned : DateRangeConstructionTargetFormat.ofProfiles? construction.start.format target.format with
+  | none => throw .profileMismatch
+  | some format => pure { construction, target, format, profileOwned := owned }
+
+namespace CheckedBoundDateRangeConstructionComputation
+
+def referencesField (operation : CheckedBoundDateRangeConstructionComputation model) (field : FieldId) : Bool :=
+  operation.construction.start.checked.target.id == field || operation.construction.finish.checked.target.id == field
+
+/-- Computation observes endpoint poison before empty suppression and renders through the target's own profile. -/
+def evaluateWith (operation : CheckedBoundDateRangeConstructionComputation model)
+    (read : FieldId → CheckedCell) : Except DateRangeConstructionComputationFault DateRangeTargetOutcome := do
+  let observation ← (operation.construction.evaluateWith .computation (fun field => pure (read field))).mapError .construction
+  (operation.format.evaluateComputationResult observation.asComputationResult).mapError .target
+
+end CheckedBoundDateRangeConstructionComputation
 
 end A12Kernel

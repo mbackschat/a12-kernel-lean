@@ -61,7 +61,9 @@ where
 /-- Temporal target profiles select expression projection; other kinds retain their established
 carrier choice. FirstFilledValue and bare Date literals keep their entity-stream and year-presence gates. -/
 def isRowAlternativeOperation (target : FlatFieldDecl) (expression : Expr) : Bool :=
-  if target.temporalTargetPolicy.isSome then
+  if target.policy.kind == .dateRange then
+    match expression with | .call "DateRange" [_, _] none none => true | _ => false
+  else if target.temporalTargetPolicy.isSome then
     match expression with
     | .call "FirstFilledValue" _ _ _ => false
     | .string text => (authoredDateLiteral? text).isNone
@@ -76,6 +78,13 @@ def isRowAlternativeOperation (target : FlatFieldDecl) (expression : Expr) : Boo
 /-- Retain each admitted operation certificate before certifying row-local selection. -/
 def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (expression : Expr) : Lowering (CheckedRowComputationOperation model) := do
+  if target.policy.kind == .dateRange then
+    let .call "DateRange" [.mk start none none, .mk finish none none] none none := expression
+      | refuse "DateRange" "constructor operands"
+    let some start := start.fieldEntity? | refuse "DateRange" "start operand"
+    let some finish := finish.fieldEntity? | refuse "DateRange" "finish operand"
+    return .dateRangeConstruction (← elaborated "DateRange"
+      (checkBoundDateRangeConstructionComputation model group target.id start finish))
   if target.temporalTargetPolicy.isSome then
     let surface ← lowerScalarTemporalExpression model group expression
     let checked ← elaborated "TemporalExpression"

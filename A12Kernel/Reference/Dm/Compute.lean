@@ -331,7 +331,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
       | none => pure step
       | some guard => (step.guard? guard).getDM (refuse "DocumentStep" "guard admission")
     pure (target, .document step)
-  if (row || target.policy.kind == .boolean || target.policy.kind == .confirm ||
+  if (row || target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .dateRange ||
       (target.temporalTargetPolicy.isSome && operations.length > 1)) &&
       operations.all (isRowAlternativeOperation target) then
     let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do

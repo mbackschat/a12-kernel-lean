@@ -350,11 +350,12 @@ end DateRangeEndpointFormat
 namespace CheckedDateRangeConstruction
 
 private def evaluateEndpoint (source : CheckedDateRangeEndpoint model)
-    (bound : DateRangeBound) (phase : Phase) (input : CheckedDocument model) :
+    (bound : DateRangeBound) (phase : Phase)
+    (read : FieldId → Except DateRangeConstructionFault CheckedCell) :
     Except DateRangeConstructionFault
       (CellObservation DateRangeConstructionEndpointValue) := do
   let field := source.checked.target.id
-  let cell ← input.read { field, path := [] } |>.mapError .document
+  let cell ← read field
   source.format.evaluateObservation source.profile field bound
     (observeCell phase cell)
 
@@ -374,13 +375,20 @@ def observeAt (construction : CheckedDateRangeConstruction model)
   { start := observe construction.start .start startCell
     finish := observe construction.finish .finish finishCell }
 
+/-- Fixed and bound consumers share phase-sensitive, start-before-finish completion (spec/05). -/
+def evaluateWith (construction : CheckedDateRangeConstruction model) (phase : Phase)
+    (read : FieldId → Except DateRangeConstructionFault CheckedCell) :
+    Except DateRangeConstructionFault DateRangeConstructionObservation := do
+  let start ← evaluateEndpoint construction.start .start phase read
+  let finish ← evaluateEndpoint construction.finish .finish phase read
+  pure { start, finish }
+
 /-- Read each certified endpoint once from one immutable checked document. -/
 def evaluate (construction : CheckedDateRangeConstruction model)
     (phase : Phase) (input : CheckedDocument model) :
-    Except DateRangeConstructionFault DateRangeConstructionObservation := do
-  let start ← evaluateEndpoint construction.start .start phase input
-  let finish ← evaluateEndpoint construction.finish .finish phase input
-  pure { start, finish }
+    Except DateRangeConstructionFault DateRangeConstructionObservation :=
+  construction.evaluateWith phase fun field =>
+    (input.read { field, path := [] }).mapError .document
 
 end CheckedDateRangeConstruction
 
