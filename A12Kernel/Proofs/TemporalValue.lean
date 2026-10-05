@@ -17,7 +17,9 @@ theorem flatTemporalDate_projects_instant_and_component
     context.resolveTemporalComparisonOperand field = .value date.instant true ∧
       context.resolveDateNumericOperand field part =
         .value (part.extract date.parts) .fixed := by
-  simp [FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy,
+  simp only [FlatContext.observeValidationAt, FlatContext.observeAt] at observed
+  simp [FlatContext.observeValidationAt, FlatContext.observeAt,
+    FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy,
     FlatTemporalField.holdsValue, FlatContext.resolveDateNumericOperand, FlatContext.resolveTemporalNumericOperandBy, observed, family,
     TemporalValue.kind, TemporalValue.instant, TemporalValue.dateParts?]
 
@@ -58,7 +60,9 @@ theorem flatTemporalDateTime_projects_all_consumers
         .value (datePart.extract date) .fixed ∧
       context.resolveTimeNumericOperand field timePart =
         .value (timePart.extract time) .fixed := by
-  simp [FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy,
+  simp only [FlatContext.observeValidationAt, FlatContext.observeAt] at observed
+  simp [FlatContext.observeValidationAt, FlatContext.observeAt,
+    FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy,
     FlatTemporalField.holdsValue, FlatContext.resolveDateNumericOperand, FlatContext.resolveTemporalNumericOperandBy,
     FlatContext.resolveTimeNumericOperand, observed, family,
     TemporalValue.kind, TemporalValue.instant, TemporalValue.dateParts?,

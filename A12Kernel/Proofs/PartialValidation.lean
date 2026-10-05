@@ -91,8 +91,7 @@ private theorem temporalOperand_resolve_agreesOn
       have readEq := agreement field.id (by
         simpa [FlatTemporalOperand.fields, FlatField.id] using relevant)
       simp_all [FlatTemporalOperand.resolve,
-        FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy,
-        FlatContext.observeValidationAt]
+        FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy]
   | literalValue instant => rfl
   | todayValue zoneId =>
       simp [FlatTemporalOperand.resolve, worldAgreement]
@@ -433,6 +432,15 @@ theorem partialSelected_agreesOn
                 worldAgreement agreement bothRelevant.left,
               temporalOperand_resolve_agreesOn rightOperand left right isRelevant
                 worldAgreement agreement bothRelevant.right]
+        | dateRange op leftField rightField =>
+            have leftEq := agreement leftField.id (by
+              simp_all [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatField.id])
+            have rightEq := agreement rightField.id (by
+              simp_all [FlatComparison.allRelevant, FlatComparison.fieldIds,
+                FlatComparison.fields, FlatField.id])
+            simp_all [FlatComparison.eval, FlatContext.resolveDateRangeComparisonOperandAt,
+              FlatContext.observeAt]
         | time op leftField rightField =>
             have leftEq := agreement leftField.id (by
               simp_all [FlatComparison.allRelevant, FlatComparison.fieldIds,
@@ -441,7 +449,7 @@ theorem partialSelected_agreesOn
               simp_all [FlatComparison.allRelevant, FlatComparison.fieldIds,
                 FlatComparison.fields, FlatField.id])
             simp_all [FlatComparison.eval, FlatContext.resolveTimeComparisonOperand,
-              FlatContext.resolveTemporalFieldBy, FlatContext.observeValidationAt]
+              FlatContext.resolveTemporalFieldBy]
       · rfl
     | tokenValueList quantifier operands values form =>
       simp only [FlatCondition.evalSelected, ConditionTree.evalVerdict,

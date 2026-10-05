@@ -397,21 +397,8 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
       let left ← (model.resolveFieldValueRead declaringGroup leftReference writtenGroup).mapError .resolve
       let right ← (model.resolveFieldValueRead declaringGroup rightReference writtenGroup).mapError .resolve
       match left.policy.kind, right.policy.kind with
-      | .temporal leftKind leftComponents, .temporal rightKind rightComponents =>
-          let comparison := op.toTemporal
-          let leftField : FlatTemporalField :=
-            { id := left.id, kind := leftKind, components := leftComponents }
-          let rightField : FlatTemporalField :=
-            { id := right.id, kind := rightKind, components := rightComponents }
-          if comparison.admitsFormats model.hasBaseYear leftComponents rightComponents then
-            -- The format gate admits a date-free side only beside another, and that pair is compared
-            -- by its clocks.
-            if !leftComponents.hasDate && !rightComponents.hasDate then
-              pure (.compare (.time comparison leftField rightField))
-            else
-              pure (.compare (.temporal comparison (.fieldValue leftField) (.fieldValue rightField)))
-          else
-            throw (.temporalFormatsIncompatible left.path right.path)
+      | .temporal _ _, .temporal _ _ =>
+          .compare <$> elaborateTemporalFieldPair model.hasBaseYear op.toTemporal left right
       | leftKind, rightKind =>
           match left.toTextFieldComparison?, right.toTextFieldComparison? with
           | some (leftOperand, leftProfile), some (rightOperand, rightProfile) =>

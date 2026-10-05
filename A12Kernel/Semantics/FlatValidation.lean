@@ -4,6 +4,7 @@ import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.String
 import A12Kernel.Semantics.DateTimeComparison
+import A12Kernel.Semantics.DateRangeComparison
 import A12Kernel.Semantics.TimeComparison
 import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.DateNumeric
@@ -156,6 +157,7 @@ inductive FlatComparison where
   | enumeration (op : EqualityOp) (operand : FlatEnumerationOperand)
       (expected : String)
   | textFields (op : EqualityOp) (left right : FlatTextFieldOperand)
+  | dateRange (op : EqualityOp) (left right : FlatDateRangeField)
   | temporal (op : TemporalComparisonOp)
       (left right : FlatTemporalOperand)
   /-- Two date-free fields, compared by their clocks alone: the Kernel's comparison observes only the
@@ -177,6 +179,7 @@ def fields : FlatComparison → List FlatField
   | .stringLength _ field _ => [.string field]
   | .enumeration _ operand _ => [.enumeration operand.field]
   | .textFields _ left right => [left.field, right.field]
+  | .dateRange _ left right => [.dateRange left, .dateRange right]
   | .temporal _ left right => left.fields ++ right.fields
   | .time _ left right => [.temporal left, .temporal right]
 
@@ -375,8 +378,8 @@ def FlatTemporalField.holdsValue (field : FlatTemporalField) (value : TemporalVa
 
 /-- Resolve one checked temporal field to one projection of its value for a comparison. -/
 def FlatContext.resolveTemporalFieldBy (context : FlatContext) (field : FlatTemporalField)
-    (project : TemporalValue → Option α) : SimpleComparisonOperand α :=
-  match context.observeValidationAt field.id with
+    (project : TemporalValue → Option α) (phase : Phase := .validation) : SimpleComparisonOperand α :=
+  match context.observeAt phase field.id with
   | .empty => .notEvaluated
   | .value (.temporal value) =>
       match field.holdsValue value, project value with
@@ -613,6 +616,16 @@ def FlatBooleanOperand.resolveAt (operand : FlatBooleanOperand) (phase : Phase)
   | .boolean field => context.resolveBooleanComparisonOperandAt phase field
   | .confirm field => context.resolveConfirmComparisonOperandAt phase field
 
+/-- Stored ranges use their exact-or-yearless identity domain (spec/05); phase observation owns
+empty and unavailable values, just as for other typed scalar comparisons. -/
+def FlatContext.resolveDateRangeComparisonOperandAt (context : FlatContext)
+    (phase : Phase) (field : FlatDateRangeField) : SimpleComparisonOperand DateRangeCellValue :=
+  match context.observeAt phase field.id with
+  | .empty => .notEvaluated
+  | .value (.dateRange value) => .value value true
+  | .value _ => .unknown .malformed
+  | .unknown cause | .poison cause => .unknown cause
+
 def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : Verdict :=
   match comparison with
   | .number op field expected =>
@@ -632,6 +645,9 @@ def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : 
         (context.observeValidationAt operand.field.id) expected
   | .textFields op left right =>
       op.evalSymmetric (· == ·) (left.resolve context) (right.resolve context)
+  | .dateRange op left right =>
+      op.evalDateRangeCellValues (context.resolveDateRangeComparisonOperandAt .validation left)
+        (context.resolveDateRangeComparisonOperandAt .validation right)
   | .temporal op left right =>
       op.evalInstant (left.resolve context) (right.resolve context)
   | .time op left right =>

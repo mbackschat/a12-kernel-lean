@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.Flat.Model
+import A12Kernel.Elaboration.DateRangeInput
 
 /-! # Checked flat-condition core admission -/
 
@@ -141,6 +142,16 @@ def FlatModel.admitsTextComparisonIn (model : FlatModel) (scope : List Repeatabl
       | _, _ => false
   | _ => false
 
+/-- Reuse the stored-range input certificate and component-set gate for each independently scoped operand. -/
+def FlatModel.dateRangeComparisonProfilesMatch (model : FlatModel)
+    (left right : FlatDateRangeField) : Bool :=
+  ((do
+    let left ← (model.lookupUniqueId left.id).toOption
+    let right ← (model.lookupUniqueId right.id).toOption
+    let left ← (certifyDateRangeInputField left).toOption
+    let right ← (certifyDateRangeInputField right).toOption
+    pure (left.format.components == right.format.components)) : Option Bool).getD false
+
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
   match comparison with
   | .booleanFields op left right =>
@@ -148,6 +159,8 @@ def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison)
         | .boolean _, .boolean _ => true
         | .confirm _, .confirm _ => op == .notEqual
         | _, _ => false) && comparison.fields.all model.admitsField
+  | .dateRange _ left right =>
+      model.dateRangeComparisonProfilesMatch left right && comparison.fields.all model.admitsField
   | .stringLength _ field _ => model.admitsStringValueField field
   | .string .. | .textFields .. | .enumeration .. => model.admitsTextComparisonIn [] comparison
   | _ => !comparison.fields.isEmpty && comparison.fields.all model.admitsField

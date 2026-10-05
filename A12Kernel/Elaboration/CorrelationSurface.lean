@@ -144,6 +144,7 @@ inductive CorrelationElabError where
   /-- A marked reference crossing a level the reading rule does not bind, with the level the walk
       refuses. -/
   | outerLevelUnbound (path : List String) (unbound : UnboundOperandLevel)
+  | dateRangeComponentsMismatch (leftPath rightPath : List String)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -179,6 +180,7 @@ and [field-reference checkpoint](../../docs/sources/having-filter-probes.md#src-
 The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
+  | .dateRangeComponentsMismatch _ _ => some .invalidCompareToDateRange
   | .text (.enumerationOperand _ (.invalidLiteral _)) =>
       some .invalidStringConstantForEnumComparison
   | .text _ => none

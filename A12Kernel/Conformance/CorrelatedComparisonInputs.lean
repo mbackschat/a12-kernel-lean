@@ -66,4 +66,48 @@ example : CorrelatedHaving.wellFormedForEnvironments (.leaf (.simpleComparison .
     (.booleanFields .equal (.boolean { id := 1 }) (.boolean { id := 1 }))))
       model [10] [10] = false := by native_decide
 
+private def clockComponents : TemporalComponents := {
+  year := false, month := false, day := false, hour := true, minute := true, second := true }
+private def clockField : FlatTemporalField := { id := 1, kind := .dateTime, components := clockComponents }
+private def clockCell (instant : Int) : CheckedCell := {
+  rawPresent := true, findings := []
+  parsed := some (.temporal (.time { epochMillis := instant }
+    ((TimeOfDay.ofHms? 12 30 0).get (by native_decide)))) }
+private def clockPair : FlatComparison := .time .equal clockField clockField
+
+example : clockPair.foldSimpleReads .validation (fun _ => .ok (clockCell 0))
+    (fun _ => .ok (clockCell 86400000)) validation = some (.ok (.fired .value)) ∧
+    clockPair.foldSimpleReads .computation (fun _ => .ok emptyRequired)
+    (fun _ => .ok (clockCell 0)) evalComputationComparisonExcept =
+      some (Except.ok (ε := String) .notTrue) ∧
+    clockPair.foldSimpleReads .validation (fun _ => .ok emptyRequired)
+    (fun _ => .ok (clockCell 0)) validation = some (.ok .unknown) := by native_decide
+
+example : clockPair.foldSimpleReads .computation (fun _ => .ok invalid)
+    (fun _ => .error "missing captured date") evalComputationComparisonExcept =
+      some (Except.ok (ε := String) (.poison .malformed)) := by native_decide
+
+private def rangeCell (finish : Nat) : CheckedCell := {
+  rawPresent := true, findings := [], parsed := some (.dateRange (.yearlessMonth 1 finish)) }
+private def rangePair : FlatComparison := .dateRange .equal { id := 1 } { id := 1 }
+
+example : rangePair.foldSimpleReads .validation (fun _ => .ok (rangeCell 2))
+    (fun _ => .ok (rangeCell 3)) validation = some (.ok .notFired) ∧
+    rangePair.foldSimpleReads .computation (fun _ => .ok invalid)
+    (fun _ => .error "missing captured range") evalComputationComparisonExcept =
+      some (Except.ok (ε := String) (.poison .malformed)) ∧
+    rangePair.foldSimpleReads .validation (fun _ => .ok invalid)
+    (fun _ => .error "missing captured range") validation = some (.error "missing captured range") := by native_decide
+
+private def partialModel : FlatModel := { model with fields := [{
+  id := 1, groupPath := ["Form", "Rows"], name := "Tag", repeatableScope := [10]
+  policy := { kind := .temporal .date TemporalComponents.fullDate }
+  temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .dayOptional } }] }
+private def dateField : FlatTemporalField := { id := 1, kind := .date, components := TemporalComponents.fullDate }
+
+example : partialModel.admitsHavingSimpleComparison [10] [10]
+    (.temporal .equal (.fieldValue dateField) (.fieldValue dateField)) = false ∧
+    (CorrelationElabError.dateRangeComponentsMismatch ["Left"] ["Right"]).diagnostic? =
+      some .invalidCompareToDateRange := by native_decide
+
 end A12Kernel.Conformance.CorrelatedComparisonInputs

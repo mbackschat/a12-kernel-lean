@@ -338,13 +338,13 @@ private def correlationElaborationResult : CorrelationElabError →
         (Json.mkObj [("path", toJson path), ("expected", toJson "number")]))
   -- The public filter vocabulary carries `compareNumbers`, `compareRepetitions`, and `and` only
   -- (`CorrelatedHavingFormTag.all`), so no request can build a String leaf, a Number-literal leaf, a
-  -- presence leaf, or a disjunction, and none of these arms is reachable on this route. Reaching one means the checked
+  -- presence leaf, DateRange pair, or a disjunction, and none of these arms is reachable on this route. Reaching one means the checked
   -- core and the wire vocabulary disagree, which is what `incoherentCore` reports; the public
   -- diagnostic vocabulary is deliberately left unchanged rather than widened for unreachable arms.
   | .text _ | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute | .literalScaleMismatch _ _ _
   | .constantNumericComparison | .numericExpressionUnsupported
-  | .numericOperandFieldNotNumber _ _ => throw .incoherentCore
+  | .numericOperandFieldNotNumber _ _ | .dateRangeComponentsMismatch _ _ => throw .incoherentCore
   -- The constant leaf splits from the placement refusal for the Kernel projection only; the public
   -- code stays the one this input always had.
   | .fieldOutsideGroup origin fieldPath expectedGroup

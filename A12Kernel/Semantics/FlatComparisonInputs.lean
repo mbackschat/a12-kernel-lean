@@ -7,6 +7,7 @@ namespace A12Kernel
 def FlatComparison.inputFields : FlatComparison → List FlatField × List FlatField
   | .booleanFields _ left right => ([left.field], [right.field])
   | .textFields _ left right => ([left.field], [right.field])
+  | .dateRange _ left right => ([.dateRange left], [.dateRange right])
   | .temporal _ left right => (left.fields, right.fields)
   | .time _ left right => ([.temporal left], [.temporal right])
   | comparison => (comparison.fields, [])
@@ -29,6 +30,14 @@ def FlatComparison.foldSimpleReads {Error Result : Type}
   let boolean (read : FieldId → Except Error CheckedCell) (operand : FlatBooleanOperand) := do
     let cell ← read operand.field.id
     pure (operand.resolveAt phase { read := fun _ => cell })
+  let temporal {α : Type} (read : FieldId → Except Error CheckedCell)
+      (field : FlatTemporalField) (project : TemporalValue → Option α) :
+      Except Error (SimpleComparisonOperand α) := do
+    let cell ← read field.id
+    pure (({ read := fun _ => cell } : FlatContext).resolveTemporalFieldBy field project phase)
+  let range (read : FieldId → Except Error CheckedCell) (field : FlatDateRangeField) := do
+    let cell ← read field.id
+    pure (({ read := fun _ => cell } : FlatContext).resolveDateRangeComparisonOperandAt phase field)
   let compare {α : Type} [BEq α] (op : EqualityOp) := consume (α := α) (fun a b => op.holds (a == b))
   match comparison with
   | .boolean op field expected => some (compare op (boolean readLeft (.boolean field)) (fun _ => pure (.value expected true)))
@@ -39,7 +48,14 @@ def FlatComparison.foldSimpleReads {Error Result : Type}
   | .enumeration op operand expected => some (compare op (text readLeft (.enumeration operand))
       (fun _ => pure (.value expected true)))
   | .textFields op left right => some (compare op (text readLeft left) (fun _ => text readRight right))
-  | .number _ _ _ | .stringLength _ _ _ | .temporal _ _ _ | .time _ _ _ => none
+  | .dateRange op left right => some (consume (fun a b => op.holds (a.sameIdentity b))
+      (range readLeft left) (fun _ => range readRight right))
+  | .temporal op (.fieldValue left) (.fieldValue right) => some (consume op.holdsInstant
+      (temporal readLeft left (fun value => some value.instant))
+      (fun _ => temporal readRight right (fun value => some value.instant)))
+  | .time op left right => some (consume op.holdsTime
+      (temporal readLeft left TemporalValue.time?) (fun _ => temporal readRight right TemporalValue.time?))
+  | .number _ _ _ | .stringLength _ _ _ | .temporal _ _ _ => none
 
 /-- Validation reaches both addressed operands before projecting formal invalidity to UNKNOWN. -/
 def FlatComparison.evalSimpleValidationReads (comparison : FlatComparison)

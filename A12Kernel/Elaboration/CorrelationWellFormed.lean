@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.Flat.FieldValueRead
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Semantics.Correlation
 
@@ -105,6 +106,13 @@ private def FlatModel.admitsHavingStringInEnvironment (model : FlatModel)
     | .enumeration operand => FlatComparison.enumeration op operand expected
   model.admitsTextComparisonIn (reference.origin.availableLevels candidateLevels outerLevels) comparison
 
+private def FlatModel.admitsComparisonInputsIn (model : FlatModel)
+    (comparison : FlatComparison) (leftScope rightScope : List RepeatableLevel) : Bool :=
+  [(leftScope, comparison.inputFields.1), (rightScope, comparison.inputFields.2)].all fun (scope, fields) =>
+    fields.all fun field => (model.lookupUniqueId field.id).toOption.any fun declaration =>
+      field.matchesDecl declaration && declaration.fieldValueReadRefusal?.isNone &&
+        repeatableScopeAvailable declaration.repeatableScope scope
+
 /-- Each side is checked in its own environment; comparability and Boolean/Confirm restrictions retain their ordinary rules. -/
 def FlatModel.admitsHavingSimpleComparison (model : FlatModel)
     (leftScope rightScope : List RepeatableLevel) : FlatComparison → Bool
@@ -120,9 +128,18 @@ def FlatModel.admitsHavingSimpleComparison (model : FlatModel)
           | .confirm _, .confirm _ => op == .notEqual
           | _, _ => false
         | _ => true
-      shape && [(leftScope, comparison.inputFields.1), (rightScope, comparison.inputFields.2)].all fun (scope, fields) =>
-        fields.all fun field => (model.lookupUniqueId field.id).toOption.any fun declaration =>
-          field.matchesDecl declaration && repeatableScopeAvailable declaration.repeatableScope scope
+      shape && model.admitsComparisonInputsIn comparison leftScope rightScope
+  | comparison@(.dateRange _ left right) =>
+      model.dateRangeComparisonProfilesMatch left right &&
+        model.admitsComparisonInputsIn comparison leftScope rightScope
+  | comparison@(.temporal op (.fieldValue left) (.fieldValue right)) =>
+      left.components.hasDate && right.components.hasDate &&
+        op.admitsFormats model.hasBaseYear left.components right.components &&
+        model.admitsComparisonInputsIn comparison leftScope rightScope
+  | comparison@(.time op left right) =>
+      !left.components.hasDate && !right.components.hasDate &&
+        op.admitsFormats model.hasBaseYear left.components right.components &&
+        model.admitsComparisonInputsIn comparison leftScope rightScope
   | _ => false
 
 def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)

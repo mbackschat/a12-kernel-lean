@@ -406,10 +406,21 @@ private def FlatModel.resolveHavingFieldsInEnvironment (model : FlatModel)
   else
     let leftDecl ← model.resolveHavingFieldValueRead declaringGroup outerLevels left.origin left.field left.projectionRef
     let rightDecl ← model.resolveHavingFieldValueRead declaringGroup outerLevels right.origin right.field right.projectionRef
+    if left.projectionRef == .stored && right.projectionRef == .stored then
+      match leftDecl.policy.kind, rightDecl.policy.kind with
+      | .temporal _ _, .temporal _ _ =>
+          return some (← (elaborateTemporalFieldPair model.hasBaseYear op.toTemporal leftDecl rightDecl).mapError .text)
+      | _, _ => pure ()
     let some equality := op.toEquality? |
       throw (.orderingFieldNotNumber leftDecl.path leftDecl.policy.kind.surfaceKind rightDecl.policy.kind.surfaceKind)
     if left.projectionRef == .stored && right.projectionRef == .stored then
       match leftDecl.policy.kind, rightDecl.policy.kind with
+      | .dateRange, .dateRange =>
+          let some leftProfile := (certifyDateRangeInputField leftDecl).toOption | throw .incoherentCore
+          let some rightProfile := (certifyDateRangeInputField rightDecl).toOption | throw .incoherentCore
+          if leftProfile.format.components != rightProfile.format.components then
+            throw (.dateRangeComponentsMismatch leftDecl.path rightDecl.path)
+          return some (.dateRange equality { id := leftDecl.id } { id := rightDecl.id })
       | .boolean, .boolean => return some (.booleanFields equality
           (.boolean { id := leftDecl.id }) (.boolean { id := rightDecl.id }))
       | .confirm, .confirm =>

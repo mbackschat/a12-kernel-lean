@@ -447,6 +447,9 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
       rcases member with rfl | rfl
       · exact directComparableProfile_admitsField model left _ leftEq
       · exact directComparableProfile_admitsField model right _ rightEq
+  | dateRange op left right =>
+      simp [FlatModel.admitsComparison, List.all_eq_true] at admitted
+      exact admitted.2 field member
   | temporal op left right =>
       simp [FlatModel.admitsComparison, List.all_eq_true] at admitted
       exact admitted.2 field member

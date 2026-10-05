@@ -52,4 +52,18 @@ def BaseYearRangeEndpoint.surfacePath : BaseYearRangeEndpoint → List String
   | .start => ["<StartOfDateRange(BaseYear)>"]
   | .finish => ["<EndOfDateRange(BaseYear)>"]
 
+/-- Direct temporal comparisons use the declared formats to select clock or instant identity. -/
+def elaborateTemporalFieldPair (hasBaseYear : Bool) (op : TemporalComparisonOp)
+    (left right : FlatFieldDecl) : Except ElabError FlatComparison := do
+  let some leftField := left.toTemporalField? |
+    throw (.temporalOperandKindMismatch left.path right.path left.policy.kind.surfaceKind right.policy.kind.surfaceKind)
+  let some rightField := right.toTemporalField? |
+    throw (.temporalOperandKindMismatch left.path right.path left.policy.kind.surfaceKind right.policy.kind.surfaceKind)
+  if !op.admitsFormats hasBaseYear leftField.components rightField.components then
+    throw (.temporalFormatsIncompatible left.path right.path)
+  if !leftField.components.hasDate && !rightField.components.hasDate then
+    pure (.time op leftField rightField)
+  else
+    pure (.temporal op (.fieldValue leftField) (.fieldValue rightField))
+
 end A12Kernel
