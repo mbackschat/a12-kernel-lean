@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.FlatComparisonInputs
 import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.Iteration
 import A12Kernel.Semantics.NumericExpression
@@ -151,6 +152,7 @@ def CapturedSingleGroupContext.frame (context : CapturedSingleGroupContext)
 /-- Closed filter-only leaves. An outer reference cannot escape into an ordinary rule expression through this type; connective structure comes from the shared `ConditionTree`. -/
 inductive CorrelatedHavingLeaf where
   | numeric (comparison : NumericComparisonOf HavingNumericAtom)
+  | simpleComparison (leftOrigin rightOrigin : HavingOrigin) (comparison : FlatComparison)
   /-- A String field against a literal. The operator is an `EqualityOp` rather than the wider
       comparison type because the kernel refuses a String field in a numeric ordering comparison,
       so the exclusion is carried by this type instead of by a runtime check. -/
@@ -213,6 +215,7 @@ def presence (polarity : HavingPresencePolarity)
 def fieldIds : CorrelatedHaving → List FieldId
   | .leaf (.numeric comparison) =>
       ((comparison.left.atoms ++ comparison.right.atoms).filterMap (·.fieldId?)).eraseDups
+  | .leaf (.simpleComparison _ _ comparison) => comparison.fields.map (·.id) |>.eraseDups
   | .leaf (.compareStringLiteral _ reference _) => [reference.field.id]
   | .leaf (.presence _ reference) => [reference.field]
   | .and left right | .or left right =>
@@ -228,6 +231,9 @@ def markedFieldIds : CorrelatedHaving → List FieldId
   | .leaf (.numeric comparison) =>
       ((comparison.left.atoms ++ comparison.right.atoms).filter (·.origin == .outer)
         |>.filterMap (·.fieldId?)).eraseDups
+  | .leaf (.simpleComparison left right comparison) =>
+      ((if left == .outer then comparison.inputFields.1 else []) ++
+        (if right == .outer then comparison.inputFields.2 else [])).map (·.id) |>.eraseDups
   | .leaf (.compareStringLiteral _ reference _) =>
       if reference.origin == .outer then [reference.field.id] else []
   | .leaf (.presence _ reference) =>
@@ -251,12 +257,18 @@ private def HavingOrigin.isOuter : HavingOrigin → Bool
 private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
       comparison.left.anyAtom (·.origin.isInner) || comparison.right.anyAtom (·.origin.isInner)
+  | .simpleComparison left right comparison =>
+      (left.isInner && !comparison.inputFields.1.isEmpty) ||
+        (right.isInner && !comparison.inputFields.2.isEmpty)
   | .compareStringLiteral _ reference _ => reference.origin.isInner
   | .presence _ reference => reference.origin.isInner
 
 private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
       comparison.left.anyAtom (·.origin.isOuter) || comparison.right.anyAtom (·.origin.isOuter)
+  | .simpleComparison left right comparison =>
+      (left.isOuter && !comparison.inputFields.1.isEmpty) ||
+        (right.isOuter && !comparison.inputFields.2.isEmpty)
   | .compareStringLiteral _ reference _ => reference.origin.isOuter
   | .presence _ reference => reference.origin.isOuter
 
@@ -462,6 +474,12 @@ def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
   | .numeric comparison =>
       CorrelatedHavingLeaf.verdictTruth
         (comparison.evalWith (HavingNumericAtom.readValidation context frame))
+  | .simpleComparison left right comparison =>
+      match comparison.evalSimpleValidationReads
+          (fun field => Except.ok (ε := Empty) (context.read (frame.envAt left) field))
+          (fun field => Except.ok (ε := Empty) (context.read (frame.envAt right) field)) with
+      | .ok verdict => CorrelatedHavingLeaf.verdictTruth verdict
+      | .error impossible => nomatch impossible
   | .compareStringLiteral op reference expected =>
       CorrelatedHavingLeaf.verdictTruth
         (reference.compareResolved (reference.resolveInAt .validation context frame) op expected)
@@ -484,6 +502,9 @@ def CorrelatedHavingLeaf.evalTruthInResolving
       pure (CorrelatedHavingLeaf.verdictTruth
         (({ comparison with left, right } :
           NumericComparisonOf (Except Unit NumericArithmeticOutcome)).evalWith id))
+  | .simpleComparison left right comparison => do
+      pure (CorrelatedHavingLeaf.verdictTruth (← comparison.evalSimpleValidationReads
+        (context.read (frame.envAt left)) (context.read (frame.envAt right))))
   | .compareStringLiteral op reference expected => do
       pure (CorrelatedHavingLeaf.verdictTruth
         (reference.compareResolved (← reference.resolveInAtResolving .validation context frame)
@@ -507,6 +528,12 @@ def CorrelatedHavingLeaf.evalComputationIn (context : CorrelationContext)
   | .numeric comparison =>
       match comparison.evalComputationWith
           (fun atom => Except.ok (ε := Empty) (atom.readComputation context frame)) with
+      | .ok result => result
+      | .error impossible => nomatch impossible
+  | .simpleComparison left right comparison =>
+      match comparison.evalSimpleComputationReads
+          (fun field => Except.ok (ε := Empty) (context.read (frame.envAt left) field))
+          (fun field => Except.ok (ε := Empty) (context.read (frame.envAt right) field)) with
       | .ok result => result
       | .error impossible => nomatch impossible
   | .compareStringLiteral op reference expected =>
@@ -539,6 +566,9 @@ def CorrelatedHavingLeaf.evalComputationInResolving
       Except Error ComputationConditionResult
   | .numeric comparison =>
       comparison.evalComputationWith (HavingNumericAtom.readComputationResolving context frame)
+  | .simpleComparison left right comparison =>
+      comparison.evalSimpleComputationReads
+        (context.read (frame.envAt left)) (context.read (frame.envAt right))
   | .compareStringLiteral op reference expected => do
       match ← reference.resolveInAtResolving .computation context frame with
       | .unknown cause => pure (.poison cause)
@@ -684,6 +714,11 @@ def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
         comparison.right.lowerForEvaluation.evalAdmittedValidation?
           (HavingNumericAtom.readValidation context frame) = some right ∧
         comparison.op.evalArithmeticWith left right = .fired messagePolarity
+  | .simpleComparison left right comparison =>
+      ∃ polarity, comparison.evalSimpleValidationReads
+        (fun field => Except.ok (ε := Empty) (context.read (frame.envAt left) field))
+        (fun field => Except.ok (ε := Empty) (context.read (frame.envAt right) field)) =
+          .ok (.fired polarity)
   | .compareStringLiteral op reference expected =>
       ∃ messagePolarity,
         reference.compareResolved (reference.resolveInAt .validation context frame) op expected

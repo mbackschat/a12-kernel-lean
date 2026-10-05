@@ -41,14 +41,17 @@ theorem textComputationComparison_readsOnlyFields (comparison : FlatComparison)
   cases comparison with
   | string op field expected =>
       have same := agree field.id (by simp [FlatComparison.fieldIds, FlatComparison.fields, FlatField.id])
-      simp only [ComputationCondition.evalTextComparison, FlatTextFieldOperand.field, FlatField.id, same]
+      simp only [ComputationCondition.evalTextComparison, ComputationCondition.evalSimpleComparison,
+        FlatComparison.foldSimpleReads, FlatTextFieldOperand.field, FlatField.id, same]
   | enumeration op operand expected =>
       have same := agree operand.field.id (by simp [FlatComparison.fieldIds, FlatComparison.fields, FlatField.id])
-      simp only [ComputationCondition.evalTextComparison, FlatTextFieldOperand.field, FlatField.id, same]
+      simp only [ComputationCondition.evalTextComparison, ComputationCondition.evalSimpleComparison,
+        FlatComparison.foldSimpleReads, FlatTextFieldOperand.field, FlatField.id, same]
   | textFields op first second =>
       have firstSame := agree first.field.id (by simp [FlatComparison.fieldIds, FlatComparison.fields])
       have secondSame := agree second.field.id (by simp [FlatComparison.fieldIds, FlatComparison.fields])
-      simp only [ComputationCondition.evalTextComparison, firstSame, secondSame]
+      simp only [ComputationCondition.evalTextComparison, ComputationCondition.evalSimpleComparison,
+        FlatComparison.foldSimpleReads, firstSame, secondSame]
   | _ => rfl
 
 /-- A clean empty computation read does not satisfy `FieldFilled`. -/

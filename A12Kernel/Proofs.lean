@@ -87,6 +87,7 @@ import A12Kernel.Proofs.ConstructedDateDifference
 import A12Kernel.Proofs.ConstructedDateEvaluation
 import A12Kernel.Proofs.ConstructedDateShift
 import A12Kernel.Proofs.Correlation
+import A12Kernel.Proofs.CorrelationEnvironment
 import A12Kernel.Proofs.CorrelationElaboration
 import A12Kernel.Proofs.CurrentRepetitionAlternatingChain
 import A12Kernel.Proofs.CurrentRepetitionAlternatingChainRelation

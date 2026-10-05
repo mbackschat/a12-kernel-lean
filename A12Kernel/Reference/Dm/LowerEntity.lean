@@ -63,7 +63,7 @@ private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
   | other => refuse "Having" other.construct
 
 /-- A filter comparison uses the shared numeric expression reader over correlated field and
-repetition atoms. String equality and presence keep their distinct operand domains. -/
+repetition atoms. Typed field pairs, Boolean/text literals and presence retain their operand domains. -/
 partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
   | .parens body => lowerHaving body
   | .logic op (first :: rest) => do
@@ -78,6 +78,26 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
   | .compare op left right => do
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
       match left, right with
+      | .value { path, index := none, category := none }, .constant literal
+      | .constant literal, .value { path, index := none, category := none } =>
+          match path.havingField?, surfaceOp.toEquality?, literal with
+          | some (origin, field), some equality, "True" =>
+              pure (.compareBoolean equality { origin, field } true)
+          | some (origin, field), some equality, "False" =>
+              pure (.compareBoolean equality { origin, field } false)
+          | _, _, _ => refuse "Having" "Boolean comparison"
+      | .value { path := left, index := none, category := leftCategory },
+          .value { path := right, index := none, category := rightCategory } =>
+          match left.havingField?, right.havingField? with
+          | some (leftOrigin, leftField), some (rightOrigin, rightField) =>
+              pure (.compareFields surfaceOp
+                {
+                  origin := leftOrigin, field := leftField,
+                  projectionRef := leftCategory.map EnumerationProjectionRef.category |>.getD .stored }
+                {
+                  origin := rightOrigin, field := rightField,
+                  projectionRef := rightCategory.map EnumerationProjectionRef.category |>.getD .stored })
+          | _, _ => refuse "Having" "field comparison"
       | .value { path, index := none, category }, .string expected
       | .string expected, .value { path, index := none, category } =>
           if isTemporalConstant expected then refuse "Having" "temporal constant" else

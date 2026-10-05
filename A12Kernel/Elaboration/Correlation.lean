@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.CorrelationSurface
 import A12Kernel.Elaboration.Flat.Condition.Surface
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.Flat.FieldValueRead
@@ -8,213 +9,12 @@ import A12Kernel.Semantics.Correlation
 
 /-! # A12Kernel.Elaboration.Correlation — checked lowering for repeatable filters
 
-The established whole-rule route admits exactly one repeatable group, one starred direct-child Number field, an outer `FieldFilled` Number guard, and a correlated `Having` made from shared numeric-expression comparisons and conjunction. The general-star route also admits String/Enumeration literal equality, presence and disjunction after a checked star path has fixed the complete candidate environment. Both routes accept only references available from that candidate environment or the captured rule environment and require an ordinary reference to reach a reopened level.
+The established whole-rule route admits exactly one repeatable group, one starred direct-child Number field, an outer `FieldFilled` Number guard, and a correlated `Having` made from shared numeric-expression comparisons and conjunction. The general-star route also admits text literal/pair equality, Boolean/Confirm comparisons, presence and disjunction after a checked star path has fixed the complete candidate environment. Both routes accept only references available from that candidate environment or the captured rule environment and require an ordinary reference to reach a reopened level.
 -/
 
 namespace A12Kernel
 
-structure SurfaceHavingNumberRef where
-  origin : HavingOrigin
-  field : SurfaceFieldPath
-  deriving Repr, DecidableEq
 
-structure SurfaceHavingRepetitionRef where
-  origin : HavingOrigin
-  group : SurfaceGroupReference
-  deriving Repr, DecidableEq
-
-/-- A surface text filter reference. The path is kind-neutral; the consuming leaf decides which
-    declaration projection must accept it. -/
-structure SurfaceHavingStringRef where
-  origin : HavingOrigin
-  field : SurfaceFieldPath
-  projectionRef : EnumerationProjectionRef := .stored
-  deriving Repr, DecidableEq
-
-/-- A surface presence filter reference. Presence accepts any declared field, so no kind projection
-    stands between this path and the checked reference. -/
-structure SurfaceHavingPresenceRef where
-  origin : HavingOrigin
-  field : SurfaceFieldPath
-  deriving Repr, DecidableEq
-
-inductive SurfaceHavingNumericAtom where
-  | field (reference : SurfaceHavingNumberRef)
-  | repetition (reference : SurfaceHavingRepetitionRef)
-  deriving Repr, DecidableEq
-
-inductive SurfaceCorrelatedHaving where
-  | numeric (op : SurfaceComparisonOp)
-      (left right : AuthoredNumericExpr SurfaceHavingNumericAtom)
-  /-- A String or Enumeration projection against a literal. The operator slot is an `EqualityOp`, so a text ordering
-      comparison is unrepresentable here rather than refused during elaboration — the same
-      treatment the ordinary String comparison surface gives it, and what `spec/04`'s
-      equality-only rule states. The kernel's `MVK_INVALID_TYPE_FOR_COMPARISON` is a class this
-      project models nowhere, so this is consistency rather than a local narrowing. -/
-  | compareStrings (op : EqualityOp) (reference : SurfaceHavingStringRef)
-      (expected : String)
-  /-- `FieldFilled` or `FieldNotFilled`. The negative polarity is authorable here because the
-      kernel admits it inside a filter without the iteration-negativity refusal that governs a
-      rule's own condition. -/
-  | presence (polarity : HavingPresencePolarity)
-      (reference : SurfaceHavingPresenceRef)
-  | and (left right : SurfaceCorrelatedHaving)
-  /-- Disjunction inside a filter. The filter's condition is the ordinary condition production, so
-      this is a strong-Kleene `Or` and a true disjunct dominates an unavailable one, keeping its
-      row. The legacy one-group route still refuses it; only the star route admits it. -/
-  | or (left right : SurfaceCorrelatedHaving)
-  deriving Repr, DecidableEq
-
-def SurfaceCorrelatedHaving.compareNumbers (op : SurfaceComparisonOp)
-    (left right : SurfaceHavingNumberRef) : SurfaceCorrelatedHaving :=
-  .numeric op (.atom (.field left)) (.atom (.field right))
-
-def SurfaceCorrelatedHaving.compareRepetitions (op : SurfaceComparisonOp)
-    (left right : SurfaceHavingRepetitionRef) : SurfaceCorrelatedHaving :=
-  .numeric op (.atom (.repetition left)) (.atom (.repetition right))
-
-def SurfaceCorrelatedHaving.compareNumberLiteral (op : SurfaceComparisonOp)
-    (reference : SurfaceHavingNumberRef) (literal : DecodedNumericLiteral) : SurfaceCorrelatedHaving :=
-  .numeric op (.atom (.field reference)) (.literal literal)
-
-/-- The exact admitted validation shape: the error target is the outer Number guard, and the starred consumer is filtered by a genuinely correlated `Having`. Requiring `errorField = guardField` is this capsule's routing boundary, not a claim that every kernel rule has that shape. -/
-structure SurfaceSingleCorrelatedRule where
-  errorField : SurfaceFieldPath
-  guardField : SurfaceFieldPath
-  valueField : SurfaceSingleStarFieldPath
-  having : SurfaceCorrelatedHaving
-  deriving Repr, DecidableEq
-
-inductive CorrelationElabError where
-  | text (error : ElabError)
-  | resolve (error : ResolveError)
-  | invalidGroupReference (reference : SurfaceGroupPath)
-  | wildcardOnRuleGroup
-  | wildcardWithParentNavigation (parents : Nat)
-  | fieldNotNumber (path : List String) (actual : SurfaceScalarKind)
-  /-- A side of an ordering comparison that is not a Number, with the kind of its partner, which was
-      read. The Kernel's ordering class reads the pair, so a refused side cannot name it alone. -/
-  | orderingFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
-      (partner : SurfaceScalarKind)
-  /-- A side of an equality or inequality that is not a Number, which this Number fragment refuses
-      while the Kernel judges the pair: it draws `MVK_INVALID_COMPARE_TO_ENUM_OR_STRING` for a
-      String against a Number ([inbound](../../docs/SOURCES.md#inbound-2026-09-25c-filter-body)), a
-      class the ordering gates never draw. -/
-  | equalityFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
-  /-- A field compared with a Number literal by `==` or `!=` that is not a Number. The partner is
-      known to be a Number literal, so the class is the ordinary equality ladder's against a
-      Number literal ([KF270](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf270)), measured on the
-      filter leaf at the String row
-      ([checkpoint](../../docs/sources/having-filter-probes.md#src-having-number-leaf-grid)). -/
-  | literalEqualityFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
-  /-- The reference does not name a String field carrying evaluated values. A raw-mode String
-      declaration reaches this arm too, matching every other checked String consumer. -/
-  | fieldNotStringValue (path : List String) (actual : SurfaceScalarKind)
-  /-- A String **or presence** leaf reached a route that admits only the numeric and repetition
-      leaves. The legacy one-group adapter is the only such route; it fails closed here rather than
-      being widened. The name predates the presence leaf and is kept because it is a public
-      constructor; both leaves report through it, and the public evaluator maps them together. -/
-  | stringLeafOutsideStarRoute
-  /-- A disjunctive filter reached the legacy one-group route, whose well-formedness predicate
-      admits a conjunctive core only. The kernel admits `Or` in this position and the star route
-      does too; this arm keeps the narrow route honest rather than silently reshaping the tree. -/
-  | disjunctionOutsideStarRoute
-  | fieldOutsideGroup (origin : HavingOrigin)
-      (fieldPath expectedGroup : List String)
-  /-- A leaf outside the filtered group beside a leaf reading one of its Number fields. The Kernel
-      admits it as a constant ([`spec/07`](../../spec/07-repetition-and-iteration.md),
-      [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)),
-      which the legacy one-group route does not represent, so it refuses without a class. -/
-  | constantLeafBesideIteratedLeaf (origin : HavingOrigin)
-      (fieldPath expectedGroup : List String)
-  | fieldScopeMismatch (fieldPath : List String)
-      (expected actual : List RepeatableLevel)
-  | fieldOutsideEnvironment (origin : HavingOrigin) (fieldPath : List String)
-      (available actual : List RepeatableLevel)
-  | repetitionGroupMismatch (expected actual : GroupPath)
-  | unknownRepetitionGroup (path : GroupPath)
-  | repetitionOutsideEnvironment (origin : HavingOrigin) (groupPath : GroupPath)
-      (available : List RepeatableLevel) (actual : RepeatableLevel)
-  | equalityScaleMismatch (leftPath : List String) (leftScale : Nat)
-      (rightPath : List String) (rightScale : Nat)
-  /-- An equality against a literal carrying more fraction digits than the field's scale. -/
-  | literalScaleMismatch (path : List String) (fieldScale : Nat) (literalScale : Int)
-  | constantNumericComparison
-  | numericExpressionUnsupported
-  | numericOperandFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
-  | missingInner
-  | missingOuter
-  | errorGuardMismatch (errorPath guardPath : List String)
-  /-- A marked reference crossing a level the reading rule does not bind, with the level the walk
-      refuses. -/
-  | outerLevelUnbound (path : List String) (unbound : UnboundOperandLevel)
-  | incoherentCore
-  deriving Repr, DecidableEq
-
-namespace CorrelationElabError
-
-/-- The Kernel class one refused `Having` filter reports.
-
-**The class is the filter's, not the wrapping operator's**, and that was the open question this
-projection existed to answer. Measured as a fourteen-filter cross against three carriers — a
-temporal extremum, a distinct count, and a filled-field count — every filter drew the identical
-class on all three ([checkpoint](../../docs/SOURCES.md#src-having-filter-comparison-and-scope-classes)).
-One shared projection is therefore right, where a per-carrier table would have been three copies of
-one fact.
-
-The two comparison arms carry kinds because **one arm reports several classes**. An ordering
-comparison collapses every non-orderable kind into one class and reads both operands to decide it; a
-String-literal comparison spreads the same kinds across four, and that column is the shared
-literal-comparison ladder's `stringLike` row cell for cell — one Kernel comparison vocabulary that a
-plain rule comparison reaches too, whatever route an assignment takes to it. Reading either column
-off the other is wrong for six kinds of eight; the two temporal families are the only agreement.
-
-A partner whose own read fails answers ahead of both kind gates, which are raised where the
-comparison ends, so an ordering side is judged only against a partner that was read
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
-
-The scope classes separate cleanly: a filter with no unmarked reference into a reopened level
-reports `noIterationForWildcard`, a **different repeatable group's** unmarked field reference
-reports `invalidIterationInFilterCondition`, and a star written *inside* the filter reports
-`noWildcardsAllowed`. A marked reference to a level no host iteration binds meets the repetition
-walk instead, `SurfaceCorrelatedHaving.unboundOuterReference?`, because it requires a captured host
-binding ([fixed-reference checkpoint](../../docs/sources/having-filter-probes.md#src-fixed-repetition-having)
-and [field-reference checkpoint](../../docs/sources/having-filter-probes.md#src-filter-reference-two-levels-above)).
-The remaining arms are this project's own narrow-route boundaries, its
-resolution routing, or unreachable by construction, and claim nothing. -/
-def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
-  | .text (.enumerationOperand _ (.invalidLiteral _)) =>
-      some .invalidStringConstantForEnumComparison
-  | .text _ => none
-  | .fieldNotNumber _ actual => numericComparisonDiagnostic? actual
-  | .orderingFieldNotNumber _ actual partner => orderingComparisonDiagnostic? actual partner
-  | .fieldNotStringValue _ actual =>
-      literalComparisonDiagnostic? .stringLike actual
-  | .fieldOutsideGroup _ _ _ | .missingInner => some .noIterationForWildcard
-  | .fieldOutsideEnvironment .outer _ _ _ | .repetitionOutsideEnvironment .outer _ _ _ =>
-      some .noWildcard
-  | .fieldOutsideEnvironment .inner _ _ _ | .repetitionOutsideEnvironment .inner _ _ _ =>
-      some .invalidIterationInFilterCondition
-  | .wildcardOnRuleGroup | .wildcardWithParentNavigation _ =>
-      some .noWildcardsAllowed
-  | .equalityScaleMismatch _ _ _ _ | .literalScaleMismatch _ _ _ => some .invalidCompareDecimalPlaces
-  | .constantNumericComparison => some .invalidCompareToConst
-  | .literalEqualityFieldNotNumber _ actual => literalComparisonDiagnostic? .number actual
-  | .outerLevelUnbound _ unbound => unbound.diagnostic?
-  | .resolve error => error.diagnostic?
-  -- Named rather than wildcarded. `stringLeafOutsideStarRoute` and `disjunctionOutsideStarRoute`
-  -- are the legacy one-group route's own narrowness — the Kernel accepts both — and
-  -- `equalityFieldNotNumber` is both routes' Number fragment's, its class depending on a pair it
-  -- does not carry; the rest are routing or unreachable by construction.
-  | .invalidGroupReference _ | .fieldScopeMismatch _ _ _ | .equalityFieldNotNumber _ _
-  | .constantLeafBesideIteratedLeaf _ _ _
-  | .repetitionGroupMismatch _ _ | .unknownRepetitionGroup _ | .stringLeafOutsideStarRoute
-  | .disjunctionOutsideStarRoute
-  | .missingOuter | .errorGuardMismatch _ _
-  | .numericExpressionUnsupported | .numericOperandFieldNotNumber _ _
-  | .incoherentCore => none
-
-end CorrelationElabError
 
 /-- The first marked reference of an authored filter, in authored order, crossing a level the
     reading rule does not bind, with the level the walk refuses. A marked reference reads the rule's
@@ -230,7 +30,9 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
       (left.atoms ++ right.atoms).findSome? fun
         | .field reference => field reference.origin reference.field
         | .repetition reference => group reference.origin reference.group
-  | .compareStrings _ reference _ => field reference.origin reference.field
+  | .compareFields _ left right =>
+      (field left.origin left.field).orElse fun _ => field right.origin right.field
+  | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
   | .presence _ reference => field reference.origin reference.field
   | .and left right | .or left right =>
       (left.unboundOuterReference? model declaringGroup writtenGroup bound).orElse fun _ =>
@@ -325,6 +127,10 @@ private def resolveHavingRepetitionInGroup
     each route chooses all of them together, and a route that admits no String or presence leaf
     supplies a refusing resolver rather than a different combinator. -/
 private structure HavingLeafResolvers where
+  boolean : EqualityOp → SurfaceHavingStringRef → Bool → Except CorrelationElabError FlatComparison
+  fields : SurfaceComparisonOp → SurfaceHavingStringRef → SurfaceHavingStringRef →
+    Except CorrelationElabError (Option FlatComparison)
+
   number : HavingOrigin → SurfaceFieldPath →
     Except CorrelationElabError ResolvedNumberRef
   repetition : HavingOrigin → SurfaceGroupReference →
@@ -415,6 +221,18 @@ private def elaborateHavingNumeric (resolvers : HavingLeafResolvers)
 
 private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
     SurfaceCorrelatedHaving → Except CorrelationElabError CorrelatedHaving
+  | .compareBoolean op reference expected => do
+      pure (.leaf (.simpleComparison reference.origin .inner (← resolvers.boolean op reference expected)))
+  | .compareFields op left right => do
+      match ← resolvers.fields op left right with
+      | some comparison => pure (.leaf (.simpleComparison left.origin right.origin comparison))
+      | none =>
+          if left.projectionRef != .stored || right.projectionRef != .stored then
+            throw .stringLeafOutsideStarRoute
+          else
+            elaborateHavingNumeric resolvers op
+              (.atom (.field { origin := left.origin, field := left.field }))
+              (.atom (.field { origin := right.origin, field := right.field }))
   | .numeric op left right => elaborateHavingNumeric resolvers op left right
   | .compareStrings op reference expected => do
       pure (.compareStringLiteral op
@@ -444,6 +262,9 @@ private def FlatModel.resolveHavingNumberRead (model : FlatModel) (declaringGrou
     reference reads the captured outer row, not the level the filter reopens. -/
 private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) : SurfaceCorrelatedHaving → Bool
+  | .compareFields _ left right =>
+      [left, right].any fun reference => reference.origin == .inner &&
+        (model.resolveNumberInGroup declaringGroup group reference.field).isOk
   | .numeric _ left right =>
       (left.atoms ++ right.atoms).any fun
         | .field reference => reference.origin == .inner &&
@@ -452,7 +273,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .and left right | .or left right =>
       left.readsGroupNumber model declaringGroup group ||
         right.readsGroupNumber model declaringGroup group
-  | .compareStrings _ _ _ | .presence _ _ => false
+  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .presence _ _ => false
 
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
     body in authored order, so each leaf's reads and comparison class answer as it closes; the
@@ -468,6 +289,8 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError CorrelatedHaving := do
   discard <| elaborateHavingCoreWith {
+    boolean := fun _ _ _ => throw .stringLeafOutsideStarRoute
+    fields := fun _ _ _ => pure none
     number := model.resolveHavingNumberRead declaringGroup
     repetition := resolveHavingRepetitionInGroup declaringGroup group
     string := fun _ reference _ => do
@@ -477,6 +300,8 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
   let readsGroup := authored.readsGroupNumber model declaringGroup group
   let condition ← (elaborateHavingCoreWith {
+    boolean := fun _ _ _ => throw .stringLeafOutsideStarRoute
+    fields := fun _ _ _ => pure none
     number := model.resolveHavingNumberInGroup declaringGroup group
     repetition := resolveHavingRepetitionInGroup declaringGroup group
     -- The legacy one-group route admits neither newer leaf; both fail closed here.
@@ -556,6 +381,62 @@ private def FlatModel.resolveHavingStringInEnvironment (model : FlatModel)
         | _, _ => throw (.fieldNotStringValue declaration.path declaration.policy.kind.surfaceKind)
   pure { origin := reference.origin, operand }
 
+private def havingTextOperand (declaration : FlatFieldDecl)
+    (projectionRef : EnumerationProjectionRef) :
+    Except CorrelationElabError (FlatTextFieldOperand × DirectComparableField) := do
+  match projectionRef with
+  | .stored =>
+      match declaration.toTextFieldComparison? with
+      | some operand => pure operand
+      | none => throw (.text (.textFieldOperandKindMismatch declaration.path declaration.policy.kind.surfaceKind))
+  | .category _ =>
+      match declaration.toEnumerationTextFieldComparison? projectionRef with
+      | some operand => pure operand
+      | none => throw .incoherentCore
+
+private def FlatModel.resolveHavingFieldsInEnvironment (model : FlatModel)
+    (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
+    (op : SurfaceComparisonOp) (left right : SurfaceHavingStringRef) :
+    Except CorrelationElabError (Option FlatComparison) := do
+  let numberSide := [left, right].any fun reference =>
+    (model.resolveFieldDeclarationUnchecked declaringGroup reference.field).toOption.any fun declaration =>
+      declaration.policy.kind.surfaceKind == .number
+  if numberSide && left.projectionRef == .stored && right.projectionRef == .stored then
+    pure none
+  else
+    let leftDecl ← model.resolveHavingFieldValueRead declaringGroup outerLevels left.origin left.field left.projectionRef
+    let rightDecl ← model.resolveHavingFieldValueRead declaringGroup outerLevels right.origin right.field right.projectionRef
+    let some equality := op.toEquality? |
+      throw (.orderingFieldNotNumber leftDecl.path leftDecl.policy.kind.surfaceKind rightDecl.policy.kind.surfaceKind)
+    if left.projectionRef == .stored && right.projectionRef == .stored then
+      match leftDecl.policy.kind, rightDecl.policy.kind with
+      | .boolean, .boolean => return some (.booleanFields equality
+          (.boolean { id := leftDecl.id }) (.boolean { id := rightDecl.id }))
+      | .confirm, .confirm =>
+          if equality == .equal then throw (.text (.illegalConfirmLiteral leftDecl.path))
+          return some (.booleanFields equality
+            (.confirm { id := leftDecl.id }) (.confirm { id := rightDecl.id }))
+      | _, _ => pure ()
+    let leftOperand ← havingTextOperand leftDecl left.projectionRef
+    let rightOperand ← havingTextOperand rightDecl right.projectionRef
+    match classifyDirectFieldComparison leftOperand.2 rightOperand.2 with
+    | .accepted => pure (some (.textFields equality leftOperand.1 rightOperand.1))
+    | .rejected error => throw (.text (.enumerationComparability leftDecl.path rightDecl.path error))
+
+private def FlatModel.resolveHavingBooleanInEnvironment (model : FlatModel)
+    (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
+    (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : Bool) :
+    Except CorrelationElabError FlatComparison := do
+  let declaration ← model.resolveHavingFieldValueRead declaringGroup outerLevels
+    reference.origin reference.field reference.projectionRef
+  if reference.projectionRef != .stored then throw .incoherentCore
+  match declaration.policy.kind with
+  | .boolean => pure (.boolean op { id := declaration.id } expected)
+  | .confirm =>
+      if expected then pure (.confirm op { id := declaration.id })
+      else throw (.text (.illegalConfirmLiteral declaration.path))
+  | kind => throw (.text (.literalKindMismatch declaration.path .boolean kind.surfaceKind))
+
 /-- Resolve one presence filter reference. Presence accepts any declared field, so this checks the
     declaration's existence and a marked one's captured environment, with no kind gate. -/
 private def FlatModel.resolveHavingPresenceInEnvironment (model : FlatModel)
@@ -620,6 +501,9 @@ def CorrelatedHaving.outerIterationScopes
       (comparison.left.atoms ++ comparison.right.atoms).map fun
         | .field reference => outerHavingNumberIterationScope model reference
         | .repetition reference => outerHavingRepetitionIterationScope model reference
+  | .leaf (.simpleComparison left right comparison) =>
+      comparison.inputFields.1.map (fun field => outerHavingFieldIterationScope model left field.id) ++
+        comparison.inputFields.2.map (fun field => outerHavingFieldIterationScope model right field.id)
   | .leaf (.compareStringLiteral _ reference _) =>
       [outerHavingFieldIterationScope model reference.origin reference.field.id]
   | .leaf (.presence _ reference) =>
@@ -656,7 +540,9 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
       (left.atoms ++ right.atoms).findSome? fun
         | .field reference => field reference.origin reference.field
         | .repetition reference => group reference.origin reference.group
-  | .compareStrings _ reference _ => field reference.origin reference.field
+  | .compareFields _ left right =>
+      (field left.origin left.field).orElse fun _ => field right.origin right.field
+  | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
   | .presence _ reference => field reference.origin reference.field
   | .and left right | .or left right =>
       (left.candidateEnvironmentRefusal? model declaringGroup candidateLevels).orElse fun _ =>
@@ -676,7 +562,7 @@ where
       !candidateLevels.contains level
     pure (.repetitionOutsideEnvironment .inner resolved.path candidateLevels missing)
 
-/-- Lower the supported numeric-expression, String and presence filter tree against one validated star plan. The result retains the authored connectives and exact candidate/captured environment split established by the checked references. -/
+/-- Lower the supported numeric, simple-comparison and presence filter tree against one validated star plan. The result retains the authored connectives and exact candidate/captured environment split established by the checked references. -/
 def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
     (bindingGroup : GroupPath := declaringGroup) :
@@ -685,6 +571,8 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
   let reopenedLevels := candidateLevels.drop source.path.firstStar
   let outerLevels := model.repeatableScopeForGroupPath bindingGroup
   let condition ← elaborateHavingCoreWith {
+    boolean := model.resolveHavingBooleanInEnvironment declaringGroup outerLevels
+    fields := model.resolveHavingFieldsInEnvironment declaringGroup outerLevels
     number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels
     repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels
     string := model.resolveHavingStringInEnvironment declaringGroup outerLevels

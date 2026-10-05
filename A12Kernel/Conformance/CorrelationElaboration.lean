@@ -127,6 +127,15 @@ private def absoluteRule (having : SurfaceCorrelatedHaving) : SurfaceSingleCorre
     valueField := absoluteStar ["Order"] "Items" "Weight"
     having }
 
+private def acceptsProjectedNumericPair (left right : EnumerationProjectionRef) : Bool :=
+  (elaborateSingleCorrelatedRule model items.path (absoluteRule (.compareFields .equal
+    { origin := .inner, field := absolute items.path "Count", projectionRef := left }
+    { origin := .outer, field := absolute items.path "Count", projectionRef := right }))).isOk
+
+example : acceptsProjectedNumericPair .stored .stored = true ∧
+    acceptsProjectedNumericPair (.category "Unknown") .stored = false ∧
+    acceptsProjectedNumericPair .stored (.category "Unknown") = false := by native_decide
+
 private def relativeRule (having : SurfaceCorrelatedHaving) : SurfaceSingleCorrelatedRule :=
   { errorField := relative ["Items"] "Count"
     guardField := relative ["Items"] "Count"

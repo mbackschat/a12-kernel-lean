@@ -63,9 +63,9 @@ def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
       | some left, some right => comparison.op.acceptsScalesWithSuppression
           comparison.suppressExactScaleWarning left right
       | _, _ => false
-  -- Neither text nor presence carries a declared scale, so the numeric scale law has nothing to
-  -- say about either leaf.
-  | .compareStringLiteral _ _ _ | .presence _ _ => true
+  -- Text, Boolean/Confirm and presence carry no declared scale; their kind gates belong to
+  -- wellFormedForEnvironments.
+  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .presence _ _ => true
 
 /-- Every leaf under the shared connective tree satisfies the static scale law. -/
 def CorrelatedHaving.equalityScalesAgree (condition : CorrelatedHaving) : Bool :=
@@ -76,10 +76,10 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
   | .numeric comparison => comparison.havingAdmitted fun
       | .field reference => model.admitsSingleGroupNumber group reference.field
       | .repetition reference => reference.source == .repeatable group.level
-  -- The legacy one-group adapter admits only the leaves it was built for. The String and presence
+  -- The legacy one-group adapter admits only the leaves it was built for. The other
   -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
   -- extending an adapter no current consumer needs them on.
-  | .compareStringLiteral _ _ _ | .presence _ _ => false
+  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .presence _ _ => false
 
 def CorrelatedHaving.wellFormedForSingleGroup (condition : CorrelatedHaving)
     (model : FlatModel) (group : RepeatableGroupDecl) : Bool :=
@@ -105,12 +105,36 @@ private def FlatModel.admitsHavingStringInEnvironment (model : FlatModel)
     | .enumeration operand => FlatComparison.enumeration op operand expected
   model.admitsTextComparisonIn (reference.origin.availableLevels candidateLevels outerLevels) comparison
 
+/-- Each side is checked in its own environment; comparability and Boolean/Confirm restrictions retain their ordinary rules. -/
+def FlatModel.admitsHavingSimpleComparison (model : FlatModel)
+    (leftScope rightScope : List RepeatableLevel) : FlatComparison → Bool
+  | .textFields _ left right =>
+      match model.directComparableIn? leftScope left, model.directComparableIn? rightScope right with
+      | some leftProfile, some rightProfile => directFieldComparisonAllowed leftProfile rightProfile
+      | _, _ => false
+  | comparison@(.boolean _ _ _) | comparison@(.confirm _ _)
+      | comparison@(.booleanFields _ _ _) =>
+      let shape := match comparison with
+        | .booleanFields op left right => match left, right with
+          | .boolean _, .boolean _ => true
+          | .confirm _, .confirm _ => op == .notEqual
+          | _, _ => false
+        | _ => true
+      shape && [(leftScope, comparison.inputFields.1), (rightScope, comparison.inputFields.2)].all fun (scope, fields) =>
+        fields.all fun field => (model.lookupUniqueId field.id).toOption.any fun declaration =>
+          field.matchesDecl declaration && repeatableScopeAvailable declaration.repeatableScope scope
+  | _ => false
+
 def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) :
     CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
       | .field reference => model.admitsHavingNumberInEnvironment candidateLevels outerLevels reference
       | .repetition reference => reference.availableIn model candidateLevels outerLevels
+  | .simpleComparison left right comparison =>
+      model.admitsHavingSimpleComparison
+        (left.availableLevels candidateLevels outerLevels)
+        (right.availableLevels candidateLevels outerLevels) comparison
   | .compareStringLiteral op reference expected =>
       model.admitsHavingStringInEnvironment candidateLevels outerLevels reference op expected
   | .presence _ reference =>
@@ -149,6 +173,11 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
         | .field reference => reference.reachesReopenedLevel model reopenedLevels
         | .repetition reference => reference.origin == .inner &&
             (reference.scope? model).any (·.any reopenedLevels.contains)
+  | .simpleComparison left right comparison =>
+      ([(left, comparison.inputFields.1), (right, comparison.inputFields.2)]).any fun (origin, fields) =>
+        origin == .inner && fields.any fun field =>
+          (model.lookupUniqueId field.id).toOption.any fun declaration =>
+            declaration.repeatableScope.any reopenedLevels.contains
   | .compareStringLiteral _ reference _ =>
       reference.reachesReopenedLevel model reopenedLevels
   | .presence _ reference =>

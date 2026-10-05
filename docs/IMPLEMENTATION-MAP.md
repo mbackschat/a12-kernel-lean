@@ -282,6 +282,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Named environments and addresses](implementation/repetition-and-paths.md#reopened-star-structural-completeness-and-addressing)
 <a id="cap-named-environments-and-addresses"></a>
 - [Named environments and addresses](implementation/repetition-and-paths.md#cap-named-environments-and-addresses)
+<a id="cap-simple-having-comparisons"></a>
+- [Simple comparisons inside Having](implementation/repetition-and-paths.md#cap-simple-having-comparisons)
+
 <a id="cap-star-selection-and-correlation"></a>
 - [Star selection and correlation](implementation/repetition-and-paths.md#cap-star-selection-and-correlation)
 <a id="cap-field-values-not-unique"></a>

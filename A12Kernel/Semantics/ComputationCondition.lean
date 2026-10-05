@@ -1,6 +1,6 @@
 import A12Kernel.Document
 import A12Kernel.Semantics.NumericExpression
-import A12Kernel.Semantics.FlatValidation
+import A12Kernel.Semantics.FlatComparisonInputs
 import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.ComputationFillQuantifier
 import A12Kernel.Semantics.Observation
@@ -275,33 +275,28 @@ def evalSimpleEquality [BEq α] (op : EqualityOp)
     (left right : SimpleComparisonOperand α) : ComputationConditionResult :=
   evalComputationComparison (fun left right => op.holds (left == right)) left right
 
-/-- Boolean and Confirm guards use computation observations; the owning readers retain Boolean's
-suppressed empty comparison and Confirm's false substitution (`spec/02` §A.3). -/
+/-- Evaluate a checked simple comparison through the shared phase-aware operand fold. -/
+def evalSimpleComparison (comparison : FlatComparison)
+    (context : ScalarComputationContext) : ComputationConditionResult :=
+  let read := fun field => Except.ok (ε := Empty) (context.read field)
+  match comparison.foldSimpleReads .computation read read evalComputationComparisonExcept with
+  | none => .notTrue
+  | some (.ok result) => result
+  | some (.error impossible) => nomatch impossible
+
+/-- Boolean and Confirm guards retain their distinct empty policies through the shared operand fold. -/
 def evalScalarComparison (comparison : FlatComparison)
     (context : ScalarComputationContext) : ComputationConditionResult :=
-  let read : FlatContext := { read := context.read }
   match comparison with
-  | .boolean op field expected =>
-      evalSimpleEquality op (read.resolveBooleanComparisonOperandAt .computation field) (.value expected true)
-  | .confirm op field =>
-      evalSimpleEquality op (read.resolveConfirmComparisonOperandAt .computation field) (.value true true)
+  | .boolean _ _ _ | .confirm _ _ => evalSimpleComparison comparison context
   | _ => .notTrue
 
-/-- Text guards reuse declaration-checked projections. Formal unavailability dominates an empty
-partner, as measured by the empty-before-invalid rows in `src-text-computation-guards`. -/
+/-- Text guards reuse declaration-checked projections and preserve poison before empty suppression
+(spec/02; src-text-computation-guards). -/
 def evalTextComparison (comparison : FlatComparison)
     (context : ScalarComputationContext) : ComputationConditionResult :=
-  let read (operand : FlatTextFieldOperand) : SimpleComparisonOperand String :=
-    match operand.checkedValueListCellAt .computation (context.read operand.field.id) with
-    | .empty => .notEvaluated
-    | .present value => .value value true
-    | .unknown cause => .unknown cause
-  let compare := evalSimpleEquality (α := String)
   match comparison with
-  | .string op field expected => compare op (read (.string field))
-      (if expected.isEmpty then .notEvaluated else .value expected true)
-  | .enumeration op operand expected => compare op (read (.enumeration operand)) (.value expected true)
-  | .textFields op left right => compare op (read left) (read right)
+  | .string _ _ _ | .enumeration _ _ _ | .textFields _ _ _ => evalSimpleComparison comparison context
   | _ => .notTrue
 
 /-- Resolve the ordered list against the current overlay before applying the shared fill scan. -/

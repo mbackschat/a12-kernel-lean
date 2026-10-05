@@ -1,3 +1,4 @@
+import A12Kernel.Conformance.CorrelatedComparisonInputs
 import A12Kernel.Conformance.CalendarExpressions
 import A12Kernel.Conformance.BooleanFirstFilledComputationRows
 import A12Kernel.Conformance.CustomFirstFilledComputationRows

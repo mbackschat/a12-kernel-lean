@@ -1,66 +1,9 @@
+import A12Kernel.Proofs.CorrelationEnvironment
 import A12Kernel.Elaboration.Correlation
 
 /-! # Proofs for explicit inner/outer Having correlation -/
 
 namespace A12Kernel
-
-/-- Row zero is not a concrete repetition binding and cannot enter a correlated comparison. -/
-@[simp]
-theorem env_uniqueRowAt_zero (level : RepeatableLevel) :
-    Env.uniqueRowAt? [(level, 0)] level = none := by
-  simp [Env.uniqueRowAt?, Env.bindingAt, Except.toOption]
-
-/-- Two distinct named levels in one complete environment retain their independent positive coordinates. -/
-theorem env_crossLevel_bindings_resolve
-    (outerLevel innerLevel : RepeatableLevel)
-    (outerRow innerRow : RowIndex)
-    (distinctLevels : outerLevel ≠ innerLevel)
-    (outerPositive : outerRow ≠ 0)
-    (innerPositive : innerRow ≠ 0) :
-    Env.uniqueRowAt? [(outerLevel, outerRow), (innerLevel, innerRow)]
-        outerLevel = some outerRow ∧
-      Env.uniqueRowAt? [(outerLevel, outerRow), (innerLevel, innerRow)]
-        innerLevel = some innerRow := by
-  have reverseLevels : innerLevel ≠ outerLevel := Ne.symm distinctLevels
-  simp [Env.uniqueRowAt?, Env.bindingAt, Except.toOption, distinctLevels,
-    reverseLevels, outerPositive, innerPositive]
-
-/-- Off-diagonal coordinates at distinct named levels cannot be represented by one scalar current-row value. -/
-theorem env_offDiagonal_bindings_not_collapsible
-    (outerLevel innerLevel : RepeatableLevel)
-    (outerRow innerRow : RowIndex)
-    (distinctLevels : outerLevel ≠ innerLevel)
-    (distinctRows : outerRow ≠ innerRow)
-    (outerPositive : outerRow ≠ 0)
-    (innerPositive : innerRow ≠ 0) :
-    ¬∃ row,
-      Env.uniqueRowAt? [(outerLevel, outerRow), (innerLevel, innerRow)]
-          outerLevel = some row ∧
-        Env.uniqueRowAt? [(outerLevel, outerRow), (innerLevel, innerRow)]
-          innerLevel = some row := by
-  rcases env_crossLevel_bindings_resolve outerLevel innerLevel outerRow innerRow
-    distinctLevels outerPositive innerPositive with
-    ⟨outerResolved, innerResolved⟩
-  have reverseRows : innerRow ≠ outerRow := Ne.symm distinctRows
-  simp [outerResolved, innerResolved, reverseRows]
-
-/-- A resolving correlation frame preserves an invalid named binding in its caller-owned structural channel. -/
-theorem correlationFrame_rowAtResolving_error
-    (frame : CorrelationFrame) (context : ResolvingCorrelationContext Error)
-    (origin : HavingOrigin) (level : RepeatableLevel) (cause : EnvBindingError)
-    (failed :
-      (frame.envAt origin).bindingAt level =
-        .error cause) :
-    frame.rowAtResolving context { origin, source := .repeatable level } =
-      .error (context.bindingError cause) := by
-  simp [CorrelationFrame.rowAtResolving, failed, Except.mapError]
-
-/-- A fixed group's own index does not read either environment; its ancestors constrain admission. -/
-theorem fixed_repetition_reference_value (frame : CorrelationFrame)
-    (context : ResolvingCorrelationContext Error) (origin : HavingOrigin) (path : List String) :
-    frame.rowAt? { origin, source := .fixed path } = some 1 ∧
-      frame.rowAtResolving context { origin, source := .fixed path } = .ok 1 := by
-  exact ⟨rfl, rfl⟩
 
 private theorem K.and_eq_tru_iff (left right : K) :
     K.and left right = .tru ↔ left = .tru ∧ right = .tru := by
@@ -385,6 +328,16 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
           rename_i l r
           cases verdict : comparison.op.evalArithmeticWith l r <;>
             simp [CorrelatedHavingLeaf.verdictTruth, verdict]
+      | simpleComparison left right comparison =>
+          cases result : comparison.evalSimpleValidationReads
+              (fun field => Except.ok (ε := Empty) (context.read (frame.envAt left) field))
+              (fun field => Except.ok (ε := Empty) (context.read (frame.envAt right) field)) with
+          | error impossible => exact nomatch impossible
+          | ok verdict =>
+              cases verdict <;>
+                simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+                  CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
+                  CorrelatedHavingLeaf.verdictTruth, result]
       | compareStringLiteral op reference expected =>
           -- Both text domains use the same verdict-to-truth projection in evalTruthIn and HoldsIn.
           cases verdict :
@@ -829,6 +782,10 @@ theorem correlatedHaving_referencesMarkedField_referencesField
         List.mem_eraseDups, List.mem_filterMap, List.mem_filter] at marked ⊢
       obtain ⟨atom, ⟨member, _⟩, projected⟩ := marked
       exact ⟨atom, member, projected⟩
+    | simpleComparison left right comparison =>
+      cases comparison <;> cases left <;> cases right <;>
+        simp_all [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds,
+          FlatComparison.inputFields, FlatComparison.fields, List.mem_map]
     | compareStringLiteral op reference expected =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
       split at marked <;> simp_all
