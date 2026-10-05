@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.DateDifferenceSource
 import A12Kernel.Semantics.NumericAggregate
 import A12Kernel.Elaboration.Flat.Model
 import A12Kernel.Elaboration.NumericExpression
@@ -81,45 +82,25 @@ def FlatModel.admitsFieldValueAsNumberSource (model : FlatModel)
   | some declaration => declaration.repeatableScope.isEmpty
   | none => false
 
-/-- A date literal keeps written year presence apart from its model-dependent completion.
-The omitted-year calendar gate uses a common year (spec/05 §1), even in a leap Base Year. -/
-structure AuthoredDateLiteral where
-  year : Option Int
-  month : Nat
-  day : Nat
-  deriving Repr, DecidableEq
-
 namespace AuthoredDateLiteral
-
-def valid (literal : AuthoredDateLiteral) : Bool :=
-  (CivilDate.ofYmd? (literal.year.getD 2023) literal.month literal.day).isSome
 
 /-- Certify both the authored calendar and the model's completion year at checked entry points. -/
 def admittedIn (literal : AuthoredDateLiteral) (model : FlatModel) (anchorYear : Int) : Bool :=
   literal.valid && anchorYear == model.baseYearOrDefault
 
-def components (literal : AuthoredDateLiteral) : TemporalComponents :=
-  { TemporalComponents.fullDate with year := literal.year.isSome }
-
-def parts (literal : AuthoredDateLiteral) (anchorYear : Int) : DateParts :=
-  { year := literal.year.getD anchorYear, month := literal.month, day := literal.day }
-
 end AuthoredDateLiteral
 
-inductive SurfaceDateDifferenceOperand where
+inductive SurfaceDateDifferenceOperand (Field : Type := SurfaceFieldPath) where
   | literal (source : AuthoredDateLiteral)
-  | field (path : SurfaceFieldPath)
+  | field (path : Field)
   | baseYear (source : BaseYearDateSource)
   | now
   | today
   deriving Repr, DecidableEq
 
-inductive ResolvedDateDifferenceOperand where
-  | literal (source : AuthoredDateLiteral) (anchorYear : Int)
-  | field (source : FlatTemporalField)
-  | baseYear (year : Int) (source : BaseYearDateSource)
-  | today (profile : ModelZone.ConcreteProfile)
-  deriving Repr, DecidableEq
+def SurfaceDateDifferenceOperand.fields : SurfaceDateDifferenceOperand Field → List Field
+  | .field source => [source]
+  | .literal _ | .baseYear _ | .now | .today => []
 
 namespace ResolvedDateDifferenceOperand
 
@@ -128,11 +109,8 @@ def isField : ResolvedDateDifferenceOperand → Bool
   | .field _ => true
   | .baseYear _ _ | .today _ => false
 
-def components : ResolvedDateDifferenceOperand → TemporalComponents
-  | .literal source _ => source.components
-  | .field source => source.components
-  | .baseYear _ _ => TemporalComponents.baseYear
-  | .today _ => TemporalComponents.fullDate
+def components : ResolvedDateDifferenceOperand → TemporalComponents :=
+  componentsWith (·.components)
 
 def references (field : FieldId) : ResolvedDateDifferenceOperand → Bool
   | .literal _ _ => false

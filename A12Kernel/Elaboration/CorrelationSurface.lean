@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.NumericSource
 import A12Kernel.Elaboration.FieldEntityAdmission
 import A12Kernel.Elaboration.Flat.Condition.Surface
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
@@ -40,8 +41,8 @@ structure SurfaceHavingTemporalRef where
 
 inductive SurfaceHavingNumericAtom where
   | aggregate (op : NumericAggregateOp) (first : SurfaceHavingNumberRef) (rest : List SurfaceHavingNumberRef)
-  | dateDifference (unit : DateDifferenceUnit) (left right : SurfaceHavingTemporalRef)
-  | dayDifference (left right : SurfaceHavingTemporalRef)
+  | dateDifference (unit : DateDifferenceUnit) (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
+  | dayDifference (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
   | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : SurfaceHavingTemporalRef)
   | baseYear
   | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)

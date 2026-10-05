@@ -17,12 +17,8 @@ def entityTextOperand? : Expr → Option SurfaceTextFieldOperand
   | .entity { path, index := none, category := some name } => (path.toFieldPath?).map (.category · name)
   | _ => none
 
-private def dateDifferenceOperand? : Expr → Option SurfaceDateDifferenceOperand
-  | .string text => (authoredDateLiteral? text).map .literal
-  | .constant "Now" => some .now
-  | .constant "Today" => some .today
-  | .constant "BaseYear" => some (.baseYear .direct)
-  | expr => (expr.fieldEntity?).map .field
+private def dateDifferenceOperand? : Expr → Option SurfaceDateDifferenceOperand :=
+  dateDifferenceOperandWith? Expr.fieldEntity?
 
 /-- One numeric atom. `aggregate` lowers an aggregate call's operands and `groups` a filled-group
 count's, the two places the arms differ. -/

@@ -52,20 +52,23 @@ private def formatted (left right : String) (baseYear : Option Int := none) : Fl
         temporalTargetPolicy := some { format } }
     else field }
 
-private def admitted (fixture : FlatModel) (filter : String) : Bool :=
+private def admissions (fixture : FlatModel) (filter : String) : List Bool :=
   let expression := "Sum(Rows*/N Having " ++ filter ++ ")"
-  ((parseText .english (expression ++ " > 0")).toOption.bind fun parsed =>
-    (lowerCondition fixture ["Form"] false parsed.body).toOption).isSome &&
+  [((parseText .english (expression ++ " > 0")).toOption.bind fun parsed =>
+    (lowerCondition fixture ["Form"] false parsed.body).toOption).isSome,
   (lowerComputation fixture .english {
     group := ["Form"], name := "Total", targetRelPath := "../Out", commonPrecondition := none,
-    alternatives := [{ precondition := none, operation := expression }], errorCodesToSuppress := [] }).isOk
+    alternatives := [{ precondition := none, operation := expression }], errorCodesToSuppress := [] }).isOk]
+
+private def admitted (fixture : FlatModel) (filter : String) : Bool := (admissions fixture filter).all id
+private def refused (fixture : FlatModel) (filter : String) : Bool := (admissions fixture filter).all (!·)
 
 example : [("DifferenceInMonths", "MM"), ("DifferenceInYears", "MM"), ("DifferenceInDays", "MM-dd")].all
     (fun (op, format) =>
-      !admitted (formatted format "yyyy-MM-dd") s!"{op}(Rows/Tag, $Expected) > 0" &&
+      refused (formatted format "yyyy-MM-dd") s!"{op}(Rows/Tag, $Expected) > 0" &&
       admitted (formatted format "yyyy-MM-dd" (some 2024)) s!"{op}(Rows/Tag, $Expected) > 0") = true ∧
-    !admitted (formatted "yyyy" "yyyy") "DifferenceInMonths(Rows/Tag, $Expected) > 0" ∧
-    !admitted (formatted "yyyy-MM" "yyyy-MM") "DifferenceInDays(Rows/Tag, $Expected) > 0" ∧
+    refused (formatted "yyyy" "yyyy") "DifferenceInMonths(Rows/Tag, $Expected) > 0" ∧
+    refused (formatted "yyyy-MM" "yyyy-MM") "DifferenceInDays(Rows/Tag, $Expected) > 0" ∧
     admitted (formatted "yyyy" "yyyy") "DifferenceInYears(Rows/Tag, $Expected) > 0" := by native_decide
 
 example : ["DifferenceInMonths", "DifferenceInYears", "DifferenceInDays"].all (fun op =>
@@ -73,9 +76,74 @@ example : ["DifferenceInMonths", "DifferenceInYears", "DifferenceInDays"].all (f
       { dates with fields := dates.fields ++ [{
         id := 6, name := "Token", groupPath := ["Form", "Rows"]
         repeatableScope := [10], policy := { kind := .string } }] } "Token" == some (true, true) &&
-    !admitted dates s!"{op}(Rows*/Tag, $Expected) > 0" &&
-    !admitted dates s!"{op}([Rows/Tag], $Expected) > 0" &&
-    !admitted dates s!"{op}(Rows/N, $Expected) > 0" &&
-    !admitted dates s!"{op}(Rows/Tag, $Out) > 0") = true := by native_decide
+    refused dates s!"{op}(Rows*/Tag, $Expected) > 0" &&
+    refused dates s!"{op}([Rows/Tag], $Expected) > 0" &&
+    refused dates s!"{op}(Rows/N, $Expected) > 0" &&
+    refused dates s!"{op}(Rows/Tag, $Out) > 0") = true := by native_decide
+
+example : [("DifferenceInMonths", "12"), ("DifferenceInYears", "1"), ("DifferenceInDays", "366")].all
+    (fun (op, expected) => runModel dates s!"{op}(Rows/Tag, \"01.03.2025\") == {expected}" false
+      "unused" "2024-02-29" "2025-02-28" == some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : [("DifferenceInMonths", "-12"), ("DifferenceInYears", "-1"), ("DifferenceInDays", "-366")].all
+    (fun (op, expected) => runModel dates s!"{op}(\"01.03.2025\", Rows/Tag) == {expected}" false
+      "unused" "2024-02-29" "2025-02-28" == some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : [("DifferenceInMonths", "12"), ("DifferenceInYears", "1"), ("DifferenceInDays", "366")].all
+    (fun (op, expected) => runModel { dates with baseYear := some 2025 }
+      s!"{op}(Rows/Tag, BaseYear) == {expected}" false
+      "unused" "2024-01-01" "2025-01-01" == some (.fired .omission, ["value 9"]) &&
+      runModel { dates with baseYear := some 2025 } s!"{op}(BaseYear, Rows/Tag) == -{expected}" false
+      "unused" "2024-01-01" "2025-01-01" == some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : runModel { dates with baseYear := some 2024 }
+    "DifferenceInDays(Rows/Tag, \"01.03.\") == 1" false
+    "unused" "2024-02-29" "2024-02-28" = some (.fired .omission, ["value 9"]) ∧
+    runModel (formatted "MM-dd" "MM-dd") "DifferenceInDays(Rows/Tag, \"01.03.\") == 2" false
+      "" "02-28" "03-01" = some (.fired .omission, ["value 9"]) ∧
+    runModel (formatted "MM-dd" "MM-dd" (some 2024)) "DifferenceInDays(\"01.03.\", Rows/Tag) == -2" false
+      "" "02-28" "03-01" = some (.fired .omission, ["value 9"]) := by native_decide
+
+example : ["DifferenceInMonths", "DifferenceInYears", "DifferenceInDays"].all (fun op =>
+    refused dates s!"{op}(Rows/Tag, BaseYear) == 0" &&
+    refused dates s!"{op}(Rows/Tag, \"01.03.\") == 0" &&
+    refused { dates with baseYear := some 2024 } s!"{op}(Rows/Tag, \"29.02.\") == 0" &&
+    refused dates s!"{op}(Rows/Tag, \"2024-03-01\") == 0" &&
+    refused dates s!"{op}(Rows/Tag, \"29.02.2023\") == 0" &&
+    refused dates s!"{op}(\"01.03.2024\", \"01.03.2025\") > 0" &&
+    refused dates s!"{op}($Expected, \"01.03.2025\") > 0" &&
+    admitted dates s!"[Rows/N] > 0 And {op}($Expected, \"01.03.2025\") > 0" &&
+    refused dates s!"{op}(Rows/Tag, Today) > 0" &&
+    refused dates s!"{op}(Rows/Tag, Now) > 0") = true := by native_decide
+
+example : runModel dates "[Rows/N] > 0 And DifferenceInDays($Expected, \"02.03.2024\") == 1" true
+    "2025-03-01" "2024-02-29" "2025-02-28" "Date(\"01\", \"03\", \"2024\")" =
+      some (.notFired, ["value 2024-03-01", "value 14"]) ∧
+    runModel dates "DifferenceInDays(Rows/Tag, \"01.03.2024\") == 0" false
+      "unused" "" "2024-03-02" = some (.fired .omission, ["value 9"]) ∧
+    runModel dates "DifferenceInMonths(\"01.03.2024\", Rows/Tag) == 0" false
+      "unused" "bad" "2024-03-02" = some (.notFired, []) := by native_decide
+
+example : ["DifferenceInMonths", "DifferenceInYears", "DifferenceInDays"].all (fun op =>
+    let fixture := { dates with fields := dates.fields ++ [{
+      id := 6, name := "Token", groupPath := ["Form", "Rows"]
+      repeatableScope := [10], policy := { kind := .string } }] }
+    referencesFor s!"{op}(/Form/Rows/Tag, \"01.03.2025\") > 0" fixture "Token" == some (true, false) &&
+    referencesFor s!"[/Form/Rows/N] > 0 And {op}(\"01.03.2025\", $/Form/Rows/Tag) > 0" fixture "Token" == some (false, true)) = true := by native_decide
+
+
+private def certifiedSource (source : ResolvedDateDifferenceOperand HavingTemporalRef) : Bool :=
+  CorrelatedHavingLeaf.wellFormedForEnvironments { dates with baseYear := some 2024 } [10] [] (.numeric {
+    op := .ordinary .equal
+    left := .atom (.dayDifference .utc (.field { origin := .inner, field := {
+      id := 3, kind := .date, components := TemporalComponents.fullDate } }) source)
+    right := .literal { value := 0, authoredScale := 0 } })
+
+example : certifiedSource (.literal { year := none, month := 3, day := 1 } 2024) = true ∧
+    certifiedSource (.literal { year := none, month := 3, day := 1 } 2023) = false ∧
+    certifiedSource (.literal { year := none, month := 2, day := 29 } 2024) = false ∧
+    certifiedSource (.baseYear 2024 .direct) = true ∧
+    certifiedSource (.baseYear 2025 .direct) = false ∧
+    certifiedSource (.today .utc) = false := by native_decide
 
 end A12Kernel.Dm.HavingCalendarLocks

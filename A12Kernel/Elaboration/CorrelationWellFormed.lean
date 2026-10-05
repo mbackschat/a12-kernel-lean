@@ -141,22 +141,31 @@ def FlatModel.admitsHavingSimpleComparison (model : FlatModel)
         model.admitsComparisonInputsIn comparison leftScope rightScope
   | _ => false
 
+private def calendarSourceAdmitted (model : FlatModel)
+    (candidateLevels outerLevels : List RepeatableLevel) :
+    ResolvedDateDifferenceOperand HavingTemporalRef → Bool
+  | .literal source anchorYear => source.admittedIn model anchorYear
+  | .baseYear year _ => model.baseYear == some year
+  | .today _ => false
+  | .field reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
+      declaration.toTemporalField? == some reference.field &&
+        repeatableScopeAvailable declaration.repeatableScope (reference.origin.availableLevels candidateLevels outerLevels)
+
 def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) :
     CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
       | .aggregate _ first rest => !rest.isEmpty && havingAggregateUnique first rest &&
           (first :: rest).all (model.admitsHavingNumberInEnvironment candidateLevels outerLevels)
-      | .dateDifference unit left right => unit.compatible model.hasBaseYear left.field.components right.field.components &&
-          [left, right].all fun reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
-            declaration.toTemporalField? == some reference.field &&
-              repeatableScopeAvailable declaration.repeatableScope (reference.origin.availableLevels candidateLevels outerLevels)
+      | .dateDifference unit left right => unit.compatible model.hasBaseYear
+          (left.componentsWith (·.field.components)) (right.componentsWith (·.field.components)) &&
+          [left, right].all (calendarSourceAdmitted model candidateLevels outerLevels)
       | .dayDifference profile left right => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
-          CalendarDayDifference.admittedBy left.field.components && CalendarDayDifference.admittedBy right.field.components &&
-          CalendarDayDifference.yearCompatible model.hasBaseYear left.field.components right.field.components &&
-          [left, right].all fun reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
-            declaration.toTemporalField? == some reference.field &&
-              repeatableScopeAvailable declaration.repeatableScope (reference.origin.availableLevels candidateLevels outerLevels)
+          CalendarDayDifference.admittedBy (left.componentsWith (·.field.components)) &&
+          CalendarDayDifference.admittedBy (right.componentsWith (·.field.components)) &&
+          CalendarDayDifference.yearCompatible model.hasBaseYear
+            (left.componentsWith (·.field.components)) (right.componentsWith (·.field.components)) &&
+          [left, right].all (calendarSourceAdmitted model candidateLevels outerLevels)
       | .dateTimeDifference unit left right => unit.compatible left.field.components right.field.components &&
           [left, right].all fun reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
             declaration.toTemporalField? == some reference.field &&
@@ -238,7 +247,10 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
   | .numeric comparison =>
       (comparison.left.atoms ++ comparison.right.atoms).any fun
         | .aggregate _ first rest => (first :: rest).any (·.reachesReopenedLevel model reopenedLevels)
-        | .dateDifference _ left right | .dayDifference _ left right | .dateTimeDifference _ left right => [left, right].any fun reference => reference.origin == .inner &&
+        | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).any fun reference => reference.origin == .inner &&
+            (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
+              declaration.repeatableScope.any reopenedLevels.contains
+        | .dateTimeDifference _ left right => [left, right].any fun reference => reference.origin == .inner &&
             (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
         | .baseYear _ | .baseYearDatePart _ _ _ => false

@@ -30,8 +30,8 @@ structure HavingLeafResolvers where
     Except CorrelationElabError (Option FlatComparison)
 
   stringValue : HavingOrigin → SurfaceFieldPath → Except CorrelationElabError FlatStringField
-  dateDifference : DateDifferenceUnit → SurfaceHavingTemporalRef → SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
-  dayDifference : SurfaceHavingTemporalRef → SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
+  dateDifference : DateDifferenceUnit → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
+  dayDifference : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
   dateTimeDifference : DateTimeSubdayUnit → SurfaceHavingTemporalRef → SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
   dateRangeBoundPart : HavingOrigin → SurfaceFieldPath → DateNumericPart → Except CorrelationElabError FlatDateRangeField
   temporalPart : HavingOrigin → SurfaceFieldPath → TemporalNumericPart → Except CorrelationElabError FlatTemporalField

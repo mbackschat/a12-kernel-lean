@@ -64,14 +64,20 @@ private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
   | other => lowerNonAggregateHavingNumericAtom other
 where
   lowerNonAggregateHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
-    | .call id [.mk (.entity { path := left, index := none, category := none }) none none,
-        .mk (.entity { path := right, index := none, category := none }) none none] none none => do
-        let some (leftOrigin, leftField) := left.havingField? | refuse "Having" "difference left"
-        let some (rightOrigin, rightField) := right.havingField? | refuse "Having" "difference right"
-        let left : SurfaceHavingTemporalRef := { origin := leftOrigin, field := leftField }
-        let right : SurfaceHavingTemporalRef := { origin := rightOrigin, field := rightField }
-        if id == "DifferenceInDays" then return .dayDifference left right
-        if let some unit := calendarUnit? id then return .dateDifference unit left right
+    | .call id [.mk left none none, .mk right none none] none none => do
+        let field : Expr → Option SurfaceHavingTemporalRef
+          | .entity { path, index := none, category := none } => do
+              let (origin, field) ← path.havingField?
+              pure { origin, field }
+          | _ => none
+        if id == "DifferenceInDays" || (calendarUnit? id).isSome then
+          let some left := dateDifferenceOperandWith? field left | refuse "Having" "difference left"
+          let some right := dateDifferenceOperandWith? field right | refuse "Having" "difference right"
+          if id == "DifferenceInDays" then return .dayDifference left right
+          let some unit := calendarUnit? id | refuse "Having" "difference unit"
+          return .dateDifference unit left right
+        let some left := field left | refuse "Having" "difference left"
+        let some right := field right | refuse "Having" "difference right"
         let some unit := subdayUnit? id | refuse "Having" "difference unit"
         pure (.dateTimeDifference unit left right)
     | .constant "BaseYear" => pure .baseYear

@@ -172,7 +172,11 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
   | .leaf (.numeric comparison) => do
       let pointers ← (comparison.left.atoms ++ comparison.right.atoms).mapM fun
         | .aggregate _ first rest => (first :: rest).mapM (havingNumberReferencePointer source environment)
-        | .dateDifference _ left right | .dayDifference _ left right | .dateTimeDifference _ left right => [left, right].mapM fun reference => do
+        | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).mapM fun reference => do
+            let declaration ← (model.lookupUniqueId reference.field.id).mapError (fun _ => .incoherentHavingField reference.field.id)
+            if declaration.toTemporalField? != some reference.field then throw (.incoherentHavingField reference.field.id)
+            havingFieldPointerFor source environment declaration reference.origin
+        | .dateTimeDifference _ left right => [left, right].mapM fun reference => do
             let declaration ← (model.lookupUniqueId reference.field.id).mapError (fun _ => .incoherentHavingField reference.field.id)
             if declaration.toTemporalField? != some reference.field then throw (.incoherentHavingField reference.field.id)
             havingFieldPointerFor source environment declaration reference.origin

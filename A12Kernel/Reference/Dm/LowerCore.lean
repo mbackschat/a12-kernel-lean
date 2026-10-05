@@ -168,6 +168,13 @@ def authoredDateLiteral? (text : String) : Option AuthoredDateLiteral :=
   | _, some (month, day) => some { year := none, month, day }
   | _, _ => none
 
+def dateDifferenceOperandWith? (field : Expr → Option Field) : Expr → Option (SurfaceDateDifferenceOperand Field)
+  | .string text => authoredDateLiteral? text |>.map .literal
+  | .constant "Now" => some .now
+  | .constant "Today" => some .today
+  | .constant "BaseYear" => some (.baseYear .direct)
+  | expr => field expr |>.map .field
+
 /-- Whether a quoted literal is typed as a temporal constant rather than a string, by its content
 alone: a date with or without its year, a clock, or a date and a clock joined by `T`. The typing
 precedes every operand walk, so a site reading the literal as text must refuse it instead

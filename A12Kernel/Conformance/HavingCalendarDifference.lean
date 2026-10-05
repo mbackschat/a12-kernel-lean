@@ -12,9 +12,9 @@ local instance [DecidableEq ε] [DecidableEq α] : DecidableEq (Except ε α)
 private def reference (origin : HavingOrigin) (id : FieldId) : HavingTemporalRef := {
   origin, field := { id, kind := .date, components := { year := true, month := true, day := true, hour := false, minute := false, second := false } } }
 private def atoms : List HavingNumericAtom :=
-  [.dateDifference .months (reference .inner 1) (reference .outer 2),
-   .dateDifference .years (reference .inner 1) (reference .outer 2),
-   .dayDifference .utc (reference .inner 1) (reference .outer 2)]
+  [.dateDifference .months (.field (reference .inner 1)) (.field (reference .outer 2)),
+   .dateDifference .years (.field (reference .inner 1)) (.field (reference .outer 2)),
+   .dayDifference .utc (.field (reference .inner 1)) (.field (reference .outer 2))]
 private def dateCell (basis : DateCalendarBasis) : CheckedCell := {
   rawPresent := true, findings := [], parsed := some (.temporal (.date {
     instant := { epochMillis := 0 }, parts := { year := 1970, month := 1, day := 1 }, basis })) }
@@ -64,5 +64,27 @@ example : atoms.all (fun atom =>
 
 example : atoms.all (fun atom => CorrelatedHaving.fieldIds (condition atom) == [1, 2] &&
     CorrelatedHaving.markedFieldIds (condition atom) == [2]) = true := by native_decide
+
+
+private def staticAtoms : List HavingNumericAtom :=
+  let literal : ResolvedDateDifferenceOperand HavingTemporalRef := .literal { year := some 1970, month := 1, day := 1 } 2023
+  [.dateDifference .months literal (.field (reference .outer 2)),
+   .dateDifference .years (.field (reference .outer 2)) (.baseYear 1970 .direct),
+   .dayDifference .utc literal (.field (reference .outer 2))]
+
+example : staticAtoms.all (fun atom => atom.origins == [.outer] &&
+    CorrelatedHaving.fieldIds (condition atom) == [2] &&
+    CorrelatedHaving.markedFieldIds (condition atom) == [2] &&
+    atom.readComputationResolving {
+      read := fun env id => if env == frame.outerEnv && id == 2 then .ok (dateCell .storedGregorian) else .error "unexpected read"
+      bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar" } frame == .ok (.value 0) &&
+    atom.readComputation (pair emptyCell invalid) frame == .ok (.poison .malformed) &&
+    atom.readComputation (pair invalid emptyCell) frame == .ok (.value 0)) = true := by native_decide
+
+
+example : (HavingNumericAtom.dayDifference .utc (.baseYear 2024 .direct)
+    (.literal { year := none, month := 3, day := 1 } 2024)).readComputationResolving {
+      read := fun _ _ => .error "unexpected read", bindingError := fun _ => "binding"
+      unsupportedDateCalendar := "calendar" } frame = .ok (.value 60) := by native_decide
 
 end A12Kernel.Conformance.HavingCalendarDifference
