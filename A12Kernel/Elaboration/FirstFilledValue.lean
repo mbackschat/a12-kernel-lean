@@ -222,6 +222,20 @@ def evaluateComputationFirstFilled
   | .inl state => pure state.finish
   | .inr result => pure result.asNumber
 
+private def scanDeclaredValidationFirstFilled
+    (document : CheckedDocument model) (scope : ValidationRelevanceScope) (fullDomain : Bool) :
+    List (FlatFieldDecl × Env) → FirstFilledScanState →
+      Except CheckedAddressingError
+        (FirstFilledScanState ⊕ PartialValidationFirstFilledNumberResult)
+  | [], state => pure (.inl state)
+  | (declaration, environment) :: rest, state => do
+      if !scope.coversCell model declaration.path environment then return .inr .nonRelevant
+      let addressed ← if fullDomain then document.fullValidationAddressedCell environment declaration.id
+        else document.addressedCell environment declaration.id
+      match state.step (observeCell .validation addressed.cell).asNumberValueListCell with
+      | .continue next => scanDeclaredValidationFirstFilled document scope fullDomain rest next
+      | .done result => pure (.inr (.evaluated result.asNumber))
+
 private def scanCheckedDocumentValidationOperand
     (document : CheckedDocument model) (outer : Env)
     (scope : ValidationRelevanceScope) (fullDomain : Bool) (state : FirstFilledScanState) :
@@ -260,7 +274,12 @@ private def scanCheckedDocumentValidationOperand
         selected (state.enterSelection selected.isEmpty
           resolved.domain.hasOpenTail true)
   | .group slot =>
-      .error (.addressing (.unsupportedGroupOperand slot.groupPath))
+      do
+        let (reads, hasTail) ← model.groupOperandReads document.source.toDocument outer
+          slot.source.boundLevelCount (model.groupSubtreeFields slot.groupPath) (·.repeatableScope)
+          |>.mapError .addressing
+        scanDeclaredValidationFirstFilled document scope fullDomain reads
+          (state.enterSelection reads.isEmpty hasTail false)
 
 private def scanCheckedDocumentValidationOperands
     (document : CheckedDocument model) (outer : Env)

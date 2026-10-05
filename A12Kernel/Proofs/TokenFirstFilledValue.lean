@@ -105,28 +105,28 @@ theorem checkedFirstFilledTokenSource_uniqueDirectOperands
     firstDuplicateDirectFirstFilledTokenField? checked.operands = none :=
   checked.uniqueDirectOperands
 
-/-- The checked direct/star full-validation route returns `none` exactly for a source outside its
-    group-free stored-token support boundary; semantic exhaustion remains the distinct
+/-- The checked full-validation route returns `none` exactly for a source outside its
+    stored-token support boundary; semantic exhaustion remains the distinct
     `some .noValue`. -/
-theorem checkedDirectStarFirstFilledValidation_none_iff_unsupported
+theorem checkedFirstFilledValidation_none_iff_unsupported
     (checked : CheckedTokenEntitySource model)
     (document : CheckedDocument model) (outer : Env) :
-    checked.evaluateCheckedDirectStarFirstFilledValidation? document outer =
+    checked.evaluateCheckedFirstFilledValidation? document outer =
         .ok none ↔
-      checked.supportsCheckedDirectStarFirstFilledValidation = false := by
+      checked.supportsCheckedFirstFilledValidation = false := by
   have mappedSome_ne_none {α ε} (result : Except ε α) :
       (some <$> result) ≠ .ok none := by
     cases result <;> intro equal <;> cases equal
-  cases supported : checked.supportsCheckedDirectStarFirstFilledValidation with
+  cases supported : checked.supportsCheckedFirstFilledValidation with
   | false =>
-      rw [CheckedTokenEntitySource.evaluateCheckedDirectStarFirstFilledValidation?]
+      rw [CheckedTokenEntitySource.evaluateCheckedFirstFilledValidation?]
       simp only [supported, Bool.false_eq_true, ↓reduceIte]
       change (Except.ok none :
         Except CheckedAddressingError (Option FirstFilledTokenResult)) =
           .ok none ↔ True
       simp
   | true =>
-      rw [CheckedTokenEntitySource.evaluateCheckedDirectStarFirstFilledValidation?]
+      rw [CheckedTokenEntitySource.evaluateCheckedFirstFilledValidation?]
       simp only [supported, ↓reduceIte, Bool.true_eq_false, iff_false]
       exact mappedSome_ne_none _
 

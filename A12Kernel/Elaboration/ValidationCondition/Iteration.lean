@@ -437,7 +437,7 @@ def supportsOrdinaryIteration
     | .repetitionNotUnique _ => true
     | .constructedDateValidity _ _ | .customFieldValidity _ => true
     | .stringPattern _ => true
-    | .stringExpression _ | .scalarTemporal _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => true
+    | .stringExpression _ | .scalarTemporal _ | .tokenComparison _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => true
     | _ => false
 
 /-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/

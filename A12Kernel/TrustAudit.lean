@@ -1871,7 +1871,7 @@ run_cmd do
 #print axioms A12Kernel.checkedTokenStar_nonRelevantFirstFilledHeadBeforeRead
 #print axioms A12Kernel.checkedFirstFilledTokenSource_requiredMultiplicity
 #print axioms A12Kernel.checkedFirstFilledTokenSource_uniqueDirectOperands
-#print axioms A12Kernel.checkedDirectStarFirstFilledValidation_none_iff_unsupported
+#print axioms A12Kernel.checkedFirstFilledValidation_none_iff_unsupported
 #print axioms A12Kernel.hasGroupPath_nonrepeatable_contributesField
 #print axioms A12Kernel.checkedStarredGroupSource_ancestry
 #print axioms A12Kernel.checkedStarredGroupSource_wellFormed

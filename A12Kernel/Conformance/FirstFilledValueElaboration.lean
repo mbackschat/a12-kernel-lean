@@ -374,4 +374,14 @@ example :
         some (.laterFieldKindMismatch note.path .string) := by
   native_decide
 
+private def primaryGroup : SurfaceFirstFilledNumberOperand :=
+  .starredGroup { base := .absolute, groups := [{ name := "Form" }, { name := "Primary", starred := true }] }
+
+example : checkedValidationSnapshot (source primaryGroup [.field (bare "Fallback")])
+      primaryAndFallbackData = some (.validation (.evaluated (.value 7 false))) ∧
+    checkedValidationSnapshot (source primaryGroup [.field (bare "Fallback")])
+      directPresentData = some (.validation (.evaluated (.value 9 true))) ∧
+    checkedValidationSnapshot (source (.field (bare "Fallback")) [primaryGroup])
+      primaryAndFallbackData = some (.validation (.evaluated (.value 9 false))) := by native_decide
+
 end A12Kernel.Conformance.FirstFilledValueElaboration

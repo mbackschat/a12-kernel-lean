@@ -113,8 +113,8 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         match equality, lowerTokenComparisonOperand model rowGroup left,
             lowerTokenComparisonOperand model rowGroup right with
         | some op, .ok left, .ok right => [do
-            let comparison ← elaborated "TokenComparison" (elaborateTokenComparison model rowGroup op left right)
-            elaborated "TokenComparison" (CheckedValidationCondition.fromTokenComparison rowGroup comparison)]
+            let comparison ← elaborated "TokenComparison" (elaborateTokenComparison model rowGroup op left right bindingGroup)
+            elaborated "TokenComparison" (CheckedValidationCondition.fromTokenComparison bindingGroup comparison)]
         | _, _, _ => []
     | _ => []
   let validity := match leaf with

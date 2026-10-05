@@ -106,7 +106,7 @@ private def tokenFirstFilled? (rows : List (List (String × String))) : Option (
   let source ← (elaborateFirstFilledTokenSource model ["Rg"]
     { first := .star (rowsStar "T"), rest := [.field (bare "TF")] }).toOption
   let document ← document? rows
-  (source.evaluateCheckedDirectStarFirstFilledValidation? document []).toOption
+  (source.evaluateCheckedFirstFilledValidation? document []).toOption
 
 private def sumSource? : Option (CheckedNumberEntitySource model) :=
   (elaborateNumberEntitySource model ["Rg"] { first := .star (rowsStar "N"), rest := [] }).toOption

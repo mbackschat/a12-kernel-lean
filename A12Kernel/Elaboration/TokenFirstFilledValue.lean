@@ -94,14 +94,16 @@ private def firstFilledMeasuredKindError? (model : FlatModel)
     classes before token certification would collapse them into a local kind mismatch. -/
 def elaborateFirstFilledTokenSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFirstFilledTokenSource)
-    (writtenGroup : GroupPath := declaringGroup) :
+    (writtenGroup : GroupPath := declaringGroup) (bindingGroup? : Option GroupPath := none) :
     Except FirstFilledTokenElabError (CheckedFirstFilledTokenSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
+  let shape ← elaborateFieldEntityShapeIn model declaringGroup
+    (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored
+    (writtenGroup := writtenGroup)
     |>.mapError fun error => .source (.shape error)
   match firstFilledMeasuredKindError? model shape.operands with
   | some error => throw error
   | none =>
-      certifyTokenEntityShape model declaringGroup shape |>.mapError .source
+      certifyTokenEntityShape model declaringGroup shape (bindingGroup?.getD declaringGroup) |>.mapError .source
 
 namespace FirstFilledTokenElabError
 
@@ -225,16 +227,22 @@ private def resolveCheckedFirstFilledValidationSide
     (source : CheckedTokenEntityOperand model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (ResolvedValueListSide .token) := do
-  pure ((← source.resolveCheckedValidationOperand document outer)
-    |>.inCapacityValueListSideAt .validation)
+  match source with
+  | .field direct => do
+      let addressed ← document.fullValidationAddressedCell outer direct.declaration.id
+      pure { cells := [direct.operand.checkedValueListCellAt .validation addressed.cell]
+             hasUninstantiatedTail := false, hasHaving := false }
+  | .star _ | .group _ => do
+      pure ((← source.resolveCheckedValidationOperand document outer)
+        |>.inCapacityValueListSideAt .validation)
 
-/-- Whether the checked token source contains only direct or starred field operands. Group-bearing
-    sources retain the separate bounded group evaluator, and category-projected Enumeration
-    sources remain outside this stored-token route. -/
-def supportsCheckedDirectStarFirstFilledValidation
+/-- Stored-token sources share the same scan across direct, starred and group operands.
+    Group certificates already require stored projections; explicit category projections remain
+    outside this route. -/
+def supportsCheckedFirstFilledValidation
     (checked : CheckedTokenEntitySource model) : Bool :=
   checked.operands.all fun
-    | .group _ => false
+    | .group _ => true
     | .field source => source.projectionRef == .stored
     | .star source => source.projectionRef == .stored
 
@@ -250,23 +258,23 @@ private def scanCheckedFirstFilledValidationOperands
           scanCheckedFirstFilledValidationOperands document outer remaining next
       | .inr result => pure result.asToken
 
-/-- Evaluate a supported stored-token source. The support proof excludes group and projected slots
-before traversal, so condition consumers need no fallback that could disguise an unsupported shape. -/
+/-- Evaluate a supported stored-token source. The support proof excludes projected slots before
+traversal, so condition consumers need no fallback that could disguise an unsupported shape. -/
 def evaluateSupportedFirstFilledValidation
     (checked : CheckedTokenEntitySource model) (document : CheckedDocument model) (outer : Env)
-    (_supported : checked.supportsCheckedDirectStarFirstFilledValidation = true) :
+    (_supported : checked.supportsCheckedFirstFilledValidation = true) :
     Except CheckedAddressingError FirstFilledTokenResult :=
   scanCheckedFirstFilledValidationOperands document outer checked.operands {}
 
-/-- Evaluate one already-admitted direct/plain-star/filtered-star token source against the immutable
-    checked document. Each reached slot selects its in-capacity projection before the common lazy
-    scan; a terminal value or formal cause hides every later slot and its addressing work. Group
-    operands retain their separately bounded checked-document route and return `none` here. -/
-def evaluateCheckedDirectStarFirstFilledValidation?
+/-- Evaluate one already-admitted direct/plain-star/filtered-star/group token source against the immutable
+    checked document. A bound direct slot retains its formal findings; reopened star/group slots select their
+    in-capacity projection before the common lazy scan; a terminal value or formal cause hides every later slot and its addressing work.
+    `none` denotes a projected source outside this stored-token account. -/
+def evaluateCheckedFirstFilledValidation?
     (checked : CheckedTokenEntitySource model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (Option FirstFilledTokenResult) :=
-  if supported : checked.supportsCheckedDirectStarFirstFilledValidation = true then do
+  if supported : checked.supportsCheckedFirstFilledValidation = true then do
     pure (some (← checked.evaluateSupportedFirstFilledValidation document outer supported))
   else
     pure none

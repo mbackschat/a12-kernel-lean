@@ -22,7 +22,7 @@ inductive TokenComparisonElabError where
 inductive CheckedTokenComparisonOperand (model : FlatModel) where
   | literal (value : String)
   | firstFilled (source : CheckedFirstFilledTokenSource model)
-      (supported : source.supportsCheckedDirectStarFirstFilledValidation = true)
+      (supported : source.supportsCheckedFirstFilledValidation = true)
 
 namespace CheckedTokenComparisonOperand
 
@@ -49,23 +49,24 @@ structure CheckedTokenComparison (model : FlatModel) where
   operator : EqualityOp
   modelWellFormed : model.validate.isOk = true
 
-private def resolveTokenComparisonOperand (model : FlatModel) (declaringGroup : GroupPath) :
+private def resolveTokenComparisonOperand (model : FlatModel) (declaringGroup bindingGroup : GroupPath) :
     SurfaceTokenComparisonOperand → Except TokenComparisonElabError (CheckedTokenComparisonOperand model)
   | .literal value => pure (.literal value)
   | .firstFilled authored => do
-      let source ← (elaborateFirstFilledTokenSource model declaringGroup authored).mapError .source
-      if supported : source.supportsCheckedDirectStarFirstFilledValidation = true then
+      let source ← (elaborateFirstFilledTokenSource model declaringGroup authored bindingGroup (some bindingGroup)).mapError .source
+      if supported : source.supportsCheckedFirstFilledValidation = true then
         pure (.firstFilled source supported)
       else throw .unsupportedSource
 
 def elaborateTokenComparison (model : FlatModel) (declaringGroup : GroupPath)
-    (operator : EqualityOp) (left right : SurfaceTokenComparisonOperand) :
+    (operator : EqualityOp) (left right : SurfaceTokenComparisonOperand)
+    (bindingGroup : GroupPath := declaringGroup) :
     Except TokenComparisonElabError (CheckedTokenComparison model) := do
   match h : model.validate with
   | .error error => throw (.model error)
   | .ok () =>
-      let left ← resolveTokenComparisonOperand model declaringGroup left
-      let right ← resolveTokenComparisonOperand model declaringGroup right
+      let left ← resolveTokenComparisonOperand model declaringGroup bindingGroup left
+      let right ← resolveTokenComparisonOperand model declaringGroup bindingGroup right
       if (left.sources ++ right.sources).isEmpty then throw .noFieldSource
       pure { left, right, operator, modelWellFormed := by rw [h]; rfl }
 

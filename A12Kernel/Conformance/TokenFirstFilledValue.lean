@@ -241,13 +241,13 @@ private def evaluatedCheckedOf (authored : SurfaceFirstFilledTokenSource)
     instantiatedRows := (List.range rowCount).map fun index =>
       checkedRow (index + 1)
     cells }).toOption
-  (checked.evaluateCheckedDirectStarFirstFilledValidation? document []).toOption
+  (checked.evaluateCheckedFirstFilledValidation? document []).toOption
 
 private def projectedCategorySupport : Option Bool := do
   let checked ←
     (elaborateProjectedTokenEntitySource model ["Form"]
       projectedCategorySource).toOption
-  pure checked.supportsCheckedDirectStarFirstFilledValidation
+  pure checked.supportsCheckedFirstFilledValidation
 
 private def checkedErrorOf (authored : SurfaceFirstFilledTokenSource) :
     Option FirstFilledTokenElabError :=
@@ -460,6 +460,6 @@ example :
       let source := fixedGroup ["Form", "Texts"]
       pure ((elaborateFirstFilledTokenSource grouped ["Form"] source).isOk,
         (elaborateTokenComparison grouped ["Form"] .equal
-          (.firstFilled source) (.literal "A")).isOk)) = some (true, false) := by native_decide
+          (.firstFilled source) (.literal "A")).isOk)) = some (true, true) := by native_decide
 
 end A12Kernel

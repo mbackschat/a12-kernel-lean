@@ -582,14 +582,15 @@ private def groupFirstFilledDecision
     (operand : SurfaceFieldEntityOperand) (cells : List ClassifiedCellInput)
     (declaringGroup : GroupPath := ["Form"])
     (rest : List SurfaceFieldEntityOperand := [])
-    (instantiatedRows : List RowAddr := []) (outer : Env := []) :
+    (instantiatedRows : List RowAddr := []) (outer : Env := []) (unified : Bool := false) :
     Option (Option FirstFilledTokenResult) := do
   let source ←
     (elaborateFirstFilledTokenSource probeModel declaringGroup
       { first := operand, rest }).toOption
   let document ←
     (checkDocument prepared "en_US" { instantiatedRows, cells }).toOption
-  (source.evaluateCheckedGroupFirstFilledValidation? document outer).toOption
+  (if unified then source.evaluateCheckedFirstFilledValidation? document outer
+   else source.evaluateCheckedGroupFirstFilledValidation? document outer).toOption
 
 private def encounterFirstFilled? (cells : List ClassifiedCellInput) :
     Option FirstFilledTokenResult :=
@@ -713,6 +714,17 @@ private def starRowsFirstFilledDecision
 
 private def starRow (index : Nat) : RowAddr :=
   { group := 40, path := [index] }
+
+example : groupFirstFilledDecision (group ["Form", "Encounter"])
+      [str 18 [] "first", str 10 [] "fallback"]
+      (rest := [field "Other", group ["Form", "Mixed"]]) (unified := true) =
+        some (some (.value "first" false)) ∧
+    groupFirstFilledDecision (group ["Form", "Encounter"]) [str 10 [] "fallback"]
+      (rest := [field "Other", group ["Form", "Mixed"]]) (unified := true) =
+        some (some (.value "fallback" true)) ∧
+    groupFirstFilledDecision starRows [str 9 [] "last"]
+      (rest := [field "Other", field "Loose"]) (unified := true) =
+        some (some (.value "last" true)) := by native_decide
 
 example :
     starRowsFirstFilledDecision [] [] = some (some .noValue) := by
