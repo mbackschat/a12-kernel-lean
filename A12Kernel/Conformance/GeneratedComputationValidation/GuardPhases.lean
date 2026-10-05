@@ -86,7 +86,7 @@ example : patternPhases .matched (.parsed (.str "x")) false "x" exactXCompiler =
     some (.notTrue, .notFired) ∧
     patternPhases .violated .empty false = some (.notTrue, .notFired) := by native_decide
 
-private def customPatternRefusal : Bool :=
+private def customPatternAssembly : Bool :=
   let source := { model with fields := model.fields.map fun field =>
     if field.id == textGuard.id then { field with customType := some { name := "HostType" } }
     else field }
@@ -99,16 +99,17 @@ private def customPatternRefusal : Bool :=
       targetField := target.id, name := "computedTarget", commonPrecondition := some (.leaf (.predicate predicate))
       alternatives := .singleton { operation }, messagePlan }
     pure (match assembleGeneratedNumericOperationTableRule source table with
-      | .error .patternGuardRequiresOrdinaryValidation => true
+      | .ok _ => true
       | _ => false)) with
   | some result => result
   | none => false
 
-example : customPatternRefusal = true ∧
+example : customPatternAssembly = true ∧
     ((elaborateComputationStringPattern builtinStringPatternCompiler repeatableModel
       ["Form", "Rows"] ["Form", "Rows"] {
         field := absolutePath ["Form", "Rows"] "Code", op := .matched, source := "[0-9]+" }).toOption.map
-      fun checked => (checked.toOrdinaryValidation? ["Form", "Rows"]).isNone) = some true := by native_decide
+      fun checked => (checked.toValidation? ["Form", "Rows"]).isSome &&
+        (checked.toValidation? ["Form"]).isNone) = some true := by native_decide
 
 private def comparisonModel : FlatModel := { model with fields := model.fields ++ [
   { id := 7, groupPath := ["Form"], name := "B1", policy := { kind := .boolean } },

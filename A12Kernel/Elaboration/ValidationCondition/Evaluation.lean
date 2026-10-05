@@ -199,6 +199,12 @@ def evalAddressedPartial?
 /-- Evaluate one addressed leaf through the same relevance rules. Ordered numeric and starred group-list sources preserve structural addressing failures; direct scalar/group leaves remain the exact pure evaluator lifted into that channel. -/
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
     ValidationConditionLeaf model → Except CheckedAddressingError Verdict
+  | .stringPattern leaf => do
+      let source := leaf.condition.field.id
+      if !context.directRelevant source then return .unknown
+      let cell ← context.readCell context.outer source
+      pure (leaf.condition.evalSelected { context.scalar.fields with
+        read := fun field => if field == source then cell else context.scalar.fields.read field })
   | .stringExpression comparison =>
       match context.input with
       | .checked document => do

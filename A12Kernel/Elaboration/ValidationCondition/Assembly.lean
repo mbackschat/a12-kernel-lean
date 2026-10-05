@@ -130,15 +130,16 @@ def fromCustomFieldValidity (model : FlatModel) (rowGroup : GroupPath)
 /-- Assemble one `PatternMatched`/`PatternViolated` leaf at a rule group, keeping the compiler that
     admitted its pattern beside the checked condition. -/
 def fromStringPattern (model : FlatModel) (rowGroup : GroupPath)
-    (compilePattern : StringPatternCompiler) (surface : SurfaceStringPatternCondition) :
+    (compilePattern : StringPatternCompiler) (surface : SurfaceStringPatternCondition)
+    (writtenGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
   match hModel : model.validate with
   | .error error => .error (.invalidModel error)
   | .ok () => do
-      let condition ← (elaborateStringPatternCondition compilePattern model rowGroup surface).mapError
+      let condition ← (elaborateStringPatternCondition compilePattern model rowGroup surface writtenGroup).mapError
         .stringPattern
-      checkCore model rowGroup (.leaf (.stringPattern { compilePattern, condition }))
-        (by rw [hModel]; rfl)
+      checkCore model writtenGroup (.leaf (.stringPattern { compilePattern, condition }))
+        (by rw [hModel]; rfl) rowGroup
 
 /-- Join the source-owning token comparison to ordinary condition composition. -/
 def fromTokenComparison (rowGroup : GroupPath) (comparison : CheckedTokenComparison model) :

@@ -1,4 +1,5 @@
 import A12Kernel.Proofs.PatternAdmission
+import A12Kernel.Elaboration.StringContext
 
 /-! # Checked authored String-pattern laws -/
 
@@ -88,19 +89,19 @@ theorem checkedStringPattern_evalSelected
 @[simp]
 theorem checkedStringPattern_emptyRow_notFired
     (checked : CheckedStringPatternCondition model compilePattern)
-    (prepared : PreparedFlatStringPatterns model compilePattern)
-    (raw : RawFlatContext) :
-    checked.evalFull prepared raw false = .notFired := by
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (raw : RawFlatContext) (locale : String) :
+    checked.evalFull prepared raw false locale = .notFired := by
   rfl
 
 /-- A content-bearing row evaluates through exactly the model-complete prepared context. -/
 @[simp]
 theorem checkedStringPattern_full_delegates
     (checked : CheckedStringPatternCondition model compilePattern)
-    (prepared : PreparedFlatStringPatterns model compilePattern)
-    (raw : RawFlatContext) :
-    checked.evalFull prepared raw true =
-      checked.evalSelected (prepared.checkContext raw) := by
+    (prepared : PreparedFlatStringContext model compilePattern)
+    (raw : RawFlatContext) (locale : String) :
+    checked.evalFull prepared raw true locale =
+      checked.evalSelected (prepared.checkContext locale raw) := by
   rfl
 
 /-- Any firing from the checked authored route retains the resolved pattern family's VALUE-only polarity. -/

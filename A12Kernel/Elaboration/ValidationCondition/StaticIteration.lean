@@ -314,6 +314,9 @@ def ordinaryIterationScope :
       Except RuleIterationScopeError (Option (List RepeatableLevel))
   | .leaf (.repeatableFieldPresence _ declaration) =>
       pure (some declaration.repeatableScope)
+  | .leaf (.stringPattern leaf) =>
+      let scope := model.fieldRepeatableScope leaf.condition.field.id
+      pure (if scope.isEmpty then none else some scope)
   | .leaf (.groupPresence _ reference) =>
       let scope := model.repeatableScopeForGroupPath reference.path
       pure (if scope.isEmpty then none else some scope)

@@ -16,6 +16,12 @@ in those carriers. Refusals name the construct and shape the replay ledger clust
 
 namespace A12Kernel.Dm
 
+def Expr.patternConstant? : Expr → Option String
+  | .string source => some source
+  | .braces body => body.patternConstant?
+  | _ => none
+
+
 /-- Why a parsed text did not reach a checked carrier. `construct` is the catalog id or shape the
 ledger clusters on, `detail` the elaborator's own error when one answered. -/
 structure Refusal where

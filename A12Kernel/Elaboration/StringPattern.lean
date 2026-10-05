@@ -298,7 +298,6 @@ inductive StringPatternConditionElabError where
   | model (error : ResolveError)
   | fieldReference (error : ResolveError)
   | fieldKind (path : List String) (kind : SurfaceScalarKind)
-  | preparedCustomFieldRequired (path : List String)
   | pattern (error : PatternAdmissionError)
   | incoherentCore
   deriving Repr, DecidableEq
@@ -329,23 +328,17 @@ def diagnostic? : StringPatternConditionElabError → Option KernelStaticDiagnos
   | .pattern .javaSyntax
   | .pattern .kernelRestriction => some .invalidPattern
   | .fieldReference error => error.diagnostic?
-  -- Named rather than wildcarded, so a new refusal must be classified instead of absorbed. A custom
-  -- declaration needing prepared checking is this theory's own reading limit, since it carries the
-  -- admitted String kind and clears the gate above, while the model form and `incoherentCore` are
-  -- routing rather than rule refusals.
-  | .model _ | .preparedCustomFieldRequired _ | .incoherentCore => none
+  | .model _ | .incoherentCore => none
 
 end StringPatternConditionElabError
 
-/-- Recheck that a field belongs to the validated model and is an ordinary nonrepeatable evaluated String. Its optional declared pattern is supplied separately by the model-complete prepared context. -/
-def FlatModel.admitsOrdinaryStringPatternField (model : FlatModel)
+/-- Recheck that a field belongs to the validated model and is an evaluated String. Its optional declared pattern is supplied separately by the model-complete prepared context. -/
+def FlatModel.admitsStringPatternField (model : FlatModel)
     (field : FlatStringField) : Bool :=
   match model.lookupUniqueId field.id with
   | .error _ => false
   | .ok declaration =>
-      declaration.repeatableScope.isEmpty &&
-        declaration.customType.isNone &&
-        declaration.stringValueMode == .evaluated &&
+      declaration.stringValueMode == .evaluated &&
         match declaration.policy.kind with
         | .string => true
         | _ => false
@@ -359,12 +352,12 @@ structure CheckedStringPatternCondition (model : FlatModel)
   pattern : AdmittedStringPattern compilePattern
   modelWellFormed : model.validate.isOk = true
   fieldWellFormed :
-    model.admitsOrdinaryStringPatternField field = true
+    model.admitsStringPatternField field = true
 
-/-- Resolve and certify the smallest ordinary checked pattern condition. Admission order follows the checked model, direct nonrepeatable field, field capability, and pattern-source stages. -/
+/-- Resolve and certify a checked pattern condition. The written field binds row reads while lexical resolution stays at the declaring group; source admission follows the field-value gates. -/
 def elaborateStringPatternCondition (compilePattern : StringPatternCompiler)
     (model : FlatModel) (rowGroup : GroupPath)
-    (surface : SurfaceStringPatternCondition) :
+    (surface : SurfaceStringPatternCondition) (writtenGroup : GroupPath := rowGroup) :
     Except StringPatternConditionElabError
       (CheckedStringPatternCondition model compilePattern) :=
   match hModel : model.validate with
@@ -373,17 +366,20 @@ def elaborateStringPatternCondition (compilePattern : StringPatternCompiler)
       -- The pattern's field is a field-value read, whose gates answer ahead of the kind gate below
       -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
       let declaration ←
-        (model.resolveFieldValueRead rowGroup surface.field)
-          |>.mapError .fieldReference
-      if declaration.customType.isSome then
-        throw (.preparedCustomFieldRequired declaration.path)
+        (checkFieldValueRead (do
+          let declaration ← model.resolveFieldDeclarationUnchecked rowGroup surface.field
+          match model.unboundReadLevel? rowGroup writtenGroup declaration.repeatableScope
+              (model.repeatableScopeForGroupPath writtenGroup) with
+          | some unbound => throw (.unboundOperandLevel declaration.path unbound)
+          | none => pure declaration)
+          (model.ruleGroupRead rowGroup writtenGroup surface.field)).mapError .fieldReference
       let field ←
         match declaration.policy.kind with
         | .string => pure { id := declaration.id }
         | kind => throw (.fieldKind declaration.path kind.surfaceKind)
       let pattern ←
         (admitStringPattern compilePattern surface.source).mapError .pattern
-      if hField : model.admitsOrdinaryStringPatternField field = true then
+      if hField : model.admitsStringPatternField field = true then
         pure {
           rowGroup
           op := surface.op
@@ -405,15 +401,6 @@ def evalSelected (checked : CheckedStringPatternCondition model compilePattern)
   checked.pattern.evalResolved checked.op
     (context.resolveDirectStringComparisonOperand checked.field)
 
-/-- Apply the ordinary full-validation row gate, then use the model-complete prepared String-pattern context. Pattern leaves cannot fire on an all-empty row. -/
-def evalFull (checked : CheckedStringPatternCondition model compilePattern)
-    (prepared : PreparedFlatStringPatterns model compilePattern)
-    (raw : RawFlatContext) (hasContent : Bool) : Verdict :=
-  if hasContent then
-    checked.evalSelected (prepared.checkContext raw)
-  else
-    .notFired
-
 /-- The direct field is the condition's only model reference. -/
 def referencesField (checked : CheckedStringPatternCondition model compilePattern)
     (field : FieldId) : Bool :=
@@ -426,23 +413,5 @@ carry the exact matcher without its leaf family being indexed by a compiler. -/
 structure CheckedStringPatternLeaf (model : FlatModel) where
   compilePattern : StringPatternCompiler
   condition : CheckedStringPatternCondition model compilePattern
-
-inductive PreparedStringPatternEvaluationError where
-  | preparation (error : DeclaredStringPatternElabError)
-  | condition (error : StringPatternConditionElabError)
-  deriving Repr, DecidableEq
-
-/-- Prepare every declared field pattern, elaborate the authored pattern leaf against the same model, and evaluate through that complete checked context. -/
-def elaborateAndEvalStringPatternFull
-    (compilePattern : StringPatternCompiler) (model : FlatModel)
-    (rowGroup : GroupPath) (raw : RawFlatContext) (hasContent : Bool)
-    (surface : SurfaceStringPatternCondition) :
-    Except PreparedStringPatternEvaluationError Verdict := do
-  let prepared ←
-    (prepareFlatStringPatterns compilePattern model).mapError .preparation
-  let checked ←
-    (elaborateStringPatternCondition compilePattern model rowGroup surface)
-      |>.mapError .condition
-  pure (checked.evalFull prepared raw hasContent)
 
 end A12Kernel

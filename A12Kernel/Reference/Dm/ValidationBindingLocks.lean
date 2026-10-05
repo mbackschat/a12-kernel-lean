@@ -24,8 +24,8 @@ private def rule (text : String) : DmRule := {
   group := ["Form"], name := "Rule", errorCode := "R", errorEntityRelPath := "../Rows/Qty"
   condition := text, severity := "ERROR" }
 private def row (qty key : String) : Json := Json.mkObj [("Qty", Json.str qty), ("Key", Json.str key)]
-private def run (text : String) (rows : List Json) : Option (List String) := do
-  let checkedRule ← (checkRule dm .english (rule text)).toOption
+private def run (text : String) (rows : List Json) (errorField : String := "../Rows/Qty") : Option (List String) := do
+  let checkedRule ← (checkRule dm .english { (rule text) with errorEntityRelPath := errorField }).toOption
   let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
     ("Qty", "9"), ("Rows", Json.arr rows.toArray)])])).toOption
   if !input.refusals.isEmpty then none
@@ -33,6 +33,53 @@ private def run (text : String) (rows : List Json) : Option (List String) := do
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
   pure ((← (runRule world document checkedRule).toOption).map fun message => (observe model message).pointer)
+
+example : run "[Rows/Key] PatternMatched \"[0-9]+\""
+    [row "5" "123", row "5" "x123"] "../Rows/Key" = some ["Form/Rows/Key"] ∧
+    run "[Rows/Key] PatternViolated {{\"[0-9]+\"}}"
+    [row "5" "123", row "5" "x123"] "../Rows/Key" = some ["Form/Rows[2]/Key"] ∧
+    run "[Rows/Key] PatternViolated \"[0-9]+\""
+    [row "5" "", row "5" ""] "../Rows/Key" = some [] := by native_decide
+
+example : run "FieldFilled(Qty) And [Rows/Key] PatternMatched \"[0-9]+\""
+    [row "5" "123", row "5" "x123"] "../Rows/Key" = some ["Form/Rows/Key"] := by native_decide
+
+example : run "(FieldNotFilled(Qty) And FieldFilled(Rows/Key)) Or [Rows/Key] PatternViolated \"[0-9]+\""
+    [row "5" "123", row "5" "x123"] "../Rows/Key" = some ["Form/Rows[2]/Key"] := by native_decide
+
+example : (do
+    let checked ← (checkRule dm .english {
+      (rule "[Rows/Key] PatternMatched \"[0-9]+\"") with errorEntityRelPath := "../Rows/Key" }).toOption
+    pure (checked.condition.declaringGroup, checked.condition.rowGroup)) =
+      some (["Form"], ["Form", "Rows"]) := by native_decide
+
+example :
+    let field : SurfaceFieldPath := { base := .absolute, groups := ["Form", "Rows"], field := "Key" }
+    (model.resolveFieldDeclarationUnchecked ["Form", "Side"] field).isOk = true ∧
+    (elaborateStringPatternCondition builtinStringPatternCompiler model ["Form", "Side"]
+      { op := .matched, field, source := "[0-9]+" } ["Form", "Rows"]).isOk = false := by native_decide
+
+private def partialPatternRows : Option (List (Env × Verdict)) := do
+  let checked ← (checkRule dm .english {
+    (rule "[Rows/Key] PatternMatched \"[0-9]+\"") with errorEntityRelPath := "../Rows/Key" }).toOption
+  let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+    ("Rows", Json.arr [row "5" "123", row "5" "x"].toArray)])])).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  match ← (checked.evalOrdinaryRepeatablePartial document .full).toOption with
+  | .skipped => none
+  | .evaluated rows => rows.mapM fun (environment, outcome) => match outcome with
+      | .skipped => none
+      | .evaluated result => some (environment, result.verdict)
+
+example : partialPatternRows = some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by native_decide
+
+example : (checkRule dm .english {
+    (rule "[/Form/Rows/Key] PatternMatched \"[0-9]+\"") with
+    group := ["Form", "Side"], errorEntityRelPath := "../../Rows/Key" }).isOk = false ∧
+    (checkRule dm .english {
+      (rule "[Rows/Key] PatternMatched \"[0-9]+\"") with errorEntityRelPath := "../Qty" }).isOk = false := by native_decide
 
 example : run "FieldFilled(Rows/Qty) And CurrentRepetition(Rows) > 1"
     [row "5" "A", row "5" "B"] = some ["Form/Rows[2]/Qty"] ∧

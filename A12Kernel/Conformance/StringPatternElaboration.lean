@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.ValidationCondition.Assembly
 import A12Kernel.Elaboration.StringContext
+import A12Kernel.Elaboration.ValidationCondition.Reference
 
 /-! # Checked authored String-pattern conformance locks -/
 
@@ -93,7 +94,7 @@ private def verdictOf (cell : RawCell) (hasContent : Bool) :
       (CheckedStringPatternCondition model compilePattern) → Option Verdict
   | .error _ => none
   | .ok checked =>
-      match prepareFlatStringPatterns compilePattern model with
+      match prepareFlatStringContext { now := { epochMillis := 0 } } compilePattern model with
       | .error _ => none
       | .ok prepared =>
           some (checked.evalFull prepared (raw cell) hasContent)
@@ -186,7 +187,7 @@ example :
         some .invalidEntity, some .tooManyParentGroups, some .fieldNameNotUnique, none] := by
   native_decide
 
-/- A raw field is refused by the field-value read's raw gate, registered-custom and repeatable fields remain explicit separate-context boundaries, and an ordinary declared-pattern field is admitted for prepared evaluation. A repeatable field read from the rule that iterates it is only this fragment's boundary, since the Kernel admits it there; read from the enclosing group it is the Kernel's missing wildcard ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)). -/
+/- A raw field is refused by the field-value read's raw gate, registered-custom and bound repeatable fields are admitted for prepared evaluation, and an ordinary declared-pattern field is admitted for prepared evaluation. A repeatable field is bound by its reading row; from an enclosing group without a row-bound error field it draws the Kernel's missing wildcard ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)). -/
 example :
     let rawDecl := {
       stringDeclaration with
@@ -208,13 +209,13 @@ example :
         some (.fieldReference (.rawFieldValueRead ["Claim", "Code"])) ∧
     errorOf (elaborateStringPatternCondition compilePattern
       { fields := [customDecl] } ["Claim"] (condition)) =
-        some (.preparedCustomFieldRequired ["Claim", "Code"]) ∧
+        none ∧
     errorOf (elaborateStringPatternCondition compilePattern
       { fields := [patternDecl] } ["Claim"] (condition)) =
         none ∧
     errorOf (elaborateStringPatternCondition compilePattern
       repeatableModel ["Claim", "Items"] (condition)) =
-        some (.fieldReference (.boundRepeatableReference ["Claim", "Items", "Code"])) ∧
+        none ∧
     errorOf (elaborateStringPatternCondition compilePattern repeatableModel ["Claim"]
       { condition with field := { base := .relative 0, groups := ["Items"], field := "Code" } }) =
         some (.fieldReference (.unboundOperandLevel ["Claim", "Items", "Code"]
@@ -434,7 +435,7 @@ example :
     preparedEvaluationErrorOf
       (elaborateAndEvalStringPatternFull compileDeclared invalidModel ["Claim"]
         (raw (.parsed (.str "A"))) true (condition "A")) =
-      some (.preparation (.pattern .javaSyntax)) := by
+      some (.preparation (.pattern (.pattern .javaSyntax))) := by
   native_decide
 
 /-! ## The pattern pair as validation leaves
@@ -512,5 +513,68 @@ example :
     partialVerdict? (.parsed (.str "ABC")) true = some (.fired .value) ∧
     partialVerdict? (.parsed (.str "ABC")) false = some .unknown := by
   native_decide
+
+private def customPatternVerdict (op : StringPatternOp) (value : String) (accept : Bool) :=
+  let fixture : FlatModel := { fields := [
+    { stringDeclaration with customType := some { name := "ProjectCode" } }] }
+  let world : World := {
+    now := { epochMillis := 0 }
+    customFieldValidator? := fun name => if name == "ProjectCode" then
+      some (fun _ _ => if accept then none else some { projectCode := "CUSTOM_REFUSAL" }) else none }
+  (elaborateAndEvalStringPatternFull compilePattern fixture ["Claim"]
+    (raw (.parsed (.str value))) true (condition (op := op)) world).toOption
+
+example : customPatternVerdict .matched "ABC" true = some (.fired .value) ∧
+    customPatternVerdict .violated "xyz" true = some (.fired .value) ∧
+    customPatternVerdict .matched "ABC" false = some .unknown ∧
+    customPatternVerdict .violated "xyz" false = some .unknown ∧
+    customPatternVerdict .violated "" true = some .notFired := by native_decide
+
+private def nestedPatternModel : FlatModel := {
+  fields := [{ stringDeclaration with groupPath := ["Claim", "Items", "Details"], repeatableScope := [10, 20] }]
+  repeatableGroups := [{ level := 10, path := ["Claim", "Items"] },
+    { level := 20, path := ["Claim", "Items", "Details"] }] }
+
+private def nestedPattern (parent : Nat) (op : StringPatternOp) (covered relevant : Bool := true)
+    (bad : Bool := false) : Option (Verdict × Verdict × List MessagePointer × Bool × Bool) := do
+  let fixture := nestedPatternModel
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } compilePattern fixture).toOption
+  let checked ← (CheckedValidationCondition.fromStringPattern fixture ["Claim"] compilePattern
+    { op, field := { base := .absolute, groups := ["Claim", "Items", "Details"], field := "Code" },
+      source := "[A-Z]{3}" } ["Claim", "Items", "Details"]).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := [{ group := 10, path := [1] }, { group := 10, path := [2] },
+      { group := 20, path := [1, 1] }, { group := 20, path := [2, 1] }]
+    cells := [{ address := { field := 1, path := [1, 1] }, stored := "xyz", raw := .parsed (.str "xyz") },
+      { address := { field := 1, path := [2, 1] }, stored := "ABC",
+        raw := if bad then .rejected .malformed else .parsed (.str "ABC") }] }).toOption
+  let environment : Env := [(10, parent), (20, 1)]
+  let context : AddressedValidationEvaluationContext fixture := {
+    scalar := {
+      fields := fixture.checkContext (raw (.parsed (.str "wrong scalar")))
+      groups := GroupPresenceContext.unavailable }
+    outer := environment, input := .checked document }
+  let full ← (checked.core.evalAddressedFull context true).toOption
+  let .leaf leaf := checked.core | none
+  let partialContext : AddressedValidationEvaluationContext fixture := { context with input := .partialView document (fun row field =>
+    if covered then (document.validationAddressedCell row field).map (fun (entry : CheckedAddressedCell) => some entry.cell) else pure none) }
+  let partialVerdict ← (← leaf.evalAddressedPartial? partialContext .full (fun _ => relevant)
+    (fun _ _ => .error (.checkedDocumentRequired [])) none).toOption
+  let pointers ← (checked.core.referencePointers environment).toOption
+  pure (full, partialVerdict, pointers, checked.core.requiresAddressedValidation,
+    checked.core.wellFormedBool ["Claim"])
+
+example : nestedPattern 2 .matched = some (.fired .value, .fired .value,
+      [{ field := 1, coordinates := [.concrete 2, .concrete 1] }], true, false) := by native_decide
+
+example : nestedPattern 1 .violated = some (.fired .value, .fired .value,
+      [{ field := 1, coordinates := [.concrete 1, .concrete 1] }], true, false) := by native_decide
+
+example : (nestedPattern 2 .matched false).map (fun (_, partialVerdict, _, _, _) => partialVerdict) = some .unknown := by native_decide
+
+example : (nestedPattern 2 .matched true false).map (fun (_, partialVerdict, _, _, _) => partialVerdict) = some .unknown := by native_decide
+
+example : (nestedPattern 2 .matched true true true).map (fun (full, partialVerdict, _, _, _) => (full, partialVerdict)) =
+      some (.unknown, .unknown) := by native_decide
 
 end A12Kernel.Conformance.StringPatternElaboration

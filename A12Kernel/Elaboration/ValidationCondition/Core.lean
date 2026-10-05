@@ -612,6 +612,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
+  | .stringPattern leaf => !(model.fieldRepeatableScope leaf.condition.field.id).isEmpty
   | .constructedDateValidity _ _ | .stringExpression _ => true
   | .scalarTemporal comparison => comparison.declarations.any fun field => !field.repeatableScope.isEmpty
   | .tokenComparison _ | .valueList _ | .valuesNotUnique _ => true
@@ -687,7 +688,8 @@ def wellFormedBool (rowGroup : GroupPath) :
   -- The rule's row must bind every level the operand leaves unstarred above its own depth.
   | .fieldFill _ source =>
       !source.hasIndexed && source.bindingScope.all (model.repeatableScopeForGroupPath rowGroup).contains
-  | .stringPattern leaf => model.admitsOrdinaryStringPatternField leaf.condition.field
+  | .stringPattern leaf => model.admitsStringPatternField leaf.condition.field &&
+      (model.fieldRepeatableScope leaf.condition.field.id).isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
 
 
 end ValidationConditionLeaf

@@ -268,15 +268,18 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         | .error refusal => [.error refusal])
     | _ => []
   let pattern := match leaf with
-    | .compare op (.value { path, index := none, category := none }) (.string source) =>
-        match op, path.toFieldPath? with
-        | .patternMatched, some field => [elaborated "PatternMatched"
+    | .compare op (.value { path, index := none, category := none }) right =>
+        match right.patternConstant? with
+        | none => []
+        | some source =>
+          match op, path.toFieldPath? with
+          | .patternMatched, some field => [elaborated "PatternMatched"
             (CheckedValidationCondition.fromStringPattern model rowGroup builtinStringPatternCompiler
-              { op := .matched, field, source })]
-        | .patternViolated, some field => [elaborated "PatternViolated"
+              { op := .matched, field, source } bindingGroup)]
+          | .patternViolated, some field => [elaborated "PatternViolated"
             (CheckedValidationCondition.fromStringPattern model rowGroup builtinStringPatternCompiler
-              { op := .violated, field, source })]
-        | _, _ => []
+              { op := .violated, field, source } bindingGroup)]
+          | _, _ => []
     | _ => []
   flat ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity
 

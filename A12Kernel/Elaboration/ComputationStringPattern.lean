@@ -32,14 +32,14 @@ def CheckedComputationStringPattern.eval (checked : CheckedComputationStringPatt
   let value ← checked.source.eval .computation context (fun _ => none)
   pure (checked.op.evalComputationResolved checked.pattern.wholeValueMatches value)
 
-/-- Preserve the admitted matcher when the source fits the ordinary validation carrier.
-Repeatable and prepared-custom validation remain outside that carrier's certificate. -/
-def CheckedComputationStringPattern.toOrdinaryValidation?
+/-- Preserve the admitted matcher when the validation row binds the source. -/
+def CheckedComputationStringPattern.toValidation?
     (checked : CheckedComputationStringPattern model) (rowGroup : GroupPath) :
     Option (CheckedStringPatternLeaf model) := do
   let .field fieldId := checked.source.core | none
   let field : FlatStringField := { id := fieldId }
-  if hField : model.admitsOrdinaryStringPatternField field = true then
+  if !(model.fieldRepeatableScope fieldId).isPrefixOf (model.repeatableScopeForGroupPath rowGroup) then none
+  if hField : model.admitsStringPatternField field = true then
     some { compilePattern := checked.compilePattern, condition := {
       rowGroup, op := checked.op, field, pattern := checked.pattern
       modelWellFormed := checked.source.modelWellFormed, fieldWellFormed := hField } }
