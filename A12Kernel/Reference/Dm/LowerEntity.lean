@@ -118,6 +118,10 @@ where
           (fun _ => (timePart? id).map TemporalNumericPart.time) | refuse "Having" "numeric source"
         pure (.temporalPart origin field part)
     | other => refuse "Having" other.construct
+private def lowerHavingNumericField (source : Expr) : Lowering SurfaceHavingNumericAtom := do
+  let reference ← numericFieldFormReference source
+  lowerHavingNumericAtom (.value reference)
+
 private def havingMember? : Expr → Option SurfaceHavingDirectFieldOperand
   | .value { path, index := none, category } => do
       let (origin, field) ← path.havingField?
@@ -189,8 +193,8 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
   | .compare op@(.tolerance _) left right => do
       let some (.tolerance range) := op.toNumeric? | refuse "Having" "tolerance band"
       pure (.tolerance range
-        (← lowerNumericExpr lowerHavingNumericAtom (fun _ => refuse "Having" "numeric field form") left)
-        (← lowerNumericExpr lowerHavingNumericAtom (fun _ => refuse "Having" "numeric field form") right))
+        (← lowerNumericExpr lowerHavingNumericAtom lowerHavingNumericField left)
+        (← lowerNumericExpr lowerHavingNumericAtom lowerHavingNumericField right))
   | .compare op left right => do
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
       match left, right with
@@ -223,8 +227,8 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
           | some (origin, field), .notEqual => pure (.compareStrings .notEqual
               { origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored } expected)
           | _, _ => refuse "Having" "String comparison"
-      | _, _ => pure (.numeric surfaceOp (← lowerNumericExpr lowerHavingNumericAtom (fun _ => refuse "Having" "numeric field form") left)
-          (← lowerNumericExpr lowerHavingNumericAtom (fun _ => refuse "Having" "numeric field form") right))
+      | _, _ => pure (.numeric surfaceOp (← lowerNumericExpr lowerHavingNumericAtom lowerHavingNumericField left)
+          (← lowerNumericExpr lowerHavingNumericAtom lowerHavingNumericField right))
   | other => refuse "Having" other.construct
 
 /-- Whether an unstarred path names a field of the model, read at the operator's group. -/

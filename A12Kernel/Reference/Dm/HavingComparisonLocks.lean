@@ -876,4 +876,58 @@ example : [("Sum", "5"), ("MinValue", "2"), ("MaxValue", "3")].all (fun (operato
       some (.fired .omission, ["value 9"]) ∧
     runModel aggregateLaterScaleModel "NumberOfDifferentValues(Rows/Tag, $Expected) == 2.00" false "3.00" "2" "3" = none := by native_decide
 
+private def numericFieldForms : List String :=
+  ["RoundDownValue", "RoundUpValue", "RoundAccountingValue", "AbsValue"]
+
+example : [("RoundDownValue", "-2"), ("RoundUpValue", "-1"),
+    ("RoundAccountingValue", "-2"), ("AbsValue", "1.5")].all (fun (op, expected) =>
+      run s!"{op}(Rows/Tag) == {expected}" false (.number { scale := 2, signed := true }) "0" "-1.5" "3.2" ==
+        some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : numericFieldForms.all (fun op =>
+    run s!"{op}(Rows/Tag) == 0" false (.number { scale := 2, signed := true }) "0" "" "3" ==
+      some (.fired .omission, ["value 9"]) &&
+    run s!"{op}(Rows/Tag) == 0" false (.number { scale := 2, signed := true }) "0" "bad" "3" ==
+      some (.notFired, []) &&
+    runModel { aggregateModel with fields := aggregateModel.fields.map fun field =>
+        if field.id == 2 || field.id == 3 then { field with policy := { kind := .number { scale := 2, signed := true } } } else field }
+      s!"{op}(Rows/Tag) == {op}($Expected)" true "-1.5" "-1.5" "3.2" "3.2" ==
+      some (.fired .omission, ["value 3.2", "value 5"])) = true := by native_decide
+
+example : [("RoundDownValue", "-1.6"), ("RoundUpValue", "-1.5"), ("RoundAccountingValue", "-1.6")].all
+    (fun (op, expected) => run s!"{op}(Rows/Tag, 1) == {expected}" false
+      (.number { scale := 2, signed := true }) "0" "-1.55" "3.2" == some (.fired .omission, ["value 9"])) = true ∧
+    run "AbsValue(Rows/Tag) + RoundUpValue($Expected) == 2.5" false
+      (.number { scale := 2, signed := true }) "0.5" "-1.5" "3.2" = some (.fired .omission, ["value 9"]) ∧
+    run "RoundDown(AbsValue(Rows/Tag), 1) == 1.5" false
+      (.number { scale := 2, signed := true }) "0" "-1.55" "3.2" = some (.fired .omission, ["value 9"]) := by native_decide
+
+example : numericFieldForms.all (fun op =>
+    [s!"{op}([Rows/Tag])", s!"{op}(1)", s!"{op}(Rows*)", s!"{op}(Rows*/Tag)",
+      s!"{op}(Rows/Tag -> Swap)", s!"{op}(AbsValue(Rows/Tag))"].all (fun expression =>
+        (run (expression ++ " > 0") false (.number { scale := 2, signed := true })).isNone) &&
+    (run s!"{op}(Rows/Tag) > 0").isNone) = true ∧
+    ["RoundDownValue", "RoundUpValue", "RoundAccountingValue"].all (fun op =>
+      ["-1", "1.0", "[Rows/Tag]", "15", "9223372036854775808"].all (fun precision =>
+        (run s!"{op}(Rows/Tag, {precision}) > 0" false (.number { scale := 2, signed := true })).isNone)) = true ∧
+    run "RoundDownValue(Rows/Tag) == 1.0" false (.number { scale := 2, signed := true }) = none ∧
+    run "AbsValue(Rows/Tag) == 1.000" false (.number { scale := 2, signed := true }) = none := by native_decide
+
+example : numericFieldForms.all (fun op => referencesFor
+    s!"{op}(/Form/Rows/Tag) == {op}($/Form/Rows/Tag)"
+    { aggregateModel with fields := aggregateModel.fields ++ [{
+      id := 6, name := "Token", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } }] }
+    "Token" == some (true, true)) = true ∧
+    numericFieldForms.all (fun op => toleranceRanges.all (fun band =>
+      run s!"{op}(Rows/Tag) * {band} DiffersWithToleranceRange{band} 0" false
+        (.number { scale := 2, signed := true }) "0" "3" "0" == some (.fired .omission, ["value 9"]))) = true := by native_decide
+
+example : ["RoundDownValue", "RoundUpValue", "RoundAccountingValue"].all (fun op =>
+    run s!"{op}(Rows/Tag, 14) == -1.55" false (.number { scale := 2, signed := true }) "0" "-1.55" "3" ==
+      some (.fired .omission, ["value 9"])) = true ∧
+    (match parseText .english "Sum(Rows*/N Having AbsValue(1) + [Rows/N] > 0) > 0" with
+      | .ok parsed => (lowerCondition { aggregateModel with fields := aggregateModel.fields.map fun field =>
+          if field.id == 2 then { field with name := "1" } else field } ["Form"] false parsed.body).isOk
+      | .error _ => false) = true := by native_decide
+
 end A12Kernel.Dm.HavingComparisonLocks

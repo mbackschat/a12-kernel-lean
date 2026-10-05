@@ -227,17 +227,21 @@ def roundingMode? : String → Option DecimalRoundingMode
   | "RoundAccounting" => some .halfUp
   | _ => none
 
-/-- Field forms share the checked Number read and arithmetic but retain their source slot
-until KF393/KF395's group, star, category and kind gates have answered. -/
-def lowerNumericFieldAtom (model : FlatModel) (group : GroupPath)
-    (atom : Expr → Lowering Atom) (source : Expr) : Lowering Atom := do
-  let reference ← match source with
+/-- GrammarOnly entity slots admit digit-only field names, distinct from numeric literal operands. -/
+def numericFieldFormReference (source : Expr) : Lowering Reference :=
+  match source with
     | .entity reference => pure reference
     | .number text =>
         if !text.isEmpty && text.toList.all Char.isDigit then
           pure ({ path := { segments := [{ name := text, star := false }] } } : Reference)
         else refuse "NumericFieldForm" KernelStaticDiagnostic.unexpectedToken.kernelCode
     | _ => refuse "NumericFieldForm" KernelStaticDiagnostic.unexpectedToken.kernelCode
+
+/-- Field forms share the checked Number read and arithmetic but retain their source slot
+until KF393/KF395's group, star, category and kind gates have answered. -/
+def lowerNumericFieldAtom (model : FlatModel) (group : GroupPath)
+    (atom : Expr → Lowering Atom) (source : Expr) : Lowering Atom := do
+  let reference ← numericFieldFormReference source
   let unstarred : Path := { reference.path with segments := reference.path.segments.map fun (segment : Segment) => { segment with star := false } }
   let some field := unstarred.toFieldPath? | refuse "NumericFieldForm" "correlated source"
   if (model.groupNamedBy? group field).isSome then

@@ -285,6 +285,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-having-configured-numeric-sources"></a>
 - [Configured numeric sources inside Having](implementation/repetition-and-paths.md#cap-having-configured-numeric-sources)
 
+<a id="cap-having-numeric-field-forms"></a>
+- [Numeric field forms inside Having](implementation/repetition-and-paths.md#cap-having-numeric-field-forms)
+
 <a id="cap-having-direct-number-aggregates"></a>
 - [Direct Number aggregates inside Having](implementation/repetition-and-paths.md#cap-having-direct-number-aggregates)
 
