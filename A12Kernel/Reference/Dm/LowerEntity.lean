@@ -52,61 +52,72 @@ private def presencePolarity? : String → Option HavingPresencePolarity
   | _ => none
 
 private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
-  | .call id [.mk (.entity { path := left, index := none, category := none }) none none,
-      .mk (.entity { path := right, index := none, category := none }) none none] none none => do
-      let some unit := subdayUnit? id | refuse "Having" "difference unit"
-      let some (leftOrigin, leftField) := left.havingField? | refuse "Having" "difference left"
-      let some (rightOrigin, rightField) := right.havingField? | refuse "Having" "difference right"
-      pure (.dateTimeDifference unit { origin := leftOrigin, field := leftField } { origin := rightOrigin, field := rightField })
-  | .constant "BaseYear" => pure .baseYear
-  | .call id [.mk (.constant "BaseYear") none none] none none => do
-      let some part := datePart? id | refuse "Having" "BaseYear component"
-      pure (.baseYearDatePart .direct part)
-  | .call id [.mk (.call bound [.mk (.constant "BaseYear") none none] none none) none none] none none => do
-      let some part := datePart? id | refuse "Having" "BaseYear component"
-      let source ← match bound with
-        | "StartOfDateRange" => pure (.range .start)
-        | "EndOfDateRange" => pure (.range .finish)
-        | _ => refuse "Having" "BaseYear endpoint"
-      pure (.baseYearDatePart source part)
-  | .call id [.mk (.call bound [.mk (.entity { path, index := none, category := none }) none none] none none) none none] none none => do
-      let some part := datePart? id | refuse "Having" "DateRange component"
-      let some (origin, field) := path.havingField? | refuse "Having" "DateRange field"
-      let bound ← match bound with
-        | "StartOfDateRange" => pure DateRangeBound.start
-        | "EndOfDateRange" => pure DateRangeBound.finish
-        | _ => refuse "Having" "DateRange endpoint"
-      pure (.dateRangeBoundPart origin field bound part)
-  | .call "FieldValueAsNumber" [.mk (.entity { path, index := none, category }) none none] none none => do
-      let some (origin, field) := path.havingField? | refuse "Having" "conversion field"
-      pure (.fieldValueAsNumber {
-        origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored })
-  | .call "Length" [.mk (.entity { path, index := none, category := none }) none none] none none =>
-      match path.havingField? with
-      | some (origin, field) => pure (.stringLength origin field)
-      | none => refuse "Having" "Length field"
-  | .value { path, index := none, category := none } =>
-      match path.havingField? with
-      | some (origin, field) => pure (.field { origin, field })
-      | none => refuse "Having" "numeric field"
-  | .call "CurrentRepetition" [.mk (.entity { path, index := none, category := none })
-        none none] none none =>
-      match path.havingGroup? with
-      | some (origin, group) => pure (.repetition { origin, group })
-      | none => refuse "Having" "CurrentRepetition"
-  | .call "RangeAsNumber" [.mk (.entity { path, index := none, category := none }) none none,
-        .mk (.number start) none none, .mk (.number finish) none none] none none => do
-      let some (origin, field) := path.havingField? | refuse "Having" "range field"
-      let some start := start.toNat? | refuse "Having" "range start"
-      let some finish := finish.toNat? | refuse "Having" "range finish"
-      pure (.stringRange origin field start finish)
-  | .call id [.mk (.entity { path, index := none, category := none }) none none] none none => do
-      let some (origin, field) := path.havingField? | refuse "Having" "temporal field"
-      let some part := (datePart? id).map TemporalNumericPart.date |>.orElse
-        (fun _ => (timePart? id).map TemporalNumericPart.time) | refuse "Having" "numeric source"
-      pure (.temporalPart origin field part)
-  | other => refuse "Having" other.construct
-
+  | .call id arguments none none => if let some op := aggregateOp? id then do
+      let sources ← arguments.mapM fun
+        | .mk (.entity { path, index := none, category := none }) none none => do
+            let some (origin, field) := path.havingField? | refuse "Having" "aggregate field"
+            pure ({ origin, field } : SurfaceHavingNumberRef)
+        | _ => refuse "Having" "aggregate operands"
+      let first :: rest := sources | refuse "Having" "aggregate arity"
+      pure (.aggregate op first rest)
+    else lowerNonAggregateHavingNumericAtom (.call id arguments none none)
+  | other => lowerNonAggregateHavingNumericAtom other
+where
+  lowerNonAggregateHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
+    | .call id [.mk (.entity { path := left, index := none, category := none }) none none,
+        .mk (.entity { path := right, index := none, category := none }) none none] none none => do
+        let some unit := subdayUnit? id | refuse "Having" "difference unit"
+        let some (leftOrigin, leftField) := left.havingField? | refuse "Having" "difference left"
+        let some (rightOrigin, rightField) := right.havingField? | refuse "Having" "difference right"
+        pure (.dateTimeDifference unit { origin := leftOrigin, field := leftField } { origin := rightOrigin, field := rightField })
+    | .constant "BaseYear" => pure .baseYear
+    | .call id [.mk (.constant "BaseYear") none none] none none => do
+        let some part := datePart? id | refuse "Having" "BaseYear component"
+        pure (.baseYearDatePart .direct part)
+    | .call id [.mk (.call bound [.mk (.constant "BaseYear") none none] none none) none none] none none => do
+        let some part := datePart? id | refuse "Having" "BaseYear component"
+        let source ← match bound with
+          | "StartOfDateRange" => pure (.range .start)
+          | "EndOfDateRange" => pure (.range .finish)
+          | _ => refuse "Having" "BaseYear endpoint"
+        pure (.baseYearDatePart source part)
+    | .call id [.mk (.call bound [.mk (.entity { path, index := none, category := none }) none none] none none) none none] none none => do
+        let some part := datePart? id | refuse "Having" "DateRange component"
+        let some (origin, field) := path.havingField? | refuse "Having" "DateRange field"
+        let bound ← match bound with
+          | "StartOfDateRange" => pure DateRangeBound.start
+          | "EndOfDateRange" => pure DateRangeBound.finish
+          | _ => refuse "Having" "DateRange endpoint"
+        pure (.dateRangeBoundPart origin field bound part)
+    | .call "FieldValueAsNumber" [.mk (.entity { path, index := none, category }) none none] none none => do
+        let some (origin, field) := path.havingField? | refuse "Having" "conversion field"
+        pure (.fieldValueAsNumber {
+          origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored })
+    | .call "Length" [.mk (.entity { path, index := none, category := none }) none none] none none =>
+        match path.havingField? with
+        | some (origin, field) => pure (.stringLength origin field)
+        | none => refuse "Having" "Length field"
+    | .value { path, index := none, category := none } =>
+        match path.havingField? with
+        | some (origin, field) => pure (.field { origin, field })
+        | none => refuse "Having" "numeric field"
+    | .call "CurrentRepetition" [.mk (.entity { path, index := none, category := none })
+          none none] none none =>
+        match path.havingGroup? with
+        | some (origin, group) => pure (.repetition { origin, group })
+        | none => refuse "Having" "CurrentRepetition"
+    | .call "RangeAsNumber" [.mk (.entity { path, index := none, category := none }) none none,
+          .mk (.number start) none none, .mk (.number finish) none none] none none => do
+        let some (origin, field) := path.havingField? | refuse "Having" "range field"
+        let some start := start.toNat? | refuse "Having" "range start"
+        let some finish := finish.toNat? | refuse "Having" "range finish"
+        pure (.stringRange origin field start finish)
+    | .call id [.mk (.entity { path, index := none, category := none }) none none] none none => do
+        let some (origin, field) := path.havingField? | refuse "Having" "temporal field"
+        let some part := (datePart? id).map TemporalNumericPart.date |>.orElse
+          (fun _ => (timePart? id).map TemporalNumericPart.time) | refuse "Having" "numeric source"
+        pure (.temporalPart origin field part)
+    | other => refuse "Having" other.construct
 private def havingMember? : Expr → Option SurfaceHavingDirectFieldOperand
   | .value { path, index := none, category } => do
       let (origin, field) ← path.havingField?

@@ -39,6 +39,7 @@ structure SurfaceHavingTemporalRef where
   deriving Repr, DecidableEq
 
 inductive SurfaceHavingNumericAtom where
+  | aggregate (op : NumericAggregateOp) (first : SurfaceHavingNumberRef) (rest : List SurfaceHavingNumberRef)
   | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : SurfaceHavingTemporalRef)
   | baseYear
   | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)

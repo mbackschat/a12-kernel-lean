@@ -830,4 +830,50 @@ example : [("yyyy-MM-dd'T'HH", "2024-04-12T12", "2024-04-12T11"),
       (temporalRun "DifferenceInHours(Rows/Tag, $Expected) == 1" .dateTime .dateTime
         format format expected source expected).isNone) = true := by native_decide
 
+private def aggregateModel : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == 2 || field.id == 3 then { field with policy := { kind := .number { scale := 0, signed := true } } } else field }
+
+example : [("Sum", "5"), ("MinValue", "2"), ("MaxValue", "3"), ("NumberOfDifferentValues", "2")].all
+    (fun (operator, amount) => runModel aggregateModel s!"{operator}(Rows/Tag, $Expected) == {amount}" false "3" "2" (if operator == "MaxValue" then "4" else "3") ==
+      some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : runModel aggregateModel "Sum(Rows/Tag, $Expected) == 5" true "3" "2" "4" "1" =
+      some (.fired .omission, ["value 1", "value 5"]) ∧
+    runModel aggregateModel "Sum(Rows/Tag, Rows/Tag) == 4" false "3" "2" "3" = none ∧
+    runModel aggregateModel "Sum(Rows/Tag) == 2" false "3" "2" "3" = none := by native_decide
+
+example : runModel aggregateModel "Sum(Rows/Tag, $Expected, Rows/N) == 7" false "3" "2" "3" =
+      some (.notFired, ["value 2"]) ∧
+    runModel aggregateModel "MaxValue(Rows/Tag, $Expected) + 1 == 4" false "3" "2" "4" =
+      some (.fired .omission, ["value 9"]) ∧
+    runModel aggregateModel "NumberOfDifferentValues(Rows/Tag, $Expected) == 1" false "3" "" "3" =
+      some (.notFired, ["value 14"]) ∧
+    runModel aggregateModel "MinValue(Rows/Tag, $Expected) == 3" false "3" "bad" "3" =
+      some (.notFired, []) := by native_decide
+
+example : ["Sum(Rows/Tag, Rows/Tag)", "Sum($Expected, $Expected)", "Sum(Rows/Tag)",
+    "Sum([Rows/Tag], $Expected)", "Sum(Rows*/Tag, $Expected)", "Sum(Sum(Rows/Tag, $Expected), Rows/N)",
+    "Sum($Expected, Out)"].all (fun expression => (runModel aggregateModel (expression ++ " == 3") false "3" "2" "3").isNone) = true ∧
+    run "Sum(Rows/Tag, $Expected) == 3" = none := by native_decide
+
+example : referencesFor "Sum(/Form/Rows/Tag, $/Form/Rows/Tag) == 4"
+    { aggregateModel with fields := aggregateModel.fields ++ [{
+        id := 6, name := "Token", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } }] }
+    "Token" = some (true, true) := by native_decide
+
+example : toleranceRanges.all (fun band => runModel aggregateModel
+    s!"Sum(Rows/Tag, $Expected) * {band} DiffersWithToleranceRange{band} 0" false "1" "2" "-1" ==
+      some (.fired .omission, ["value 9"])) = true := by native_decide
+
+private def aggregateLaterScaleModel : FlatModel := { aggregateModel with fields := aggregateModel.fields.map fun field =>
+  if field.id == 2 then { field with policy := { kind := .number { scale := 2, signed := true } } } else field }
+
+example : [("Sum", "5"), ("MinValue", "2"), ("MaxValue", "3")].all (fun (operator, amount) =>
+    runModel aggregateLaterScaleModel s!"{operator}(Rows/Tag, $Expected) == {amount}.00" false "3.00" "2" "4" ==
+      some (.fired .omission, ["value 9"]) &&
+    (runModel aggregateLaterScaleModel s!"{operator}(Rows/Tag, $Expected) == {amount}.000" false "3.00" "2" "4").isNone) = true ∧
+    runModel aggregateLaterScaleModel "NumberOfDifferentValues(Rows/Tag, $Expected) == 2" false "3.00" "2" "3" =
+      some (.fired .omission, ["value 9"]) ∧
+    runModel aggregateLaterScaleModel "NumberOfDifferentValues(Rows/Tag, $Expected) == 2.00" false "3.00" "2" "3" = none := by native_decide
+
 end A12Kernel.Dm.HavingComparisonLocks

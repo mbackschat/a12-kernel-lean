@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.NumericAggregate
 import A12Kernel.Elaboration.Flat.Model
 import A12Kernel.Elaboration.NumericExpression
 import A12Kernel.Elaboration.SingleGroup
@@ -182,14 +183,6 @@ def dateTimeDifferenceReferences
   operand.fields.any (·.id == field)
 
 end FlatTemporalOperand
-
-/-- The Number-valued field-list aggregate operations whose resolved folds share one classified-cell owner. -/
-inductive NumericAggregateOp where
-  | sum
-  | minimum
-  | maximum
-  | distinctCount
-  deriving Repr, DecidableEq
 
 /-- A parser-independent direct Number aggregate field list. Checked direct-list admission requires at least two entries; starred/group operands expand through separate owners. -/
 structure SurfaceNumericAggregateFields where

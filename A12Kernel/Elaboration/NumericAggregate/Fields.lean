@@ -359,14 +359,8 @@ def resolvedSumSide (source : ResolvedNumericAggregateFields)
 /-- Evaluate one resolved direct field-list aggregate through the established aggregate folds. -/
 def evaluate (source : ResolvedNumericAggregateFields) (op : NumericAggregateOp)
     (observe : FieldId → CellObservation) : NumericOperand :=
-  match op with
-  | .sum => evalDeclaredNumericSumAggregate (source.resolvedSumSide observe)
-  | .minimum => evalNumericExtremumAggregate .minimum
-      (source.resolvedValueSide observe)
-  | .maximum => evalNumericExtremumAggregate .maximum
-      (source.resolvedValueSide observe)
-  | .distinctCount => evalNumericDistinctCountAggregate
-      (source.resolvedValueSide observe)
+  ({ values := source.resolvedValueSide observe, sum := source.resolvedSumSide observe } :
+    ResolvedNumberEntityAggregateSides).evaluate op
 
 def referencesField (source : ResolvedNumericAggregateFields)
     (field : FieldId) : Bool :=

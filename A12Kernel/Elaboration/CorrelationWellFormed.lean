@@ -72,7 +72,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
     (model : FlatModel) (group : RepeatableGroupDecl) : CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
       | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
-      | .dateTimeDifference _ _ _ | .fieldValueAsNumber _ _ => false
+      | .aggregate _ _ _ | .dateTimeDifference _ _ _ | .fieldValueAsNumber _ _ => false
       | .field reference => model.admitsSingleGroupNumber group reference.field
       | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
       | .repetition reference => reference.source == .repeatable group.level
@@ -145,6 +145,8 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) :
     CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
+      | .aggregate _ first rest => !rest.isEmpty && havingAggregateUnique first rest &&
+          (first :: rest).all (model.admitsHavingNumberInEnvironment candidateLevels outerLevels)
       | .dateTimeDifference unit left right => unit.compatible left.field.components right.field.components &&
           [left, right].all fun reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
             declaration.toTemporalField? == some reference.field &&
@@ -225,6 +227,7 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
     (reopenedLevels : List RepeatableLevel) : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
       (comparison.left.atoms ++ comparison.right.atoms).any fun
+        | .aggregate _ first rest => (first :: rest).any (·.reachesReopenedLevel model reopenedLevels)
         | .dateTimeDifference _ left right => [left, right].any fun reference => reference.origin == .inner &&
             (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains

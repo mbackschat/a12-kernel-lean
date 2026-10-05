@@ -12,13 +12,6 @@ and `BaseYear`, mean the same on both arms and are lowered once.
 
 namespace A12Kernel.Dm
 
-def aggregateOp? : String → Option NumericAggregateOp
-  | "Sum" => some .sum
-  | "MinValue" => some .minimum
-  | "MaxValue" => some .maximum
-  | "NumberOfDifferentValues" => some .distinctCount
-  | _ => none
-
 private def calendarUnit? : String → Option DateDifferenceUnit
   | "DifferenceInMonths" => some .months
   | "DifferenceInYears" => some .years

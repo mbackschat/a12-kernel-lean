@@ -22,6 +22,7 @@ structure ResolvedHavingNumberRef where
     each route chooses all of them together, and a route that admits no String or presence leaf
     supplies a refusing resolver rather than a different combinator. -/
 structure HavingLeafResolvers where
+  aggregate : NumericAggregateOp → SurfaceHavingNumberRef → List SurfaceHavingNumberRef → Except CorrelationElabError HavingNumericAtom
   baseYear : Except CorrelationElabError Int
   fieldValueAsNumber : SurfaceHavingStringRef → Except CorrelationElabError ResolvedFieldValueAsNumberSource
   boolean : EqualityOp → SurfaceHavingStringRef → Bool → Except CorrelationElabError FlatComparison
@@ -68,6 +69,7 @@ private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
     (op : NumericValidationOp) (left right : AuthoredNumericExpr SurfaceHavingNumericAtom) :
     Except CorrelationElabError CorrelatedHaving := do
   let resolve : SurfaceHavingNumericAtom → Except CorrelationElabError HavingNumericAtom
+    | .aggregate op first rest => resolvers.aggregate op first rest
     | .dateTimeDifference unit left right => resolvers.dateTimeDifference unit left right
     | .baseYear => HavingNumericAtom.baseYear <$> resolvers.baseYear
     | .baseYearDatePart source part => (fun year => .baseYearDatePart year source part) <$> resolvers.baseYear

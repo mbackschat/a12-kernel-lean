@@ -4,6 +4,7 @@ import A12Kernel.Semantics.Iteration
 import A12Kernel.Semantics.NumericExpression
 import A12Kernel.Semantics.NumericConversion
 import A12Kernel.Semantics.DateTimeDifference
+import A12Kernel.Semantics.NumericAggregate
 
 /-! Correlated operand identities, binding frames and phase-specific checked reads. -/
 
@@ -102,6 +103,7 @@ structure HavingTemporalRef where
 
 /-- Model constants carry no row origin, so arithmetic cannot make them satisfy a filter reference requirement (spec/07 §3). Field and repetition atoms retain their own origins. -/
 inductive HavingNumericAtom where
+  | aggregate (op : NumericAggregateOp) (first : HavingNumberRef) (rest : List HavingNumberRef)
   | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : HavingTemporalRef)
   | baseYear (year : Int)
   | baseYearDatePart (year : Int) (source : BaseYearDateSource) (part : DateNumericPart)
@@ -115,6 +117,7 @@ inductive HavingNumericAtom where
   deriving Repr, DecidableEq
 
 def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
+  | .aggregate _ first rest => (first :: rest).map (·.origin)
   | .dateTimeDifference _ left right => [left.origin, right.origin]
   | .baseYear _ | .baseYearDatePart _ _ _ => []
   | .field reference => [reference.origin]
@@ -124,6 +127,7 @@ def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
 
 /-- Preserve each read's own origin inside a multi-source numeric atom (spec/07 §3). -/
 def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin × FieldId)
+  | .aggregate _ first rest => (first :: rest).map (fun reference => (reference.origin, reference.field.id))
   | .dateTimeDifference _ left right => [(left.origin, left.field.id), (right.origin, right.field.id)]
   | .baseYear _ | .baseYearDatePart _ _ _ | .repetition _ => []
   | .dateRangeBoundPart origin source _ _ => [(origin, source.id)]
@@ -133,6 +137,8 @@ def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin ×
   | .temporalPart origin source _ => [(origin, source.id)]
 
 def HavingNumericAtom.summary : HavingNumericAtom → NumericScaleSummary
+  | .aggregate .distinctCount _ _ => .field 0
+  | .aggregate _ first rest => rest.foldl (fun summary reference => summary.union (.field reference.field.info.scale)) (.field first.field.info.scale)
   | .dateTimeDifference _ _ _ => .field 0
   | .baseYear _ | .baseYearDatePart _ _ _ => .field 0
   | .fieldValueAsNumber _ source => .field source.scale
@@ -289,6 +295,23 @@ private def havingArithmetic : NumericOperand → Except Unit NumericArithmeticO
   | .value amount fillability => .ok (.value amount fillability)
   | .unknown _ => .error ()
 
+/-- Direct duplicate identity includes the captured marker, as in the kernel parser's `EntityRef.equals`. -/
+def havingAggregateUnique (first : HavingNumberRef) (rest : List HavingNumberRef) : Bool :=
+  let identities := (first :: rest).map fun reference => (reference.origin, reference.field.id)
+  identities.eraseDups.length == identities.length
+
+private def readHavingAggregate (phase : Phase)
+    (read : Env → FieldId → Except Error CheckedCell) (frame : CorrelationFrame)
+    (op : NumericAggregateOp) (first : HavingNumberRef) (rest : List HavingNumberRef) : Except Error NumericOperand := do
+  let resolve (reference : HavingNumberRef) := do
+    let cell ← read (frame.envAt reference.origin) reference.field.id
+    pure (Sum.inl { cells := [(observeCell phase cell).asNumberValueListCell], hasUninstantiatedTail := false, hasHaving := false })
+  match ← scanResolvedValueListOperands (state := ResolvedNumberEntityAggregateSides) (terminal := NumericOperand)
+      resolve (fun cause => .unknown cause)
+      (fun accumulated reference side => accumulated.append reference.field.info.signed side) (first :: rest) {} with
+  | .inl accumulated => pure (accumulated.evaluate op)
+  | .inr operand => pure operand
+
 private def readHavingSubdayDifference (phase : Phase)
     (read : Env → FieldId → Except Error CheckedCell) (frame : CorrelationFrame)
     (unit : DateTimeSubdayUnit) (left right : HavingTemporalRef) : Except Error NumericOperand := do
@@ -302,6 +325,10 @@ private def readHavingSubdayDifference (phase : Phase)
     repetition bindings remain unknown; checked addressed readers report them structurally. -/
 def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : CorrelationFrame) :
     HavingNumericAtom → Except Unit NumericArithmeticOutcome
+  | .aggregate op first rest =>
+      match readHavingAggregate (Error := Empty) .validation (fun env field => .ok (context.read env field)) frame op first rest with
+      | .ok operand => havingArithmetic operand
+      | .error impossible => nomatch impossible
   | .dateTimeDifference unit left right =>
       havingArithmetic (DateTimeDifferenceOperand.evaluate unit
         (DateTimeDifferenceOperand.ofObservation (observeCell .validation (context.read (frame.envAt left.origin) left.field.id)))
@@ -330,6 +357,8 @@ def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : Cor
 def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) :
     HavingNumericAtom → Except Error (Except Unit NumericArithmeticOutcome)
+  | .aggregate op first rest => do
+      pure (havingArithmetic (← readHavingAggregate .validation context.read frame op first rest))
   | .dateTimeDifference unit left right => do
       pure (havingArithmetic (← readHavingSubdayDifference .validation context.read frame unit left right))
   | .dateRangeBoundPart origin source bound part => do
@@ -358,6 +387,10 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
 
 def HavingNumericAtom.readComputation (context : CorrelationContext) (frame : CorrelationFrame) :
     HavingNumericAtom → NumericComputationResult
+  | .aggregate op first rest =>
+      match readHavingAggregate (Error := Empty) .computation (fun env field => .ok (context.read env field)) frame op first rest with
+      | .ok operand => operand.toComputationResult
+      | .error impossible => nomatch impossible
   | .dateTimeDifference unit left right =>
       (DateTimeDifferenceOperand.evaluate unit
         (DateTimeDifferenceOperand.ofObservation (observeCell .computation (context.read (frame.envAt left.origin) left.field.id)))
@@ -385,6 +418,8 @@ def HavingNumericAtom.readComputation (context : CorrelationContext) (frame : Co
 
 def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) : HavingNumericAtom → Except Error NumericComputationResult
+  | .aggregate op first rest => do
+      pure ((← readHavingAggregate .computation context.read frame op first rest).toComputationResult)
   | .dateTimeDifference unit left right => do
       pure ((← readHavingSubdayDifference .computation context.read frame unit left right).toComputationResult)
   | .dateRangeBoundPart origin source bound part => do

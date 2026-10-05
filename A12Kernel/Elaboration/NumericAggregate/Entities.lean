@@ -4,38 +4,6 @@ import A12Kernel.Elaboration.NumericAggregate.Fields
 
 namespace A12Kernel
 
-private def appendNumericSumSide
-    (left right : ResolvedNumericSumSide) : ResolvedNumericSumSide :=
-  { cells := left.cells ++ right.cells
-    uninstantiatedSignedness :=
-      left.uninstantiatedSignedness ++ right.uninstantiatedSignedness
-    hasHaving := left.hasHaving || right.hasHaving }
-
-private structure ResolvedNumberEntityAggregateSides where
-  values : ResolvedValueListSide .number := {
-    cells := [], hasUninstantiatedTail := false, hasHaving := false }
-  sum : ResolvedNumericSumSide := {
-    cells := [], uninstantiatedSignedness := [], hasHaving := false }
-
-namespace ResolvedNumberEntityAggregateSides
-
-private def append (accumulated : ResolvedNumberEntityAggregateSides)
-    (declarationSigned : Bool) (side : ResolvedValueListSide .number) :
-    ResolvedNumberEntityAggregateSides :=
-  { values := accumulated.values.append side
-    sum := appendNumericSumSide accumulated.sum
-      (side.toNumericSumSide declarationSigned) }
-
-private def evaluate (accumulated : ResolvedNumberEntityAggregateSides)
-    (op : NumericAggregateOp) : NumericOperand :=
-  match op with
-  | .sum => evalDeclaredNumericSumAggregate accumulated.sum
-  | .minimum => evalNumericExtremumAggregate .minimum accumulated.values
-  | .maximum => evalNumericExtremumAggregate .maximum accumulated.values
-  | .distinctCount => evalNumericDistinctCountAggregate accumulated.values
-
-end ResolvedNumberEntityAggregateSides
-
 /-- The aggregate over an operand that reaches no cell, the same fold every slot runs with nothing
 appended. -/
 def NumericAggregateOp.overNoCells (op : NumericAggregateOp) : NumericOperand :=

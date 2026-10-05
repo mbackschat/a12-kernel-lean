@@ -171,6 +171,7 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
     Except ReferenceProjectionError (List MessagePointer)
   | .leaf (.numeric comparison) => do
       let pointers ← (comparison.left.atoms ++ comparison.right.atoms).mapM fun
+        | .aggregate _ first rest => (first :: rest).mapM (havingNumberReferencePointer source environment)
         | .dateTimeDifference _ left right => [left, right].mapM fun reference => do
             let declaration ← (model.lookupUniqueId reference.field.id).mapError (fun _ => .incoherentHavingField reference.field.id)
             if declaration.toTemporalField? != some reference.field then throw (.incoherentHavingField reference.field.id)

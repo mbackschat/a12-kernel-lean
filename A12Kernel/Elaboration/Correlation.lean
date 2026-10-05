@@ -30,6 +30,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
     SurfaceCorrelatedHaving → Option (List String × UnboundOperandLevel)
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
+        | .aggregate _ first rest => (first :: rest).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
             (field left.origin left.field).orElse fun _ => field right.origin right.field
         | .baseYear | .baseYearDatePart _ _ => none
@@ -142,7 +143,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
         (model.resolveNumberInGroup declaringGroup group reference.field).isOk
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).any fun
-        | .dateTimeDifference _ _ _ | .baseYear | .baseYearDatePart _ _ | .fieldValueAsNumber _
+        | .aggregate _ _ _ | .dateTimeDifference _ _ _ | .baseYear | .baseYearDatePart _ _ | .fieldValueAsNumber _
             | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
         | .field reference => reference.origin == .inner &&
             (model.resolveNumberInGroup declaringGroup group reference.field).isOk
@@ -166,6 +167,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError CorrelatedHaving := do
   discard <| elaborateHavingCoreWith {
+    aggregate := fun _ _ _ => throw .stringLeafOutsideStarRoute
     baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
     fieldValueAsNumber := fun _ => throw .stringLeafOutsideStarRoute
     boolean := fun _ _ _ => throw .stringLeafOutsideStarRoute
@@ -187,6 +189,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
   let readsGroup := authored.readsGroupNumber model declaringGroup group
   let condition ← (elaborateHavingCoreWith {
+    aggregate := fun _ _ _ => throw .stringLeafOutsideStarRoute
     baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
     fieldValueAsNumber := fun _ => throw .stringLeafOutsideStarRoute
     boolean := fun _ _ _ => throw .stringLeafOutsideStarRoute
@@ -426,6 +429,7 @@ def CorrelatedHaving.outerIterationScopes
     CorrelatedHaving → List (Option (List RepeatableLevel))
   | .leaf (.numeric comparison) =>
       (comparison.left.atoms ++ comparison.right.atoms).flatMap fun
+        | .aggregate _ first rest => (first :: rest).map (outerHavingNumberIterationScope model)
         | .dateTimeDifference _ left right => [left, right].map fun reference =>
             outerHavingFieldIterationScope model reference.origin reference.field.id
         | .baseYear _ | .baseYearDatePart _ _ _ => [none]
@@ -478,6 +482,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
     SurfaceCorrelatedHaving → Option CorrelationElabError
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
+        | .aggregate _ first rest => (first :: rest).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
             (field left.origin left.field).orElse fun _ => field right.origin right.field
         | .baseYear | .baseYearDatePart _ _ => none
@@ -520,6 +525,14 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
   let reopenedLevels := candidateLevels.drop source.path.firstStar
   let outerLevels := model.repeatableScopeForGroupPath bindingGroup
   let condition ← elaborateHavingCoreWith {
+    aggregate := fun op first rest => do
+      if rest.isEmpty then throw .numericExpressionUnsupported
+      let resolve (reference : SurfaceHavingNumberRef) :=
+        (model.resolveHavingNumberInEnvironment declaringGroup outerLevels reference.origin reference.field).map (·.core)
+      let first ← resolve first
+      let rest ← rest.mapM resolve
+      if !havingAggregateUnique first rest then throw .numericExpressionUnsupported
+      pure (.aggregate op first rest)
     baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
     fieldValueAsNumber := fun reference => do
       let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels reference

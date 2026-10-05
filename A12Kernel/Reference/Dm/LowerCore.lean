@@ -351,4 +351,11 @@ def subdayUnit? : String → Option DateTimeSubdayUnit
   | "DifferenceInSeconds" => some .seconds
   | _ => none
 
+def aggregateOp? : String → Option NumericAggregateOp
+  | "Sum" => some .sum
+  | "MinValue" => some .minimum
+  | "MaxValue" => some .maximum
+  | "NumberOfDifferentValues" => some .distinctCount
+  | _ => none
+
 end A12Kernel.Dm

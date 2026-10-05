@@ -338,4 +338,44 @@ def evalNumericProductAggregate
   | .ok (amount, fillability) =>
       .value amount (if side.hasUninstantiatedTail then .both else fillability)
 
+/-- The Number-valued field-list aggregate operations whose resolved folds share one classified-cell owner. -/
+inductive NumericAggregateOp where
+  | sum
+  | minimum
+  | maximum
+  | distinctCount
+  deriving Repr, DecidableEq
+
+private def appendNumericSumSide
+    (left right : ResolvedNumericSumSide) : ResolvedNumericSumSide :=
+  { cells := left.cells ++ right.cells
+    uninstantiatedSignedness :=
+      left.uninstantiatedSignedness ++ right.uninstantiatedSignedness
+    hasHaving := left.hasHaving || right.hasHaving }
+
+structure ResolvedNumberEntityAggregateSides where
+  values : ResolvedValueListSide .number := {
+    cells := [], hasUninstantiatedTail := false, hasHaving := false }
+  sum : ResolvedNumericSumSide := {
+    cells := [], uninstantiatedSignedness := [], hasHaving := false }
+
+namespace ResolvedNumberEntityAggregateSides
+
+def append (accumulated : ResolvedNumberEntityAggregateSides)
+    (declarationSigned : Bool) (side : ResolvedValueListSide .number) :
+    ResolvedNumberEntityAggregateSides :=
+  { values := accumulated.values.append side
+    sum := appendNumericSumSide accumulated.sum
+      (side.toNumericSumSide declarationSigned) }
+
+def evaluate (accumulated : ResolvedNumberEntityAggregateSides)
+    (op : NumericAggregateOp) : NumericOperand :=
+  match op with
+  | .sum => evalDeclaredNumericSumAggregate accumulated.sum
+  | .minimum => evalNumericExtremumAggregate .minimum accumulated.values
+  | .maximum => evalNumericExtremumAggregate .maximum accumulated.values
+  | .distinctCount => evalNumericDistinctCountAggregate accumulated.values
+
+end ResolvedNumberEntityAggregateSides
+
 end A12Kernel
