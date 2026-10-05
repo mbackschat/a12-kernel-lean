@@ -23,6 +23,7 @@ private def runModel (model : FlatModel) (filter : String) (fresh : Bool)
   let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj ([
     ("Error", Json.str "ready"), ("Expected", Json.str expected),
     ("Rows", Json.arr #[row first "2", row second "5", row first "7"])] ++ extra))])).toOption
+  if !input.refusals.isEmpty then none
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
@@ -823,5 +824,10 @@ example : subdayFormatAdmitted "DifferenceInHours" "yyyy-MM-dd'T'HH" = true ∧
     subdayFormatAdmitted "DifferenceInMinutes" "yyyy-MM-dd'T'HH:mm" = true ∧
     subdayFormatAdmitted "DifferenceInMinutes" "yyyy-MM-dd'T'HH" = false ∧
     subdayFormatAdmitted "DifferenceInSeconds" "yyyy-MM-dd'T'HH:mm" = false := by native_decide
+
+example : [("yyyy-MM-dd'T'HH", "2024-04-12T12", "2024-04-12T11"),
+    ("yyyy-MM-dd'T'HH:mm", "2024-04-12T12:00", "2024-04-12T11:00")].all (fun (format, expected, source) =>
+      (temporalRun "DifferenceInHours(Rows/Tag, $Expected) == 1" .dateTime .dateTime
+        format format expected source expected).isNone) = true := by native_decide
 
 end A12Kernel.Dm.HavingComparisonLocks
