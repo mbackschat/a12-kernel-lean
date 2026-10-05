@@ -52,8 +52,8 @@ private def formatted (left right : String) (baseYear : Option Int := none) : Fl
         temporalTargetPolicy := some { format } }
     else field }
 
-private def admissions (fixture : FlatModel) (filter : String) : List Bool :=
-  let expression := "Sum(Rows*/N Having " ++ filter ++ ")"
+private def admissions (fixture : FlatModel) (filter : String) (filtered : Bool := true) : List Bool :=
+  let expression := if filtered then "Sum(Rows*/N Having " ++ filter ++ ")" else filter
   [((parseText .english (expression ++ " > 0")).toOption.bind fun parsed =>
     (lowerCondition fixture ["Form"] false parsed.body).toOption).isSome,
   (lowerComputation fixture .english {
@@ -145,5 +145,66 @@ example : certifiedSource (.literal { year := none, month := 3, day := 1 } 2024)
     certifiedSource (.baseYear 2024 .direct) = true ∧
     certifiedSource (.baseYear 2025 .direct) = false ∧
     certifiedSource (.today .utc) = false := by native_decide
+
+
+private def baseYearSources : List (String × List String) :=
+  [("BaseYear", ["2024", "1", "1", "1"]),
+   ("StartOfDateRange(BaseYear)", ["2024", "1", "1", "1"]),
+   ("EndOfDateRange(BaseYear)", ["2024", "12", "31", "4"])]
+
+example : baseYearSources.all (fun (source, values) =>
+    (["YearFromDate", "MonthFromDate", "DayFromDate", "QuarterFromDate"].zip values).all fun (op, expected) =>
+      runModel { dates with baseYear := some 2024 } "" false "" "" ""
+        (operationOverride := some s!"{op}({source}) + 0") (ruleExpected := expected) ==
+        some (.fired .value, [s!"value {expected}"]) &&
+      runModel { dates with baseYear := some 2024 }
+        s!"FieldFilled(Rows/Tag) And {op}({source}) == {expected}" false
+        "" "2024-01-01" "" == some (.fired .omission, ["value 9"]) &&
+      (admissions dates s!"{op}({source})" false).all (!·) &&
+      refused dates s!"FieldFilled(Rows/Tag) And {op}({source}) == {expected}") = true := by native_decide
+
+example : [("StartOfDateRange", "2023-01-01", "2024-01-01", "365"),
+    ("EndOfDateRange", "2023-12-31", "2024-12-31", "366")].all (fun (bound, first, second, days) =>
+      [("DifferenceInMonths", "12"), ("DifferenceInYears", "1"), ("DifferenceInDays", days)].all fun (op, expected) =>
+        runModel { dates with baseYear := some 2024 }
+          s!"{op}(Rows/Tag, {bound}(BaseYear)) == {expected}" false "" first second ==
+          some (.fired .omission, ["value 9"]) &&
+        runModel { dates with baseYear := some 2024 }
+          s!"{op}({bound}(BaseYear), Rows/Tag) == -{expected}" false "" first second ==
+          some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : [("DifferenceInMonths", "11"), ("DifferenceInYears", "0"), ("DifferenceInDays", "365")].all
+    (fun (op, expected) =>
+      runModel { dates with baseYear := some 2024 } "" false "" "" ""
+        (operationOverride := some s!"{op}(StartOfDateRange(BaseYear),EndOfDateRange(BaseYear))")
+        (ruleExpected := expected) == some (.fired .value, [s!"value {expected}"]) &&
+      (admissions dates s!"{op}(StartOfDateRange(BaseYear),EndOfDateRange(BaseYear))" false).all (!·) &&
+      refused dates s!"{op}(Rows/Tag, EndOfDateRange(BaseYear)) > 0") = true := by native_decide
+
+example : runModel { dates with baseYear := some 2023 } "" false "" "" ""
+    (operationOverride := some "DifferenceInDays(EndOfDateRange(BaseYear),StartOfDateRange(BaseYear))")
+    (ruleExpected := "-364") = some (.fired .value, ["value -364"]) ∧
+    runModel { dates with baseYear := some 2024 } "DifferenceInDays(EndOfDateRange(BaseYear), Rows/Tag) == 0"
+      false "" "" "2024-01-01" = some (.fired .omission, ["value 9"]) ∧
+    runModel { dates with baseYear := some 2024 } "DifferenceInMonths(Rows/Tag, StartOfDateRange(BaseYear)) == 0"
+      false "" "bad" "2024-01-01" = some (.notFired, []) := by native_decide
+
+example : ["StartOfDateRange(BaseYear)", "EndOfDateRange(BaseYear)"].all (fun source =>
+    refused { dates with baseYear := some 2024 } s!"DifferenceInDays({source}, BaseYear) == 0" &&
+    ["DifferenceInHours", "DifferenceInMinutes", "DifferenceInSeconds"].all fun op =>
+      (admissions { dates with baseYear := some 2024 } s!"{op}({source}, Now)" false).all (!·) &&
+      refused { dates with baseYear := some 2024 } s!"{op}(Rows/Tag, {source}) == 0") = true := by native_decide
+
+
+example : ["StartOfDateRange(BaseYear,BaseYear)", "EndOfDateRange(BaseYear,BaseYear)",
+    "MonthFromDate(BaseYear)"].all (fun source =>
+      (admissions { dates with baseYear := some 2024 } s!"DifferenceInDays(BaseYear,{source})" false).all (!·) &&
+      refused { dates with baseYear := some 2024 } s!"DifferenceInDays(Rows/Tag,{source}) == 0") = true := by native_decide
+
+example : ["StartOfDateRange", "EndOfDateRange"].all (fun bound =>
+    referencesFor s!"DifferenceInDays(/Form/Rows/Tag,{bound}(BaseYear)) > 0"
+      { dates with baseYear := some 2024, fields := dates.fields ++ [{
+        id := 6, name := "Token", groupPath := ["Form", "Rows"]
+        repeatableScope := [10], policy := { kind := .string } }] } "Token" == some (true, false)) = true := by native_decide
 
 end A12Kernel.Dm.HavingCalendarLocks

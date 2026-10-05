@@ -16,7 +16,8 @@ def model : FlatModel := {
 
 def runModel (model : FlatModel) (filter : String) (fresh : Bool)
     (expected first second : String) (producerOperation : String := "\"drop\"")
-    (extra : List (String × Json) := []) : Option (Verdict × List String) := do
+    (extra : List (String × Json) := []) (operationOverride : Option String := none)
+    (ruleExpected : String := "9") : Option (Verdict × List String) := do
   let dm : DmModel := {
     flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let row := fun (tag n : String) => Json.mkObj [("Tag", Json.str tag), ("N", Json.str n)]
@@ -27,10 +28,10 @@ def runModel (model : FlatModel) (filter : String) (fresh : Bool)
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
-  let operation := "Sum(Rows*/N Having " ++ filter ++ ")"
+  let operation := operationOverride.getD ("Sum(Rows*/N Having " ++ filter ++ ")")
   let rule ← (checkRule dm .english {
     group := ["Form"], name := "Selected", errorCode := "SELECTED", errorEntityRelPath := "../Error",
-    condition := "FieldFilled(Error) And " ++ operation ++ " == 9", severity := "ERROR" }).toOption
+    condition := "FieldFilled(Error) And " ++ operation ++ " == " ++ ruleExpected, severity := "ERROR" }).toOption
   let context : AddressedValidationEvaluationContext model := {
     scalar := { fields := document.flatContext.withWorld world, groups := GroupPresenceContext.unavailable }
     outer := [], input := .checked document }

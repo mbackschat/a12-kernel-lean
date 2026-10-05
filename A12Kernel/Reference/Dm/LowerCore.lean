@@ -168,12 +168,22 @@ def authoredDateLiteral? (text : String) : Option AuthoredDateLiteral :=
   | _, some (month, day) => some { year := none, month, day }
   | _, _ => none
 
+def baseYearDateSource? : Expr → Option BaseYearDateSource
+  | .constant "BaseYear" => some .direct
+  | .call bound [.mk (.constant "BaseYear") none none] none none =>
+      match bound with
+      | "StartOfDateRange" => some (.range .start)
+      | "EndOfDateRange" => some (.range .finish)
+      | _ => none
+  | _ => none
+
 def dateDifferenceOperandWith? (field : Expr → Option Field) : Expr → Option (SurfaceDateDifferenceOperand Field)
   | .string text => authoredDateLiteral? text |>.map .literal
   | .constant "Now" => some .now
   | .constant "Today" => some .today
-  | .constant "BaseYear" => some (.baseYear .direct)
-  | expr => field expr |>.map .field
+  | expr => match baseYearDateSource? expr with
+      | some source => some (.baseYear source)
+      | none => field expr |>.map .field
 
 /-- Whether a quoted literal is typed as a temporal constant rather than a string, by its content
 alone: a date with or without its year, a clock, or a date and a clock joined by `T`. The typing

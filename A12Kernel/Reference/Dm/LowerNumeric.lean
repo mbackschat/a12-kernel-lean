@@ -48,7 +48,10 @@ def lowerNumericAtomWith
       | _, _, some unit, some left, some right, _ => pure (.dateTimeDifference unit left right)
       | _, _, _, _, _, some op => (.aggregate op ·) <$> aggregate op [.mk left none none, .mk right none none]
       | _, _, _, _, _, none => refuse id "operand"
-  | .call id [.mk operand none none] none none =>
+  | .call id [.mk operand none none] none none => do
+      if let some part := datePart? id then
+        if let some source := baseYearDateSource? operand then
+          return .baseYearDatePart source part
       match datePart? id, timePart? id, aggregateOp? id, operand with
       | some part, _, _, .call bound [.mk range none none] none none =>
           match bound, range.fieldEntity? with
