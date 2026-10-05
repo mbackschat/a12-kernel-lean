@@ -38,25 +38,27 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-04-08"></a>
 ### SPEC-2026-10-04-08 — missing named validators fail computation guards
 
-- `status`: pending
+- `status`: answered
 - `delta`: qualify missing-name double firing as validation behavior. In computation, a filled valid operand makes either polarity fail with target-local calculation error and poisoned dependent readback; empty input clears cleanly and source invalidity precedes lookup. Retain lazy connective evaluation and the stored XML-value projection.
 - `basis`: [checkpoint and retained capture](sources/computation-scheduling-probes.md#src-type-validity-computation-guards), three documents, both Kernel strategies, clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`; source owns the stored Enumeration token projection. KF51's validation-only account was checked before this entry.
 - `canonical`: [spec/06](../spec/06-strings-and-enumerations.md#a3-custom-field-type-validation).
 - `acceptance`: reconcile the phase-qualified missing-validator and source-invalidity outcomes; do not transfer validation double firing to computation. Registered-validator and Enumeration runtime calibration remain outside this capture.
+- `reviewed`: 2026-10-05 at a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`, fixes `5c1f92b31`. Inspected committed locks (UnregisteredPredefinedTypeComputationTest; KF51) against this entry; semantic record corrected and both Kernel strategies locked; interpreter deliberately refuses the unknown name as unsupported, so this is not implementation parity. The handback reports its passing differential run at `b4c7456f3`; no Kernel invocation was performed here.
 
 <a id="spec-2026-10-04-07"></a>
 ### SPEC-2026-10-04-07 — uniqueness computation guards propagate reached invalidity
 
-- `status`: pending; not forwarded.
+- `status`: accepted
 - `claim`: `FieldValuesNotUnique` skips invalid operands in validation, but a computation precondition propagates reached formal/calculation poison. An earlier duplicate excludes a later poison; filtered iteration retains its one-row lookahead.
 - `basis`: [checkpoint and retained capture](sources/computation-scheduling-probes.md#src-uniqueness-computation-guards), six documents, both Kernel strategies, clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`. Dependent targets separate poison from clean clearing. The peer findings were checked for an existing computation-phase account before this entry.
 - `canonical`: [spec/07](../spec/07-repetition-and-iteration.md) now qualifies the invalid-cell skip by phase.
 - `acceptance`: reconcile the phase-qualified ordered scan and filter lookahead against the retained outcomes; preserve the validation-only skip account and the capture's explicit kind/scope limits.
+- `reviewed`: 2026-10-05 at a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`, fixes `6c692a35e`. Inspected committed locks (UniquenessComputationGuardDiffTest; KF518/IF363) against this entry; ordered duplicate decisions and reached poison, including an unfiltered-column separator. The handback reports its passing differential run at `b4c7456f3`; no Kernel invocation was performed here.
 
 <a id="spec-2026-10-04-06"></a>
 ### SPEC-2026-10-04-06 — validation reaches a failing shift amount after an unavailable source
 
-- `status`: pending
+- `status`: accepted
 - `clause`: [spec/05 date arithmetic](../spec/05-dates-and-time.md#2-addition-and-difference-are-asymmetric-and-calendar-corrected).
 - `delta`: narrow the formal-source short-circuit to computation. Validation still reaches the shift amount, whose runtime failure can produce the authored rule’s VALUE error despite the earlier unavailable source.
 - `evidence`: [recursive temporal checkpoint](sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression), Kernel 30.8.1, both strategies. The malformed Stamp/later gap-amount row is distinguished from the same source with an ordinary amount and the clean constructed-gap control.
@@ -64,11 +66,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `surfaces`: generated validation numeric extraction and temporal shift operand evaluation; preserve computation’s earlier poison stop.
 - `acceptance`: reconcile the bad-source/gap-amount and ordinary-amount controls against the retained outcomes, or provide contrary Kernel observations. Existing equivalent handling can be acknowledged without reimplementation.
 - `introducing commit`: resolve by this stable entry ID using the ledger contract.
+- `reviewed`: 2026-10-05 at a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`, fixes `555a60c84`. Inspected committed locks (ShiftAmountPhaseDiffTest; KF516/IF361) against this entry; existing equivalent phase handling, now locked, plus corrected extracted-amount provenance. The handback reports its passing differential run at `b4c7456f3`; no Kernel invocation was performed here.
 
 <a id="spec-2026-10-04-05"></a>
 ### SPEC-2026-10-04-05 — filtered field-fill computation ranges
 
-- `status`: handed-off
+- `status`: accepted
 - `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/02 §A.4](../spec/02-logic-and-formal-errors.md#a4-fill-quantifiers-group-scopes-and-the-two-iteration-ranges)
 - `delta`: state selected declared versus instantiated candidates, absent-coordinate reads, per-scan lookahead and composite restart for filtered computation guards.
@@ -77,11 +80,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reconcile`: canonical field-fill account, computation interpreter selection and its phase distinction.
 - `acceptance`: preserve coordinate-selected missing slots versus a value filter’s empty selection, deciding prefixes beside filter/payload failure, composite restart, and fresh filter producers.
 - `introducing commit`: resolve by this stable entry ID using the ledger contract.
+- `reviewed`: 2026-10-05 at a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`, fixes `029ef9a5f`. Inspected committed locks (FilteredFillComputationGuardDiffTest; KF520/IF364) against this entry; selected declared slots, composite scans and poison lookahead. The handback reports its passing differential run at `b4c7456f3`; no Kernel invocation was performed here.
 
 <a id="spec-2026-10-04-04"></a>
 ### `SPEC-2026-10-04-04` — DateRange overlap guards preserve reached poison and ordered prefixes
 
-- `status`: handed-off
+- `status`: accepted
 - `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/05 §8](../spec/05-dates-and-time.md#8-date-ranges-and-overlap).
 - `delta`: qualify unavailable-cell skipping as validation behavior. Computation overlap guards preserve scalar-first empty termination, reached poison, deciding prefixes, filter lookahead and declaration-major group ordering.
@@ -90,11 +94,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `surfaces`: overlap evaluation in computation preconditions and the language-neutral phase distinction. Indexed/parallel guards and broader yearless profiles are outside this capture.
 - `acceptance`: reconcile the ordered overlap consumer against the retained early-match, scalar-empty, third-filter-versus-third-payload and group-order controls, or supply contrary observations. Acknowledge an existing equivalent implementation without duplicate work.
 - `introducing commit`: resolve using the ledger contract's `git log --reverse -S` recipe.
+- `reviewed`: 2026-10-05 at a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`, fixes `6c692a35e`. Inspected committed locks (OverlapComputationGuardDiffTest; KF518/IF363) against this entry; reached poison, scalar-empty termination, group order and filter lookahead. The handback reports its passing differential run at `b4c7456f3`; no Kernel invocation was performed here.
 
 <a id="spec-2026-10-04-03"></a>
 ### `SPEC-2026-10-04-03` — full-rule iteration differs from physical extent and uniqueness cache membership
 
-- `status`: handed-off
+- `status`: accepted
 - `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands).
 - `delta`: ordinary single-root full-rule iteration selects dense declared slots at product ≤ 5 and occupied coordinate prefixes above it, retaining each reset's first coordinate. Root dispatch is separate; occupancy crosses group identities. RNU always uses the occupied-prefix relation over document depth bounds, even inside a dense rule.
@@ -103,11 +108,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `surfaces`: ordinary full-validation iteration and uniqueness relation membership; partial/global/parallel dispatch remains outside this correction.
 - `acceptance`: reconcile the declared-product and occupied-prefix distinctions against the retained root, nested, foreign-coordinate and RNU separators, or supply contrary evidence. Existing equivalent implementation can be acknowledged without reimplementation.
 - `introducing commit`: resolve using the ledger contract's `git log --reverse -S` recipe.
+- `reviewed`: 2026-10-05 at a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`, fixes `16bc5b1f9`. Inspected committed locks (ValidationIterationDomainDiffTest; KF517/IF362) against this entry; declared versus occupied full-rule domains; peer acknowledges existing equivalent uniqueness handling. The handback reports its passing differential run at `b4c7456f3`; no Kernel invocation was performed here.
 
 <a id="spec-2026-10-04-02"></a>
 ### `SPEC-2026-10-04-02` — temporal construction preserves independent absence and relevance states
 
-- `status`: handed-off
+- `status`: accepted
 - `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/05 constructor composition](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity).
 - `delta`: Time and DateTime no-payload outcomes retain missing versus fixed provenance under extrema. Cause-free partial-Date non-relevance remains distinct. DateTime arguments evaluate in order; a constructed Berlin gap clears cleanly, unlike a gap literal, and the retained fold chooses the later occurrence.
@@ -116,11 +122,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `surfaces`: temporal constructor/interpreter outcomes, extrema provenance and ordered computation reads; no repeatable-locus or wider-zone extension.
 - `acceptance`: reconcile these distinctions with the retained constructed/literal gap, fold, empty/malformed and unknown-year controls, or provide contrary evidence. Existing equivalent handling may be acknowledged without reimplementation.
 - `introducing commit`: resolve using the ledger contract’s `git log --reverse -S` recipe.
+- `reviewed`: 2026-10-05 at a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`, fixes `25f092352`. Inspected committed locks (ConstructionProvenanceDiffTest; KF515/IF359) against this entry; constructor absence/provenance and ordered argument evaluation. The handback reports its passing differential run at `b4c7456f3`; no Kernel invocation was performed here.
 
 <a id="spec-2026-10-04-01"></a>
 ### `SPEC-2026-10-04-01` — component-omitting Date checking completes the stored format after rendering
 
-- `status`: handed-off
+- `status`: accepted
 - `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/05 component-omitting formats](../spec/05-dates-and-time.md#1-constant-format-and-the-stringdate-literal-ambiguity-).
 - `delta`: replace the no-position-error claim with format-specific formal completion and position checking. Computed fragment targets are classified after rendering, so discarded years can cause floor or leap-reality failure; the attempted text remains errored and dependents are poisoned. Arithmetic retains intermediate calendar values before storage checks.
@@ -129,11 +136,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `surfaces`: component-omitting stored-input and computed-target classification; preserve the distinction from runtime year completion and intermediate arithmetic.
 - `acceptance`: reconcile KF196 and scalar target handling with the retained year/year-month floor, month-day versus month-only Base-Year controls, five-digit attempts, and leap-loss producer/dependent pair, or provide contrary evidence. No universal correspondence claim, wider-zone request or nonpositive-era extension.
 - `introducing commit`: resolve with the ledger contract’s `git log --reverse -S` recipe.
+- `reviewed`: 2026-10-05 at a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`, fixes `c957c046d`, `7cd96891f`. Inspected committed locks (CalendarTargetCompletionDiffTest and BaseYearDateConstructionReadTest; KF514/IF358/IF360) against this entry; stored-format completion, calendar floor, overflow and dependent readback. The handback reports its passing differential run at `b4c7456f3`; no Kernel invocation was performed here.
 
 <a id="spec-2026-10-03-06"></a>
 ### `SPEC-2026-10-03-06` — temporal failures preserve operand order and the validation rule boundary
 
-- `status`: handed-off
+- `status`: accepted
 - `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/09 §3.2](../spec/09-computations.md#32-an-invalidity-clear-poisons) and [spec/10 §3.1](../spec/10-validation-and-polarity.md#31-truth-testing-and-message-classification).
 - `delta`: temporal operand-list Min/Max stop at an earlier malformed operand before converting a later gap literal. Reversing Min operands reaches the literal error first. During validation truth testing, a reached gap-label comparison produces the authored rule’s VALUE_ERROR; a later false And cannot suppress it, while an earlier false or unknown prefix skips it. A true complete condition may then reach the skipped failure during statically enabled classification.
@@ -146,11 +154,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `surfaces`: temporal expression evaluation and validation exception handling; keep formal operand poison distinct from runtime value failure at the producer, while retaining cause-blind invalid reads downstream.
 - `acceptance`: reconcile malformed-first versus gap-first Min, the Max sibling, both validation And orders, and ordinary repeated-validation loop termination with first-address failure attribution against the retained rows, together with pure versus child-group-guarded Or prefixes, false complete conditions that must skip classification, and the singular/plural authored-form enablement distinction, or provide contrary evidence. No claim about other discontinuities, repeated computation targets or arbitrary nesting.
 - `introducing commit`: resolve with the ledger contract’s `git log --reverse -S` recipe.
+- `reviewed`: 2026-10-05 at a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`, fixes `1440303dd`. Inspected committed locks (TemporalValueFailureDiffTest; KF513/IF356) against this entry; gap-label failure, operand order and rule-loop classification. The handback reports its passing differential run at `b4c7456f3`; no Kernel invocation was performed here.
 
 <a id="spec-2026-10-03-05"></a>
 ### `SPEC-2026-10-03-05` — group-list expansion does not inherit singular containing-group exemptions
 
-- `status`: handed-off
+- `status`: accepted
 - `handoff`: owner confirmed transfer on 2026-10-04.
 - `clause`: [spec/09 §1.1](../spec/09-computations.md#11-group-derived-scheduling-dependencies) and §5.
 - `delta`: positive singular GroupFilled and the admitted positive fixed-root AtLeastOneGroupFilled form retain their special target/dependency treatment. Ordinary containing-group lists, including a sole non-root AtLeastOneGroupFilled and starred Any/No controls, draw MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD; Boolean expansion must preserve the authored dependency kind.
@@ -159,11 +168,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `surfaces`: computation target-reference admission, protected producer dependencies and group-list lowering. This narrows list composition without reopening the accepted singular-guard profile account.
 - `acceptance`: reconcile the GroupFilled/non-root Any/multi-All/multi-Any/root-Any and starred controls in `static.tsv`, or retain contrary kernel observations. Wider root repetition and keyed shapes remain outside this grid.
 - `introducing commit`: resolve with the ledger contract’s `git log --reverse -S` recipe.
+- `reviewed`: 2026-10-05 at a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`, fixes `48795e0fa`, `4f495de58`. Inspected committed locks (GroupListSelfReadLawsTest, ComputationSelfReadScopeLawsTest and RootGroupGuardDependencyDiffTest; KF521/IF365) against this entry; root-positive-group exemption, operand-local self-read checks and independent root guards. The handback reports its passing differential run at `b4c7456f3`; no Kernel invocation was performed here.
 
 <a id="spec-2026-10-03-04"></a>
 ### `SPEC-2026-10-03-04` — computation membership preserves reached poison and deciding prefixes
 
-- `status`: handed-off
+- `status`: accepted
 - `handoff`: owner confirmed transfer on 2026-10-04.
 - `origin`: this entry records local measurements and was created after the owner's 2026-10-03 ledger handoff; it was not part of that transfer.
 - `clause`: [spec/06 §B.5](../spec/06-strings-and-enumerations.md#b5-computation-preconditions-preserve-reached-errors-and-traversal-order).
@@ -173,6 +183,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `surfaces`: interpreter computation preconditions and phase-sensitive membership evaluation; do not replace validation's existing unknown/omission account.
 - `acceptance`: reconcile the retained scalar/plural subject-order, member-poison, empty-side and filtered-successor controls, or supply contrary Kernel evidence for these exact computation forms.
 - `introducing commit`: resolve with the ledger contract's `git log --reverse -S` recipe.
+- `reviewed`: 2026-10-05 at a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`, fixes `6c692a35e`. Inspected committed locks (MembershipComputationGuardDiffTest; KF518/KF519/IF363) against this entry; scalar member reads, plural deciding prefixes and filtered lookahead. The handback reports its passing differential run at `b4c7456f3`; no Kernel invocation was performed here.
 
 <a id="spec-2026-10-03-03"></a>
 ### `SPEC-2026-10-03-03` — filtered field-fill declared slots and deciding-prefix polarity

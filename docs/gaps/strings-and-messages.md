@@ -143,6 +143,8 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 <a id="gap-sg10"></a>
 ### SG10 — message construction and formal-output integration
 
+- `remaining`: implement the inbound [omission-reference selection family](../sources/message-and-pointer-probes.md#src-message-construction-route) through one static selector: presence-only operands, upward count comparisons, filter references and positive root-group expansion. Keep referenced and fill-to-fix sets distinct; the source review resolves the handback table discrepancy in favor of excluding ordinary operands on both sides of an upward count comparison while preserving filter references. This is separate from indexed-count evaluation.
+
 - `state`: open
 - `baseline`: [SG25](#sg25--the-message-parameter-grammar-and-its-terminal-set) owns the authored parameter grammar — both positions, the terminal set, token legality, quoting, and each terminal's admission gates. Parameter-surface work belongs there rather than here; this record keeps what happens once a parameter has resolved.
 - `missing`: locale and display providers, category and `BaseYear` lookup, format errors, custom output, repeatable pointers, structural references, and validation or computation orchestration must produce exact structured messages without changing firing. The **parameter grammar and its terminal set** were split out when this record hit its byte ceiling and are no longer owned here.

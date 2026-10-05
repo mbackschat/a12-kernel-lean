@@ -1628,7 +1628,7 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-temporal-construction-route"></a>
 - [Temporal construction and calendar profiles](sources/temporal-and-message-probes.md#src-temporal-construction-route)
 <a id="src-message-construction-route"></a>
-- [Message construction](sources/message-and-pointer-probes.md#src-message-construction-route)
+- [Message/reference rules](sources/message-and-pointer-probes.md#src-message-construction-route)
 
 ### Inbound provenance checkpoints
 
