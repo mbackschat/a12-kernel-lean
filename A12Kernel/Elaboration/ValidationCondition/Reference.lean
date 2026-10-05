@@ -171,6 +171,9 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
     Except ReferenceProjectionError (List MessagePointer)
   | .leaf (.numeric comparison) => do
       let pointers ← (comparison.left.atoms ++ comparison.right.atoms).mapM fun
+        | .baseYear _ | .baseYearDatePart _ _ _ => pure []
+        | .fieldValueAsNumber origin converted => do
+            pure [← havingStringReferencePointer source environment { origin, operand := converted.operand }]
         | .field reference => do pure [← havingNumberReferencePointer source environment reference]
         | .stringLength origin field | .stringRange origin field _ _ => do
             pure [← havingStringReferencePointer source environment { origin, operand := .string field }]

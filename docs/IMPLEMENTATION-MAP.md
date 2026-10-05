@@ -282,6 +282,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Named environments and addresses](implementation/repetition-and-paths.md#reopened-star-structural-completeness-and-addressing)
 <a id="cap-named-environments-and-addresses"></a>
 - [Named environments and addresses](implementation/repetition-and-paths.md#cap-named-environments-and-addresses)
+<a id="cap-having-configured-numeric-sources"></a>
+- [Configured numeric sources inside Having](implementation/repetition-and-paths.md#cap-having-configured-numeric-sources)
+
 <a id="cap-having-scalar-projections"></a>
 - [Direct scalar numeric projections inside Having](implementation/repetition-and-paths.md#cap-having-scalar-projections)
 

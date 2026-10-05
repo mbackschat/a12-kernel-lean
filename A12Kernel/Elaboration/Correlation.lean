@@ -29,6 +29,8 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
     SurfaceCorrelatedHaving → Option (List String × UnboundOperandLevel)
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
+        | .baseYear | .baseYearDatePart _ _ => none
+        | .fieldValueAsNumber reference => field reference.origin reference.field
         | .field reference => field reference.origin reference.field
         | .stringLength origin reference | .stringRange origin reference _ _ | .temporalPart origin reference _ => field origin reference
         | .repetition reference => group reference.origin reference.group
@@ -133,6 +135,8 @@ private def resolveHavingRepetitionInGroup
     each route chooses all of them together, and a route that admits no String or presence leaf
     supplies a refusing resolver rather than a different combinator. -/
 private structure HavingLeafResolvers where
+  baseYear : Except CorrelationElabError Int
+  fieldValueAsNumber : SurfaceHavingStringRef → Except CorrelationElabError ResolvedFieldValueAsNumberSource
   boolean : EqualityOp → SurfaceHavingStringRef → Bool → Except CorrelationElabError FlatComparison
   fields : SurfaceComparisonOp → SurfaceHavingStringRef → SurfaceHavingStringRef →
     Except CorrelationElabError (Option FlatComparison)
@@ -175,6 +179,9 @@ private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
     (op : NumericValidationOp) (left right : AuthoredNumericExpr SurfaceHavingNumericAtom) :
     Except CorrelationElabError CorrelatedHaving := do
   let resolve : SurfaceHavingNumericAtom → Except CorrelationElabError HavingNumericAtom
+    | .baseYear => HavingNumericAtom.baseYear <$> resolvers.baseYear
+    | .baseYearDatePart source part => (fun year => .baseYearDatePart year source part) <$> resolvers.baseYear
+    | .fieldValueAsNumber reference => (.fieldValueAsNumber reference.origin ·) <$> resolvers.fieldValueAsNumber reference
     | .stringLength origin reference => (.stringLength origin ·) <$> resolvers.stringValue origin reference
     | .stringRange origin reference start finish => do
         let source ← (resolvers.stringValue origin reference).mapError fun
@@ -303,7 +310,8 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
         (model.resolveNumberInGroup declaringGroup group reference.field).isOk
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).any fun
-        | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
+        | .baseYear | .baseYearDatePart _ _ | .fieldValueAsNumber _
+            | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
         | .field reference => reference.origin == .inner &&
             (model.resolveNumberInGroup declaringGroup group reference.field).isOk
         | .repetition _ => false
@@ -326,6 +334,8 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError CorrelatedHaving := do
   discard <| elaborateHavingCoreWith {
+    baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
+    fieldValueAsNumber := fun _ => throw .stringLeafOutsideStarRoute
     boolean := fun _ _ _ => throw .stringLeafOutsideStarRoute
     stringValue := fun _ _ => throw .stringLeafOutsideStarRoute
     temporalPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
@@ -343,6 +353,8 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
   let readsGroup := authored.readsGroupNumber model declaringGroup group
   let condition ← (elaborateHavingCoreWith {
+    baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
+    fieldValueAsNumber := fun _ => throw .stringLeafOutsideStarRoute
     boolean := fun _ _ _ => throw .stringLeafOutsideStarRoute
     stringValue := fun _ _ => throw .stringLeafOutsideStarRoute
     temporalPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
@@ -578,6 +590,8 @@ def CorrelatedHaving.outerIterationScopes
     CorrelatedHaving → List (Option (List RepeatableLevel))
   | .leaf (.numeric comparison) =>
       (comparison.left.atoms ++ comparison.right.atoms).map fun
+        | .baseYear _ | .baseYearDatePart _ _ _ => none
+        | .fieldValueAsNumber origin source => outerHavingFieldIterationScope model origin source.fieldId
         | .field reference => outerHavingNumberIterationScope model reference
         | .stringLength origin field | .stringRange origin field _ _ => outerHavingFieldIterationScope model origin field.id
         | .temporalPart origin field _ => outerHavingFieldIterationScope model origin field.id
@@ -625,6 +639,8 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
     SurfaceCorrelatedHaving → Option CorrelationElabError
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
+        | .baseYear | .baseYearDatePart _ _ => none
+        | .fieldValueAsNumber reference => field reference.origin reference.field
         | .field reference => field reference.origin reference.field
         | .stringLength origin reference | .stringRange origin reference _ _ | .temporalPart origin reference _ => field origin reference
         | .repetition reference => group reference.origin reference.group
@@ -663,6 +679,10 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
   let reopenedLevels := candidateLevels.drop source.path.firstStar
   let outerLevels := model.repeatableScopeForGroupPath bindingGroup
   let condition ← elaborateHavingCoreWith {
+    baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
+    fieldValueAsNumber := fun reference => do
+      let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels reference
+      (declaration.resolveFieldValueAsNumberSource reference.projectionRef).mapError (fun _ => .numericExpressionUnsupported)
     boolean := model.resolveHavingBooleanInEnvironment declaringGroup outerLevels
     stringValue := fun origin reference => do
       let declaration ← model.resolveHavingFieldValueRead declaringGroup outerLevels origin reference .stored

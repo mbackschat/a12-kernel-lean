@@ -357,7 +357,8 @@ theorem numericValidation_fieldValueAsNumber_empty_both
   context.resolveNumericValidationAtom (.fieldValueAsNumber source) =
       .ok (.value 0 .both) := by
   simp [FlatContext.resolveNumericValidationAtom,
-    ValidationEvaluationContext.resolveNumericValidationAtom, observed]
+    ValidationEvaluationContext.resolveNumericValidationAtom, ResolvedFieldValueAsNumberSource.observeOperand,
+    NumericOperand.toValidationArithmetic, observed]
 
 /-- A present admitted String or Enumeration value is projected and parsed once; the resulting value is fixed. -/
 theorem numericValidation_fieldValueAsNumber_value_fixed
@@ -369,7 +370,8 @@ theorem numericValidation_fieldValueAsNumber_value_fixed
   context.resolveNumericValidationAtom (.fieldValueAsNumber source) =
       .ok (.value amount .fixed) := by
   simp [FlatContext.resolveNumericValidationAtom,
-    ValidationEvaluationContext.resolveNumericValidationAtom,
+    ValidationEvaluationContext.resolveNumericValidationAtom, ResolvedFieldValueAsNumberSource.observeOperand,
+    NumericOperand.toValidationArithmetic,
     observed, converted]
 
 /-- A reached formal cause survives String or Enumeration/category conversion unchanged. -/
@@ -380,7 +382,8 @@ theorem numericValidation_fieldValueAsNumber_unknown_preservesCause
     context.resolveNumericValidationAtom (.fieldValueAsNumber source) =
       .error (.formal cause) := by
   simp [FlatContext.resolveNumericValidationAtom,
-    ValidationEvaluationContext.resolveNumericValidationAtom, observed]
+    ValidationEvaluationContext.resolveNumericValidationAtom, ResolvedFieldValueAsNumberSource.observeOperand,
+    NumericOperand.toValidationArithmetic, observed]
 
 theorem numericArithmetic_formalInvalid_left_is_unknown
     (op : NumericValidationOp) (cause : FormalCause)

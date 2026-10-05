@@ -52,6 +52,21 @@ private def presencePolarity? : String → Option HavingPresencePolarity
   | _ => none
 
 private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
+  | .constant "BaseYear" => pure .baseYear
+  | .call id [.mk (.constant "BaseYear") none none] none none => do
+      let some part := datePart? id | refuse "Having" "BaseYear component"
+      pure (.baseYearDatePart .direct part)
+  | .call id [.mk (.call bound [.mk (.constant "BaseYear") none none] none none) none none] none none => do
+      let some part := datePart? id | refuse "Having" "BaseYear component"
+      let source ← match bound with
+        | "StartOfDateRange" => pure (.range .start)
+        | "EndOfDateRange" => pure (.range .finish)
+        | _ => refuse "Having" "BaseYear endpoint"
+      pure (.baseYearDatePart source part)
+  | .call "FieldValueAsNumber" [.mk (.entity { path, index := none, category }) none none] none none => do
+      let some (origin, field) := path.havingField? | refuse "Having" "conversion field"
+      pure (.fieldValueAsNumber {
+        origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored })
   | .call "Length" [.mk (.entity { path, index := none, category := none }) none none] none none =>
       match path.havingField? with
       | some (origin, field) => pure (.stringLength origin field)

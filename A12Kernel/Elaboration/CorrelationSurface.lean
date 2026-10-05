@@ -34,6 +34,9 @@ structure SurfaceHavingPresenceRef where
   deriving Repr, DecidableEq
 
 inductive SurfaceHavingNumericAtom where
+  | baseYear
+  | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
+  | fieldValueAsNumber (reference : SurfaceHavingStringRef)
   | field (reference : SurfaceHavingNumberRef)
   | stringLength (origin : HavingOrigin) (field : SurfaceFieldPath)
   | stringRange (origin : HavingOrigin) (field : SurfaceFieldPath) (start finish : Nat)

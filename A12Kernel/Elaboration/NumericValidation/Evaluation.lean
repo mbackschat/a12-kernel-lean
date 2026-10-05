@@ -42,13 +42,7 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
   | .stringRange field start finish =>
       ((context.fields.observeValidationAt field.id).asStringRangeOperand start finish).toValidationArithmetic
   | .fieldValueAsNumber source =>
-      match context.fields.observeValidationAt source.fieldId with
-      | .empty => .ok (.value 0 .both)
-      | .value value =>
-          match source.valueFor? value with
-          | some amount => .ok (.value amount .fixed)
-          | none => .error (.formal .malformed)
-      | .unknown cause | .poison cause => .error (.formal cause)
+      (source.observeOperand (context.fields.observeValidationAt source.fieldId)).toValidationArithmetic
   | .dateDifference unit left right =>
       match DateDifferenceOperand.evaluate unit
           (left.validationOperand context.fields)

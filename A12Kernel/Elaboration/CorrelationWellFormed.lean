@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.HavingFieldValueList
 import A12Kernel.Elaboration.Flat.FieldValueRead
 import A12Kernel.Elaboration.SingleGroup
+import A12Kernel.Elaboration.NumericSource
 import A12Kernel.Semantics.Correlation
 
 /-! # Static well-formedness of a resolved filter tree
@@ -69,6 +70,8 @@ def CorrelatedHaving.equalityScalesAgree (condition : CorrelatedHaving) : Bool :
 def CorrelatedHavingLeaf.wellFormedForSingleGroup
     (model : FlatModel) (group : RepeatableGroupDecl) : CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
+      | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
+      | .fieldValueAsNumber _ _ => false
       | .field reference => model.admitsSingleGroupNumber group reference.field
       | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
       | .repetition reference => reference.source == .repeatable group.level
@@ -141,6 +144,9 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) :
     CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
+      | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
+      | .fieldValueAsNumber origin source => (model.certifiedFieldValueAsNumberDeclaration? source).any fun declaration =>
+          repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
       | .field reference => model.admitsHavingNumberInEnvironment candidateLevels outerLevels reference
       | .stringLength origin field => (model.lookupUniqueId field.id).toOption.any fun declaration =>
           declaration.toStringValueField? == some field && declaration.fieldValueReadRefusal?.isNone &&
@@ -211,6 +217,10 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
     (reopenedLevels : List RepeatableLevel) : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
       (comparison.left.atoms ++ comparison.right.atoms).any fun
+        | .baseYear _ | .baseYearDatePart _ _ _ => false
+        | .fieldValueAsNumber origin source => origin == .inner &&
+            (model.certifiedFieldValueAsNumberDeclaration? source).any fun declaration =>
+              declaration.repeatableScope.any reopenedLevels.contains
         | .field reference => reference.reachesReopenedLevel model reopenedLevels
         | .stringLength origin field | .stringRange origin field _ _ => origin == .inner &&
             (model.lookupUniqueId field.id).toOption.any fun declaration =>

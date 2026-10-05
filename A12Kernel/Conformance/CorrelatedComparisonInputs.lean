@@ -319,4 +319,48 @@ example : projectedAtoms.all (fun source =>
     comparison.evalTruthInResolving toleranceRead frame == .error "captured read" &&
       comparison.evalComputationInResolving toleranceRead frame == .ok (.poison .malformed)) = true := by native_decide
 
+private def conversionSource : ResolvedFieldValueAsNumberSource := { operand := .string { id := 1 }, scale := 0 }
+private def conversionModel : FlatModel := { model with
+  baseYear := some 2024
+  fields := model.fields.map fun field => { field with
+    stringPatternSource := some "[0-9]+", stringPolicy := { maxLength := some 15 } } }
+
+private def conversionCondition (origin : HavingOrigin) (source : ResolvedFieldValueAsNumberSource) : CorrelatedHavingLeaf :=
+  .numeric { op := .ordinary .equal, left := .atom (.fieldValueAsNumber origin source), right := .literal { value := 2, authoredScale := 0 } }
+
+example : (conversionCondition .inner conversionSource).wellFormedForEnvironments conversionModel [10] [] = true ∧
+    (conversionCondition .inner conversionSource).wellFormedForEnvironments model [10] [] = false ∧
+    (conversionCondition .outer conversionSource).wellFormedForEnvironments conversionModel [10] [] = false ∧
+    (conversionCondition .inner { conversionSource with scale := 1 }).wellFormedForEnvironments conversionModel [10] [] = false := by native_decide
+
+example : (HavingNumericAtom.fieldValueAsNumber .inner conversionSource).readValidation
+      { read := fun _ _ => { emptyRequired with findings := [] } } frame = .ok (.value 0 .both) ∧
+    (HavingNumericAtom.fieldValueAsNumber .inner conversionSource).readComputation
+      { read := fun _ _ => emptyRequired } frame = .value 0 ∧
+    (conversionCondition .inner conversionSource).evalComputationInResolving toleranceRead frame =
+      .ok (.poison .malformed) := by native_decide
+
+example : (HavingNumericAtom.fieldValueAsNumber .inner conversionSource).readValidationResolving
+      ({ toleranceRead with read := fun _ _ => .error "address" } : ResolvingCorrelationContext String) frame = .error "address" ∧
+    (HavingNumericAtom.fieldValueAsNumber .inner conversionSource).readComputationResolving
+      ({ toleranceRead with read := fun _ _ => .error "address" } : ResolvingCorrelationContext String) frame = .error "address" := by native_decide
+
+private def conversionPair : CorrelatedHavingLeaf := .numeric {
+  op := .ordinary .equal
+  left := .atom (.fieldValueAsNumber .inner conversionSource)
+  right := .atom (.fieldValueAsNumber .outer conversionSource) }
+
+example : conversionPair.evalTruthInResolving toleranceRead frame = .error "captured read" ∧
+    conversionPair.evalComputationInResolving toleranceRead frame = .ok (.poison .malformed) := by native_decide
+
+private def configuredYearCondition (year : Int) : CorrelatedHaving :=
+  .leaf (.numeric { op := .ordinary .equal, left := .atom (.baseYear year), right := .literal { value := 2024, authoredScale := 0 } })
+
+example : (configuredYearCondition 2024).wellFormedForEnvironments conversionModel [] [] = true ∧
+    (configuredYearCondition 2023).wellFormedForEnvironments conversionModel [] [] = false ∧
+    (configuredYearCondition 2024).wellFormedForEnvironments model [] [] = false ∧
+    (configuredYearCondition 2024).usesInner = false ∧
+    (configuredYearCondition 2024).usesOuter = false ∧
+    (configuredYearCondition 2024).fieldIds = [] := by native_decide
+
 end A12Kernel.Conformance.CorrelatedComparisonInputs

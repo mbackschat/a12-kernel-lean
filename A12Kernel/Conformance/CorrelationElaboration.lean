@@ -654,4 +654,9 @@ example :
         repetitionAdmittedAt [1, 2] [1] 1 .outer = true) := by
   native_decide
 
+example : (elaborateSingleCorrelatedRule { model with baseYear := some 2024 } ["Order"]
+    (absoluteRule (.and (equalCount .inner .outer) (.numeric .less
+      (.atom (.field (numberRef .inner (absolute items.path "Count"))))
+      (.atom .baseYear))))).isOk = true := by native_decide
+
 end A12Kernel.Conformance.CorrelationElaboration

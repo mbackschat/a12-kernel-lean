@@ -640,4 +640,55 @@ example : run "RangeAsNumber(Rows/Tag, 2, 3) == 0" false .string "x" "aXz" "a12"
       some (.fired .omission, []) := by native_decide
 
 
+private def modelWithBaseYear : FlatModel := { model with baseYear := some 2024 }
+
+example : runModel modelWithBaseYear "BaseYear == 2024 And [Rows/N] != 5" false "x" "x" "y" =
+      some (.fired .omission, ["value 9"]) ∧
+    runModel modelWithBaseYear "[Rows/N] + BaseYear == 2026" false "x" "x" "y" =
+      some (.notFired, ["value 2"]) ∧
+    run "BaseYear == 2024 And [Rows/N] != 5" = none ∧
+    runModel modelWithBaseYear "BaseYear == 2024" false "x" "x" "y" = none := by native_decide
+
+example : [("BaseYear", ["2024", "1", "1", "1"]),
+    ("StartOfDateRange(BaseYear)", ["2024", "1", "1", "1"]),
+    ("EndOfDateRange(BaseYear)", ["2024", "12", "4", "31"])].all (fun (source, expected) =>
+    (["YearFromDate", "MonthFromDate", "QuarterFromDate", "DayFromDate"].zip expected).all (fun (operator, value) =>
+      runModel modelWithBaseYear s!"{operator}({source}) == {value} And [Rows/N] != 5" false "x" "x" "y" ==
+        some (.fired .omission, ["value 9"]))) = true := by native_decide
+
+private def convertibleStringModel : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == 2 || field.id == 3 then { field with
+    stringPatternSource := some "[0-9]+", stringPolicy := { maxLength := some 15 } } else field }
+
+example : runModel convertibleStringModel "FieldValueAsNumber(Rows/Tag) == 2" false "2" "02" "5" =
+      some (.fired .omission, ["value 9"]) ∧
+    runModel convertibleStringModel "FieldValueAsNumber(Rows/Tag) == FieldValueAsNumber($Expected)"
+      true "2" "02" "7" "\"7\"" = some (.fired .omission, ["value 7", "value 5"]) ∧
+    run "FieldValueAsNumber(Rows/Tag) == 2" = none := by native_decide
+
+private def numericCategoryDomain : EnumerationDeclaration := {
+  storedTokens := ["keep", "drop"], categories := [{ name := "Numeric", tokens := ["1.5", "-2.5"] }] }
+
+example : run "FieldValueAsNumber(Rows/Tag -> Numeric) == 1.5" false
+      .enumeration "keep" "keep" "drop" (some numericCategoryDomain) =
+      some (.fired .omission, ["value 9"]) ∧
+    run "FieldValueAsNumber(Rows/Tag) == 1.5" false
+      .enumeration "keep" "keep" "drop" (some numericCategoryDomain) = none := by native_decide
+
+example : referencesFor "FieldValueAsNumber(/Form/Rows/Tag) == FieldValueAsNumber($/Form/Rows/Tag)" convertibleStringModel =
+      some (true, true) ∧
+    runModel convertibleStringModel "FieldValueAsNumber(Rows/Tag) > 0" false "2" "bad" "2" =
+      some (.notFired, []) ∧
+    runModel convertibleStringModel "FieldValueAsNumber($Expected) == 2" false "2" "02" "5" = none ∧
+    runModel convertibleStringModel "FieldValueAsNumber([Rows/Tag]) == 2" false "2" "02" "5" = none ∧
+    runModel { convertibleStringModel with fields := convertibleStringModel.fields.map fun field =>
+        if field.id == 3 then { field with stringPolicy := { maxLength := some 16 } } else field }
+      "FieldValueAsNumber(Rows/Tag) == 2" false "2" "02" "5" = none := by native_decide
+
+example : run "FieldValueAsNumber(Rows/Tag) == 1.5" false .enumeration "1.5" "1.5" "-2.5"
+      (some { storedTokens := ["1.5", "-2.5"] }) = some (.fired .omission, ["value 9"]) ∧
+    run "FieldValueAsNumber(Rows/Tag -> Missing) == 1.5" false
+      .enumeration "keep" "keep" "drop" (some numericCategoryDomain) = none ∧
+    runModel modelWithBaseYear "HoursFromTime(BaseYear) == 0 And [Rows/N] != 5" false "x" "x" "y" = none := by native_decide
+
 end A12Kernel.Dm.HavingComparisonLocks

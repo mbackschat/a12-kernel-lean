@@ -106,7 +106,7 @@ def referencesField (condition : CorrelatedHaving) (field : FieldId) : Bool :=
     rule's error-field gates ([inbound](../../docs/SOURCES.md#inbound-2026-09-26d-reference-set)). -/
 def markedFieldIds : CorrelatedHaving → List FieldId
   | .leaf (.numeric comparison) =>
-      ((comparison.left.atoms ++ comparison.right.atoms).filter (·.origin == .outer)
+      ((comparison.left.atoms ++ comparison.right.atoms).filter (·.origin? == some .outer)
         |>.filterMap (·.fieldId?)).eraseDups
   | .leaf (.simpleComparison left right comparison) =>
       ((if left == .outer then comparison.inputFields.1 else []) ++
@@ -139,7 +139,7 @@ private def HavingOrigin.isOuter : HavingOrigin → Bool
 
 private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
-      comparison.left.anyAtom (·.origin.isInner) || comparison.right.anyAtom (·.origin.isInner)
+      comparison.left.anyAtom (·.origin?.any HavingOrigin.isInner) || comparison.right.anyAtom (·.origin?.any HavingOrigin.isInner)
   | .simpleComparison left right comparison =>
       (left.isInner && !comparison.inputFields.1.isEmpty) ||
         (right.isInner && !comparison.inputFields.2.isEmpty)
@@ -151,7 +151,7 @@ private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
 
 private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
-      comparison.left.anyAtom (·.origin.isOuter) || comparison.right.anyAtom (·.origin.isOuter)
+      comparison.left.anyAtom (·.origin?.any HavingOrigin.isOuter) || comparison.right.anyAtom (·.origin?.any HavingOrigin.isOuter)
   | .simpleComparison left right comparison =>
       (left.isOuter && !comparison.inputFields.1.isEmpty) ||
         (right.isOuter && !comparison.inputFields.2.isEmpty)
