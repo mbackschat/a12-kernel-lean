@@ -316,6 +316,10 @@ def ordinaryIterationScope :
       Except RuleIterationScopeError (Option (List RepeatableLevel))
   | .leaf (.repeatableFieldPresence _ declaration) =>
       pure (some declaration.repeatableScope)
+  | .leaf (.constructedDateValidity _ source) =>
+      mergeIterationScopeList (source.fields.map fun field =>
+        let scope := model.fieldRepeatableScope field
+        if scope.isEmpty then none else some scope)
   | .leaf (.stringPattern leaf) =>
       let scope := model.fieldRepeatableScope leaf.condition.field.id
       pure (if scope.isEmpty then none else some scope)

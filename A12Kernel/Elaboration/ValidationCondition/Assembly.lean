@@ -102,14 +102,20 @@ def fromFlat (condition : CheckedFlatCondition model) :
 
 /-- Compose either constructed-Date validity projection using the existing component certificate. -/
 def fromConstructedDateValidity (model : FlatModel) (rowGroup : GroupPath)
-    (operation : ConstructedDateValidityOp) (surface : SurfaceConstructedDateComponents) :
+    (operation : ConstructedDateValidityOp) (surface : SurfaceConstructedDateComponents)
+    (bindingGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) := do
   match hModel : model.validate with
   | .error error => throw (.invalidModel error)
   | .ok () =>
-      let source ← (elaborateConstructedDateSources model surface).mapError .constructedDate
-      checkCore model rowGroup (.leaf (.constructedDateValidity operation source))
-        (by rw [hModel]; rfl)
+      let source ← (elaborateConstructedDateSources model surface
+        (model.repeatableScopeForGroupPath bindingGroup)).mapError .constructedDate
+      if source.fields.any (fun field =>
+          (model.unboundReadLevel? rowGroup bindingGroup (model.fieldRepeatableScope field)
+            (model.repeatableScopeForGroupPath bindingGroup)).isSome) then
+        throw .incoherentCore
+      checkCore model bindingGroup (.leaf (.constructedDateValidity operation source))
+        (by rw [hModel]; rfl) rowGroup
 
 /-- Assemble one explicit `Valid`/`Invalid` predicate at a rule group.
 

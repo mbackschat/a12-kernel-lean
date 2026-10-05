@@ -69,10 +69,30 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .groupList operator [.starredGroupPresence _] =>
       operator.toStarredGroupFillQuantifier?.isSome
   | .repetitionNotUnique _ => true
-  | .customFieldValidity _ | .stringPattern _ => true
+  | .customFieldValidity _ | .stringPattern _ | .constructedDateValidity _ _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
   | _ => false
+
+/-- Select component cells at the current row before invoking the shared constructor. Partial
+unavailability retains a separate relevance bit: the empty placeholder permits later eager argument
+conversion, but no constructor value escapes when any source was unavailable (spec/05 §3). -/
+private def evalConstructedDateAddressed
+    (context : AddressedValidationEvaluationContext model) (isRelevant : FlatRelevance)
+    (operation : ConstructedDateValidityOp) (source : CheckedConstructedDateComponents model) :
+    Except CheckedAddressingError Verdict := do
+  let document ← match context.input with
+    | .checked document | .partialView document _ => pure document
+    | .legacy _ _ => throw (.checkedDocumentRequired [])
+  let cells ← source.fields.mapM fun field => do
+    let cell ← if isRelevant field then context.readPartialCell context.outer field else pure none
+    pure (field, cell)
+  let readCell field := ((cells.find? (·.1 == field)).bind (·.2)).getD (checkAdmittedRawCell .presentEmpty)
+  let observation ← (source.evaluateComponentsWith (fun component =>
+    component.readWith .validation readCell (document.storedTextIn context.outer)
+      context.scalar.fields.world) .validation >>= source.applyProfileReality).mapError .constructedDate
+  pure (if cells.all (·.2.isSome) then (observation.validityVerdict operation).toOption.getD .unknown
+    else .unknown)
 
 private def evalFlatLeafAddressedPartial
     (leaf : FlatConditionLeaf)
@@ -120,6 +140,8 @@ def evalAddressedPartial?
       Option (Except CheckedAddressingError Verdict)
   | .flat condition =>
       some (evalFlatLeafAddressedPartial condition context isRelevant)
+  | .constructedDateValidity operation source =>
+      some (evalConstructedDateAddressed context isRelevant operation source)
   | .repeatableFieldPresence operator declaration =>
       some (if isRelevant declaration.id then
         context.readPartialCell context.outer declaration.id |>.map fun cell? =>
@@ -223,12 +245,7 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
       | .checked document => comparison.evaluateFull document context.outer
       | .legacy _ _ | .partialView _ _ => .error (.checkedDocumentRequired [])
   | .constructedDateValidity operation source =>
-      match context.input with
-      | .checked document => do
-          let observation ← (source.evaluate .validation document context.scalar.fields.world).mapError
-            .constructedDate
-          pure ((observation.validityVerdict operation).toOption.getD .unknown)
-      | .legacy _ _ | .partialView _ _ => .error (.checkedDocumentRequired [])
+      evalConstructedDateAddressed context context.directRelevant operation source
   | .valuesNotUnique source =>
       match context.input with
       | .checked document => source.evaluateFull document context.outer

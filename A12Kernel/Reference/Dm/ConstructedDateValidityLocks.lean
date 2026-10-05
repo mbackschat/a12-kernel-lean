@@ -114,7 +114,7 @@ private def references : Option (List FieldId × Bool) := do
   let pointers ← (condition.core.referencePointers []).toOption
   pure (pointers.map (·.field), condition.core.allLeaves ValidationConditionLeaf.supportsAddressedPartial)
 
-example : references = some ([1, 2, 4, 5], false) := by native_decide
+example : references = some ([1, 2, 4, 5], true) := by native_decide
 
 private def leafResult (text : String) (values : List (String × String)) :
     Option (Except CheckedAddressingError Verdict) := do
@@ -324,5 +324,145 @@ example : [false, true].all (fun repeated =>
       compute s!"{operation}(Date({path}TextDay,{path}M,{path}Y))"
         [[("TextDay", "x"), ("M", "2"), ("Y", "2024")]] repeated false 0 false true ==
         some ["cleared", "cleared"]) := by native_decide
+
+private def rowValidityOutcomes (operation : String) (scope : Option ValidationRelevanceScope := none)
+    (values : List (String × String) := [("29", "2024"), ("29", "2023")])
+    (extensible : Bool := false) (condition : Option String := none)
+    (world : Option World := none) (stringYear : Bool := false) :
+    Option (List (Env × FlatRuleOutcome)) := do
+  let model := computationModel true
+  let model := { model with
+    repeatableGroups := model.repeatableGroups.map fun group => { group with repeatability := some (max 1 values.length) }
+    fields := model.fields.map fun field =>
+      if stringYear && field.id == 3 then
+        { field with
+          policy := { kind := .string }, numericTargetConstraints := {}
+          stringExtensibleEnum := true, stringPolicy := { maxLength := some 4 } }
+      else if extensible && field.id == 7 then
+        { field with stringExtensibleEnum := true, stringPatternSource := none } else field }
+  let dm := { dm with flat := model }
+  let day := if extensible then "TextDay" else "D"
+  let raw (value : String × String) := Json.mkObj [(day, Json.str value.1), ("M", "2"), ("Y", Json.str value.2),
+    ("Year", Json.str value.2), ("C", "20"), ("S", "24")]
+  let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+    ("Rows", .arr (values.map raw).toArray)])])).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let expression := s!"{operation}(Date(Rows/{day}, Rows/M, Rows/Y))"
+  let expression := if operation == "Invalid" then s!"FieldFilled(Rows/{day}) And {expression}" else expression
+  let rule ← (checkRule dm .english {
+    group := ["Form"], name := "Rule", errorCode := "R", errorEntityRelPath := s!"../Rows/{day}"
+    condition := condition.getD expression, severity := "ERROR" }).toOption
+  match scope with
+  | none => (rule.evalOrdinaryRepeatableFull document world).toOption
+  | some scope =>
+      match ← (rule.evalOrdinaryRepeatablePartial document scope world).toOption with
+      | .skipped => none
+      | .evaluated rows => rows.mapM fun (environment, outcome) => match outcome with
+          | .skipped => none
+          | .evaluated result => some (environment, result)
+
+private def rowValidity (operation : String) (scope : Option ValidationRelevanceScope := none) :
+    Option (List Verdict) := (rowValidityOutcomes operation scope).map fun rows => rows.map (·.2.verdict)
+
+example : rowValidity "Valid" = some [.fired .value, .notFired] ∧
+    rowValidity "Invalid" = some [.notFired, .fired .value] ∧
+    rowValidity "Valid" (some .full) = some [.fired .value, .notFired] ∧
+    rowValidity "Invalid" (some .full) = some [.notFired, .fired .value] := by native_decide
+
+example : rowValidity "Valid" (some (.partialSet [
+    { path := ["Form", "Rows", "D"], indices := [.all, .all, .all] }])) =
+      some [.unknown, .unknown] := by native_decide
+
+example : (rowValidityOutcomes "Valid" (some .full) [("2", "2024"), ("x", "2024")] true
+    (some "Valid(Date(Rows/TextDay,Rows/M,Rows/Y)) And FieldNotFilled(Rows/M)")) =
+    (rowValidityOutcomes "Valid" none [("2", "2024"), ("x", "2024")] true
+    (some "Valid(Date(Rows/TextDay,Rows/M,Rows/Y)) And FieldNotFilled(Rows/M)")) := by native_decide
+
+private def rowOutcomes (result : Option (List (Env × FlatRuleOutcome))) :
+    Option (List (Env × Verdict × Option CellAddr)) := result.map fun rows => rows.map fun (row, outcome) =>
+      (row, outcome.verdict, outcome.message?.bind (·.errorAddress.toCellAddr?))
+
+example : [none, some ValidationRelevanceScope.full].all (fun scope =>
+    rowOutcomes (rowValidityOutcomes "Valid" scope [("2", "2024"), ("x", "2024"), ("1", "2024")] true
+      (some "Valid(Date(Rows/TextDay,Rows/M,Rows/Y)) And FieldNotFilled(Rows/M)")) == some [
+        ([(10, 1)], .notFired, none),
+        ([(10, 2)], .fired .value, some { field := 7, path := [1] })]) := by native_decide
+
+example : [none, some ValidationRelevanceScope.full].all (fun scope =>
+    rowOutcomes (rowValidityOutcomes "Valid" scope [("x", "2024"), ("x", "2024")] true
+      (some "FieldNotFilled(Rows/M) And Valid(Date(Rows/TextDay,Rows/M,Rows/Y))")) == some [
+        ([(10, 1)], .notFired, none), ([(10, 2)], .notFired, none)]) := by native_decide
+
+example : ["Date(Rows/D,Rows/M)", "Date(Rows/D,Rows/M,Rows/C,Rows/S)"].all (fun constructor =>
+    (rowValidityOutcomes "Valid" (some .full) [("29", "2024"), ("28", "2024")] false
+      (some s!"Valid({constructor})")).map (fun rows => rows.map (·.2.verdict)) ==
+        some [.fired .value, .fired .value]) ∧
+    (rowValidityOutcomes "Valid" (some .full) [("29", "2024"), ("29", "2023")] false
+      (some "Valid(Date(Rows/D,Rows/M,Rows/Year))")).map (fun rows => rows.map (·.2.verdict)) ==
+        some [.fired .value, .notFired] := by native_decide
+
+example : (rowValidityOutcomes "Valid" (some .full) [("", "2024"), ("bad", "2024")] false
+    (some "FieldFilled(Rows/M) And Invalid(Date(Rows/D,Rows/M,Rows/Y))")).map
+      (fun rows => rows.map (·.2.verdict)) = some [.fired .omission, .unknown] := by native_decide
+
+example : [0, 951782400000].map (fun now =>
+    (rowValidityOutcomes "Valid" (some .full) [("30", "2024")] false
+      (some "FieldFilled(Rows/D) And Valid(Date(\"30\",MonthFromDate(Now),YearFromDate(Now)))")
+      (some { now := { epochMillis := now } })).map (fun rows => rows.map (·.2.verdict))) =
+      [some [.fired .value], some [.notFired]] := by native_decide
+
+example : rowOutcomes (rowValidityOutcomes "Valid" (some (.partialSet [
+    { path := ["Form", "Rows", "D"], indices := [.all, .all, .all] },
+    { path := ["Form", "Rows", "Y"], indices := [.all, .all, .all] }]))
+    [("29", "x")] false none none true) = some [
+      ([(10, 1)], .fired .value, some { field := 1, path := [1] })] ∧
+    (rowValidityOutcomes "Valid" (some (.partialSet [
+      { path := ["Form", "Rows", "D"], indices := [.all, .all, .all] }]))
+      [("29", "x")] false none none true).map (fun rows => rows.map (·.2.verdict)) =
+        some [.unknown] := by native_decide
+
+example :
+    let model := computationModel true
+    let source : SurfaceConstructedDateComponents := {
+      day := .numberField 1, month := .numberField 2, year := .complete (.numberField 3) }
+    (CheckedValidationCondition.fromConstructedDateValidity model ["Form"] .valid source ["Form", "Rows"]).isOk = true ∧
+    (CheckedValidationCondition.fromConstructedDateValidity model ["Form", "Side"] .valid source ["Form", "Rows"]).isOk = false := by native_decide
+
+example : [none, some ValidationRelevanceScope.full].all (fun scope =>
+    rowOutcomes (rowValidityOutcomes "Valid" scope [("x", "2024"), ("1", "2024")] true
+      (some "FieldFilled(Rows/M) Or Valid(Date(Rows/TextDay,Rows/M,Rows/Y))")) == some [
+        ([(10, 1)], .fired .value, some { field := 7, path := [1] })]) := by native_decide
+
+private def fixedPartialValidity (once : Bool) (times : List Int)
+    (scope : ValidationRelevanceScope := .full)
+    (expression : String := "Valid(Date(D,MonthFromDate(Now),YearFromDate(Now)))") :
+    Option (List (Verdict × Option CellAddr)) := do
+  let document ← checkedDocument [("D", "30"), ("M", "2"), ("Y", "2024")] true
+  let rule ← (checkRule dm .english {
+    group := ["Form"], name := "Rule", errorCode := "R", severity := "ERROR"
+    errorEntityRelPath := if once then "../Rows/E" else "../D"
+    condition := if once then expression ++ " And AtLeastOneGroupFilled(Rows*)" else expression }).toOption
+  times.mapM fun now => do
+    let world := some { now := { epochMillis := now } }
+    let outcome ← if once then do
+      match ← (rule.evalOrdinaryOncePartial document scope world).toOption with
+      | .skipped => none
+      | .evaluated _ outcome => pure outcome
+    else do
+      match ← (rule.evalAddressedPartial document scope world).toOption with
+      | .skipped => none
+      | .evaluated outcome => pure outcome
+    pure (outcome.verdict, outcome.message?.bind (·.errorAddress.toCellAddr?))
+
+example : fixedPartialValidity false [0, 951782400000] = some [
+    (.fired .value, some { field := 1, path := [] }), (.notFired, none)] ∧
+    fixedPartialValidity true [0, 951782400000] = some [
+    (.fired .value, some { field := 6, path := [1] }), (.notFired, none)] := by native_decide
+
+example : fixedPartialValidity false [0]
+    (.partialSet [{ path := ["Form", "D"], indices := [.all, .all] }])
+    "Valid(Date(D,M,Y))" = some [(.unknown, none)] := by native_decide
 
 end A12Kernel.Dm.ConstructedDateValidityLocks

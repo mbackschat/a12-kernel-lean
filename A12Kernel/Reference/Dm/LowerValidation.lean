@@ -127,7 +127,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         | some operation => [do
             let source ← lowerDateComponents model rowGroup arguments
             elaborated id (CheckedValidationCondition.fromConstructedDateValidity
-              model rowGroup operation source)]
+              model rowGroup operation source bindingGroup)]
         | none => []
     | .call id [.mk field none none, .mk (.string name) none none] none none =>
         let operation := match id with
