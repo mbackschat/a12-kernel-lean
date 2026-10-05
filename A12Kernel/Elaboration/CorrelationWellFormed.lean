@@ -60,7 +60,7 @@ def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
       | _, _ => false
   -- Text, Boolean/Confirm and presence carry no declared scale; their kind gates belong to
   -- wellFormedForEnvironments.
-  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .presence _ _ => true
+  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .presence _ _ => true
 
 /-- Every leaf under the shared connective tree satisfies the static scale law. -/
 def CorrelatedHaving.equalityScalesAgree (condition : CorrelatedHaving) : Bool :=
@@ -74,7 +74,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
   -- The legacy one-group adapter admits only the leaves it was built for. The other
   -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
   -- extending an adapter no current consumer needs them on.
-  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .presence _ _ => false
+  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .presence _ _ => false
 
 def CorrelatedHaving.wellFormedForSingleGroup (condition : CorrelatedHaving)
     (model : FlatModel) (group : RepeatableGroupDecl) : Bool :=
@@ -148,6 +148,17 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
         (right.availableLevels candidateLevels outerLevels) comparison
   | .compareStringLiteral op reference expected =>
       model.admitsHavingStringInEnvironment candidateLevels outerLevels reference op expected
+  | .literalMembership origin _ source =>
+      let scope := origin.availableLevels candidateLevels outerLevels
+      match source with
+      | .number field values =>
+          !values.isEmpty && (model.lookupUniqueId field.id).toOption.any fun declaration =>
+            (.number field : FlatField).matchesDecl declaration && declaration.repetitionBoundBy scope
+      | .token operand values =>
+          !values.isEmpty && match operand with
+          | .string _ => model.directComparableIn? scope operand == some .plainString
+          | .enumeration operand => (model.checkedEnumerationOperandIn? scope operand).any fun checked =>
+              values.all (checked.declaration.literalAllowed checked.projection)
   | .fieldFill _ references =>
       references.length >= 2 && references.eraseDups.length == references.length &&
         references.all fun ref => (model.lookupUniqueId ref.field).toOption.any fun declaration =>
@@ -196,6 +207,9 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
             declaration.repeatableScope.any reopenedLevels.contains
   | .compareStringLiteral _ reference _ =>
       reference.reachesReopenedLevel model reopenedLevels
+  | .literalMembership origin _ source =>
+      origin == .inner && (model.lookupUniqueId source.field.id).toOption.any fun declaration =>
+        declaration.repeatableScope.any reopenedLevels.contains
   | .fieldFill _ references => references.any fun ref =>
       ref.origin == .inner && (model.lookupUniqueId ref.field).toOption.any fun declaration =>
         declaration.repeatableScope.any reopenedLevels.contains

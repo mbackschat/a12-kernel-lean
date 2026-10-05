@@ -33,6 +33,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .literalMembership _ reference _ => field reference.origin reference.field
   | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
   | .presence _ reference => field reference.origin reference.field
   | .and left right | .or left right =>
@@ -138,6 +139,8 @@ private structure HavingLeafResolvers where
     Except CorrelationElabError HavingRepetitionRef
   string : EqualityOp → SurfaceHavingStringRef → String →
     Except CorrelationElabError HavingStringRef
+  literalMembership : SurfaceHavingStringRef → Sum (List Int) (List String) →
+    Except CorrelationElabError FlatLiteralMembership
   fieldFill : SurfaceHavingDirectFieldSource → Except CorrelationElabError (List HavingPresenceRef)
   presence : HavingOrigin → SurfaceFieldPath →
     Except CorrelationElabError HavingPresenceRef
@@ -239,6 +242,8 @@ private def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
   | .compareStrings op reference expected => do
       pure (.compareStringLiteral op
         (← resolvers.string op reference expected) expected)
+  | .literalMembership operator reference values => do
+      pure (.leaf (.literalMembership reference.origin operator (← resolvers.literalMembership reference values)))
   | .fieldFill operator source => do
       pure (.leaf (.fieldFill operator (← resolvers.fieldFill source)))
   | .presence polarity reference => do
@@ -277,7 +282,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .and left right | .or left right =>
       left.readsGroupNumber model declaringGroup group ||
         right.readsGroupNumber model declaringGroup group
-  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .fieldFill _ _ | .presence _ _ => false
+  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .presence _ _ => false
 
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
     body in authored order, so each leaf's reads and comparison class answer as it closes; the
@@ -301,6 +306,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       discard <| (checkFieldValueRead (model.resolveFieldDeclarationUnchecked declaringGroup reference.field)
         (model.havingGroupRead declaringGroup reference.field)).mapError .resolve
       throw .stringLeafOutsideStarRoute
+    literalMembership := fun _ _ => throw .stringLeafOutsideStarRoute
     fieldFill := fun _ => throw .stringLeafOutsideStarRoute
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
   let readsGroup := authored.readsGroupNumber model declaringGroup group
@@ -309,8 +315,9 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     fields := fun _ _ _ => pure none
     number := model.resolveHavingNumberInGroup declaringGroup group
     repetition := resolveHavingRepetitionInGroup declaringGroup group
-    -- The legacy one-group route admits neither newer leaf; both fail closed here.
+    -- Preserve the legacy numeric fragment; richer leaves belong to the checked star route.
     string := fun _ _ _ => throw .stringLeafOutsideStarRoute
+    literalMembership := fun _ _ => throw .stringLeafOutsideStarRoute
     fieldFill := fun _ => throw .stringLeafOutsideStarRoute
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored).mapError fun
       | .fieldOutsideGroup origin fieldPath expectedGroup =>
@@ -353,6 +360,15 @@ private def FlatModel.resolveHavingFieldValueRead (model : FlatModel) (declaring
   match declaration.projectedReadRefusal? projectionRef with
   | some refusal => throw (.resolve refusal)
   | none => pure declaration
+
+private def FlatModel.resolveHavingLiteralMembership (model : FlatModel)
+    (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
+    (reference : SurfaceHavingStringRef) (values : Sum (List Int) (List String)) :
+    Except CorrelationElabError FlatLiteralMembership := do
+  let declaration ← (displaceGroupRead (model.resolveFieldDeclarationUnchecked declaringGroup reference.field)
+    (model.havingGroupRead declaringGroup reference.field)).mapError .resolve
+  requireOuterFieldAvailable reference.origin outerLevels declaration
+  (elaborateLiteralMembershipCore declaration reference.projectionRef values).mapError .text
 
 private def FlatModel.resolveHavingNumberInEnvironment (model : FlatModel)
     (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
@@ -523,6 +539,8 @@ def CorrelatedHaving.outerIterationScopes
         comparison.inputFields.2.map (fun field => outerHavingFieldIterationScope model right field.id)
   | .leaf (.compareStringLiteral _ reference _) =>
       [outerHavingFieldIterationScope model reference.origin reference.field.id]
+  | .leaf (.literalMembership origin _ source) =>
+      [outerHavingFieldIterationScope model origin source.field.id]
   | .leaf (.fieldFill _ references) =>
       references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
   | .leaf (.presence _ reference) =>
@@ -562,6 +580,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .literalMembership _ reference _ => field reference.origin reference.field
   | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
   | .presence _ reference => field reference.origin reference.field
   | .and left right | .or left right =>
@@ -582,7 +601,7 @@ where
       !candidateLevels.contains level
     pure (.repetitionOutsideEnvironment .inner resolved.path candidateLevels missing)
 
-/-- Lower the supported numeric, simple-comparison and presence filter tree against one validated star plan. The result retains the authored connectives and exact candidate/captured environment split established by the checked references. -/
+/-- Lower the supported filter tree against one validated star plan. The result retains the authored connectives and exact candidate/captured environment split established by the checked references. -/
 def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
     (bindingGroup : GroupPath := declaringGroup) :
@@ -596,6 +615,7 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels
     repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels
     string := model.resolveHavingStringInEnvironment declaringGroup outerLevels
+    literalMembership := model.resolveHavingLiteralMembership declaringGroup outerLevels
     fieldFill := fun source => do
       let checked ← elaborateHavingDirectFieldSource model declaringGroup candidateLevels outerLevels source .deferCandidate
         |>.mapError .fieldFill

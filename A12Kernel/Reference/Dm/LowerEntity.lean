@@ -72,6 +72,21 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
       for part in rest do result := join result (← lowerHaving part)
       pure result
   | .call id arguments none none => do
+      if id == "FieldValueIncludedInValueList" || id == "FieldValueNotIncludedInValueList" then
+        let operator := if id == "FieldValueIncludedInValueList" then ValueListMembershipOp.included else .notIncluded
+        let .mk (.entity { path, index := none, category }) none none :: rest := arguments |
+          refuse "Having" "membership subject"
+        let some (origin, field) := path.havingField? | refuse "Having" "membership path"
+        let values ← rest.mapM fun | .mk expression none none => pure expression | _ => refuse "Having" "membership member"
+        let reference : SurfaceHavingStringRef := {
+          origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored }
+        if let some strings := values.mapM (fun | .string value => some value | _ => none) then
+          return .literalMembership operator reference (.inr strings)
+        let integers ← values.mapM fun expression => do
+          let .number text := expression | refuse "Having" "integer member"
+          let some literal := decodeNumber? text | refuse "Having" "integer member"
+          if literal.authoredScale == 0 then pure literal.value.num else refuse "Having" "integer member"
+        return .literalMembership operator reference (.inl integers)
       if let some polarity := presencePolarity? id then
         match arguments with
         | [.mk (.entity { path, index := none, category := none }) none none] =>

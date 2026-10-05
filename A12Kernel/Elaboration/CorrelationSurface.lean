@@ -50,6 +50,8 @@ inductive SurfaceCorrelatedHaving where
       project models nowhere, so this is consistency rather than a local narrowing. -/
   | compareStrings (op : EqualityOp) (reference : SurfaceHavingStringRef)
       (expected : String)
+  | literalMembership (operator : ValueListMembershipOp) (reference : SurfaceHavingStringRef)
+      (values : Sum (List Int) (List String))
   | fieldFill (operator : FieldFillQuantifier) (source : SurfaceHavingDirectFieldSource)
   /-- `FieldFilled` or `FieldNotFilled`. The negative polarity is authorable here because the
       kernel admits it inside a filter without the iteration-negativity refusal that governs a
@@ -109,10 +111,8 @@ inductive CorrelationElabError where
   /-- The reference does not name a String field carrying evaluated values. A raw-mode String
       declaration reaches this arm too, matching every other checked String consumer. -/
   | fieldNotStringValue (path : List String) (actual : SurfaceScalarKind)
-  /-- A String **or presence** leaf reached a route that admits only the numeric and repetition
-      leaves. The legacy one-group adapter is the only such route; it fails closed here rather than
-      being widened. The name predates the presence leaf and is kept because it is a public
-      constructor; both leaves report through it, and the public evaluator maps them together. -/
+  /-- A leaf outside the legacy numeric/repetition fragment. The public constructor name predates
+      the richer checked-star route; the legacy adapter fails closed at this boundary. -/
   | stringLeafOutsideStarRoute
   /-- A disjunctive filter reached the legacy one-group route, whose well-formedness predicate
       admits a conjunctive core only. The kernel admits `Or` in this position and the star route

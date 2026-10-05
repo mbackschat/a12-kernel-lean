@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.FlatLiteralMembership
 import A12Kernel.Elaboration.Flat.Condition.SurfaceSupport
 import A12Kernel.Elaboration.Flat.FieldValueRead
 
@@ -61,19 +62,6 @@ def elaborateEnumerationFieldOperand (model : FlatModel)
                 projection := projection.projection })
   | kind, _ =>
       throw (.textFieldOperandKindMismatch declaration.path kind.surfaceKind)
-
-private def elaborateEnumerationLiteralList (model : FlatModel)
-    (declaringGroup writtenGroup : GroupPath) (surface : SurfaceTextFieldOperand)
-    (values : List String) : Except ElabError FlatEnumerationOperand := do
-  let (path, checked, operand) ←
-    elaborateEnumerationFieldOperand model declaringGroup surface writtenGroup
-  if values.isEmpty then
-    throw (.emptyValueList path)
-  else
-    match values.find? fun value =>
-        !checked.declaration.literalAllowed checked.projection value with
-    | some value => throw (.enumerationOperand path (.invalidLiteral value))
-    | none => pure operand
 
 /-- A multi-field list's operand, read through a field resolver. A path naming a group is an operand
     the Kernel expands, so `(Ledger, Other In "a")` draws the base-type class of the group's fields
@@ -171,22 +159,42 @@ private def duplicateExactValueListOperand? {operand : Type} [BEq operand] :
       else
         duplicateExactValueListOperand? remaining
 
+/-- Literal membership shares its declaration-owned kind, projection and nonempty-list gates
+between ordinary conditions and correlated filters (spec/06 §B.4). -/
+def elaborateLiteralMembershipCore (declaration : FlatFieldDecl)
+    (projectionRef : EnumerationProjectionRef) (values : Sum (List Int) (List String)) :
+    Except ElabError FlatLiteralMembership := do
+  if projectionRef != .stored then
+    match declaration.projectedReadRefusal? projectionRef with
+    | some refusal => throw (.resolve refusal)
+    | none => pure ()
+  match values with
+  | .inl values =>
+      let some field := declaration.toNumberField? |
+        throw (.literalKindMismatch declaration.path .number declaration.policy.kind.surfaceKind)
+      if values.isEmpty then throw (.emptyValueList declaration.path)
+      pure (.number field values)
+  | .inr values =>
+      let operand ← match declaration.policy.kind, declaration.enumeration with
+        | .enumeration, some domain => do
+            let checked ← (elaborateEnumeration domain).mapError fun _ => ElabError.incoherentCore
+            let projection ← (checkEnumerationProjection checked projectionRef).mapError (.enumerationOperand declaration.path)
+            if let some value := values.find? fun value => !checked.literalAllowed projection.projection value then
+              throw (.enumerationOperand declaration.path (.invalidLiteral value))
+            pure (FlatTextFieldOperand.enumeration {
+              field := { id := declaration.id }, projectionRef, projection := projection.projection })
+        | _, _ => do
+            let field ← requireStringValueField declaration
+            pure (.string field)
+      if values.isEmpty then throw (.emptyValueList declaration.path)
+      pure (.token operand values)
+
 private def elaborateStringValueListOperand (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) (surface : SurfaceFieldPath) :
     Except ElabError ElaboratedStringValueListOperand := do
   let declaration ← model.resolveFlatListOperand declaringGroup writtenGroup surface
   let field ← requireStringValueField declaration
   pure (declaration.path, .string field)
-
-private def elaborateStringLiteralList (model : FlatModel)
-    (declaringGroup writtenGroup : GroupPath) (surface : SurfaceFieldPath)
-    (values : List String) : Except ElabError FlatTextFieldOperand := do
-  let (path, operand) ←
-    elaborateStringValueListOperand model declaringGroup writtenGroup surface
-  if values.isEmpty then
-    throw (.emptyValueList path)
-  else
-    pure operand
 
 private def elaborateStringValueListOperands (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) (surfaces : List SurfaceFieldPath)
@@ -249,15 +257,6 @@ private def rejectDuplicateNumberValueListOperands
   match duplicateExactValueListOperand? resolved with
   | some path => throw (.duplicateNumberValueListField path)
   | none => pure ()
-
-private def elaborateNumberLiteralMembership (model : FlatModel)
-    (declaringGroup writtenGroup : GroupPath) (surface : SurfaceFieldPath)
-    (values : List Int) : Except ElabError (FlatNumberField × List Rat) := do
-  let (path, operand) ←
-    elaborateNumberValueListOperand model declaringGroup writtenGroup surface
-  if values.isEmpty then
-    throw (.emptyValueList path)
-  pure (operand, values.map Rat.ofInt)
 
 private def elaborateNumberFieldValueSides (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) (fieldSurfaces valueSurfaces : List SurfaceFieldPath) :
@@ -359,8 +358,10 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
       pure (.tokenValueList quantifier fields (.fields values))
   | .stringValueMembership op surface values => do
       checkScalarLiteralSubjectRead model declaringGroup writtenGroup (.direct surface)
-      let operand ← elaborateStringLiteralList model declaringGroup writtenGroup surface values
-      pure (.tokenValueList op.quantifier [operand] (.literals values) .membership)
+      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup surface writtenGroup).mapError .resolve
+      discard <| requireStringValueField declaration
+      let source ← elaborateLiteralMembershipCore declaration .stored (.inr values)
+      pure (.leaf (source.condition op))
   | .stringFieldValueMembership op surface valueSurfaces => do
       checkScalarMemberReads model declaringGroup writtenGroup (.direct surface) (valueSurfaces.map .direct)
       let (fields, values) ←
@@ -368,9 +369,9 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
       pure (.tokenValueList op.quantifier fields (.fields values) .membership)
   | .numberValueMembership op surface values => do
       checkScalarLiteralSubjectRead model declaringGroup writtenGroup (.direct surface)
-      let (operand, values) ←
-        elaborateNumberLiteralMembership model declaringGroup writtenGroup surface values
-      pure (.numberValueList op.quantifier [operand] (.literals values) .membership)
+      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup surface writtenGroup).mapError .resolve
+      let source ← elaborateLiteralMembershipCore declaration .stored (.inl values)
+      pure (.leaf (source.condition op))
   | .numberFieldValueMembership op surface valueSurfaces => do
       checkScalarMemberReads model declaringGroup writtenGroup (.direct surface) (valueSurfaces.map .direct)
       let (fields, values) ←
@@ -382,9 +383,11 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
       pure (.numberValueList quantifier fields (.fields values))
   | .enumerationValueMembership op surface values => do
       checkScalarLiteralSubjectRead model declaringGroup writtenGroup surface
-      let operand ←
-        elaborateEnumerationLiteralList model declaringGroup writtenGroup surface values
-      pure (.tokenValueList op.quantifier [.enumeration operand] (.literals values) .membership)
+      let declaration ← (model.resolveNonrepeatableFieldUnchecked declaringGroup surface.reference writtenGroup).mapError .resolve
+      if declaration.policy.kind.surfaceKind != .enumeration then
+        throw (.textFieldOperandKindMismatch declaration.path declaration.policy.kind.surfaceKind)
+      let source ← elaborateLiteralMembershipCore declaration surface.projectionRef (.inr values)
+      pure (.leaf (source.condition op))
   | .enumerationFieldValueMembership op surface valueSurfaces => do
       checkScalarMemberReads model declaringGroup writtenGroup surface valueSurfaces
       let (fields, values) ←

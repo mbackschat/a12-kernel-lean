@@ -84,15 +84,83 @@ example : run "[Rows/Tag] == False" false .confirm "true" "true" "" = none ∧
     run "[Rows/Tag] == False" false .boolean "false" "bad" "false" =
       some (.notFired, []) := by native_decide
 
-private def references : Option (Bool × Bool) := do
+example : run "FieldValueIncludedInValueList(Rows/Tag, \"keep\", \"extra\")" =
+      some (.fired .omission, ["value 9"]) ∧
+    run "FieldValueNotIncludedInValueList(Rows/Tag, \"keep\")" =
+      some (.notFired, ["value 5"]) ∧
+    run "FieldValueIncludedInValueList(Rows/Tag, 2, 7)" false
+      (.number { scale := 0, signed := true }) "2" "2" "5" =
+      some (.fired .omission, ["value 9"]) ∧
+    run "FieldValueNotIncludedInValueList(Rows/Tag, 2)" false
+      (.number { scale := 0, signed := true }) "2" "2" "5" =
+      some (.notFired, ["value 5"]) := by native_decide
+
+example : run "FieldValueIncludedInValueList(Rows/Tag, \"keep\")" false
+      .enumeration "keep" "keep" "drop" (some domain) =
+      some (.fired .omission, ["value 9"]) ∧
+    run "FieldValueNotIncludedInValueList(Rows/Tag, \"keep\")" false
+      .enumeration "keep" "keep" "drop" (some domain) =
+      some (.notFired, ["value 5"]) := by native_decide
+
+example : run "FieldValueIncludedInValueList(Rows/Tag -> Swap, \"drop\")" false
+      .enumeration "keep" "keep" "drop" (some domain) =
+      some (.fired .omission, ["value 9"]) ∧
+    run "FieldValueNotIncludedInValueList(Rows/Tag -> Swap, \"drop\")" false
+      .enumeration "keep" "keep" "drop" (some domain) =
+      some (.notFired, ["value 5"]) := by native_decide
+
+example : run "FieldValueIncludedInValueList(Rows/Tag, 0)" false
+      (.number { scale := 0, signed := true }) "0" "" "0" =
+      some (.notFired, ["value 5"]) ∧
+    run "FieldValueNotIncludedInValueList(Rows/Tag, 0)" false
+      (.number { scale := 0, signed := true }) "0" "" "0" =
+      some (.notFired, ["value 0"]) ∧
+    run "FieldValueIncludedInValueList(Rows/Tag, -2)" false
+      (.number { scale := 0, signed := true }) "0" "-2" "5" =
+      some (.fired .omission, ["value 9"]) := by native_decide
+
+example : run "FieldValueIncludedInValueList(Rows/Tag, \"\", \"keep\")" false .string "keep" "" "keep" =
+      some (.notFired, ["value 5"]) ∧
+    run "FieldValueNotIncludedInValueList(Rows/Tag, \"keep\")" false .string "keep" "" "keep" =
+      some (.notFired, ["value 0"]) ∧
+    run "FieldValueIncludedInValueList(Rows/Tag, 2)" false
+      (.number { scale := 0, signed := true }) "0" "bad" "2" =
+      some (.notFired, []) ∧
+    run "FieldValueNotIncludedInValueList(Rows/Tag, 2)" false
+      (.number { scale := 0, signed := true }) "0" "bad" "5" =
+      some (.notFired, []) := by native_decide
+
+example : (run "FieldFilled(Rows/Tag) And FieldValueIncludedInValueList($Expected, \"keep\")" true).map (·.2) =
+      some ["value drop", "value 0"] ∧
+    (run "FieldFilled(Rows/Tag) And FieldValueNotIncludedInValueList($Expected, \"keep\")" true).map (·.2) =
+      some ["value drop", "value 14"] := by native_decide
+
+example : run "FieldValueIncludedInValueList(Rows/Tag, \"absent\")" false .enumeration
+      "keep" "keep" "drop" (some domain) = none ∧
+    run "FieldValueIncludedInValueList(Rows/Tag -> Missing, \"keep\")" false .enumeration
+      "keep" "keep" "drop" (some domain) = none ∧
+    run "FieldValueIncludedInValueList(Rows/Tag, 2.5)" false
+      (.number { scale := 1, signed := true }) "2" "2" "5" = none ∧
+    run "FieldValueIncludedInValueList(Rows/Tag, \"true\")" false .boolean "true" "true" "false" = none := by native_decide
+
+example : run "FieldValueIncludedInValueList($Expected, \"keep\") And [Rows/Tag] == \"keep\"" true =
+      some (.fired .omission, ["value drop", "value 0"]) ∧
+    run "FieldValueNotIncludedInValueList($Expected, \"drop\") And [Rows/Tag] == \"keep\"" true =
+      some (.fired .omission, ["value drop", "value 0"]) := by native_decide
+
+private def referencesFor (filter : String) : Option (Bool × Bool) := do
   let parsed ← (parseText .english
-    "FieldValuesNotUnique(/Form/Rows*/Tag Having [/Form/Rows/Tag] == [$/Form/Rows/Tag])").toOption
+    ("FieldValuesNotUnique(/Form/Rows*/Tag Having " ++ filter ++ ")")).toOption
   let checked ← (lowerCondition model ["Form", "Rows"] false parsed.body).toOption
   let pointers ← (checked.core.referencePointers [(10, 2)]).toOption
   pure (pointers.contains { field := 3, coordinates := [.wildcard] },
     pointers.contains { field := 3, coordinates := [.concrete 2] })
 
-example : references = some (true, true) := by native_decide
+example : referencesFor "[/Form/Rows/Tag] == [$/Form/Rows/Tag]" = some (true, true) := by native_decide
+
+example : referencesFor
+    "FieldValueIncludedInValueList(/Form/Rows/Tag, \"keep\") And FieldValueNotIncludedInValueList($/Form/Rows/Tag, \"drop\")" =
+      some (true, true) := by native_decide
 
 private def temporalRun (filter : String) (leftKind rightKind : TemporalKind)
     (leftFormat rightFormat expected first second : String)

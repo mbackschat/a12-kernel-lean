@@ -865,4 +865,18 @@ example : havingErrorOf ["Shop"] source (.and (filledPair otherAmount)
       { origin := .inner, field := { base := .absolute, groups := amount.groupPath, field := amount.name } })) =
       some (.having (.orderingFieldNotNumber otherName.path .string .number)) := by native_decide
 
+private def memberAt (field : FlatFieldDecl) : SurfaceCorrelatedHaving :=
+  .literalMembership .included
+    { origin := .inner, field := { base := .absolute, groups := field.groupPath, field := field.name } } (.inl [1])
+
+example : havingErrorOf ["Shop"] source (memberAt otherAmount) =
+      some (.having (.fieldOutsideEnvironment .inner otherAmount.path [10, 20] [30])) ∧
+    havingErrorOf ["Shop"] source (memberAt extraValue) =
+      some (.having (.fieldOutsideEnvironment .inner extraValue.path [10, 20] [10, 40])) ∧
+    havingErrorOf ["Shop"] source (.and (memberAt otherAmount)
+      (.compareNumbers .less
+        { origin := .inner, field := { base := .absolute, groups := otherName.groupPath, field := otherName.name } }
+        { origin := .inner, field := { base := .absolute, groups := amount.groupPath, field := amount.name } })) =
+      some (.having (.orderingFieldNotNumber otherName.path .string .number)) := by native_decide
+
 end A12Kernel.Conformance.StarNumberElaboration

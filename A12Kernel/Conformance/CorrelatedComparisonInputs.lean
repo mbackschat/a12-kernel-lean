@@ -137,4 +137,29 @@ example : (fill .allFieldsFilled).wellFormedForEnvironments model [10] [10] = tr
     (CorrelationElabError.fieldFill .tooFewFields).diagnostic? = some .paramSizeInvalidN ∧
     (CorrelationElabError.fieldFill (.duplicateOperand 1)).diagnostic? = some .duplicateParam1 := by native_decide
 
+private def membership (origin : HavingOrigin) (operator : ValueListMembershipOp) : CorrelatedHavingLeaf :=
+  .literalMembership origin operator (.token (.string { id := 1 }) ["filled"])
+
+example : (membership .inner .included).evalTruthIn fillContext frame = .tru ∧
+    (membership .outer .included).evalTruthIn fillContext frame = .fls ∧
+    (membership .outer .notIncluded).evalComputationIn fillContext frame = .notTrue ∧
+    (membership .outer .included).evalTruthInResolving failingFillContext frame = .error "captured read" ∧
+    (membership .outer .notIncluded).evalComputationInResolving failingFillContext frame = .error "captured read" ∧
+    CorrelatedHaving.markedFieldIds (.leaf (membership .outer .included)) = [1] ∧
+    CorrelatedHaving.fieldIds (.leaf (membership .outer .included)) = [1] := by native_decide
+
+example : (membership .inner .included).wellFormedForEnvironments model [10] [] = true ∧
+    (membership .outer .included).wellFormedForEnvironments model [10] [] = false ∧
+    (membership .outer .included).wellFormedForEnvironments model [] [10] = true ∧
+    (CorrelatedHavingLeaf.literalMembership .inner .included (.token (.string { id := 1 }) [])).wellFormedForEnvironments model [10] [] = false := by native_decide
+
+private def numericMembership : FlatLiteralMembership :=
+  .number { id := 1, info := { scale := 0, signed := true } } [0]
+private def cleanEmpty : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
+
+example : numericMembership.evalValidation .included cleanEmpty = .notFired ∧
+    numericMembership.evalComputation .included cleanEmpty = .notTrue ∧
+    numericMembership.evalValidation .notIncluded invalid = .notFired ∧
+    numericMembership.evalComputation .notIncluded invalid = .poison .malformed := by native_decide
+
 end A12Kernel.Conformance.CorrelatedComparisonInputs
