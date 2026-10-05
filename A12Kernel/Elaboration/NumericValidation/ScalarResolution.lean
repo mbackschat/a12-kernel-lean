@@ -50,6 +50,9 @@ private def resolveDateDifferenceOperandWith
       | some year => pure (.baseYear year source)
       | none => throw .baseYearNotDeclared
   | .now => throw .incompatibleDateDifference
+  | .today => match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+      | some profile => pure (.today profile)
+      | none => throw (.unsupportedCalendarProfile model.timeZoneId)
 
 private def FlatModel.ensureNumericAggregateRowGroup (model : FlatModel)
     (rowGroup : GroupPath) :
@@ -159,7 +162,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
       let resolveOperand (reference : SurfaceDateDifferenceOperand) :
           Except NumericValidationElabError FlatTemporalOperand :=
         match reference with
-        | .baseYear _ | .literal _ => throw .incompatibleDateDifference
+        | .baseYear _ | .literal _ | .today => throw .incompatibleDateDifference
         | .now => pure .nowValue
         | .field path => do
             let field ← resolveTemporalNumericField model rowGroup writtenGroup path
@@ -337,7 +340,7 @@ private def resolveAddressedNumericAtomIn (model : FlatModel)
       let resolveOperand (operand : SurfaceDateDifferenceOperand) :
           Except NumericValidationElabError FlatTemporalOperand :=
         match operand with
-        | .baseYear _ | .literal _ => throw .incompatibleDateDifference
+        | .baseYear _ | .literal _ | .today => throw .incompatibleDateDifference
         | .now => pure .nowValue
         | .field reference => do
             let declaration ←

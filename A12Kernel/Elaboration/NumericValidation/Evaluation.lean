@@ -648,6 +648,6 @@ def elaborateAndEvalNumericComparison
     (surface : SurfaceNumericComparison) :
     Except NumericValidationElabError Verdict := do
   let checked ← elaborateNumericComparison model rowGroup surface
-  pure (checked.evalFull (prepared.checkContext locale raw) hasContent)
+  pure (checked.evalFull ((prepared.checkContext locale raw).withWorld prepared.world) hasContent)
 
 end A12Kernel

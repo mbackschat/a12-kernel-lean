@@ -377,6 +377,7 @@ def NumericValidationAtom.admitted
                 model.admitsTemporalModelWide source
         | .literal source year => source.admittedIn model year
         | .baseYear year _ => model.baseYear == some year
+        | .today profile => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
       admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
   | .dateTimeDifference unit left right =>
@@ -409,6 +410,7 @@ def NumericValidationAtom.admitted
               CalendarDayDifference.admittedBy source.components
         | .literal source year => source.admittedIn model year
         | .baseYear year _ => model.baseYear == some year
+        | .today profile => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
       ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
         admitted left && admitted right &&
         CalendarDayDifference.yearCompatible model.hasBaseYear
@@ -518,7 +520,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
   | .dateDifference _ left right =>
       let operandRelevant : ResolvedDateDifferenceOperand → Bool
         | .field source => isRelevant source.id
-        | .baseYear _ _ | .literal _ _ => true
+        | .baseYear _ _ | .literal _ _ | .today _ => true
       operandRelevant left && operandRelevant right
   | .dateTimeDifference _ left right =>
       left.fields.all (isRelevant ∘ FlatField.id) &&
@@ -526,7 +528,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
   | .dayDifference _ left right =>
       let operandRelevant : ResolvedDateDifferenceOperand → Bool
         | .field source => isRelevant source.id
-        | .baseYear _ _ | .literal _ _ => true
+        | .baseYear _ _ | .literal _ _ | .today _ => true
       operandRelevant left && operandRelevant right
   | .aggregate _ source => source.allRelevant isRelevant
   | .filledGroupCount _ => true

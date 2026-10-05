@@ -414,13 +414,16 @@ theorem readTemporalNumeric_value
 theorem readDateDifference_evaluated
     (context : ScalarComputationContext) (unit : DateDifferenceUnit)
     (left right : ResolvedDateDifferenceOperand) (operand : NumericOperand)
-    (evaluated : DateDifferenceOperand.evaluate unit
-      (context.readDateDifferenceOperand left)
-      (context.readDateDifferenceOperand right) = .ok operand) :
+    (leftOperand rightOperand : DateDifferenceOperand)
+    (leftResolved : context.readDateDifferenceOperand left = .ok leftOperand)
+    (rightResolved : context.readDateDifferenceOperand right = .ok rightOperand)
+    (evaluated : DateDifferenceOperand.evaluate unit leftOperand rightOperand = .ok operand) :
     context.readNumericComputationAtom (.dateDifference unit left right) =
       .ok operand.toComputationResult := by
   simp only [ScalarComputationContext.readNumericComputationAtom,
     ScalarComputationContext.readNumericComputationAtomWith]
+  rw [leftResolved, rightResolved]
+  dsimp only [Except.bind, Bind.bind, Pure.pure]
   rw [evaluated]
   rfl
 
@@ -449,13 +452,16 @@ theorem readCalendarDayDifference_evaluated
     (context : ScalarComputationContext)
     (profile : ModelZone.ConcreteProfile)
     (left right : ResolvedDateDifferenceOperand) (operand : NumericOperand)
-    (evaluated : CalendarDayDifferenceOperand.evaluate profile
-      (context.readCalendarDayDifferenceOperand profile left)
-      (context.readCalendarDayDifferenceOperand profile right) = .ok operand) :
+    (leftOperand rightOperand : CalendarDayDifferenceOperand)
+    (leftResolved : context.readCalendarDayDifferenceOperand profile left = .ok leftOperand)
+    (rightResolved : context.readCalendarDayDifferenceOperand profile right = .ok rightOperand)
+    (evaluated : CalendarDayDifferenceOperand.evaluate profile leftOperand rightOperand = .ok operand) :
     context.readNumericComputationAtom (.dayDifference profile left right) =
       .ok operand.toComputationResult := by
   simp only [ScalarComputationContext.readNumericComputationAtom,
     ScalarComputationContext.readNumericComputationAtomWith]
+  rw [leftResolved, rightResolved]
+  dsimp only [Except.bind, Bind.bind, Pure.pure]
   rw [evaluated]
   rfl
 

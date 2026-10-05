@@ -51,6 +51,7 @@ def entityTextOperand? : Expr → Option SurfaceTextFieldOperand
 private def dateDifferenceOperand? : Expr → Option SurfaceDateDifferenceOperand
   | .string text => (authoredDateLiteral? text).map .literal
   | .constant "Now" => some .now
+  | .constant "Today" => some .today
   | .constant "BaseYear" => some (.baseYear .direct)
   | expr => (expr.fieldEntity?).map .field
 

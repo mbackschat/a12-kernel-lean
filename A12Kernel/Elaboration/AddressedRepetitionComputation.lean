@@ -27,6 +27,7 @@ def CheckedAddressedNumericTarget.admitsDateDifferenceEndpoint
       target.admitsSourceField source.id fun owned => owned.toTemporalField? == some source
   | .literal source year => source.admittedIn model year
   | .baseYear year _ => model.baseYear == some year
+  | .today _ => false
 
 /-- One endpoint of a sub-day difference. Only a field is admitted, because `Now` needs an evaluation
     world this carrier's row read does not carry and every other operand this type carries reads
@@ -150,8 +151,8 @@ structure CheckedAddressedRepetitionComputation (model : FlatModel) where
     (exactNumericScaleComparisonAllowedWithSuppression suppressExactScaleWarning
       (.field target.targetPolicy.info.scale)) = true
 
-/-- Resolve one authored difference endpoint against the target's own declaring group. `Now` is
-    refused rather than resolved: it needs an evaluation world this carrier's row read does not
+/-- Resolve one authored difference endpoint against the target's own declaring group. `Now` and `Today` are
+    refused rather than resolved: they need an evaluation world this carrier's row read does not
     carry, and a structural refusal keeps that missing input out of the value domain. -/
 private def resolveDateDifferenceEndpoint (target : CheckedAddressedNumericTarget model)
     (surface : SurfaceDateDifferenceOperand) :
@@ -170,7 +171,7 @@ private def resolveDateDifferenceEndpoint (target : CheckedAddressedNumericTarge
       match model.baseYear with
       | some year => pure (.baseYear year source)
       | none => throw .baseYearNotDeclared
-  | .now => throw .unsupportedExpression
+  | .now | .today => throw .unsupportedExpression
 
 /-- Resolve one authored sub-day endpoint. Base Year is not a legal operand of this family and `Now`
     needs an evaluation world, so only a field resolves here. -/
@@ -184,7 +185,7 @@ private def resolveSubdayEndpoint (target : CheckedAddressedNumericTarget model)
       match declaration.toTemporalField? with
       | some field => pure (.fieldValue field)
       | none => throw .unsupportedExpression
-  | .baseYear _ | .now | .literal _ => throw .unsupportedExpression
+  | .baseYear _ | .now | .today | .literal _ => throw .unsupportedExpression
 
 /-- Resolve a field the target's declaring group names, asking the field read's group gate from the
     target's scope, for a bracket read and an operator's field parameter ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
@@ -335,7 +336,7 @@ private def readAddressedAtom (model : FlatModel) (atom : NumericComputationAtom
 private def ResolvedDateDifferenceOperand.endpointField? :
     ResolvedDateDifferenceOperand → Option FieldId
   | .field source => some source.id
-  | .baseYear _ _ | .literal _ _ => none
+  | .baseYear _ _ | .literal _ _ | .today _ => none
 
 /-- The same projection for a sub-day endpoint. Only the field form is admitted here, so every other
     shape reports no field and would read nothing even if one were reachable. -/

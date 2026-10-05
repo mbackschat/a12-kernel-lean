@@ -96,6 +96,7 @@ def FlatModel.admitsNumericComputationOperand
               (unit.admittedBy model.hasBaseYear source.components)
         | .literal source year => source.admittedIn model year
         | .baseYear year _ => model.baseYear == some year
+        | .today profile => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
       admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
   | .numeric (.dateTimeDifference unit left right) =>
@@ -118,6 +119,7 @@ def FlatModel.admitsNumericComputationOperand
               (CalendarDayDifference.admittedBy source.components)
         | .literal source year => source.admittedIn model year
         | .baseYear year _ => model.baseYear == some year
+        | .today profile => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
       ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
         admitted left && admitted right &&
         CalendarDayDifference.yearCompatible model.hasBaseYear
@@ -450,6 +452,9 @@ def FlatModel.elaborateNumericComputationAtom
               | some year => pure (.baseYear year source)
               | none => throw .baseYearNotDeclared
           | .now => throw .incompatibleDateDifference
+          | .today => match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+              | some profile => pure (.today profile)
+              | none => throw (.unsupportedCalendarProfile model.timeZoneId)
         let resolvedLeft ← resolveOperand left
         let resolvedRight ← resolveOperand right
         if unit.compatible model.hasBaseYear
@@ -460,7 +465,7 @@ def FlatModel.elaborateNumericComputationAtom
     | .numeric (.dateTimeDifference unit left right) => do
         let resolveOperand : SurfaceDateDifferenceOperand →
             Except NumericComputationElabError FlatTemporalOperand
-          | .baseYear _ | .literal _ => throw .incompatibleDateDifference
+          | .baseYear _ | .literal _ | .today => throw .incompatibleDateDifference
           | .now => pure .nowValue
           | .field reference => do
               let field ← model.resolveTemporalNumericComputationField
@@ -498,6 +503,9 @@ def FlatModel.elaborateNumericComputationAtom
               | some year => pure (.baseYear year source)
               | none => throw .baseYearNotDeclared
           | .now => throw .incompatibleDateDifference
+          | .today => match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+              | some profile => pure (.today profile)
+              | none => throw (.unsupportedCalendarProfile model.timeZoneId)
         let resolvedLeft ← resolveOperand left
         let resolvedRight ← resolveOperand right
         if CalendarDayDifference.yearCompatible model.hasBaseYear

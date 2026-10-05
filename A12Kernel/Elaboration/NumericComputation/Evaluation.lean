@@ -136,21 +136,29 @@ def readDateRangeBoundNumeric (context : ScalarComputationContext)
   | .value value => pure (.value (part.extract (value.selectBoundParts bound)))
   | .unknown cause | .poison cause => pure (.poison cause)
 
+private def readTodayParts (context : ScalarComputationContext) (profile : ModelZone.ConcreteProfile) :
+    Except NumericComputationFault DateParts := do
+  let some world := context.world | throw .worldRequired
+  let some parts := ResolvedDateDifferenceOperand.todayParts? profile (some world)
+    | throw .unsupportedDateCalendar
+  pure parts
+
 def readDateDifferenceOperand (context : ScalarComputationContext) :
-    ResolvedDateDifferenceOperand → DateDifferenceOperand
-  | .literal source year => .value (source.parts year)
-  | .field source => DateDifferenceOperand.ofObservation
-      (observeCell .computation (context.read source.id))
-  | .baseYear year source => .value (source.parts year)
+    ResolvedDateDifferenceOperand → Except NumericComputationFault DateDifferenceOperand
+  | .literal source year => pure (.value (source.parts year))
+  | .field source => pure (DateDifferenceOperand.ofObservation
+      (observeCell .computation (context.read source.id)))
+  | .baseYear year source => pure (.value (source.parts year))
+  | .today profile => DateDifferenceOperand.value <$> context.readTodayParts profile
 
 def readCalendarDayDifferenceOperand (context : ScalarComputationContext)
     (profile : ModelZone.ConcreteProfile) :
-    ResolvedDateDifferenceOperand → CalendarDayDifferenceOperand
-  | .literal source year => CalendarDayDifferenceOperand.ofParts profile (source.parts year)
-  | .field source => CalendarDayDifferenceOperand.ofObservation
-      (observeCell .computation (context.read source.id))
-  | .baseYear year source =>
-      CalendarDayDifferenceOperand.ofBaseYear profile year source
+    ResolvedDateDifferenceOperand → Except NumericComputationFault CalendarDayDifferenceOperand
+  | .literal source year => pure (CalendarDayDifferenceOperand.ofParts profile (source.parts year))
+  | .field source => pure (CalendarDayDifferenceOperand.ofObservation
+      (observeCell .computation (context.read source.id)))
+  | .baseYear year source => pure (CalendarDayDifferenceOperand.ofBaseYear profile year source)
+  | .today sourceProfile => CalendarDayDifferenceOperand.ofParts sourceProfile <$> context.readTodayParts sourceProfile
 
 /-- Resolve one checked sub-day operand through computation-phase field reads or the explicit evaluation world. Unsupported temporal comparison shapes fail structurally rather than becoming field poison. -/
 def readDateTimeDifferenceOperand (context : ScalarComputationContext) :
@@ -233,10 +241,10 @@ def readNumericComputationAtomWith
           | some amount => pure (.value amount)
           | none => throw (.fieldKindMismatch source.fieldId)
       | .unknown cause | .poison cause => pure (.poison cause)
-  | .dateDifference unit left right =>
-      match DateDifferenceOperand.evaluate unit
-          (context.readDateDifferenceOperand left)
-          (context.readDateDifferenceOperand right) with
+  | .dateDifference unit left right => do
+      let leftOperand ← context.readDateDifferenceOperand left
+      let rightOperand ← context.readDateDifferenceOperand right
+      match DateDifferenceOperand.evaluate unit leftOperand rightOperand with
       | .error _ => throw .unsupportedDateCalendar
       | .ok operand => pure operand.toComputationResult
   | .dateTimeDifference unit left right => do
@@ -244,10 +252,10 @@ def readNumericComputationAtomWith
       let rightOperand ← context.readDateTimeDifferenceOperand right
       pure ((DateTimeDifferenceOperand.evaluate unit
         leftOperand rightOperand).toComputationResult)
-  | .dayDifference profile left right =>
-      match CalendarDayDifferenceOperand.evaluate profile
-          (context.readCalendarDayDifferenceOperand profile left)
-          (context.readCalendarDayDifferenceOperand profile right) with
+  | .dayDifference profile left right => do
+      let leftOperand ← context.readCalendarDayDifferenceOperand profile left
+      let rightOperand ← context.readCalendarDayDifferenceOperand profile right
+      match CalendarDayDifferenceOperand.evaluate profile leftOperand rightOperand with
       | .error _ => throw .unsupportedDateCalendar
       | .ok operand => pure operand.toComputationResult
   | .aggregate op source => readAggregate op source
@@ -592,7 +600,7 @@ def NumericComputationAtom.numericComputationFault? :
         | .field source =>
             if unit.admittedBy true source.components then none
             else some (.fieldKindMismatch source.id)
-        | .baseYear _ _ | .literal _ _ => none
+        | .baseYear _ _ | .literal _ _ | .today _ => none
       match fault? left with
       | some fault => some fault
       | none => fault? right
@@ -611,7 +619,7 @@ def NumericComputationAtom.numericComputationFault? :
         | .field source =>
             if CalendarDayDifference.admittedBy source.components then none
             else some (.fieldKindMismatch source.id)
-        | .baseYear _ _ | .literal _ _ => none
+        | .baseYear _ _ | .literal _ _ | .today _ => none
       match fault? left with
       | some fault => some fault
       | none => fault? right

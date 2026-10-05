@@ -232,12 +232,14 @@ inductive SurfaceDateDifferenceOperand where
   | field (path : SurfaceFieldPath)
   | baseYear (source : BaseYearDateSource)
   | now
+  | today
   deriving Repr, DecidableEq
 
 inductive ResolvedDateDifferenceOperand where
   | literal (source : AuthoredDateLiteral) (anchorYear : Int)
   | field (source : FlatTemporalField)
   | baseYear (year : Int) (source : BaseYearDateSource)
+  | today (profile : ModelZone.ConcreteProfile)
   deriving Repr, DecidableEq
 
 namespace ResolvedDateDifferenceOperand
@@ -245,17 +247,24 @@ namespace ResolvedDateDifferenceOperand
 def isField : ResolvedDateDifferenceOperand → Bool
   | .literal _ _ => false
   | .field _ => true
-  | .baseYear _ _ => false
+  | .baseYear _ _ | .today _ => false
 
 def components : ResolvedDateDifferenceOperand → TemporalComponents
   | .literal source _ => source.components
   | .field source => source.components
   | .baseYear _ _ => TemporalComponents.baseYear
+  | .today _ => TemporalComponents.fullDate
 
 def references (field : FieldId) : ResolvedDateDifferenceOperand → Bool
   | .literal _ _ => false
   | .field source => source.id == field
-  | .baseYear _ _ => false
+  | .baseYear _ _ | .today _ => false
+
+/-- Read the model-local civil day from this evaluation's clock, as required by spec/05 §7.
+No instant is cached in the checked operand. -/
+def todayParts? (profile : ModelZone.ConcreteProfile) (world? : Option World) : Option DateParts := do
+  let world ← world?
+  pure (← profile.localDate? world.now).civil.parts
 
 def validationOperand (context : FlatContext) :
     ResolvedDateDifferenceOperand → DateDifferenceOperand
@@ -263,6 +272,9 @@ def validationOperand (context : FlatContext) :
   | .field source => DateDifferenceOperand.ofObservation
       (context.observeValidationAt source.id)
   | .baseYear year source => .value (source.parts year)
+  | .today profile => match todayParts? profile context.world with
+      | some parts => .value parts
+      | none => .unavailable .malformed
 
 def calendarDayValidationOperand (profile : ModelZone.ConcreteProfile)
     (context : FlatContext) :
@@ -272,6 +284,9 @@ def calendarDayValidationOperand (profile : ModelZone.ConcreteProfile)
       (context.observeValidationAt source.id)
   | .baseYear year source =>
       CalendarDayDifferenceOperand.ofBaseYear profile year source
+  | .today sourceProfile => match todayParts? sourceProfile context.world with
+      | some parts => CalendarDayDifferenceOperand.ofParts sourceProfile parts
+      | none => .unavailable .malformed
 
 end ResolvedDateDifferenceOperand
 

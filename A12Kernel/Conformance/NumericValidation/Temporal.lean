@@ -392,4 +392,27 @@ example :
       List.replicate 2 [some (.fired .value), some .notFired] := by
   native_decide
 
+private def todayVerdict (expression : AuthoredNumericExpr SurfaceNumericAtom) (expected : Rat)
+    (input : RawFlatContext := raw) : Option Verdict := do
+  let fixture := { model with timeZoneId := "Europe/Berlin" }
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 1711924200000 } }
+    compileValidationPattern fixture).toOption
+  (elaborateAndEvalNumericComparison prepared "en_US" ["Order"] input true
+    (comparison .equal expression expected)).toOption
+
+example : todayVerdict (dateTimeDifference .seconds .now .now) 0 = some (.fired .value) := by native_decide
+
+example : todayVerdict (dayDifference (dateLiteral (some 2024) 3 31) .today) 1 = some (.fired .value) ∧
+    todayVerdict (dateDifference .months (dateLiteral (some 2023) 4 1) .today) 12 = some (.fired .value) ∧
+    todayVerdict (dateDifference .years .today (dateLiteral (some 2023) 4 1)) (-1) = some (.fired .value) := by native_decide
+
+example :
+    (ResolvedDateDifferenceOperand.today .utc).validationOperand { read := fun _ => malformedCheckedCell } =
+      .unavailable .malformed ∧
+    (ResolvedDateDifferenceOperand.today .utc).references 1 = false ∧
+    NumericValidationAtom.admitted model ["Order"] .sameGroup
+      (.dayDifference .utc (.today .europeBerlin) (.today .utc)) = false ∧
+    errorOf (comparison .equal (dateTimeDifference .seconds .today .now) 0) =
+      some .incompatibleDateDifference := by native_decide
+
 end A12Kernel.Conformance.NumericValidation.Temporal

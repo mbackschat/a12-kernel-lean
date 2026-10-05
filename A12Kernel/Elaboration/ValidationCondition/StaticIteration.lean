@@ -135,6 +135,8 @@ private def temporalDifferenceOperandDeclarations?
       if source.admittedIn model year then some [] else none
   | .baseYear year _ =>
       if model.baseYear == some year then some [] else none
+  | .today profile =>
+      if ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile then some [] else none
 
 def ordinaryNumericAtomFieldDeclarations?
     (model : FlatModel) :

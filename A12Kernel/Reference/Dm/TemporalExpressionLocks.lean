@@ -73,15 +73,16 @@ example : numericArms "HoursFromTime(AddSeconds(Stamp,[NumericOut]))" = (true, f
     numericArms "SecondsFromTime(Time(HoursFromTime(Now),MinutesFromTime(Now),SecondsFromTime(Now)))" =
       (true, true) := by native_decide
 
-private def numericReadback (expression stamp clock : String) :
+private def numericReadback (expression stamp clock : String) (due : String := "")
+    (now : Int := 1704112496000) :
     Option (List String × List (List Polarity)) := do
   let dm : DmModel := {
     flat := numericModel, computations := [], rules := [], conditionLanguage := "en_US", refusals := [] }
   let input ← (readDocument dm (Lean.Json.mkObj [("Order", Lean.Json.mkObj [
-    ("Stamp", Lean.Json.str stamp), ("Clock", Lean.Json.str clock),
+    ("Stamp", Lean.Json.str stamp), ("Clock", Lean.Json.str clock), ("Due1", Lean.Json.str due),
     ("NumericOut", Lean.Json.num 99), ("NumericDep", Lean.Json.num 99),
     ("Anchor", Lean.Json.num 1)])])).toOption
-  let world : World := { now := { epochMillis := 1704112496000 } }
+  let world : World := { now := { epochMillis := now } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler numericModel).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
   let steps ← [("NumericDep", "[NumericOut] + 1"), ("NumericOut", expression)].mapM fun (name, operation) =>
@@ -362,7 +363,7 @@ private def rowRule (text : String) (atRoot : Bool := false) : DmRule := {
   errorEntityRelPath := if atRoot then "../Rows/Stamp2" else "../Stamp2" }
 
 private def runRows (text : String) (rows : List Lean.Json) (atRoot : Bool := false)
-    (zone : String := "UTC") :
+    (zone : String := "UTC") (now : Int := 0) :
     Option (List String) := do
   let rowDm := { rowDm with flat := { rowModel with timeZoneId := zone } }
   let rowModel := rowDm.flat
@@ -370,7 +371,7 @@ private def runRows (text : String) (rows : List Lean.Json) (atRoot : Bool := fa
   let input ← (readDocument rowDm (Lean.Json.mkObj [("Order", Lean.Json.mkObj [
     ("Flag", "yes"), ("Amount", "0"), ("Rows", Lean.Json.arr rows.toArray)])])).toOption
   if !input.refusals.isEmpty then none
-  let world : World := { now := { epochMillis := 0 } }
+  let world : World := { now := { epochMillis := now } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler rowModel).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
   pure ((← (runRule world checked rule).toOption).map fun message =>
@@ -589,11 +590,11 @@ example : numericArms "Min(Max(Min([Anchor],1),2), HoursFromTime(AddHours(Now,1)
     (true, true) := by native_decide
 
 private def temporalAlternativeRows (definitions : List (String × List DmAlternative × Option String))
-    (rows : List Lean.Json) (zone : String := "UTC") (fixed : Bool := false) : Option (List String) := do
+    (rows : List Lean.Json) (zone : String := "UTC") (fixed : Bool := false) (now : Int := 0) : Option (List String) := do
   let dm := { rowDm with flat := { (if fixed then model else rowModel) with timeZoneId := zone } }
   let input ← (readDocument dm (Lean.Json.mkObj [("Order", Lean.Json.mkObj
     (if fixed then [] else [("Rows", .arr rows.toArray)]))])).toOption
-  let world : World := { now := { epochMillis := 0 } }
+  let world : World := { now := { epochMillis := now } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
   let steps ← definitions.mapM fun (name, alternatives, guard) =>
@@ -605,9 +606,9 @@ private def temporalAlternativeRows (definitions : List (String × List DmAltern
     (fun result => result.pointer ++ ":" ++ result.outcome)).mergeSort
 
 private def temporalRows (definitions : List (String × String × Option String))
-    (rows : List Lean.Json) (zone : String := "UTC") : Option (List String) :=
+    (rows : List Lean.Json) (zone : String := "UTC") (now : Int := 0) : Option (List String) :=
   temporalAlternativeRows (definitions.map fun (name, operation, guard) =>
-    (name, [{ operation, precondition := none }], guard)) rows zone
+    (name, [{ operation, precondition := none }], guard)) rows zone false now
 
 example : temporalRows [("Stamp2", "Min([Stamp],AddHours(Stamp,[Amount]),AddHours(Stamp,3))", none)]
     [clockRow "-1", clockRow "1", clockRow "bad", clockRow "100"] = some [
@@ -673,5 +674,23 @@ example : (do
     let expression ← (elaborateScalarTemporalExpression narrow ["Order", "Rows"] surface
       (some ["Order", "Rows"])).toOption
     pure (checkTemporalExpressionComputation? expression 8).isNone) = some true := by native_decide
+
+example : ["DifferenceInDays(Due1,Today)", "DifferenceInMonths(Due1,Today)",
+    "DifferenceInYears(Today,Due1)"].all (fun expression => numericArms expression == (true, true)) = true ∧
+    numericArms "DifferenceInHours(Stamp,Today)" = (false, false) ∧
+    numericArms "DifferenceInDays(Due1,{Today})" = (false, false) := by native_decide
+
+example : numericReadback "DifferenceInDays(Due1,Today)" "" "" "2024-03-31" 1711924200000 =
+    some (["Order/NumericDep:value 2", "Order/NumericOut:value 1"], [[], [], [.value]]) ∧
+    numericReadback "DifferenceInDays(Due1,Today)" "" "" "" 1711924200000 =
+    some (["Order/NumericDep:value 1", "Order/NumericOut:value 0"], [[.omission], [.omission], [.omission]]) ∧
+    numericReadback "DifferenceInDays(Due1,Today)" "" "" "bad" 1711924200000 =
+    some (["Order/NumericDep:cleared", "Order/NumericOut:cleared"], [[], [], []]) := by native_decide
+
+example : runRows "FieldFilled(Stamp2) And DifferenceInDays(Due1,Today) == 1"
+    [sourceRow false, sourceRow true] false "Europe/Berlin" 1711924200000 = some ["Order/Rows/Stamp2"] ∧
+    temporalRows [("Amount", "DifferenceInDays(Due1,Today)", none)]
+      [sourceRow false, sourceRow true] "Europe/Berlin" 1711924200000 =
+      some ["Order/Rows/Amount:value 1", "Order/Rows[2]/Amount:value -29"] := by native_decide
 
 end A12Kernel.Dm.TemporalExpressionLocks

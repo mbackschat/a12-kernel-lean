@@ -8,6 +8,14 @@ open A12Kernel
 open A12Kernel.Conformance.NumericComputation.Support
 
 example :
+    let expression := surfaceDayDifference (.literal { year := some 2024, month := 6, day := 24 }) .today
+    let input : ScalarComputationContext := { context with
+      world := some { now := { epochMillis := 1719268200000 } } }
+    checkedResultOfIn { model with timeZoneId := "Europe/Berlin" } expression input = some (.value 1) ∧
+      checkedResultOfIn { model with timeZoneId := "UTC" } expression input = some (.value 0) := by native_decide
+
+
+example :
     let first : SurfaceDateDifferenceOperand := .literal { year := none, month := 2, day := 28 }
     let second : SurfaceDateDifferenceOperand := .literal { year := none, month := 3, day := 1 }
     checkedResultOfIn { model with baseYear := some 2023 }
@@ -225,5 +233,29 @@ example :
         checkedResultOfIn crossKindModel (surfaceDateFieldPart name .year) (crossKindContext 10 year)) =
       [[some (.value 2024), some (.value 2024)], [some (.value 2023), some (.value 2023)]] := by
   native_decide
+
+private def todayInput (now : Int) (cell : RawCell := .empty) : ScalarComputationContext := {
+  (context (date := checkedTemporal .date TemporalComponents.fullDate cell)) with
+  world := some { now := { epochMillis := now } } }
+
+example : (do
+    let expression := surfaceDayDifference (.literal { year := some 2024, month := 3, day := 31 }) .today
+    let checked ← (elaborateNumericComputationOperation { model with timeZoneId := "Europe/Berlin" }
+      ["Root"] targetId expression).toOption
+    [1711924200000, 1712010600000].mapM fun now => (checked.evaluate (todayInput now)).toOption) =
+      some [.value 1, .value 2] := by native_decide
+
+example : checkedResultOf (surfaceDateDifference .months
+      (.literal { year := some 2023, month := 6, day := 24 }) .today) (todayInput 1719268200000) = some (.value 12) ∧
+    checkedResultOf (surfaceDateDifference .years .today
+      (.literal { year := some 2023, month := 6, day := 24 })) (todayInput 1719268200000) = some (.value (-1)) ∧
+    checkedFaultOf (surfaceDayDifference (surfaceDateOperand "Date") .today) = some .worldRequired := by native_decide
+
+example :
+    let expression := surfaceDayDifference (surfaceDateOperand "Date") .today
+    checkedResultOf expression (todayInput 1719268200000) = some (.value 0) ∧
+    checkedResultOf expression (todayInput 1719268200000 (.rejected .malformed)) = some (.poison .malformed) ∧
+    checkedErrorOf (surfaceDateTimeDifference .hours (surfaceDateOperand "DateTime") .today) =
+      some .incompatibleDateDifference := by native_decide
 
 end A12Kernel.Conformance.NumericComputation.Temporal
