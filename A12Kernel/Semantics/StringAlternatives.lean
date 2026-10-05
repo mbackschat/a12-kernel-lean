@@ -14,6 +14,7 @@ structure StringAlternativeComputation (Guard : Type := ComputationCondition) wh
   targetField : FieldId
   alternatives : List (ComputationAlternative StringExpr Guard)
   targetPolicy : StringFieldPolicy
+  targetRegime : StringTargetRegime := .ordinary
   prior : PriorStringTarget
   deriving Repr, DecidableEq
 
@@ -33,6 +34,7 @@ def selectedStep (computation : StringAlternativeComputation Guard)
   targetField := computation.targetField
   expression
   targetPolicy := computation.targetPolicy
+  targetRegime := computation.targetRegime
   prior := computation.prior
 
 /-- Select once, then evaluate only the selected expression against an explicitly prepared target matcher. An operation outcome is never fed back into the alternative scan. -/
@@ -47,7 +49,7 @@ def evaluateOutcomeWithGuard (computation : StringAlternativeComputation Guard)
   | .poison cause => .ok (.poison cause)
   | .selected expression =>
       let store ← (expression.evaluate context).mapError operationError
-      pure (computation.targetPolicy.checkTargetWithPattern wholeValueMatches? store)
+      pure (computation.targetRegime.check computation.targetPolicy wholeValueMatches? store)
 
 def evaluateOutcomeWithPattern (computation : StringAlternativeComputation)
     (wholeValueMatches? : Option (String → Bool))

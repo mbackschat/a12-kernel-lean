@@ -5,12 +5,15 @@ namespace A12Kernel.Dm
 
 /-- A String computation's operation: field reads, literals, `FieldValueAsString`, `RangeAsString`
 and `+` concatenation. -/
-partial def lowerStringExpr : Expr → Lowering (StringExpr SurfaceFieldPath)
+partial def lowerStringExpr : Expr → Lowering (StringExpr SurfaceFieldPath String)
   | .string text =>
       if isTemporalConstant text then refuse "StringOperation" "temporal constant"
       else pure (.literal text)
   | .value { path, index := none, category := none } => match path.toFieldPath? with
       | some field => pure (.field field)
+      | none => refuse "StringOperand" "path"
+  | .value { path, index := none, category := some name } => match path.toFieldPath? with
+      | some field => pure (.category field name)
       | none => refuse "StringOperand" "path"
   | .call "FieldValueAsString" [.mk field none none] none none => match field.fieldEntity? with
       | some path => pure (.fieldValueAsString path)
@@ -26,8 +29,8 @@ partial def lowerStringExpr : Expr → Lowering (StringExpr SurfaceFieldPath)
 
 /-- Direct field/literal comparisons keep their established typed carriers; expression nodes use
 this shared route on both validation and computation arms. -/
-def isCompoundStringExpression : StringExpr Atom → Bool
-  | .field _ | .literal _ => false
+def isCompoundStringExpression : StringExpr Atom Category → Bool
+  | .field _ | .category _ _ | .literal _ => false
   | _ => true
 
 end A12Kernel.Dm

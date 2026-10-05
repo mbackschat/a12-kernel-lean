@@ -7,7 +7,7 @@ namespace A12Kernel
 namespace StringExpr
 
 def fields : StringExpr FieldId → List FieldId
-  | .field fieldId | .fieldValueAsString fieldId | .range fieldId _ _ => [fieldId]
+  | .field fieldId | .category fieldId _ | .fieldValueAsString fieldId | .range fieldId _ _ => [fieldId]
   | .literal _ => []
   | .concat left right => left.fields ++ right.fields
 
@@ -24,7 +24,7 @@ structure CheckedBoundStringExpression (model : FlatModel) where
 
 /-- Reuse the String constructor/kind gates before certifying the consumer's complete row binding. -/
 def elaborateBoundStringExpression (model : FlatModel) (declaringGroup rowGroup : GroupPath)
-    (expression : StringExpr SurfaceFieldPath) :
+    (expression : StringExpr SurfaceFieldPath String) :
     Except StringComputationElabError (CheckedBoundStringExpression model) := do
   match hModel : model.validate with
   | .error error => throw (.resolve error)
@@ -69,7 +69,7 @@ structure CheckedStringExpressionComparison (model : FlatModel) where
   operator : EqualityOp
 
 def elaborateStringExpressionComparison (model : FlatModel) (declaringGroup rowGroup : GroupPath)
-    (operator : EqualityOp) (left right : StringExpr SurfaceFieldPath) :
+    (operator : EqualityOp) (left right : StringExpr SurfaceFieldPath String) :
     Except StringComputationElabError (CheckedStringExpressionComparison model) := do
   pure { left := ← elaborateBoundStringExpression model declaringGroup rowGroup left
          right := ← elaborateBoundStringExpression model declaringGroup rowGroup right
@@ -119,10 +119,10 @@ inductive RowStringExpressionElabError where
   deriving Repr, DecidableEq
 
 def elaborateRowStringExpression (model : FlatModel) (declaringGroup : GroupPath)
-    (targetField : FieldId) (surface : StringExpr SurfaceFieldPath) :
+    (targetField : FieldId) (surface : StringExpr SurfaceFieldPath String) :
     Except RowStringExpressionElabError (CheckedRowStringExpression model) := do
   let target ← (checkAddressedRepeatableTarget model declaringGroup targetField).mapError .target
-  if !target.declaration.isOrdinaryStringComputationCarrier then throw .targetKind
+  if !target.declaration.isStringExpressionTarget then throw .targetKind
   let expression ← (elaborateBoundStringExpression model declaringGroup target.declaration.groupPath surface).mapError .expression
   if expression.referencesField targetField then throw .selfReference
   pure { target, expression }

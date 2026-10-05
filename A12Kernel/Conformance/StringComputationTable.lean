@@ -41,11 +41,11 @@ private def model : FlatModel :=
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
-private def operation (targetField : FieldId) (expression : StringExpr SurfaceFieldPath) : Option (CheckedStringComputationOperation model) :=
+private def operation (targetField : FieldId) (expression : StringExpr SurfaceFieldPath String) : Option (CheckedStringComputationOperation model) :=
   (elaborateStringComputationOperation model ["Form"] targetField expression).toOption
 
 private def operationAt (declaringGroup : GroupPath) (targetField : FieldId)
-    (expression : StringExpr SurfaceFieldPath) :
+    (expression : StringExpr SurfaceFieldPath String) :
     Option (CheckedStringComputationOperation model) :=
   (elaborateStringComputationOperation model declaringGroup targetField expression).toOption
 

@@ -63,7 +63,7 @@ private def prefix? (source : SurfaceFieldPath := bare "Qty") :
     ["Order"] total.id starAmount .sum).toOption
 
 private def stringTable? (target : FieldId)
-    (rows : List ((CheckedComputationCondition model) × StringExpr SurfaceFieldPath)) :
+    (rows : List ((CheckedComputationCondition model) × StringExpr SurfaceFieldPath String)) :
     Option (CheckedStringComputationTable model) := do
   let alternatives ← rows.mapM fun (precondition, expression) => do
     let operation ← (elaborateStringComputationOperation

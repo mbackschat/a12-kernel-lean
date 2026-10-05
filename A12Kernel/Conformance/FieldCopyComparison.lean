@@ -189,15 +189,15 @@ example :
 /- Where each carrier claims no class, exactly. The String, Number and Enumeration carriers answer
    every row one side of which is their kind, and every row whose kinds meet an arm; the rest are
    another family's. The exceptions are named: an unlabelled Enumeration into a String is admitted by
-   the Kernel and refused here without a class, since neither the String carrier nor the Enumeration
-   one has a leaf reading it as text; a String into an unlabelled Enumeration draws the calculation's
+   the Kernel and now supported by the String carrier, while the Enumeration carrier still owns
+   Enumeration targets alone; a String into an unlabelled Enumeration draws the calculation's
    class, which the Enumeration carrier owns. The full-Date carrier answers only a full-Date target, a
    clock or instant source through its format gate. -/
 example :
     let unlabelledIntoText := ("Note2", "Plain")
     let textIntoUnlabelled := ("Plain2", "Note")
     grid.all (fun row => refuses stringCopy row ==
-      (outside .string row || [unlabelledIntoText, textIntoUnlabelled].contains (row.1, row.2.1))) ∧
+      (outside .string row || (row.1, row.2.1) == textIntoUnlabelled)) ∧
     grid.all (fun row => refuses numberCopy row == outside .number row) ∧
     grid.all (fun row => refuses enumerationCopy row ==
       (outside .enumeration row || (row.1, row.2.1) == unlabelledIntoText)) ∧

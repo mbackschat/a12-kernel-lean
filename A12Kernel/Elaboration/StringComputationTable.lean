@@ -154,6 +154,7 @@ def toResolved (table : CheckedStringComputationTable model) (prior : PriorStrin
   targetField := table.targetField
   alternatives := table.selectableAlternatives.map (·.toResolved)
   targetPolicy := table.targetPolicy
+  targetRegime := ((model.lookupUniqueId table.targetField).toOption.map (·.stringTargetRegime)).getD .ordinary
   prior
 
 /-- Evaluate through the sole resolved first-match owner and an explicitly prepared target matcher. Selection completes before the chosen String expression can produce no value, rejection, or poison. -/

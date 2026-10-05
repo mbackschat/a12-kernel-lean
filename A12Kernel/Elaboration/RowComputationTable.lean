@@ -147,7 +147,7 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
       let context := document.computationContextAt environment
       let result ← (operation.expression.eval .computation { read := context.read } context.numberText).mapError .stringExpression
       let term := StringTerm.ofOperand result
-      let outcome := operation.target.declaration.stringPolicy.checkTargetWithPattern matcher term.store
+      let outcome := operation.target.declaration.checkStringExpressionTarget matcher term.store
       pure (.string outcome, ← (DocumentComputationReadBack.string outcome).mapError .readBack)
   | .stringConstant operation =>
       let some matcher := patterns.targetMatcher? operation.checkedTarget.targetField

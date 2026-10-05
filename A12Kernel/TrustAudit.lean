@@ -2085,6 +2085,8 @@ run_cmd do
 #print axioms A12Kernel.acceptedStringTarget_applies_value
 #print axioms A12Kernel.same_appliedValue_does_not_imply_same_delta
 
+#print axioms A12Kernel.stringCategory_preserves_projection
+#print axioms A12Kernel.customStringTarget_accepts_attempt
 #print axioms A12Kernel.stringOperand_computation_poison_aborts
 #print axioms A12Kernel.stringOperand_validation_observes_right_fault
 #print axioms A12Kernel.stringOperand_missing_concat_literal

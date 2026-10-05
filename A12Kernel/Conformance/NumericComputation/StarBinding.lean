@@ -358,7 +358,7 @@ example :
 /-- `none` when admitted, otherwise the class the carried resolver error projects, for a String
     computation into the fixed `FreeS`. -/
 private def stringAdmission (m : FlatModel) (declaringGroup : GroupPath)
-    (e : StringExpr SurfaceFieldPath) : Option (Option KernelStaticDiagnostic) :=
+    (e : StringExpr SurfaceFieldPath String) : Option (Option KernelStaticDiagnostic) :=
   match elaborateStringComputationOperation m declaringGroup 13 e with
   | .ok _ => none
   | .error (.resolve error) => some error.diagnostic?

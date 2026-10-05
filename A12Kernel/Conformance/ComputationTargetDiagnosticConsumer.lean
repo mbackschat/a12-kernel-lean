@@ -110,7 +110,7 @@ private def fractionDecision (expression : AuthoredNumericExpr SurfaceNumericAto
   decideNumberTargetDiagnostic
     (elaborateNumericComputationOperation fractionModel ["Root"] targetId expression)
 
-private def stringDecision (expression : StringExpr SurfaceFieldPath) :
+private def stringDecision (expression : StringExpr SurfaceFieldPath String) :
     ComputationTargetDiagnosticDecision :=
   decideStringTargetDiagnostic
     (elaborateStringComputationOperation consumerModel ["Root"] stringTarget.id
@@ -267,8 +267,8 @@ example :
 /- Explain keeps an unmeasured String refusal, a range that starts at zero, as its exact local
 refusal. Its missing external code is distinct from an accepted operation. -/
 example :
-    let uncoveredString : StringExpr SurfaceFieldPath := .range (bare "Wrong") 0 1
-    let acceptedString : StringExpr SurfaceFieldPath := .field (bare "Wrong")
+    let uncoveredString : StringExpr SurfaceFieldPath String := .range (bare "Wrong") 0 1
+    let acceptedString : StringExpr SurfaceFieldPath String := .field (bare "Wrong")
     stringDecision uncoveredString = .stringRefusal (.invalidRange 0 1) ∧
       stringDecision acceptedString = .accepted ∧
       (stringDecision uncoveredString).kernelCode? = none ∧

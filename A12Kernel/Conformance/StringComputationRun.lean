@@ -52,7 +52,7 @@ private def prepared : PreparedFlatStringContext model builtinStringPatternCompi
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
-private def operation? (target : FieldId) (expression : StringExpr SurfaceFieldPath) :
+private def operation? (target : FieldId) (expression : StringExpr SurfaceFieldPath String) :
     Option (CheckedStringComputationOperation model) :=
   (elaborateStringComputationOperation model ["Form"] target expression).toOption
 

@@ -71,6 +71,7 @@ structure StringComputationStep where
   targetField : FieldId
   expression : StringExpr
   targetPolicy : StringFieldPolicy
+  targetRegime : StringTargetRegime := .ordinary
   prior : PriorStringTarget
   deriving Repr, DecidableEq
 
@@ -87,7 +88,7 @@ def evaluateOutcome (step : StringComputationStep) (context : StringComputationC
     Except StringComputationFault StringTargetOutcome :=
   match step.expression.evaluate context with
   | .error fault => .error fault
-  | .ok store => .ok (step.targetPolicy.checkTarget store)
+  | .ok store => .ok (step.targetRegime.check step.targetPolicy none store)
 
 /-- Consume an already-evaluated computation condition before the body. Clean not-true yields quiet no-value, while poison is preserved as an invalid target outcome; both return before the body can read an operand. -/
 def evaluateOutcomeWhen (step : StringComputationStep)

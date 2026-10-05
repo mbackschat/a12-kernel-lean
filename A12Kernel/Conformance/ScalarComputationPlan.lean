@@ -70,7 +70,7 @@ private def prepared : PreparedFlatStringContext model builtinStringPatternCompi
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
-private def stringStep? (target : FieldId) (expression : StringExpr SurfaceFieldPath) :
+private def stringStep? (target : FieldId) (expression : StringExpr SurfaceFieldPath String) :
     Option (CheckedScalarComputationStep model) := do
   let operation ← (elaborateStringComputationOperation model ["Join"] target expression).toOption
   let table ← (certifyStringComputationTable

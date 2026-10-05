@@ -5,6 +5,20 @@ import A12Kernel.Proofs.StringFieldPolicy
 
 namespace A12Kernel
 
+/-- Category projection preserves the selected operand's provenance and exact positional token. -/
+theorem stringCategory_preserves_projection (phase : Phase)
+    (read : FieldId → Except StringComputationFault (SimpleComparisonOperand String))
+    (fieldId : FieldId) (projection : ResolvedEnumerationCategory) (stored text : String) (given : Bool)
+    (selected : read fieldId = .ok (.value stored given))
+    (projected : projection.categoryTokenFor? stored = some text) :
+    (StringExpr.category fieldId projection).evalOperandWith phase read = .ok (.value text given) := by
+  simp [StringExpr.evalOperandWith, selected, projected, bind, Except.bind, pure, Except.pure]
+
+/-- The reduced Custom regime cannot turn an attempted value into an ordinary format rejection. -/
+theorem customStringTarget_accepts_attempt (policy : StringFieldPolicy)
+    (matcher : Option (String → Bool)) (value : StoredString) :
+    StringTargetRegime.custom.check policy matcher (.produced value) = .accepted value := rfl
+
 /-- Any poisoned subtree aborts computation concatenation before the right expression. -/
 theorem stringOperand_computation_poison_aborts
     (read : FieldId → Except StringComputationFault (SimpleComparisonOperand String))

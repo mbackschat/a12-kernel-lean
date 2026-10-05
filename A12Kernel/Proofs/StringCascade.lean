@@ -169,7 +169,7 @@ theorem holdingStringPrecondition_consumedInvalidField_poisons
   simp only [StringComputationStep.evaluateOutcomeWhen,
     StringComputationStep.evaluateOutcome,
     poisonedStringField_evaluates_poison context operand cause poisonedRead,
-    StringFieldPolicy.checkTarget, StringFieldPolicy.checkTargetWithPattern]
+    StringTargetRegime.check, StringFieldPolicy.checkTargetWithPattern]
 
 /-- Equal immediate deltas do not imply equal dependency states. Clean no-value and computed-dependency poison both clear the same prior target, but their consumer reads remain different. -/
 theorem same_delta_does_not_imply_same_dependency

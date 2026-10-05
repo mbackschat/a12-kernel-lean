@@ -54,7 +54,7 @@ private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
 private def stringTable? (target : FieldId)
-    (rows : List (Option (CheckedComputationCondition model) × StringExpr SurfaceFieldPath)) :
+    (rows : List (Option (CheckedComputationCondition model) × StringExpr SurfaceFieldPath String)) :
     Option (CheckedStringComputationTable model) := do
   let alternatives ← rows.mapM fun (guard, expression) => do
     let operation ← (elaborateStringComputationOperation

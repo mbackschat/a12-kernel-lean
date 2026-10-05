@@ -19,7 +19,7 @@ def referencesFieldValueAsString (field : FieldId) :
   | .concat left right =>
       left.referencesFieldValueAsString field ||
         right.referencesFieldValueAsString field
-  | .field _ | .literal _ | .range _ _ _ => false
+  | .field _ | .category _ _ | .literal _ | .range _ _ _ => false
 
 end StringExpr
 

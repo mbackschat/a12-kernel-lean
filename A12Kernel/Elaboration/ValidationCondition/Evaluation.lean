@@ -69,7 +69,7 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .groupList operator [.starredGroupPresence _] =>
       operator.toStarredGroupFillQuantifier?.isSome
   | .repetitionNotUnique _ => true
-  | .customFieldValidity _ | .stringPattern _ | .constructedDateValidity _ _ => true
+  | .customFieldValidity _ | .stringPattern _ | .constructedDateValidity _ _ | .stringExpression _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
   | _ => false
@@ -93,6 +93,27 @@ private def evalConstructedDateAddressed
       context.scalar.fields.world) .validation >>= source.applyProfileReality).mapError .constructedDate
   pure (if cells.all (·.2.isSome) then (observation.validityVerdict operation).toOption.getD .unknown
     else .unknown)
+
+/-- Partial relevance is independent of String omission: an unavailable operand never becomes
+an empty contribution. The common fold still checks reached range operations (spec/10 §12). -/
+private def evalStringExpressionAddressed
+    (context : AddressedValidationEvaluationContext model) (isRelevant : FlatRelevance)
+    (comparison : CheckedStringExpressionComparison model) : Except CheckedAddressingError Verdict := do
+  let document ← match context.input with
+    | .checked document | .partialView document _ => pure document
+    | .legacy _ _ => throw (.checkedDocumentRequired [])
+  let cells ← comparison.declarations.mapM fun declaration => do
+    let cell ← if isRelevant declaration.id then context.readPartialCell context.outer declaration.id
+      else pure none
+    pure (declaration.id, cell)
+  let fields : FlatContext := { context.scalar.fields with
+    read := fun field => ((cells.find? (·.1 == field)).bind (·.2)).getD (checkAdmittedRawCell .presentEmpty) }
+  let numberText field := do
+    let declaration ← (model.lookupUniqueId field).toOption
+    let path ← (context.outer.pathForScope declaration.repeatableScope).toOption
+    (← (document.readNumberFormalText { field, path }).toOption).parsed
+  let verdict ← (comparison.eval fields numberText).mapError .stringExpression
+  pure (if cells.all (·.2.isSome) then verdict else .unknown)
 
 private def evalFlatLeafAddressedPartial
     (leaf : FlatConditionLeaf)
@@ -140,6 +161,8 @@ def evalAddressedPartial?
       Option (Except CheckedAddressingError Verdict)
   | .flat condition =>
       some (evalFlatLeafAddressedPartial condition context isRelevant)
+  | .stringExpression comparison =>
+      some (evalStringExpressionAddressed context isRelevant comparison)
   | .constructedDateValidity operation source =>
       some (evalConstructedDateAddressed context isRelevant operation source)
   | .repeatableFieldPresence operator declaration =>
@@ -228,18 +251,7 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
       pure (leaf.condition.evalSelected { context.scalar.fields with
         read := fun field => if field == source then cell else context.scalar.fields.read field })
   | .stringExpression comparison =>
-      match context.input with
-      | .checked document => do
-          let cells ← comparison.declarations.mapM fun field => do
-            pure (field.id, ← context.readCell context.outer field.id)
-          let fields : FlatContext := { context.scalar.fields with
-            read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell }
-          let numberText field := do
-            let declaration ← (model.lookupUniqueId field).toOption
-            let path ← (context.outer.pathForScope declaration.repeatableScope).toOption
-            (← (document.readNumberFormalText { field, path }).toOption).parsed
-          (comparison.eval fields numberText).mapError .stringExpression
-      | .legacy _ _ | .partialView _ _ => .error (.checkedDocumentRequired [])
+      evalStringExpressionAddressed context context.directRelevant comparison
   | .tokenComparison comparison =>
       match context.input with
       | .checked document => comparison.evaluateFull document context.outer

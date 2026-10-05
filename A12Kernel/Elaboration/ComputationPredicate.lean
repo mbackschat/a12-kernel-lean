@@ -22,7 +22,7 @@ inductive SurfaceComputationPredicate where
   | pattern (source : SurfaceStringPatternCondition)
   | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceConstructedDateComponents)
   | typeValidity (operation : CustomFieldValidityOp) (source : SurfaceFieldPath) (name : String)
-  | stringExpression (operator : EqualityOp) (left right : StringExpr SurfaceFieldPath)
+  | stringExpression (operator : EqualityOp) (left right : StringExpr SurfaceFieldPath String)
   | temporal (operator : TemporalComparisonOp) (left right : SurfaceScalarTemporalExpression)
   | fieldComparison (operator : SurfaceComparisonOp) (left right : SurfaceFieldPath)
   | scalarMembership (operator : ValueListMembershipOp) (subject : SurfaceTextFieldOperand)

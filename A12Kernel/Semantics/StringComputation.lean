@@ -1,6 +1,7 @@
 import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.String
+import A12Kernel.Semantics.Enumeration
 import A12Kernel.Semantics.StringFieldPolicy
 import A12Kernel.Document
 
@@ -63,13 +64,14 @@ def readTerm (context : StringComputationContext) (field : FieldId) :
 
 end StringComputationContext
 
-/-- Parser-independent String expression admitted by the first computation capsule. Parameterizing only the leaf lets checked lowering reuse the runtime tree without defining a parallel expression language. -/
-inductive StringExpr (Atom : Type := FieldId) where
+/-- Parser-independent String expression admitted by the first computation capsule. Parameterizing field identity and category selection lets checked lowering resolve authored names to positional mappings in the same tree. -/
+inductive StringExpr (Atom : Type := FieldId) (Category : Type := ResolvedEnumerationCategory) where
   | field (field : Atom)
+  | category (field : Atom) (projection : Category)
   | fieldValueAsString (field : Atom)
   | literal (value : String)
   | range (field : Atom) (start finish : Nat)
-  | concat (left right : StringExpr Atom)
+  | concat (left right : StringExpr Atom Category)
   deriving Repr, DecidableEq
 
 /-- Storage forgets comparison provenance while preserving formal poison, for fixed and row targets. -/
@@ -86,7 +88,8 @@ def readOperandAt (phase : Phase) (read : FieldId → CheckedCell) (fieldId : Fi
     Except StringComputationFault (SimpleComparisonOperand String) :=
   match observeCell phase (read fieldId) with
   | .empty => pure .notEvaluated
-  | .value (.str text) => if text.isEmpty then pure .notEvaluated else pure (.value text true)
+  | .value (.str text) | .value (.enum text) =>
+      if text.isEmpty then pure .notEvaluated else pure (.value text true)
   | .value _ => throw (.fieldKindMismatch fieldId)
   | .poison cause | .unknown cause => pure (.unknown cause)
 
@@ -106,6 +109,13 @@ def evalOperandWith (phase : Phase)
     (read : FieldId → Except StringComputationFault (SimpleComparisonOperand String)) :
     StringExpr FieldId → Except StringComputationFault (SimpleComparisonOperand String)
   | .field fieldId | .fieldValueAsString fieldId => read fieldId
+  | .category fieldId projection => do
+      match ← read fieldId with
+      | .value stored given =>
+          match projection.categoryTokenFor? stored with
+          | some text => pure (.value text given)
+          | none => pure (.unknown .malformed)
+      | other => pure other
   | .literal value => pure (.value value true)
   | .range fieldId start finish => do
       if !validStringRange start finish then throw (.invalidRange start finish)
@@ -175,6 +185,13 @@ inductive StringTargetOutcome where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
+/-- Reduced Custom target validation accepts the attempted payload without calling the registered
+validator or ordinary String format policy (spec/06 A.3, spec/09 §11). -/
+def StringStore.uncheckedTarget : StringStore → StringTargetOutcome
+  | .noValue => .noValue
+  | .poison cause => .poison cause
+  | .produced value => .accepted value
+
 /-- Apply the declaration-owned basic String clauses and optional prepared matcher to a root write attempt. Checking may normalize CRLF for pattern and length measurement, but an accepted or rejected result retains the exact attempted payload. No-value and poison bypass target validation unchanged. -/
 def StringFieldPolicy.checkTargetWithPattern (policy : StringFieldPolicy)
     (wholeValueMatches? : Option (String → Bool)) :
@@ -185,6 +202,18 @@ def StringFieldPolicy.checkTargetWithPattern (policy : StringFieldPolicy)
       match policy.checkTextWithPattern wholeValueMatches? attempted.text with
       | .ok _ => .accepted attempted
       | .error cause => .errored attempted cause
+
+/-- The target's reduced-check regime is part of a resolved computation, including erased tables. -/
+inductive StringTargetRegime where
+  | ordinary
+  | custom
+  deriving Repr, DecidableEq
+
+def StringTargetRegime.check (regime : StringTargetRegime) (policy : StringFieldPolicy)
+    (matcher : Option (String → Bool)) (store : StringStore) : StringTargetOutcome :=
+  match regime with
+  | .ordinary => policy.checkTargetWithPattern matcher store
+  | .custom => store.uncheckedTarget
 
 /-- The ordinary no-pattern target specialization retained by the resolved computation and evidence boundaries. -/
 def StringFieldPolicy.checkTarget (policy : StringFieldPolicy) :

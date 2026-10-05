@@ -51,7 +51,7 @@ theorem elaborateStringExprCore_range (model : FlatModel)
 /-- Successful child lowering preserves the authored concatenation shape and order exactly. -/
 theorem elaborateStringExprCore_concat (model : FlatModel)
     (declaringGroup targetGroup : GroupPath)
-    (left right : StringExpr SurfaceFieldPath)
+    (left right : StringExpr SurfaceFieldPath String)
     (loweredLeft loweredRight : StringExpr FieldId)
     (leftOk : elaborateStringExprCore model declaringGroup targetGroup left = .ok loweredLeft)
     (rightOk : elaborateStringExprCore model declaringGroup targetGroup right = .ok loweredRight) :
@@ -68,7 +68,7 @@ theorem checkedStringExpr_evaluate (expression : CheckedStringExpr model)
       expression.core.evaluate input.stringComputationContext := by
   rfl
 
-/-- A checked ordinary String operation retains the exact declaration-owned target relation. -/
+/-- A checked ordinary-or-Custom String operation retains the exact declaration-owned target relation. -/
 theorem checkedStringComputation_target_admitted
     (operation : CheckedStringComputationOperation model) :
     model.admitsStringComputationTarget operation.targetField
@@ -94,12 +94,14 @@ theorem checkedStringComputation_evaluateOutcome
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model)
     (matcher : Option (String → Bool))
+    (declaration : FlatFieldDecl)
+    (targetDeclaration : model.lookupUniqueId operation.targetField = .ok declaration)
     (preparedTarget :
       patterns.targetMatcher? operation.targetField = some matcher) :
     operation.evaluateOutcome patterns input = (do
       let store ← operation.expression.evaluate input
-      pure (operation.targetPolicy.checkTargetWithPattern matcher store)) := by
-  simp [CheckedStringComputationOperation.evaluateOutcome, preparedTarget]
+      pure (declaration.checkStringExpressionTarget matcher store)) := by
+  simp [CheckedStringComputationOperation.evaluateOutcome, preparedTarget, targetDeclaration]
 
 /-- A forged or incomplete prepared target plan fails closed instead of silently treating a required declared pattern as absent. -/
 theorem checkedStringComputation_missingTargetPattern_failsClosed

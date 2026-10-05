@@ -54,13 +54,13 @@ private def prepared : PreparedFlatStringContext model builtinStringPatternCompi
 private def bare (field : String) : SurfaceFieldPath :=
   { base := .relative 0, groups := [], field }
 
-private def stringOperation? (expression : StringExpr SurfaceFieldPath) :
+private def stringOperation? (expression : StringExpr SurfaceFieldPath String) :
     Option (CheckedStringComputationOperation model) :=
   (elaborateStringComputationOperation
     model ["Form"] producerId expression).toOption
 
 private def stringTable? (rows : List
-    ((CheckedComputationCondition model) × StringExpr SurfaceFieldPath)) :
+    ((CheckedComputationCondition model) × StringExpr SurfaceFieldPath String)) :
     Option (CheckedStringComputationTable model) := do
   let alternatives ← rows.mapM fun (guard, expression) => do
     let operation ← stringOperation? expression

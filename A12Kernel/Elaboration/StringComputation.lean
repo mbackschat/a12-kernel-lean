@@ -4,18 +4,31 @@ import A12Kernel.Semantics.StringComputation
 
 /-! # Checked String-computation expression lowering
 
-This capsule resolves parser-independent field paths in copy/Number-`FieldValueAsString`/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. The expression binder accepts declarations at the target scope, while the fixed-operation certificate retains its nonrepeatable boundary. Ordinary String reads, ranges, and Number coercion keep their distinct kind gates. `RangeAsString` preserves the kernel's static gate order: resolve the entity source at the consumer scope, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/pattern/minimum/maximum policy and rejects direct target self-reference before evaluation. A read of the target, at the root or inside a concatenation, projects the one measured Kernel class, and a raw target is refused with its read's class. Alternatives, concrete syntax and scheduling are assembled by their existing owners. Indexed coercion and custom/raw targets remain outside this binder.
+This capsule resolves parser-independent field paths in copy/Number-`FieldValueAsString`/literal/`RangeAsString`/concatenation expressions into the existing `StringExpr FieldId` runtime tree. The expression binder accepts declarations at the target scope, while the fixed-operation certificate retains its nonrepeatable boundary. Ordinary String reads, ranges, and Number coercion keep their distinct kind gates. `RangeAsString` preserves the kernel's static gate order: resolve the entity source at the consumer scope, check 1-based inclusive bounds, then certify the String value kind. The integrated ordinary-target entry point additionally retains the declaration-owned line-break/pattern/minimum/maximum policy and rejects direct target self-reference before evaluation. A read of the target, at the root or inside a concatenation, projects the one measured Kernel class, and a raw target is refused with its read's class. Alternatives, concrete syntax and scheduling are assembled by their existing owners. Indexed coercion remains outside this binder; raw targets are rejected and Custom targets use reduced validation.
 -/
 
 namespace A12Kernel
 
-/-- The declaration-local ordinary evaluated-String carrier shared by expression and first-filled targets. -/
+/-- The ordinary evaluated-String carrier used by the first-filled declaration-matching boundary. -/
 def FlatFieldDecl.isOrdinaryStringComputationCarrier
     (declaration : FlatFieldDecl) : Bool :=
   declaration.policy.kind == .string &&
     declaration.stringValueMode == .evaluated &&
     declaration.customType.isNone && declaration.enumeration.isNone
 
+
+/-- Expression targets accept evaluated Custom Strings, whose reduced checks differ from ordinary
+String policy; first-filled carriers retain their separate declaration-matching contract. -/
+def FlatFieldDecl.isStringExpressionTarget (declaration : FlatFieldDecl) : Bool :=
+  declaration.policy.kind == .string && declaration.stringValueMode == .evaluated &&
+    declaration.enumeration.isNone
+
+def FlatFieldDecl.stringTargetRegime (declaration : FlatFieldDecl) : StringTargetRegime :=
+  if declaration.customType.isSome then .custom else .ordinary
+
+def FlatFieldDecl.checkStringExpressionTarget (declaration : FlatFieldDecl)
+    (matcher : Option (String → Bool)) (store : StringStore) : StringTargetOutcome :=
+  declaration.stringTargetRegime.check declaration.stringPolicy matcher store
 
 /-- Fail-closed errors owned by checked String-computation expression lowering. Keeping this domain local avoids widening validation or public reference diagnostics. -/
 inductive StringComputationElabError where
@@ -26,7 +39,6 @@ inductive StringComputationElabError where
   | targetKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | copyComparison (targetPath sourcePath : List String) (refusal : CopyComparisonRefusal)
   | rawStringTarget (path : List String)
-  | customStringTarget (path : List String)
   | targetSelfReference (field : FieldId)
   /-- The group a target-less expression is judged in repeats, so its hypothetical target is a row
   target, which this carrier never evaluates. Claims no class. -/
@@ -65,6 +77,22 @@ def admitStringComputationValueField
       else
         throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)
 
+/-- Concatenation admits stored Enumeration tokens only without effective display remapping
+(spec/06 Part A); range extraction keeps the stricter String-value gate. -/
+def admitStringExpressionField (declaration : FlatFieldDecl) :
+    Except StringComputationElabError FieldId := do
+  if let some (_, .enumeration display) := declaration.toEnumerationTextFieldComparison? .stored then
+    if !display.hasEffectiveDisplay then return declaration.id
+  admitStringComputationValueField declaration
+
+/-- Resolve the declared category once so evaluation and consumers retain its positional mapping. -/
+def stringCategory? (declaration : FlatFieldDecl) (name : String) :
+    Option ResolvedEnumerationCategory := do
+  let (.enumeration operand, _) ← declaration.toEnumerationTextFieldComparison? (.category name)
+    | none
+  let .category mapping := operand.projection | none
+  pure mapping
+
 /-- Resolve one legal String-value field at its target scope. The
 copied field is a field-value read, so its gates refuse a raw String ahead of this carrier's own
 refusal. -/
@@ -72,7 +100,7 @@ def elaborateStringValueField (model : FlatModel) (declaringGroup targetGroup : 
     (reference : SurfaceFieldPath) : Except StringComputationElabError FieldId := do
   let declaration ←
     (model.resolveComputationFieldValueRead declaringGroup targetGroup reference).mapError .resolve
-  admitStringComputationValueField declaration
+  admitStringExpressionField declaration
 
 /-- Admit one already-resolved Number declaration as a `FieldValueAsString` operand. -/
 def admitNumberAsStringField
@@ -91,13 +119,13 @@ def elaborateNumberAsStringField (model : FlatModel)
     (model.resolveComputationEntityRead declaringGroup targetGroup reference).mapError .resolve
   admitNumberAsStringField declaration
 
-/-- Whether one runtime leaf is the exact nonrepeatable String-value declaration in the model. -/
+/-- Require the same textual kind and display gates after nonrepeatable resolution. -/
 private def FlatModel.admitsStringComputationOperand (model : FlatModel)
     (fieldId : FieldId) : Bool :=
   match model.lookupUniqueId fieldId with
   | .ok declaration =>
       declaration.repeatableScope.isEmpty &&
-        declaration.toStringValueField? == some { id := fieldId }
+        (admitStringExpressionField declaration).toOption == some fieldId
   | .error _ => false
 
 /-- Whether one runtime coercion leaf is the exact nonrepeatable Number declaration in the model. -/
@@ -113,10 +141,15 @@ private def FlatModel.admitsNumberAsStringOperand (model : FlatModel)
 
 namespace StringExpr
 
-/-- Check that every runtime leaf names the exact nonrepeatable String declaration in one model. -/
+/-- Certify every resolved leaf against the same model and nonrepeatable scope. -/
 def wellFormedBool (model : FlatModel) : StringExpr FieldId → Bool
   | StringExpr.field fieldId =>
       model.admitsStringComputationOperand fieldId
+  | .category fieldId projection =>
+      (model.lookupUniqueId fieldId).toOption.any fun declaration =>
+        declaration.repeatableScope.isEmpty &&
+          declaration.enumeration.any fun source => source.categories.any fun category =>
+            stringCategory? declaration category.name == some projection
   | StringExpr.fieldValueAsString fieldId =>
       model.admitsNumberAsStringOperand fieldId
   | StringExpr.literal _ => true
@@ -132,7 +165,7 @@ def WellFormed (expression : StringExpr FieldId) (model : FlatModel) : Prop :=
 
 /-- Whether the resolved expression contains the named field anywhere in its authored tree. -/
 def referencesField (field : FieldId) : StringExpr FieldId → Bool
-  | .field candidate => candidate == field
+  | .field candidate | .category candidate _ => candidate == field
   | .fieldValueAsString candidate => candidate == field
   | .literal _ => false
   | .range candidate _ _ => candidate == field
@@ -146,7 +179,7 @@ structure CheckedStringExpr (model : FlatModel) where
   modelWellFormed : model.validate.isOk = true
   wellFormed : core.WellFormed model
 
-/-- The exact ordinary nonrepeatable String target/policy relation retained by checked computation lowering. -/
+/-- The exact nonrepeatable ordinary-or-Custom String target/policy relation retained by checked lowering. -/
 def FlatModel.admitsStringComputationTarget (model : FlatModel)
     (field : FieldId) (policy : StringFieldPolicy) : Bool :=
   match model.lookupUniqueId field with
@@ -154,12 +187,11 @@ def FlatModel.admitsStringComputationTarget (model : FlatModel)
       declaration.repeatableScope.isEmpty &&
         declaration.policy.kind == .string &&
         declaration.stringValueMode == .evaluated &&
-        declaration.customType.isNone &&
         declaration.enumeration.isNone &&
         declaration.stringPolicy == policy
   | .error _ => false
 
-/-- One ordinary String target and expression certified against the same validated model. The
+/-- One ordinary-or-Custom String target and expression certified against the same validated model. The
 declaration group remains definition identity even when fixed target placement owns execution scope.
 Target policy cannot be substituted after elaboration. -/
 structure CheckedStringComputationOperation (model : FlatModel) where
@@ -173,10 +205,16 @@ structure CheckedStringComputationOperation (model : FlatModel) where
 
 /-- Resolve one authored String-expression tree without evaluating or reordering it. The caller supplies a validated model; each field still passes through the shared target-scope path resolver. -/
 def elaborateStringExprCore (model : FlatModel) (declaringGroup targetGroup : GroupPath) :
-    StringExpr SurfaceFieldPath →
+    StringExpr SurfaceFieldPath String →
       Except StringComputationElabError (StringExpr FieldId)
   | StringExpr.field reference => do
       pure (.field (← elaborateStringValueField model declaringGroup targetGroup reference))
+  | .category reference name => do
+      let declaration ←
+        (model.resolveComputationFieldValueRead declaringGroup targetGroup reference).mapError .resolve
+      match stringCategory? declaration name with
+      | some projection => pure (.category declaration.id projection)
+      | none => throw .incoherentCore
   | StringExpr.fieldValueAsString reference => do
       pure (.fieldValueAsString
         (← elaborateNumberAsStringField model declaringGroup targetGroup reference))
@@ -209,7 +247,7 @@ private def certifyStringExpr (model : FlatModel)
 
 /-- Validate the flat model once, preserve the authored expression tree exactly, and certify every resolved runtime leaf before returning it to computation evaluation. Without a target the expression is judged as if its target lay in the declaring group, where an undeclared declaring group defaults. A repeating target group is refused first: the computation binding would bind its levels, which this carrier's fixed-target evaluator cannot read. -/
 def elaborateStringExpr (model : FlatModel) (declaringGroup : GroupPath)
-    (expression : StringExpr SurfaceFieldPath) (targetGroup : GroupPath := declaringGroup) :
+    (expression : StringExpr SurfaceFieldPath String) (targetGroup : GroupPath := declaringGroup) :
     Except StringComputationElabError (CheckedStringExpr model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
@@ -223,10 +261,10 @@ def elaborateStringExpr (model : FlatModel) (declaringGroup : GroupPath)
 asked after the target's read and then the copied field's read, as the Kernel asks them
 ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
 A wider expression is not typed here: the rows measure a whole-expression copy. A pair the comparison
-admits falls through to this carrier's own gates, so an unlabelled Enumeration, which the Kernel copies
-into a String, is still refused by this carrier's missing Enumeration leaf. -/
+admits falls through to this carrier's expression gates, including the stored-token leaf for an
+unlabelled Enumeration copied into a String. -/
 private def FlatModel.checkStringCopyComparison (model : FlatModel) (declaringGroup : GroupPath)
-    (target : FlatFieldDecl) : StringExpr SurfaceFieldPath → Except StringComputationElabError Unit
+    (target : FlatFieldDecl) : StringExpr SurfaceFieldPath String → Except StringComputationElabError Unit
   | .field reference => do
       if target.fieldValueReadRefusal?.isNone then
         let source ←
@@ -244,10 +282,10 @@ private def certifyStringComputationDeclaringGroup (declaringGroup : GroupPath) 
   else
     .error (.resolve (.invalidRuleGroup declaringGroup))
 
-/-- Resolve one ordinary nonrepeatable String target and expression together. The declaration supplies the complete basic target policy, and direct self-reference is rejected before a runtime operation exists. -/
+/-- Resolve one ordinary-or-Custom nonrepeatable String target and expression together. The declaration supplies the complete basic target policy, and direct self-reference is rejected before a runtime operation exists. -/
 def elaborateStringComputationOperation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (expression : StringExpr SurfaceFieldPath) :
+    (expression : StringExpr SurfaceFieldPath String) :
     Except StringComputationElabError (CheckedStringComputationOperation model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
@@ -263,8 +301,6 @@ def elaborateStringComputationOperation
           throw (.targetKindMismatch declaration.path actual.surfaceKind)
       if declaration.stringValueMode == .raw then
         throw (.rawStringTarget declaration.path)
-      if declaration.customType.isSome then
-        throw (.customStringTarget declaration.path)
       model.checkStringCopyComparison checkedDeclaringGroup.val declaration expression
       let core ←
         elaborateStringExprCore model checkedDeclaringGroup.val declaration.groupPath expression
@@ -331,8 +367,10 @@ def evaluateOutcome (operation : CheckedStringComputationOperation model)
   let matcher ← match patterns.targetMatcher? operation.targetField with
     | some matcher => pure matcher
     | none => throw (.targetPatternUnavailable operation.targetField)
-  pure (operation.targetPolicy.checkTargetWithPattern matcher
-    (← operation.expression.evaluate input))
+  let declaration ← match model.lookupUniqueId operation.targetField with
+    | .ok declaration => pure declaration
+    | .error _ => throw (.fieldKindMismatch operation.targetField)
+  pure (declaration.checkStringExpressionTarget matcher (← operation.expression.evaluate input))
 
 end CheckedStringComputationOperation
 

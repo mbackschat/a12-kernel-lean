@@ -198,7 +198,7 @@ private def operationErrorOf {candidateModel : FlatModel}
   | .ok _ => none
   | .error error => some error
 
-private def patternTargetOutcomeOf (expression : StringExpr SurfaceFieldPath)
+private def patternTargetOutcomeOf (expression : StringExpr SurfaceFieldPath String)
     (cells : List ClassifiedCellInput) : Option StringTargetOutcome := do
   let checked ←
     (elaborateStringComputationOperation patternTargetModel ["Form"]
@@ -219,7 +219,7 @@ private def cells (sourceCell suffixCell : RawCell) :
     List ClassifiedCellInput :=
   [cellFor? source.id sourceCell, cellFor? suffix.id suffixCell].filterMap id
 
-private def storeOf (expression : StringExpr SurfaceFieldPath)
+private def storeOf (expression : StringExpr SurfaceFieldPath String)
     (cells : List ClassifiedCellInput) : Option StringStore := do
   let checked ← (elaborateStringExpr model ["Form"] expression).toOption
   let prepared ←
@@ -456,7 +456,7 @@ example :
     let customModel : FlatModel := { fields := [customTarget] }
     operationErrorOf (elaborateStringComputationOperation customModel ["Form"]
       customTarget.id (.literal "TEXT")) =
-        some (.customStringTarget customTarget.path) := by
+        none := by
   native_decide
 
 /- An ordinary pattern-bearing String target remains statically legal. -/
