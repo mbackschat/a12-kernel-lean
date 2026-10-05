@@ -70,7 +70,19 @@ private def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPat
   | .string value => pure (.literal value)
   | .call "FirstFilledValue" arguments none none =>
       (.firstFilled ·) <$> lowerEntitySource model rowGroup arguments
-  | expression => refuse "TokenComparison" expression.construct
+  | expression => match expression.fieldEntity? with
+      | some field => pure (.field field)
+      | none => refuse "TokenComparison" expression.construct
+
+private def lowerFirstFilledComparisonOperand (model : FlatModel) (rowGroup : GroupPath) :
+    Expr → Lowering SurfaceFirstFilledComparisonOperand
+  | .call "FirstFilledValue" arguments none none =>
+      (.firstFilled ·) <$> lowerEntitySource model rowGroup arguments
+  | .constant "True" => pure (.boolean true)
+  | .constant "False" => pure (.boolean false)
+  | expression => match expression.fieldEntity? with
+      | some path => pure (.field path)
+      | none => (.temporal ·) <$> lowerScalarTemporalExpression model rowGroup expression
 
 /-- The carriers tried for one leaf, in order; the first to admit it answers. -/
 private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : World)
@@ -114,7 +126,22 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
             lowerTokenComparisonOperand model rowGroup right with
         | some op, .ok left, .ok right => [do
             let comparison ← elaborated "TokenComparison" (elaborateTokenComparison model rowGroup op left right bindingGroup)
-            elaborated "TokenComparison" (CheckedValidationCondition.fromTokenComparison bindingGroup comparison)]
+            elaborated "TokenComparison" (CheckedValidationCondition.fromTokenComparison bindingGroup comparison rowGroup)]
+        | _, _, _ => []
+    | _ => []
+  let selected : Expr → Bool
+    | .call "FirstFilledValue" _ none none => true
+    | _ => false
+  let firstFilled := match leaf with
+    | .compare op left right =>
+        if !selected left && !selected right then [] else
+        match op.toSurface?, lowerFirstFilledComparisonOperand model rowGroup left,
+            lowerFirstFilledComparisonOperand model rowGroup right with
+        | some op, .ok left, .ok right => [do
+            let comparison ← elaborated "FirstFilledComparison"
+              (elaborateFirstFilledComparison model rowGroup bindingGroup op.toTemporal left right)
+            elaborated "FirstFilledComparison"
+              (CheckedValidationCondition.fromFirstFilledComparison bindingGroup comparison rowGroup)]
         | _, _, _ => []
     | _ => []
   let validity := match leaf with
@@ -281,7 +308,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
               { op := .violated, field, source } bindingGroup)]
           | _, _ => []
     | _ => []
-  flat ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity
+  flat ++ firstFilled ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :

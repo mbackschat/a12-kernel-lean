@@ -122,7 +122,7 @@ def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
           match model.lookupUniqueId field with
           | .ok declaration => !declaration.repeatableScope.isEmpty
           | .error _ => false
-  | .firstFilled source => source.directResolvedFields?.isNone
+  | .firstFilled source => source.directResolvedFields?.isNone || source.bindingScopes.any (!·.isEmpty)
   | .valueCount _ source => source.directResolvedFields?.isNone
   | .tokenValueCount source => source.source.directFields?.isNone
   | .booleanValueCount source => source.directFields?.isNone
@@ -142,7 +142,9 @@ def admitted (atom : OrderedNumericValidationAtom model)
         | .modelWideCheckedComputation => true
   | .ordinary source => source.admitted model rowGroup scope
   | .firstFilled source =>
-      checkedNumberEntitySourceAdmittedIn source rowGroup scope
+      match scope with
+      | .sameGroupAddressed => source.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
+      | _ => checkedNumberEntitySourceAdmittedIn source rowGroup scope
   | .valueCount _ source =>
       checkedNumberEntitySourceAdmittedIn source rowGroup scope
   | .tokenValueCount source =>
@@ -270,9 +272,9 @@ def OrderedNumericComparison.hasTemporalExpression (comparison : OrderedNumericC
 def OrderedNumericValidationAtom.supportsAddressedPartial :
     OrderedNumericValidationAtom model → Bool
   | .ordinary (.filledGroupCount _) => false
-  | .ordinary _ | .aggregate _ _ | .filledGroupCountMixed _ => true
+  | .ordinary _ | .aggregate _ _ | .filledGroupCountMixed _ | .firstFilled _ => true
   | .filledFieldCount source => source.supportsPartialCount
-  | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
+  | .valueCount _ _ | .tokenValueCount _
   | .booleanValueCount _ | .sumOfProducts _
   | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ => false
 

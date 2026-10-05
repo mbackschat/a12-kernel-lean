@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.TokenFirstFilledValue
 
 /-! # Checked comparisons of selected tokens
 
-Both equality sides retain their literal or first-filled source. Selection, empty suppression and
+Both equality sides retain their literal, direct field or first-filled source. Selection, empty suppression and
 missing-prefix polarity stay with the existing token scan and symmetric comparison owners.
 -/
 
@@ -10,6 +10,7 @@ namespace A12Kernel
 
 inductive SurfaceTokenComparisonOperand where
   | literal (value : String)
+  | field (reference : SurfaceFieldPath)
   | firstFilled (source : SurfaceFirstFilledTokenSource)
 
 inductive TokenComparisonElabError where
@@ -21,13 +22,14 @@ inductive TokenComparisonElabError where
 
 inductive CheckedTokenComparisonOperand (model : FlatModel) where
   | literal (value : String)
+  | field (source : CheckedTokenField model)
   | firstFilled (source : CheckedFirstFilledTokenSource model)
       (supported : source.supportsCheckedFirstFilledValidation = true)
 
 namespace CheckedTokenComparisonOperand
 
 def sources : CheckedTokenComparisonOperand model → List (CheckedFirstFilledTokenSource model)
-  | .literal _ => []
+  | .literal _ | .field _ => []
   | .firstFilled source _ => [source]
 
 def evaluate (operand : CheckedTokenComparisonOperand model)
@@ -35,9 +37,36 @@ def evaluate (operand : CheckedTokenComparisonOperand model)
     Except CheckedAddressingError (SimpleComparisonOperand String) :=
   match operand with
   | .literal value => pure (if value.isEmpty then .notEvaluated else .value value true)
+  | .field source => do
+      let cell ← document.fullValidationAddressedCell outer source.declaration.id
+      pure ((evalFirstFilledToken {
+        cells := [source.operand.checkedValueListCellAt .validation cell.cell]
+        hasUninstantiatedTail := false, hasHaving := false }).asValidationOperand)
   | .firstFilled source supported =>
       FirstFilledTokenResult.asValidationOperand <$>
         source.evaluateSupportedFirstFilledValidation document outer supported
+
+def fields : CheckedTokenComparisonOperand model → List (CheckedTokenField model)
+  | .field source => [source]
+  | _ => []
+
+def evaluatePartial? (operand : CheckedTokenComparisonOperand model)
+    (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError CheckedCell) :
+    Option (Except CheckedAddressingError (Option (SimpleComparisonOperand String))) :=
+  match operand with
+  | .literal value => some (pure (some (if value.isEmpty then .notEvaluated else .value value true)))
+  | .field source => some do
+      if !scope.coversCell model source.declaration.path outer then return none
+      let cell ← read outer source.declaration.id
+      pure (some (evalFirstFilledToken {
+        cells := [source.operand.checkedValueListCellAt .validation cell]
+        hasUninstantiatedTail := false, hasHaving := false }).asValidationOperand)
+  | .firstFilled source _ => do
+      let result ← source.evaluateCheckedPartialFirstFilled? document outer scope read
+      pure (result.map fun
+        | .nonRelevant => none
+        | .evaluated result => some result.asValidationOperand)
 
 end CheckedTokenComparisonOperand
 
@@ -52,6 +81,9 @@ structure CheckedTokenComparison (model : FlatModel) where
 private def resolveTokenComparisonOperand (model : FlatModel) (declaringGroup bindingGroup : GroupPath) :
     SurfaceTokenComparisonOperand → Except TokenComparisonElabError (CheckedTokenComparisonOperand model)
   | .literal value => pure (.literal value)
+  | .field reference => do
+      let declaration ← (model.resolveFieldDeclarationUnchecked declaringGroup reference).mapError .model
+      .field <$> ((certifyDirectTokenOperand model declaration).mapError fun cause => .source (.source cause))
   | .firstFilled authored => do
       let source ← (elaborateFirstFilledTokenSource model declaringGroup authored bindingGroup (some bindingGroup)).mapError .source
       if supported : source.supportsCheckedFirstFilledValidation = true then
@@ -80,9 +112,11 @@ def hasHaving (comparison : CheckedTokenComparison model) : Bool :=
 
 def referencesField (comparison : CheckedTokenComparison model) (field : FieldId)
     (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) : Bool :=
-  comparison.sources.any (·.referencesField field filterReads)
+  (comparison.left.fields ++ comparison.right.fields).any (·.declaration.id == field) ||
+    comparison.sources.any (·.referencesField field filterReads)
 
 def bindingScopes (comparison : CheckedTokenComparison model) : List (List RepeatableLevel) :=
+  (comparison.left.fields ++ comparison.right.fields).map (·.declaration.repeatableScope) ++
   comparison.sources.flatMap fun source => source.bindingScopes ++
     (source.operands.flatMap fun
       | .star source => source.filter.toList.flatMap fun filter =>
@@ -93,6 +127,23 @@ def evaluateFull (comparison : CheckedTokenComparison model)
     (document : CheckedDocument model) (outer : Env) : Except CheckedAddressingError Verdict := do
   pure (comparison.operator.evalSymmetric (· == ·)
     (← comparison.left.evaluate document outer) (← comparison.right.evaluate document outer))
+
+def evaluatePartial? (comparison : CheckedTokenComparison model)
+    (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError CheckedCell) :
+    Option (Except CheckedAddressingError Verdict) := do
+  if comparison.hasHaving then none else pure ()
+  let left ← comparison.left.evaluatePartial? document outer scope read
+  let right ← comparison.right.evaluatePartial? document outer scope read
+  let available := fun result => match result with
+    | .error (.partialUnavailable _ _) => .ok none
+    | result => result
+  pure do
+    let left ← available left
+    let right ← available right
+    pure (match left, right with
+      | some left, some right => comparison.operator.evalSymmetric (· == ·) left right
+      | _, _ => .unknown)
 
 end CheckedTokenComparison
 end A12Kernel

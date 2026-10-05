@@ -1839,6 +1839,7 @@ run_cmd do
 #print axioms A12Kernel.resolvedValueList_hasPresent_of_anyOutside
 #print axioms A12Kernel.valueList_evalClassified_noNonRelevant
 #print axioms A12Kernel.valueList_classified_fired_implies_resolved_fired
+#print axioms A12Kernel.scanFirstFilledObservations_append_terminal
 #print axioms A12Kernel.scanFirstFilledItems_present_head
 #print axioms A12Kernel.scanFirstFilledItems_unknown_head
 #print axioms A12Kernel.scanFirstFilledItemsResolving_present_head

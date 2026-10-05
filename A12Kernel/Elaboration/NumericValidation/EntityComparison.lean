@@ -18,8 +18,9 @@ paths still resolve at its lexical declaring group. The same split applies to or
 operands and to captured references in a filter; a descendant error field does not relocate names.
 
 Three forms keep the carriers that already own them, so none acquires a second representation. A
-comparison reading no entity list at all belongs to the ordinary numeric comparisons. A list of plain
-fields only belongs to the scalar comparison, and the addressed scope admits it in neither atom form, so it is refused as incoherent.
+comparison reading no entity list at all belongs to the ordinary numeric comparisons. Direct-list
+aggregates keep their scalar owner; FirstFilledValue additionally retains caller-bound direct lists
+because selection must read each field at the rule's current row.
 The filled-group count belongs to `elaborateNumericComparison` and
 `elaborateMixedFilledGroupCountComparison`.
 

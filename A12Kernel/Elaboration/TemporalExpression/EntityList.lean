@@ -11,9 +11,8 @@ private def liftScalarTemporal (wrap : α → ScalarTemporalValue) :
 
 /-- Preserve each declaration's precision before model Base Year completion (LF163). Both direct
 and expanded operands use this projection, so a row-set cannot borrow another field's components. -/
-def readScalarTemporalField (model : FlatModel) (phase : Phase) (field : FlatTemporalField)
-    (cell : CheckedCell) : SimpleComparisonOperand ScalarTemporalValue :=
-  let observation := observeCell phase cell
+def projectScalarTemporalObservation (model : FlatModel) (field : FlatTemporalField)
+    (observation : CellObservation) : SimpleComparisonOperand ScalarTemporalValue :=
   let components := if field.components.hasDate then field.components.withBaseYear model.hasBaseYear else field.components
   if components == TemporalComponents.now then
     liftScalarTemporal .instant observation.asDateTimeExtremumOperand
@@ -37,6 +36,10 @@ def readScalarTemporalField (model : FlatModel) (phase : Phase) (field : FlatTem
     | .notEvaluated, _ => .notEvaluated
     | .unknown cause, _ => .unknown cause
     | _, _ => .unknown .malformed
+
+def readScalarTemporalField (model : FlatModel) (phase : Phase) (field : FlatTemporalField)
+    (cell : CheckedCell) : SimpleComparisonOperand ScalarTemporalValue :=
+  projectScalarTemporalObservation model field (observeCell phase cell)
 
 namespace CheckedTemporalExtremumOperands
 

@@ -8,6 +8,23 @@ These laws characterize the ordered resolved Number scan, its two projections, c
 
 namespace A12Kernel
 
+/-- Once typed selection reaches a value or formal cause, appending any suffix preserves its
+result, including missing-prefix provenance. This is the selection-order law consumers need
+before deciding whether a list rewrite can expose additional reads (spec/07). -/
+theorem scanFirstFilledObservations_append_terminal
+    (heads suffix : List (CellObservation α)) (state : FirstFilledScanState)
+    (result : SimpleComparisonOperand α)
+    (terminal : scanFirstFilledObservations heads state = .inr result) :
+    scanFirstFilledObservations (heads ++ suffix) state = .inr result := by
+  induction heads generalizing state with
+  | nil => simp [scanFirstFilledObservations] at terminal
+  | cons head tail ih =>
+      cases head with
+      | empty => exact ih { state with emptyBefore := true } terminal
+      | value value => exact terminal
+      | unknown cause => exact terminal
+      | poison cause => exact terminal
+
 /-- The generic lazy scan terminates on a present head without projecting any suffix item. -/
 theorem scanFirstFilledItems_present_head
     (cell : α → ValueListCell kind) (head : α) (tail : List α)

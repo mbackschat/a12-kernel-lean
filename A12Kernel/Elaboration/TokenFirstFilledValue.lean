@@ -279,6 +279,50 @@ def evaluateCheckedFirstFilledValidation?
   else
     pure none
 
+private def checkedPartialTokenAddresses (document : CheckedDocument model) (outer : Env) :
+    CheckedTokenEntityOperand model →
+      Except CheckedAddressingError (List (FlatFieldDecl × FlatTextFieldOperand × Env))
+  | .field source => pure [(source.declaration, source.operand, outer)]
+  | .star source => do
+      let resolved ← (source.source.path.resolveInCapacity document.source.toDocument outer).mapError .addressing
+      pure (resolved.environments.map (source.source.declaration, source.operand, ·))
+  | .group source => do
+      let (reads, _) ← (model.groupOperandReads document.source.toDocument outer
+        source.source.boundLevelCount source.slots (·.declaration.repeatableScope)).mapError .addressing
+      pure (reads.map fun (slot, row) => (slot.declaration, slot.operand, row))
+
+private def scanCheckedPartialTokenCells {model : FlatModel} (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError CheckedCell) :
+    List (FlatFieldDecl × FlatTextFieldOperand × Env) → FirstFilledScanState →
+      Except CheckedAddressingError (FirstFilledScanState ⊕ PartialValidationFirstFilledTokenResult)
+  | [], state => pure (.inl state)
+  | (declaration, operand, row) :: rest, state => do
+      if !scope.coversCell model declaration.path row then return .inr .nonRelevant
+      match state.step (operand.checkedValueListCellAt .validation (← read row declaration.id)) with
+      | .continue next => scanCheckedPartialTokenCells (model := model) scope read rest next
+      | .done result => pure (.inr (.evaluated result.asToken))
+
+private def scanCheckedPartialTokenOperands (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) (read : Env → FieldId → Except CheckedAddressingError CheckedCell) :
+    List (CheckedTokenEntityOperand model) → FirstFilledScanState →
+      Except CheckedAddressingError PartialValidationFirstFilledTokenResult
+  | [], _ => pure (.evaluated .noValue)
+  | operand :: rest, state => do
+      let cells ← checkedPartialTokenAddresses document outer operand
+      match ← scanCheckedPartialTokenCells (model := model) scope read cells
+          (state.enterSelection cells.isEmpty false false) with
+      | .inl next => scanCheckedPartialTokenOperands document outer scope read rest next
+      | .inr result => pure result
+
+/-- Unfiltered partial lists preserve declaration-owned token projection and read each reached
+cell through the call-local view. Rule-wide Having skip remains outside this scan (spec/07). -/
+def evaluateCheckedPartialFirstFilled?
+    (source : CheckedTokenEntitySource model) (document : CheckedDocument model) (outer : Env)
+    (scope : ValidationRelevanceScope) (read : Env → FieldId → Except CheckedAddressingError CheckedCell) :
+    Option (Except CheckedAddressingError PartialValidationFirstFilledTokenResult) :=
+  if source.hasHaving || !source.supportsCheckedFirstFilledValidation then none else
+    some (scanCheckedPartialTokenOperands document outer scope read source.operands {})
+
 /-- Evaluate the measured full-validation group fragments through the immutable checked document.
     One fixed group whose authored terminal is nonrepeatable, including its recursive repeatable
     descendants, and one direct single-level group star are complete operand lists; the measured

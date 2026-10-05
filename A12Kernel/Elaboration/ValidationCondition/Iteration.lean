@@ -300,6 +300,8 @@ private def ValidationConditionLeaf.iterationGuardAt
       if source.bindingScope.contains level then .unclassified else .noReference
   | .stringExpression comparison =>
       if comparison.declarations.any (·.repeatableScope.contains level) then .unclassified else .noReference
+  | .firstFilledComparison comparison =>
+      if comparison.bindingScopes.flatten.contains level then .unclassified else .noReference
   | .tokenComparison comparison =>
       if comparison.bindingScopes.flatten.contains level then .unclassified else .noReference
   | .valueList source =>
@@ -437,7 +439,7 @@ def supportsOrdinaryIteration
     | .repetitionNotUnique _ => true
     | .constructedDateValidity _ _ | .customFieldValidity _ => true
     | .stringPattern _ => true
-    | .stringExpression _ | .scalarTemporal _ | .tokenComparison _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => true
+    | .stringExpression _ | .scalarTemporal _ | .firstFilledComparison _ | .tokenComparison _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => true
     | _ => false
 
 /-- Discover a filtered source across the complete checked connective tree. Unlike verdict evaluation, this static traversal never short-circuits on a decisive branch. -/
@@ -467,10 +469,13 @@ def evalWithTemporalResult (condition : ValidationCondition model)
       fun _ => .ok (.fired .value))
     (numericResult : OrderedNumericComparison model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
       fun comparison => (comparison.evalSelectedResult context isRelevant).mapError Sum.inr)
-    (leafRuntimeFault? : Error → Option ScalarTemporalEvaluationFault := fun _ => none) :
+    (leafRuntimeFault? : Error → Option ScalarTemporalEvaluationFault := fun _ => none)
+    (firstFilledResult : CheckedFirstFilledComparison model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
+      fun _ => pure .unknown) :
     Except Error Verdict :=
   let readLeaf : ValidationConditionLeaf model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
     fun leaf => match leaf with
+      | .firstFilledComparison comparison => firstFilledResult comparison
       | .scalarTemporal comparison =>
           if comparison.fieldIds.all isRelevant then do
             let fields ← (temporalFields comparison).mapError Sum.inl
@@ -557,6 +562,7 @@ def evalAddressed (condition : ValidationCondition model)
     (addressedTemporalFields context)
     (numericResult := fun comparison => comparison.evalAddressedResult context)
     (leafRuntimeFault? := constructedComponentRuntimeFault?)
+    (firstFilledResult := ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context)
 
 /-- Evaluate the same connective tree with one already-prepared current-row RNU result. Duplicate construction remains outside and branch-independent. -/
 def evalAddressedWithRepetitionNotUnique
@@ -569,6 +575,7 @@ def evalAddressedWithRepetitionNotUnique
     (addressedTemporalFields context)
     (numericResult := fun comparison => comparison.evalAddressedResult context)
     (leafRuntimeFault? := constructedComponentRuntimeFault?)
+    (firstFilledResult := ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context)
 
 /-- Keep reached temporal failure distinct from a row verdict until the rule's iteration handler.
 The generated Java `CodeGenRuleDefinition.st` catches outside its row loop. -/
@@ -588,6 +595,10 @@ def evalAddressedWithRepetitionNotUniqueResult
     (leafRuntimeFault? := fun
       | .inl error => constructedComponentRuntimeFault? error
       | .inr fault => some fault)
+    (firstFilledResult := fun comparison =>
+      (ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context comparison).mapError fun
+        | .inl error => .inl (.inl error)
+        | .inr fault => .inr fault)
 
 /-- Apply the ordinary full-validation content gate to the addressed tree without sampling any repeatable source on an ineligible empty row. -/
 def evalAddressedFull (condition : ValidationCondition model)

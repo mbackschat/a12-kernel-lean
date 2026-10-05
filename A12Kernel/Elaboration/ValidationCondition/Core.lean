@@ -11,6 +11,7 @@ import A12Kernel.Elaboration.CustomFieldValidity
 import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.ValueListCondition
 import A12Kernel.Elaboration.ValuesNotUniqueCondition
+import A12Kernel.Elaboration.FirstFilledComparison
 import A12Kernel.Elaboration.TokenComparison
 import A12Kernel.Elaboration.TemporalExpression
 
@@ -266,6 +267,7 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   | stringPattern (leaf : CheckedStringPatternLeaf model)
   | valueList (source : CheckedValueListCondition model)
   | valuesNotUnique (source : CheckedValuesNotUniqueCondition model)
+  | firstFilledComparison (comparison : CheckedFirstFilledComparison model)
   | tokenComparison (comparison : CheckedTokenComparison model)
   | stringExpression (comparison : CheckedStringExpressionComparison model)
   | scalarTemporal (comparison : CheckedScalarTemporalComparison model)
@@ -329,6 +331,7 @@ def ValidationConditionLeaf.requiresClassificationPass : ValidationConditionLeaf
       | .atLeastOneFieldFilled | .fieldsNotCollectivelyFilled => true
   | .valueList source => source.quantifier != .atLeastOne || source.hasHaving
   | .valuesNotUnique source => source.hasHaving
+  | .firstFilledComparison _ => true
   | .tokenComparison _ => true
   | .stringExpression comparison => !comparison.declarations.isEmpty
   | .scalarTemporal comparison => !comparison.fieldIds.isEmpty
@@ -523,7 +526,7 @@ def liftsEmptyGate : ValidationConditionLeaf model → Bool
 def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .constructedDateValidity operation source =>
       operation == .invalid || source.fields.isEmpty
-  | .tokenComparison _ => false
+  | .firstFilledComparison _ | .tokenComparison _ => false
   | .stringExpression _ | .scalarTemporal _ => false
   | .valuesNotUnique _ => false
   | .valueList source => source.quantifier.canFireOnEmpty
@@ -548,6 +551,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .constructedDateValidity _ source, field => source.fields.contains field
+  | .firstFilledComparison comparison, field => comparison.referencesField field
   | .tokenComparison comparison, field => comparison.referencesField field
   | .stringExpression comparison, field => comparison.referencesField field
   | .scalarTemporal comparison, field => comparison.referencesField field
@@ -578,6 +582,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
 /-- Whether a leaf reaches `field` for the rule's error-field gates. Filter-owning sources count
     marked body reads but exclude unmarked candidate reads, following the shared correlation gate. -/
 def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
+  | .firstFilledComparison comparison, field => comparison.referencesField field CorrelatedHaving.referencesMarkedField
   | .tokenComparison comparison, field => comparison.referencesField field CorrelatedHaving.referencesMarkedField
   | .fieldFill _ source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
   | .valuesNotUnique source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
@@ -596,6 +601,7 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
 /-- Whether the checked source retains a `Having` filter, which makes whole-rule partial validation
     skip before evaluation (spec/10 §5). Scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
+  | .firstFilledComparison comparison => comparison.hasHaving
   | .tokenComparison comparison => comparison.hasHaving
   | .fieldFill _ source => source.hasHaving
   | .constructedDateValidity _ _ => false
@@ -615,7 +621,7 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .stringPattern leaf => !(model.fieldRepeatableScope leaf.condition.field.id).isEmpty
   | .constructedDateValidity _ _ | .stringExpression _ => true
   | .scalarTemporal comparison => comparison.declarations.any fun field => !field.repeatableScope.isEmpty
-  | .tokenComparison _ | .valueList _ | .valuesNotUnique _ => true
+  | .firstFilledComparison _ | .tokenComparison _ | .valueList _ | .valuesNotUnique _ => true
   | .orderedNumeric _ comparison =>
       comparison.requiresAddressedValidation
   | .groupPresence _ reference =>
@@ -636,6 +642,8 @@ def wellFormedBool (rowGroup : GroupPath) :
     ValidationConditionLeaf model → Bool
   | .constructedDateValidity _ source => source.fields.all fun field =>
       (model.fieldRepeatableScope field).isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
+  | .firstFilledComparison comparison => comparison.bindingScopes.flatten.all
+      (model.repeatableScopeForGroupPath rowGroup).contains
   | .tokenComparison comparison => comparison.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains
   | .stringExpression comparison => comparison.declarations.all fun field =>

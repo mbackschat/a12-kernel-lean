@@ -94,6 +94,15 @@ def finish (state : FirstFilledScanState) : FirstFilledNumberResult :=
 
 end FirstFilledScanState
 
+/-- Boolean, temporal and DateRange selection retain typed payloads and missing-prefix provenance
+without introducing those kinds into unrelated value-list operators (spec/07, FirstFilledValue). -/
+def scanFirstFilledObservations : List (CellObservation α) → FirstFilledScanState →
+    FirstFilledScanState ⊕ SimpleComparisonOperand α
+  | [], state => .inl state
+  | .empty :: rest, state => scanFirstFilledObservations rest { state with emptyBefore := true }
+  | .value value :: _, state => .inr (.value value (!(state.emptyBefore || state.encounteredHaving)))
+  | .unknown cause :: _, _ | .poison cause :: _, _ => .inr (.unknown cause)
+
 /-- Compatibility name for the established Number checked adapters. The scan state itself is kind-neutral. -/
 abbrev FirstFilledNumberScanState := FirstFilledScanState
 

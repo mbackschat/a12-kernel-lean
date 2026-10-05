@@ -147,10 +147,16 @@ def fromStringPattern (model : FlatModel) (rowGroup : GroupPath)
       checkCore model writtenGroup (.leaf (.stringPattern { compilePattern, condition }))
         (by rw [hModel]; rfl) rowGroup
 
-/-- Join the source-owning token comparison to ordinary condition composition. -/
-def fromTokenComparison (rowGroup : GroupPath) (comparison : CheckedTokenComparison model) :
+def fromFirstFilledComparison (rowGroup : GroupPath) (comparison : CheckedFirstFilledComparison model)
+    (declaringGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
-  checkCore model rowGroup (.leaf (.tokenComparison comparison)) comparison.modelWellFormed
+  checkCore model rowGroup (.leaf (.firstFilledComparison comparison)) comparison.modelWellFormed declaringGroup
+
+/-- Join the source-owning token comparison to ordinary condition composition. -/
+def fromTokenComparison (rowGroup : GroupPath) (comparison : CheckedTokenComparison model)
+    (declaringGroup : GroupPath := rowGroup) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  checkCore model rowGroup (.leaf (.tokenComparison comparison)) comparison.modelWellFormed declaringGroup
 
 /-- Join String expressions to the shared condition tree; whole-rule execution owns
 its full-validation iteration domain independently of the expression's operator. -/

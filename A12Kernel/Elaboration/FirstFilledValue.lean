@@ -223,29 +223,30 @@ def evaluateComputationFirstFilled
   | .inr result => pure result.asNumber
 
 private def scanDeclaredValidationFirstFilled
-    (document : CheckedDocument model) (scope : ValidationRelevanceScope) (fullDomain : Bool) :
+    {model : FlatModel} (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError CheckedCell) :
     List (FlatFieldDecl × Env) → FirstFilledScanState →
       Except CheckedAddressingError
         (FirstFilledScanState ⊕ PartialValidationFirstFilledNumberResult)
   | [], state => pure (.inl state)
   | (declaration, environment) :: rest, state => do
       if !scope.coversCell model declaration.path environment then return .inr .nonRelevant
-      let addressed ← if fullDomain then document.fullValidationAddressedCell environment declaration.id
-        else document.addressedCell environment declaration.id
-      match state.step (observeCell .validation addressed.cell).asNumberValueListCell with
-      | .continue next => scanDeclaredValidationFirstFilled document scope fullDomain rest next
+      let cell ← read environment declaration.id
+      match state.step (observeCell .validation cell).asNumberValueListCell with
+      | .continue next => scanDeclaredValidationFirstFilled (model := model) scope read rest next
       | .done result => pure (.inr (.evaluated result.asNumber))
 
 private def scanCheckedDocumentValidationOperand
     (document : CheckedDocument model) (outer : Env)
-    (scope : ValidationRelevanceScope) (fullDomain : Bool) (state : FirstFilledScanState) :
+    (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError CheckedCell) (state : FirstFilledScanState) :
     CheckedFirstFilledNumberOperand model →
       Except CheckedAddressingError
         (FirstFilledScanState ⊕ PartialValidationFirstFilledNumberResult)
   | .field source =>
       if scope.coversCell model source.declaration.path outer then do
         match state.step
-            (← document.numberValueListCellAt .validation outer source.field fullDomain) with
+            (observeCell .validation (← read outer source.field.id)).asNumberValueListCell with
         | .continue next => pure (.inl next)
         | .done result => pure (.inr (.evaluated result.asNumber))
       else
@@ -256,8 +257,7 @@ private def scanCheckedDocumentValidationOperand
           |>.mapError .addressing
       source.scanPartialValidationFirstFilledStateResolvingWith scope
         (fun environment =>
-          document.numberValueListCellAt .validation environment
-            source.field fullDomain)
+          (fun cell => (observeCell .validation cell).asNumberValueListCell) <$> read environment source.field.id)
         resolved.environments
         (state.enterSelection resolved.environments.isEmpty
           resolved.domain.hasOpenTail false)
@@ -269,8 +269,7 @@ private def scanCheckedDocumentValidationOperand
         document.resolvingCorrelationContext outer resolved.environments
       source.source.scanPartialValidationFirstFilledStateResolvingWith scope
         (fun environment =>
-          document.numberValueListCellAt .validation environment
-            source.source.field fullDomain)
+          (fun cell => (observeCell .validation cell).asNumberValueListCell) <$> read environment source.source.field.id)
         selected (state.enterSelection selected.isEmpty
           resolved.domain.hasOpenTail true)
   | .group slot =>
@@ -278,30 +277,36 @@ private def scanCheckedDocumentValidationOperand
         let (reads, hasTail) ← model.groupOperandReads document.source.toDocument outer
           slot.source.boundLevelCount (model.groupSubtreeFields slot.groupPath) (·.repeatableScope)
           |>.mapError .addressing
-        scanDeclaredValidationFirstFilled document scope fullDomain reads
+        scanDeclaredValidationFirstFilled (model := model) scope read reads
           (state.enterSelection reads.isEmpty hasTail false)
 
 private def scanCheckedDocumentValidationOperands
     (document : CheckedDocument model) (outer : Env)
-    (scope : ValidationRelevanceScope) (fullDomain : Bool) :
+    (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError CheckedCell) :
     List (CheckedFirstFilledNumberOperand model) → FirstFilledScanState →
       Except CheckedAddressingError PartialValidationFirstFilledNumberResult
   | [], state => pure (.evaluated state.finish)
   | operand :: remaining, state => do
-      match ← scanCheckedDocumentValidationOperand document outer scope fullDomain
+      match ← scanCheckedDocumentValidationOperand document outer scope read
           state operand with
       | .inl next =>
-          scanCheckedDocumentValidationOperands document outer scope fullDomain
+          scanCheckedDocumentValidationOperands document outer scope read
             remaining next
       | .inr result => pure result
 
-/-- Evaluate validation-phase `FirstFilledValue` against one immutable model-certified checked document. Target reads remain prefix-lazy, while validation filters retain their all-candidate structural footprint. Ordinary full rules select `fullDomain` for their implicit coordinates; partial callers retain the physical read view. -/
+/-- Evaluate validation-phase `FirstFilledValue` against one immutable model-certified checked document. Target reads remain prefix-lazy, while validation filters retain their all-candidate structural footprint. Ordinary full rules select `fullDomain` for their implicit coordinates; partial callers supply their call-local availability-aware read. Without an override the existing physical read view is retained. -/
 def evaluateCheckedDocumentValidation
     (checked : CheckedNumberEntitySource model)
     (document : CheckedDocument model) (outer : Env)
-    (scope : ValidationRelevanceScope) (fullDomain : Bool := false) :
+    (scope : ValidationRelevanceScope) (fullDomain : Bool := false)
+    (read? : Option (Env → FieldId → Except CheckedAddressingError CheckedCell) := none) :
     Except CheckedAddressingError PartialValidationFirstFilledNumberResult :=
-  scanCheckedDocumentValidationOperands document outer scope fullDomain
+  let read := read?.getD fun row field => do
+    let addressed ← if fullDomain then document.fullValidationAddressedCell row field
+      else document.addressedCell row field
+    pure addressed.cell
+  scanCheckedDocumentValidationOperands document outer scope read
     checked.operands {}
 
 /-- Scan one unfiltered checked Number star over its in-capacity extent through a caller-supplied exact-address view while retaining immutable topology and the shared cross-operand prefix state. -/

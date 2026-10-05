@@ -120,14 +120,14 @@ theorem checkedFirstFilledValidation_none_iff_unsupported
   cases supported : checked.supportsCheckedFirstFilledValidation with
   | false =>
       rw [CheckedTokenEntitySource.evaluateCheckedFirstFilledValidation?]
-      simp only [supported, Bool.false_eq_true, ↓reduceIte]
+      simp only [supported, Bool.false_eq_true]
       change (Except.ok none :
         Except CheckedAddressingError (Option FirstFilledTokenResult)) =
           .ok none ↔ True
       simp
   | true =>
       rw [CheckedTokenEntitySource.evaluateCheckedFirstFilledValidation?]
-      simp only [supported, ↓reduceIte, Bool.true_eq_false, iff_false]
+      simp only [supported, Bool.true_eq_false, iff_false]
       exact mappedSome_ne_none _
 
 end A12Kernel

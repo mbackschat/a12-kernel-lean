@@ -378,6 +378,12 @@ private def evalOrdinaryPartialAdmittedAt
       (leafRuntimeFault? := fun
         | .inl (.conditionAddressing (.constructedDate (.stringNotConvertible _ _))) => some .componentNumberInvalid
         | _ => none)
+      (firstFilledResult := fun comparison =>
+        match comparison.evaluatePartial? checked environment context.scalar.fields scope context.readPartialCell with
+        | none => .error (.inl (.inl .unsupportedCondition))
+        | some result => result.mapError fun
+            | .inl error => .inl (.inl (.conditionAddressing error))
+            | .inr fault => .inr fault)
   match result with
   | .ok verdict => pure (.next environment (rule.core.emitAt errorPath verdict))
   | .error (.inl error) => throw error

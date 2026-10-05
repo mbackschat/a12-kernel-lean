@@ -599,7 +599,17 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
               | none => pure (.error .groupState)
               | some available => pure (.ok (.value available.1 available.2))
           | none | some .skippedHaving => pure (.error .groupState)
-  | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
+  | .firstFilled source =>
+      match context.input with
+      | .legacy _ _ => throw (.checkedDocumentRequired [])
+      | .checked document | .partialView document _ =>
+          match source.evaluateCheckedDocumentValidation document context.outer scope
+              (read? := some context.readCell) with
+          | .error (.partialUnavailable _ _) => pure (.error .silentlyUnavailable)
+          | .error error => throw error
+          | .ok .nonRelevant => pure (.error .nonRelevant)
+          | .ok (.evaluated result) => pure result.asValidationOperand.toValidationArithmetic
+  | .valueCount _ _ | .tokenValueCount _
   | .booleanValueCount _ | .sumOfProducts _
   | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ =>
       pure (.error .groupState)

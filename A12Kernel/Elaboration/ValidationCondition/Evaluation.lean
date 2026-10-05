@@ -57,10 +57,12 @@ def evalSelected (context : ValidationEvaluationContext)
   | .stringPattern leaf =>
       if isRelevant leaf.condition.field.id then leaf.condition.evalSelected context.fields
       else .unknown
-  | .stringExpression _ | .tokenComparison _ | .constructedDateValidity _ _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => .unknown
+  | .firstFilledComparison _ | .stringExpression _ | .tokenComparison _ | .constructedDateValidity _ _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => .unknown
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
+  | .firstFilledComparison comparison => !comparison.hasHaving
+  | .tokenComparison comparison => !comparison.hasHaving
   | .flat _ | .groupPresence _ _ | .repeatableFieldPresence _ _ => true
   | .orderedNumeric _ comparison =>
       comparison.supportsAddressedPartial
@@ -161,6 +163,17 @@ def evalAddressedPartial?
       Option (Except CheckedAddressingError Verdict)
   | .flat condition =>
       some (evalFlatLeafAddressedPartial condition context isRelevant)
+  | .firstFilledComparison comparison =>
+      match context.input with
+      | .checked document | .partialView document _ =>
+          (comparison.evaluatePartial? document context.outer context.scalar.fields scope context.readPartialCell).map fun result =>
+            result.mapError fun | .inl error => error | .inr _ => .temporalUnavailable
+      | .legacy _ _ => none
+  | .tokenComparison comparison =>
+      match context.input with
+      | .checked document | .partialView document _ =>
+          comparison.evaluatePartial? document context.outer scope context.readCell
+      | .legacy _ _ => none
   | .stringExpression comparison =>
       some (evalStringExpressionAddressed context isRelevant comparison)
   | .constructedDateValidity operation source =>
@@ -241,6 +254,13 @@ def evalAddressedPartial?
         | none => pure .unknown)
   | _ => none
 
+def evalFirstFilledComparisonAddressedResult (context : AddressedValidationEvaluationContext model)
+    (comparison : CheckedFirstFilledComparison model) :
+    Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault) Verdict :=
+  match context.input with
+  | .checked document => comparison.evaluateFull document context.outer context.scalar.fields
+  | .legacy _ _ | .partialView _ _ => .error (.inl (.checkedDocumentRequired []))
+
 /-- Evaluate one addressed leaf through the same relevance rules. Ordered numeric and starred group-list sources preserve structural addressing failures; direct scalar/group leaves remain the exact pure evaluator lifted into that channel. -/
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
     ValidationConditionLeaf model → Except CheckedAddressingError Verdict
@@ -252,6 +272,10 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
         read := fun field => if field == source then cell else context.scalar.fields.read field })
   | .stringExpression comparison =>
       evalStringExpressionAddressed context context.directRelevant comparison
+  | .firstFilledComparison comparison =>
+      (evalFirstFilledComparisonAddressedResult context comparison).mapError fun
+        | .inl error => error
+        | .inr _ => .temporalUnavailable
   | .tokenComparison comparison =>
       match context.input with
       | .checked document => comparison.evaluateFull document context.outer
