@@ -207,6 +207,85 @@ example : [
       "AtLeastOneFieldValueIncludedInValueList(Rows/Tag, Rows/N In $Expected)" =
       some (some .varyingTypesNotAllowed) := by native_decide
 
+private def literalListFilters : List String := [
+  "AtLeastOneFieldValueIncludedInValueList", "NoFieldValueIncludedInValueList", "NotAllFieldValuesIncludedInValueList"]
+
+example : literalListFilters.map (fun operator => run (operator ++ "(Rows/Tag In \"keep\")")) =
+    [some (.fired .omission, ["value 9"]), some (.notFired, ["value 5"]), some (.notFired, ["value 5"])] ∧
+    literalListFilters.map (fun operator => run (operator ++ "(Rows/Tag In \"keep\")")
+      false .enumeration "keep" "keep" "drop" (some domain)) =
+    [some (.fired .omission, ["value 9"]), some (.notFired, ["value 5"]), some (.notFired, ["value 5"])] := by native_decide
+
+example : literalListFilters.map (fun operator => (run (operator ++ "(Rows/Tag -> Swap In \"keep\")")
+      false .enumeration "keep" "keep" "drop" (some domain)).map (·.2)) =
+    [some ["value 5"], some ["value 9"], some ["value 9"]] ∧
+    literalListFilters.map (fun operator => (run (operator ++ "(Rows/Tag, $Expected In \"keep\")") true).map (·.2)) =
+    [some ["value drop", "value 9"], some ["value drop", "value 5"], some ["value drop", "value 14"]] := by native_decide
+
+example : literalListFilters.map (fun operator => (run (operator ++ "(Rows/Tag In \"\", \"keep\")")
+      false .string "keep" "" "keep").map (·.2)) =
+    [some ["value 5"], some ["value 9"], some ["value 0"]] ∧
+    run "AtLeastOneFieldValueIncludedInValueList(Rows/Tag, Rows/Tag In \"keep\")" = none ∧
+    run "AtLeastOneFieldValueIncludedInValueList([Rows/Tag] In \"keep\")" = none := by native_decide
+
+private def disjointLiteralDomains : FlatModel := { categoryModel with fields := categoryModel.fields.map fun field =>
+  if field.id == 2 then { field with enumeration := some { storedTokens := ["other", "extra"] } } else field }
+
+example : literalListFilters.map (fun operator =>
+    (runModel disjointLiteralDomains (operator ++ "(Rows/Tag, $Expected In \"keep\", \"other\")")
+      false "other" "keep" "drop").map (·.2)) =
+    [some ["value 14"], some ["value 0"], some ["value 5"]] ∧
+    literalListFilters.map (fun operator => (run
+      (operator ++ "(Rows/Tag, Rows/Tag -> Swap In \"keep\", \"drop\")")
+      false .enumeration "keep" "keep" "drop" (some domain)).map (·.2)) =
+    [some ["value 14"], some ["value 0"], some ["value 0"]] := by native_decide
+
+example : membershipDiagnostic disjointLiteralDomains
+    "AtLeastOneFieldValueIncludedInValueList(Rows/Tag, $Expected In \"absent\")" =
+      some (some .invalidStringConstantForEnumComparison) ∧
+    membershipDiagnostic categoryModel "NoFieldValueIncludedInValueList(Rows/Tag -> Missing, Rows/N In \"keep\")" =
+      some (some .categoryUnknown) ∧
+    membershipDiagnostic model "NotAllFieldValuesIncludedInValueList(Rows/N In \"1\")" =
+      some (some .invalidTypesForComparison) ∧
+    membershipDiagnostic model "AtLeastOneFieldValueIncludedInValueList(Rows/Tag, Rows/N In \"keep\")" =
+      some (some .varyingTypesNotAllowed) := by native_decide
+
+private def categoryLiteralDomains : FlatModel := { categoryModel with fields := categoryModel.fields.map fun field =>
+  if field.id == 2 || field.id == 3 then { field with enumeration := some {
+    storedTokens := ["keep", "drop"], categories := [{ name := "Label", tokens := ["yes", "no"] }] } }
+  else field }
+
+private def categoryLiteralCertificate (value : String) : Option Bool := do
+  let declaration ← (categoryLiteralDomains.lookupUniqueId 3).toOption
+  let (operand, _) ← declaration.toEnumerationTextFieldComparison? (.category "Label")
+  pure ((HavingFieldValueList.tokenLiterals [{ origin := .inner, operand }] [value]).wellFormedForEnvironments
+    (.quantified .atLeastOne) categoryLiteralDomains [10] [])
+
+example : literalListFilters.map (fun operator =>
+    (runModel categoryLiteralDomains (operator ++ "(Rows/Tag -> Label In \"yes\")")
+      false "keep" "keep" "drop").map (·.2)) =
+    [some ["value 9"], some ["value 5"], some ["value 5"]] ∧
+    literalListFilters.map (fun operator => membershipDiagnostic categoryLiteralDomains
+      (operator ++ "(Rows/Tag -> Label In \"keep\")")) =
+      List.replicate 3 (some (some .invalidStringConstantForEnumComparison)) ∧
+    literalListFilters.map (fun operator =>
+      (runModel categoryLiteralDomains (operator ++ "(Rows/Tag, Rows/Tag -> Label In \"keep\", \"yes\")")
+        false "keep" "keep" "drop").map (·.2)) =
+      [some ["value 9"], some ["value 5"], some ["value 5"]] ∧
+    categoryLiteralCertificate "yes" = some true ∧ categoryLiteralCertificate "keep" = some false := by native_decide
+
+private def offPathLiteralModel : FlatModel := { model with
+  fields := model.fields ++ [{
+    id := 6, groupPath := ["Form", "Other"], name := "Text", repeatableScope := [20], policy := { kind := .string } }]
+  repeatableGroups := model.repeatableGroups ++ [{ level := 20, path := ["Form", "Other"], repeatability := some 3 }] }
+
+example : membershipDiagnostic offPathLiteralModel
+    "AtLeastOneFieldValueIncludedInValueList(Rows/Tag, Other/Text In \"keep\")" =
+      some (some .invalidIterationInFilterCondition) ∧
+    membershipDiagnostic offPathLiteralModel
+    "AtLeastOneFieldValueIncludedInValueList(Rows/Tag, Other/Text In \"keep\") And [Rows/N] == \"bad\"" =
+      some (some .invalidCompareToEnumOrString) := by native_decide
+
 private def reversedMembershipResults : List (Option (Verdict × List String)) := [
   some (.notFired, ["value 5"]), some (.fired .omission, ["value 9"]),
   some (.notFired, ["value 5"]), some (.fired .omission, ["value 9"]),
@@ -286,6 +365,10 @@ example : referencesFor
 example : referencesFor "FieldValueIncludedInValueList(/Form/Rows/Tag, [$/Form/Rows/Tag])" =
       some (true, true) ∧
     referencesFor "NotAllFieldValuesIncludedInValueList(/Form/Rows/Tag In $/Form/Rows/Tag)" =
+      some (true, true) := by native_decide
+
+example : referencesFor
+    "NotAllFieldValuesIncludedInValueList(/Form/Rows/Tag, $/Form/Rows/Tag In \"keep\")" =
       some (true, true) := by native_decide
 
 private def temporalRun (filter : String) (leftKind rightKind : TemporalKind)

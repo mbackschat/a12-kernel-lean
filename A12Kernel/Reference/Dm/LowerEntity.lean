@@ -91,8 +91,11 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
       let plain (arguments : List Argument) := arguments.mapM fun
         | .mk expression none none => pure expression
         | _ => refuse "Having" "direct membership fields"
-      pure (.fieldMembership (.quantified operator)
-        (← havingMembers (← plain arguments)) (← havingMembers (← plain members)))
+      let subjects ← havingMembers (← plain arguments)
+      let values ← plain members
+      if let some literals := values.mapM (fun | .string value => some value | _ => none) then
+        return .literalList operator subjects literals
+      pure (.fieldMembership (.quantified operator) subjects (← havingMembers values))
   | .call id arguments none none => do
       if id == "FieldValueIncludedInValueList" || id == "FieldValueNotIncludedInValueList" then
         let operator := if id == "FieldValueIncludedInValueList" then ValueListMembershipOp.included else .notIncluded

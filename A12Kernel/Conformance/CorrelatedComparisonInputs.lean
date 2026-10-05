@@ -220,4 +220,37 @@ example : [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
       (fun _ field => if field == 2 then Except.error "late subject" else .ok (text "match"))) =
     [.ok .holds, .ok .notTrue, .error "late subject"] := by native_decide
 
+private def tokenLiteralList : HavingFieldValueList := .tokenLiterals
+  [{ origin := .inner, operand := .string { id := 1 } }, { origin := .outer, operand := .string { id := 1 } }]
+  ["candidate"]
+
+example : [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
+    (CorrelatedHavingLeaf.fieldMembership (.quantified operator) tokenLiteralList).evalComputationIn context frame) =
+      [.holds, .notTrue, .holds] ∧
+    tokenLiteralList.references = [{ origin := .inner, field := 1 }, { origin := .outer, field := 1 }] ∧
+    CorrelatedHaving.markedFieldIds (.leaf (.fieldMembership (.quantified .notAll) tokenLiteralList)) = [1] := by native_decide
+
+example : [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
+    tokenLiteralList.evalComputationRead (.quantified operator)
+      (fun origin _ => if origin == .inner then .ok (text "candidate") else Except.error "late subject")) =
+    [.ok .holds, .ok .notTrue, .error "late subject"] ∧
+    [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
+      tokenLiteralList.evalValidationRead (.quantified operator)
+        (fun origin _ => if origin == .inner then .ok (text "candidate") else Except.error "late subject")) =
+    [.error "late subject", .error "late subject", .error "late subject"] := by native_decide
+
+example : tokenLiteralList.wellFormedForEnvironments (.quantified .no) model [10] [10] = true ∧
+    tokenLiteralList.wellFormedForEnvironments (.quantified .no) model [10] [] = false ∧
+    tokenLiteralList.wellFormedForEnvironments (.scalar .included) model [10] [10] = false ∧
+    (HavingFieldValueList.tokenLiterals [] ["candidate"]).wellFormedForEnvironments (.quantified .no) model [10] [10] = false ∧
+    (HavingFieldValueList.tokenLiterals [{ origin := .inner, operand := .string { id := 1 } }] []).wellFormedForEnvironments
+      (.quantified .no) model [10] [10] = false := by native_decide
+
+example : [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
+    tokenLiteralList.evalComputationRead (.quantified operator) (fun _ _ => Except.ok (ε := String) emptyRequired)) =
+    [.ok .notTrue, .ok .holds, .ok .notTrue] ∧
+    [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
+      tokenLiteralList.evalComputationRead (.quantified operator) (fun _ _ => Except.ok (ε := String) invalid)) =
+    [.ok (.poison .malformed), .ok (.poison .malformed), .ok (.poison .malformed)] := by native_decide
+
 end A12Kernel.Conformance.CorrelatedComparisonInputs

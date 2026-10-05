@@ -286,7 +286,7 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Direct field-fill lists inside Having](implementation/repetition-and-paths.md#cap-having-direct-field-fill)
 
 <a id="cap-having-literal-membership"></a>
-- [Scalar literal membership inside Having](implementation/repetition-and-paths.md#cap-having-literal-membership)
+- [Literal membership inside Having](implementation/repetition-and-paths.md#cap-having-literal-membership)
 
 <a id="cap-having-field-membership"></a>
 - [Field-valued membership inside Having](implementation/repetition-and-paths.md#cap-having-field-membership)
