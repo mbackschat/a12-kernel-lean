@@ -712,4 +712,16 @@ example : deepPartialCount .full = some (some (.evaluated (.value 5))) ∧
       { path := ["Probe", "Flat", "Rows"], indices := [.all, .all, .concrete 1] }]) =
       some (some .nonRelevant) := by native_decide
 
+private def nestedDirectCount (outer inner : Nat) : Option (Option NumericOperand) := do
+  let declaration ← (deepModel.lookupUniqueId 32).toOption
+  let source : CheckedFieldFillList deepModel := { operands := [.field declaration] }
+  let document ← (checkDocument deepPrepared "en_US" {
+    instantiatedRows := ((List.range outer).map fun i => { group := 30, path := [i + 1] }) ++
+      ((List.range inner).map fun i => { group := 31, path := [outer, i + 1] })
+    cells := [cell 32 [outer, inner] "filled"] }).toOption
+  (source.evaluateCountOperand? document [(30, outer), (31, inner)]).toOption
+
+example : nestedDirectCount 1 1 = some (some (.value 1 .fixed)) ∧
+    nestedDirectCount 3 1 = some none ∧ nestedDirectCount 1 3 = some none := by native_decide
+
 end A12Kernel

@@ -111,8 +111,10 @@ def observations (document : CheckedDocument model) (outer : Env) :
     CheckedFieldFillOperand model → Except CheckedAddressingError (List CellObservation)
   | .indexed source => List.singleton <$> indexedObservation document outer source .validation
   | .field declaration => do
-      let core ← document.resolveCheckedDirectEntityOperandCoreAt outer declaration.id
-      pure (core.inCapacityAddressedCells.map fun addressed => observeCell .validation addressed.cell)
+      -- EntityUtil.resolveIterations retains the bound singleton; RuntimeController's
+      -- isWertAngegeben observes its formal state rather than treating it as a reopened extent.
+      let addressed ← document.fullValidationAddressedCell outer declaration.id
+      pure [observeCell .validation addressed.cell]
   | .star source => do
       let core ← source.source.resolveCheckedValidationEntityOperandCore document outer
         (source.filter.map (·.condition))

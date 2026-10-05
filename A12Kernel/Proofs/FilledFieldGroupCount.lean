@@ -8,6 +8,15 @@ the first unavailable result without consulting later addresses.
 
 namespace A12Kernel
 
+theorem boundFieldFill_preserves_unknown
+    (document : CheckedDocument model) (outer : Env) (declaration : FlatFieldDecl)
+    (addressed : CheckedAddressedCell) (cause : FormalCause)
+    (resolved : document.fullValidationAddressedCell outer declaration.id = .ok addressed)
+    (unknown : observeCell .validation addressed.cell = .unknown cause) :
+    (CheckedFieldFillOperand.field declaration).observations document outer =
+      .ok [.unknown cause] := by
+  simp [CheckedFieldFillOperand.observations, resolved, unknown, bind, Except.bind, pure, Except.pure]
+
 theorem countPartialFieldReads_silent_prefix
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
     (environment : Env) (field : FieldId) (rest : List (Env × FieldId))

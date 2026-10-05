@@ -293,4 +293,16 @@ example : ((elaborateFieldFillList indexedListModel ["Probe"] {
     first := indexedValue 1 "1", rest := [direct "A"] }).toOption.map (·.supportsPartialCount)) =
     some false := by native_decide
 
+private def boundDirectResults (row : Nat) :
+    Option (Option NumericOperand × Option ValidationFillOutcome) := do
+  let declaration ← (listModel.lookupUniqueId 4).toOption
+  let source : CheckedFieldFillList listModel := { operands := [.field declaration] }
+  let document ← document? ((List.range row).map fun i => { group := 4, path := [i + 1] })
+    [cell 4 [row] 1]
+  pure (← (source.evaluateCountOperand? document [(4, row)]).toOption,
+    ← (source.evaluateFill? .noFieldFilled document [(4, row)]).toOption)
+
+example : boundDirectResults 1 = some (some (.value 1 .fixed), some .falseOrUnknown) ∧
+    boundDirectResults 3 = some (none, some .falseOrUnknown) := by native_decide
+
 end A12Kernel
