@@ -587,8 +587,20 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
               match count.availableWithFillability? extent with
               | none => pure (.error .groupState)
               | some available => pure (.ok (.value available.1 available.2))
+  | .filledFieldCount source =>
+      match context.input with
+      | .legacy _ _ => throw (.checkedDocumentRequired [])
+      | .checked document | .partialView document _ =>
+          match ← source.evaluatePartialCount document context.outer scope context.readPartialCell with
+          | some .nonRelevant => pure (.error .nonRelevant)
+          | some .silentlyUnavailable => pure (.error .silentlyUnavailable)
+          | some (.evaluated count) =>
+              match source.countCapacity?.bind count.availableWithFillability? with
+              | none => pure (.error .groupState)
+              | some available => pure (.ok (.value available.1 available.2))
+          | none | some .skippedHaving => pure (.error .groupState)
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .booleanValueCount _ | .sumOfProducts _ | .filledFieldCount _
+  | .booleanValueCount _ | .sumOfProducts _
   | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ =>
       pure (.error .groupState)
 

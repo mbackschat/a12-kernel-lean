@@ -42,7 +42,7 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 
 - `state`: open
 - `missing`: execute Boolean group value-count computation over wider fixed groups and groups with declarations below a deeper repeatable level on the dedicated fixed-group carrier, whose measured-shape gate refuses them; the Number computation surface computes a fixed group over one repeatable descendant ([checkpoint](../sources/computation-scheduling-probes.md#src-fixed-group-descendants)).
-- `missing`: execute non-value-count token group operands through computation; a fixed Number group, `NumberOfFilledFields` over a group, Boolean groups and non-value-list token group operands through partial validation; and all three families through legacy raw-`Document` routes.
+- `missing`: execute non-value-count token group operands through computation; a fixed Number group, Boolean groups and non-value-list token group operands through partial validation; and all three families through legacy raw-`Document` routes.
 - `missing`: make Number directional missingness per cell before admitting a group whose declarations disagree on signedness.
 - `missing`: decide Enumeration or category `NumberOfValueInFields` literal admission over a starred group independently of the current all-declarations choice.
 - `prerequisite`: legacy raw-`Document` readers must expose instantiated-row topology before enumerating the operand-bounded group extent.

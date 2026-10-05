@@ -174,6 +174,51 @@ def validationRange? (operand : CheckedFieldFillOperand model) (declared : Bool)
 
 end CheckedFieldFillOperand
 
+/-- Count call-local observations in order. Kernel 30.8.1's
+`RuntimeController.anzahlAngegebenerEntities` stops at the first unavailable cell;
+in particular a later addressing failure must not replace that result. -/
+def countPartialFieldReads
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    List (Env × FieldId) → Except CheckedAddressingError PartialValidationFilledFieldCountResult
+  | [] => pure (.evaluated (.value 0))
+  | (environment, field) :: rest => do
+      match ← read environment field with
+      | none => pure .silentlyUnavailable
+      | some cell =>
+          match numberOfFilledFields [observeCell .validation cell] with
+          | .unknown => pure (.evaluated .unknown)
+          | .value count =>
+              match ← countPartialFieldReads read rest with
+              | .evaluated (.value remaining) => pure (.evaluated (.value (count + remaining)))
+              | result => pure result
+
+private def CheckedFieldFillOperand.partialCount
+    (operand : CheckedFieldFillOperand model) (document : CheckedDocument model)
+    (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    Except CheckedAddressingError (Option PartialValidationFilledFieldCountResult) := do
+  let rows ← match operand with
+    | .indexed _ => return none
+    | .field declaration =>
+        if !scope.coversAggregateExtent model declaration.path declaration.repeatableScope [] outer then
+          return some .nonRelevant
+        pure [(outer, declaration.id)]
+    | .star source => do
+        if source.hasHaving then return some .skippedHaving
+        if !source.source.allRowsRelevant scope outer then return some .nonRelevant
+        let resolved ← (source.source.path.resolveInCapacity document.source.toDocument outer)
+          |>.mapError .addressing
+        pure (resolved.environments.map (·, source.source.declaration.id))
+    | .group source => do
+        if !source.source.everyDeclarationCovers source.declarations
+            (fun path bound reopened => scope.coversAggregateExtent model path bound reopened outer) then
+          return some .nonRelevant
+        let rows ← model.groupOperandRows document.source.toDocument outer
+          source.source.boundLevelCount source.declarations (·.repeatableScope)
+          |>.mapError .addressing
+        pure (rows.map fun (declaration, environment) => (environment, declaration.id))
+  some <$> countPartialFieldReads read rows
+
 namespace CheckedFieldFillList
 
 def declarations (list : CheckedFieldFillList model) : List FlatFieldDecl :=
@@ -192,6 +237,33 @@ def hasIndexed (list : CheckedFieldFillList model) : Bool :=
 
 def hasHaving (list : CheckedFieldFillList model) : Bool :=
   list.operands.any (·.hasHaving)
+
+/-- Structural support is separate from an admitted count's relevance or cell availability. -/
+def supportsPartialCount (list : CheckedFieldFillList model) : Bool :=
+  !list.hasIndexed && !list.hasHaving
+
+/-- Partial counts preserve each operand's complete declared extent and read the call-local
+preliminary view. Indexed sources remain structurally unsupported (`none`); filtered rules
+retain their rule-owned skip. A reached unavailable operand stops the authored suffix. -/
+def evaluatePartialCount (list : CheckedFieldFillList model) (document : CheckedDocument model)
+    (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    Except CheckedAddressingError (Option PartialValidationFilledFieldCountResult) :=
+  if list.hasIndexed then pure none
+  else if list.hasHaving then pure (some .skippedHaving)
+  else go list.operands
+where
+  go : List (CheckedFieldFillOperand model) →
+      Except CheckedAddressingError (Option PartialValidationFilledFieldCountResult)
+    | [] => pure (some (.evaluated (.value 0)))
+    | operand :: rest => do
+        match ← operand.partialCount document outer scope read with
+        | some (.evaluated (.value count)) =>
+            match ← go rest with
+            | some (.evaluated (.value remaining)) =>
+                pure (some (.evaluated (.value (count + remaining))))
+            | result => pure result
+        | result => pure result
 
 def referencesField (list : CheckedFieldFillList model) (field : FieldId)
     (havingReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) : Bool :=

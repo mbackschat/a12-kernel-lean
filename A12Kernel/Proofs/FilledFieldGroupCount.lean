@@ -1,13 +1,29 @@
 import A12Kernel.Elaboration.FieldFillList
 
-/-! # Group-scope `NumberOfFilledFields` extent laws
+/-! # `NumberOfFilledFields` extent and partial-read laws
 
-These laws are about the *extent* a group operand's count moves against, not about the count itself.
-They exist because the extent has two plausible readings that agree on most models, and the wrong one
-shipped here until a kernel row separated them.
+The extent laws separate declared capacity from instantiated cells. Partial-read prefix laws retain
+the first unavailable result without consulting later addresses.
 -/
 
 namespace A12Kernel
+
+theorem countPartialFieldReads_silent_prefix
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
+    (environment : Env) (field : FieldId) (rest : List (Env × FieldId))
+    (unavailable : read environment field = .ok none) :
+    countPartialFieldReads read ((environment, field) :: rest) = .ok .silentlyUnavailable := by
+  simp [countPartialFieldReads, unavailable, bind, Except.bind, pure, Except.pure]
+
+theorem countPartialFieldReads_unknown_prefix
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
+    (environment : Env) (field : FieldId) (rest : List (Env × FieldId))
+    (cell : CheckedCell) (cause : FormalCause)
+    (available : read environment field = .ok (some cell))
+    (unknown : observeCell .validation cell = .unknown cause) :
+    countPartialFieldReads read ((environment, field) :: rest) = .ok (.evaluated .unknown) := by
+  simp [countPartialFieldReads, available, unknown, numberOfFilledFields,
+    bind, Except.bind, pure, Except.pure]
 
 private theorem slotCapacityFold_flat (model : FlatModel) (enclosing : Nat) :
     ∀ (declarations : List FlatFieldDecl) (accumulated : Nat),

@@ -271,8 +271,9 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
     OrderedNumericValidationAtom model → Bool
   | .ordinary (.filledGroupCount _) => false
   | .ordinary _ | .aggregate _ _ | .filledGroupCountMixed _ => true
+  | .filledFieldCount source => source.supportsPartialCount
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _
-  | .booleanValueCount _ | .sumOfProducts _ | .filledFieldCount _
+  | .booleanValueCount _ | .sumOfProducts _
   | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ => false
 
 def OrderedNumericComparison.supportsAddressedPartial

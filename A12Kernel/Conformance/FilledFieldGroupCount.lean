@@ -689,4 +689,27 @@ example : nestedRuntimeFillMatrix? [(20, 1)] = some oneRuntimeFill ∧
       .inl (.addressing (.missingBinding 20))) := by
   native_decide
 
+private def deepPartialCount (scope : ValidationRelevanceScope) :
+    Option (Option PartialValidationFilledFieldCountResult) := do
+  let source ← deepChecked?
+  let document ← (checkDocument deepPrepared "en_US" {
+    instantiatedRows := deepOuterRows ++ deepInnerRows 1
+    cells := deepOuterCells ++ deepInnerCells 1 }).toOption
+  (source.asFieldFillList.evaluatePartialCount document [] scope fun environment field =>
+    some <$> (document.fullValidationAddressedCell environment field).map (·.cell)).toOption
+
+example : deepPartialCount .full = some (some (.evaluated (.value 5))) ∧
+    deepPartialCount (.partialSet [{
+      path := ["Probe", "Flat"], indices := [.all, .all] }]) =
+      some (some (.evaluated (.value 5))) ∧
+    deepPartialCount (.partialSet [
+      { path := ["Probe", "Flat", "FlatA"], indices := [.all, .all, .all] },
+      { path := ["Probe", "Flat", "Rows", "RowR"], indices := [.all, .all, .all, .all] },
+      { path := ["Probe", "Flat", "Rows", "Inner", "InnerI"],
+        indices := [.all, .all, .all, .all, .all] }]) = some (some (.evaluated (.value 5))) ∧
+    deepPartialCount (.partialSet [
+      { path := ["Probe", "Flat", "FlatA"], indices := [.all, .all, .all] },
+      { path := ["Probe", "Flat", "Rows"], indices := [.all, .all, .concrete 1] }]) =
+      some (some .nonRelevant) := by native_decide
+
 end A12Kernel

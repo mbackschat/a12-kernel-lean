@@ -360,4 +360,73 @@ private def generatedIndexedCount (key : Rat) : Option NumericTargetCheckResult 
 example : generatedIndexedCount 1 = some (.supported (.accepted { unscaled := 2, scale := 0 })) ∧
     generatedIndexedCount 3 = some (.supported (.accepted { unscaled := 1, scale := 0 })) := by native_decide
 
+private def partialCount (inputModel : FlatModel) (data : DocumentData)
+    (condition : String) (scope : ValidationRelevanceScope := .full) : Option Verdict := do
+  let dm : DmModel := {
+    flat := inputModel, rules := [], computations := [],
+    conditionLanguage := "en_US", refusals := [] }
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler inputModel).toOption
+  let checked ← (checkDocument prepared "en_US" data).toOption
+  let rule ← (checkRule dm .english {
+    group := ["Form"], name := "Count", errorEntityRelPath := "../Out", errorCode := "COUNT",
+    condition := "FieldFilled(Out) And (" ++ condition ++ ")", severity := "ERROR" }).toOption
+  match ← (rule.evalAddressedPartial checked scope (some world)).toOption with
+  | .skipped => none
+  | .evaluated outcome => some outcome.verdict
+
+private def coverage (paths : List (List String)) : ValidationRelevanceScope :=
+  .partialSet (paths.map fun path => { path, indices := path.map fun _ => .all })
+
+example : ["NumberOfFilledFields(Inputs)", "NumberOfFilledFields(Inputs/A, Inputs/B)"].all
+    (fun operand =>
+      partialCount model (input (some "1") true) (operand ++ " == 2") == some (.fired .value) &&
+      partialCount model (input none true) (operand ++ " == 1") == some (.fired .omission) &&
+      partialCount model (input (some "bad") true) (operand ++ " == 2") == some .unknown &&
+      partialCount model (input (some "1") true) (operand ++ " == 2")
+        (coverage [["Form", "Out"], ["Form", "Inputs", "A"]]) == some .unknown &&
+      partialCount model (input (some "1") true) (operand ++ " == 2")
+        (coverage [["Form", "Out"], ["Form", "Inputs"]]) == some (.fired .value)) := by native_decide
+
+example : ["NumberOfFilledFields(Rows*/Qty)", "NumberOfFilledFields(Anchor, Rows*) - 3"].all
+    (fun operand =>
+      partialCount filteredModel (filteredInput "1" false) (operand ++ " == 2") == some (.fired .value) &&
+      partialCount filteredModel (filteredInput "1" true) (operand ++ " == 2") == some .unknown) := by native_decide
+
+example : partialCount { model with fields := model.fields.map fun field =>
+      if field.id == 1 then { field with requiredness := some .absoluteOrNearestRepeatableAncestor }
+      else field } (input none true) "NumberOfFilledFields(Inputs) == 1" = some .unknown := by native_decide
+
+private def partialBoundCounts (scope : ValidationRelevanceScope) (includeOverflow : Bool := false)
+    (condition : String := "NumberOfFilledFields(Qty, Keep) == 2") : Option (List Verdict) := do
+  let dm : DmModel := {
+    flat := filteredModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler filteredModel).toOption
+  let data := filteredInput "1" false
+  let document ← (checkDocument prepared "en_US" { data with
+    instantiatedRows := if includeOverflow then data.instantiatedRows else data.instantiatedRows.take 2
+    cells := data.cells.filter (fun cell => includeOverflow || cell.address.path != [3]) }).toOption
+  let checked ← (checkRule dm .english {
+    group := ["Form", "Rows"], name := "BoundCount", errorEntityRelPath := "../Keep", errorCode := "COUNT",
+    condition, severity := "ERROR" }).toOption
+  match ← (checked.evalOrdinaryRepeatablePartial document scope (some world)).toOption with
+  | .skipped => none
+  | .evaluated rows => rows.mapM fun (_, outcome) => match outcome with
+      | .skipped => none
+      | .evaluated result => some result.verdict
+
+example : partialBoundCounts .full = some [.fired .value, .fired .value] ∧
+    partialBoundCounts (.partialSet [
+      { path := ["Form", "Rows", "Keep"], indices := [.all, .all, .all] },
+      { path := ["Form", "Rows", "Qty"], indices := [.all, .concrete 1, .all] }]) =
+      some [.fired .value, .unknown] := by native_decide
+
+example : partialBoundCounts .full true = some [.fired .value, .fired .value, .unknown] ∧
+    partialBoundCounts .full true "NumberOfFilledFields(Qty, Keep) == 0" =
+      some [.notFired, .notFired, .unknown] := by native_decide
+
+example : filteredComparison (filteredOperation ++ " == 2") "0" true true = some ["match"] ∧
+    partialCount filteredModel (filteredInput "0" true) (filteredOperation ++ " == 2") = none := by native_decide
+
 end A12Kernel.Dm.NumericCountLocks

@@ -332,6 +332,14 @@ example : [false, true].all (fun strings =>
     numericExpressionGuardRun "FieldValueAsNumber(Text) > 0" strings ==
       some ["cleared", "cleared"]) = true := by native_decide
 
+example : [false, true].all (fun strings =>
+    numericExpressionGuardRun "NumberOfFilledFields(A,B) == 2" strings true ==
+      some ["value 1", if strings then "value ready" else "value 2", "value 1"] &&
+    numericExpressionGuardRun "NumberOfFilledFields(A,B) == 2" strings ==
+      some ["cleared", "cleared"] &&
+    numericExpressionGuardRun "NumberOfFilledFields(A,B) == 0" strings true ==
+      some ["value 1", "cleared", "value 1"]) := by native_decide
+
 example : numericExpressionGuardRun "[B] > 0 And FieldValueAsNumber(Text) > 0" false =
     some ["cleared", "value 1"] ∧
     numericExpressionGuardRun "[B] == 0 Or FieldValueAsNumber(Text) > 0" true =

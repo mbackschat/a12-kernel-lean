@@ -14,12 +14,13 @@ The partial-validation route applies the local reduced-universal account that ma
 
 namespace A12Kernel
 
-/-- Partial filled-field count evaluation distinguishes an unavailable operand extent, a rule the
-    coverage gate skipped because its operand carries a filter, and an evaluated count whose cells
-    may still be formally unknown. -/
+/-- Partial filled-field count evaluation distinguishes an unavailable operand extent, a filtered
+    rule skip, call-local silent unavailability, and an evaluated count whose cells may still be
+    formally unknown. -/
 inductive PartialValidationFilledFieldCountResult where
   | nonRelevant
   | skippedHaving
+  | silentlyUnavailable
   | evaluated (count : FilledFieldCount)
   deriving Repr, DecidableEq
 

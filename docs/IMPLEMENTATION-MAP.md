@@ -188,6 +188,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Component-omitting Date stored classifier](implementation/temporal.md#cap-omitting-date-input)
 <a id="cap-filled-field-count"></a>
 - [`NumberOfFilledFields` validation count](implementation/temporal.md#cap-filled-field-count)
+<a id="cap-filled-field-count-partial"></a>
+- [Partial filled-field count lists](implementation/temporal.md#cap-filled-field-count-partial)
 <a id="cap-temporal-extractor-entry"></a>
 - [Temporal extractor literal entry](implementation/temporal.md#cap-temporal-extractor-entry)
 <a id="cap-date-from-datetime"></a>

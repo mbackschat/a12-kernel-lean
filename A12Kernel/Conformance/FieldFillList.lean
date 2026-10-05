@@ -255,4 +255,42 @@ example : indexedValidationCount 3 = some (some (.value 0 .growOnly)) := by nati
 example : indexedValidationCount 1 1 = some none := by native_decide
 example : indexedValidationCount 1 2 true = some none := by native_decide
 
+private def partialListCount (source : SurfaceFieldEntitySource)
+    (scope : ValidationRelevanceScope) (missing : Option FieldId := none)
+    (invalidated : Option FieldId := none) :
+    Option (Option PartialValidationFilledFieldCountResult) := do
+  let checked ← (elaborateFieldFillList listModel ["Probe"] source).toOption
+  let document ← document? [{ group := 4, path := [1] }]
+    [cell 1 [] 1, cell 4 [1] 1, cell 5 [] 1, cell 6 [] 1]
+  (checked.evaluatePartialCount document [] scope fun environment field => do
+    if missing == some field then return none
+    if invalidated == some field then return some { rawPresent := true, parsed := none, findings := [.malformed] }
+    some <$> (document.fullValidationAddressedCell environment field).map (·.cell)).toOption
+
+private def partialExtent (paths : List (List String)) : ValidationRelevanceScope :=
+  .partialSet (paths.map fun path => { path, indices := path.map fun _ => .all })
+
+example : partialListCount { first := direct "A", rest := [starR, groupG] } .full =
+    some (some (.evaluated (.value 4))) ∧
+    partialListCount { first := direct "A", rest := [starR, groupG] }
+      (partialExtent [["Probe", "A"], ["Probe", "Rows", "R"], ["Probe", "G", "X"],
+        ["Probe", "G", "Y"]]) = some (some (.evaluated (.value 4))) ∧
+    partialListCount { first := direct "A", rest := [starR, groupG] }
+      (partialExtent [["Probe", "A"], ["Probe", "Rows", "R"], ["Probe", "G", "X"]]) =
+      some (some .nonRelevant) := by native_decide
+
+example : partialListCount directList .full (some 1) = some (some .silentlyUnavailable) ∧
+    partialListCount directList .full none (some 1) = some (some (.evaluated .unknown)) ∧
+    partialListCount { first := starR, rest := [] } .full (some 4) =
+      some (some .silentlyUnavailable) ∧
+    partialListCount { first := groupG, rest := [] } .full none (some 6) =
+      some (some (.evaluated .unknown)) := by native_decide
+
+example : partialListCount { first := selectedFirst, rest := [] } .full =
+    some (some .skippedHaving) := by native_decide
+
+example : ((elaborateFieldFillList indexedListModel ["Probe"] {
+    first := indexedValue 1 "1", rest := [direct "A"] }).toOption.map (·.supportsPartialCount)) =
+    some false := by native_decide
+
 end A12Kernel
