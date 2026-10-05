@@ -96,20 +96,23 @@ structure HavingRepetitionRef where
 /-- A numeric filter source retains its origin even when nested inside arithmetic. -/
 inductive HavingNumericAtom where
   | field (reference : HavingNumberRef)
+  | stringLength (origin : HavingOrigin) (field : FlatStringField)
   | repetition (reference : HavingRepetitionRef)
   deriving Repr, DecidableEq
 
 def HavingNumericAtom.origin : HavingNumericAtom → HavingOrigin
   | .field reference => reference.origin
+  | .stringLength origin _ => origin
   | .repetition reference => reference.origin
 
 def HavingNumericAtom.fieldId? : HavingNumericAtom → Option FieldId
   | .field reference => some reference.field.id
+  | .stringLength _ source => some source.id
   | .repetition _ => none
 
 def HavingNumericAtom.summary : HavingNumericAtom → NumericScaleSummary
   | .field reference => .field reference.field.info.scale
-  | .repetition _ => .field 0
+  | .repetition _ | .stringLength _ _ => .field 0
 
 /-- One correlated filter frame. Both candidate and captured rule environments are
     explicit full repetition contexts. -/
@@ -261,6 +264,10 @@ def HavingNumberRef.resolve (reference : HavingNumberRef)
     repetition bindings remain unknown; checked addressed readers report them structurally. -/
 def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : CorrelationFrame) :
     HavingNumericAtom → Except Unit NumericArithmeticOutcome
+  | .stringLength origin source =>
+      match (observeCell .validation (context.read (frame.envAt origin) source.id)).asStringLengthOperand with
+      | .value amount fillability => .ok (.value amount fillability)
+      | .unknown _ => .error ()
   | .field reference =>
       match reference.resolveIn context frame with
       | .value amount => .ok (.value amount .fixed)
@@ -273,6 +280,11 @@ def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : Cor
 def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) :
     HavingNumericAtom → Except Error (Except Unit NumericArithmeticOutcome)
+  | .stringLength origin source => do
+      let cell ← context.read (frame.envAt origin) source.id
+      pure (match (observeCell .validation cell).asStringLengthOperand with
+        | .value amount fillability => .ok (.value amount fillability)
+        | .unknown _ => .error ())
   | .field reference => do
       pure (match ← reference.resolveInAtResolving .validation context frame with
         | .value amount => .ok (.value amount .fixed)
@@ -282,6 +294,8 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
 
 def HavingNumericAtom.readComputation (context : CorrelationContext) (frame : CorrelationFrame) :
     HavingNumericAtom → NumericComputationResult
+  | .stringLength origin source =>
+      (observeCell .computation (context.read (frame.envAt origin) source.id)).asStringLengthOperand.toComputationResult
   | .field reference =>
       match reference.resolveInAt .computation context frame with
       | .value amount => .value amount
@@ -293,6 +307,9 @@ def HavingNumericAtom.readComputation (context : CorrelationContext) (frame : Co
 
 def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) : HavingNumericAtom → Except Error NumericComputationResult
+  | .stringLength origin source => do
+      let cell ← context.read (frame.envAt origin) source.id
+      pure ((observeCell .computation cell).asStringLengthOperand.toComputationResult)
   | .field reference => do
       pure (match ← reference.resolveInAtResolving .computation context frame with
         | .value amount => .value amount

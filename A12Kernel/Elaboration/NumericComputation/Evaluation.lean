@@ -5,10 +5,6 @@ import A12Kernel.Semantics.ComputationSelfValidation
 
 namespace A12Kernel
 
-def NumericOperand.toComputationResult : NumericOperand → NumericComputationResult
-  | .value amount _ => .value amount
-  | .unknown cause => .poison cause
-
 private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFillOperand model)
     (context : ScalarComputationContext) (filterRead? : Option (Env → FieldId → CheckedCell))
     (indexColumn? : Option SemanticIndexColumnReader) :

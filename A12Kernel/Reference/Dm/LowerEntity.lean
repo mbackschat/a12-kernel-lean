@@ -52,6 +52,10 @@ private def presencePolarity? : String → Option HavingPresencePolarity
   | _ => none
 
 private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
+  | .call "Length" [.mk (.entity { path, index := none, category := none }) none none] none none =>
+      match path.havingField? with
+      | some (origin, field) => pure (.stringLength origin field)
+      | none => refuse "Having" "Length field"
   | .value { path, index := none, category := none } =>
       match path.havingField? with
       | some (origin, field) => pure (.field { origin, field })

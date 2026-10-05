@@ -70,6 +70,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
     (model : FlatModel) (group : RepeatableGroupDecl) : CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
       | .field reference => model.admitsSingleGroupNumber group reference.field
+      | .stringLength _ _ => false
       | .repetition reference => reference.source == .repeatable group.level
   -- The legacy one-group adapter admits only the leaves it was built for. The other
   -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
@@ -141,6 +142,9 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
     CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
       | .field reference => model.admitsHavingNumberInEnvironment candidateLevels outerLevels reference
+      | .stringLength origin field => (model.lookupUniqueId field.id).toOption.any fun declaration =>
+          declaration.toStringValueField? == some field && declaration.fieldValueReadRefusal?.isNone &&
+            repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
       | .repetition reference => reference.availableIn model candidateLevels outerLevels
   | .simpleComparison left right comparison =>
       model.admitsHavingSimpleComparison
@@ -200,6 +204,9 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
   | .numeric comparison =>
       (comparison.left.atoms ++ comparison.right.atoms).any fun
         | .field reference => reference.reachesReopenedLevel model reopenedLevels
+        | .stringLength origin field => origin == .inner &&
+            (model.lookupUniqueId field.id).toOption.any fun declaration =>
+              declaration.repeatableScope.any reopenedLevels.contains
         | .repetition reference => reference.origin == .inner &&
             (reference.scope? model).any (·.any reopenedLevels.contains)
   | .simpleComparison left right comparison =>

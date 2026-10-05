@@ -14,6 +14,10 @@ poison and arithmetic domain failure. Model and path admission remain with the c
 
 namespace A12Kernel
 
+def NumericOperand.toComputationResult : NumericOperand → NumericComputationResult
+  | .value amount _ => .value amount
+  | .unknown cause => .poison cause
+
 /-- A row-bound structural operand retains its complete ancestry separately from its own coordinate:
     a fixed descendant requires ancestor bindings but returns one (`spec/08` §4). -/
 structure BoundCurrentRepetitionSource where

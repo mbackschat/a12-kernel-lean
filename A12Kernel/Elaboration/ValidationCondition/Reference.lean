@@ -172,6 +172,8 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
   | .leaf (.numeric comparison) => do
       let pointers ← (comparison.left.atoms ++ comparison.right.atoms).mapM fun
         | .field reference => do pure [← havingNumberReferencePointer source environment reference]
+        | .stringLength origin field => do
+            pure [← havingStringReferencePointer source environment { origin, operand := .string field }]
         | .repetition _ => pure []
       pure pointers.flatten
   | .leaf (.simpleComparison left right comparison) => do

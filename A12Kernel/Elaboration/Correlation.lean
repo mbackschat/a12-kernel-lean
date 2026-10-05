@@ -30,6 +30,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
         | .field reference => field reference.origin reference.field
+        | .stringLength origin reference => field origin reference
         | .repetition reference => group reference.origin reference.group
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
@@ -136,6 +137,7 @@ private structure HavingLeafResolvers where
   fields : SurfaceComparisonOp → SurfaceHavingStringRef → SurfaceHavingStringRef →
     Except CorrelationElabError (Option FlatComparison)
 
+  stringLength : HavingOrigin → SurfaceFieldPath → Except CorrelationElabError FlatStringField
   number : HavingOrigin → SurfaceFieldPath →
     Except CorrelationElabError ResolvedNumberRef
   repetition : HavingOrigin → SurfaceGroupReference →
@@ -172,6 +174,7 @@ private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
     (op : NumericValidationOp) (left right : AuthoredNumericExpr SurfaceHavingNumericAtom) :
     Except CorrelationElabError CorrelatedHaving := do
   let resolve : SurfaceHavingNumericAtom → Except CorrelationElabError HavingNumericAtom
+    | .stringLength origin reference => (.stringLength origin ·) <$> resolvers.stringLength origin reference
     | .field reference => do
         let resolved ← (resolvers.number reference.origin reference.field).mapError fun
           | .fieldNotNumber path actual => .numericOperandFieldNotNumber path actual
@@ -291,6 +294,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
         (model.resolveNumberInGroup declaringGroup group reference.field).isOk
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).any fun
+        | .stringLength _ _ => false
         | .field reference => reference.origin == .inner &&
             (model.resolveNumberInGroup declaringGroup group reference.field).isOk
         | .repetition _ => false
@@ -314,6 +318,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     Except CorrelationElabError CorrelatedHaving := do
   discard <| elaborateHavingCoreWith {
     boolean := fun _ _ _ => throw .stringLeafOutsideStarRoute
+    stringLength := fun _ _ => throw .stringLeafOutsideStarRoute
     fields := fun _ _ _ => pure none
     number := model.resolveHavingNumberRead declaringGroup
     repetition := resolveHavingRepetitionInGroup declaringGroup group
@@ -329,6 +334,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
   let readsGroup := authored.readsGroupNumber model declaringGroup group
   let condition ← (elaborateHavingCoreWith {
     boolean := fun _ _ _ => throw .stringLeafOutsideStarRoute
+    stringLength := fun _ _ => throw .stringLeafOutsideStarRoute
     fields := fun _ _ _ => pure none
     number := model.resolveHavingNumberInGroup declaringGroup group
     repetition := resolveHavingRepetitionInGroup declaringGroup group
@@ -562,6 +568,7 @@ def CorrelatedHaving.outerIterationScopes
   | .leaf (.numeric comparison) =>
       (comparison.left.atoms ++ comparison.right.atoms).map fun
         | .field reference => outerHavingNumberIterationScope model reference
+        | .stringLength origin field => outerHavingFieldIterationScope model origin field.id
         | .repetition reference => outerHavingRepetitionIterationScope model reference
   | .leaf (.simpleComparison left right comparison) =>
       comparison.inputFields.1.map (fun field => outerHavingFieldIterationScope model left field.id) ++
@@ -607,6 +614,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
         | .field reference => field reference.origin reference.field
+        | .stringLength origin reference => field origin reference
         | .repetition reference => group reference.origin reference.group
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
@@ -644,6 +652,11 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
   let outerLevels := model.repeatableScopeForGroupPath bindingGroup
   let condition ← elaborateHavingCoreWith {
     boolean := model.resolveHavingBooleanInEnvironment declaringGroup outerLevels
+    stringLength := fun origin reference => do
+      let declaration ← model.resolveHavingFieldValueRead declaringGroup outerLevels origin reference .stored
+      match declaration.toStringValueField? with
+      | some field => pure field
+      | none => throw (.text (.lengthOperandKindMismatch declaration.path declaration.policy.kind.surfaceKind))
     fields := model.resolveHavingFieldsInEnvironment declaringGroup outerLevels
     number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels
     repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels

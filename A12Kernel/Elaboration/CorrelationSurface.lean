@@ -35,6 +35,7 @@ structure SurfaceHavingPresenceRef where
 
 inductive SurfaceHavingNumericAtom where
   | field (reference : SurfaceHavingNumberRef)
+  | stringLength (origin : HavingOrigin) (field : SurfaceFieldPath)
   | repetition (reference : SurfaceHavingRepetitionRef)
   deriving Repr, DecidableEq
 

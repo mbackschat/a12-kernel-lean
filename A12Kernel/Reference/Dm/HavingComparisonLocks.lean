@@ -537,4 +537,43 @@ private def fillReferences : Option (Bool × Bool) := do
 
 example : fillReferences = some (true, true) := by native_decide
 
+example : [("== 2", "x"), ("!= 1", "x"), ("< 3", "abcd"), ("<= 2", "abcd"),
+    ("> 1", "x"), (">= 2", "x")].all (fun (suffix, rejected) =>
+    run ("Length(Rows/Tag) " ++ suffix) false .string "x" "ab" rejected ==
+      some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : run "Length(Rows/Tag) + 1 == 3" false .string "x" "ab" "x" =
+      some (.fired .omission, ["value 9"]) ∧
+    run "3 > Length(Rows/Tag)" false .string "x" "ab" "abcd" =
+      some (.fired .omission, ["value 9"]) := by native_decide
+
+example : run "Length(Rows/Tag) == Length($Expected)" false .string "ab" "xy" "z" =
+      some (.fired .omission, ["value 9"]) ∧
+    (run "Length(Rows/Tag) == Length($Expected)" true .string "ab" "xy" "drop").map (·.2) =
+      some ["value drop", "value 5"] ∧
+    referencesFor "Length(/Form/Rows/Tag) == Length($/Form/Rows/Tag)" = some (true, true) := by native_decide
+
+example : run "Length(Rows/Tag) == 2" false .string "x" "é" "x" =
+      some (.fired .omission, ["value 9"]) ∧
+    run "Length(Rows/Tag) == 2" false (.number { scale := 0, signed := true }) "2" "2" "1" = none ∧
+    run "Length(Rows/Tag -> Swap) == 2" false .enumeration "keep" "keep" "drop" (some domain) = none ∧
+    run "Length([Rows/Tag]) == 2" = none ∧
+    run "Length($Expected) == 4" = none := by native_decide
+
+private def constrainedLengthModel : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == 3 then { field with stringPolicy := { maxLength := some 2 } } else field }
+
+example : runModel constrainedLengthModel "Length(Rows/Tag) > 0" false "a" "ab" "long" =
+      some (.fired .omission, []) ∧
+    runModel { model with fields := model.fields.map fun field =>
+        if field.id == 3 then { field with stringValueMode := .raw, stringPolicy := { lineBreaksPermitted := true } }
+        else field } "Length(Rows/Tag) > 0" false "a" "ab" "x" = none := by native_decide
+
+example : toleranceRanges.all (fun band =>
+    run s!"Length(Rows/Tag) * {band} DiffersWithToleranceRange{band} Length($Expected) * {band}"
+      false .string "abc" "abcde" "ab" == some (.fired .omission, ["value 9"])) = true ∧
+    run "Length(Rows/Tag) < 2.5" false .string "x" "ab" "abc" =
+      some (.fired .omission, ["value 9"]) ∧
+    run "Length(Rows/Tag) > 0" false .enumeration "keep" "keep" "drop" (some domain) = none := by native_decide
+
 end A12Kernel.Dm.HavingComparisonLocks

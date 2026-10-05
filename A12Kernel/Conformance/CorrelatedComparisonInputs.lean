@@ -272,4 +272,25 @@ example : (CorrelatedHavingLeaf.numeric (toleranceComparison .range1)).evalTruth
       .ok (.poison .malformed) ∧
     CorrelatedHaving.markedFieldIds (.leaf (.numeric (toleranceComparison .range1))) = [1] := by native_decide
 
+private def lengthComparison : NumericComparisonOf HavingNumericAtom := {
+  op := .ordinary .equal
+  left := .atom (.stringLength .inner { id := 1 })
+  right := .atom (.stringLength .outer { id := 1 }) }
+
+-- The synthetic checked cell separates UTF-16 counting from prior legal-character admission (spec/06 §A).
+example : (HavingNumericAtom.stringLength .inner { id := 1 }).readValidation
+      { read := fun _ _ => { emptyRequired with findings := [] } } frame = .ok (.value 0 .growOnly) ∧
+    (HavingNumericAtom.stringLength .inner { id := 1 }).readValidation
+      { read := fun _ _ => emptyRequired } frame = .error () ∧
+    (HavingNumericAtom.stringLength .inner { id := 1 }).readComputation
+      { read := fun _ _ => emptyRequired } frame = .value 0 ∧
+    (HavingNumericAtom.stringLength .inner { id := 1 }).readValidation
+      { read := fun _ _ => { rawPresent := true, parsed := some (.str "😀"), findings := [] } } frame = .ok (.value 2 .fixed) := by native_decide
+
+example : (CorrelatedHavingLeaf.numeric lengthComparison).evalTruthInResolving toleranceRead frame =
+      .error "captured read" ∧
+    (CorrelatedHavingLeaf.numeric lengthComparison).evalComputationInResolving toleranceRead frame =
+      .ok (.poison .malformed) ∧
+    CorrelatedHaving.markedFieldIds (.leaf (.numeric lengthComparison)) = [1] := by native_decide
+
 end A12Kernel.Conformance.CorrelatedComparisonInputs
