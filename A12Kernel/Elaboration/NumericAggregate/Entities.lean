@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.PartialSemanticIndex
 import A12Kernel.Elaboration.NumericAggregate.Fields
 
 /-! # Checked mixed entity-list numeric aggregates and value counts -/
@@ -91,6 +92,29 @@ private def resolvedPartialViewSide
   | .inl cells =>
       pure (.inl { cells, hasUninstantiatedTail, hasHaving })
   | .inr result => pure (.inr result)
+
+/-- Selected aggregates share the index decision but ask their own all-rows extent gate before
+reading targets; value-count and prefix consumers have different gates (spec/10 §5). -/
+private def resolvedSelectedPartialAggregateSide
+    (source : CheckedSelectedNumberEntity model) (document : CheckedDocument model)
+    (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    Except PartialViewNumberAggregateError
+      (Sum (ResolvedValueListSide .number) PartialValidationNumberAggregateResult) := do
+  let selected ← (resolvePartialSelectedAddresses source.source document scope outer read
+    (fun declaration bound reopened environment =>
+      scope.coversAggregateExtent model declaration.path bound reopened environment)).mapError .addressing
+  match selected with
+  | none => pure (.inr .nonRelevant)
+  | some (.unknown cause) | some (.poison cause) => pure (.inr (.evaluated (.unknown cause)))
+  | some .empty => pure (.inl { cells := [.empty], hasUninstantiatedTail := false, hasHaving := false })
+  | some (.value (addresses, hasTail)) =>
+      if addresses.isEmpty then
+        let cells := match source.source with | .inl _ => [.empty] | .inr _ => []
+        pure (.inl { cells, hasUninstantiatedTail := hasTail, hasHaving := false })
+      else
+        resolvedPartialViewSide read (fun _ cell => (observeCell .validation cell).asNumberValueListCell)
+          (addresses.map fun (declaration, environment) => (environment, declaration.id)) hasTail false
 
 /-- Resolve exactly one authored slot. Plain and filtered stars reuse the general checked topology and filter owners; direct fields reuse the checked flat Number reader. -/
 def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
@@ -261,7 +285,12 @@ def resolvedCheckedDocumentPartialAggregateSide
       (Sum (ResolvedValueListSide .number)
         PartialValidationNumberAggregateResult) :=
   match checked with
-  | .selected source => .error (.addressing (.unsupportedGroupOperand source.groupPath))
+  | .selected source =>
+      match resolvedSelectedPartialAggregateSide source document outer scope
+          (fun row field => (fun addressed => some addressed.cell) <$> document.addressedCell row field) with
+      | .ok result => pure result
+      | .error (.addressing error) => throw error
+      | .error .silentlyUnavailable => pure (.inr .nonRelevant)
   | .field source =>
       if scope.coversCell model source.declaration.path [] then do
         match ← resolvedCheckedDocumentSide document .validation source.field
@@ -304,7 +333,7 @@ private def resolvedPartialViewAggregateSide
       (Sum (ResolvedValueListSide .number)
         PartialValidationNumberAggregateResult) :=
   match checked with
-  | .selected source => .error (.addressing (.addressing (.unsupportedGroupOperand source.groupPath)))
+  | .selected source => resolvedSelectedPartialAggregateSide source document outer scope read
   | .field source =>
       if scope.coversCell model source.declaration.path [] then
         resolvedPartialViewSide read

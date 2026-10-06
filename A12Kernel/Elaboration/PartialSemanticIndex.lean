@@ -57,12 +57,13 @@ def CheckedSemanticIndexSource.observePartialDocument (source : CheckedSemanticI
       if !view.relevance.coversField model source.targetDeclaration.id environment then return none
       pure ((← read environment source.targetDeclaration.id).map (observeCell .validation))
 
-/-- Resolve only selection and topology for a prefix consumer; target relevance and cell reads
-remain with its lazy scan. Missing selection requires wildcard target coverage (spec/10 §5). -/
+/-- Resolve only selection and topology without reading targets; consumers retain their own extent
+gate and cell scan. Missing selection requires wildcard target coverage (spec/10 §5). -/
 def resolvePartialSelectedAddresses
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
     (document : CheckedDocument model) (scope : ValidationRelevanceScope) (outer : Env)
-    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
+    (extentRelevant : FlatFieldDecl → List RepeatableLevel → List RepeatableLevel → Env → Bool := fun _ _ _ _ => true) :
     Except CheckedAddressingError
       (Option (CellObservation (List (FlatFieldDecl × Env) × Bool))) := do
   let view ← document.applyPartialGeneratedPreliminaryForScope scope |>.mapError .indexPreliminary
@@ -75,12 +76,17 @@ def resolvePartialSelectedAddresses
       let declarations := match source with | .inl selected => [selected.targetDeclaration] | .inr selected => selected.declarations
       let bound := selection.indexDeclaration.repeatableScope.dropLast
       if !declarations.all (fun declaration => view.relevance.coversValueListExtent model
-          declaration.path bound (declaration.repeatableScope.drop bound.length) outer) then return none
+          declaration.path bound (declaration.repeatableScope.drop bound.length) outer &&
+          extentRelevant declaration bound (declaration.repeatableScope.drop bound.length) outer) then return none
       let omitted := match source with
         | .inl _ => false
         | .inr selected => match selected.target with | .group _ => true | _ => false
       pure (some (.value ([], omitted)))
   | some (.value environment) =>
+      let declarations := match source with | .inl selected => [selected.targetDeclaration] | .inr selected => selected.declarations
+      let bound := selection.indexDeclaration.repeatableScope
+      if !declarations.all (fun declaration => extentRelevant declaration bound
+          (declaration.repeatableScope.drop bound.length) environment) then return none
       match source with
       | .inl selected => pure (some (.value ([(selected.targetDeclaration, environment)], false)))
       | .inr selected =>

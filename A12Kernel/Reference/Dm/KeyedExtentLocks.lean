@@ -16,12 +16,22 @@ private def model : FlatModel := {
     { level := 10, path := ["Form", "Packages"], repeatability := some 3, indexField := some 1 },
     { level := 20, path := ["Form", "Packages", "Items"], repeatability := some 2 }] }
 
+private def dimsModel : FlatModel :=
+  { model with fields := model.fields.flatMap fun declaration =>
+      if declaration.id == 5 then [
+        { id := 7, name := "Width", groupPath := ["Form", "Packages", "Dims"], repeatableScope := [10], policy := { kind := .number { scale := 0, signed := true } } },
+        { id := 8, name := "Depth", groupPath := ["Form", "Packages", "Dims"], repeatableScope := [10], policy := { kind := .number { scale := 0, signed := true } } },
+        declaration]
+      else [declaration] }
+
 private def input (key : String) (duplicate : Bool := false) (bad : Bool := false) (invalidIndex : Bool := false) (emptySecond : Bool := false) (sourceModel : FlatModel := model) (header : String := "1") : Option (CheckedDocument sourceModel) := do
   let numericIndex := (sourceModel.lookupUniqueId 1).toOption.any (fun field => field.policy.kind.surfaceKind == .number)
-  let package (key : String) (weights : List String) := Lean.Json.mkObj [
+  let package (key : String) (weights : List String) := Lean.Json.mkObj ([
     ("Code", .str key), ("Header", .str header),
     ("Items", .arr (weights.map fun weight => Lean.Json.mkObj [
-      ("Weight", .str weight), ("Quantity", .str "2")]).toArray)]
+      ("Weight", .str weight), ("Quantity", .str "2")]).toArray)] ++
+    if sourceModel.fields.any (·.id == 7) then
+      [("Dims", Lean.Json.mkObj [("Width", .str "3"), ("Depth", .str "4")])] else [])
   let data := Lean.Json.mkObj [("Form", Lean.Json.mkObj [
     ("Key", .str key), ("Out", .str "99"),
     ("Packages", .arr #[package (if numericIndex then "1" else "P1") ["2", if bad then "bad" else "5"], package (if invalidIndex then "" else if duplicate then (if numericIndex then "1" else "P1") else (if numericIndex then "2" else "P2")) (if emptySecond then [] else ["11"])])])]
@@ -230,11 +240,11 @@ example : ["Sum", "MinValue", "MaxValue"].all (fun operator =>
     validationVerdict (operator ++ "(Packages/Items*/Weight For Key) == 0") "P2" false false false true == some (.fired .omission)) := by native_decide
 
 private def partialOutcome (expression : String) (coverage : List RelevantEntityPattern)
-    (key : String := "P1") (duplicate : Bool := false) (numericIndex : Bool := false) (header : String := "1") (invalidIndex : Bool := false) : Option (Except OrdinaryRepeatableRuleEvaluationError PartialRuleOutcome) := do
-  let sourceModel := if numericIndex then { model with fields := model.fields.map fun field =>
+    (key : String := "P1") (duplicate : Bool := false) (numericIndex : Bool := false) (header : String := "1") (invalidIndex : Bool := false) (emptySecond : Bool := false) (baseModel : FlatModel := model) : Option (Except OrdinaryRepeatableRuleEvaluationError PartialRuleOutcome) := do
+  let sourceModel := if numericIndex then { baseModel with fields := baseModel.fields.map fun field =>
     if field.id == 1 || field.id == 5 then { field with policy := { kind := .number { scale := 0, signed := true } } }
-    else field } else model
-  let document ← input (if numericIndex then key.replace "P" "" else key) duplicate false invalidIndex false sourceModel header
+    else field } else baseModel
+  let document ← input (if numericIndex then key.replace "P" "" else key) duplicate false invalidIndex emptySecond sourceModel header
   let parsed ← (parseText .english ("FieldFilled(Out) And (" ++ expression ++ ")")).toOption
   let condition ← (lowerCondition sourceModel ["Form"] false parsed.body).toOption
   let rule ← (assembleResolvedValidationRule sourceModel condition 6 "PARTIAL_INDEX" .error { parts := [] }).toOption
@@ -242,8 +252,8 @@ private def partialOutcome (expression : String) (coverage : List RelevantEntity
     { path := ["Form", "Out"], indices := [.all, .all] } :: coverage)))
 
 private def partialVerdict (expression : String) (coverage : List RelevantEntityPattern)
-    (key : String := "P1") (duplicate : Bool := false) (numericIndex : Bool := false) (header : String := "1") (invalidIndex : Bool := false) : Option Verdict := do
-  let result ← (← partialOutcome expression coverage key duplicate numericIndex header invalidIndex).toOption
+    (key : String := "P1") (duplicate : Bool := false) (numericIndex : Bool := false) (header : String := "1") (invalidIndex : Bool := false) (emptySecond : Bool := false) (baseModel : FlatModel := model) : Option Verdict := do
+  let result ← (← partialOutcome expression coverage key duplicate numericIndex header invalidIndex emptySecond baseModel).toOption
   match result with | .evaluated result => some result.verdict | .skipped => none
 
 private def relevant (path : List String) : RelevantEntityPattern :=
@@ -317,5 +327,92 @@ example : partialVerdict "FirstFilledValue(Packages/Header For Key,Out) == 99"
       [relevant ["Key"], relevant ["Packages"]] "missing" = some (.fired .omission) ∧
     partialVerdict "FirstFilledValue(Packages/Items*/Weight For Key,Out) == 99"
       [relevant ["Key"], concreteRow 1, concreteRow 2] "missing" = some .unknown := by native_decide
+
+private def partialAggregateFamily (operand : String) (expected : List String)
+    (coverage : List RelevantEntityPattern) (key : String := "P1") (baseModel : FlatModel := model) : Bool :=
+  (["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].zip expected).all fun (operator, value) =>
+    partialVerdict (operator ++ "(" ++ operand ++ ") == " ++ value) coverage key (baseModel := baseModel) == some (.fired .value)
+
+example : partialAggregateFamily "Packages/Items*/Weight For Key" ["7", "2", "5", "2"]
+    [relevant ["Key"], relevant ["Packages"]] = true ∧
+    partialAggregateFamily "Packages/Items* For Key" ["11", "2", "5", "2"]
+      [relevant ["Key"], relevant ["Packages"]] = true ∧
+    partialAggregateFamily "Packages/Header For Key,Packages/Header For \"P2\"" ["2", "1", "1", "1"]
+      [relevant ["Key"], relevant ["Packages"]] = true := by native_decide
+
+example : ["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].all (fun operator =>
+    partialVerdict (operator ++ "(Packages/Items* For Key) == 11")
+      [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Items", "Weight"]] == some .unknown &&
+    partialVerdict (operator ++ "(Packages/Items*/Weight For Key) == 7")
+      [relevant ["Key"], relevant ["Packages", "Items", "Weight"]] == some .unknown) = true := by native_decide
+
+private def concreteItem (package item : Nat) : RelevantEntityPattern :=
+  { path := ["Form", "Packages", "Items", "Weight"], indices := [.all, .concrete package, .concrete item, .all] }
+
+private def packageWeights (package : Nat) : RelevantEntityPattern :=
+  { path := ["Form", "Packages", "Items", "Weight"], indices := [.all, .concrete package, .all, .all] }
+
+example : (["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].zip ["7", "2", "5", "2"]).all (fun (operator, value) =>
+    let expression := operator ++ "(Packages/Items*/Weight For Key) == " ++ value
+    partialVerdict expression [relevant ["Key"], relevant ["Packages", "Code"], concreteItem 1 1, concreteItem 1 2] == some .unknown &&
+    partialVerdict expression [relevant ["Key"], relevant ["Packages", "Code"], packageWeights 1, concreteItem 2 1] == some (.fired .value) &&
+    partialVerdict expression [relevant ["Key"], relevant ["Packages", "Code"], packageWeights 1, concreteItem 1 1] == some (.fired .value) &&
+    partialVerdict expression [relevant ["Key"], relevant ["Packages"]] "1" false true == some (.fired .value)) = true := by native_decide
+
+example : ["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].all (fun operator =>
+    partialVerdict (operator ++ "(Packages/Items*/Weight For Key) == 0")
+      [relevant ["Key"], relevant ["Packages"]] "missing" == some (.fired .value) &&
+    partialVerdict (operator ++ "(Packages/Items*/Weight For Key) == 0")
+      [relevant ["Key"], concreteRow 1, concreteRow 2] "missing" == some .unknown &&
+    partialVerdict (operator ++ "(Packages/Items*/Weight For Key) == 0")
+      [relevant ["Key"], relevant ["Packages"]] "P1" true == some .unknown &&
+    partialVerdict (operator ++ "(Packages/Header For Key,Packages/Header For \"P2\") == 0")
+      [relevant ["Key"], relevant ["Packages"]] "P1" false false "bad" == some .unknown) = true := by native_decide
+
+private def aggregateReadback (expression : String) (formalFirst unavailableFirst : Bool) (laterUnavailable : Bool := true) (checkedInput : Bool := false) : Option Verdict := do
+  let document ← input "P1"
+  let parsed ← (parseText .english expression).toOption
+  let checked ← (lowerCondition model ["Form"] false parsed.body).toOption
+  let .leaf leaf := checked.core | none
+  let context : AddressedValidationEvaluationContext model := {
+    scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }, outer := []
+    input := if checkedInput then .checked document else .partialView document fun row field =>
+      if field == 3 && row.lookup 20 == some 1 then
+        pure (if unavailableFirst then none else if formalFirst then some malformedCheckedCell
+          else some (checkAdmittedRawCell (.parsed (.num 8))))
+      else if field == 3 && laterUnavailable then .error (.partialUnavailable row field)
+      else (fun addressed => some addressed.cell) <$> document.addressedCell row field }
+  let result ← leaf.evalAddressedPartial? context .full (fun _ => true)
+    (fun _ _ => .error (.checkedDocumentRequired [])) none
+  result.toOption
+
+example : ["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].all (fun operator =>
+    let expression := operator ++ "(Packages/Items*/Weight For Key) == 8"
+    aggregateReadback expression true false == some .unknown &&
+    aggregateReadback expression false true == some .unknown) = true := by native_decide
+
+example : (["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].zip ["13", "5", "8", "2"]).all (fun (operator, value) =>
+    aggregateReadback (operator ++ "(Packages/Items*/Weight For Key) == " ++ value) false false false == some (.fired .value)) = true := by native_decide
+
+example : ["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].all (fun operator =>
+    let expression := operator ++ "(Packages/Header For Key,Packages/Header For \"P1\") == 1"
+    (validationVerdict expression "missing").isSome &&
+    partialVerdict expression [relevant ["Key"], relevant ["Packages"]] "missing" == validationVerdict expression "missing") = true := by native_decide
+
+example : (["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].zip ["7", "2", "5", "2"]).all (fun (operator, value) =>
+    aggregateReadback (operator ++ "(Packages/Items*/Weight For Key) == " ++ value) false false false true == some (.fired .value)) = true := by native_decide
+
+example : ["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].all (fun operator =>
+    let expression := operator ++ "(Packages/Items*/Weight For Key) == 0"
+    (validationVerdict expression "P2" false false false true).isSome &&
+    partialVerdict expression [relevant ["Key"], relevant ["Packages"]] "P2" false false "1" false true ==
+      validationVerdict expression "P2" false false false true) = true := by native_decide
+
+example : partialAggregateFamily "Packages/Dims For Key" ["7", "3", "4", "2"]
+    [relevant ["Key"], concreteRow 1] (baseModel := dimsModel) = true ∧
+    partialAggregateFamily "Packages/Dims For Key" ["7", "3", "4", "2"]
+      [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Dims"]] (baseModel := dimsModel) = true ∧
+    partialVerdict "Sum(Packages/Dims For Key) == 7"
+      [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Dims", "Width"]] (baseModel := dimsModel) = some .unknown := by native_decide
 
 end A12Kernel.Dm.KeyedExtentLocks
