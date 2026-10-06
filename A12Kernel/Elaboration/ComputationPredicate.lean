@@ -171,7 +171,11 @@ private def scanNumber (context : ScalarComputationContext)
     (source : CheckedNumberEntityOperand model) (state : State) :
     Except ComputationPredicateError (ComputationHavingScanResult State Result) := do
   match source with
-  | .selected _ => throw (.fieldFill .indexedOperandNotSupported)
+  | .selected source =>
+      let current ← addressed context
+      let side ← (source.sideWith .computation current.document context.row context.read context.storedText
+        current.read context.semanticIndexColumnReader).mapError .indexSelection
+      pure (scanCells consume side.cells state)
   | .field source => pure (scanCells consume
       (source.resolvedAggregateSideAt .computation { read := context.read }).cells state)
   | .star source =>

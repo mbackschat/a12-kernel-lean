@@ -55,16 +55,17 @@ private def validation (expression : String) (key : String := "P1") (duplicate :
     | .fired _ => true | _ => false
 
 private def computation (operation : String) (guard : String := "FieldFilled(Key)")
-    (key : String := "P1") (duplicate : Bool := false) (bad : Bool := false) (invalidIndex : Bool := false) (fallback : Bool := false) (producer : Option (String × String) := none) : Option String := do
-  let checked ← input key duplicate bad invalidIndex
+    (key : String := "P1") (duplicate : Bool := false) (bad : Bool := false) (invalidIndex : Bool := false) (fallback : Bool := false) (producer : Option (String × String) := none)
+    (sourceModel : FlatModel := model) (emptySecond : Bool := false) (header : String := "1") : Option String := do
+  let checked ← input key duplicate bad invalidIndex emptySecond sourceModel header
   let world : World := { now := { epochMillis := 0 } }
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
-  let lowered ← (lowerComputation model .english {
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler sourceModel).toOption
+  let lowered ← (lowerComputation sourceModel .english {
     name := "Consumer", group := ["Form"], targetRelPath := "../Out", commonPrecondition := if fallback then none else some guard,
     alternatives := if fallback then [{ precondition := some guard, operation }, { precondition := some "FieldFilled(Key)", operation := "2" }]
       else [{ precondition := none, operation }], errorCodesToSuppress := [] }).toOption
   let producers ← producer.toList.mapM fun (target, operation) =>
-    (lowerComputation model .english {
+    (lowerComputation sourceModel .english {
       name := "Producer", group := ["Form"], targetRelPath := "../" ++ target,
       commonPrecondition := none, alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).toOption
   let results ← (runComputations world prepared checked (lowered.2 :: producers.map (·.2))).toOption
@@ -514,5 +515,76 @@ example : partialVerdict "FieldValuesNotUnique(Packages/Items* For Key)"
       [relevant ["Key"], relevant ["Packages"]] "P1" true = some .notFired ∧
     partialVerdict "FieldValuesNotUnique(Packages/Items* For Key)"
       [relevant ["Packages"]] = some .notFired := by native_decide
+
+example : computation "1" "FieldValuesNotUnique(Packages/Items* For Key)" = some "value 1" ∧
+    computation "1" "FieldValuesNotUnique(Packages/Items*/Quantity For Key)" = some "value 1" ∧
+    computation "1" "FieldValuesNotUnique(Packages/Items*/Weight For Key)" = some "cleared" ∧
+    computation "1" "FieldValuesNotUnique(Packages/Dims For Key)" (sourceModel := dimsModel) = some "cleared" ∧
+    computation "1" "FieldValuesNotUnique(Packages/Header For Key,Packages/Dims/Width For Key)"
+      (sourceModel := dimsModel) (header := "3") = some "value 1" := by native_decide
+
+example : [("AtLeastOneFieldValueIncludedInValueList", "value 1"),
+    ("NoFieldValueIncludedInValueList", "cleared"), ("NotAllFieldValuesIncludedInValueList", "value 1")].all
+    (fun (operator, expected) => ["Packages/Items*/Weight For Key", "Packages/Items* For Key"].all fun fields =>
+      computation "1" (operator ++ "(" ++ fields ++ " In Packages/Header For Key)")
+        (header := "2") == some expected) = true := by native_decide
+
+example : [("AtLeastOneFieldValueIncludedInValueList", "value 1"),
+    ("NoFieldValueIncludedInValueList", "cleared"), ("NotAllFieldValuesIncludedInValueList", "value 1")].all
+    (fun (operator, expected) => computation "1" (operator ++ "(Packages/Dims For Key In Packages/Header For Key)")
+      (sourceModel := dimsModel) (header := "3") == some expected) = true := by native_decide
+
+example : [("AtLeastOneFieldValueIncludedInValueList", "value 1"),
+    ("NoFieldValueIncludedInValueList", "cleared"),
+    ("NotAllFieldValuesIncludedInValueList", "cleared")].all
+    (fun (operator, present) =>
+      computation "1" (operator ++ "(Packages/Header For Key In Packages/Items*/Quantity For Key)")
+        (header := "2") == some present &&
+      computation "1" (operator ++ "(Packages/Items*/Weight For Key In Packages/Header For Key)")
+        (key := "P2") (emptySecond := true) ==
+        some (if operator == "NoFieldValueIncludedInValueList" then "value 1" else "cleared") &&
+      computation "1" (operator ++ "(Packages/Header For Key In Packages/Items*/Quantity For Key)")
+        (header := "") == some (if operator == "NoFieldValueIncludedInValueList" then "value 1" else "cleared")) = true := by native_decide
+
+example : [("AtLeastOneFieldValueIncludedInValueList", "value 1"),
+    ("NoFieldValueIncludedInValueList", "cleared"), ("NotAllFieldValuesIncludedInValueList", "cleared")].all
+    (fun (operator, expected) =>
+      computation "1" (operator ++ "(Packages/Items*/Weight For Key In Packages/Header For Key)")
+        (bad := true) (header := "2") == some expected &&
+      computation "1" (operator ++ "(Packages/Header For Key In Packages/Items*/Weight For Key)")
+        (bad := true) (header := "2") == some "cleared") = true := by native_decide
+
+example : let quantityFirst := { model with fields := model.fields.filter (·.id != 3) ++ model.fields.filter (·.id == 3) }
+    computation "1" "FieldValuesNotUnique(Packages/Items* For Key)" (bad := true) = some "cleared" ∧
+    computation "1" "FieldValuesNotUnique(Packages/Items* For Key)" (bad := true)
+      (sourceModel := quantityFirst) = some "value 1" := by native_decide
+
+example : ["FieldValuesNotUnique(Packages/Items* For Key)",
+    "AtLeastOneFieldValueIncludedInValueList(Packages/Items*/Weight For Key In Packages/Header For Key)"].all
+    (fun guard => computation "1" guard (key := "missing") (header := "2") (fallback := true) == some "value 2" &&
+      computation "1" guard (duplicate := true) (header := "2") (fallback := true) == some "cleared" &&
+      computation "1" guard (invalidIndex := true) (header := "2") (fallback := true) == some "cleared" &&
+      computation "1" guard (key := "missing") (header := "2")
+        (producer := some ("Key", "\"P1\"")) == some "value 1") = true := by native_decide
+
+example : computation "1" "FieldValuesNotUnique(Packages/Dims For Key)"
+      (sourceModel := dimsModel) (producer := some ("Packages/Dims/Depth", "3")) = some "value 1" ∧
+    computation "1" "FieldValuesNotUnique(Packages/Header For Key,Packages/Dims/Width For Key)"
+      (sourceModel := dimsModel) (producer := some ("Packages/Header", "3")) = some "value 1" ∧
+    computation "1" "NoFieldValueIncludedInValueList(Packages/Items*/Weight For Key In Packages/Header For Key)"
+      (producer := some ("Packages/Items/Weight", "1")) = some "cleared" ∧
+    computation "1" "AtLeastOneFieldValueIncludedInValueList(Packages/Header For Key In Packages/Items*/Weight For Key)"
+      (producer := some ("Packages/Items/Weight", "1")) = some "value 1" := by native_decide
+
+example : let numericIndex := { model with fields := model.fields.map fun field =>
+      if field.id == 1 || field.id == 5 then { field with policy := { kind := .number { scale := 0, signed := true } } } else field }
+    computation "1" "FieldValuesNotUnique(Packages/Items* For Key)" (key := "01") (sourceModel := numericIndex) = some "value 1" ∧
+    computation "1" "AtLeastOneFieldValueIncludedInValueList(Packages/Items*/Weight For Key In Packages/Header For Key)"
+      (key := "01") (sourceModel := numericIndex) (header := "2") = some "value 1" := by native_decide
+
+example : ["FieldValuesNotUnique(Packages/Items* For Key)",
+    "NotAllFieldValuesIncludedInValueList(Packages/Items*/Weight For Key In Packages/Header For Key)",
+    "AtLeastOneFieldValueIncludedInValueList(Packages/Header For Key In Packages/Items*/Weight For Key)"].all
+    (fun guard => computation "1" guard (bad := true) (header := "2") (fallback := true) == some "cleared") = true := by native_decide
 
 end A12Kernel.Dm.KeyedExtentLocks
