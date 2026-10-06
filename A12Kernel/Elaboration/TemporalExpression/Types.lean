@@ -41,12 +41,25 @@ inductive SurfaceScalarTemporalExpression where
   | subdayShift (unit : DateTimeSubdayUnit) (source : SurfaceScalarTemporalExpression)
       (amount : AuthoredNumericExpr (Sum SurfaceNumericAtom (TemporalNumericPart × SurfaceScalarTemporalExpression)))
 
-/-- Temporal source slots exclude the grouped comparison and extrema productions; each nested
-operation checks its own slot (spec/12 §3, grammar `datumAngabe`/`datumAngabe2`). -/
-def SurfaceScalarTemporalExpression.admittedSourceSlot : SurfaceScalarTemporalExpression → Bool
+/-- `datumAngabe2` adds partial-Date interpretation to the ordinary `datumAngabe` source slot
+(GrammarOnly_ConditionParser.g4, rules at lines 479–492; spec/05 §§3,6). -/
+inductive TemporalSourceSlot where
+  | ordinary
+  | withPartialDate
+  deriving Repr, DecidableEq
+
+/-- Each nested operation owns its grammar slot; admitting a wrapper does not widen its operand's
+slot (GrammarOnly_ConditionParser.g4, extractor and constructor rules at lines 416 and 444). -/
+def SurfaceScalarTemporalExpression.admittedSourceSlot (source : SurfaceScalarTemporalExpression)
+    (slot : TemporalSourceSlot := .withPartialDate) : Bool :=
+  match source with
   | .group _ | .extremum _ _ | .combine _ _ _ => false
+  | .valueAsDate _ _ | .indexedValueAsDate _ _ =>
+      match slot with
+      | .ordinary => false
+      | .withPartialDate => true
   | .field _ | .indexed _ | .now | .today | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _
-  | .dateTimeConstruction _ _ | .valueAsDate _ _ | .indexedValueAsDate _ _ | .rangeBound _ _ | .baseYearBound _ | .dateConstruction _ | .calendarShift _ _ _
+  | .dateTimeConstruction _ _ | .rangeBound _ _ | .baseYearBound _ | .dateConstruction _ | .calendarShift _ _ _
   | .timeConstruction _ | .dateFromDateTime _ | .timeFromDateTime _ | .subdayShift _ _ _ => true
 
 inductive ScalarTemporalExpressionError where

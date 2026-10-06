@@ -82,19 +82,7 @@ that same reader, so a `Having` source cannot silently switch to the selected-va
 def evalCheckedIn (condition : CheckedComputationCondition model)
     (context : NumericComputationEvaluationContext) :
     Except CheckedComputationConditionError ComputationConditionResult :=
-  let addressed := context.scalar.addressed.getD {
-    document := context.document, read := context.starRead }
-  let scalar := { context.scalar with
-    row := context.outer
-    addressed := some { addressed with
-      document := context.document
-      read := context.starRead
-      storedText := fun row field => match context.scalar.addressed with
-        | some addressed => addressed.storedText row field
-        | none => do
-            let declaration ← (model.lookupUniqueId field).toOption
-            let path ← (row.pathForScope declaration.repeatableScope).toOption
-            context.document.rawCells { field, path } } }
+  let scalar := context.scalarContext model
   ComputationConditionOf.evalCheckedWith condition scalar CheckedComputationConditionError.primitive
     (fun atom => (context.readCheckedNumericComputationAtom atom).mapError .numeric)
     (fun source => (source.evalChecked scalar (some context.filterRead) context.indexColumn?).mapError .predicate)

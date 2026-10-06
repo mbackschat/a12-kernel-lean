@@ -858,4 +858,22 @@ private def indexedPartialCurrentSource : Option DateParts := do
   pure value.parts
 
 example : indexedPartialCurrentSource = some { year := 2024, month := 3, day := 31 } := by native_decide
+
+example : [("YearFromDate", "2024"), ("MonthFromDate", "2"), ("DayFromDate", "2")].all (fun (operator, expected) =>
+    let scenario : Scenario := { partialMode := .dayOptional, fullDateTarget := true }
+    ["Low", "Rows/Body/A For Key"].all (fun source =>
+      let direct := operator ++ "(ValueAsDate(" ++ source ++ ",FirstDay))"
+      let shifted := operator ++ "(AddDays(ValueAsDate(" ++ source ++ ",FirstDay),1))"
+      evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
+        (direct ++ " == " ++ expected) false none scenario == none &&
+      evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
+        direct true (some "FieldFilled(Key)") scenario == none &&
+      evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
+        (shifted ++ " == " ++ expected) false none scenario == some (.inl (.fired .value)) &&
+      evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
+        shifted true (some "FieldFilled(Key)") scenario == some (.inr ("value " ++ expected)))) = true := by native_decide
+
+example (reference : SurfaceFieldPath) (selection : SurfaceSemanticIndex) (endpoint : ValueAsDateEndpoint) :
+    [SurfaceScalarTemporalExpression.valueAsDate reference endpoint, .indexedValueAsDate selection endpoint].all
+      (fun source => source.admittedSourceSlot .withPartialDate && !source.admittedSourceSlot .ordinary) = true := by rfl
 end A12Kernel.Dm.IndexedTemporalLocks

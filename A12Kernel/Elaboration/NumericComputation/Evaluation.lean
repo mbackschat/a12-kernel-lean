@@ -536,6 +536,24 @@ def selectedBooleanCountSide (context : NumericComputationEvaluationContext)
     (context.indexColumn?.getD context.scalar.semanticIndexColumnReader)
     |>.mapError (fun _ => .unsupportedGroupOperand source.path)
 
+/-- Numeric operands and guards share the caller's addressed text and index capabilities;
+rebuilding only checked reads loses partial-Date interpretation (spec/05 §§3,6). -/
+def scalarContext
+    (context : NumericComputationEvaluationContext) (model : FlatModel) : ScalarComputationContext :=
+  let addressed := context.scalar.addressed.getD {
+    document := context.document, read := context.starRead }
+  { context.scalar with
+    row := context.outer
+    addressed := some { addressed with
+      document := context.document
+      read := context.starRead
+      storedText := fun row field => match context.scalar.addressed with
+        | some addressed => addressed.storedText row field
+        | none => do
+            let declaration ← (model.lookupUniqueId field).toOption
+            let path ← (row.pathForScope declaration.repeatableScope).toOption
+            context.document.rawCells { field, path } } }
+
 /-- Evaluate one model-checked atom against its complete direct/repeatable computation inputs. Addressing failures stay explicit and cannot collapse into a numeric value, clean absence, or formal poison. -/
 def readCheckedNumericComputationAtom
     (context : NumericComputationEvaluationContext) :
@@ -552,15 +570,11 @@ def readCheckedNumericComputationAtom
         context.scalar.read context.scalar.storedText |>.mapError .indexSelection
       pure ((observation.asDirectNumericComparisonOperand source.field.info).toComputationResult)
   | .temporalPart source =>
-      let scalar : ScalarComputationContext := { context.scalar with
-        row := context.outer
-        addressed := some { document := context.document, read := context.starRead } }
+      let scalar := context.scalarContext model
       let scalar := scalar.withIndexColumnReader model (context.indexColumn?.getD context.scalar.semanticIndexColumnReader)
       scalar.readTemporalNumericExpression source
   | .filledFieldCount source =>
-      source.evaluateComputationCount { context.scalar with
-        row := context.outer
-        addressed := some { document := context.document, read := context.starRead } } (some context.filterRead) context.indexColumn?
+      source.evaluateComputationCount (context.scalarContext model) (some context.filterRead) context.indexColumn?
   | .firstFilled source => do
       let result ←
         (source.evaluateComputationFirstFilled (world := context.scalar.world) context.document context.outer

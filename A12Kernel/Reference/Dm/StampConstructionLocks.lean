@@ -81,6 +81,10 @@ example : observed "Min(ValueAsDate(P,FirstDay),[D])" "2024-03-31" "0000-00-00" 
 
 example : ["AddDays(D,DayFromDate(ValueAsDate(P,FirstDay)))",
     "AddSeconds(Z,DayFromDate(ValueAsDate(P,FirstDay)))"].all
+    (fun source => (expression? source).isNone) := by native_decide
+
+example : ["AddDays(D,DayFromDate(AddDays(ValueAsDate(P,FirstDay),1)))",
+    "AddSeconds(Z,DayFromDate(AddDays(ValueAsDate(P,FirstDay),1)))"].all
     (fun source => observed source "2024-03-31" "0000-00-00" "02:30:00" "2" ==
       some (.inr (.value .nonRelevant true))) := by native_decide
 
@@ -137,4 +141,3 @@ example : [none, some 2024].all (fun year =>
     given "Min(Time(H),[T])" "2" year == some true) := by native_decide
 
 end A12Kernel.Dm.StampConstructionLocks
-

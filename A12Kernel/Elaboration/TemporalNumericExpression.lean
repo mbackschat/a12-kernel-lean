@@ -31,9 +31,8 @@ def elaborateTemporalNumericExpression (model : FlatModel) (declaringGroup : Gro
     Except TemporalNumericExpressionError (CheckedTemporalNumericExpression model) := do
   match surface with
   | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _ => throw .literalNotAllowed
-  | .indexedValueAsDate _ _ => throw .sourceSlot
   | _ => pure ()
-  if !surface.admittedSourceSlot then throw .sourceSlot
+  if !surface.admittedSourceSlot .ordinary then throw .sourceSlot
   let source ← (elaborateScalarTemporalExpression model declaringGroup surface targetGroup?).mapError .source
   if h : part.admitsComponents source.components model.hasBaseYear = true then
     let some profile := ModelZone.ConcreteProfile.ofId? model.timeZoneId | throw .calendarUnavailable

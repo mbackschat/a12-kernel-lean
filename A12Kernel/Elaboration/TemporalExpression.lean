@@ -107,7 +107,7 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
         pure (.atom (.indexedValueAsDate { selection, source, sameTarget }), TemporalComponents.fullDate)
       else throw .unsupportedSource
   | .dateTimeConstruction date time => do
-      if !date.admittedSourceSlot || !time.admittedSourceSlot then throw .unsupportedSource
+      if !date.admittedSourceSlot .withPartialDate || !time.admittedSourceSlot .ordinary then throw .unsupportedSource
       let (date, dateComponents) ← resolveScalarTemporalExpression model rowGroup targetGroup? date
       let (time, timeComponents) ← resolveScalarTemporalExpression model rowGroup targetGroup? time
       if !dateComponents.hasDate || !dateComponents.year || dateComponents.hasTime ||
@@ -118,7 +118,7 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       let components ← (elaborateConstructedDateSources model source scope).mapError .dateComponents
       pure (.atom (.dateConstruction components), TemporalComponents.fullDate)
   | .calendarShift unit source amount => do
-      if !source.admittedSourceSlot then throw .unsupportedSource
+      if !source.admittedSourceSlot .withPartialDate then throw .unsupportedSource
       let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? source
       let componentPresent := match unit with
         | .days => components.day
@@ -132,17 +132,17 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       let components ← resolveScalarTimeComponents model rowGroup targetGroup? source
       pure (.atom (.timeConstruction components), TemporalComponents.time)
   | .dateFromDateTime source => do
-      if !source.admittedSourceSlot then throw .unsupportedSource
+      if !source.admittedSourceSlot .ordinary then throw .unsupportedSource
       let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? source
       if !components.isFullDateTime then throw .incompatibleFormats
       pure (.apply (.dateFromDateTime (← scalarProfile model)) source [], TemporalComponents.fullDate)
   | .timeFromDateTime source => do
-      if !source.admittedSourceSlot then throw .unsupportedSource
+      if !source.admittedSourceSlot .ordinary then throw .unsupportedSource
       let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? source
       if !components.isFullDateTime then throw .incompatibleFormats
       pure (.apply (.timeFromDateTime (← scalarProfile model)) source [], TemporalComponents.time)
   | .subdayShift unit source amount => do
-      if !source.admittedSourceSlot then throw .unsupportedSource
+      if !source.admittedSourceSlot .withPartialDate then throw .unsupportedSource
       let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? source
       if !unit.admittedBy components || !components.isFullDateTime then throw .incompatibleFormats
       let profile ← scalarProfile model
@@ -155,9 +155,9 @@ private def resolveScalarTemporalProjection (model : FlatModel) (rowGroup : Grou
     (targetGroup? : Option GroupPath) (surface : SurfaceScalarTemporalExpression) (part : TemporalNumericPart) :
     Except ScalarTemporalExpressionError (ScalarTemporalNumericAtom model) := do
   match surface with
-  | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _ | .indexedValueAsDate _ _ => throw .unsupportedSource
+  | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _ => throw .unsupportedSource
   | _ => pure ()
-  if !surface.admittedSourceSlot then throw .unsupportedSource
+  if !surface.admittedSourceSlot .ordinary then throw .unsupportedSource
   let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? surface
   if !part.admitsComponents components model.hasBaseYear then throw .incompatibleFormats
   pure (.projection part (← scalarProfile model) source)
