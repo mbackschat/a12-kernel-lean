@@ -326,6 +326,12 @@ Date-range capabilities are owned by [`date-range.md`](date-range.md).
 - `assurance`: E/P closed for the three complete sets. Kernel correspondence covers the positional family gate and the component gate; the fold's runtime rows are internal, since no retained observation evaluates an extremum.
 - `remains`: the **filtered** star, under [SG6](../SEMANTICS-GAPS.md#sg6--temporal-authoring-calendar-and-target-completion), with the declared-kind half under [SG21](../SEMANTICS-GAPS.md#sg21--the-declared-kindformat-split-across-temporal-carriers). Plain-star, fixed-group and starred-group operands all fold, the DateTime family's cross-kind comparison is measured, and the component-omitting element type is closed — it needed no interval.
 
+<a id="cap-indexed-temporal-scalar"></a>
+#### Indexed temporal scalar expressions
+
+- `indexed-scalar`: [The scalar atom](../../A12Kernel/Elaboration/TemporalExpression.lean) retains the checked index source and projects its selected observation through the ordinary temporal domain. Full addressed comparisons, recursive shifts and DateTime/Time composition, numeric date/clock extraction, temporal targets and guards use the same leaf. Dynamic key, declared index and selected target remain scheduler dependencies; only the key's free scope enters row binding. Value slots require brackets and source slots require bare entities. Partial-Date interpretation, recursive Date constructor components, partial validation and rich selected pointers remain outside this slice.
+- `indexed-scalar-assurance`: [Reader controls](../../A12Kernel/Reference/Dm/IndexedTemporalLocks.lean) cover Date/Time/DateTime, reference and exact-text literal keys, missing/duplicate/poisoned selection, reduced Date components with and without Base Year, recursive projections and construction, numeric scalar-plan execution, prepared-column fallback versus explicit-reader equivalence, reverse-authored key/target producers, ordinary missing-row faults and source-position/type refusals. Execute retains phase-specific selection and value failure; Analyze can separate scheduling dependencies from free row scopes without reparsing. Existing generic expression laws apply unchanged. This composition is internally checked; external evidence and independent consumer qualification remain pending.
+
 <a id="cap-temporal-comparison-and-aggregates"></a>
 #### Temporal comparison and aggregates
 

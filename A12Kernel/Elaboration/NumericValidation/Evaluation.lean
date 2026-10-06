@@ -176,7 +176,11 @@ def resolveResult (atom : OrderedNumericValidationAtom model)
 
 private def temporalNumericFields (source : CheckedTemporalNumericExpression model)
     (context : AddressedValidationEvaluationContext model) : Except CheckedAddressingError FlatContext := do
-  let cells ← source.source.fieldIds.mapM fun field => do
+  for scope in source.source.bindingScopes do
+    discard <| (context.outer.pathForScope scope).mapError CheckedAddressingError.environment
+  let fields := source.source.fieldIds.filter fun field =>
+    (context.outer.pathForScope (model.fieldRepeatableScope field)).isOk
+  let cells ← fields.mapM fun field => do
     pure (field, ← context.readCell context.outer field)
   let storedText ← match context.input with
     | .checked document | .partialView document _ => pure (document.storedTextIn context.outer)
@@ -188,6 +192,14 @@ private def temporalNumericFields (source : CheckedTemporalNumericExpression mod
   pure { context.scalar.fields with
     storedText
     read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell }
+
+private def temporalNumericAddressed (source : CheckedTemporalNumericExpression model)
+    (context : AddressedValidationEvaluationContext model) :
+    Except CheckedAddressingError (Option ComputationFillContext) := do
+  if !source.source.requiresAddressed then return none
+  match context.input with
+  | .checked document => pure (some document.indexedComputationFillContext)
+  | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired [])
 
 /-- Full addressed validation makes every already-certified direct field relevant. Partial scopes use their separate evaluator and cannot inhabit this context. -/
 def addressedDirectRelevant
@@ -300,7 +312,8 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
       pure ((observation.asDirectNumericComparisonOperand source.field.info).toValidationArithmetic)
   | .temporalPart source => do
       let fields ← temporalNumericFields source context
-      (source.evalResult .validation fields).mapError (fun _ => .temporalUnavailable)
+      let addressed ← temporalNumericAddressed source context
+      (source.evalResult .validation fields addressed context.outer).mapError (fun _ => .temporalUnavailable)
   | .ordinary source =>
       if source.allRelevant (addressedDirectRelevant context) then
         match source, context.input with
@@ -435,7 +448,8 @@ def resolveAddressedResult (atom : OrderedNumericValidationAtom model)
   match atom with
   | .temporalPart source =>
       let fields ← (temporalNumericFields source context).mapError Sum.inl
-      (source.evalResult .validation fields).mapError Sum.inr
+      let addressed ← (temporalNumericAddressed source context).mapError Sum.inl
+      (source.evalResult .validation fields addressed context.outer).mapError Sum.inr
   | _ => (atom.resolveAddressed context).mapError Sum.inl
 
 end OrderedNumericValidationAtom

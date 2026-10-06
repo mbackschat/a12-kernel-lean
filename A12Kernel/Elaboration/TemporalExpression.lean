@@ -48,6 +48,12 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       if declaration.toTemporalTargetPolicy?.any (·.partialMode != .full) then
         throw .unsupportedSource
       pure (.atom (.field field), scalarComponents model field.components)
+  | .indexed authored => do
+      let source ← (elaborateSemanticIndexSource model rowGroup authored).mapError .indexed
+      let some field := source.targetDeclaration.toTemporalField? | throw (.nonTemporal source.targetDeclaration.path)
+      if source.targetDeclaration.toTemporalTargetPolicy?.any (·.partialMode != .full) then
+        throw .unsupportedSource
+      pure (.atom (.indexed source), scalarComponents model field.components)
   | .group source => resolveScalarTemporalExpression model rowGroup targetGroup? source
   | .extremum operator operands => do
       let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
@@ -312,6 +318,11 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
     (atom : ScalarTemporalAtom model) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
   match atom with
+  | .indexed source =>
+      let some field := source.targetDeclaration.toTemporalField? | throw .calendarUnavailable
+      let observation ← (source.observeColumnWith phase context.semanticIndexColumnReader
+        context.row context.read context.storedText).mapError (fun _ => .calendarUnavailable)
+      pure (projectScalarTemporalObservation model field observation)
   | .dateTimeLiteral profile value =>
       match profile.resolveLocal? value with
       | some instant => pure (.value (.instant instant) true)
@@ -541,25 +552,28 @@ end
 
 mutual
 private def scalarTemporalDependencies (storedOnly : Bool)
-    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α) (expression : ScalarTemporalExpression model) : List α :=
+    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
+    (indexed : CheckedSemanticIndexSource model → List α) (expression : ScalarTemporalExpression model) : List α :=
   match expression with
-  | .atom source => scalarTemporalAtomDependencies storedOnly field entity source
+  | .atom source => scalarTemporalAtomDependencies storedOnly field entity indexed source
   | .apply operation first rest =>
-      scalarTemporalDependencies storedOnly field entity first ++
-        (rest.attach.flatMap fun ⟨source, _⟩ => scalarTemporalDependencies storedOnly field entity source) ++
-        scalarTemporalOperationDependencies storedOnly field entity operation
+      scalarTemporalDependencies storedOnly field entity indexed first ++
+        (rest.attach.flatMap fun ⟨source, _⟩ => scalarTemporalDependencies storedOnly field entity indexed source) ++
+        scalarTemporalOperationDependencies storedOnly field entity indexed operation
 termination_by sizeOf expression
 
 private def scalarTemporalAtomDependencies (storedOnly : Bool)
-    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α) (atom : ScalarTemporalAtom model) : List α :=
+    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
+    (indexed : CheckedSemanticIndexSource model → List α) (atom : ScalarTemporalAtom model) : List α :=
   match atom with
   | .dateConstruction components =>
       (if storedOnly then components.sources.filterMap fun
         | .dateYearField checked => some checked.source.id | _ => none
       else components.fields).flatMap field
   | .valueAsDate source => field source.source.target.id
-  | .timeConstruction components => scalarTemporalComponentDependencies storedOnly field entity components
+  | .timeConstruction components => scalarTemporalComponentDependencies storedOnly field entity indexed components
   | .field source => if storedOnly then [] else field source.id
+  | .indexed source => indexed source
   | .entityExtremum _ source => if storedOnly then [] else entity source
   | .rangeBound _ (.exact source) => if storedOnly then [] else field source.source.id
   | .rangeBound _ (.yearless source) => if storedOnly then [] else field source.source.id
@@ -567,39 +581,43 @@ private def scalarTemporalAtomDependencies (storedOnly : Bool)
 termination_by sizeOf atom
 
 private def scalarTemporalOperationDependencies (storedOnly : Bool)
-    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α) (operation : ScalarTemporalTransform model) : List α :=
+    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
+    (indexed : CheckedSemanticIndexSource model → List α) (operation : ScalarTemporalTransform model) : List α :=
   match operation with
   | .subdayShift _ _ amount | .calendarShift _ _ amount =>
-      match amount.mapMSubterm (fun atom _ => (Except.ok (scalarTemporalNumericDependencies storedOnly field entity atom) : Except Empty (List α))) with
+      match amount.mapMSubterm (fun atom _ => (Except.ok (scalarTemporalNumericDependencies storedOnly field entity indexed atom) : Except Empty (List α))) with
       | .ok result => result.atoms.flatten
       | .error error => nomatch error
   | _ => []
 termination_by sizeOf operation
 
 private def scalarTemporalNumericDependencies (storedOnly : Bool)
-    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α) (atom : ScalarTemporalNumericAtom model) : List α :=
+    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
+    (indexed : CheckedSemanticIndexSource model → List α) (atom : ScalarTemporalNumericAtom model) : List α :=
   match atom with
   | .ordinary source => if storedOnly then [] else source.fieldDependencies.flatMap field
-  | .projection _ _ source => scalarTemporalDependencies storedOnly field entity source
+  | .projection _ _ source => scalarTemporalDependencies storedOnly field entity indexed source
 termination_by sizeOf atom
 
 private def scalarTemporalComponentDependency (storedOnly : Bool)
     (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
+    (indexed : CheckedSemanticIndexSource model → List α)
     (component : Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model)) : List α :=
   match component with
   | .inl source => if storedOnly then [] else source.fieldDependencies.flatMap field
-  | .inr source => scalarTemporalNumericDependencies storedOnly field entity source
+  | .inr source => scalarTemporalNumericDependencies storedOnly field entity indexed source
 termination_by sizeOf component
 
 private def scalarTemporalComponentDependencies (storedOnly : Bool)
     (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
+    (indexed : CheckedSemanticIndexSource model → List α)
     (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model))) : List α :=
   match components with
   | .empty => []
-  | .hour hour => scalarTemporalComponentDependency storedOnly field entity hour
-  | .minute hour minute => scalarTemporalComponentDependency storedOnly field entity hour ++ scalarTemporalComponentDependency storedOnly field entity minute
-  | .second hour minute second => scalarTemporalComponentDependency storedOnly field entity hour ++
-      scalarTemporalComponentDependency storedOnly field entity minute ++ scalarTemporalComponentDependency storedOnly field entity second
+  | .hour hour => scalarTemporalComponentDependency storedOnly field entity indexed hour
+  | .minute hour minute => scalarTemporalComponentDependency storedOnly field entity indexed hour ++ scalarTemporalComponentDependency storedOnly field entity indexed minute
+  | .second hour minute second => scalarTemporalComponentDependency storedOnly field entity indexed hour ++
+      scalarTemporalComponentDependency storedOnly field entity indexed minute ++ scalarTemporalComponentDependency storedOnly field entity indexed second
 termination_by sizeOf components
 end
 
@@ -607,25 +625,28 @@ namespace CheckedScalarTemporalExpression
 
 /-- Stored-text requirements include recursively nested temporal operands. -/
 def storedTextFields (expression : CheckedScalarTemporalExpression model) : List FieldId :=
-  scalarTemporalDependencies true (fun field => [field]) (·.fieldIds) expression.core
+  scalarTemporalDependencies true (fun field => [field]) (·.fieldIds)
+    (fun source => match source.key with | .field key => [key.id] | .literal .. => []) expression.core
 
 def fieldIds (expression : CheckedScalarTemporalExpression model) : List FieldId :=
-  scalarTemporalDependencies false (fun field => [field]) (·.fieldIds) expression.core
+  scalarTemporalDependencies false (fun field => [field]) (·.fieldIds)
+    (fun source => (model.fields.filter fun field => source.referencesField field.id).map (·.id)) expression.core
 
-/-- Dependencies below a star remain scheduler inputs, but the star binds those row levels itself. -/
+/-- Selected targets remain scheduler inputs while index and star selection bind their own rows (spec/08 §4). -/
 def bindingScopes (expression : CheckedScalarTemporalExpression model) : List (List RepeatableLevel) :=
   scalarTemporalDependencies false
     (fun field => ((model.lookupUniqueId field).toOption.map (·.repeatableScope)).toList)
-    (·.bindingScopes) expression.core
+    (·.bindingScopes)
+    (fun source => match source.key with | .field key => [key.repeatableScope] | .literal .. => []) expression.core
 
 def boundFieldIds (expression : CheckedScalarTemporalExpression model) : List FieldId :=
-  scalarTemporalDependencies false (fun field => [field]) (·.boundFieldIds) expression.core
+  scalarTemporalDependencies false (fun field => [field]) (·.boundFieldIds)
+    (fun source => match source.key with | .field key => [key.id] | .literal .. => []) expression.core
 
-/-- Expanded operands need topology and selected row reads; a flat validation carrier must defer
-these expressions to the existing addressed extrema carrier. -/
+/-- Index and expanded operands require the addressed carrier to supply topology and selected reads. -/
 def requiresAddressed (expression : CheckedScalarTemporalExpression model) : Bool :=
   (scalarTemporalDependencies false (fun _ => []) (fun source =>
-    [source.shape.operands.any fun | .field .. => false | _ => true]) expression.core).any id
+    [source.shape.operands.any fun | .field .. => false | _ => true]) (fun _ => [true]) expression.core).any id
 
 def referencesField (expression : CheckedScalarTemporalExpression model) (field : FieldId) : Bool :=
   expression.fieldIds.contains field

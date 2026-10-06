@@ -17,6 +17,7 @@ namespace A12Kernel
 
 inductive SurfaceScalarTemporalExpression where
   | field (reference : SurfaceFieldPath)
+  | indexed (source : SurfaceSemanticIndex)
   | group (source : SurfaceScalarTemporalExpression)
   | extremum (operator : TemporalExtremumOp) (source : SurfaceFieldEntitySource)
   | combine (operator : TemporalExtremumOp)
@@ -43,13 +44,14 @@ inductive SurfaceScalarTemporalExpression where
 operation checks its own slot (spec/12 §3, grammar `datumAngabe`/`datumAngabe2`). -/
 def SurfaceScalarTemporalExpression.admittedSourceSlot : SurfaceScalarTemporalExpression → Bool
   | .group _ | .extremum _ _ | .combine _ _ _ => false
-  | .field _ | .now | .today | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _
+  | .field _ | .indexed _ | .now | .today | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _
   | .dateTimeConstruction _ _ | .valueAsDate _ _ | .rangeBound _ _ | .baseYearBound _ | .dateConstruction _ | .calendarShift _ _ _
   | .timeConstruction _ | .dateFromDateTime _ | .timeFromDateTime _ | .subdayShift _ _ _ => true
 
 inductive ScalarTemporalExpressionError where
   | model (error : ResolveError)
   | read (error : ResolveError)
+  | indexed (error : SemanticIndexElabError)
   | extremum (error : TemporalExtremumOperandElabError)
   | amount (error : TemporalShiftAmountElabError)
   | dateComponents (error : ConstructedDateComponentsElabError)
@@ -109,6 +111,7 @@ inductive ScalarTemporalEvaluationFault where
 mutual
 inductive ScalarTemporalAtom (model : FlatModel) where
   | field (source : FlatTemporalField)
+  | indexed (source : CheckedSemanticIndexSource model)
   | entityExtremum (operator : TemporalExtremumOp) (source : CheckedTemporalExtremumOperands model)
   | fixed (value : ScalarTemporalValue)
   | now

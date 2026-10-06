@@ -44,7 +44,7 @@ private def FlatModel.admitsTemporalComputationOperand
 def FlatModel.admitsNumericComputationOperand
     (model : FlatModel) (scope : List RepeatableLevel) : CheckedNumericComputationAtom model → Bool
   | .indexed _ => true
-  | .temporalPart source => model.directFieldsBoundBy scope source.source.fieldIds
+  | .temporalPart source => model.directFieldsBoundBy scope source.source.boundFieldIds
   | .filledFieldCount source =>
       !source.operands.isEmpty && source.rowBoundBool scope &&
         source.operands.all fun operand =>

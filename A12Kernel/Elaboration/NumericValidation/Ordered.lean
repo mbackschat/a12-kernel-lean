@@ -138,7 +138,7 @@ def admitted (atom : OrderedNumericValidationAtom model)
     (scope : NumericOperandScope) : Bool :=
   match atom with
   | .indexed _ => scope == .sameGroupAddressed || scope == .modelWideCheckedComputation
-  | .temporalPart source => source.source.fieldIds.all fun field =>
+  | .temporalPart source => source.source.boundFieldIds.all fun field =>
       (model.lookupUniqueId field).toOption.any fun declaration => match scope with
         | .sameGroup => declaration.groupPath == rowGroup && declaration.repeatableScope.isEmpty
         | .sameGroupAddressed => declaration.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)

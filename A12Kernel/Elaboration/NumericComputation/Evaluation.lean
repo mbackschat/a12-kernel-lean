@@ -270,7 +270,7 @@ def readTemporalNumericExpression (context : ScalarComputationContext)
     (source : CheckedTemporalNumericExpression model) :
     Except NumericComputationFault NumericComputationResult := do
   let result ← match source.evalResult .computation {
-      read := context.read, storedText := context.storedText, world := context.world } with
+      read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
     | .ok result => pure result
     | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return .domainFailure
     | .error fault => throw (.temporalExpression fault)
@@ -531,7 +531,12 @@ def readCheckedNumericComputationAtom
       let observation ← source.toCheckedSemanticIndexSource.observeColumnWith .computation readColumn context.outer
         context.scalar.read context.scalar.storedText |>.mapError .indexSelection
       pure ((observation.asDirectNumericComparisonOperand source.field.info).toComputationResult)
-  | .temporalPart source => context.scalar.readTemporalNumericExpression source
+  | .temporalPart source =>
+      let scalar : ScalarComputationContext := { context.scalar with
+        row := context.outer
+        addressed := some { document := context.document, read := context.starRead } }
+      let scalar := scalar.withIndexColumnReader model (context.indexColumn?.getD context.scalar.semanticIndexColumnReader)
+      scalar.readTemporalNumericExpression source
   | .filledFieldCount source =>
       source.evaluateComputationCount { context.scalar with
         row := context.outer

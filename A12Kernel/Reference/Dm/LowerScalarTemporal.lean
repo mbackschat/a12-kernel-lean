@@ -105,6 +105,14 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
         pure (.rangeBound path bound)
   match expression with
   | .braces source => (.group ·) <$> lowerScalarTemporalExpressionAt model rowGroup .value source
+  | .value { path, index := some key, category := none } =>
+      match position with
+      | .value => (.indexed ·) <$> lowerIndexedSource model rowGroup path key
+      | .source => refuse "TemporalExpression" "bracketed read in temporal source slot"
+  | .entity { path, index := some key, category := none } =>
+      match position with
+      | .source => (.indexed ·) <$> lowerIndexedSource model rowGroup path key
+      | .value => refuse "TemporalExpression" "bare entity in temporal value expression"
   | .value { path, index := none, category := none } =>
       match position, path.toFieldPath? with
       | .value, some field => pure (.field field)

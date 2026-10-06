@@ -582,4 +582,131 @@ example : ["Rows/Children*/Value For Key", "Rows/Children* For Key", "Rows*/Chil
       { validSecond := true, partialCoverage := some (concreteField :: coverage) } ==
         some (.inl (.fired .omission))) = true := by native_decide
 
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    ["Key", "\"R1\""].all fun key =>
+      let expression := "[Rows/Body/A For " ++ key ++ "]"
+      evaluate kind components format low high (expression ++ " == [Low]") false == some (.inl (.fired .value)) &&
+      evaluate kind components format low high ("Max(" ++ expression ++ ",[High])") true == some (.inr ("value " ++ high)) &&
+      evaluate kind components format low high "1" true (some (expression ++ " == [Low]")) == some (.inr "value 1")) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    let expression := "Min([Rows/Body/A For Key],[Low])"
+    [(({ key := "missing" } : Scenario), Verdict.notFired),
+      ({ firstA := some "bad" }, .unknown), ({ secondCode := "R1" }, .unknown)].all (fun (scenario, expected) =>
+        evaluate kind components format low high "[Rows/Body/A For Key] == [Low]" false none scenario == some (.inl expected) &&
+        evaluate kind components format low high expression true none scenario ==
+          some (.inr (if scenario.key == "missing" then "value " ++ low else "cleared"))) &&
+    evaluate kind components format low high "Max([Rows/Body/A For Key],[Low])" true none
+      { key := "missing", firstA := some high, producer := some ("Key", "\"R1\"") } == some (.inr ("value " ++ high)) &&
+    evaluate kind components format low high "Max([Rows/Body/A For Key],[Low])" true none
+      { firstA := some "bad", producer := some ("Rows/Body/A", "MaxValue(Low,High)") } == some (.inr ("value " ++ high))) = true := by native_decide
+
+example : evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03"
+    "AddDays(Rows/Body/A For Key,2) == [High]" false == some (.inl (.fired .value)) ∧
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03"
+      "AddDays(Rows/Body/A For Key,2)" true == some (.inr "value 2024-01-03") := by native_decide
+
+example : [("YearFromDate", "2024"), ("MonthFromDate", "1"), ("DayFromDate", "1"), ("QuarterFromDate", "1")].all (fun (operator, expected) =>
+    let expression := operator ++ "(Rows/Body/A For Key)"
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03"
+      (expression ++ " == " ++ expected) false == some (.inl (.fired .value)) &&
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03"
+      expression true (some "FieldFilled(Key)") == some (.inr ("value " ++ expected))) = true := by native_decide
+
+example : [(.time, TemporalComponents.time, "HH:mm:ss", "01:02:03", "03:02:01"),
+    (.dateTime, .now, "yyyy-MM-dd'T'HH:mm:ss", "2024-01-01T01:02:03", "2024-01-03T03:02:01")].all
+    (fun (kind, components, format, low, high) =>
+      [("HoursFromTime", "1"), ("MinutesFromTime", "2"), ("SecondsFromTime", "3")].all fun (operator, expected) =>
+        let expression := operator ++ "(Rows/Body/A For Key)"
+        evaluate kind components format low high (expression ++ " == " ++ expected) false == some (.inl (.fired .value)) &&
+        evaluate kind components format low high expression true (some "FieldFilled(Key)") == some (.inr ("value " ++ expected))) = true := by native_decide
+
+example : evaluate .dateTime .now "yyyy-MM-dd'T'HH:mm:ss" "2024-01-01T01:02:03" "2024-01-03T03:02:01"
+    "DateTime(DateFromDateTime(Rows/Body/A For Key),TimeFromDateTime(Rows/Body/A For Key)) == [Low]"
+    false == some (.inl (.fired .value)) ∧
+    evaluate .time .time "HH:mm:ss" "01:02:03" "03:02:01"
+      "Time(HoursFromTime(Rows/Body/A For Key),MinutesFromTime(Rows/Body/A For Key),SecondsFromTime(Rows/Body/A For Key))"
+      true == some (.inr "value 01:02:03") := by native_decide
+
+
+example : evaluate .dateTime .now "yyyy-MM-dd'T'HH:mm:ss" "2024-01-01T01:02:03" "2024-01-03T03:02:01"
+    "SecondsFromTime(AddSeconds(Rows/Body/A For Key,1)) == 4" false == some (.inl (.fired .value)) ∧
+    evaluate .dateTime .now "yyyy-MM-dd'T'HH:mm:ss" "2024-01-01T01:02:03" "2024-01-03T03:02:01"
+      "SecondsFromTime(AddSeconds(Rows/Body/A For Key,1))" true (some "FieldFilled(Key)") == some (.inr "value 4") ∧
+    evaluate .time .time "HH:mm:ss" "01:02:03" "03:02:01"
+      "HoursFromTime(Rows/Body/A For Key)" true (some "FieldFilled(Key)") { scalarPlan := true } == some (.inr "value 1") := by native_decide
+
+example : evaluate .time .time "HH:mm:ss" "01:02:03" "03:02:01"
+    "HoursFromTime(Rows/Body/A For Key)" true (some "FieldFilled(Key)")
+    { firstA := some "03:02:01", key := "missing", producer := some ("Key", "\"R1\"") } == some (.inr "value 3") ∧
+    evaluate .time .time "HH:mm:ss" "01:02:03" "03:02:01"
+      "HoursFromTime(Rows/Body/A For Key)" true (some "FieldFilled(Key)")
+      { firstA := some "bad", producer := some ("Rows/Body/A", "MaxValue(Low,High)") } == some (.inr "value 3") := by native_decide
+
+example : [none, some 2024].all (fun baseYear =>
+    evaluate .date { TemporalComponents.fullDate with year := false } "MM-dd" "01-01" "01-03"
+      "AddDays(Rows/Body/A For Key,2) == [High]" false none { baseYear } == some (.inl (.fired .value))) = true := by native_decide
+
+example : ["AddDays([Rows/Body/A For Key],2) == [High]",
+    "Rows/Body/A For Key == [Low]", "AddDays(Rows/Amount For Key,2) == [High]",
+    "[Rows/Body/A For 1] == [Low]", "DateTime(Rows/Body/A For Key,Rows/Body/B For Key) == [Low]"].all
+    (fun expression => (evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03" expression false).isNone) = true := by native_decide
+
+private def indexedScalarDependencies : Option (List FieldId × List FieldId × List (List RepeatableLevel) × Bool × List FieldId) := do
+  let model := model .date .fullDate "yyyy-MM-dd"
+  let parsed ← (parseText .english "AddDays(Rows/Body/A For Key,2)").toOption
+  let surface ← (lowerScalarTemporalExpression model ["Form"] parsed.body).toOption
+  let checked ← (elaborateScalarTemporalExpression model ["Form"] surface).toOption
+  pure (checked.fieldIds, checked.boundFieldIds, checked.bindingScopes, checked.requiresAddressed, checked.storedTextFields)
+
+example : indexedScalarDependencies = some ([4,5,6], [4], [[]], true, [4]) := by native_decide
+
+example : (evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03"
+    "[Rows/Body/A For Key] == [Low]" false none { partialCoverage := some [] }).isNone = true ∧
+    (evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03"
+      "[Rows/Body/A For Key] == [Low]" false none { partialMode := .dayOptional }).isNone = true := by native_decide
+
+
+private def numericMissingBinding (expression : String) : Option Bool := do
+  let model := model .date .fullDate "yyyy-MM-dd"
+  let parsed ← (parseText .english expression).toOption
+  let surface ← (lowerScalarTemporalExpression model ["Form"] parsed.body).toOption
+  let source ← (elaborateTemporalNumericExpression model ["Form"] surface (.date .day) (some ["Form", "Rows"])).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler model).toOption
+  let document ← (readDocument {
+    flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (input "2024-01-01" "2024-01-03" {})).toOption
+  let document ← (checkDocument prepared "en_US" document.data).toOption
+  pure (!((OrderedNumericValidationAtom.temporalPart source).resolveAddressed {
+    scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable },
+    outer := [], input := .checked document }).isOk)
+
+example : numericMissingBinding "[Rows/Body/A]" = some true ∧
+    numericMissingBinding "AddDays(Rows/Body/A,2)" = some true := by native_decide
+
+
+private def indexedNumericContexts (expression : String) : Option (List (Option Rat)) := do
+  let model := model .date .fullDate "yyyy-MM-dd"
+  let parsed ← (parseText .english expression).toOption
+  let surface ← (lowerScalarTemporalExpression model ["Form"] parsed.body).toOption
+  let source ← (elaborateTemporalNumericExpression model ["Form"] surface (.date .day)).toOption
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let data ← (readDocument { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (input "2024-01-01" "2024-01-03" {})).toOption
+  let checked ← (checkDocument prepared "en_US" data.data).toOption
+  let scalar := checked.indexedScalarComputationContext world
+  let context : NumericComputationEvaluationContext := {
+    scalar, document := checked.computationFillContext.document, outer := [],
+    filterRead := checked.computationFillContext.read, starRead := checked.computationFillContext.read }
+  let atom := CheckedNumericComputationAtom.temporalPart source
+  let explicit := { context with indexColumn? := some scalar.semanticIndexColumnReader }
+  pure ([scalar.readCheckedNumericComputationAtom atom, context.readCheckedNumericComputationAtom atom,
+    explicit.readCheckedNumericComputationAtom atom].map fun result =>
+      result.toOption.bind fun | .value amount => some amount | _ => none)
+
+example : indexedNumericContexts "[Rows/Body/A For Key]" = some [some 1, some 1, some 1] ∧
+    indexedNumericContexts "AddDays(Rows/Body/A For Key,2)" = some [some 3, some 3, some 3] := by native_decide
+
 end A12Kernel.Dm.IndexedTemporalLocks
