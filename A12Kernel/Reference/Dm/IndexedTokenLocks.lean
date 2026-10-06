@@ -196,20 +196,21 @@ example : generated "NumberOfDifferentValues(Rows/Body For Key)" = some (.fired 
     generated "1" (some "AtLeastOneFieldValueIncludedInValueList(Rows/Body For Key In Ref)") = some (.fired .value) ∧
     generated "1" (some "AtLeastOneFieldValueIncludedInValueList(Rows/Body For Key In Ref)") "missing" = some .notFired := by native_decide
 
-private def ordinaryRule (selected partialRun : Bool) :
+private def ordinaryRule (selected partialRun : Bool) (scope : ValidationRelevanceScope := .full)
+    (enumeration : Bool := false) (scenario : Scenario := {}) (operandOverride : Option String := none) :
     Option (Except OrdinaryRepeatableRuleEvaluationError (Option Verdict)) := do
-  let m := model false
+  let m := model enumeration
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler m).toOption
   let data ← (readDocument {
-    flat := m, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] } (input {})).toOption
+    flat := m, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] } (input scenario)).toOption
   let document ← (checkDocument prepared "en_US" data.data).toOption
-  let operands := if selected then "Rows/Body For Key" else "Ref,TextOut"
+  let operands := operandOverride.getD (if selected then "Rows/Body For Key" else "Ref,TextOut")
   let parsed ← (parseText .english ("FieldFilled(Ref) And FirstFilledValue(" ++ operands ++ ") == \"A\"")).toOption
   let condition ← (lowerCondition m ["Form"] false parsed.body).toOption
   let rule ← (assembleResolvedValidationRule m condition 4 "SELECTED" .error { parts := [] }).toOption
   if partialRun then
-    pure ((rule.evalAddressedPartial document .full).map fun
+    pure ((rule.evalAddressedPartial document scope).map fun
       | .skipped => none
       | .evaluated outcome => some outcome.verdict)
   else
@@ -217,13 +218,26 @@ private def ordinaryRule (selected partialRun : Bool) :
       scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }
       outer := [], input := .checked document } true).mapError .conditionAddressing).map (some ∘ FlatRuleOutcome.verdict))
 
-example : [(true, false), (false, true)].all (fun (selected, partialRun) =>
+example : [(true, false), (false, true), (true, true)].all (fun (selected, partialRun) =>
     match ordinaryRule selected partialRun with
     | some (.ok (some (.fired .value))) => true
-    | _ => false) = true ∧
-    (match ordinaryRule true true with
-    | some (.error (.conditionAddressing (.addressing (.unsupportedGroupOperand path)))) => path == ["Form", "Rows", "Body"]
     | _ => false) = true := by native_decide
+
+private def partialSelected (enumeration : Bool) (operand : String)
+    (paths : List (List String)) (scenario : Scenario := {}) : Option Verdict := do
+  let scope := ValidationRelevanceScope.partialSet ((["Ref"] :: ["Key"] :: ["Rows", "Code"] :: paths).map fun path =>
+    { path := "Form" :: path, indices := ("Form" :: path).map fun _ => .all })
+  (← ordinaryRule true true scope enumeration scenario (some operand)).toOption.join
+
+example : [false, true].all (fun enumeration =>
+    partialSelected enumeration "Rows/Body For Key" [["Rows", "Body", "A"]] == some (.fired .value) &&
+    partialSelected enumeration "Rows/Body/A For Key,Ref" [["Rows", "Body", "A"]] == some (.fired .value) &&
+    partialSelected enumeration "Rows/Children*/Value For Key" [["Rows", "Children", "Value"]] == some (.fired .value) &&
+    partialSelected enumeration "Rows/Body For Key" [["Rows", "Body", "B"]] == some .unknown &&
+    partialSelected enumeration "Rows/Body For Key" [["Rows", "Body", "A"]] { firstA := "" } == some .unknown &&
+    partialSelected enumeration "Rows/Body For Key,Ref" [["Rows", "Body"]] { key := "missing" } == some (.fired .omission) &&
+    partialSelected enumeration "Rows/Body For Key,Ref" [] { key := "missing" } == some .unknown &&
+    partialSelected enumeration "Ref,Rows/Body For Key" [] { key := "missing" } == some (.fired .value)) = true := by native_decide
 
 private def selectedSource : Option (CheckedTokenEntitySource (model false)) := do
   let parsed ← (parseText .english "FirstFilledValue(Rows/Body For Key)").toOption

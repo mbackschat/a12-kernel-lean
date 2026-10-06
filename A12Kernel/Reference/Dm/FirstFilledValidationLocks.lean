@@ -305,4 +305,48 @@ example : [none, some ValidationRelevanceScope.full].all (fun partialScope =>
       [(some "B", some "A"), (some "A", some "B")] (partialScope := partialScope)
       (descendantError := true) == some [.fired .value, .notFired]) := by native_decide
 
+private def selectedOutcome (prototype : FlatFieldDecl) (value : String) (operand : String)
+    (first : String) (paths : List (List String)) (partialRun : Bool := true) : Option Verdict := do
+  let model : FlatModel := {
+    timeZoneId := "Europe/Berlin"
+    fields := [
+      { id := 1, groupPath := ["Form"], name := "Error", policy := { kind := .string } },
+      { id := 2, groupPath := ["Form", "Rows"], name := "Code", repeatableScope := [10], policy := { kind := .string } },
+      { prototype with id := 3, groupPath := ["Form", "Rows", "Body"], name := "A", repeatableScope := [10] },
+      { prototype with id := 4, groupPath := ["Form", "Rows", "Body"], name := "B", repeatableScope := [10] },
+      { prototype with id := 5, groupPath := ["Form"], name := "Fallback" }]
+    repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 2, indexField := some 2 }] }
+  let input ← (readDocument { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (Json.mkObj [("Form", Json.mkObj [("Error", .str "ready"), ("Fallback", .str value),
+      ("Rows", .arr #[Json.mkObj [("Code", .str "R1"), ("Body", Json.mkObj [("A", .str first), ("B", .str "bad")])]])])])).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let parsed ← (parseText .english ("FieldFilled(Error) And FirstFilledValue(" ++ operand ++ ") == Fallback")).toOption
+  let condition ← (lowerCondition model ["Form"] false parsed.body).toOption
+  let rule ← (assembleResolvedValidationRule model condition 1 "PARTIAL_FIRST" .error { parts := [] }).toOption
+  if !partialRun then
+    return (← (rule.evalAddressedFull {
+      scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }
+      outer := [], input := .checked document } true).toOption).verdict
+  let scope := coverage ((["Form", "Error"] :: ["Form", "Fallback"] :: ["Form", "Rows", "Code"] :: paths))
+  match ← (rule.evalAddressedPartial document scope).toOption with
+  | .skipped => none
+  | .evaluated result => some result.verdict
+
+example : [(boolean, "false"), (date, "2024-03-05"), (time, "03:04:05"),
+    (stamp, "2024-03-05T03:04:05"), (range, "2024-03-05/2024-04-06")].all (fun (prototype, value) =>
+    selectedOutcome prototype value "Rows/Body For \"R1\"" value [["Form", "Rows", "Body", "A"]] == some (.fired .value) &&
+    selectedOutcome prototype value "Rows/Body/A For \"R1\",Fallback" value [["Form", "Rows", "Body", "A"]] == some (.fired .value) &&
+    selectedOutcome prototype value "Rows/Body For \"R1\"" value [["Form", "Rows", "Body", "B"]] == some .unknown &&
+    selectedOutcome prototype value "Rows/Body For \"R1\"" "" [["Form", "Rows", "Body", "A"]] == some .unknown &&
+    selectedOutcome prototype value "Rows/Body For \"missing\",Fallback" value [["Form", "Rows", "Body"]] == some (.fired .omission)) = true := by native_decide
+
+example : [(boolean, "false"), (date, "2024-03-05"), (time, "03:04:05"),
+    (stamp, "2024-03-05T03:04:05"), (range, "2024-03-05/2024-04-06")].all (fun (prototype, value) =>
+    selectedOutcome prototype value "Rows/Body For \"R1\"" value [] false == some (.fired .value) &&
+    selectedOutcome prototype value "Rows/Body/A For \"R1\",Fallback" value [] false == some (.fired .value) &&
+    selectedOutcome prototype value "Rows/Body For \"missing\",Fallback" value [] false == some (.fired .omission) &&
+    selectedOutcome prototype value "Rows/Body For \"R1\"" "" [["Form", "Rows", "Body"]] == some .unknown &&
+    selectedOutcome prototype value "Fallback,Rows/Body For \"missing\"" value [] == some (.fired .value)) = true := by native_decide
+
 end A12Kernel.Dm.FirstFilledValidationLocks

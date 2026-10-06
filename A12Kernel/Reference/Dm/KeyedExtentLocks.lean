@@ -301,4 +301,21 @@ example : partialUnsupported "NumberOfValueInFields(2 In Packages/Items* For Key
 
 example : partialUnsupported "NumberOfValueInFields(2 In Packages/Items* For Key) == 3 Or FieldFilled(Out)" = true := by native_decide
 
+example : partialVerdict "FirstFilledValue(Packages/Items*/Weight For Key) == 2"
+    [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Items", "Weight"]] = some (.fired .value) ∧
+    partialVerdict "FirstFilledValue(Packages/Header For Key,Out) == 1"
+      [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Header"]] = some (.fired .value) ∧
+    partialVerdict "FirstFilledValue(Packages/Items* For Key) == 2"
+      [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Items", "Weight"]] = some (.fired .value) := by native_decide
+
+example : partialVerdict "FirstFilledValue(Packages/Header For Key,Out) == 99"
+    [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Header"]] "P1" false false "" = some (.fired .omission) ∧
+    partialVerdict "FirstFilledValue(Packages/Header For Key,Out) == 99"
+      [relevant ["Key"], relevant ["Packages", "Code"]] = some .unknown ∧
+    partialVerdict "FirstFilledValue(Out,Packages/Header For Key) == 99" [] = some (.fired .value) ∧
+    partialVerdict "FirstFilledValue(Packages/Items*/Weight For Key,Out) == 99"
+      [relevant ["Key"], relevant ["Packages"]] "missing" = some (.fired .omission) ∧
+    partialVerdict "FirstFilledValue(Packages/Items*/Weight For Key,Out) == 99"
+      [relevant ["Key"], concreteRow 1, concreteRow 2] "missing" = some .unknown := by native_decide
+
 end A12Kernel.Dm.KeyedExtentLocks

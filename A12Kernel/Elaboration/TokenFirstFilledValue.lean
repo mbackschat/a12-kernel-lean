@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.PartialSemanticIndex
 import A12Kernel.Elaboration.TokenEntityList
 import A12Kernel.Semantics.FirstFilledValue
 
@@ -317,9 +318,24 @@ private def scanCheckedPartialTokenOperands (document : CheckedDocument model) (
       Except CheckedAddressingError PartialValidationFirstFilledTokenResult
   | [], _ => pure (.evaluated .noValue)
   | operand :: rest, state => do
-      let cells ← checkedPartialTokenAddresses document outer operand
-      match ← scanCheckedPartialTokenCells (model := model) scope read cells
-          (state.enterSelection cells.isEmpty false false) with
+      let step ← match operand with
+        | .selected source => do
+            match ← resolvePartialSelectedAddresses source.source document scope outer (fun row field => some <$> read row field) with
+            | none => pure (.inr .nonRelevant)
+            | some (.unknown cause) | some (.poison cause) => pure (.inr (.evaluated (.unavailable cause)))
+            | some .empty => pure (.inl (state.enterSelection true false false))
+            | some (.value (addresses, hasTail)) =>
+                let cells ← addresses.mapM fun (declaration, row) => do
+                  let some slot := source.slots.find? (·.declaration.id == declaration.id)
+                    | throw (.checkedDocumentRequired source.path)
+                  pure (declaration, slot.operand, row)
+                scanCheckedPartialTokenCells (model := model) scope read cells
+                  (state.enterSelection cells.isEmpty hasTail false)
+        | _ => do
+            let cells ← checkedPartialTokenAddresses document outer operand
+            scanCheckedPartialTokenCells (model := model) scope read cells
+              (state.enterSelection cells.isEmpty false false)
+      match step with
       | .inl next => scanCheckedPartialTokenOperands document outer scope read rest next
       | .inr result => pure result
 
