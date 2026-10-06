@@ -1,0 +1,3979 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "IndexedPattern_DM.json",
+    "locale" : "en_US",
+    "clock" : "2024-01-01T00:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "matched",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "PATTERNMATCHED",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonComp",
+              "field" : "Form/PatternMatchedCommon",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedCommon",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : 1,
+                "PatternMatchedAlternativeAfter" : 2,
+                "PatternMatchedCommon" : 1,
+                "PatternMatchedCommonAfter" : 2,
+                "PatternViolatedAlternative" : 2,
+                "PatternViolatedAlternativeAfter" : 3,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : 1,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "123"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "PATTERNMATCHED",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonComp",
+              "field" : "Form/PatternMatchedCommon",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedCommon",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : 1,
+                "PatternMatchedAlternativeAfter" : 2,
+                "PatternMatchedCommon" : 1,
+                "PatternMatchedCommonAfter" : 2,
+                "PatternViolatedAlternative" : 2,
+                "PatternViolatedAlternativeAfter" : 3,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : 1,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "123"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "violated",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "PATTERNVIOLATED",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonComp",
+              "field" : "Form/PatternViolatedCommon",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedCommon",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "2"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : 2,
+                "PatternMatchedAlternativeAfter" : 3,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : 1,
+                "PatternViolatedAlternative" : 1,
+                "PatternViolatedAlternativeAfter" : 2,
+                "PatternViolatedCommon" : 1,
+                "PatternViolatedCommonAfter" : 2,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x12"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "PATTERNVIOLATED",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonComp",
+              "field" : "Form/PatternViolatedCommon",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedCommon",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "2"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : 2,
+                "PatternMatchedAlternativeAfter" : 3,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : 1,
+                "PatternViolatedAlternative" : 1,
+                "PatternViolatedAlternativeAfter" : 2,
+                "PatternViolatedCommon" : 1,
+                "PatternViolatedCommonAfter" : 2,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x12"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : 2,
+                "PatternMatchedAlternativeAfter" : 3,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : 1,
+                "PatternViolatedAlternative" : 2,
+                "PatternViolatedAlternativeAfter" : 3,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : 1,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : ""
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : 2,
+                "PatternMatchedAlternativeAfter" : 3,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : 1,
+                "PatternViolatedAlternative" : 2,
+                "PatternViolatedAlternativeAfter" : 3,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : 1,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : ""
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "missing",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Text",
+                "Form/Key",
+                "Form/PatternMatchedAlternative"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Text",
+                "Form/Key",
+                "Form/PatternViolatedAlternative"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "Z",
+                "PatternMatchedAlternative" : 2,
+                "PatternMatchedAlternativeAfter" : 3,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : 1,
+                "PatternViolatedAlternative" : 2,
+                "PatternViolatedAlternativeAfter" : 3,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : 1,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "123"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Text",
+                "Form/Key",
+                "Form/PatternMatchedAlternative"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Text",
+                "Form/Key",
+                "Form/PatternViolatedAlternative"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "Z",
+                "PatternMatchedAlternative" : 2,
+                "PatternMatchedAlternativeAfter" : 3,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : 1,
+                "PatternViolatedAlternative" : 2,
+                "PatternViolatedAlternativeAfter" : 3,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : 1,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "123"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "duplicate",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows/Id",
+                "Form/Rows/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows/Id",
+                "Form/Rows/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows[2]/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Id"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows[2]/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Id"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : null,
+                "PatternMatchedAlternativeAfter" : null,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : null,
+                "PatternViolatedAlternative" : null,
+                "PatternViolatedAlternativeAfter" : null,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : null,
+                "Rows" : [
+                  {
+                    "Id" : "B",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "123"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows/Id",
+                "Form/Rows/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows/Id",
+                "Form/Rows/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows[2]/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Id"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows[2]/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Id"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : null,
+                "PatternMatchedAlternativeAfter" : null,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : null,
+                "PatternViolatedAlternative" : null,
+                "PatternViolatedAlternativeAfter" : null,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : null,
+                "Rows" : [
+                  {
+                    "Id" : "B",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "123"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringZuLang",
+              "field" : "Form/Rows[2]/Text",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringZuLang",
+                "field" : "Form/Rows[2]/Text",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Text"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : null,
+                "PatternMatchedAlternativeAfter" : null,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : null,
+                "PatternViolatedAlternative" : null,
+                "PatternViolatedAlternativeAfter" : null,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "long"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringZuLang",
+              "field" : "Form/Rows[2]/Text",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringZuLang",
+                "field" : "Form/Rows[2]/Text",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Text"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : null,
+                "PatternMatchedAlternativeAfter" : null,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : null,
+                "PatternViolatedAlternative" : null,
+                "PatternViolatedAlternativeAfter" : null,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "long"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "unselected-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "PATTERNMATCHED",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonComp",
+              "field" : "Form/PatternMatchedCommon",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedCommon",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringZuLang",
+              "field" : "Form/Rows/Text",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Text"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringZuLang",
+                "field" : "Form/Rows/Text",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Text"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : 1,
+                "PatternMatchedAlternativeAfter" : 2,
+                "PatternMatchedCommon" : 1,
+                "PatternMatchedCommonAfter" : 2,
+                "PatternViolatedAlternative" : 2,
+                "PatternViolatedAlternativeAfter" : 3,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : 1,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "long"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "123"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "PATTERNMATCHED",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonComp",
+              "field" : "Form/PatternMatchedCommon",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedCommon",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringZuLang",
+              "field" : "Form/Rows/Text",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Text"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringZuLang",
+                "field" : "Form/Rows/Text",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Text"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : 1,
+                "PatternMatchedAlternativeAfter" : 2,
+                "PatternMatchedCommon" : 1,
+                "PatternMatchedCommonAfter" : 2,
+                "PatternViolatedAlternative" : 2,
+                "PatternViolatedAlternativeAfter" : 3,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : 1,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "long"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "123"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "omitted",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : 2,
+                "PatternMatchedAlternativeAfter" : 3,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : 1,
+                "PatternViolatedAlternative" : 2,
+                "PatternViolatedAlternativeAfter" : 3,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : 1,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : 2,
+                "PatternMatchedAlternativeAfter" : 3,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : 1,
+                "PatternViolatedAlternative" : 2,
+                "PatternViolatedAlternativeAfter" : 3,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : 1,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty-key",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "",
+                "PatternMatchedAlternative" : null,
+                "PatternMatchedAlternativeAfter" : 1,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : 1,
+                "PatternViolatedAlternative" : null,
+                "PatternViolatedAlternativeAfter" : 1,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : 1,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "123"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "",
+                "PatternMatchedAlternative" : null,
+                "PatternMatchedAlternativeAfter" : 1,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : 1,
+                "PatternViolatedAlternative" : null,
+                "PatternViolatedAlternativeAfter" : 1,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : 1,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "123"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty-index",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "PATTERNMATCHED",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonComp",
+              "field" : "Form/PatternMatchedCommon",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedCommon",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Form/Rows/Id",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Id"
+              ],
+              "fillToFix" : [
+                "Form/Rows/Id"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "mandatoryField",
+                "field" : "Form/Rows/Id",
+                "severity" : "ERROR",
+                "type" : "OMISSION_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Id"
+                ],
+                "fillToFix" : [
+                  "Form/Rows/Id"
+                ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : null,
+                "PatternMatchedAlternativeAfter" : null,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : null,
+                "PatternViolatedAlternative" : null,
+                "PatternViolatedAlternativeAfter" : null,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : null,
+                "Rows" : [
+                  {
+                    "Id" : "",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "123"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "PATTERNMATCHED",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeAfterComp",
+              "field" : "Form/PatternMatchedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedAlternative",
+                "Form/PatternMatchedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedAlternativeComp",
+              "field" : "Form/PatternMatchedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonAfterComp",
+              "field" : "Form/PatternMatchedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternMatchedCommon",
+                "Form/PatternMatchedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternMatchedCommonComp",
+              "field" : "Form/PatternMatchedCommon",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternMatchedCommon",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeAfterComp",
+              "field" : "Form/PatternViolatedAlternativeAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedAlternative",
+                "Form/PatternViolatedAlternativeAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedAlternativeComp",
+              "field" : "Form/PatternViolatedAlternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/PatternViolatedAlternative",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PatternViolatedCommonAfterComp",
+              "field" : "Form/PatternViolatedCommonAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/PatternViolatedCommon",
+                "Form/PatternViolatedCommonAfter"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Form/Rows/Id",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Id"
+              ],
+              "fillToFix" : [
+                "Form/Rows/Id"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/PatternMatchedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedAlternativeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternMatchedCommonAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternative",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedAlternativeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommon",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/PatternViolatedCommonAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "mandatoryField",
+                "field" : "Form/Rows/Id",
+                "severity" : "ERROR",
+                "type" : "OMISSION_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Id"
+                ],
+                "fillToFix" : [
+                  "Form/Rows/Id"
+                ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Key" : "B",
+                "PatternMatchedAlternative" : null,
+                "PatternMatchedAlternativeAfter" : null,
+                "PatternMatchedCommon" : null,
+                "PatternMatchedCommonAfter" : null,
+                "PatternViolatedAlternative" : null,
+                "PatternViolatedAlternativeAfter" : null,
+                "PatternViolatedCommon" : null,
+                "PatternViolatedCommonAfter" : null,
+                "Rows" : [
+                  {
+                    "Id" : "",
+                    "Text" : "abc"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "123"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

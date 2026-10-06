@@ -1,0 +1,262 @@
+[
+  {
+    "id": "PatternMatched-direct",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Key] PatternMatched \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternMatched-indexed",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows/Text For Key] PatternMatched \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternMatched-literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows/Text For \"B\"] PatternMatched \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternMatched-number",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [PatternMatchedCommon] PatternMatched \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternMatched-group",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows For Key] PatternMatched \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternMatched-star",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows*/Text] PatternMatched \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternMatched-parenthesized",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And {[Rows/Text For Key]} PatternMatched \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternMatched-computed",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows/Text For Key]+\"x\" PatternMatched \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternMatched-enum",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows/Enum For Key] PatternMatched \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternMatched-category",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows/Enum For Key->Kind] PatternMatched \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternViolated-direct",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Key] PatternViolated \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternViolated-indexed",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows/Text For Key] PatternViolated \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternViolated-literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows/Text For \"B\"] PatternViolated \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternViolated-number",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [PatternMatchedCommon] PatternViolated \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternViolated-group",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows For Key] PatternViolated \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternViolated-star",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows*/Text] PatternViolated \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternViolated-parenthesized",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And {[Rows/Text For Key]} PatternViolated \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternViolated-computed",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows/Text For Key]+\"x\" PatternViolated \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternViolated-enum",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows/Enum For Key] PatternViolated \"[0-9]+\""
+    ]
+  },
+  {
+    "id": "PatternViolated-category",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And [Rows/Enum For Key->Kind] PatternViolated \"[0-9]+\""
+    ]
+  }
+]

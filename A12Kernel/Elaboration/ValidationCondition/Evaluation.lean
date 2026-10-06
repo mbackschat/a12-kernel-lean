@@ -39,7 +39,7 @@ def evalSelected (context : ValidationEvaluationContext)
       | some states =>
           (operator.evalPresence states).asConservativeVerdict
       | none => .unknown
-  | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ | .indexedCustomFieldValidity _ => .unknown
+  | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ | .indexedCustomFieldValidity _ | .indexedStringPattern _ => .unknown
   | .repetitionNotUnique _ => .unknown
   | .guardedRootCurrentRepetition guard _ comparison =>
       Verdict.conj
@@ -77,7 +77,7 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .repetitionNotUnique _ => true
   | .stringExpression comparison => !comparison.hasIndexed
   | .constructedDateValidity _ source => source.directComponents?.isSome
-  | .customCondition _ | .customFieldValidity _ | .indexedCustomFieldValidity _ | .stringPattern _ => true
+  | .customCondition _ | .customFieldValidity _ | .indexedCustomFieldValidity _ | .stringPattern _ | .indexedStringPattern _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
   | _ => false
@@ -252,6 +252,13 @@ def evalAddressedPartial?
           | none => .unknown
       else
         pure .unknown)
+  | .indexedStringPattern leaf =>
+      some do
+        let document ← match context.input with
+          | .checked document | .partialView document _ => pure document
+          | .legacy _ _ => throw (.checkedDocumentRequired leaf.selection.group.path)
+        let observation ← leaf.selection.observePartialDocument document scope context.outer context.readPartialCell
+        pure (observation.map leaf.evalObservation |>.getD .unknown)
   | .indexedCustomFieldValidity leaf =>
       some do
         let document ← match context.input with
@@ -338,6 +345,11 @@ def evalFirstFilledComparisonAddressedResult (context : AddressedValidationEvalu
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
     ValidationConditionLeaf model → Except CheckedAddressingError Verdict
   | .customCondition name => (context.scalar.customResult name.value).mapError .customCondition
+  | .indexedStringPattern leaf => do
+      let document ← match context.input with
+        | .checked document => pure document
+        | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired leaf.selection.group.path)
+      pure (leaf.evalObservation (← leaf.selection.observeDocument document context.outer .validation))
   | .indexedCustomFieldValidity leaf => do
       let document ← match context.input with
         | .checked document => pure document

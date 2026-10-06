@@ -878,7 +878,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Rule-message entity and membership/index failures precede an empty category name](sources/message-and-pointer-probes.md#src-message-category-gate-order)
 
 <a id="src-message-parameter-surface-and-iteration-gates"></a>
-- [The rule-message parameter surface read off its own grammar: the value suffix's second gate is a field declaration (`INVALID_NO_VALUE_VALIDATION`), `$Entity.Vordruckzeile$` skips the condition-membership gate, `$#RootGroup$` is gated on parallel iteration, the group position takes a matching semantic-index key, and the index terminal's cross-declaration consistency family is reachable](sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)
+- [Rule-message parameter grammar and iteration gates](sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)
 
 <a id="src-index-terminal-refusal-classes"></a>
 - [The `index(...)` terminal's complete refusal-class set: `->Category` admitted on an Enumeration index field with its own `INVALID_CATEGORY`, multiplicity refused `INVALID_INDEX_FIELD_AMBIGUOUS`, and a cross-check against the rule's own condition refusing a keyed or starred reference `INVALID_INDEX_FIELD_REP_ITER`](sources/message-and-pointer-probes.md#src-index-terminal-refusal-classes)
@@ -1787,3 +1787,6 @@ Edit the source shard when its provenance or drill route changes; change this hu
 
 <a id="src-indexed-type-validity"></a>
 - [Indexed named-type validity](sources/computation-scheduling-probes.md#src-indexed-type-validity)
+
+<a id="src-indexed-patterns"></a>
+- [Indexed pattern predicates](sources/computation-scheduling-probes.md#src-indexed-patterns)

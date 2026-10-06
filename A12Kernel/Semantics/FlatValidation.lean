@@ -349,18 +349,21 @@ def FlatContext.resolveConfirmComparisonOperand (context : FlatContext)
     (field : FlatConfirmField) : SimpleComparisonOperand Bool :=
   context.resolveConfirmComparisonOperandAt .validation field
 
+/-- Direct and selected pattern reads use the same checked String observation (spec/06 patterns). -/
+@[simp]
+def CellObservation.asStringComparisonOperand : CellObservation Value → SimpleComparisonOperand String
+  | .empty => .notEvaluated
+  | .value (.str text) => if text.isEmpty then .notEvaluated else .value text true
+  | .value _ => .unknown .malformed
+  | .unknown cause => .unknown cause
+  | .poison cause => .unknown cause
+
 /-- Resolve one String field for direct comparison at a chosen phase, mirroring the numeric pair
     above. There are no empty String *values*, so a present-empty cell and an absent one both
     resolve to `notEvaluated` and neither can satisfy an equality. -/
 def FlatContext.resolveStringComparisonOperandAt (context : FlatContext)
-    (phase : Phase) (field : FlatStringField) :
-    SimpleComparisonOperand String :=
-  match context.observeAt phase field.id with
-  | .empty => .notEvaluated
-  | .value (.str value) => if value.isEmpty then .notEvaluated else .value value true
-  | .value _ => .unknown .malformed
-  | .unknown cause => .unknown cause
-  | .poison cause => .unknown cause
+    (phase : Phase) (field : FlatStringField) : SimpleComparisonOperand String :=
+  (context.observeAt phase field.id).asStringComparisonOperand
 
 def FlatContext.resolveDirectStringComparisonOperand (context : FlatContext)
     (field : FlatStringField) :

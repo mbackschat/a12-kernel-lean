@@ -23,6 +23,7 @@ inductive SurfaceComputationPredicate where
   | keyedGroupPresence (operator : GroupPresenceOperator) (source : SurfaceKeyedEntityExtent)
   | indexedFieldPresence (operator : RepeatableFieldPresenceOperator) (source : SurfaceSemanticIndex)
   | pattern (source : SurfaceStringPatternCondition)
+  | indexedPattern (source : SurfaceIndexedStringPatternCondition)
   | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceConstructedDateComponents SurfaceScalarDateComponent)
   | typeValidity (operation : CustomFieldValidityOp) (source : SurfaceFieldPath) (name : String)
   | indexedTypeValidity (operation : CustomFieldValidityOp) (source : SurfaceSemanticIndex) (name : String)
@@ -43,6 +44,7 @@ inductive ComputationPredicateElabError where
   | keyedGroup (error : KeyedEntityExtentError)
   | semanticIndex (error : SemanticIndexElabError)
   | pattern (error : ComputationStringPatternElabError)
+  | indexedPattern (error : IndexedStringPatternElabError)
   | typeOperand (error : CustomFieldValidityOperandElabError)
   | typeName (error : CustomFieldValidityElabError)
   | indexedTypeOperand (error : IndexedCustomFieldValidityElabError)
@@ -84,6 +86,7 @@ inductive CheckedComputationPredicate (model : FlatModel) where
   | keyedGroupPresence (operator : GroupPresenceOperator) (source : CheckedKeyedEntityExtent model) (dependencyKind : ComputationGroupDependencyKind)
   | indexedFieldPresence (operator : RepeatableFieldPresenceOperator) (source : CheckedSemanticIndexSource model)
   | pattern (source : CheckedComputationStringPattern model)
+  | indexedPattern (source : CheckedIndexedStringPatternLeaf model)
   | dateValidity (operation : ConstructedDateValidityOp) (source : CheckedConstructedDateComponents model (ScalarDateComponent model))
   | typeValidity (operation : CustomFieldValidityOp)
       (source : CheckedCustomFieldValidityOperand model) (name : String)
@@ -105,6 +108,7 @@ namespace CheckedComputationPredicate
 def referencesField (predicate : CheckedComputationPredicate model) (field : FieldId) : Bool :=
   match predicate with
   | .pattern source => source.source.referencesField field
+  | .indexedPattern source => source.selection.referencesField field
   | .dateValidity _ source => source.scalarFieldIds.contains field
   | .typeValidity _ source _ => source.source == field
   | .indexedTypeValidity _ source _ => source.selection.referencesField field
@@ -150,6 +154,7 @@ def groupReference? : CheckedComputationPredicate model → Option (GroupPresenc
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
   match predicate with
   | .pattern source => source.source.declarations.all (·.repeatableScope.isPrefixOf scope)
+  | .indexedPattern source => source.bindingScope.isPrefixOf scope
   | .dateValidity _ source => source.scalarBindingScopes.all (·.isPrefixOf scope)
   | .typeValidity _ source _ => source.declaration.repeatableScope.isPrefixOf scope
   | .indexedTypeValidity _ source _ => source.bindingScope.isPrefixOf scope
@@ -400,6 +405,14 @@ def evalChecked (predicate : CheckedComputationPredicate model)
         | .filled => observation.evalComputationFilled
         | .notFilled => observation.evalComputationNotFilled)
   | .pattern source => (source.eval { read := context.read }).mapError .stringExpression
+  | .indexedPattern source => do
+      let some addressed := context.addressed | throw .contextRequired
+      let selected ← source.selection.selectEnvironmentWith .computation context.semanticIndexColumnReader
+        context.row context.read context.storedText |>.mapError .indexSelection
+      pure (source.evalComputationObservation (match selected with
+        | .empty => .empty
+        | .unknown cause | .poison cause => .poison cause
+        | .value row => observeCell .computation (addressed.read row source.leaf.condition.field.id)))
   | .dateValidity operation source => do
       let observation ← match source.directComponents? with
         | some direct => (direct.evaluateComponentsWith (fun component =>
@@ -501,6 +514,8 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
         (elaborateSemanticIndexSource model declaringGroup source).mapError .semanticIndex
   | .pattern source => CheckedComputationPredicate.pattern <$>
       (elaborateComputationStringPattern compilePattern model declaringGroup targetGroup source).mapError .pattern
+  | .indexedPattern source => CheckedComputationPredicate.indexedPattern <$>
+      (elaborateIndexedStringPattern compilePattern model declaringGroup source).mapError .indexedPattern
   | .dateValidity operation source => do
       let checked ← (elaborateScalarDateValidityComponents model declaringGroup source targetGroup).mapError .temporal
       pure (.dateValidity operation checked)

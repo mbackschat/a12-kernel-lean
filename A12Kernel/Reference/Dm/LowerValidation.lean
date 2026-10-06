@@ -309,18 +309,24 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         | .error refusal => [.error refusal])
     | _ => []
   let pattern := match leaf with
-    | .compare op (.value { path, index := none, category := none }) right =>
-        match right.patternConstant? with
-        | none => []
-        | some source =>
-          match op, path.toFieldPath? with
-          | .patternMatched, some field => [elaborated "PatternMatched"
-            (CheckedValidationCondition.fromStringPattern model rowGroup builtinStringPatternCompiler
-              { op := .matched, field, source } bindingGroup)]
-          | .patternViolated, some field => [elaborated "PatternViolated"
-            (CheckedValidationCondition.fromStringPattern model rowGroup builtinStringPatternCompiler
-              { op := .violated, field, source } bindingGroup)]
-          | _, _ => []
+    | .compare op (.value { path, index, category := none }) right =>
+        let operation := match op with
+          | .patternMatched => some StringPatternOp.matched
+          | .patternViolated => some .violated
+          | _ => none
+        match operation, right.patternConstant? with
+        | some op, some source =>
+          let construct := match op with | .matched => "PatternMatched" | .violated => "PatternViolated"
+          match index with
+          | some key => [do
+              let field ← lowerIndexedSource model rowGroup path key
+              elaborated construct (CheckedValidationCondition.fromIndexedStringPattern model rowGroup
+                builtinStringPatternCompiler { op, field, source } bindingGroup)]
+          | none => match path.toFieldPath? with
+            | some field => [elaborated construct (CheckedValidationCondition.fromStringPattern model rowGroup
+                builtinStringPatternCompiler { op, field, source } bindingGroup)]
+            | none => []
+        | _, _ => []
     | _ => []
   flat ++ firstFilled ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ valueLists ++ uniqueness ++ validity
 

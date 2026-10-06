@@ -24,6 +24,7 @@ inductive ValidationConditionAssemblyError where
   | iteratedDateRange (error : IteratedDateRangeConditionElabError)
   | multipleRepetitionNotUnique
   | stringPattern (error : StringPatternConditionElabError)
+  | indexedStringPattern (error : IndexedStringPatternElabError)
   | constructedDate (error : ConstructedDateComponentsElabError)
   | scalarTemporal (error : ScalarTemporalExpressionError)
   | incoherentCore
@@ -75,6 +76,7 @@ def groupListDiagnostic? :
   | .repetitionNotUnique _ | .iteratedDateRange _ | .multipleRepetitionNotUnique => none
   | .constructedDate .onlyConstantsUsed => some .onlyConstantsUsed
   | .scalarTemporal error => error.dateValidityDiagnostic?
+  | .indexedStringPattern error => error.diagnostic?
   | .constructedDate _ | .stringPattern _ | .incoherentCore => none
 
 end ValidationConditionAssemblyError
@@ -164,6 +166,13 @@ def fromStringPattern (model : FlatModel) (rowGroup : GroupPath)
         .stringPattern
       checkCore model writtenGroup (.leaf (.stringPattern { compilePattern, condition }))
         (by rw [hModel]; rfl) rowGroup
+
+def fromIndexedStringPattern (model : FlatModel) (rowGroup : GroupPath)
+    (compilePattern : StringPatternCompiler) (surface : SurfaceIndexedStringPatternCondition)
+    (writtenGroup : GroupPath := rowGroup) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) := do
+  let leaf ← (elaborateIndexedStringPattern compilePattern model rowGroup surface).mapError .indexedStringPattern
+  checkCore model writtenGroup (.leaf (.indexedStringPattern leaf)) leaf.selection.modelWellFormed rowGroup
 
 def fromFirstFilledComparison (rowGroup : GroupPath) (comparison : CheckedFirstFilledComparison model)
     (declaringGroup : GroupPath := rowGroup) :

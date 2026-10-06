@@ -1,0 +1,1 @@
+[{"target": "field", "op": "add", "group": "/Form/Rows", "name": "Enum", "kind": "ENUM", "enum": {"values": [{"value": "x"}, {"value": "y"}], "categories": [{"name": "Kind", "values": ["123", "abc"]}]}}]

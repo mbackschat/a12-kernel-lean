@@ -600,6 +600,10 @@ private def generatedGuardCondition (model : FlatModel) (world? : Option World) 
   | .leaf (.predicate (.uniqueness source)) => pure (.leaf (.valuesNotUnique source))
   | .leaf (.predicate (.overlap source)) => pure (.leaf (.iteratedDateRange source.toValidation))
   | .leaf (.predicate (.stringExpression source)) => pure (.leaf (.stringExpression source))
+  | .leaf (.predicate (.indexedPattern source)) => do
+      let targetDeclaration ← (model.lookupUniqueId target).mapError GeneratedComputationValidationError.resolve
+      if !source.bindingScope.isPrefixOf targetDeclaration.repeatableScope then throw .patternGuardScopeMismatch
+      pure (.leaf (.indexedStringPattern source))
   | .leaf (.predicate (.pattern source)) => do
       let targetDeclaration ← (model.lookupUniqueId target).mapError GeneratedComputationValidationError.resolve
       let some leaf := source.toValidation? targetDeclaration.groupPath

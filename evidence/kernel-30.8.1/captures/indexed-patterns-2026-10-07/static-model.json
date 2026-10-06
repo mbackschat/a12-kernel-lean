@@ -1,0 +1,345 @@
+{
+  "header" : {
+    "id" : "IndexedPattern_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "IndexedPattern_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Id",
+                "name" : "Id",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Text",
+                "name" : "Text",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 3
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Enum",
+                "name" : "Enum",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "EnumerationType",
+                    "EnumerationType" : {
+                      "values" : [ {
+                        "value" : "x"
+                      }, {
+                        "value" : "y"
+                      } ],
+                      "categories" : [ {
+                        "name" : "Kind",
+                        "values" : [ "123", "abc" ]
+                      } ]
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "Id"
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Key",
+            "name" : "Key",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/PatternMatchedCommon",
+            "name" : "PatternMatchedCommon",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/PatternMatchedCommonAfter",
+            "name" : "PatternMatchedCommonAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/PatternMatchedCommonComp",
+            "name" : "PatternMatchedCommonComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PatternMatchedCommon",
+              "commonPrecondition" : "[Rows/Text For Key] PatternMatched \"[0-9]+\"",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/PatternMatchedCommonAfterComp",
+            "name" : "PatternMatchedCommonAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PatternMatchedCommonAfter",
+              "computationAlternatives" : [ {
+                "operation" : "[PatternMatchedCommon]+1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/PatternMatchedAlternative",
+            "name" : "PatternMatchedAlternative",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/PatternMatchedAlternativeAfter",
+            "name" : "PatternMatchedAlternativeAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/PatternMatchedAlternativeComp",
+            "name" : "PatternMatchedAlternativeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PatternMatchedAlternative",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Rows/Text For Key] PatternMatched \"[0-9]+\""
+              }, {
+                "operation" : "2",
+                "precondition" : "FieldFilled(Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/PatternMatchedAlternativeAfterComp",
+            "name" : "PatternMatchedAlternativeAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PatternMatchedAlternativeAfter",
+              "computationAlternatives" : [ {
+                "operation" : "[PatternMatchedAlternative]+1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/PATTERNMATCHED",
+            "name" : "PATTERNMATCHED",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "PATTERNMATCHED",
+              "errorCondition" : "FieldFilled(Key) And [Rows/Text For Key] PatternMatched \"[0-9]+\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/PatternViolatedCommon",
+            "name" : "PatternViolatedCommon",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/PatternViolatedCommonAfter",
+            "name" : "PatternViolatedCommonAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/PatternViolatedCommonComp",
+            "name" : "PatternViolatedCommonComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PatternViolatedCommon",
+              "commonPrecondition" : "[Rows/Text For Key] PatternViolated \"[0-9]+\"",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/PatternViolatedCommonAfterComp",
+            "name" : "PatternViolatedCommonAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PatternViolatedCommonAfter",
+              "computationAlternatives" : [ {
+                "operation" : "[PatternViolatedCommon]+1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/PatternViolatedAlternative",
+            "name" : "PatternViolatedAlternative",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/PatternViolatedAlternativeAfter",
+            "name" : "PatternViolatedAlternativeAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/PatternViolatedAlternativeComp",
+            "name" : "PatternViolatedAlternativeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PatternViolatedAlternative",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "[Rows/Text For Key] PatternViolated \"[0-9]+\""
+              }, {
+                "operation" : "2",
+                "precondition" : "FieldFilled(Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/PatternViolatedAlternativeAfterComp",
+            "name" : "PatternViolatedAlternativeAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../PatternViolatedAlternativeAfter",
+              "computationAlternatives" : [ {
+                "operation" : "[PatternViolatedAlternative]+1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/PATTERNVIOLATED",
+            "name" : "PATTERNVIOLATED",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "PATTERNVIOLATED",
+              "errorCondition" : "FieldFilled(Key) And [Rows/Text For Key] PatternViolated \"[0-9]+\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

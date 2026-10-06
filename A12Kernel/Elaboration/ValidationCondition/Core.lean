@@ -10,6 +10,7 @@ import A12Kernel.Elaboration.ValidationContext
 import A12Kernel.Elaboration.CurrentRepetition
 import A12Kernel.Elaboration.IteratedDateRangeCondition
 import A12Kernel.Elaboration.CustomFieldValidity
+import A12Kernel.Elaboration.IndexedStringPattern
 import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.ValueListCondition
 import A12Kernel.Elaboration.ValuesNotUniqueCondition
@@ -276,6 +277,7 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   /-- `PatternMatched` or `PatternViolated` over one ordinary nonrepeatable String field, read like a
   flat leaf through the field's validation-phase String. -/
   | stringPattern (leaf : CheckedStringPatternLeaf model)
+  | indexedStringPattern (leaf : CheckedIndexedStringPatternLeaf model)
   | valueList (source : CheckedValueListCondition model)
   | valuesNotUnique (source : CheckedValuesNotUniqueCondition model)
   | firstFilledComparison (comparison : CheckedFirstFilledComparison model)
@@ -337,7 +339,7 @@ def ValidationConditionLeaf.requiresClassificationPass : ValidationConditionLeaf
   | .iteratedDateRange (.yearlessPluralOverlap source) => source.operands.any (·.hasFilter)
   | .iteratedDateRange _ => true
   | .customFieldValidity _ | .indexedCustomFieldValidity _ => false
-  | .stringPattern _ => true
+  | .stringPattern _ | .indexedStringPattern _ => true
   | .fieldFill operator source =>
       match operator with
       | .allFieldsFilled | .moreThanOneFieldFilled => source.hasHaving
@@ -571,7 +573,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   -- neither polarity of the explicit predicate can fire on one.
   | .customFieldValidity _ | .indexedCustomFieldValidity _ => false
   -- An empty operand is never matched, so neither operator fires on an empty instance.
-  | .stringPattern _ => false
+  | .stringPattern _ | .indexedStringPattern _ => false
   | .fieldFill operator _ => match operator with
       | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled => true
       | .allFieldsFilled | .atLeastOneFieldFilled | .moreThanOneFieldFilled
@@ -610,6 +612,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .indexedCustomFieldValidity leaf, field => leaf.source.selection.referencesField field
   | .fieldFill _ source, field => source.referencesField field
   | .stringPattern leaf, field => leaf.condition.referencesField field
+  | .indexedStringPattern leaf, field => leaf.selection.referencesField field
 
 /-- Whether a leaf reaches `field` for the rule's error-field gates. Filter-owning sources count
     marked body reads but exclude unmarked candidate reads, following the shared correlation gate. -/
@@ -630,7 +633,7 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field
   | leaf@(.constructedDateValidity _ _), field
   | leaf@(.customFieldValidity _), field | leaf@(.indexedCustomFieldValidity _), field
-  | leaf@(.stringPattern _), field | leaf@(.scalarTemporal _), field | leaf@(.stringExpression _), field =>
+  | leaf@(.stringPattern _), field | leaf@(.indexedStringPattern _), field | leaf@(.scalarTemporal _), field | leaf@(.stringExpression _), field =>
       leaf.referencesField field
 
 /-- Whether the checked source retains a `Having` filter, which makes whole-rule partial validation
@@ -650,11 +653,11 @@ def hasHaving : ValidationConditionLeaf model → Bool
   | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ | .repetitionNotUnique _
   | .guardedRootCurrentRepetition _ _ _
   | .guardedRepeatableCurrentRepetition _ _ _
-  | .customFieldValidity _ | .indexedCustomFieldValidity _ | .stringPattern _ => false
+  | .customFieldValidity _ | .indexedCustomFieldValidity _ | .stringPattern _ | .indexedStringPattern _ => false
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
-  | .customCondition _ | .indexedCustomFieldValidity _ => true
+  | .customCondition _ | .indexedCustomFieldValidity _ | .indexedStringPattern _ => true
   | .stringPattern leaf => !(model.fieldRepeatableScope leaf.condition.field.id).isEmpty
   | .constructedDateValidity _ _ | .stringExpression _ => true
   | .scalarTemporal comparison => comparison.left.requiresAddressed || comparison.right.requiresAddressed ||
@@ -736,6 +739,7 @@ def wellFormedBool (rowGroup : GroupPath) :
   -- The rule's row must bind every level the operand leaves unstarred above its own depth.
   | .fieldFill _ source =>
       source.bindingScope.all (model.repeatableScopeForGroupPath rowGroup).contains
+  | .indexedStringPattern leaf => leaf.bindingScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
   | .stringPattern leaf => model.admitsStringPatternField leaf.condition.field &&
       (model.fieldRepeatableScope leaf.condition.field.id).isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
 

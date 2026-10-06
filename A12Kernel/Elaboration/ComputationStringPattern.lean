@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.StringExpression
 import A12Kernel.Elaboration.StringContext
+import A12Kernel.Elaboration.IndexedStringPattern
 
 namespace A12Kernel
 
@@ -44,5 +45,10 @@ def CheckedComputationStringPattern.toValidation?
       rowGroup, op := checked.op, field, pattern := checked.pattern
       modelWellFormed := checked.source.modelWellFormed, fieldWellFormed := hField } }
   else none
+
+def CheckedIndexedStringPatternLeaf.evalComputationObservation
+    (checked : CheckedIndexedStringPatternLeaf model) (observation : CellObservation) : ComputationConditionResult :=
+  checked.leaf.condition.op.evalComputationResolved
+    checked.leaf.condition.pattern.wholeValueMatches observation.asStringComparisonOperand
 
 end A12Kernel

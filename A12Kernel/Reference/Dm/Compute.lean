@@ -61,12 +61,18 @@ private def lowerScalarMembership (operator : ValueListMembershipOp)
       let some fields := members.mapM Expr.textFieldValue? | refuse "Guard/Membership" "bracketed members"
       pure (.scalarMembership operator subject (.fields fields))
 
-private def lowerPatternGuard (op : StringPatternOp) (left right : Expr) :
+private def lowerPatternGuard (model : FlatModel) (group : GroupPath)
+    (op : StringPatternOp) (left right : Expr) :
     Lowering (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) := do
-  let .value { path, index := none, category := none } := left | refuse "Guard/Pattern" "direct field"
-  let some field := path.toFieldPath? | refuse "Guard/Pattern" "field path"
+  let .value { path, index, category := none } := left | refuse "Guard/Pattern" "field value"
   let some source := right.patternConstant? | refuse "Guard/Pattern" "constant source"
-  pure (.predicate (.pattern { op, field, source }))
+  match index with
+  | some key => do
+      let field ← lowerIndexedSource model group path key
+      pure (.predicate (.indexedPattern { op, field, source }))
+  | none =>
+      let some field := path.toFieldPath? | refuse "Guard/Pattern" "field path"
+      pure (.predicate (.pattern { op, field, source }))
 
 /-- Lower typed guards into the shared computation condition tree. Unsupported atoms remain explicit refusals during model resolution. -/
 partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool := false)
@@ -74,8 +80,8 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
     Lowering (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) :=
   match expression with
   | .custom _ _ => refuse "CustomCondition" "not admitted in computation guards"
-  | .compare .patternMatched left right => lowerPatternGuard .matched left right
-  | .compare .patternViolated left right => lowerPatternGuard .violated left right
+  | .compare .patternMatched left right => lowerPatternGuard model group .matched left right
+  | .compare .patternViolated left right => lowerPatternGuard model group .violated left right
   | .parens body => lowerGuard model group suppress body targetGroup?
   | .logic op (first :: rest) => do
       let join := match op with
