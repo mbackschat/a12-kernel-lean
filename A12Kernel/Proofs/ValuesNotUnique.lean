@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValuesNotUniqueCondition
+import A12Kernel.Elaboration.PartialEntityValueList
 import A12Kernel.Elaboration.TokenValuesNotUnique
 import A12Kernel.Elaboration.TemporalValuesNotUnique
 import A12Kernel.Proofs.NumericAggregate
@@ -45,6 +46,17 @@ theorem valuesNotUniqueCondition_never_unknown
   | number source => exact numberValuesNotUnique_route_never_unknown source document outer
   | token source => exact tokenValuesNotUnique_route_never_unknown source document outer
   | temporal source => exact temporalValuesNotUnique_route_never_unknown source document outer
+
+/-- Partial uniqueness never turns missing coverage into semantic UNKNOWN; its evaluated result
+only reports whether the available members already contain a duplicate. -/
+theorem valuesNotUniqueCondition_partial_never_unknown
+    (source : CheckedValuesNotUniqueCondition model)
+    (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    source.evaluatePartialDocument document outer scope read ≠ .ok (.evaluated .unknown) := by
+  cases source <;> simp only [CheckedValuesNotUniqueCondition.evaluatePartialDocument]
+  all_goals split <;> simp_all [pure, Except.pure, bind, Except.bind]
+  all_goals split <;> simp_all [evalValuesNotUniqueVerdict_never_unknown]
 
 /-- A retained temporal group omits no descendant: every declaration in its recursive subtree is
     present in the certified expansion with its exact declared temporal policy. -/

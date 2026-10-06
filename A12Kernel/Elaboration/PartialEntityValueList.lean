@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.PartialSemanticIndex
 import A12Kernel.Elaboration.ValueListCondition
+import A12Kernel.Elaboration.ValuesNotUniqueCondition
 
 namespace A12Kernel
 
@@ -39,7 +40,8 @@ private def partialListSide {kind : ValueListKind} {model : FlatModel}
         else side := { side with hasNonRelevant := true }
       pure { side with cells := if emptyScalar && extent.addresses.isEmpty then [.empty] else side.cells.reverse }
 
-private def numberPartialListSide (source : CheckedNumberEntityOperand model)
+/-- Retain Number witnesses and operand-local relevance for list quantifiers and uniqueness. -/
+def CheckedNumberEntityOperand.resolvePartialValueListSide (source : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
     Except CheckedAddressingError (ResolvedValueListSide .number) := do
@@ -54,7 +56,8 @@ private def numberPartialListSide (source : CheckedNumberEntityOperand model)
   partialListSide (model := model) selection (!source.isAlreadyMany) scope read
     (fun _ cell => pure (observeCell .validation cell).asNumberValueListCell)
 
-private def tokenPartialListSide (source : CheckedTokenEntityOperand model)
+/-- Retain declaration-owned token witnesses and operand-local relevance for both list consumers. -/
+def CheckedTokenEntityOperand.resolvePartialValueListSide (source : CheckedTokenEntityOperand model)
     (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
     Except CheckedAddressingError (ResolvedValueListSide .token) := do
@@ -80,19 +83,38 @@ def CheckedValueListCondition.evaluatePartialDocument (source : CheckedValueList
   let verdict ← match source with
     | .number source => do
         let (fields, values) ← source.quantifier.resolveSidesOrdered
-          (fun () => source.fields.operands.mapM (numberPartialListSide · document outer scope read))
-          (fun () => source.values.operands.mapM (numberPartialListSide · document outer scope read))
+          (fun () => source.fields.operands.mapM (·.resolvePartialValueListSide document outer scope read))
+          (fun () => source.values.operands.mapM (·.resolvePartialValueListSide document outer scope read))
         pure (source.quantifier.evalOrdered fields values)
     | .token source => do
         let (fields, values) ← source.quantifier.resolveSidesOrdered
-          (fun () => source.fields.operands.mapM (tokenPartialListSide · document outer scope read))
-          (fun () => source.values.operands.mapM (tokenPartialListSide · document outer scope read))
+          (fun () => source.fields.operands.mapM (·.resolvePartialValueListSide document outer scope read))
+          (fun () => source.values.operands.mapM (·.resolvePartialValueListSide document outer scope read))
         pure (source.quantifier.evalOrdered fields values)
     | .literals source => do
-        let fields ← source.fields.operands.mapM (tokenPartialListSide · document outer scope read)
+        let fields ← source.fields.operands.mapM (·.resolvePartialValueListSide document outer scope read)
         pure (source.quantifier.evalOrdered fields
           [{ cells := (source.firstValue :: source.restValues).map (ValueListCell.present (kind := .token)),
              hasUninstantiatedTail := false, hasHaving := false }])
+  pure (.evaluated verdict)
+
+/-- Uniqueness skips unavailable members and tests known values even under incomplete extent
+(spec/10 §5); whole-rule filters still suppress partial execution before any source read. -/
+def CheckedValuesNotUniqueCondition.evaluatePartialDocument (source : CheckedValuesNotUniqueCondition model)
+    (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    Except CheckedAddressingError PartialHavingValueListResult := do
+  if source.hasHaving then return .skippedHaving
+  let verdict ← match source with
+    | .number source => do
+        let tagged ← collectTaggedValueListCells
+          (fun operand => operand.resolvePartialValueListSide document outer scope read) source.operands
+        pure (evalValuesNotUniqueVerdict tagged)
+    | .token source => do
+        let tagged ← collectTaggedValueListCells
+          (fun operand => operand.resolvePartialValueListSide document outer scope read) source.source.operands
+        pure (evalValuesNotUniqueVerdict tagged)
+    | .temporal _ => throw (.checkedDocumentRequired [])
   pure (.evaluated verdict)
 
 end A12Kernel

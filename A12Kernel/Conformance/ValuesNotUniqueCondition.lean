@@ -80,7 +80,7 @@ example : (sources.map fun source =>
     ((ValidationConditionLeaf.valuesNotUnique source).requiresAddressedValidation,
      (ValidationConditionLeaf.valuesNotUnique source).supportsAddressedPartial,
      (ValidationConditionLeaf.valuesNotUnique source).canFireOnEmpty)) =
-      List.replicate 3 (true, false, false) ∧
+      [(true, true, false), (true, true, false), (true, false, false)] ∧
     (sources.map fun source => [1, 2, 3, 4, 5, 6, 7].filter source.referencesField) =
       [[1, 2, 3], [4, 5], [6, 7]] := by
   native_decide

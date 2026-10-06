@@ -668,6 +668,15 @@ def resolveCheckedValidationOperand
         slot.source.boundLevelCount (model.groupSubtreeFields slot.groupPath)
       pure { source, core }
 
+/-- Project the selected or ordinary checked stream without inventing addresses for an absent
+selection; rich selected pointer projection remains a separate boundary. -/
+def checkedValidationSide (source : CheckedNumberEntityOperand model)
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) : Except CheckedAddressingError (ResolvedValueListSide .number) := do
+  match source with
+  | .selected selection => selection.sideIn .validation document outer
+  | _ => pure ((← source.resolveCheckedValidationOperand (world := world) document outer).valueListSideAt .validation)
+
 /-- Resolve one unfiltered partial-validation operand. Direct masking precedes its read; a star retains canonical topology, reads only relevant concrete cells, and records incomplete extent on that exact authored operand. -/
 def resolveCheckedPartialValidationOperand
     (source : CheckedNumberEntityOperand model)

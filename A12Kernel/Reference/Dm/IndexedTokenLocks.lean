@@ -464,4 +464,29 @@ example : [false, true].all (fun enumeration =>
     | some (.ok none) => true
     | _ => false) = true := by native_decide
 
+example : [false, true].all (fun enumeration =>
+    tokenListVerdict enumeration "FieldValuesNotUnique(Rows/Body For Key)" .full { secondB := "A" } == some (.fired .value) &&
+    tokenListVerdict enumeration "FieldValuesNotUnique(Rows/Body For Key)" .full == some .notFired &&
+    tokenListVerdict enumeration "FieldValuesNotUnique(Rows/Body For Key,Ref)"
+      (tokenCountCoverage [["Rows", "Body", "A"]]) == some (.fired .value) &&
+    tokenListVerdict enumeration "FieldValuesNotUnique(Rows/Body For Key,TextOut)"
+      .full { firstA := "bad" } == some (.fired .value) &&
+    tokenListVerdict enumeration "FieldValuesNotUnique(Rows/Children*/Value For Key)"
+      .full { children := ["A", "A"] } == some (.fired .value) &&
+    tokenListVerdict enumeration "FieldValuesNotUnique(Rows/Children*/Value For Key)"
+      .full { key := "missing" } == some .notFired) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    tokenListVerdict enumeration "FieldValuesNotUnique(Rows/Body For Key,Ref)" .full { secondB := "bad" } == some (.fired .value) &&
+    tokenListVerdict enumeration "FieldValuesNotUnique(Rows/Body For Key)" .full { secondCode := "R1", secondB := "A" } == some .notFired &&
+    tokenListVerdict enumeration "FieldValuesNotUnique(Ref,TextOut)" == some .notFired &&
+    tokenListVerdict enumeration "FieldValuesNotUnique(Rows*/Body)" == some .notFired &&
+    tokenListVerdict enumeration "FieldValuesNotUnique(Rows*/Children*/Value)" .full { children := ["A", "A"] } == some (.fired .value)) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    match ordinaryRule true true .full enumeration {} none
+      (some "FieldFilled(Ref) Or FieldValuesNotUnique(Rows*/Body/A Having ([Rows/Body/A] == \"A\"))") with
+    | some (.ok none) => true
+    | _ => false) = true := by native_decide
+
 end A12Kernel.Dm.IndexedTokenLocks

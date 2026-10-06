@@ -369,7 +369,7 @@ example : ["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].all (fun op
     partialVerdict (operator ++ "(Packages/Header For Key,Packages/Header For \"P2\") == 0")
       [relevant ["Key"], relevant ["Packages"]] "P1" false false "bad" == some .unknown) = true := by native_decide
 
-private def aggregateReadback (expression : String) (formalFirst unavailableFirst : Bool) (laterFault : Bool := true) (checkedInput : Bool := false) : Option Verdict := do
+private def aggregateReadback (expression : String) (formalFirst unavailableFirst : Bool) (laterFault : Bool := true) (checkedInput : Bool := false) (injected : Rat := 8) : Option Verdict := do
   let document ← input "P1"
   let parsed ← (parseText .english expression).toOption
   let checked ← (lowerCondition model ["Form"] false parsed.body).toOption
@@ -379,7 +379,7 @@ private def aggregateReadback (expression : String) (formalFirst unavailableFirs
     input := if checkedInput then .checked document else .partialView document fun row field =>
       if field == 3 && row.lookup 20 == some 1 then
         pure (if unavailableFirst then none else if formalFirst then some malformedCheckedCell
-          else some (checkAdmittedRawCell (.parsed (.num 8))))
+          else some (checkAdmittedRawCell (.parsed (.num injected))))
       else if field == 3 && laterFault then .error (.checkedDocumentRequired ["unreached"])
       else (fun addressed => some addressed.cell) <$> document.addressedCell row field }
   let result ← leaf.evalAddressedPartial? context .full (fun _ => true)
@@ -486,5 +486,33 @@ example : let expression := "NoFieldValueIncludedInValueList(Packages/Items*/Wei
     aggregateReadback expression true false false = some .unknown ∧
     aggregateReadback expression false true false = some .unknown ∧
     aggregateReadback expression false false false true = some .notFired := by native_decide
+
+example : validationVerdict "FieldValuesNotUnique(Packages/Items* For Key)" = some (.fired .value) ∧
+    validationVerdict "FieldValuesNotUnique(Packages/Items*/Weight For Key)" = some .notFired ∧
+    validationVerdict "FieldValuesNotUnique(Packages/Items* For Key)" "missing" = some .notFired := by native_decide
+
+example : partialVerdict "FieldValuesNotUnique(Packages/Items* For Key)"
+    [relevant ["Key"], relevant ["Packages"]] = some (.fired .value) ∧
+    partialVerdict "FieldValuesNotUnique(Packages/Items* For Key)"
+      [relevant ["Key"], relevant ["Packages", "Code"], concreteItem 1 1, concreteItem 1 2] = some .notFired ∧
+    partialVerdict "FieldValuesNotUnique(Packages/Items*/Quantity For Key)"
+      [relevant ["Key"], relevant ["Packages", "Code"],
+       { concreteItem 1 1 with path := ["Form", "Packages", "Items", "Quantity"] },
+       { concreteItem 1 2 with path := ["Form", "Packages", "Items", "Quantity"] }] = some (.fired .value) := by native_decide
+
+example : let expression := "FieldValuesNotUnique(Packages/Items*/Weight For Key)"
+    aggregateReadback expression false false false (injected := 5) = some (.fired .value) ∧
+    aggregateReadback expression true false false (injected := 5) = some .notFired ∧
+    aggregateReadback expression false true false (injected := 5) = some .notFired ∧
+    aggregateReadback expression false false false true (injected := 5) = some .notFired := by native_decide
+
+example : partialVerdict "FieldValuesNotUnique(Packages/Items* For Key)"
+    [relevant ["Key"], relevant ["Packages"]] "1" false true = some (.fired .value) ∧
+    partialVerdict "FieldValuesNotUnique(Packages/Items* For Key)"
+      [relevant ["Key"], concreteRow 1] "P1" true = some (.fired .value) ∧
+    partialVerdict "FieldValuesNotUnique(Packages/Items* For Key)"
+      [relevant ["Key"], relevant ["Packages"]] "P1" true = some .notFired ∧
+    partialVerdict "FieldValuesNotUnique(Packages/Items* For Key)"
+      [relevant ["Packages"]] = some .notFired := by native_decide
 
 end A12Kernel.Dm.KeyedExtentLocks

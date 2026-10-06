@@ -66,9 +66,7 @@ def evaluateCheckedDocumentValuesNotUnique
     (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) : Except CheckedAddressingError Verdict := do
   let tagged ← collectTaggedValueListCells
-    (fun operand => do
-      let resolved ← operand.resolveCheckedValidationOperand (world := world) document outer
-      pure (resolved.valueListSideAt .validation))
+    (fun operand => operand.checkedValidationSide (world := world) document outer)
     checked.operands
   pure (evalValuesNotUniqueVerdict tagged)
 
