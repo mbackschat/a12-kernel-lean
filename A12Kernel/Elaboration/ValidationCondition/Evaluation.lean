@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.ValidationCondition.Core
+import A12Kernel.Elaboration.PartialEntityValueList
 
 /-! # Checked validation-leaf evaluation
 
@@ -62,7 +63,7 @@ def evalSelected (context : ValidationEvaluationContext)
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
-  | .indexedFieldPresence _ _ | .keyedGroupPresence _ _ => true
+  | .indexedFieldPresence _ _ | .keyedGroupPresence _ _ | .valueList _ => true
   | .firstFilledComparison comparison => !comparison.hasHaving
   | .tokenComparison comparison => !comparison.hasHaving
   | .flat _ | .groupPresence _ _ | .repeatableFieldPresence _ _ => true
@@ -163,6 +164,13 @@ def evalAddressedPartial?
     (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult) :
     ValidationConditionLeaf model →
       Option (Except CheckedAddressingError Verdict)
+  | .valueList source =>
+      match context.input with
+      | .legacy _ _ => none
+      | .checked document | .partialView document _ => some do
+          match ← source.evaluatePartialDocument document context.outer scope context.readPartialCell with
+          | .skippedHaving => pure .unknown
+          | .evaluated verdict => pure verdict
   | .customCondition name => some ((context.scalar.customResult name.value).mapError .customCondition)
   | .flat condition =>
       some (evalFlatLeafAddressedPartial condition context isRelevant)

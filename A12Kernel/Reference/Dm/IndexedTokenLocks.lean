@@ -405,4 +405,63 @@ example : [false, true].all (fun enumeration =>
       selectedAssignmentWithRead enumeration operand "missing" "R1" == some (.accepted ⟨"A", by decide⟩) &&
       selectedAssignmentWithRead enumeration operand "R1" "missing" == some .noValue) = true := by native_decide
 
+private def tokenListVerdict (enumeration : Bool) (expression : String)
+    (scope : ValidationRelevanceScope := .full) (scenario : Scenario := {}) (partialRun : Bool := true) : Option Verdict := do
+  (← ordinaryRule true partialRun scope enumeration scenario none (some expression)).toOption.join
+
+example : [false, true].all (fun enumeration =>
+    [("AtLeastOneFieldValueIncludedInValueList", Verdict.fired .value),
+      ("NoFieldValueIncludedInValueList", .notFired), ("NotAllFieldValuesIncludedInValueList", .fired .value)].all
+    fun (operator, expected) => [false, true].all fun partialRun =>
+      tokenListVerdict enumeration (operator ++ "(Rows/Body For Key In Ref)")
+        (partialRun := partialRun) == some expected) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    tokenListVerdict enumeration "AtLeastOneFieldValueIncludedInValueList(Rows/Body For Key In Ref)"
+      (tokenCountCoverage [["Rows", "Body", "A"]]) == some (.fired .value) &&
+    tokenListVerdict enumeration "NoFieldValueIncludedInValueList(Rows/Body For Key In Ref)"
+      (tokenCountCoverage [["Rows", "Body", "A"]]) == some .unknown &&
+    tokenListVerdict enumeration "NotAllFieldValuesIncludedInValueList(Rows/Body For Key In Ref)"
+      (tokenCountCoverage [["Rows", "Body", "B"]]) == some (.fired .value)) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    tokenListVerdict enumeration "AtLeastOneFieldValueIncludedInValueList(Ref In Rows/Body For Key)"
+      (tokenCountCoverage [["Rows", "Body", "A"]]) == some (.fired .value) &&
+    tokenListVerdict enumeration "NoFieldValueIncludedInValueList(Ref In Rows/Body For Key)"
+      (tokenCountCoverage [["Rows", "Body", "A"]]) == some .unknown &&
+    tokenListVerdict enumeration "NotAllFieldValuesIncludedInValueList(TextOut In Rows/Body For Key)"
+      (tokenCountCoverage [["TextOut"], ["Rows", "Body", "A"]]) == some .unknown &&
+    tokenListVerdict enumeration "AtLeastOneFieldValueIncludedInValueList(Rows/Children*/Value For Key In \"A\")"
+      .full == some (.fired .value)) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    tokenListVerdict enumeration "AtLeastOneFieldValueIncludedInValueList(Rows/Body For Key In TextOut)"
+      .full { firstA := "bad" } == some (.fired .value) &&
+    tokenListVerdict enumeration "NoFieldValueIncludedInValueList(Rows/Body For Key In TextOut)"
+      .full { firstA := "bad" } == some .unknown &&
+    tokenListVerdict enumeration "NotAllFieldValuesIncludedInValueList(Rows/Body For Key In Ref)"
+      .full { firstA := "bad" } == some (.fired .value) &&
+    tokenListVerdict enumeration "NotAllFieldValuesIncludedInValueList(Ref In Rows/Body For Key)"
+      .full { firstA := "bad" } == some .unknown) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    tokenListVerdict enumeration "NoFieldValueIncludedInValueList(Rows/Children*/Value For Key In Ref)"
+      .full { key := "missing" } == some (.fired .value) &&
+    tokenListVerdict enumeration "NoFieldValueIncludedInValueList(Rows/Children*/Value For Key In Ref)"
+      (tokenCountCoverage []) { key := "missing" } == some .unknown &&
+    tokenListVerdict enumeration "AtLeastOneFieldValueIncludedInValueList(Rows/Body For Key In Ref)"
+      .full { secondCode := "R1" } == some .notFired) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    tokenListVerdict enumeration "AtLeastOneFieldValueIncludedInValueList(Rows/Body/A For Key,TextOut In Ref)" == some (.fired .value) &&
+    tokenListVerdict enumeration "AtLeastOneFieldValueIncludedInValueList(Rows*/Body In Ref)" == some (.fired .value) &&
+    tokenListVerdict enumeration "AtLeastOneFieldValueIncludedInValueList(Rows/Children*/Value For Key In Ref)" == some (.fired .value) &&
+    tokenListVerdict enumeration "AtLeastOneFieldValueIncludedInValueList(Ref In TextOut)" == some .notFired) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    match ordinaryRule true true .full enumeration {} none
+      (some "FieldFilled(Ref) Or AtLeastOneFieldValueIncludedInValueList(Rows*/Body/A Having ([Rows/Body/A] == \"A\") In Ref)") with
+    | some (.ok none) => true
+    | _ => false) = true := by native_decide
+
 end A12Kernel.Dm.IndexedTokenLocks

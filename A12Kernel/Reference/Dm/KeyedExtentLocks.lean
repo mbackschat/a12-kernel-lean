@@ -446,4 +446,45 @@ example : partialVerdict "NumberOfValueInFields(1 In Key,Out) == 1"
     partialVerdict "NumberOfValueInFields(2 In Packages/Items* For Key) == 3"
       [relevant ["Key"], relevant ["Packages"]] "P1" true = some .unknown := by native_decide
 
+example : [("AtLeastOneFieldValueIncludedInValueList", Verdict.fired .value),
+    ("NoFieldValueIncludedInValueList", .notFired), ("NotAllFieldValuesIncludedInValueList", .fired .value)].all
+    (fun (operator, expected) => partialVerdict (operator ++ "(Packages/Items*/Weight For Key In Packages/Header For Key)")
+      [relevant ["Key"], relevant ["Packages"]] (header := "2") == some expected) = true := by native_decide
+
+example : partialVerdict "AtLeastOneFieldValueIncludedInValueList(Packages/Items*/Weight For Key In Packages/Header For Key)"
+    [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Header"], concreteItem 1 1]
+    (header := "2") = some (.fired .value) ∧
+    partialVerdict "NoFieldValueIncludedInValueList(Packages/Items*/Weight For Key In Packages/Header For Key)"
+      [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Header"], concreteItem 1 1]
+      (header := "2") = some .unknown ∧
+    partialVerdict "NotAllFieldValuesIncludedInValueList(Packages/Items*/Weight For Key In Packages/Header For Key)"
+      [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Header"], concreteItem 1 2]
+      (header := "2") = some (.fired .value) := by native_decide
+
+example : [("AtLeastOneFieldValueIncludedInValueList", Verdict.notFired),
+    ("NoFieldValueIncludedInValueList", .fired .value), ("NotAllFieldValuesIncludedInValueList", .fired .value)].all
+    (fun (operator, expected) => validationVerdict (operator ++ "(Packages/Items*/Weight For Key In Packages/Header For Key)")
+      == some expected) = true := by native_decide
+
+example : [("AtLeastOneFieldValueIncludedInValueList", Verdict.fired .value),
+    ("NoFieldValueIncludedInValueList", .unknown), ("NotAllFieldValuesIncludedInValueList", .unknown)].all
+    (fun (operator, expected) => partialVerdict (operator ++ "(Packages/Header For Key In Packages/Items*/Weight For Key)")
+      [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Header"], concreteItem 1 1]
+      (header := "2") == some expected) = true := by native_decide
+
+example : partialVerdict "NoFieldValueIncludedInValueList(Packages/Items*/Weight For Key In Out)"
+    [relevant ["Key"], relevant ["Packages"]] "missing" = some (.fired .value) ∧
+    partialVerdict "NoFieldValueIncludedInValueList(Packages/Items*/Weight For Key In Out)"
+      [relevant ["Key"], relevant ["Packages", "Code"]] "missing" = some .unknown ∧
+    partialVerdict "NoFieldValueIncludedInValueList(Packages/Header For Key In Out)"
+      [relevant ["Key"], relevant ["Packages"]] "missing" = some (.fired .omission) ∧
+    partialVerdict "AtLeastOneFieldValueIncludedInValueList(Packages/Dims For Key In Packages/Header For Key)"
+      [relevant ["Key"], relevant ["Packages"]] (header := "3") (baseModel := dimsModel) = some (.fired .value) := by native_decide
+
+example : let expression := "NoFieldValueIncludedInValueList(Packages/Items*/Weight For Key In Packages/Items*/Quantity For Key)"
+    aggregateReadback expression false false false = some (.fired .value) ∧
+    aggregateReadback expression true false false = some .unknown ∧
+    aggregateReadback expression false true false = some .unknown ∧
+    aggregateReadback expression false false false true = some .notFired := by native_decide
+
 end A12Kernel.Dm.KeyedExtentLocks

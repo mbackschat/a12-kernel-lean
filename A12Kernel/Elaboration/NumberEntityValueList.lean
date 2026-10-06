@@ -103,7 +103,13 @@ def evaluateFull (checked : CheckedNumberEntityValueListSource model)
     (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) :
     Except CheckedAddressingError Verdict := do
-  pure (← checked.resolveFull (world := world) document outer).evaluate
+  let resolve (source : CheckedNumberEntitySource model) := source.operands.mapM fun operand => do
+    match operand with
+    | .selected selected => selected.sideIn .validation document outer
+    | _ => pure ((← operand.resolveCheckedValidationOperand (world := world) document outer).valueListSideAt .validation)
+  let (fields, values) ← checked.quantifier.resolveSidesOrdered
+    (fun () => resolve checked.fields) (fun () => resolve checked.values)
+  pure (checked.quantifier.evalOrdered fields values)
 
 private def resolvePartialFields
     (checked : CheckedNumberEntityValueListSource model)

@@ -76,7 +76,7 @@ example :
     (sides.map fun source =>
       ((ValidationConditionLeaf.valueList source).requiresAddressedValidation,
        (ValidationConditionLeaf.valueList source).supportsAddressedPartial,
-       source.bindingScopes.flatten.isEmpty)) = List.replicate 3 (true, false, true) ∧
+       source.bindingScopes.flatten.isEmpty)) = List.replicate 3 (true, true, true) ∧
       (sides.map fun source => [1, 2, 3, 4].filter source.referencesField) =
         [[2, 3], [1, 4], [4]] := by
   native_decide

@@ -57,15 +57,23 @@ def CheckedSemanticIndexSource.observePartialDocument (source : CheckedSemanticI
       if !view.relevance.coversField model source.targetDeclaration.id environment then return none
       pure ((← read environment source.targetDeclaration.id).map (observeCell .validation))
 
-/-- Resolve only selection and topology without reading targets; consumers retain their own extent
-gate and cell scan. Missing selection requires wildcard target coverage (spec/10 §5). -/
-def resolvePartialSelectedAddresses
+/-- The available concrete extent and its completeness are independent: partial list quantifiers
+can use a witness even when no identifier covers every reopened row (spec/10 §5). -/
+structure PartialSelectedExtent where
+  addresses : List (FlatFieldDecl × Env)
+  hasUninstantiatedTail : Bool
+  extentRelevant : Bool
+
+/-- Resolve selection and topology while retaining concrete witnesses under incomplete extent.
+Missing selection still needs independent wildcard target coverage (spec/10 §5). -/
+def resolvePartialSelectedExtent
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
     (document : CheckedDocument model) (scope : ValidationRelevanceScope) (outer : Env)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
-    (extentRelevant : FlatFieldDecl → List RepeatableLevel → List RepeatableLevel → Env → Bool := fun _ _ _ _ => true) :
+    (extentRelevant : FlatFieldDecl → List RepeatableLevel → List RepeatableLevel → Env → Bool := fun _ _ _ _ => true)
+    (requireComplete : Bool := false) :
     Except CheckedAddressingError
-      (Option (CellObservation (List (FlatFieldDecl × Env) × Bool))) := do
+      (Option (CellObservation PartialSelectedExtent)) := do
   let view ← document.applyPartialGeneratedPreliminaryForScope scope |>.mapError .indexPreliminary
   let selection := match source with | .inl selected => selected | .inr selected => selected.selection.indexSource
   match ← selection.selectPartial view outer read with
@@ -81,17 +89,36 @@ def resolvePartialSelectedAddresses
       let omitted := match source with
         | .inl _ => false
         | .inr selected => match selected.target with | .group _ => true | _ => false
-      pure (some (.value ([], omitted)))
+      pure (some (.value { addresses := [], hasUninstantiatedTail := omitted, extentRelevant := true }))
   | some (.value environment) =>
       let declarations := match source with | .inl selected => [selected.targetDeclaration] | .inr selected => selected.declarations
       let bound := selection.indexDeclaration.repeatableScope
-      if !declarations.all (fun declaration => extentRelevant declaration bound
-          (declaration.repeatableScope.drop bound.length) environment) then return none
+      let complete := declarations.all (fun declaration => extentRelevant declaration bound
+          (declaration.repeatableScope.drop bound.length) environment)
+      if requireComplete && !complete then return none
       match source with
-      | .inl selected => pure (some (.value ([(selected.targetDeclaration, environment)], false)))
+      | .inl selected => pure (some (.value { addresses := [(selected.targetDeclaration, environment)], hasUninstantiatedTail := false, extentRelevant := complete }))
       | .inr selected =>
           let rows ← selected.rows document.source.toDocument environment |>.mapError .addressing
-          pure (some (.value (rows.flatMap (fun (declaration, environments, _) =>
-            environments.map (declaration, ·)), rows.any (·.2.2))))
+          pure (some (.value {
+            addresses := rows.flatMap fun (declaration, environments, _) => environments.map (declaration, ·)
+            hasUninstantiatedTail := rows.any (·.2.2), extentRelevant := complete }))
+
+/-- Count and aggregate consumers require complete extent before scanning; prefix consumers use
+an always-true extent predicate and retain their call-local per-cell gate. -/
+def resolvePartialSelectedAddresses
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
+    (document : CheckedDocument model) (scope : ValidationRelevanceScope) (outer : Env)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
+    (extentRelevant : FlatFieldDecl → List RepeatableLevel → List RepeatableLevel → Env → Bool := fun _ _ _ _ => true) :
+    Except CheckedAddressingError
+      (Option (CellObservation (List (FlatFieldDecl × Env) × Bool))) := do
+  match ← resolvePartialSelectedExtent source document scope outer read extentRelevant (requireComplete := true) with
+  | none => pure none
+  | some .empty => pure (some .empty)
+  | some (.unknown cause) => pure (some (.unknown cause))
+  | some (.poison cause) => pure (some (.poison cause))
+  | some (.value extent) => pure (if extent.extentRelevant then
+      some (.value (extent.addresses, extent.hasUninstantiatedTail)) else none)
 
 end A12Kernel
