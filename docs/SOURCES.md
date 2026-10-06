@@ -705,13 +705,15 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-omitting-date-formats"></a>
 - [What a component-omitting DATE format stores, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-omitting-date-formats)
 <a id="src-filled-field-count"></a>
-- [What a formally invalid operand does to `NumberOfFilledFields`, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-filled-field-count)
+- [`NumberOfFilledFields` formal invalidity](sources/temporal-and-message-probes.md#src-filled-field-count)
 <a id="src-date-from-datetime"></a>
-- [What `DateFromDateTime` reads, and the source gate both component extractors share, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-from-datetime)
+- [`DateFromDateTime` reads and component gates](sources/temporal-and-message-probes.md#src-date-from-datetime)
 <a id="src-date-from-datetime-computation"></a>
 - [`DateFromDateTime` scalar computation reaches the full-Date target channels, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-date-from-datetime-computation)
 <a id="src-date-from-datetime-repeatable-computation"></a>
 - [`DateFromDateTime` computes exact repeatable rows, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-date-from-datetime-repeatable-computation)
+<a id="src-recursive-date-components"></a>
+- [Date components](sources/temporal-runtime-fold-probes.md#src-recursive-date-components)
 <a id="src-indexed-partial-date-endpoints"></a>
 - [Indexed partial-Date endpoint selection and clearing, measured 2026-10-06](sources/temporal-and-message-probes.md#src-indexed-partial-date-endpoints)
 <a id="src-value-as-date-locus"></a>

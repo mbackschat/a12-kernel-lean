@@ -1,0 +1,13 @@
+id	admitted	verification	codes	condition
+recursive	true	KERNEL_CONFIRMED		FieldFilled(Key) And Date(DayFromDate(AddDays(Rows/FULL For Key,1)),MonthFromDate(AddDays(Rows/FULL For Key,1)),YearFromDate(AddDays(Rows/FULL For Key,1))) == "01.02.2024"
+indexedextract	true	KERNEL_CONFIRMED		FieldFilled(Key) And Date(DayFromDate(Rows/FULL For Key),MonthFromDate(Rows/FULL For Key),YearFromDate(Rows/FULL For Key)) == "01.02.2024"
+number3	true	KERNEL_CONFIRMED		FieldFilled(Key) And Date(Rows/Day For Key,Rows/Month For Key,Rows/YearBound For Key) == "01.02.2024"
+number2	true	KERNEL_CONFIRMED		FieldFilled(Key) And Date(Rows/Day For Key,Rows/Month For Key) == "01.02.2024"
+number4	true	KERNEL_CONFIRMED		FieldFilled(Key) And Date(Rows/Day For Key,Rows/Month For Key,Rows/Century For Key,Rows/ShortYear For Key) == "01.02.2024"
+string3	true	KERNEL_CONFIRMED		FieldFilled(Key) And Date(Rows/DayText For Key,Rows/MonthText For Key,Rows/YearText For Key) == "01.02.2024"
+dateyear	true	KERNEL_CONFIRMED		FieldFilled(Key) And Date("1","2",Rows/YearDate For Key) == "01.02.2024"
+wrongpart	false	KERNEL_CONFIRMED	MVK_INVALID_DATE_OR_TIME_EXTRACT_OP	FieldFilled(Key) And Date(MonthFromDate(Rows/FULL For Key),"2","2024") == "01.02.2024"
+splitextract	false	KERNEL_CONFIRMED	MVK_EXTRACT_OP_NOT_ALLOWED_4_DATE_CONSTRUCT_WITH_4_PARAMS	FieldFilled(Key) And Date("1","2",YearFromDate(Rows/FULL For Key),"24") == "01.02.2024"
+arithmetic	false	KERNEL_CONFIRMED	MVK_UNEXPECTED_TOKEN	FieldFilled(Key) And Date([Rows/Day For Key]+1,"2","2024") == "01.02.2024"
+wrappedpartial	true	KERNEL_CONFIRMED		FieldFilled(Key) And Date("1","2",YearFromDate(AddDays(ValueAsDate(Rows/DAY_OPTIONAL For Key,FirstDay),1))) == "01.02.2024"
+directpartial	false	KERNEL_CONFIRMED	MVK_UNEXPECTED_TOKEN	FieldFilled(Key) And Date("1","2",YearFromDate(ValueAsDate(Rows/DAY_OPTIONAL For Key,FirstDay))) == "01.02.2024"

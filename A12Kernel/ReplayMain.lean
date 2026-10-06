@@ -27,6 +27,7 @@ import A12Kernel.Reference.Dm.SemanticIndexLocks
 import A12Kernel.Reference.Dm.KeyedExtentLocks
 import A12Kernel.Reference.Dm.IndexedGroupLocks
 import A12Kernel.Reference.Dm.IndexedTemporalLocks
+import A12Kernel.Reference.Dm.DateComponentLocks
 import A12Kernel.Reference.Dm.IndexedTokenLocks
 import A12Kernel.Reference.Dm.IndexedStringNumericLocks
 import A12Kernel.Reference.Dm.IndexedNumberTextLocks

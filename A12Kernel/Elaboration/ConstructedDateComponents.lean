@@ -84,18 +84,18 @@ inductive SurfaceConstructedDateSource where
   deriving Repr, DecidableEq
 
 /-- The three legal authored year shapes before model-relative checking. -/
-inductive SurfaceConstructedDateYear where
-  | complete (source : SurfaceConstructedDateSource)
+inductive SurfaceConstructedDateYear (Source : Type := SurfaceConstructedDateSource) where
+  | complete (source : Source)
   | baseYear
   | centuryAndShortYear
-      (century shortYear : SurfaceConstructedDateSource)
+      (century shortYear : Source)
   deriving Repr, DecidableEq
 
 /-- One complete direct Date source in generated component order. -/
-structure SurfaceConstructedDateComponents where
-  day : SurfaceConstructedDateSource
-  month : SurfaceConstructedDateSource
-  year : SurfaceConstructedDateYear
+structure SurfaceConstructedDateComponents (Source : Type := SurfaceConstructedDateSource) where
+  day : Source
+  month : Source
+  year : SurfaceConstructedDateYear Source
   deriving Repr, DecidableEq
 
 /-- Exact Number declaration gate for one direct three-field Date component. -/
@@ -241,17 +241,19 @@ inductive CheckedConstructedDateSource (model : FlatModel) where
       (source : CheckedConstructedDatePointInTimeExtractor model)
 
 /-- A checked complete Year source, fixed model Base Year, or authored Century/Short-Year pair. -/
-inductive CheckedConstructedDateYear (model : FlatModel) where
-  | complete (source : CheckedConstructedDateSource model)
+inductive CheckedConstructedDateYear (model : FlatModel)
+    (Source : Type := CheckedConstructedDateSource model) where
+  | complete (source : Source)
   | baseYear (year : Int)
   | centuryAndShortYear
-      (century shortYear : CheckedConstructedDateSource model)
+      (century shortYear : Source)
 
 /-- The checked direct constructor plus its selected concrete model-zone profile. -/
-structure CheckedConstructedDateComponents (model : FlatModel) where
-  day : CheckedConstructedDateSource model
-  month : CheckedConstructedDateSource model
-  year : CheckedConstructedDateYear model
+structure CheckedConstructedDateComponents (model : FlatModel)
+    (Source : Type := CheckedConstructedDateSource model) where
+  day : Source
+  month : Source
+  year : CheckedConstructedDateYear model Source
   profile : ModelZone.ConcreteProfile
   profileSelected :
     ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
@@ -265,8 +267,8 @@ def CheckedConstructedDateSource.fieldId? : CheckedConstructedDateSource model �
   | .constant _ | .baseYearExtractor _ | .pointInTimeExtractor _ => none
 
 /-- All authored components in evaluation order, including both split-year slots. -/
-def CheckedConstructedDateComponents.sources (checked : CheckedConstructedDateComponents model) :
-    List (CheckedConstructedDateSource model) :=
+def CheckedConstructedDateComponents.sources (checked : CheckedConstructedDateComponents model Source) :
+    List Source :=
   [checked.day, checked.month] ++ match checked.year with
     | .complete source => [source]
     | .baseYear _ => []
@@ -275,6 +277,22 @@ def CheckedConstructedDateComponents.sources (checked : CheckedConstructedDateCo
 /-- Dependency and pointer discovery retain the same component order as execution. -/
 def CheckedConstructedDateComponents.fields (checked : CheckedConstructedDateComponents model) :
     List FieldId := checked.sources.filterMap (·.fieldId?)
+
+/-- Retain constructor shape while exposing component subterms to recursive consumers. -/
+def CheckedConstructedDateComponents.attach [SizeOf Source]
+    (checked : CheckedConstructedDateComponents model Source) :
+    CheckedConstructedDateComponents model { source : Source // sizeOf source < sizeOf checked } :=
+  match checked with
+  | ⟨day, month, .complete year, profile, selected⟩ =>
+      { day := ⟨day, by simp +arith⟩, month := ⟨month, by simp +arith⟩
+        year := .complete ⟨year, by simp +arith⟩, profile, profileSelected := selected }
+  | ⟨day, month, .baseYear year, profile, selected⟩ =>
+      { day := ⟨day, by simp +arith⟩, month := ⟨month, by simp +arith⟩
+        year := .baseYear year, profile, profileSelected := selected }
+  | ⟨day, month, .centuryAndShortYear century shortYear, profile, selected⟩ =>
+      { day := ⟨day, by simp +arith⟩, month := ⟨month, by simp +arith⟩
+        year := .centuryAndShortYear ⟨century, by simp +arith⟩ ⟨shortYear, by simp +arith⟩
+        profile, profileSelected := selected }
 
 /-- Static rejection before any component is read. -/
 inductive ConstructedDateComponentsElabError where

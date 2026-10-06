@@ -247,30 +247,27 @@ end CheckedConstructedDateSource
 namespace CheckedConstructedDateYear
 
 /-- Read one checked year form with the caller's explicit optional world. Split-year evaluation preserves Century-before-Short-Year formal precedence, while any ordinary empty component keeps the construction incomplete. -/
-def readWith (checked : CheckedConstructedDateYear model)
-    (readSource : CheckedConstructedDateSource model →
-      Except ConstructedDateEvaluationFault CheckedConstructedDateComponent)
+def readWith [Monad m] (checked : CheckedConstructedDateYear model Source)
+    (readSource : Source → m CheckedConstructedDateComponent)
     (phase : Phase := .computation) :
-    Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
+    m CheckedConstructedDateComponent :=
   match checked with
   | .complete source => readSource source
   | .baseYear year => pure (.value year)
-  | .centuryAndShortYear century shortYear =>
-      match readSource century with
-      | .error error => .error error
-      | .ok (.unavailable cause) =>
-          if phase == .validation then (readSource shortYear).map (fun _ => .unavailable cause)
-          else .ok (.unavailable cause)
-      | .ok centuryPart =>
-          match readSource shortYear with
-          | .error error => .error error
-          | .ok (.unavailable cause) => .ok (.unavailable cause)
-          | .ok shortYearPart =>
+  | .centuryAndShortYear century shortYear => do
+      match ← readSource century with
+      | .unavailable cause =>
+          if phase == .validation then discard (readSource shortYear)
+          pure (.unavailable cause)
+      | centuryPart =>
+          match ← readSource shortYear with
+          | .unavailable cause => pure (.unavailable cause)
+          | shortYearPart =>
               match centuryPart, shortYearPart with
               | .value century, .value shortYear =>
                   -- The four-part constructor rejects a present zero Century (spec/05 §3).
-                  .ok (.value (if century == 0 then 0 else century * 100 + shortYear))
-              | _, _ => .ok .empty
+                  pure (.value (if century == 0 then 0 else century * 100 + shortYear))
+              | _, _ => pure .empty
 
 def read (checked : CheckedConstructedDateYear model)
     (phase : Phase) (input : CheckedDocument model) (world : Option World) :
@@ -384,7 +381,7 @@ namespace CheckedConstructedDateComponents
 /-- Resolve one real constructed Date exactly as its fresh model-zone parse does.
     Exact consumers retain this instant instead of reducing the value to calendar
     parts and resolving it again at a later boundary. -/
-def resolveFreshInstant (checked : CheckedConstructedDateComponents model)
+def resolveFreshInstant (checked : CheckedConstructedDateComponents model Source)
     (parts : DateParts) : Except ConstructedDateEvaluationFault (Option Instant) :=
   -- DateUtil.createDate uses a strict host calendar, whose instant must fit signed 64-bit millis.
   pure ((checked.profile.resolveCalendarLabel? {
@@ -394,14 +391,14 @@ def resolveFreshInstant (checked : CheckedConstructedDateComponents model)
 /-- Decide whether one already hybrid-real Date also exists at local midnight in the
     selected profile. The calendar label remains independent of the stored-Date floor,
     which only a later target may apply (calendar boundary grid, 2026-10-04). -/
-def profileAcceptsDate (checked : CheckedConstructedDateComponents model)
+def profileAcceptsDate (checked : CheckedConstructedDateComponents model Source)
     (parts : DateParts) :
     Except ConstructedDateEvaluationFault Bool := do
   pure (← checked.resolveFreshInstant parts).isSome
 
 /-- Apply the selected profile's local-midnight reality without changing incomplete,
     already-unreal, or formally unavailable construction results. -/
-def applyProfileReality (checked : CheckedConstructedDateComponents model) :
+def applyProfileReality (checked : CheckedConstructedDateComponents model Source) :
     ConstructedDateObservation →
       Except ConstructedDateEvaluationFault ConstructedDateObservation
   | .resolved (.real parts) => do
@@ -418,30 +415,25 @@ private def availableAmount? : CheckedConstructedDateComponent → Option Int
 /-- Read Day, Month, and Year in generated argument order before applying a profile
     consumer. Computation stops on formal poison; validation evaluates later arguments, whose
     conversion may still throw, before retaining the first formal cause (spec/05 §3). -/
-def evaluateComponentsWith (checked : CheckedConstructedDateComponents model)
-    (readSource : CheckedConstructedDateSource model →
-      Except ConstructedDateEvaluationFault CheckedConstructedDateComponent)
+def evaluateComponentsWith [Monad m] (checked : CheckedConstructedDateComponents model Source)
+    (readSource : Source → m CheckedConstructedDateComponent)
     (phase : Phase := .computation) :
-    Except ConstructedDateEvaluationFault ConstructedDateObservation :=
-  match readSource checked.day with
-  | .error error => .error error
-  | .ok (.unavailable cause) =>
-      if phase == .validation then do
-        let _ ← readSource checked.month
-        let _ ← checked.year.readWith readSource phase
-        pure (.unavailable cause)
-      else .ok (.unavailable cause)
-  | .ok day =>
-      match readSource checked.month with
-      | .error error => .error error
-      | .ok (.unavailable cause) =>
-          if phase == .validation then (checked.year.readWith readSource phase).map (fun _ => .unavailable cause)
-          else .ok (.unavailable cause)
-      | .ok month =>
-          match checked.year.readWith readSource phase with
-          | .error error => .error error
-          | .ok (.unavailable cause) => .ok (.unavailable cause)
-          | .ok year =>
+    m ConstructedDateObservation := do
+  match ← readSource checked.day with
+  | .unavailable cause =>
+      if phase == .validation then
+        discard (readSource checked.month)
+        discard (checked.year.readWith readSource phase)
+      pure (.unavailable cause)
+  | day =>
+      match ← readSource checked.month with
+      | .unavailable cause =>
+          if phase == .validation then discard (checked.year.readWith readSource phase)
+          pure (.unavailable cause)
+      | month =>
+          match ← checked.year.readWith readSource phase with
+          | .unavailable cause => pure (.unavailable cause)
+          | year =>
               pure (ConstructedDateObservation.ofAvailableComponents
                 (availableAmount? day) (availableAmount? month)
                 (availableAmount? year))
@@ -460,23 +452,25 @@ def evaluate (checked : CheckedConstructedDateComponents model)
   checked.applyProfileReality
     (← checked.evaluateComponents phase input world)
 
-/-- Evaluate a constructed Date into the shared exact value boundary. A real local
+/-- Finish one constructed observation at the shared exact value boundary. A real local
     label is resolved exactly once here; later comparison, shift, and difference
     consumers receive that retained instant rather than resolving `parts` again. -/
-def evaluateValueWith (checked : CheckedConstructedDateComponents model)
-    (readSource : CheckedConstructedDateSource model →
-      Except ConstructedDateEvaluationFault CheckedConstructedDateComponent)
-    (phase : Phase := .computation) :
-    Except ConstructedDateEvaluationFault ConstructedDateValue := do
-  match ← checked.evaluateComponentsWith readSource phase with
+def finishValue (checked : CheckedConstructedDateComponents model Source) :
+    ConstructedDateObservation → Except ConstructedDateEvaluationFault ConstructedDateValue
   | .unavailable cause => pure (.unavailable cause)
-  | .resolved (.real parts) =>
+  | .resolved (.real parts) => do
       match ← checked.resolveFreshInstant parts with
       | some instant => pure (.value instant parts false)
       | none => pure (.noValue false)
   | .resolved .incomplete => pure (.noValue true)
   | .resolved .unreal => pure (.noValue false)
   | .resolved .unknown => pure (.unavailable .malformed)
+
+def evaluateValueWith (checked : CheckedConstructedDateComponents model Source)
+    (readSource : Source → Except ConstructedDateEvaluationFault CheckedConstructedDateComponent)
+    (phase : Phase := .computation) :
+    Except ConstructedDateEvaluationFault ConstructedDateValue := do
+  checked.finishValue (← checked.evaluateComponentsWith readSource phase)
 
 def evaluateValue (checked : CheckedConstructedDateComponents model)
     (phase : Phase) (input : CheckedDocument model) (world : Option World) :

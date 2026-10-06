@@ -226,6 +226,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Repeatable-operand rule locus across the DateRange carriers](implementation/date-range.md#cap-date-range-repeatable-operand-locus)
 <a id="cap-temporal-extrema"></a>
 - [Temporal extrema](implementation/temporal.md#cap-temporal-extrema)
+<a id="cap-recursive-date-components"></a>
+- [Recursive and selected Date components](implementation/temporal.md#cap-recursive-date-components)
 <a id="cap-indexed-temporal-scalar"></a>
 - [Indexed temporal scalar expressions](implementation/temporal.md#cap-indexed-temporal-scalar)
 <a id="cap-temporal-comparison-and-aggregates"></a>

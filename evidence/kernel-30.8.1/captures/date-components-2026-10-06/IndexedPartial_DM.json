@@ -1,0 +1,1502 @@
+{
+  "header" : {
+    "id" : "IndexedPartial_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "IndexedPartial_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false,
+      "baseYear" : "2024"
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Id",
+                "name" : "Id",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/DAY_OPTIONAL",
+                "name" : "DAY_OPTIONAL",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd",
+                      "datePrecision" : "DAY_OPTIONAL"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/MONTH_OPTIONAL",
+                "name" : "MONTH_OPTIONAL",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd",
+                      "datePrecision" : "MONTH_OPTIONAL"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/YEAR_OPTIONAL",
+                "name" : "YEAR_OPTIONAL",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd",
+                      "datePrecision" : "YEAR_OPTIONAL"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/FULL",
+                "name" : "FULL",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Day",
+                "name" : "Day",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minValue" : 0,
+                      "maxValue" : 31
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Month",
+                "name" : "Month",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minValue" : 0,
+                      "maxValue" : 12
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/YearBound",
+                "name" : "YearBound",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minValue" : 0,
+                      "maxValue" : 9999
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Century",
+                "name" : "Century",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minValue" : 0,
+                      "maxValue" : 21
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/ShortYear",
+                "name" : "ShortYear",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minValue" : 0,
+                      "maxValue" : 99
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/DayText",
+                "name" : "DayText",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "probe"
+                      } ],
+                      "maxLength" : 2,
+                      "pattern" : "[0-9]+"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/MonthText",
+                "name" : "MonthText",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "probe"
+                      } ],
+                      "maxLength" : 2,
+                      "pattern" : "[0-9]+"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/YearText",
+                "name" : "YearText",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "probe"
+                      } ],
+                      "maxLength" : 4,
+                      "pattern" : "[0-9]+"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/YearDate",
+                "name" : "YearDate",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy"
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "Id"
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Key",
+            "name" : "Key",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/First",
+            "name" : "First",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Last",
+            "name" : "Last",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Shift",
+            "name" : "Shift",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Minimum",
+            "name" : "Minimum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Year",
+            "name" : "Year",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Clock",
+            "name" : "Clock",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Stamp",
+            "name" : "Stamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MonthFirst",
+            "name" : "MonthFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MonthLast",
+            "name" : "MonthLast",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/UnknownFirst",
+            "name" : "UnknownFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/UnknownLast",
+            "name" : "UnknownLast",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FirstComp",
+            "name" : "FirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../First",
+              "computationAlternatives" : [ {
+                "operation" : "ValueAsDate(Rows/DAY_OPTIONAL For Key, FirstDay)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CHECK_First",
+            "name" : "CHECK_First",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "CHECK_First",
+              "errorCondition" : "FieldFilled(Key) And ValueAsDate(Rows/DAY_OPTIONAL For Key, FirstDay) == \"01.02.2024\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/LastComp",
+            "name" : "LastComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Last",
+              "computationAlternatives" : [ {
+                "operation" : "ValueAsDate(Rows/DAY_OPTIONAL For Key, LastDay)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CHECK_Last",
+            "name" : "CHECK_Last",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "CHECK_Last",
+              "errorCondition" : "FieldFilled(Key) And ValueAsDate(Rows/DAY_OPTIONAL For Key, LastDay) == \"01.02.2024\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MonthFirstComp",
+            "name" : "MonthFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MonthFirst",
+              "computationAlternatives" : [ {
+                "operation" : "ValueAsDate(Rows/MONTH_OPTIONAL For Key, FirstDay)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CHECK_MonthFirst",
+            "name" : "CHECK_MonthFirst",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "CHECK_MonthFirst",
+              "errorCondition" : "FieldFilled(Key) And ValueAsDate(Rows/MONTH_OPTIONAL For Key, FirstDay) == \"01.02.2024\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MonthLastComp",
+            "name" : "MonthLastComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MonthLast",
+              "computationAlternatives" : [ {
+                "operation" : "ValueAsDate(Rows/MONTH_OPTIONAL For Key, LastDay)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CHECK_MonthLast",
+            "name" : "CHECK_MonthLast",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "CHECK_MonthLast",
+              "errorCondition" : "FieldFilled(Key) And ValueAsDate(Rows/MONTH_OPTIONAL For Key, LastDay) == \"01.02.2024\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/UnknownFirstComp",
+            "name" : "UnknownFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../UnknownFirst",
+              "computationAlternatives" : [ {
+                "operation" : "ValueAsDate(Rows/YEAR_OPTIONAL For Key, FirstDay)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CHECK_UnknownFirst",
+            "name" : "CHECK_UnknownFirst",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "CHECK_UnknownFirst",
+              "errorCondition" : "FieldFilled(Key) And ValueAsDate(Rows/YEAR_OPTIONAL For Key, FirstDay) == \"01.02.2024\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/UnknownLastComp",
+            "name" : "UnknownLastComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../UnknownLast",
+              "computationAlternatives" : [ {
+                "operation" : "ValueAsDate(Rows/YEAR_OPTIONAL For Key, LastDay)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CHECK_UnknownLast",
+            "name" : "CHECK_UnknownLast",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "CHECK_UnknownLast",
+              "errorCondition" : "FieldFilled(Key) And ValueAsDate(Rows/YEAR_OPTIONAL For Key, LastDay) == \"01.02.2024\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ShiftComp",
+            "name" : "ShiftComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Shift",
+              "computationAlternatives" : [ {
+                "operation" : "AddDays(ValueAsDate(Rows/DAY_OPTIONAL For Key, LastDay), 1)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CHECK_Shift",
+            "name" : "CHECK_Shift",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "CHECK_Shift",
+              "errorCondition" : "FieldFilled(Key) And AddDays(ValueAsDate(Rows/DAY_OPTIONAL For Key, LastDay), 1) == \"01.02.2024\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MinimumComp",
+            "name" : "MinimumComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Minimum",
+              "computationAlternatives" : [ {
+                "operation" : "Min(ValueAsDate(Rows/DAY_OPTIONAL For Key, FirstDay), \"15.02.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CHECK_Minimum",
+            "name" : "CHECK_Minimum",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "CHECK_Minimum",
+              "errorCondition" : "FieldFilled(Key) And Min(ValueAsDate(Rows/DAY_OPTIONAL For Key, FirstDay), \"15.02.2024\") == \"01.02.2024\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/StampComp",
+            "name" : "StampComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Stamp",
+              "computationAlternatives" : [ {
+                "operation" : "DateTime(ValueAsDate(Rows/DAY_OPTIONAL For Key, FirstDay), Clock)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/UnknownMinimum",
+            "name" : "UnknownMinimum",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/UnknownMinimumComp",
+            "name" : "UnknownMinimumComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../UnknownMinimum",
+              "computationAlternatives" : [ {
+                "operation" : "Min(ValueAsDate(Rows/YEAR_OPTIONAL For Key, FirstDay), \"15.02.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterLast",
+            "name" : "AfterLast",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterLastComp",
+            "name" : "AfterLastComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterLast",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(Last)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(Last)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterUnknown",
+            "name" : "AfterUnknown",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterUnknownComp",
+            "name" : "AfterUnknownComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterUnknown",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(UnknownFirst)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(UnknownFirst)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/recursive",
+            "name" : "recursive",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/recursiveMin",
+            "name" : "recursiveMin",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/recursiveAfter",
+            "name" : "recursiveAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/recursiveComp",
+            "name" : "recursiveComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../recursive",
+              "computationAlternatives" : [ {
+                "operation" : "Date(DayFromDate(AddDays(Rows/FULL For Key,1)),MonthFromDate(AddDays(Rows/FULL For Key,1)),YearFromDate(AddDays(Rows/FULL For Key,1)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/recursiveMinComp",
+            "name" : "recursiveMinComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../recursiveMin",
+              "computationAlternatives" : [ {
+                "operation" : "Min(Date(DayFromDate(AddDays(Rows/FULL For Key,1)),MonthFromDate(AddDays(Rows/FULL For Key,1)),YearFromDate(AddDays(Rows/FULL For Key,1))),\"15.02.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/recursiveAfterComp",
+            "name" : "recursiveAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../recursiveAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(recursive)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(recursive)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/indexedextract",
+            "name" : "indexedextract",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/indexedextractMin",
+            "name" : "indexedextractMin",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/indexedextractAfter",
+            "name" : "indexedextractAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/indexedextractComp",
+            "name" : "indexedextractComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../indexedextract",
+              "computationAlternatives" : [ {
+                "operation" : "Date(DayFromDate(Rows/FULL For Key),MonthFromDate(Rows/FULL For Key),YearFromDate(Rows/FULL For Key))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/indexedextractMinComp",
+            "name" : "indexedextractMinComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../indexedextractMin",
+              "computationAlternatives" : [ {
+                "operation" : "Min(Date(DayFromDate(Rows/FULL For Key),MonthFromDate(Rows/FULL For Key),YearFromDate(Rows/FULL For Key)),\"15.02.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/indexedextractAfterComp",
+            "name" : "indexedextractAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../indexedextractAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(indexedextract)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(indexedextract)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/number3",
+            "name" : "number3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/number3Min",
+            "name" : "number3Min",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/number3After",
+            "name" : "number3After",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/number3Comp",
+            "name" : "number3Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../number3",
+              "computationAlternatives" : [ {
+                "operation" : "Date(Rows/Day For Key,Rows/Month For Key,Rows/YearBound For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/number3MinComp",
+            "name" : "number3MinComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../number3Min",
+              "computationAlternatives" : [ {
+                "operation" : "Min(Date(Rows/Day For Key,Rows/Month For Key,Rows/YearBound For Key),\"15.02.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/number3AfterComp",
+            "name" : "number3AfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../number3After",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(number3)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(number3)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/number2",
+            "name" : "number2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/number2Min",
+            "name" : "number2Min",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/number2After",
+            "name" : "number2After",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/number2Comp",
+            "name" : "number2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../number2",
+              "computationAlternatives" : [ {
+                "operation" : "Date(Rows/Day For Key,Rows/Month For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/number2MinComp",
+            "name" : "number2MinComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../number2Min",
+              "computationAlternatives" : [ {
+                "operation" : "Min(Date(Rows/Day For Key,Rows/Month For Key),\"15.02.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/number2AfterComp",
+            "name" : "number2AfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../number2After",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(number2)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(number2)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/number4",
+            "name" : "number4",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/number4Min",
+            "name" : "number4Min",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/number4After",
+            "name" : "number4After",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/number4Comp",
+            "name" : "number4Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../number4",
+              "computationAlternatives" : [ {
+                "operation" : "Date(Rows/Day For Key,Rows/Month For Key,Rows/Century For Key,Rows/ShortYear For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/number4MinComp",
+            "name" : "number4MinComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../number4Min",
+              "computationAlternatives" : [ {
+                "operation" : "Min(Date(Rows/Day For Key,Rows/Month For Key,Rows/Century For Key,Rows/ShortYear For Key),\"15.02.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/number4AfterComp",
+            "name" : "number4AfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../number4After",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(number4)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(number4)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/string3",
+            "name" : "string3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/string3Min",
+            "name" : "string3Min",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/string3After",
+            "name" : "string3After",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/string3Comp",
+            "name" : "string3Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../string3",
+              "computationAlternatives" : [ {
+                "operation" : "Date(Rows/DayText For Key,Rows/MonthText For Key,Rows/YearText For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/string3MinComp",
+            "name" : "string3MinComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../string3Min",
+              "computationAlternatives" : [ {
+                "operation" : "Min(Date(Rows/DayText For Key,Rows/MonthText For Key,Rows/YearText For Key),\"15.02.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/string3AfterComp",
+            "name" : "string3AfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../string3After",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(string3)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(string3)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/dateyear",
+            "name" : "dateyear",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/dateyearMin",
+            "name" : "dateyearMin",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/dateyearAfter",
+            "name" : "dateyearAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/dateyearComp",
+            "name" : "dateyearComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../dateyear",
+              "computationAlternatives" : [ {
+                "operation" : "Date(\"1\",\"2\",Rows/YearDate For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/dateyearMinComp",
+            "name" : "dateyearMinComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../dateyearMin",
+              "computationAlternatives" : [ {
+                "operation" : "Min(Date(\"1\",\"2\",Rows/YearDate For Key),\"15.02.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/dateyearAfterComp",
+            "name" : "dateyearAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../dateyearAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(dateyear)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(dateyear)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/wrappedpartial",
+            "name" : "wrappedpartial",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/wrappedpartialMin",
+            "name" : "wrappedpartialMin",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/wrappedpartialAfter",
+            "name" : "wrappedpartialAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/wrappedpartialComp",
+            "name" : "wrappedpartialComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../wrappedpartial",
+              "computationAlternatives" : [ {
+                "operation" : "Date(\"1\",\"2\",YearFromDate(AddDays(ValueAsDate(Rows/DAY_OPTIONAL For Key,FirstDay),1)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/wrappedpartialMinComp",
+            "name" : "wrappedpartialMinComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../wrappedpartialMin",
+              "computationAlternatives" : [ {
+                "operation" : "Min(Date(\"1\",\"2\",YearFromDate(AddDays(ValueAsDate(Rows/DAY_OPTIONAL For Key,FirstDay),1))),\"15.02.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/wrappedpartialAfterComp",
+            "name" : "wrappedpartialAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../wrappedpartialAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(wrappedpartial)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(wrappedpartial)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/unknownwrap",
+            "name" : "unknownwrap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/unknownwrapMin",
+            "name" : "unknownwrapMin",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/unknownwrapAfter",
+            "name" : "unknownwrapAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/unknownwrapComp",
+            "name" : "unknownwrapComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../unknownwrap",
+              "computationAlternatives" : [ {
+                "operation" : "Date(\"1\",\"2\",YearFromDate(AddDays(ValueAsDate(Rows/YEAR_OPTIONAL For Key,FirstDay),1)))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/unknownwrapMinComp",
+            "name" : "unknownwrapMinComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../unknownwrapMin",
+              "computationAlternatives" : [ {
+                "operation" : "Min(Date(\"1\",\"2\",YearFromDate(AddDays(ValueAsDate(Rows/YEAR_OPTIONAL For Key,FirstDay),1))),\"15.02.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/unknownwrapAfterComp",
+            "name" : "unknownwrapAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../unknownwrapAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(unknownwrap)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(unknownwrap)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NonrelFirst",
+            "name" : "NonrelFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/AfterNonrelFirst",
+            "name" : "AfterNonrelFirst",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NonrelFirstComp",
+            "name" : "NonrelFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NonrelFirst",
+              "computationAlternatives" : [ {
+                "operation" : "Date(DayFromDate(AddDays(ValueAsDate(Rows/YEAR_OPTIONAL For Key,FirstDay),1)),Rows/Month For Key,Rows/YearBound For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/AfterNonrelFirstComp",
+            "name" : "AfterNonrelFirstComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../AfterNonrelFirst",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(NonrelFirst)"
+              }, {
+                "operation" : "0",
+                "precondition" : "FieldFilled(NonrelFirst)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

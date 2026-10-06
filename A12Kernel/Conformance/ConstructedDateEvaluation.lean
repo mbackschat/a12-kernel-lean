@@ -688,4 +688,43 @@ example :
           some (.numeric (.value 0 false)) := by
   native_decide
 
+private inductive TraceDateSlot where
+  | day | month | century | shortYear
+  deriving Repr, DecidableEq
+
+private def tracedComponents : CheckedConstructedDateComponents (dateModel "UTC") TraceDateSlot := {
+  day := .day, month := .month, year := .centuryAndShortYear .century .shortYear
+  profile := .utc, profileSelected := by rfl }
+
+private def componentTrace (phase : Phase) (poison fault : Option TraceDateSlot := none)
+    (zeroCentury : Bool := false) : Sum ConstructedDateEvaluationFault ConstructedDateObservation × List TraceDateSlot :=
+  let read (slot : TraceDateSlot) : ExceptT ConstructedDateEvaluationFault (StateM (List TraceDateSlot)) CheckedConstructedDateComponent := do
+    modify (· ++ [slot])
+    if fault == some slot then throw (.payloadKind 0)
+    if poison == some slot then return .unavailable .malformed
+    pure (.value (match slot with
+      | .day => 15 | .month => 6 | .century => if zeroCentury then 0 else 19 | .shortYear => 63))
+  let (result, order) := ((tracedComponents.evaluateComponentsWith read phase).run).run []
+  match result with
+  | .ok observation => (.inr observation, order)
+  | .error error => (.inl error, order)
+
+example : componentTrace .computation =
+    (.inr (.resolved (.real { year := 1963, month := 6, day := 15 })), [.day, .month, .century, .shortYear]) ∧
+    componentTrace .computation none none true =
+      (.inr (.resolved .unreal), [.day, .month, .century, .shortYear]) := by native_decide
+
+example : [(TraceDateSlot.day, [.day]), (.month, [.day, .month]),
+    (.century, [.day, .month, .century]), (.shortYear, [.day, .month, .century, .shortYear])].all
+    (fun (slot, expectedOrder) => componentTrace .computation (some slot) == (.inr (.unavailable .malformed), expectedOrder) &&
+      componentTrace .validation (some slot) ==
+        (.inr (.unavailable .malformed), [.day, .month, .century, .shortYear])) = true := by native_decide
+
+example : componentTrace .computation (some .day) (some .month) = (.inr (.unavailable .malformed), [.day]) ∧
+    componentTrace .validation (some .day) (some .month) = (.inl (.payloadKind 0), [.day, .month]) ∧
+    [Phase.computation, .validation].all (fun phase =>
+      componentTrace phase none (some .century) == (.inl (.payloadKind 0), [.day, .month, .century]) &&
+      componentTrace phase none (some .shortYear) true ==
+        (.inl (.payloadKind 0), [.day, .month, .century, .shortYear])) = true := by native_decide
+
 end A12Kernel.Conformance.ConstructedDateEvaluation

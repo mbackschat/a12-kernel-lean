@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.TemporalExpression.EntityList
+import A12Kernel.Elaboration.TemporalExpression.DateComponents
 
 namespace A12Kernel
 
@@ -114,8 +115,7 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
           timeComponents.hasDate || !timeComponents.hasTime then throw .incompatibleFormats
       pure (.apply (.dateTime (← scalarProfile model)) date [time], TemporalComponents.now)
   | .dateConstruction source => do
-      let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
-      let components ← (elaborateConstructedDateSources model source scope).mapError .dateComponents
+      let components ← resolveScalarDateComponents model rowGroup targetGroup? source
       pure (.atom (.dateConstruction components), TemporalComponents.fullDate)
   | .calendarShift unit source amount => do
       if !source.admittedSourceSlot .withPartialDate then throw .unsupportedSource
@@ -189,6 +189,44 @@ private def resolveScalarTemporalAmount (model : FlatModel) (rowGroup : GroupPat
 termination_by (sizeOf surface, 0)
 decreasing_by
   all_goals first | decreasing_tactic | (apply Prod.Lex.left; simp_all +arith <;> omega)
+
+private def resolveScalarDateComponent (model : FlatModel) (rowGroup : GroupPath)
+    (targetGroup? : Option GroupPath) (position : ConstructedDateComponentPosition)
+    (surface : Sum (Sum SurfaceConstructedDateSource SurfaceSemanticIndex) (DateNumericPart × SurfaceScalarTemporalExpression)) :
+    Except ScalarTemporalExpressionError (ScalarDateComponent model) := do
+  match surface with
+  | .inl source =>
+      let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
+      .inl <$> elaborateScalarDateLeaf model rowGroup scope position source
+  | .inr (part, source) =>
+      if position.extractor? != some part then throw .incompatibleFormats
+      .inr <$> resolveScalarTemporalProjection model rowGroup targetGroup? source (.date part)
+termination_by (sizeOf surface, 0)
+
+private def resolveScalarDateComponents (model : FlatModel) (rowGroup : GroupPath)
+    (targetGroup? : Option GroupPath)
+    (surface : SurfaceConstructedDateComponents
+      (Sum (Sum SurfaceConstructedDateSource SurfaceSemanticIndex) (DateNumericPart × SurfaceScalarTemporalExpression))) :
+    Except ScalarTemporalExpressionError (CheckedConstructedDateComponents model (ScalarDateComponent model)) := do
+  match selected : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+  | none => throw .unsupportedSource
+  | some profile => do
+      let day ← resolveScalarDateComponent model rowGroup targetGroup? .day surface.day
+      let month ← resolveScalarDateComponent model rowGroup targetGroup? .month surface.month
+      let year ← match _yearShape : surface.year with
+        | .complete source => .complete <$> resolveScalarDateComponent model rowGroup targetGroup? .year source
+        | .baseYear =>
+            match model.baseYear with
+            | some year => pure (.baseYear year)
+            | none => throw (.dateComponents .missingBaseYear)
+        | .centuryAndShortYear century shortYear => do
+            pure (.centuryAndShortYear
+              (← resolveScalarDateComponent model rowGroup targetGroup? .century century)
+              (← resolveScalarDateComponent model rowGroup targetGroup? .shortYear shortYear))
+      pure { day, month, year, profile, profileSelected := selected }
+termination_by (sizeOf surface, 0)
+decreasing_by
+  all_goals first | decreasing_tactic | (apply Prod.Lex.left; cases surface; simp_all +arith <;> omega)
 
 private def resolveScalarTimeComponent (model : FlatModel) (rowGroup : GroupPath)
     (targetGroup? : Option GroupPath) (position : TimeComponentPosition)
@@ -399,16 +437,7 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       | .value row =>
           readScalarValueAsDate phase source.source (addressed.read row source.selection.targetDeclaration.id)
             (addressed.storedText row source.selection.targetDeclaration.id)
-  | .dateConstruction components =>
-      let read (source : CheckedConstructedDateSource model) :=
-        source.readWith phase context.read context.storedText context.world
-      match components.evaluateValueWith read phase with
-      | .ok (.value instant parts notGiven) =>
-          pure (.value (.date { instant, parts, basis := .legacyHybrid }) (!notGiven))
-      | .ok (.noValue notGiven) => pure (.value .noValue (!notGiven))
-      | .ok (.unavailable cause) => pure (.unknown cause)
-      | .error (.stringNotConvertible _ _) => throw .componentNumberInvalid
-      | .error _ => throw .calendarUnavailable
+  | .dateConstruction components => readRecursiveDateComponents phase context components
   | .timeConstruction components => do
       pure (match ← readRecursiveTimeComponents phase context components with
       | .value time => .value (.time time) true
@@ -527,6 +556,26 @@ private def readRecursiveScalarAmount (phase : Phase) (context : ScalarComputati
   | .ok expression => pure (expression.lowerForEvaluation.evalNumericOperationTree id)
 termination_by (sizeOf amount, 0)
 
+private def readRecursiveDateComponent (phase : Phase) (context : ScalarComputationContext)
+    (component : ScalarDateComponent model) :
+    StateT DateComponentRelevance (Except ScalarTemporalEvaluationFault) CheckedConstructedDateComponent := do
+  match component with
+  | .inl source => liftM (readScalarDateLeaf phase context source)
+  | .inr source =>
+      observeScalarDateComponent (← liftM (readRecursiveScalarAtom phase context source))
+termination_by (sizeOf component, 0)
+
+private def readRecursiveDateComponents (phase : Phase) (context : ScalarComputationContext)
+    (components : CheckedConstructedDateComponents model (ScalarDateComponent model)) :
+    Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
+  let (observation, relevance) ← (components.attach.evaluateComponentsWith
+    (fun ⟨source, _⟩ => readRecursiveDateComponent phase context source) phase).run .relevant
+  finishScalarDateComponents components observation relevance
+termination_by (sizeOf components, 0)
+decreasing_by
+  all_goals apply Prod.Lex.left
+  all_goals assumption
+
 private def readRecursiveTimeComponents (phase : Phase) (context : ScalarComputationContext)
     (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model))) :
     Except ScalarTemporalEvaluationFault TimeConstructionResult :=
@@ -587,9 +636,8 @@ private def scalarTemporalAtomDependencies (storedOnly : Bool)
     (indexed : CheckedSemanticIndexSource model → List α) (atom : ScalarTemporalAtom model) : List α :=
   match atom with
   | .dateConstruction components =>
-      (if storedOnly then components.sources.filterMap fun
-        | .dateYearField checked => some checked.source.id | _ => none
-      else components.fields).flatMap field
+      components.attach.sources.flatMap fun ⟨component, _⟩ =>
+        scalarDateComponentDependencies storedOnly field entity indexed component
   | .valueAsDate source => field source.source.target.id
   | .indexedValueAsDate source =>
       (if storedOnly then field source.selection.targetDeclaration.id else []) ++ indexed source.selection
@@ -601,6 +649,21 @@ private def scalarTemporalAtomDependencies (storedOnly : Bool)
   | .rangeBound _ (.yearless source) => if storedOnly then [] else field source.source.id
   | _ => []
 termination_by sizeOf atom
+
+private def scalarDateComponentDependencies (storedOnly : Bool)
+    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
+    (indexed : CheckedSemanticIndexSource model → List α) (component : ScalarDateComponent model) : List α :=
+  match component with
+  | .inl (.inl source) =>
+      if storedOnly then
+        match source with
+        | .dateYearField source => field source.source.id
+        | _ => []
+      else source.fieldId?.toList.flatMap field
+  | .inl (.inr source) =>
+      (if storedOnly then field source.selection.targetDeclaration.id else []) ++ indexed source.selection
+  | .inr source => scalarTemporalNumericDependencies storedOnly field entity indexed source
+termination_by sizeOf component
 
 private def scalarTemporalOperationDependencies (storedOnly : Bool)
     (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)

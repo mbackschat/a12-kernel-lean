@@ -47,10 +47,9 @@ private def lowerDateComponent (model : FlatModel) (rowGroup : GroupPath) :
       | .temporal _ => pure (.dateYearField field.id)
       | _ => refuse "Date" "component kind"
 
-def lowerDateComponents (model : FlatModel) (rowGroup : GroupPath)
-    (arguments : List Argument) : Lowering SurfaceConstructedDateComponents := do
+private def lowerDateComponentsWith (component : Expr → Lowering Source)
+    (arguments : List Argument) : Lowering (SurfaceConstructedDateComponents Source) := do
   let some expressions := arguments.mapM (fun | .mk expression none none => some expression | _ => none) | refuse "Date" "component modifier"
-  let component := lowerDateComponent model rowGroup
   match expressions with
   | [day, month] => pure { day := ← component day, month := ← component month, year := .baseYear }
   | [day, month, year] => pure {
@@ -59,6 +58,11 @@ def lowerDateComponents (model : FlatModel) (rowGroup : GroupPath)
       day := ← component day, month := ← component month
       year := .centuryAndShortYear (← component century) (← component shortYear) }
   | _ => refuse "Date" "component arity"
+
+
+def lowerDateComponents (model : FlatModel) (rowGroup : GroupPath)
+    (arguments : List Argument) : Lowering SurfaceConstructedDateComponents :=
+  lowerDateComponentsWith (lowerDateComponent model rowGroup) arguments
 
 private inductive TemporalExpressionPosition where
   | value
@@ -137,7 +141,17 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
           let some path := source.fieldEntity? | refuse "ValueAsDate" "partial Date entity"
           pure (.valueAsDate path endpoint)
   | .call "Date" arguments none none =>
-      (.dateConstruction ·) <$> lowerDateComponents model rowGroup arguments
+      (.dateConstruction ·) <$> lowerDateComponentsWith (fun component => do
+        match component with
+        | .entity { path, index := some key, category := none } =>
+            pure (.inl (.inr (← lowerIndexedSource model rowGroup path key)))
+        | _ =>
+            match lowerDateComponent model rowGroup component with
+            | .ok source => pure (.inl (.inl source))
+            | .error _ =>
+                let .call name [.mk source none none] none none := component | refuse "Date" "component source"
+                let some part := datePart? name | refuse "Date" "component extractor"
+                pure (.inr (part, ← lowerSourceSlot source))) arguments
   | .call "Time" arguments none none =>
       (.timeConstruction ·) <$> lowerTimeComponents arguments
   | .constant "Now" => pure .now

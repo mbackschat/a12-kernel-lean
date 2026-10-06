@@ -55,7 +55,7 @@ theorem checkedConstructedDateComponents_evaluateValue_real
     CheckedConstructedDateComponents.evaluateValueWith
   unfold CheckedConstructedDateComponents.evaluateComponents at observed
   rw [observed]
-  simp only [bind, Except.bind]
+  simp only [bind, Except.bind, CheckedConstructedDateComponents.finishValue]
   rw [resolved]
   rfl
 
@@ -152,7 +152,8 @@ theorem checkedConstructedDateCentury_read_unavailable
         (.centuryAndShortYear century shortYear) phase input world =
       .ok (.unavailable cause) := by
   subst phase
-  simp [CheckedConstructedDateYear.read, CheckedConstructedDateYear.readWith, observed]
+  simp [CheckedConstructedDateYear.read, CheckedConstructedDateYear.readWith, observed,
+    bind, Except.bind, pure, Except.pure]
 
 /-- Two reached split-year parts retain the zero-Century gate before decimal-place composition. -/
 theorem checkedConstructedDateCentury_read_values
@@ -167,16 +168,17 @@ theorem checkedConstructedDateCentury_read_values
     CheckedConstructedDateYear.read
         (.centuryAndShortYear century shortYear) phase input world =
       .ok (.value (if centuryValue == 0 then 0 else centuryValue * 100 + shortYearValue)) := by
-  simp [CheckedConstructedDateYear.read, CheckedConstructedDateYear.readWith, observedCentury, observedShortYear]
+  simp [CheckedConstructedDateYear.read, CheckedConstructedDateYear.readWith, observedCentury, observedShortYear,
+    bind, Except.bind, pure, Except.pure]
 
 /-- A reached Day poison stops the shared component fold, for immutable documents and scalar
 expression contexts alike; the later Month and Year readers are arbitrary. -/
 theorem checkedConstructedDateComponentsWith_day_unavailable
-    (checked : CheckedConstructedDateComponents model)
-    (readSource : CheckedConstructedDateSource model →
-      Except ConstructedDateEvaluationFault CheckedConstructedDateComponent)
-    (cause : FormalCause) (observed : readSource checked.day = .ok (.unavailable cause)) :
-    checked.evaluateComponentsWith readSource = .ok (.unavailable cause) := by
+    {Source : Type} {m : Type → Type} [Monad m] [LawfulMonad m]
+    (checked : CheckedConstructedDateComponents model Source)
+    (readSource : Source → m CheckedConstructedDateComponent)
+    (cause : FormalCause) (observed : readSource checked.day = pure (.unavailable cause)) :
+    checked.evaluateComponentsWith readSource = pure (.unavailable cause) := by
   simp [CheckedConstructedDateComponents.evaluateComponentsWith, observed]
 
 /-- The document reader specializes the shared ordered component fold. -/
@@ -241,6 +243,7 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
   unfold CheckedConstructedDateComponents.evaluateComponents
     CheckedConstructedDateComponents.evaluateComponentsWith
   dsimp only
+  simp only [bind, Except.bind, discard, Functor.mapConst, pure, Except.pure]
   generalize dayRead :
     CheckedConstructedDateSource.read checked.day phase input world = day
   cases day with
@@ -252,7 +255,7 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
           split
           · cases hm : checked.month.read phase input world <;>
               cases hy : checked.year.readWith (fun source => source.read phase input world) phase <;>
-              simp [bind, Except.bind, Functor.map, Except.map]
+              simp_all [Except.map]
           · simp
       | value amount =>
           generalize monthRead :
@@ -265,7 +268,7 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
                   simp
                   split
                   · cases hy : checked.year.readWith (fun source => source.read phase input world) phase <;>
-                      simp [Except.map]
+                      simp_all [Except.map]
                   · simp
               | value amount =>
                   generalize yearRead :
@@ -275,8 +278,7 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
                   | error error => simp
                   | ok year =>
                       cases year <;>
-                        simp [constructedDateObservation_ofAvailableComponents_ne_unknown,
-                          pure, Except.pure]
+                        simp [constructedDateObservation_ofAvailableComponents_ne_unknown]
               | empty =>
                   generalize yearRead :
                     CheckedConstructedDateYear.readWith
@@ -285,8 +287,7 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
                   | error error => simp
                   | ok year =>
                       cases year <;>
-                        simp [constructedDateObservation_ofAvailableComponents_ne_unknown,
-                          pure, Except.pure]
+                        simp [constructedDateObservation_ofAvailableComponents_ne_unknown]
       | empty =>
           generalize monthRead :
             CheckedConstructedDateSource.read checked.month phase input world = month
@@ -298,7 +299,7 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
                   simp
                   split
                   · cases hy : checked.year.readWith (fun source => source.read phase input world) phase <;>
-                      simp [Except.map]
+                      simp_all [Except.map]
                   · simp
               | value amount =>
                   generalize yearRead :
@@ -308,8 +309,7 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
                   | error error => simp
                   | ok year =>
                       cases year <;>
-                        simp [constructedDateObservation_ofAvailableComponents_ne_unknown,
-                          pure, Except.pure]
+                        simp [constructedDateObservation_ofAvailableComponents_ne_unknown]
               | empty =>
                   generalize yearRead :
                     CheckedConstructedDateYear.readWith
@@ -318,8 +318,7 @@ theorem checkedConstructedDateComponents_evaluateComponents_ne_resolved_unknown
                   | error error => simp
                   | ok year =>
                       cases year <;>
-                        simp [constructedDateObservation_ofAvailableComponents_ne_unknown,
-                          pure, Except.pure]
+                        simp [constructedDateObservation_ofAvailableComponents_ne_unknown]
 
 /-- Profile application cannot introduce the cause-free UNKNOWN fallback after
     checked component execution. -/

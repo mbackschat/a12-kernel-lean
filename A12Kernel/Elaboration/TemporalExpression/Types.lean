@@ -32,7 +32,8 @@ inductive SurfaceScalarTemporalExpression where
   | dateTimeConstruction (date time : SurfaceScalarTemporalExpression)
   | valueAsDate (reference : SurfaceFieldPath) (endpoint : ValueAsDateEndpoint)
   | indexedValueAsDate (selection : SurfaceSemanticIndex) (endpoint : ValueAsDateEndpoint)
-  | dateConstruction (components : SurfaceConstructedDateComponents)
+  | dateConstruction (components : SurfaceConstructedDateComponents
+      (Sum (Sum SurfaceConstructedDateSource SurfaceSemanticIndex) (DateNumericPart × SurfaceScalarTemporalExpression)))
   | calendarShift (unit : DateShiftUnit) (source : SurfaceScalarTemporalExpression)
       (amount : AuthoredNumericExpr (Sum SurfaceNumericAtom (TemporalNumericPart × SurfaceScalarTemporalExpression)))
   | timeConstruction (components : TimeComponentPrefix (Sum SurfaceTimeComponent (TimeNumericPart × SurfaceScalarTemporalExpression)))
@@ -129,6 +130,13 @@ structure CheckedIndexedValueAsDateSource (model : FlatModel) where
   source : CheckedZonedValueAsDateSource model
   sameTarget : source.source.target.id = selection.targetDeclaration.id
 
+/-- Selection and the position-specific component certificate must identify the same declaration
+(spec/05 §3 and spec/08 §4). -/
+structure CheckedIndexedDateComponent (model : FlatModel) where
+  selection : CheckedSemanticIndexSource model
+  source : CheckedConstructedDateSource model
+  sameTarget : source.fieldId? = some selection.targetDeclaration.id
+
 mutual
 inductive ScalarTemporalAtom (model : FlatModel) where
   | field (source : FlatTemporalField)
@@ -140,7 +148,8 @@ inductive ScalarTemporalAtom (model : FlatModel) where
   /-- Authored year presence survives effective Base-Year supplementation (spec/05 §1). -/
   | dateLiteral (profile : ModelZone.ConcreteProfile) (value : FullDate) (yearPresent : Bool := true)
   | dateTimeLiteral (profile : ModelZone.ConcreteProfile) (value : LocalDateTime)
-  | dateConstruction (components : CheckedConstructedDateComponents model)
+  | dateConstruction (components : CheckedConstructedDateComponents model
+      (Sum (Sum (CheckedConstructedDateSource model) (CheckedIndexedDateComponent model)) (ScalarTemporalNumericAtom model)))
   | timeConstruction (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model)))
   | valueAsDate (source : CheckedZonedValueAsDateSource model)
   | indexedValueAsDate (source : CheckedIndexedValueAsDateSource model)

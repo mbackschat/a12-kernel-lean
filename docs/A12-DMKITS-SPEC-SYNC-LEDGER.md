@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-06-04"></a>
+### SPEC-2026-10-06-04 — Date components retain non-relevance without skipping later poison
+
+- `status`: pending
+- `delta`: a cause-free non-relevant recursive component does not short-circuit Date construction; later formal poison wins, otherwise the constructed result remains non-relevant and absorbs Min fallback.
+- `basis`: [Date component checkpoint](sources/temporal-runtime-fold-probes.md#src-recursive-date-components), Kernel 30.8.1, clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`; both engines agree on the retained computation/dependent-guard controls.
+- `canonical`: [spec/05 §3](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity), ordered component reads and result relevance.
+- `acceptance`: reconcile the clause and interpreter treatment against unknown-Year extraction inside an admitted shift, Min fallback, and a later malformed Month. Preserve the checkpoint's consumer and placement limits. Introducing revision is the first commit containing this entry ID.
+
 <a id="spec-2026-10-06-03"></a>
 ### SPEC-2026-10-06-03 — partial products require declared lower capacity
 
