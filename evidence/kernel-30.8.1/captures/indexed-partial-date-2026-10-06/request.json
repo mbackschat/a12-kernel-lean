@@ -1,0 +1,271 @@
+{
+  "model": "IndexedPartial_DM.json",
+  "locale": "en_US",
+  "clock": "2024-01-01T00:00:00Z",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "known",
+      "documentInline": {
+        "Form": {
+          "Key": "B",
+          "Clock": "12:30:00",
+          "Rows": [
+            {
+              "Id": "A",
+              "DAY_OPTIONAL": "2023-01-00",
+              "MONTH_OPTIONAL": "2023-00-00",
+              "YEAR_OPTIONAL": "2023-00-00",
+              "FULL": "2023-01-01"
+            },
+            {
+              "Id": "B",
+              "DAY_OPTIONAL": "2024-02-00",
+              "MONTH_OPTIONAL": "2024-00-00",
+              "YEAR_OPTIONAL": "0000-00-00",
+              "FULL": "2024-02-01"
+            }
+          ],
+          "First": "2001-12-25",
+          "Last": "2001-12-25",
+          "MonthFirst": "2001-12-25",
+          "MonthLast": "2001-12-25",
+          "UnknownFirst": "2001-12-25",
+          "UnknownLast": "2001-12-25",
+          "Shift": "2001-12-25",
+          "Minimum": "2001-12-25",
+          "Stamp": "2001-12-25T00:00:00",
+          "UnknownMinimum": "2001-12-25",
+          "AfterLast": "9",
+          "AfterUnknown": "9"
+        }
+      }
+    },
+    {
+      "name": "full",
+      "documentInline": {
+        "Form": {
+          "Key": "B",
+          "Clock": "12:30:00",
+          "Rows": [
+            {
+              "Id": "A",
+              "DAY_OPTIONAL": "2023-01-00",
+              "MONTH_OPTIONAL": "2023-00-00",
+              "YEAR_OPTIONAL": "2023-00-00",
+              "FULL": "2023-01-01"
+            },
+            {
+              "Id": "B",
+              "DAY_OPTIONAL": "2024-02-12",
+              "MONTH_OPTIONAL": "2024-02-12",
+              "YEAR_OPTIONAL": "2024-02-12",
+              "FULL": "2024-02-01"
+            }
+          ],
+          "First": "2001-12-25",
+          "Last": "2001-12-25",
+          "MonthFirst": "2001-12-25",
+          "MonthLast": "2001-12-25",
+          "UnknownFirst": "2001-12-25",
+          "UnknownLast": "2001-12-25",
+          "Shift": "2001-12-25",
+          "Minimum": "2001-12-25",
+          "Stamp": "2001-12-25T00:00:00",
+          "UnknownMinimum": "2001-12-25",
+          "AfterLast": "9",
+          "AfterUnknown": "9"
+        }
+      }
+    },
+    {
+      "name": "empty",
+      "documentInline": {
+        "Form": {
+          "Key": "B",
+          "Clock": "12:30:00",
+          "Rows": [
+            {
+              "Id": "A",
+              "DAY_OPTIONAL": "2023-01-00",
+              "MONTH_OPTIONAL": "2023-00-00",
+              "YEAR_OPTIONAL": "2023-00-00",
+              "FULL": "2023-01-01"
+            },
+            {
+              "Id": "B",
+              "DAY_OPTIONAL": "",
+              "MONTH_OPTIONAL": "",
+              "YEAR_OPTIONAL": "",
+              "FULL": "2024-02-01"
+            }
+          ],
+          "First": "2001-12-25",
+          "Last": "2001-12-25",
+          "MonthFirst": "2001-12-25",
+          "MonthLast": "2001-12-25",
+          "UnknownFirst": "2001-12-25",
+          "UnknownLast": "2001-12-25",
+          "Shift": "2001-12-25",
+          "Minimum": "2001-12-25",
+          "Stamp": "2001-12-25T00:00:00",
+          "UnknownMinimum": "2001-12-25",
+          "AfterLast": "9",
+          "AfterUnknown": "9"
+        }
+      }
+    },
+    {
+      "name": "malformed",
+      "documentInline": {
+        "Form": {
+          "Key": "B",
+          "Clock": "12:30:00",
+          "Rows": [
+            {
+              "Id": "A",
+              "DAY_OPTIONAL": "2023-01-00",
+              "MONTH_OPTIONAL": "2023-00-00",
+              "YEAR_OPTIONAL": "2023-00-00",
+              "FULL": "2023-01-01"
+            },
+            {
+              "Id": "B",
+              "DAY_OPTIONAL": "bad",
+              "MONTH_OPTIONAL": "bad",
+              "YEAR_OPTIONAL": "bad",
+              "FULL": "2024-02-01"
+            }
+          ],
+          "First": "2001-12-25",
+          "Last": "2001-12-25",
+          "MonthFirst": "2001-12-25",
+          "MonthLast": "2001-12-25",
+          "UnknownFirst": "2001-12-25",
+          "UnknownLast": "2001-12-25",
+          "Shift": "2001-12-25",
+          "Minimum": "2001-12-25",
+          "Stamp": "2001-12-25T00:00:00",
+          "UnknownMinimum": "2001-12-25",
+          "AfterLast": "9",
+          "AfterUnknown": "9"
+        }
+      }
+    },
+    {
+      "name": "missing",
+      "documentInline": {
+        "Form": {
+          "Key": "C",
+          "Clock": "12:30:00",
+          "Rows": [
+            {
+              "Id": "A",
+              "DAY_OPTIONAL": "2023-01-00",
+              "MONTH_OPTIONAL": "2023-00-00",
+              "YEAR_OPTIONAL": "2023-00-00",
+              "FULL": "2023-01-01"
+            },
+            {
+              "Id": "B",
+              "DAY_OPTIONAL": "2024-02-00",
+              "MONTH_OPTIONAL": "2024-00-00",
+              "YEAR_OPTIONAL": "0000-00-00",
+              "FULL": "2024-02-01"
+            }
+          ],
+          "First": "2001-12-25",
+          "Last": "2001-12-25",
+          "MonthFirst": "2001-12-25",
+          "MonthLast": "2001-12-25",
+          "UnknownFirst": "2001-12-25",
+          "UnknownLast": "2001-12-25",
+          "Shift": "2001-12-25",
+          "Minimum": "2001-12-25",
+          "Stamp": "2001-12-25T00:00:00",
+          "UnknownMinimum": "2001-12-25",
+          "AfterLast": "9",
+          "AfterUnknown": "9"
+        }
+      }
+    },
+    {
+      "name": "duplicate",
+      "documentInline": {
+        "Form": {
+          "Key": "B",
+          "Clock": "12:30:00",
+          "Rows": [
+            {
+              "Id": "B",
+              "DAY_OPTIONAL": "2023-01-00",
+              "MONTH_OPTIONAL": "2023-00-00",
+              "YEAR_OPTIONAL": "2023-00-00",
+              "FULL": "2023-01-01"
+            },
+            {
+              "Id": "B",
+              "DAY_OPTIONAL": "2024-02-00",
+              "MONTH_OPTIONAL": "2024-00-00",
+              "YEAR_OPTIONAL": "0000-00-00",
+              "FULL": "2024-02-01"
+            }
+          ],
+          "First": "2001-12-25",
+          "Last": "2001-12-25",
+          "MonthFirst": "2001-12-25",
+          "MonthLast": "2001-12-25",
+          "UnknownFirst": "2001-12-25",
+          "UnknownLast": "2001-12-25",
+          "Shift": "2001-12-25",
+          "Minimum": "2001-12-25",
+          "Stamp": "2001-12-25T00:00:00",
+          "UnknownMinimum": "2001-12-25",
+          "AfterLast": "9",
+          "AfterUnknown": "9"
+        }
+      }
+    },
+    {
+      "name": "keyempty",
+      "documentInline": {
+        "Form": {
+          "Key": "",
+          "Clock": "12:30:00",
+          "Rows": [
+            {
+              "Id": "A",
+              "DAY_OPTIONAL": "2023-01-00",
+              "MONTH_OPTIONAL": "2023-00-00",
+              "YEAR_OPTIONAL": "2023-00-00",
+              "FULL": "2023-01-01"
+            },
+            {
+              "Id": "B",
+              "DAY_OPTIONAL": "2024-02-00",
+              "MONTH_OPTIONAL": "2024-00-00",
+              "YEAR_OPTIONAL": "0000-00-00",
+              "FULL": "2024-02-01"
+            }
+          ],
+          "First": "2001-12-25",
+          "Last": "2001-12-25",
+          "MonthFirst": "2001-12-25",
+          "MonthLast": "2001-12-25",
+          "UnknownFirst": "2001-12-25",
+          "UnknownLast": "2001-12-25",
+          "Shift": "2001-12-25",
+          "Minimum": "2001-12-25",
+          "Stamp": "2001-12-25T00:00:00",
+          "UnknownMinimum": "2001-12-25",
+          "AfterLast": "9",
+          "AfterUnknown": "9"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+id	condition	valid	verification	codes
+0	FieldFilled(Key) And YearFromDate(ValueAsDate(Rows/DAY_OPTIONAL For Key, FirstDay)) > 0	false	KERNEL_CONFIRMED	MVK_UNEXPECTED_TOKEN
+1	FieldFilled(Key) And YearFromDate(ValueAsDate(Rows/DAY_OPTIONAL, FirstDay)) > 0	false	KERNEL_CONFIRMED	MVK_UNEXPECTED_TOKEN
+2	FieldFilled(Key) And ValueAsDate(Rows/FULL For Key, FirstDay) == "01.02.2024"	false	KERNEL_CONFIRMED	MVK_INVALID_DATE_TYPE_FOR_OP
+3	FieldFilled(Key) And ValueAsDate(Rows/DAY_OPTIONAL For Key, FirstDay) == "01.02.2024"	true	KERNEL_CONFIRMED	

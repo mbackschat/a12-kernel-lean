@@ -37,14 +37,18 @@ private structure Scenario where
   partialCoverage : Option (List RelevantEntityPattern) := none
   partialMode : TemporalPartialMode := .full
   validSecond : Bool := false
+  secondA : Option String := none
+  dateTimeTarget : Bool := false
+  missingFirstA : Bool := false
 
 private def input (low high : String) (scenario : Scenario) : Lean.Json :=
-  let row (key a b : String) (children : List String) := Lean.Json.mkObj [
-    ("Code", .str key), ("Amount", .str (if key == "R1" then "1" else "2")), ("Body", Lean.Json.mkObj [("A", .str a), ("B", .str b)]),
+  let row (key a b : String) (children : List String) (missingA : Bool := false) := Lean.Json.mkObj [
+    ("Code", .str key), ("Amount", .str (if key == "R1" then "1" else "2")),
+    ("Body", Lean.Json.mkObj ((if missingA then [] else [("A", .str a)]) ++ [("B", .str b)])),
     ("Children", .arr (children.map fun value => Lean.Json.mkObj [("Value", .str value)]).toArray)]
   Lean.Json.mkObj [("Form", Lean.Json.mkObj [
     ("Out", .str "bad"), ("Flag", .str "99"), ("Low", .str low), ("High", .str high), ("Key", .str scenario.key),
-    ("Rows", .arr #[row "R1" (scenario.firstA.getD low) high (scenario.children.getD [high, low]), row scenario.secondCode (if scenario.validSecond then low else "bad")
+    ("Rows", .arr #[row "R1" (scenario.firstA.getD low) high (scenario.children.getD [high, low]) scenario.missingFirstA, row scenario.secondCode (scenario.secondA.getD (if scenario.validSecond then low else "bad"))
       (if scenario.validSecond then high else "bad") (if scenario.validSecond then [low] else ["bad"])])])]
 
 private def evaluate (kind : TemporalKind) (components : TemporalComponents) (format low high expression : String)
@@ -64,7 +68,15 @@ private def evaluate (kind : TemporalKind) (components : TemporalComponents) (fo
         if field.id == 7 then { field with temporalTargetPolicy := some { format } } else field }
   let model : FlatModel := { model with fields := model.fields.map fun field =>
     { field with temporalTargetPolicy := field.temporalTargetPolicy.map fun policy =>
-        { policy with partialMode := scenario.partialMode } } }
+        { policy with partialMode := if scenario.fullDateTarget && field.id == 1 then .full else scenario.partialMode } } }
+  let model := if scenario.dateTimeTarget then
+    { model with fields := model.fields.map fun field =>
+        if field.id == 1 then
+          { field with
+            policy := { kind := .temporal .dateTime .now }
+            temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } }
+        else field }
+    else model
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (readDocument {
@@ -709,4 +721,141 @@ private def indexedNumericContexts (expression : String) : Option (List (Option 
 example : indexedNumericContexts "[Rows/Body/A For Key]" = some [some 1, some 1, some 1] ∧
     indexedNumericContexts "AddDays(Rows/Body/A For Key,2)" = some [some 3, some 3, some 3] := by native_decide
 
+private def partialEndpoints : List (TemporalPartialMode × String × String × String) := [
+  (.dayOptional, "2024-02-00", "2024-02-01", "2024-02-29"),
+  (.monthOptional, "2024-00-00", "2024-01-01", "2024-12-31"),
+  (.yearOptional, "2024-00-00", "2024-01-01", "2024-12-31")]
+
+private def authoredDate (stored : String) : String :=
+  match stored.splitOn "-" with
+  | [year, month, day] => day ++ "." ++ month ++ "." ++ year
+  | _ => stored
+
+example : partialEndpoints.all (fun (partialMode, stored, first, last) =>
+    [("FirstDay", first), ("LastDay", last)].all fun (endpoint, expected) =>
+      ["Key", "\"R2\""].all fun key =>
+        let expression := "ValueAsDate(Rows/Body/A For " ++ key ++ "," ++ endpoint ++ ")"
+        let scenario : Scenario := { partialMode, key := "R2", firstA := some "2023-01-00", secondA := some stored, fullDateTarget := true }
+        evaluate .date .fullDate "yyyy-MM-dd" stored stored (expression ++ " == \"" ++ authoredDate expected ++ "\"")
+          false none scenario == some (.inl (.fired .value)) &&
+        evaluate .date .fullDate "yyyy-MM-dd" stored stored expression true none scenario == some (.inr ("value " ++ expected)) &&
+        evaluate .date .fullDate "yyyy-MM-dd" stored stored "1" true
+          (some (expression ++ " == \"" ++ authoredDate expected ++ "\"")) scenario == some (.inr "value 1")) = true := by native_decide
+
+example : [TemporalPartialMode.dayOptional, .monthOptional, .yearOptional].all (fun partialMode =>
+    ["FirstDay", "LastDay"].all fun endpoint =>
+      let expression := "ValueAsDate(Rows/Body/A For Key," ++ endpoint ++ ")"
+      evaluate .date .fullDate "yyyy-MM-dd" "2024-02-12" "2024-02-12"
+        (expression ++ " == \"12.02.2024\"") false none { partialMode, fullDateTarget := true } == some (.inl (.fired .value)) &&
+      evaluate .date .fullDate "yyyy-MM-dd" "2024-02-12" "2024-02-12"
+        expression true none { partialMode, fullDateTarget := true } == some (.inr "value 2024-02-12")) = true := by native_decide
+
+example : ["FirstDay", "LastDay"].all (fun endpoint =>
+    let expression := "ValueAsDate(Rows/Body/A For Key," ++ endpoint ++ ")"
+    let minimum := "Min(" ++ expression ++ ",\"15.02.2024\")"
+    [TemporalPartialMode.dayOptional, .monthOptional, .yearOptional].all (fun partialMode =>
+      [(({ key := "missing" } : Scenario), Verdict.notFired, "value 2024-02-15"),
+      ({ key := "" }, .notFired, "value 2024-02-15"),
+      ({ firstA := some "" }, .notFired, "value 2024-02-15"),
+      ({ missingFirstA := true }, .notFired, "value 2024-02-15"),
+      ({ firstA := some "bad" }, .unknown, "cleared"),
+      ({ secondCode := "R1" }, .unknown, "cleared")].all (fun (scenario, verdict, outcome) =>
+        let scenario := { scenario with partialMode, fullDateTarget := true }
+        evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
+          (expression ++ " == \"01.02.2024\"") false none scenario == some (.inl verdict) &&
+        evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
+          minimum true none scenario == some (.inr outcome))) &&
+    evaluate .date .fullDate "yyyy-MM-dd" "0000-00-00" "0000-00-00"
+      (expression ++ " == \"01.02.2024\"") false none { partialMode := .yearOptional, fullDateTarget := true } == some (.inl .unknown) &&
+    evaluate .date .fullDate "yyyy-MM-dd" "0000-00-00" "0000-00-00"
+      minimum true none { partialMode := .yearOptional, fullDateTarget := true } == some (.inr "cleared")) = true := by native_decide
+
+example : evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
+    "AddDays(ValueAsDate(Rows/Body/A For Key,LastDay),1)" true none
+    { partialMode := .dayOptional, fullDateTarget := true } = some (.inr "value 2024-03-01") ∧
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
+      "DateTime(ValueAsDate(Rows/Body/A For Key,FirstDay),\"12:30:00\")" true none
+      { partialMode := .dayOptional, dateTimeTarget := true, fullDateTarget := true } = some (.inr "value 2024-02-01T12:30:00") ∧
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
+      "ValueAsDate(Rows/Body/A For Key,LastDay)" true none
+      { partialMode := .dayOptional, key := "missing", producer := some ("Key", "\"R1\""), fullDateTarget := true } = some (.inr "value 2024-02-29") := by native_decide
+
+private def indexedPartialDependencies (key : String) :
+    Option (List FieldId × List FieldId × List (List RepeatableLevel) × Bool × List FieldId) := do
+  let model := model .date .fullDate "yyyy-MM-dd"
+  let model : FlatModel := { model with fields := model.fields.map fun field =>
+    { field with temporalTargetPolicy := field.temporalTargetPolicy.map fun policy =>
+        { policy with partialMode := .dayOptional } } }
+  let parsed ← (parseText .english ("ValueAsDate(Rows/Body/A For " ++ key ++ ",FirstDay)")).toOption
+  let surface ← (lowerScalarTemporalExpression model ["Form"] parsed.body).toOption
+  let checked ← (elaborateScalarTemporalExpression model ["Form"] surface).toOption
+  pure (checked.fieldIds, checked.boundFieldIds, checked.bindingScopes, checked.requiresAddressed, checked.storedTextFields)
+
+example : indexedPartialDependencies "Key" == some ([4,5,6], [4], [[]], true, [6,4]) ∧
+    indexedPartialDependencies "\"R1\"" == some ([5,6], [], [], true, [6]) := by native_decide
+
+example : evaluate .date .fullDate "yyyy-MM-dd" "2024-02-01" "2024-02-01"
+    "ValueAsDate(Rows/Body/A For Key,FirstDay)" true = none ∧
+    ["ValueAsDate([Rows/Body/A For Key],FirstDay) == \"01.02.2024\"",
+      "YearFromDate(ValueAsDate(Rows/Body/A For Key,FirstDay)) == 2024",
+      "AddDays(ValueAsDate(Rows/Body/A For Key,FirstDay),DayFromDate(ValueAsDate(Rows/Body/A For Key,FirstDay))) == \"01.02.2024\""].all (fun expression =>
+      (evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
+        expression false none { partialMode := .dayOptional, fullDateTarget := true }).isNone) = true := by native_decide
+
+example : evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
+    "YearFromDate(ValueAsDate(Rows/Body/A For Key,FirstDay))" true (some "FieldFilled(Key)")
+    { partialMode := .dayOptional, fullDateTarget := true } = none := by native_decide
+
+example : evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
+    "ValueAsDate(Rows/Body/A For Key,FirstDay) == \"01.02.2024\"" false none
+    { partialMode := .dayOptional, fullDateTarget := true, partialCoverage := some [] } = none := by native_decide
+
+example : [(({ firstA := some "" } : Scenario), "value 1"),
+    ({ key := "missing" }, "value 1"), ({ firstA := some "0000-00-00" }, "value 1"),
+    ({ firstA := some "bad" }, "cleared"), ({ secondCode := "R1" }, "cleared")].all (fun (scenario, expected) =>
+      evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00" "1" true
+        (some "FieldNotFilled(Out)") { scenario with
+          partialMode := .yearOptional
+          fullDateTarget := true
+          producer := some ("Out", "ValueAsDate(Rows/Body/A For Key,FirstDay)") } ==
+        some (.inr expected)) = true := by native_decide
+
+private def indexedPartialMissingAddressed : Option Bool := do
+  let model := model .date .fullDate "yyyy-MM-dd"
+  let model : FlatModel := { model with fields := model.fields.map fun field =>
+    { field with temporalTargetPolicy := field.temporalTargetPolicy.map fun policy =>
+        { policy with partialMode := .dayOptional } } }
+  let parsed ← (parseText .english "ValueAsDate(Rows/Body/A For Key,FirstDay)").toOption
+  let surface ← (lowerScalarTemporalExpression model ["Form"] parsed.body).toOption
+  let checked ← (elaborateScalarTemporalExpression model ["Form"] surface).toOption
+  pure (!(checked.evalResult .validation { read := fun _ => checkAdmittedRawCell .empty }).isOk)
+
+example : indexedPartialMissingAddressed = some true ∧
+    evaluate .date .fullDate "dd.MM.yyyy" "00.02.2024" "00.02.2024"
+      "ValueAsDate(Rows/Body/A For Key,LastDay)" true none
+      { partialMode := .dayOptional, fullDateTarget := true } = some (.inr "value 2024-02-29") := by native_decide
+private def indexedPartialCurrentSource : Option DateParts := do
+  let model := model .date .fullDate "yyyy-MM-dd"
+  let model : FlatModel := { model with fields := model.fields.map fun field =>
+    { field with temporalTargetPolicy := field.temporalTargetPolicy.map fun policy =>
+        { policy with partialMode := .dayOptional } } }
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let data ← (readDocument { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (input "2023-01-00" "2024-02-00" { key := "R2", secondA := some "bad" })).toOption
+  let document ← (checkDocument prepared "en_US" data.data).toOption
+  let parsed ← (parseText .english "ValueAsDate(Rows/Body/A For Key,LastDay)").toOption
+  let surface ← (lowerScalarTemporalExpression model ["Form"] parsed.body).toOption
+  let checked ← (elaborateScalarTemporalExpression model ["Form"] surface).toOption
+  let context := document.indexedScalarComputationContext world
+  let some addressed := context.addressed | none
+  let changed (row : Env) (field : FieldId) := row == [(10,2)] && field == 6
+  let current := { addressed with
+    read := fun row field => if changed row field then checkAdmittedRawCell (.parsed (.partialDate "2024-03-00")) else addressed.read row field
+    storedText := fun row field => if changed row field then some "2024-03-00" else addressed.storedText row field }
+  let .value (.date value) true ← (checked.evalResult .computation
+    { read := context.read, storedText := context.storedText, world := context.world } (some current)).toOption | none
+  pure value.parts
+
+example : indexedPartialCurrentSource = some { year := 2024, month := 3, day := 31 } := by native_decide
 end A12Kernel.Dm.IndexedTemporalLocks

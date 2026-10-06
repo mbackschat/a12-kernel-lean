@@ -690,9 +690,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-partial-date-input-causes"></a>
 - [Which formal cause a partially known Date draws, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-partial-date-input-causes)
 <a id="src-partial-date-presence"></a>
-- [A partially known Date is filled on both arms, a component-omitting Date and a DateFragment too, and only a too-deep omission makes presence unknown, measured locally 2026-10-02](sources/temporal-and-message-probes.md#src-partial-date-presence)
+- [Partial-Date, component-omitting Date and DateFragment presence, measured 2026-10-02](sources/temporal-and-message-probes.md#src-partial-date-presence)
 <a id="src-partial-date-readers"></a>
-- [A partially known Date satisfies requiredness, is group and root content, and is compared by its stored text for uniqueness; a computed fragment compares as its earliest date, and a yearless one computes with no Base Year, measured locally 2026-10-02](sources/temporal-and-message-probes.md#src-partial-date-readers)
+- [Partial-Date requiredness, group content and uniqueness; computed fragment identity and yearless computation, measured 2026-10-02](sources/temporal-and-message-probes.md#src-partial-date-readers)
 <a id="src-date-decoded-identity-witness"></a>
 - [Whether two stored Date texts can decode to one instant, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-date-decoded-identity-witness)
 <a id="src-temporal-aggregate-gate"></a>
@@ -712,6 +712,8 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [`DateFromDateTime` scalar computation reaches the full-Date target channels, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-date-from-datetime-computation)
 <a id="src-date-from-datetime-repeatable-computation"></a>
 - [`DateFromDateTime` computes exact repeatable rows, measured locally 2026-08-24](sources/temporal-and-message-probes.md#src-date-from-datetime-repeatable-computation)
+<a id="src-indexed-partial-date-endpoints"></a>
+- [Indexed partial-Date endpoint selection and clearing, measured 2026-10-06](sources/temporal-and-message-probes.md#src-indexed-partial-date-endpoints)
 <a id="src-value-as-date-locus"></a>
 - [Where a partial-Date `ValueAsDate` operand may be read, measured locally 2026-08-23](sources/temporal-and-message-probes.md#src-value-as-date-locus)
 <a id="src-rule-message-semantic-index"></a>

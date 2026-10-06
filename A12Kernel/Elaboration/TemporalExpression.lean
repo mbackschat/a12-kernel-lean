@@ -99,6 +99,13 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
       let source ← (elaborateZonedValueAsDateSource model declaration.id endpoint scope).mapError .partialDate
       pure (.atom (.valueAsDate source), TemporalComponents.fullDate)
+  | .indexedValueAsDate authored endpoint => do
+      let selection ← (elaborateSemanticIndexSource model rowGroup authored).mapError .indexed
+      let source ← (elaborateZonedValueAsDateSource model selection.targetDeclaration.id endpoint
+        selection.targetDeclaration.repeatableScope).mapError .partialDate
+      if sameTarget : source.source.target.id = selection.targetDeclaration.id then
+        pure (.atom (.indexedValueAsDate { selection, source, sameTarget }), TemporalComponents.fullDate)
+      else throw .unsupportedSource
   | .dateTimeConstruction date time => do
       if !date.admittedSourceSlot || !time.admittedSourceSlot then throw .unsupportedSource
       let (date, dateComponents) ← resolveScalarTemporalExpression model rowGroup targetGroup? date
@@ -148,7 +155,7 @@ private def resolveScalarTemporalProjection (model : FlatModel) (rowGroup : Grou
     (targetGroup? : Option GroupPath) (surface : SurfaceScalarTemporalExpression) (part : TemporalNumericPart) :
     Except ScalarTemporalExpressionError (ScalarTemporalNumericAtom model) := do
   match surface with
-  | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _ => throw .unsupportedSource
+  | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _ | .indexedValueAsDate _ _ => throw .unsupportedSource
   | _ => pure ()
   if !surface.admittedSourceSlot then throw .unsupportedSource
   let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? surface
@@ -276,6 +283,19 @@ private def resolvedScalarDate (profile : ModelZone.ConcreteProfile) (date : Ful
     date, time := { hour := 0, minute := 0, second := 0, valid := by decide } }
   pure { instant, parts := date.civil.parts, basis := .storedGregorian }
 
+private def readScalarValueAsDate (phase : Phase) (source : CheckedZonedValueAsDateSource model)
+    (cell : CheckedCell) (stored : Option String) :
+    Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
+  let checked := source.toCheckedValueAsDateSource.checkSourceText {
+    rawPresent := cell.rawPresent, parsed := stored, findings := cell.findings }
+  match source.toCheckedValueAsDateSource.observe phase checked with
+  | .empty => pure .notEvaluated
+  | .unavailable cause => pure (.unknown cause)
+  | .nonRelevant => pure (.value .nonRelevant true)
+  | .date date =>
+      let some value := resolvedScalarDate source.profile date | throw .calendarUnavailable
+      pure (.value (.date value) true)
+
 private def readScalarTimeComponent (context : FlatContext) (phase : Phase)
     (component : CheckedTimeComponent model) : Except TimeComponentsFault TimeConstructionComponent :=
   match component with
@@ -367,18 +387,18 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       |>.bind (resolvedScalarDate profile) with
       | some date => .value (.date date) true
       | none => .unknown .malformed)
-  | .valueAsDate source => do
-      let cell := context.read source.source.target.id
-      let checked := source.toCheckedValueAsDateSource.checkSourceText {
-        rawPresent := cell.rawPresent, parsed := context.storedText source.source.target.id
-        findings := cell.findings }
-      match source.toCheckedValueAsDateSource.observe phase checked with
+  | .valueAsDate source =>
+      readScalarValueAsDate phase source (context.read source.source.target.id)
+        (context.storedText source.source.target.id)
+  | .indexedValueAsDate source => do
+      let some addressed := context.addressed | throw .calendarUnavailable
+      match ← (source.selection.selectEnvironmentWith phase context.semanticIndexColumnReader
+          context.row context.read context.storedText).mapError (fun _ => .calendarUnavailable) with
       | .empty => pure .notEvaluated
-      | .unavailable cause => pure (.unknown cause)
-      | .nonRelevant => pure (.value .nonRelevant true)
-      | .date date =>
-          let some value := resolvedScalarDate source.profile date | throw .calendarUnavailable
-          pure (.value (.date value) true)
+      | .unknown cause | .poison cause => pure (.unknown cause)
+      | .value row =>
+          readScalarValueAsDate phase source.source (addressed.read row source.selection.targetDeclaration.id)
+            (addressed.storedText row source.selection.targetDeclaration.id)
   | .dateConstruction components =>
       let read (source : CheckedConstructedDateSource model) :=
         source.readWith phase context.read context.storedText context.world
@@ -571,6 +591,8 @@ private def scalarTemporalAtomDependencies (storedOnly : Bool)
         | .dateYearField checked => some checked.source.id | _ => none
       else components.fields).flatMap field
   | .valueAsDate source => field source.source.target.id
+  | .indexedValueAsDate source =>
+      (if storedOnly then field source.selection.targetDeclaration.id else []) ++ indexed source.selection
   | .timeConstruction components => scalarTemporalComponentDependencies storedOnly field entity indexed components
   | .field source => if storedOnly then [] else field source.id
   | .indexed source => indexed source

@@ -31,6 +31,7 @@ inductive SurfaceScalarTemporalExpression where
   | baseYearBound (bound : BaseYearRangeEndpoint)
   | dateTimeConstruction (date time : SurfaceScalarTemporalExpression)
   | valueAsDate (reference : SurfaceFieldPath) (endpoint : ValueAsDateEndpoint)
+  | indexedValueAsDate (selection : SurfaceSemanticIndex) (endpoint : ValueAsDateEndpoint)
   | dateConstruction (components : SurfaceConstructedDateComponents)
   | calendarShift (unit : DateShiftUnit) (source : SurfaceScalarTemporalExpression)
       (amount : AuthoredNumericExpr (Sum SurfaceNumericAtom (TemporalNumericPart × SurfaceScalarTemporalExpression)))
@@ -45,7 +46,7 @@ operation checks its own slot (spec/12 §3, grammar `datumAngabe`/`datumAngabe2`
 def SurfaceScalarTemporalExpression.admittedSourceSlot : SurfaceScalarTemporalExpression → Bool
   | .group _ | .extremum _ _ | .combine _ _ _ => false
   | .field _ | .indexed _ | .now | .today | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _
-  | .dateTimeConstruction _ _ | .valueAsDate _ _ | .rangeBound _ _ | .baseYearBound _ | .dateConstruction _ | .calendarShift _ _ _
+  | .dateTimeConstruction _ _ | .valueAsDate _ _ | .indexedValueAsDate _ _ | .rangeBound _ _ | .baseYearBound _ | .dateConstruction _ | .calendarShift _ _ _
   | .timeConstruction _ | .dateFromDateTime _ | .timeFromDateTime _ | .subdayShift _ _ _ => true
 
 inductive ScalarTemporalExpressionError where
@@ -108,6 +109,13 @@ inductive ScalarTemporalEvaluationFault where
   | calendarUnavailable
   deriving Repr, DecidableEq
 
+/-- Index selection retains the same declaration-certified partial-Date endpoint and model profile
+as a direct read; the selected row cannot substitute another field's policy (spec/08 §4). -/
+structure CheckedIndexedValueAsDateSource (model : FlatModel) where
+  selection : CheckedSemanticIndexSource model
+  source : CheckedZonedValueAsDateSource model
+  sameTarget : source.source.target.id = selection.targetDeclaration.id
+
 mutual
 inductive ScalarTemporalAtom (model : FlatModel) where
   | field (source : FlatTemporalField)
@@ -122,6 +130,7 @@ inductive ScalarTemporalAtom (model : FlatModel) where
   | dateConstruction (components : CheckedConstructedDateComponents model)
   | timeConstruction (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model)))
   | valueAsDate (source : CheckedZonedValueAsDateSource model)
+  | indexedValueAsDate (source : CheckedIndexedValueAsDateSource model)
   | rangeBound (profile : ModelZone.ConcreteProfile) (source : CheckedDateRangeBoundOperand model)
   | baseYearBound (profile : ModelZone.ConcreteProfile) (year : Int) (bound : BaseYearRangeEndpoint)
 

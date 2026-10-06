@@ -1,0 +1,3235 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "IndexedPartial_DM.json",
+    "locale" : "en_US",
+    "clock" : "2024-01-01T00:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "known",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CHECK_First",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CHECK_Minimum",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstComp",
+              "field" : "Form/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/First",
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "LastComp",
+              "field" : "Form/Last",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Last",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MinimumComp",
+              "field" : "Form/Minimum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Minimum",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MonthFirstComp",
+              "field" : "Form/MonthFirst",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/MonthFirst",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MONTH_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MonthLastComp",
+              "field" : "Form/MonthLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/MonthLast",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MONTH_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ShiftComp",
+              "field" : "Form/Shift",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id",
+                "Form/Shift"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "StampComp",
+              "field" : "Form/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Clock",
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id",
+                "Form/Stamp"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-01"
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-29"
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-01"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-01-01"
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-12-31"
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-01"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-01T12:30:00"
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/AfterLast",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/First",
+                "value" : "2024-02-01"
+              },
+              {
+                "field" : "Form/Last",
+                "value" : "2024-02-29"
+              },
+              {
+                "field" : "Form/Minimum",
+                "value" : "2024-02-01"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "value" : "2024-01-01"
+              },
+              {
+                "field" : "Form/MonthLast",
+                "value" : "2024-12-31"
+              },
+              {
+                "field" : "Form/Shift",
+                "value" : "2024-03-01"
+              },
+              {
+                "field" : "Form/Stamp",
+                "value" : "2024-02-01T12:30:00"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : 0,
+                "AfterUnknown" : 1,
+                "Clock" : "12:30:00",
+                "First" : "2024-02-01",
+                "Key" : "B",
+                "Last" : "2024-02-29",
+                "Minimum" : "2024-02-01",
+                "MonthFirst" : "2024-01-01",
+                "MonthLast" : "2024-12-31",
+                "Shift" : "2024-03-01",
+                "Stamp" : "2024-02-01T12:30:00",
+                "UnknownFirst" : null,
+                "UnknownLast" : null,
+                "UnknownMinimum" : null,
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "A",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : "2024-02-00",
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "2024-00-00",
+                    "YEAR_OPTIONAL" : "0000-00-00"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CHECK_First",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "CHECK_Minimum",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstComp",
+              "field" : "Form/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/First",
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "LastComp",
+              "field" : "Form/Last",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Last",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MinimumComp",
+              "field" : "Form/Minimum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Minimum",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MonthFirstComp",
+              "field" : "Form/MonthFirst",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/MonthFirst",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MONTH_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MonthLastComp",
+              "field" : "Form/MonthLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/MonthLast",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MONTH_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ShiftComp",
+              "field" : "Form/Shift",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id",
+                "Form/Shift"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "StampComp",
+              "field" : "Form/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Clock",
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id",
+                "Form/Stamp"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-01"
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-29"
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-01"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-01-01"
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-12-31"
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-03-01"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-01T12:30:00"
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/AfterLast",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/First",
+                "value" : "2024-02-01"
+              },
+              {
+                "field" : "Form/Last",
+                "value" : "2024-02-29"
+              },
+              {
+                "field" : "Form/Minimum",
+                "value" : "2024-02-01"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "value" : "2024-01-01"
+              },
+              {
+                "field" : "Form/MonthLast",
+                "value" : "2024-12-31"
+              },
+              {
+                "field" : "Form/Shift",
+                "value" : "2024-03-01"
+              },
+              {
+                "field" : "Form/Stamp",
+                "value" : "2024-02-01T12:30:00"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : 0,
+                "AfterUnknown" : 1,
+                "Clock" : "12:30:00",
+                "First" : "2024-02-01",
+                "Key" : "B",
+                "Last" : "2024-02-29",
+                "Minimum" : "2024-02-01",
+                "MonthFirst" : "2024-01-01",
+                "MonthLast" : "2024-12-31",
+                "Shift" : "2024-03-01",
+                "Stamp" : "2024-02-01T12:30:00",
+                "UnknownFirst" : null,
+                "UnknownLast" : null,
+                "UnknownMinimum" : null,
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "A",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : "2024-02-00",
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "2024-00-00",
+                    "YEAR_OPTIONAL" : "0000-00-00"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "full",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstComp",
+              "field" : "Form/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/First",
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "LastComp",
+              "field" : "Form/Last",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Last",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MinimumComp",
+              "field" : "Form/Minimum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Minimum",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MonthFirstComp",
+              "field" : "Form/MonthFirst",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/MonthFirst",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MONTH_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MonthLastComp",
+              "field" : "Form/MonthLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/MonthLast",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MONTH_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ShiftComp",
+              "field" : "Form/Shift",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id",
+                "Form/Shift"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "StampComp",
+              "field" : "Form/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Clock",
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id",
+                "Form/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "UnknownFirstComp",
+              "field" : "Form/UnknownFirst",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/YEAR_OPTIONAL",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "UnknownLastComp",
+              "field" : "Form/UnknownLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/YEAR_OPTIONAL",
+                "Form/UnknownLast"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "UnknownMinimumComp",
+              "field" : "Form/UnknownMinimum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/YEAR_OPTIONAL",
+                "Form/UnknownMinimum"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-13"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12T12:30:00"
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/AfterLast",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/First",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/Last",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/Minimum",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/MonthLast",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/Shift",
+                "value" : "2024-02-13"
+              },
+              {
+                "field" : "Form/Stamp",
+                "value" : "2024-02-12T12:30:00"
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "value" : "2024-02-12"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : 0,
+                "AfterUnknown" : 0,
+                "Clock" : "12:30:00",
+                "First" : "2024-02-12",
+                "Key" : "B",
+                "Last" : "2024-02-12",
+                "Minimum" : "2024-02-12",
+                "MonthFirst" : "2024-02-12",
+                "MonthLast" : "2024-02-12",
+                "Shift" : "2024-02-13",
+                "Stamp" : "2024-02-12T12:30:00",
+                "UnknownFirst" : "2024-02-12",
+                "UnknownLast" : "2024-02-12",
+                "UnknownMinimum" : "2024-02-12",
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "A",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : "2024-02-12",
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "2024-02-12",
+                    "YEAR_OPTIONAL" : "2024-02-12"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FirstComp",
+              "field" : "Form/First",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/First",
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "LastComp",
+              "field" : "Form/Last",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Last",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MinimumComp",
+              "field" : "Form/Minimum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Minimum",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MonthFirstComp",
+              "field" : "Form/MonthFirst",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/MonthFirst",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MONTH_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MonthLastComp",
+              "field" : "Form/MonthLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/MonthLast",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MONTH_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ShiftComp",
+              "field" : "Form/Shift",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id",
+                "Form/Shift"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "StampComp",
+              "field" : "Form/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Clock",
+                "Form/Key",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id",
+                "Form/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "UnknownFirstComp",
+              "field" : "Form/UnknownFirst",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/YEAR_OPTIONAL",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "UnknownLastComp",
+              "field" : "Form/UnknownLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/YEAR_OPTIONAL",
+                "Form/UnknownLast"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "UnknownMinimumComp",
+              "field" : "Form/UnknownMinimum",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/YEAR_OPTIONAL",
+                "Form/UnknownMinimum"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-13"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12T12:30:00"
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-12"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/AfterLast",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/First",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/Last",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/Minimum",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/MonthLast",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/Shift",
+                "value" : "2024-02-13"
+              },
+              {
+                "field" : "Form/Stamp",
+                "value" : "2024-02-12T12:30:00"
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "value" : "2024-02-12"
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "value" : "2024-02-12"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : 0,
+                "AfterUnknown" : 0,
+                "Clock" : "12:30:00",
+                "First" : "2024-02-12",
+                "Key" : "B",
+                "Last" : "2024-02-12",
+                "Minimum" : "2024-02-12",
+                "MonthFirst" : "2024-02-12",
+                "MonthLast" : "2024-02-12",
+                "Shift" : "2024-02-13",
+                "Stamp" : "2024-02-12T12:30:00",
+                "UnknownFirst" : "2024-02-12",
+                "UnknownLast" : "2024-02-12",
+                "UnknownMinimum" : "2024-02-12",
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "A",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : "2024-02-12",
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "2024-02-12",
+                    "YEAR_OPTIONAL" : "2024-02-12"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MinimumComp",
+              "field" : "Form/Minimum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Minimum",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [
+                "Form/Key",
+                "Form/Minimum",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ]
+            },
+            {
+              "code" : "UnknownMinimumComp",
+              "field" : "Form/UnknownMinimum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/YEAR_OPTIONAL",
+                "Form/UnknownMinimum"
+              ],
+              "fillToFix" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/YEAR_OPTIONAL",
+                "Form/UnknownMinimum"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-15"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-15"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/AfterLast",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Minimum",
+                "value" : "2024-02-15"
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "value" : "2024-02-15"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : 1,
+                "AfterUnknown" : 1,
+                "Clock" : "12:30:00",
+                "First" : null,
+                "Key" : "B",
+                "Last" : null,
+                "Minimum" : "2024-02-15",
+                "MonthFirst" : null,
+                "MonthLast" : null,
+                "Shift" : null,
+                "Stamp" : null,
+                "UnknownFirst" : null,
+                "UnknownLast" : null,
+                "UnknownMinimum" : "2024-02-15",
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "A",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : null,
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : null,
+                    "YEAR_OPTIONAL" : null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MinimumComp",
+              "field" : "Form/Minimum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Minimum",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [
+                "Form/Key",
+                "Form/Minimum",
+                "Form/Rows[2]/DAY_OPTIONAL",
+                "Form/Rows[2]/Id"
+              ]
+            },
+            {
+              "code" : "UnknownMinimumComp",
+              "field" : "Form/UnknownMinimum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/YEAR_OPTIONAL",
+                "Form/UnknownMinimum"
+              ],
+              "fillToFix" : [
+                "Form/Key",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/YEAR_OPTIONAL",
+                "Form/UnknownMinimum"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-15"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-15"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/AfterLast",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Minimum",
+                "value" : "2024-02-15"
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "value" : "2024-02-15"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : 1,
+                "AfterUnknown" : 1,
+                "Clock" : "12:30:00",
+                "First" : null,
+                "Key" : "B",
+                "Last" : null,
+                "Minimum" : "2024-02-15",
+                "MonthFirst" : null,
+                "MonthLast" : null,
+                "Shift" : null,
+                "Stamp" : null,
+                "UnknownFirst" : null,
+                "UnknownLast" : null,
+                "UnknownMinimum" : "2024-02-15",
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "A",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : null,
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : null,
+                    "YEAR_OPTIONAL" : null
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/Rows[2]/DAY_OPTIONAL",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/DAY_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/Rows[2]/MONTH_OPTIONAL",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/MONTH_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/Rows[2]/YEAR_OPTIONAL",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/YEAR_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Form/Rows[2]/DAY_OPTIONAL",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/DAY_OPTIONAL"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Form/Rows[2]/MONTH_OPTIONAL",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/MONTH_OPTIONAL"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Form/Rows[2]/YEAR_OPTIONAL",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/YEAR_OPTIONAL"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : null,
+                "AfterUnknown" : null,
+                "Clock" : "12:30:00",
+                "First" : null,
+                "Key" : "B",
+                "Last" : null,
+                "Minimum" : null,
+                "MonthFirst" : null,
+                "MonthLast" : null,
+                "Shift" : null,
+                "Stamp" : null,
+                "UnknownFirst" : null,
+                "UnknownLast" : null,
+                "UnknownMinimum" : null,
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "A",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : "bad",
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "bad",
+                    "YEAR_OPTIONAL" : "bad"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/Rows[2]/DAY_OPTIONAL",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/DAY_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/Rows[2]/MONTH_OPTIONAL",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/MONTH_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/Rows[2]/YEAR_OPTIONAL",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/YEAR_OPTIONAL"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Form/Rows[2]/DAY_OPTIONAL",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/DAY_OPTIONAL"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Form/Rows[2]/MONTH_OPTIONAL",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/MONTH_OPTIONAL"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Form/Rows[2]/YEAR_OPTIONAL",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/YEAR_OPTIONAL"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : null,
+                "AfterUnknown" : null,
+                "Clock" : "12:30:00",
+                "First" : null,
+                "Key" : "B",
+                "Last" : null,
+                "Minimum" : null,
+                "MonthFirst" : null,
+                "MonthLast" : null,
+                "Shift" : null,
+                "Stamp" : null,
+                "UnknownFirst" : null,
+                "UnknownLast" : null,
+                "UnknownMinimum" : null,
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "A",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : "bad",
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "bad",
+                    "YEAR_OPTIONAL" : "bad"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "missing",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MinimumComp",
+              "field" : "Form/Minimum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/DAY_OPTIONAL",
+                "/Form[1]/Rows[-5]/Id",
+                "Form/Key",
+                "Form/Minimum"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/DAY_OPTIONAL",
+                "/Form[1]/Rows[-5]/Id",
+                "Form/Key",
+                "Form/Minimum"
+              ]
+            },
+            {
+              "code" : "UnknownMinimumComp",
+              "field" : "Form/UnknownMinimum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/YEAR_OPTIONAL",
+                "Form/Key",
+                "Form/UnknownMinimum"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/YEAR_OPTIONAL",
+                "Form/Key",
+                "Form/UnknownMinimum"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-15"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-15"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/AfterLast",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Minimum",
+                "value" : "2024-02-15"
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "value" : "2024-02-15"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : 1,
+                "AfterUnknown" : 1,
+                "Clock" : "12:30:00",
+                "First" : null,
+                "Key" : "C",
+                "Last" : null,
+                "Minimum" : "2024-02-15",
+                "MonthFirst" : null,
+                "MonthLast" : null,
+                "Shift" : null,
+                "Stamp" : null,
+                "UnknownFirst" : null,
+                "UnknownLast" : null,
+                "UnknownMinimum" : "2024-02-15",
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "A",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : "2024-02-00",
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "2024-00-00",
+                    "YEAR_OPTIONAL" : "0000-00-00"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MinimumComp",
+              "field" : "Form/Minimum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/DAY_OPTIONAL",
+                "/Form[1]/Rows[-5]/Id",
+                "Form/Key",
+                "Form/Minimum"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/DAY_OPTIONAL",
+                "/Form[1]/Rows[-5]/Id",
+                "Form/Key",
+                "Form/Minimum"
+              ]
+            },
+            {
+              "code" : "UnknownMinimumComp",
+              "field" : "Form/UnknownMinimum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/YEAR_OPTIONAL",
+                "Form/Key",
+                "Form/UnknownMinimum"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/YEAR_OPTIONAL",
+                "Form/Key",
+                "Form/UnknownMinimum"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-15"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-15"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/AfterLast",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Minimum",
+                "value" : "2024-02-15"
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "value" : "2024-02-15"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : 1,
+                "AfterUnknown" : 1,
+                "Clock" : "12:30:00",
+                "First" : null,
+                "Key" : "C",
+                "Last" : null,
+                "Minimum" : "2024-02-15",
+                "MonthFirst" : null,
+                "MonthLast" : null,
+                "Shift" : null,
+                "Stamp" : null,
+                "UnknownFirst" : null,
+                "UnknownLast" : null,
+                "UnknownMinimum" : "2024-02-15",
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "A",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : "2024-02-00",
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "2024-00-00",
+                    "YEAR_OPTIONAL" : "0000-00-00"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "duplicate",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows[2]/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Id"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows[2]/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Id"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : null,
+                "AfterUnknown" : null,
+                "Clock" : "12:30:00",
+                "First" : null,
+                "Key" : "B",
+                "Last" : null,
+                "Minimum" : null,
+                "MonthFirst" : null,
+                "MonthLast" : null,
+                "Shift" : null,
+                "Stamp" : null,
+                "UnknownFirst" : null,
+                "UnknownLast" : null,
+                "UnknownMinimum" : null,
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : "2024-02-00",
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "2024-00-00",
+                    "YEAR_OPTIONAL" : "0000-00-00"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows[2]/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Id"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows[2]/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Id"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : null,
+                "AfterUnknown" : null,
+                "Clock" : "12:30:00",
+                "First" : null,
+                "Key" : "B",
+                "Last" : null,
+                "Minimum" : null,
+                "MonthFirst" : null,
+                "MonthLast" : null,
+                "Shift" : null,
+                "Stamp" : null,
+                "UnknownFirst" : null,
+                "UnknownLast" : null,
+                "UnknownMinimum" : null,
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : "2024-02-00",
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "2024-00-00",
+                    "YEAR_OPTIONAL" : "0000-00-00"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "keyempty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MinimumComp",
+              "field" : "Form/Minimum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/DAY_OPTIONAL",
+                "/Form[1]/Rows[-5]/Id",
+                "Form/Key",
+                "Form/Minimum"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/DAY_OPTIONAL",
+                "/Form[1]/Rows[-5]/Id",
+                "Form/Key",
+                "Form/Minimum"
+              ]
+            },
+            {
+              "code" : "UnknownMinimumComp",
+              "field" : "Form/UnknownMinimum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/YEAR_OPTIONAL",
+                "Form/Key",
+                "Form/UnknownMinimum"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/YEAR_OPTIONAL",
+                "Form/Key",
+                "Form/UnknownMinimum"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-15"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-15"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/AfterLast",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Minimum",
+                "value" : "2024-02-15"
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "value" : "2024-02-15"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : 1,
+                "AfterUnknown" : 1,
+                "Clock" : "12:30:00",
+                "First" : null,
+                "Key" : "",
+                "Last" : null,
+                "Minimum" : "2024-02-15",
+                "MonthFirst" : null,
+                "MonthLast" : null,
+                "Shift" : null,
+                "Stamp" : null,
+                "UnknownFirst" : null,
+                "UnknownLast" : null,
+                "UnknownMinimum" : "2024-02-15",
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "A",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : "2024-02-00",
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "2024-00-00",
+                    "YEAR_OPTIONAL" : "0000-00-00"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AfterLastComp",
+              "field" : "Form/AfterLast",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterLast",
+                "Form/Last"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "AfterUnknownComp",
+              "field" : "Form/AfterUnknown",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/AfterUnknown",
+                "Form/UnknownFirst"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MinimumComp",
+              "field" : "Form/Minimum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/DAY_OPTIONAL",
+                "/Form[1]/Rows[-5]/Id",
+                "Form/Key",
+                "Form/Minimum"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/DAY_OPTIONAL",
+                "/Form[1]/Rows[-5]/Id",
+                "Form/Key",
+                "Form/Minimum"
+              ]
+            },
+            {
+              "code" : "UnknownMinimumComp",
+              "field" : "Form/UnknownMinimum",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/YEAR_OPTIONAL",
+                "Form/Key",
+                "Form/UnknownMinimum"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/YEAR_OPTIONAL",
+                "Form/Key",
+                "Form/UnknownMinimum"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/AfterLast",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/First",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Last",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Minimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-15"
+              },
+              {
+                "field" : "Form/MonthFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MonthLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Shift",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownFirst",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownLast",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-15"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/AfterLast",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/AfterUnknown",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Minimum",
+                "value" : "2024-02-15"
+              },
+              {
+                "field" : "Form/UnknownMinimum",
+                "value" : "2024-02-15"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "AfterLast" : 1,
+                "AfterUnknown" : 1,
+                "Clock" : "12:30:00",
+                "First" : null,
+                "Key" : "",
+                "Last" : null,
+                "Minimum" : "2024-02-15",
+                "MonthFirst" : null,
+                "MonthLast" : null,
+                "Shift" : null,
+                "Stamp" : null,
+                "UnknownFirst" : null,
+                "UnknownLast" : null,
+                "UnknownMinimum" : "2024-02-15",
+                "Rows" : [
+                  {
+                    "DAY_OPTIONAL" : "2023-01-00",
+                    "FULL" : "2023-01-01",
+                    "Id" : "A",
+                    "MONTH_OPTIONAL" : "2023-00-00",
+                    "YEAR_OPTIONAL" : "2023-00-00"
+                  },
+                  {
+                    "DAY_OPTIONAL" : "2024-02-00",
+                    "FULL" : "2024-02-01",
+                    "Id" : "B",
+                    "MONTH_OPTIONAL" : "2024-00-00",
+                    "YEAR_OPTIONAL" : "0000-00-00"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
