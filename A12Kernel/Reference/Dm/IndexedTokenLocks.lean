@@ -41,6 +41,8 @@ private structure Scenario where
   rowTarget : Bool := false
   wideTarget : Bool := false
   displaySecond : Bool := false
+  validSecond : Bool := false
+  fixedRows : Bool := false
 
 private def input (scenario : Scenario) : Lean.Json :=
   let row (key a b : String) (children : List String) := Lean.Json.mkObj [
@@ -49,10 +51,11 @@ private def input (scenario : Scenario) : Lean.Json :=
     ("Children", .arr (children.map fun value => Lean.Json.mkObj [("Value", .str value)]).toArray)]
   Lean.Json.mkObj [("Form", Lean.Json.mkObj [
     ("Out", .str "99"), ("TextOut", .str "B"), ("Ref", .str "A"), ("Key", .str scenario.key),
-    ("Rows", .arr #[row "R1" scenario.firstA scenario.secondB scenario.children, row scenario.secondCode "bad" "bad" ["bad"]])])]
+    ("Rows", if scenario.fixedRows then row "R1" scenario.firstA scenario.secondB scenario.children
+      else .arr #[row "R1" scenario.firstA scenario.secondB scenario.children, row scenario.secondCode (if scenario.validSecond then "A" else "bad")
+        (if scenario.validSecond then "B" else "bad") (if scenario.validSecond then ["A"] else ["bad"])])])]
 
-private def evaluate (enumeration : Bool) (expression : String) (computation : Bool)
-    (guard : Option String := none) (scenario : Scenario := {}) : Option (Sum Verdict String) := do
+private def scenarioModel (enumeration : Bool) (scenario : Scenario) : FlatModel :=
   let model := model enumeration
   let model := if scenario.distinctEnumerationDomain then
     { model with fields := model.fields.map fun field =>
@@ -69,6 +72,14 @@ private def evaluate (enumeration : Bool) (expression : String) (computation : B
       { field with enumeration := some {
           storedTokens := ["A", "B"], displayFacts := [{ locale := "en", stored := "A", display := "Alpha" }] } }
     else field }
+  if scenario.fixedRows then
+    { model with fields := model.fields.map fun field => { field with repeatableScope := field.repeatableScope.filter (· != 10) }
+                 repeatableGroups := model.repeatableGroups.filter (·.level != 10) }
+  else model
+
+private def evaluate (enumeration : Bool) (expression : String) (computation : Bool)
+    (guard : Option String := none) (scenario : Scenario := {}) : Option (Sum Verdict String) := do
+  let model := scenarioModel enumeration scenario
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (readDocument {
@@ -199,7 +210,7 @@ example : generated "NumberOfDifferentValues(Rows/Body For Key)" = some (.fired 
 private def ordinaryRule (selected partialRun : Bool) (scope : ValidationRelevanceScope := .full)
     (enumeration : Bool := false) (scenario : Scenario := {}) (operandOverride : Option String := none) (conditionOverride : Option String := none) :
     Option (Except OrdinaryRepeatableRuleEvaluationError (Option Verdict)) := do
-  let m := model enumeration
+  let m := scenarioModel enumeration scenario
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler m).toOption
   let data ← (readDocument {
@@ -265,7 +276,7 @@ example : [false, true].all (fun enumeration =>
     tokenPartialCount enumeration "Rows/Body For Key" 1 .full { secondB := "bad" } == some .unknown &&
     tokenPartialCount enumeration "Ref,TextOut" 1 .full == some (.fired .value)) = true := by native_decide
 
-private def boundCount (enumeration numeric partialRun : Bool) : Option (List Verdict) := do
+private def boundCount (enumeration numeric partialRun : Bool) (distinct : Bool := false) : Option (List Verdict) := do
   let m := model enumeration
   let m := if numeric then { m with fields := m.fields.map fun field =>
     if field.id == 6 || field.id == 7 then
@@ -276,7 +287,9 @@ private def boundCount (enumeration numeric partialRun : Bool) : Option (List Ve
     (input { firstA := if numeric then "1" else "A", secondB := if numeric then "2" else "B" })).toOption
   let document ← (checkDocument prepared "en_US" data.data).toOption
   let literal := if numeric then "1" else "\"A\""
-  let parsed ← (parseText .english ("FieldFilled(TextOut) And NumberOfValueInFields(" ++ literal ++ " In Body/A,Body/B) == 1")).toOption
+  let expression := if distinct then "NumberOfDifferentValues(Body/A,Body/B) == 2"
+    else "NumberOfValueInFields(" ++ literal ++ " In Body/A,Body/B) == 1"
+  let parsed ← (parseText .english ("FieldFilled(TextOut) And " ++ expression)).toOption
   let condition ← (lowerCondition m ["Form", "Rows"] false parsed.body).toOption
   let rule ← (assembleResolvedValidationRule m condition 10 "BOUND_COUNT" .error { parts := [] }).toOption
   if partialRun then
@@ -488,5 +501,111 @@ example : [false, true].all (fun enumeration =>
       (some "FieldFilled(Ref) Or FieldValuesNotUnique(Rows*/Body/A Having ([Rows/Body/A] == \"A\"))") with
     | some (.ok none) => true
     | _ => false) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    ["Ref,TextOut", "Rows/Body For Key", "Rows/Body/A For Key,Rows/Body/B For Key",
+      "Rows/Children*/Value For Key", "Rows/Children* For Key"].all fun operand =>
+      let condition := "NumberOfDifferentValues(" ++ operand ++ ") == 2"
+      let expected := if operand == "Rows/Children*/Value For Key" || operand == "Rows/Children* For Key"
+        then Polarity.omission else .value
+      tokenListVerdict enumeration condition .full {} false == some (.fired expected) &&
+      tokenListVerdict enumeration condition == some (.fired expected)) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Body For Key) == 2"
+      (tokenCountCoverage [["Rows", "Body", "A"]]) == some .unknown &&
+    tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Body For Key) == 2"
+      (tokenCountCoverage [["Rows", "Body"]]) == some (.fired .value)) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    ["Rows*/Body", "Rows*/Children*/Value", "Rows*/Children*"].all fun operand =>
+      let condition := "NumberOfDifferentValues(" ++ operand ++ ") == 2"
+      tokenListVerdict enumeration condition .full { validSecond := true } == some (.fired .omission) &&
+      tokenListVerdict enumeration condition .full { validSecond := true } false == some (.fired .omission)) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    ["Rows/Body For Key", "Rows/Children*/Value For Key", "Rows/Children* For Key",
+      "Rows/Body/A For Key,Rows/Body/B For Key"].all fun operand =>
+      let condition := "NumberOfDifferentValues(" ++ operand ++ ") == 0"
+      let expected := if operand == "Rows/Body For Key" || operand == "Rows/Body/A For Key,Rows/Body/B For Key"
+        then Polarity.omission else .value
+      tokenListVerdict enumeration condition .full { key := "missing" } == some (.fired expected) &&
+      tokenListVerdict enumeration condition .full { key := "missing" } false == some (.fired expected) &&
+      tokenListVerdict enumeration condition (tokenCountCoverage []) { key := "missing" } == some .unknown) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Body For Key) == 2" .full { secondCode := "R1" } == some .unknown &&
+    tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Body For Key) == 2" .full { firstA := "bad" } == some .unknown &&
+    tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Children*/Value For Key) == 0" .full { children := [] } == some (.fired .omission) &&
+    boundCount enumeration false true true == some [.fired .value, .unknown] &&
+    boundCount enumeration false false true == some [.fired .value, .unknown, .notFired]) = true := by native_decide
+
+example : tokenListVerdict true "NumberOfDifferentValues(Rows/Body For Key) == 2" .full
+      { distinctEnumerationDomain := true, secondB := "C" } = some (.fired .value) ∧
+    tokenListVerdict true "NumberOfDifferentValues(Rows/Body For Key) == 2" .full
+      { mixedTokenKinds := true } = some (.fired .value) := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    let fieldWildcard : RelevantEntityPattern := {
+      path := ["Form", "Rows", "Children", "Value"], indices := [.all, .all, .all, .concrete 1] }
+    let concreteGroup : RelevantEntityPattern := {
+      path := ["Form", "Rows", "Children"], indices := [.all, .concrete 1, .concrete 1] }
+    let concreteField := { fieldWildcard with indices := [.all, .concrete 1, .concrete 1, .concrete 1] }
+    let base := [["Ref"], ["Key"], ["Rows", "Code"]].map fun path =>
+      { path := "Form" :: path, indices := ("Form" :: path).map fun _ => RelevanceIndex.all }
+    let scope := ValidationRelevanceScope.partialSet (fieldWildcard :: concreteGroup :: base)
+    tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Children*/Value For Key) == 2" scope == some .unknown &&
+    tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Children*/Value For Key) == 2"
+      (.partialSet (fieldWildcard :: concreteField :: base)) == some (.fired .omission) &&
+    tokenPartialCount enumeration "Rows/Children*/Value For Key" 1 scope == some (.fired .omission)) = true := by native_decide
+
+example : (match ordinaryRule true true .full false {} none
+    (some "FieldFilled(Ref) Or NumberOfDifferentValues(Rows*/Body/A Having (FieldFilled(Rows/Body/A))) == 2") with
+    | some (.ok none) => true | _ => false) = true := by native_decide
+
+private def distinctReadback (enumeration : Bool) (operands : String) (expected : Nat)
+    (changes : List (FieldId × Except CheckedAddressingError (Option CheckedCell))) :
+    Option (Sum Verdict (List String)) := do
+  let m := model enumeration
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler m).toOption
+  let data ← (readDocument { flat := m, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (input {})).toOption
+  let document ← (checkDocument prepared "en_US" data.data).toOption
+  let parsed ← (parseText .english ("NumberOfDifferentValues(" ++ operands ++ ") == " ++ toString expected)).toOption
+  let condition ← (lowerCondition m ["Form"] false parsed.body).toOption
+  let .leaf leaf := condition.core | none
+  let context : AddressedValidationEvaluationContext m := {
+    scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }, outer := []
+    input := .partialView document fun environment field => match changes.find? (·.1 == field) with
+      | some (_, result) => result
+      | none => (fun addressed => some addressed.cell) <$> document.addressedCell environment field }
+  let result ← leaf.evalAddressedPartial? context .full (fun _ => true)
+    (fun _ _ => .error (.checkedDocumentRequired [])) none
+  pure (match result with
+    | .ok verdict => .inl verdict
+    | .error (.checkedDocumentRequired path) => .inr path
+    | .error _ => .inr ["unexpected failure"])
+
+example : [false, true].all (fun enumeration =>
+    ["Rows/Body For Key", "Rows/Body/A For Key,Rows/Body/B For Key"].all fun operands =>
+      let replacement := checkAdmittedRawCell (.parsed (if enumeration then .enum "B" else .str "B"))
+      distinctReadback enumeration operands 1 [(6, .ok (some replacement))] == some (.inl (.fired .value)) &&
+      distinctReadback enumeration operands 2 [(6, .ok none)] == some (.inl .unknown) &&
+      distinctReadback enumeration operands 2 [(6, .error (.partialUnavailable [] 6))] == some (.inl .unknown) &&
+      distinctReadback enumeration operands 2 [(6, .ok (some malformedCheckedCell)),
+        (7, .error (.checkedDocumentRequired ["injected"]))] == some (.inl .unknown) &&
+      distinctReadback enumeration operands 2 [(6, .error (.checkedDocumentRequired ["injected"])),
+        (7, .ok (some malformedCheckedCell))] == some (.inr ["injected"]) &&
+      distinctReadback enumeration operands 0 [(3, .ok (some (checkAdmittedRawCell (.parsed (.str "missing")))))] ==
+        some (.inl (.fired .omission))) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Body/A,Rows/Body/B) == 2" == none) = true := by native_decide
+
+example : [false, true].all (fun enumeration =>
+    tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Body) == 2" .full { fixedRows := true } ==
+      some (.fired .value) &&
+    tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Body) == 2" .full { fixedRows := true } false ==
+      some (.fired .value)) = true := by native_decide
 
 end A12Kernel.Dm.IndexedTokenLocks

@@ -84,16 +84,18 @@ private def distinctPositionalError? (operands : List (ResolvedFieldEntityOperan
     otherwise certify through the common token list unchanged. -/
 def elaborateTokenDistinctCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceTokenDistinctCountSource)
-    (writtenGroup : GroupPath := declaringGroup) (fixedTargetGroup? : Option GroupPath := none) :
+    (writtenGroup : GroupPath := declaringGroup) (fixedTargetGroup? : Option GroupPath := none)
+    (bindingGroup? : Option GroupPath := none) :
     Except TokenDistinctCountElabError (CheckedTokenEntitySource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
+  let shape ← elaborateFieldEntityShapeIn model declaringGroup
+      (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored (writtenGroup := writtenGroup)
       (categoryGate := .aheadOfRepeat) (fixedTargetGroup? := fixedTargetGroup?)
     |>.mapError fun error => .source (.shape error)
   match distinctPositionalError? shape.operands with
   | some error => throw error
   | none =>
       certifyTokenEntityShape model declaringGroup shape
-        (fixedTargetGroup?.getD writtenGroup) |>.mapError .source
+        ((bindingGroup?.or fixedTargetGroup?).getD writtenGroup) |>.mapError .source
 
 namespace TokenDistinctCountElabError
 

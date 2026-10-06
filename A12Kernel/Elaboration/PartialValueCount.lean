@@ -4,12 +4,14 @@ import A12Kernel.Elaboration.TokenValueCount
 
 namespace A12Kernel
 
-/-- Value counts use the existential extent gate, independently for each expanded declaration
-(spec/10 §5); the resolved index or ordinary star fixes the unreopened coordinates. -/
+/-- Each count owns its extent gate: value counts are existential and distinct counts use
+reduced-universal relevance (spec/10 §5). Topology fixes the unreopened coordinates. -/
 private def partialCountExtent (document : CheckedDocument model) (outer : Env)
-    (scope : ValidationRelevanceScope) (declarations : List FlatFieldDecl) (bound : Nat) :
+    (scope : ValidationRelevanceScope) (declarations : List FlatFieldDecl) (bound : Nat)
+    (extentRelevant : FlatFieldDecl → List RepeatableLevel → List RepeatableLevel → Env → Bool :=
+      fun declaration bound reopened environment => scope.coversValueListExtent model declaration.path bound reopened environment) :
     Except CheckedAddressingError (Option (CellObservation (List (FlatFieldDecl × Env) × Bool))) := do
-  if !declarations.all (fun declaration => scope.coversValueListExtent model declaration.path
+  if !declarations.all (fun declaration => extentRelevant declaration
       (declaration.repeatableScope.take bound) (declaration.repeatableScope.drop bound) outer) then return none
   let extent ← model.groupOperandReads document.source.toDocument outer bound declarations
     (·.repeatableScope) |>.mapError .addressing
@@ -67,15 +69,16 @@ private def numberPartialCountSide (source : CheckedNumberEntityOperand model)
 
 private def tokenPartialCountSide (source : CheckedTokenEntityOperand model)
     (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
+    (extentRelevant : FlatFieldDecl → List RepeatableLevel → List RepeatableLevel → Env → Bool :=
+      fun declaration bound reopened environment => scope.coversValueListExtent model declaration.path bound reopened environment) :
     Except CheckedAddressingError (Sum (ResolvedValueListSide .token) PartialValidationNumberAggregateResult) := do
   let selection ← match source with
     | .field source => pure (some (.value ([(source.declaration, outer)], false)))
     | .selected source =>
-        resolvePartialSelectedAddresses source.source document scope outer read
-          (fun declaration bound reopened environment => scope.coversValueListExtent model declaration.path bound reopened environment)
-    | .star source => partialCountExtent document outer scope [source.source.declaration] source.source.path.firstStar
-    | .group source => partialCountExtent document outer scope (source.slots.map (·.declaration)) source.source.boundLevelCount
+        resolvePartialSelectedAddresses source.source document scope outer read extentRelevant
+    | .star source => partialCountExtent document outer scope [source.source.declaration] source.source.path.firstStar extentRelevant
+    | .group source => partialCountExtent document outer scope (source.slots.map (·.declaration)) source.source.boundLevelCount extentRelevant
   let emptyScalar := !source.isAlreadyMany
   partialCountSide (model := model) selection emptyScalar scope read fun declaration cell => do
     let some operand := source.tokenOperands.find? (·.field.id == declaration.id)
@@ -99,5 +102,21 @@ def CheckedTokenValueCountSource.evaluatePartialValueCountDocument (source : Che
     Except CheckedAddressingError PartialValidationNumberAggregateResult :=
   evalPartialResolvedValueCountOperands (kind := .token) source.expected source.source.operands source.source.hasHaving
     (fun operand => tokenPartialCountSide operand document outer scope read)
+
+/-- Partial token distinct counts share call-local classification with value counts but require
+complete aggregate extents; the shared ordered fold preserves the first unavailable read. -/
+def CheckedTokenEntitySource.evaluatePartialDistinctCountDocument (source : CheckedTokenEntitySource model)
+    (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    Except CheckedAddressingError PartialValidationAggregateResult := do
+  if source.hasHaving then return .skippedHaving
+  match ← scanResolvedValueListOperands
+      (fun operand => tokenPartialCountSide operand document outer scope read
+        (fun declaration bound reopened environment => scope.coversAggregateExtent model declaration.path bound reopened environment))
+      (fun cause => .evaluated (.unknown cause))
+      (fun accumulated _ side => accumulated.append side)
+      source.operands (ResolvedValueListSide.empty (kind := .token)) with
+  | .inl side => pure (.evaluated (evalDistinctCountAggregate side))
+  | .inr result => pure result
 
 end A12Kernel

@@ -22,7 +22,7 @@ def elaborateDistinctCountSource (model : FlatModel) (declaringGroup : GroupPath
   | .ok checked => pure (.number checked)
   | .error error =>
       match elaborateTokenDistinctCountSource model declaringGroup source
-          (fixedTargetGroup? := fixedTargetGroup?)
+          (fixedTargetGroup? := fixedTargetGroup?) (bindingGroup? := bindingGroup?)
           (writtenGroup := bindingGroup?.getD declaringGroup) with
       | .ok checked => pure (.token checked)
       | .error _ =>
