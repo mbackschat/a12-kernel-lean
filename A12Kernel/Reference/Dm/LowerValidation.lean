@@ -350,6 +350,14 @@ partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress 
       ((CheckedValidationCondition.fromFlat checked).bind (·.atBinding bindingGroup)).toOption
   match whole, condition with
   | some checked, _ => pure checked
+  | none, .custom name quoted => do
+      let spelling := if quoted then CustomConditionNameSpelling.quoted name else .unquoted name
+      let some checkedName := checkCustomConditionName (fun _ => false) spelling
+        | refuse "CustomCondition" "invalid name"
+      if h : model.validate.isOk = true then
+        elaborated "CustomCondition" (CheckedValidationCondition.checkCore model bindingGroup
+          (.leaf (.customCondition checkedName)) h rowGroup)
+      else refuse "CustomCondition" "invalid model"
   | none, .parens body => lowerCondition model rowGroup suppress body world bindingGroup
   | none, .logic op (first :: rest) => do
       let join := match op with

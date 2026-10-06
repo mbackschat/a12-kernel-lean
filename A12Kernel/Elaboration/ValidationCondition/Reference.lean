@@ -415,6 +415,7 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
         concreteFieldPointer declaration environment
   | .constructedDateValidity _ source =>
       sievedFieldPointers model (fun declaration => source.fields.contains declaration.id) environment
+  | .customCondition _ => pure []
   | .customFieldValidity leaf =>
       (concreteFieldPointer leaf.operand.declaration environment).map ([·])
   | .stringPattern leaf =>

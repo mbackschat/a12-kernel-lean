@@ -143,6 +143,8 @@ theorem validationCondition_flat_evalSelected
     (ValidationCondition.flat (model := model) condition).evalSelected
         context isRelevant =
       condition.evalSelected context.fields isRelevant := by
+  have never (tree : ConditionTree FlatConditionLeaf) : tree.anyLeaf (fun _ => false) = false := by
+    induction tree <;> simp_all
   unfold ValidationCondition.evalSelected ValidationCondition.evalWithTemporalResult ValidationCondition.flat
   dsimp only
   simp only [ConditionTree.evalBoolExcept_map, ConditionTree.evalClassificationExcept_map]
@@ -152,7 +154,7 @@ theorem validationCondition_flat_evalSelected
     (fun leaf => (ValidationConditionLeaf.flat leaf).evalSelected context isRelevant) (fun _ => rfl)]
   rw [conditionTree_evalVerdictExcept_embed condition ValidationConditionLeaf.flat _
     (fun leaf => (ValidationConditionLeaf.flat leaf).evalSelected context isRelevant) (fun _ => rfl)]
-  cases condition <;> simp [ConditionTree.map,
+  cases condition <;> simp [ConditionTree.map, never,
     FlatCondition.evalSelected, ValidationConditionLeaf.evalSelected]
 
 

@@ -68,10 +68,12 @@ theorem evalClassificationExcept_pure (tree : ConditionTree Leaf) (evaluate : Le
   induction tree with
   | leaf value => rfl
   | and left right leftIH rightIH =>
-      rw [evalClassificationExcept, leftIH, rightIH, evalVerdict_and_eq_conj]
+      dsimp only [evalClassificationExcept] at leftIH rightIH
+      rw [evalClassificationExcept, evalClassificationM, leftIH, rightIH, evalVerdict_and_eq_conj]
       rfl
   | or left right leftIH rightIH =>
-      rw [evalClassificationExcept, leftIH, rightIH, evalVerdict_or_eq_disj]
+      dsimp only [evalClassificationExcept] at leftIH rightIH
+      rw [evalClassificationExcept, evalClassificationM, leftIH, rightIH, evalVerdict_or_eq_disj]
       rfl
 
 /-- The effectful eligibility fold agrees with ordinary Boolean evaluation on total leaves. -/
@@ -81,10 +83,10 @@ theorem evalBoolExcept_pure (tree : ConditionTree Leaf) (evaluate : Leaf → Boo
   induction tree with
   | leaf value => rfl
   | and left right leftIH rightIH =>
-      simp only [evalBoolExcept, leftIH, rightIH, bind, Except.bind, pure, Except.pure, evalBool]
+      simp only [evalBoolExcept, evalBoolM, leftIH, rightIH, bind, Except.bind, pure, Except.pure, evalBool]
       cases left.evalBool evaluate <;> rfl
   | or left right leftIH rightIH =>
-      simp only [evalBoolExcept, leftIH, rightIH, bind, Except.bind, pure, Except.pure, evalBool]
+      simp only [evalBoolExcept, evalBoolM, leftIH, rightIH, bind, Except.bind, pure, Except.pure, evalBool]
       cases left.evalBool evaluate <;> rfl
 
 /-- Leaf translation commutes with eligibility, including its failure boundary. -/
@@ -95,7 +97,7 @@ theorem evalBoolExcept_map (tree : ConditionTree Source) (translate : Source →
   induction tree with
   | leaf _ => rfl
   | and _ _ leftIH rightIH | or _ _ leftIH rightIH =>
-      simp only [map, evalBoolExcept, leftIH, rightIH]
+      simp only [map, evalBoolExcept, evalBoolM, leftIH, rightIH]
 
 /-- Leaf translation also preserves authored classification order and failures. -/
 theorem evalClassificationExcept_map (tree : ConditionTree Source) (translate : Source → Target)
@@ -105,7 +107,7 @@ theorem evalClassificationExcept_map (tree : ConditionTree Source) (translate : 
   induction tree with
   | leaf _ => rfl
   | and _ _ leftIH rightIH | or _ _ leftIH rightIH =>
-      simp only [map, evalClassificationExcept, leftIH, rightIH]
+      simp only [map, evalClassificationExcept, evalClassificationM, leftIH, rightIH]
 
 end ConditionTree
 

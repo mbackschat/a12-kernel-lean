@@ -30,7 +30,7 @@ def map (transform : Source → Target) : ConditionTree Source → ConditionTree
   | .or left right => .or (left.map transform) (right.map transform)
 
 /-- Whether any leaf satisfies a predicate. Connective structure does not affect reference membership. -/
-def anyLeaf (predicate : Leaf → Bool) : ConditionTree Leaf → Bool
+@[simp] def anyLeaf (predicate : Leaf → Bool) : ConditionTree Leaf → Bool
   | .leaf value => predicate value
   | .and left right | .or left right =>
       left.anyLeaf predicate || right.anyLeaf predicate
@@ -49,26 +49,41 @@ def allLeaves (predicate : Leaf → Bool) : ConditionTree Leaf → Bool
 
 /-- Boolean eligibility reaches only the branch needed to decide truth; failure is observable
 only along that path. The generated rule's first pass uses this boundary before classification. -/
-def evalBoolExcept (evalLeaf : Leaf → Except Error Bool) : ConditionTree Leaf → Except Error Bool
+def evalBoolM [Monad m] (evalLeaf : Leaf → m Bool) : ConditionTree Leaf → m Bool
   | .leaf value => evalLeaf value
   | .and left right => do
-      if ← left.evalBoolExcept evalLeaf then right.evalBoolExcept evalLeaf else pure false
+      if ← left.evalBoolM evalLeaf then right.evalBoolM evalLeaf else pure false
   | .or left right => do
-      if ← left.evalBoolExcept evalLeaf then pure true else right.evalBoolExcept evalLeaf
+      if ← left.evalBoolM evalLeaf then pure true else right.evalBoolM evalLeaf
+
+abbrev evalBoolExcept (evalLeaf : Leaf → Except Error Bool) (tree : ConditionTree Leaf) : Except Error Bool :=
+  tree.evalBoolM evalLeaf
 
 /-- Classification evaluates every authored leaf before combining verdicts. Its eager failure
 boundary differs from eligibility (Java/Groovy `CodeGenRuleDefinition_line.st`). -/
-def evalClassificationExcept (evalLeaf : Leaf → Except Error Verdict) :
-    ConditionTree Leaf → Except Error Verdict
+def evalClassificationM [Monad m] (evalLeaf : Leaf → m Verdict) : ConditionTree Leaf → m Verdict
   | .leaf value => evalLeaf value
   | .and left right => do
-      let left ← left.evalClassificationExcept evalLeaf
-      let right ← right.evalClassificationExcept evalLeaf
+      let left ← left.evalClassificationM evalLeaf
+      let right ← right.evalClassificationM evalLeaf
       pure (Verdict.conj left right)
   | .or left right => do
-      let left ← left.evalClassificationExcept evalLeaf
-      let right ← right.evalClassificationExcept evalLeaf
+      let left ← left.evalClassificationM evalLeaf
+      let right ← right.evalClassificationM evalLeaf
       pure (Verdict.disj left right)
+
+abbrev evalClassificationExcept (evalLeaf : Leaf → Except Error Verdict) (tree : ConditionTree Leaf) :
+    Except Error Verdict := tree.evalClassificationM evalLeaf
+
+/-- Preserve generated-rule call discipline for observable host leaves: false truth has no
+classification pass; a true value-only condition emits directly (CodeGenRuleDefinition.st). -/
+def evalObservedM [Monad m] (needsClassification : Bool) (evalLeaf : Leaf → m Verdict)
+    (tree : ConditionTree Leaf) : m Verdict := do
+  let holds ← tree.evalBoolM fun leaf => do
+    pure (match ← evalLeaf leaf with | .fired _ => true | _ => false)
+  if !holds then pure .notFired
+  else if needsClassification then tree.evalClassificationM evalLeaf
+  else pure (.fired .value)
 
 /-- Evaluate leaves under the shared A12 connective algebra. `And` skips only after `notFired`; `Or` skips only after `fired value`, because every other verdict can still change through polarity composition. -/
 @[simp] def evalVerdict (evalLeaf : Leaf → Verdict) : ConditionTree Leaf → Verdict

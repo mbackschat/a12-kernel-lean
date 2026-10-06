@@ -173,10 +173,8 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 ### SG11 — custom-condition checked orchestration
 
 - `state`: open
-- `missing`: registration, static restrictions, effective data, relevance, formal and pointer construction, host call order, messages, and whole-rule integration must surround the pure reached-leaf oracle without unsupported locality or monotonicity laws.
-- `baseline`: [§14](../IMPLEMENTATION-MAP.md#14--custom-conditions) owns the checked `nameOhnePunkt` spelling and normalized callback key plus the pure successful callback leaf. Locale-specific terminal classification remains an explicit input rather than a hard-coded keyword inventory.
-- `remaining`: resolve the locale terminal predicate and callback registration, then construct the shared message pointer around the reached callback.
-- `prerequisite`: checked document supplies data and SG10 supplies formal output. Host failures remain explicit integration outcomes unless Kernel behavior establishes otherwise.
-- `consumer`: Execute and Qualify require a concrete host contract and observable call discipline.
-- `completion-gate`: checked authoring and orchestration reproduce registration, eligibility, projection, order, failure, and message behavior while retaining current non-laws.
+- `baseline`: [custom-condition orchestration](../implementation/validation-messages-and-custom.md#cap-custom-condition-callback) now owns checked reader names, reached registry resolution, shared phase call discipline, checked invocation construction and full/partial fixed and ordinary repeatable rule execution.
+- `remaining`: integrate CustomCondition with general parallel rule execution as that shared runner closes; do not invent exact coordinates where the current error pointer is unknown. Wider runtime calibration of factory precedence, phase-dependent callback reach and partial/repeatable payloads remains pending.
+- `consumer`: Execute and Qualify need the declared pure successful-factory boundary; Analyze/Transform must retain non-locality and non-monotonicity rather than inferring callback dependencies from ordinary references.
+- `completion-gate`: preserve callback payloads, order, failure and message behavior across the remaining orchestration routes. Mutable effects, exceptions and concrete host APIs remain named boundaries.
 - `route-state`: discovery-required

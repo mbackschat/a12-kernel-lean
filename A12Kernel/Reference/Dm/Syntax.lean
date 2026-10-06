@@ -135,7 +135,7 @@ structure SyntaxError where
 
 inductive Token
   | keyword (id : String)
-  | name (text : String)
+  | name (text : String) (quoted : Bool := false)
   /-- A number literal's digits and point, whitespace inside it removed (spec §12.3). -/
   | number (text : String)
   | string (text : String)
@@ -154,10 +154,10 @@ structure Lexeme where
 def isDslWhitespace (c : Char) : Bool :=
   c == ' ' || c == '\r' || c == '\t' || c == '\x0c' || c == '\n'
 
-/-- A name character: ASCII letters, digits, underscore and the German letters. The Kernel lexes
+/-- A name character: ASCII letters, digits, underscore, colon and the German letters. The Kernel lexes
 `MVK_GEBÜHR` as one name and refuses `MVK_FRAÉ` lexically (spec §12.4). -/
 def isNameChar (c : Char) : Bool :=
-  c.isAlphanum || c == '_' || "äöüÄÖÜß".contains c
+  c.isAlphanum || c == '_' || c == ':' || "äöüÄÖÜß".contains c
 
 private def symbols : List String :=
   ["==", "!=", "<=", ">=", "->", "..", "<", ">", "+", "-", "*", "/", "^", "$", "(", ")", "[", "]",
@@ -192,15 +192,18 @@ partial def lex (language : Language) (text : String) : Except SyntaxError (Arra
         let stop := takeWhile (· != c) chars (index + 1)
         if stop < chars.size then
           let body := slice chars (index + 1) stop
-          emit (if c == '"' then .string body else .name body) (stop + 1)
+          emit (if c == '"' then .string body else .name body true) (stop + 1)
         else fail
       else if c.isDigit then
         let integer := takeWhile Char.isDigit chars index
         -- Whitespace may stand on either side of the point (spec §12.3), so look past it before
         -- deciding that the literal has a fractional part.
+        let nameEnd := takeWhile isNameChar chars index
         let point := skipWhitespace chars integer
         let fractionStart := skipWhitespace chars (point + 1)
-        if charAt point == some '.' && (charAt fractionStart).any Char.isDigit then
+        if nameEnd > integer then
+          emit (.name (slice chars index nameEnd)) nameEnd
+        else if charAt point == some '.' && (charAt fractionStart).any Char.isDigit then
           let stop := takeWhile Char.isDigit chars fractionStart
           emit (.number (slice chars index integer ++ "." ++ slice chars fractionStart stop)) stop
         else emit (.number (slice chars index integer)) integer
@@ -280,7 +283,7 @@ inductive Expr
   /-- An operator call. `listed` holds the arguments after an `In`, and `scope` an `@From` group. -/
   | call (id : String) (arguments : List Argument) (listed : Option (List Argument))
       (scope : Option Path)
-  | custom (name : String)
+  | custom (name : String) (quoted : Bool := false)
   | arith (op : ArithOp) (left right : Expr)
   | braces (body : Expr)
   | compare (op : CompareOp) (left right : Expr)

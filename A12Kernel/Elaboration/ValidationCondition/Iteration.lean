@@ -280,7 +280,7 @@ private def ValidationConditionLeaf.iterationGuardAt
     (level : RepeatableLevel) :
     ValidationConditionLeaf model → IterationGuardStatus
   | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
-  | .customFieldValidity _ => .noReference
+  | .customCondition _ | .customFieldValidity _ => .noReference
   | .constructedDateValidity operation source =>
       if source.fields.any (fun field => (model.fieldRepeatableScope field).contains level) then
         match operation with
@@ -437,7 +437,7 @@ def supportsOrdinaryIteration
     | .iteratedDateRange _ => true
     | .orderedNumeric .sameGroupAddressed _ => true
     | .repetitionNotUnique _ => true
-    | .constructedDateValidity _ _ | .customFieldValidity _ => true
+    | .customCondition _ | .constructedDateValidity _ _ | .customFieldValidity _ => true
     | .stringPattern _ => true
     | .stringExpression _ | .scalarTemporal _ | .firstFilledComparison _ | .tokenComparison _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => true
     | _ => false
@@ -471,10 +471,13 @@ def evalWithTemporalResult (condition : ValidationCondition model)
       fun comparison => (comparison.evalSelectedResult context isRelevant).mapError Sum.inr)
     (leafRuntimeFault? : Error → Option ScalarTemporalEvaluationFault := fun _ => none)
     (firstFilledResult : CheckedFirstFilledComparison model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
-      fun _ => pure .unknown) :
+      fun _ => pure .unknown)
+    (customResult : String → Except Error Verdict := fun name =>
+      pure ((context.customResult name).toOption.getD .unknown)) :
     Except Error Verdict :=
   let readLeaf : ValidationConditionLeaf model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
     fun leaf => match leaf with
+      | .customCondition name => (customResult name.value).mapError Sum.inl
       | .firstFilledComparison comparison => firstFilledResult comparison
       | .scalarTemporal comparison =>
           if comparison.fieldIds.all isRelevant then do
@@ -489,8 +492,11 @@ def evalWithTemporalResult (condition : ValidationCondition model)
           | some fault => .inr fault
           | none => .inl error
       | leaf => (evaluate leaf).mapError Sum.inl
+  let hasCustom := condition.anyLeaf fun | .customCondition _ => true | _ => false
   let result : Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
-    match condition with
+    if hasCustom then condition.evalObservedM
+      (condition.anyLeaf ValidationConditionLeaf.requiresClassificationPass) readLeaf
+    else match condition with
     | .leaf leaf => readLeaf leaf
     | _ => do
       let holds ← condition.evalBoolExcept fun leaf => do
@@ -563,6 +569,7 @@ def evalAddressed (condition : ValidationCondition model)
     (numericResult := fun comparison => comparison.evalAddressedResult context)
     (leafRuntimeFault? := constructedComponentRuntimeFault?)
     (firstFilledResult := ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context)
+    (customResult := fun name => (context.scalar.customResult name).mapError CheckedAddressingError.customCondition)
 
 /-- Evaluate the same connective tree with one already-prepared current-row RNU result. Duplicate construction remains outside and branch-independent. -/
 def evalAddressedWithRepetitionNotUnique
@@ -576,6 +583,7 @@ def evalAddressedWithRepetitionNotUnique
     (numericResult := fun comparison => comparison.evalAddressedResult context)
     (leafRuntimeFault? := constructedComponentRuntimeFault?)
     (firstFilledResult := ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context)
+    (customResult := fun name => (context.scalar.customResult name).mapError CheckedAddressingError.customCondition)
 
 /-- Keep reached temporal failure distinct from a row verdict until the rule's iteration handler.
 The generated Java `CodeGenRuleDefinition.st` catches outside its row loop. -/
@@ -599,6 +607,8 @@ def evalAddressedWithRepetitionNotUniqueResult
       (ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context comparison).mapError fun
         | .inl error => .inl (.inl error)
         | .inr fault => .inr fault)
+    (customResult := fun name => (context.scalar.customResult name).mapError
+      (fun error => .inl (.customCondition error)))
 
 /-- Apply the ordinary full-validation content gate to the addressed tree without sampling any repeatable source on an ineligible empty row. -/
 def evalAddressedFull (condition : ValidationCondition model)

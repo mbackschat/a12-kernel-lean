@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.CustomCondition
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Semantics.GroupPresence
 
@@ -45,5 +46,11 @@ structure ValidationEvaluationContext where
   fields : FlatContext
   groups : GroupPresenceContext
   pass : ValidationPass := .full
+  customConditions : String → Except CustomConditionLookupError Bool :=
+    fun name => .error (.missingRegistration name)
+
+def ValidationEvaluationContext.customResult (context : ValidationEvaluationContext) (name : String) :
+    Except CustomConditionLookupError Verdict :=
+  (context.customConditions name).map customConditionVerdict
 
 end A12Kernel

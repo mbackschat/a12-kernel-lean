@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-06-01"></a>
+### SPEC-2026-10-06-01 — reached custom-condition registration
+
+- `status`: pending
+- `delta`: resolve registration only when the callback leaf is reached, not during elaboration. A per-validation factory replaces the fallback chain even when it returns no match; without it, registered factories select the first match.
+- `basis`: source-only, kernel `cb66e51`: `ValidationCache.getCustomCondition`, `CustomConditionService.getCustomCondition`, `MainValidatorController.applikationsBedingung`, and `CodeGenRuleDefinition.st`; the [source map](SOURCES.md) owns the drill path. No new runtime calibration is claimed.
+- `canonical`: [spec/11 §14](../spec/11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch).
+- `acceptance`: preserve skipped missing registrations, per-call factory shadowing and first-match fallback. Reconcile the former non-normative elaboration-error wording; host exceptions and mutable callback effects remain outside the pure successful-callback model.
+
 <a id="spec-2026-10-05-01"></a>
 ### SPEC-2026-10-05-01 — extensible String constructor conversion and phase effects
 

@@ -73,7 +73,9 @@ def printExpr (language : Language) : Expr → String
         | some path => s!" {keywordSpelling language "@From"} {printPath language path}"
         | none => ""
       keywordSpelling language id ++ "(" ++ printArguments language arguments ++ listed ++ scope ++ ")"
-  | .custom name => keywordSpelling language "CustomCondition" ++ " " ++ printName language name
+  | .custom name quoted =>
+      keywordSpelling language "CustomCondition" ++ " " ++
+        (if quoted || (keywordId? language name).isSome then "'" ++ name ++ "'" else name)
   | .arith op left right => printExpr language left ++ " " ++ op.spelling ++ " " ++ printExpr language right
   | .braces body => "{" ++ printExpr language body ++ "}"
   | .compare op left right =>

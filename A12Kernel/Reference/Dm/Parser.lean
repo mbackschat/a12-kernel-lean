@@ -68,7 +68,7 @@ private def compareOp? : Option Token → Option CompareOp
 
 private def segment : P Segment := do
   match ← peek with
-  | some (.name name) => advance; return { name, star := ← acceptSymbol "*" }
+  | some (.name name _) => advance; return { name, star := ← acceptSymbol "*" }
   | _ => failHere .expectedTokenNotFound
 
 private partial def segments : P (List Segment) := do
@@ -87,7 +87,7 @@ private partial def ups : P (Nat × Option String) := do
         let (count, label) ← ups
         return (count + 1, label)
       else return (1, none)
-  | some (.name label) => advance; return (1, some label)
+  | some (.name label _) => advance; return (1, some label)
   | _ => return (1, none)
 
 private def path : P Path := do
@@ -107,7 +107,7 @@ private def reference : P Reference := do
     else pure none
   let category ← if ← acceptSymbol "->" then
       match ← peek with
-      | some (.name name) => advance; pure (some name)
+      | some (.name name _) => advance; pure (some name)
       | _ => failHere .expectedTokenNotFound
     else pure none
   return { path := target, index, category }
@@ -191,13 +191,16 @@ private partial def atom : P Expr := do
   | some (.keyword "CustomCondition") =>
       advance
       match ← peek with
-      | some (.name name) => advance; return .custom name
+      | some (.name name quoted) => advance; return .custom name quoted
+      | some (.number name) =>
+          if name.toList.all (fun c => '0' ≤ c && c ≤ '9') then advance; return .custom name
+          else failHere .expectedTokenNotFound
       | _ => failHere .expectedTokenNotFound
   | some (.keyword id) =>
       if separatorKeywords.contains id then failHere .incompleteInput
       advance
       if ← acceptSymbol "(" then call id else return .constant id
-  | some (.name _) | some (.symbol "/") | some (.symbol "..") | some (.symbol "$") =>
+  | some (.name _ _) | some (.symbol "/") | some (.symbol "..") | some (.symbol "$") =>
       return .entity (← reference)
   | _ => failHere .incompleteInput
 
@@ -224,7 +227,7 @@ private def preamble : P (List String) := do
   if ← acceptKeyword "@SuppressWarning" then
     expectSymbol "("
     let name ← match ← peek with
-      | some (.name name) => advance; pure name
+      | some (.name name _) => advance; pure name
       | _ => failHere .expectedTokenNotFound
     expectSymbol ")"
     return [name]

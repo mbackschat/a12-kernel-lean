@@ -1671,7 +1671,7 @@ The clause map gets a reader into the right subsystem; this table gets a working
 | When is generated computation validation run? | `ValidationModelConverter`, `ComputationAlternativesJoiner`, validation service orchestration | Later validation owns all relevant alternatives; computation execution does not invoke it |
 | When is a partial rule skipped? | `rulesDir/CodeGenRuleDefinition.st` in Java/Groovy/JavaScript-VK | Rule-level early return before iteration/condition; `CodeGenRules.st` is only the enclosing pass-through |
 | How are validation messages rendered? | message model/API, `FehlerHandler`, `CheckCommand.ersetzeFeldParameter`, errortext grammar | Locale resource lookup and token replacement; computation pointer partition is a later separate mechanism |
-| How is a custom condition invoked? | `ApplicationCondition.st`, `MainValidatorController.applikationsBedingung`, `CustomConditionWrapper`, `ICustomCondition` | Generated invocation and host callback boundary; registration/failure policy requires the service/model path |
+| How is a custom condition invoked? | `ApplicationCondition.st`, `CodeGenRuleDefinition.st`, `ValidationCache`, `CustomConditionService`, `MainValidatorController` | Reached factory lookup, callback and classification; concrete host APIs remain external |
 
 ## a12-dmkits drill route
 

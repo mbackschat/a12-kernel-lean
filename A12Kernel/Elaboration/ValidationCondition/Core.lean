@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.CustomCondition
 import A12Kernel.Elaboration.StringExpression
 import A12Kernel.Elaboration.NumericValidation
 import A12Kernel.Elaboration.CheckedGroupPresence
@@ -235,6 +236,7 @@ end ConditionTree
 
 /-- The validation leaf families admitted by this checked condition boundary, indexed by the one model that owns every retained source certificate. -/
 inductive ValidationConditionLeaf (model : FlatModel) where
+  | customCondition (name : CheckedCustomConditionName)
   | flat (condition : FlatConditionLeaf)
   | numeric (scope : NumericOperandScope) (comparison : NumericComparison)
   | orderedNumeric (scope : NumericOperandScope)
@@ -298,6 +300,7 @@ private def orderedNumericClassificationSource : OrderedNumericValidationAtom mo
 messages on the current document. In particular a child-group presence guard enables the pass,
 whereas unfiltered positive field presence does not (classification grid, 2026-10-04). -/
 def ValidationConditionLeaf.requiresClassificationPass : ValidationConditionLeaf model → Bool
+  | .customCondition _ => false
   | .flat (.compare comparison) => !comparison.fieldIds.isEmpty
   | .flat (.fieldFilled _) => false
   | .flat (.fieldNotFilled _) => true
@@ -524,6 +527,7 @@ def liftsEmptyGate : ValidationConditionLeaf model → Bool
 /-- Whether a presence leaf can hold on an instance without admitted content; it composes through
 `And` and `Or`. A comparison claims nothing here, `liftsEmptyGate` owning it. -/
 def canFireOnEmpty : ValidationConditionLeaf model → Bool
+  | .customCondition _ => true
   | .constructedDateValidity operation source =>
       operation == .invalid || source.fields.isEmpty
   | .firstFilledComparison _ | .tokenComparison _ => false
@@ -550,6 +554,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
       | .fieldsNotCollectivelyFilled => false
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
+  | .customCondition _, _ => false
   | .constructedDateValidity _ source, field => source.fields.contains field
   | .firstFilledComparison comparison, field => comparison.referencesField field
   | .tokenComparison comparison, field => comparison.referencesField field
@@ -582,6 +587,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
 /-- Whether a leaf reaches `field` for the rule's error-field gates. Filter-owning sources count
     marked body reads but exclude unmarked candidate reads, following the shared correlation gate. -/
 def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
+  | .customCondition _, _ => false
   | .firstFilledComparison comparison, field => comparison.referencesField field CorrelatedHaving.referencesMarkedField
   | .tokenComparison comparison, field => comparison.referencesField field CorrelatedHaving.referencesMarkedField
   | .fieldFill _ source, field => source.referencesField field CorrelatedHaving.referencesMarkedField
@@ -601,6 +607,7 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
 /-- Whether the checked source retains a `Having` filter, which makes whole-rule partial validation
     skip before evaluation (spec/10 §5). Scalar leaves cannot manufacture the marker. -/
 def hasHaving : ValidationConditionLeaf model → Bool
+  | .customCondition _ => false
   | .firstFilledComparison comparison => comparison.hasHaving
   | .tokenComparison comparison => comparison.hasHaving
   | .fieldFill _ source => source.hasHaving
@@ -618,6 +625,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
+  | .customCondition _ => true
   | .stringPattern leaf => !(model.fieldRepeatableScope leaf.condition.field.id).isEmpty
   | .constructedDateValidity _ _ | .stringExpression _ => true
   | .scalarTemporal comparison => comparison.declarations.any fun field => !field.repeatableScope.isEmpty
@@ -640,6 +648,7 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
 /-- Static admission reuses each leaf family's existing checked core predicate. -/
 def wellFormedBool (rowGroup : GroupPath) :
     ValidationConditionLeaf model → Bool
+  | .customCondition _ => true
   | .constructedDateValidity _ source => source.fields.all fun field =>
       (model.fieldRepeatableScope field).isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
   | .firstFilledComparison comparison => comparison.bindingScopes.flatten.all

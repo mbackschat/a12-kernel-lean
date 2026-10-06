@@ -19,7 +19,7 @@ theorem evalReachedCustomCondition_fired_value_iff
         DataView RelevantEntities FormalInvalidAddresses) :
     evalReachedCustomCondition oracle invocation = .fired .value ↔
       oracle invocation = true := by
-  simp [evalReachedCustomCondition]
+  simp [evalReachedCustomCondition, customConditionVerdict]
 
 /-- The callback is non-firing exactly when the oracle returns false. -/
 theorem evalReachedCustomCondition_notFired_iff
@@ -31,7 +31,7 @@ theorem evalReachedCustomCondition_notFired_iff
         DataView RelevantEntities FormalInvalidAddresses) :
     evalReachedCustomCondition oracle invocation = .notFired ↔
       oracle invocation = false := by
-  simp [evalReachedCustomCondition]
+  simp [evalReachedCustomCondition, customConditionVerdict]
 
 /-- A successfully evaluated custom callback never produces evaluator UNKNOWN. -/
 theorem evalReachedCustomCondition_ne_unknown
@@ -43,7 +43,7 @@ theorem evalReachedCustomCondition_ne_unknown
         DataView RelevantEntities FormalInvalidAddresses) :
     evalReachedCustomCondition oracle invocation ≠ .unknown := by
   cases h : oracle invocation <;>
-    simp [evalReachedCustomCondition, h]
+    simp [evalReachedCustomCondition, customConditionVerdict, h]
 
 /-- A successfully evaluated custom callback never fires with omission polarity. -/
 theorem evalReachedCustomCondition_ne_omission
@@ -55,7 +55,7 @@ theorem evalReachedCustomCondition_ne_omission
         DataView RelevantEntities FormalInvalidAddresses) :
     evalReachedCustomCondition oracle invocation ≠ .fired .omission := by
   cases h : oracle invocation <;>
-    simp [evalReachedCustomCondition, h]
+    simp [evalReachedCustomCondition, customConditionVerdict, h]
 
 /-- Structural empty-row eligibility is unconditional at the custom leaf. -/
 theorem customConditionCanFireOnEmpty_eq_true :
@@ -111,5 +111,22 @@ theorem customCondition_purity_does_not_imply_formal_monotonicity :
       evalReachedCustomCondition reversesFormalInvalid (formalInvocation true) =
         .notFired := by
   decide
+
+/-- Per-call configuration replaces the fallback chain even when the selected factory declines. -/
+theorem customCondition_configured_factory_wins
+    (factory : String → Option (Invocation → Bool)) (fallback : List (String → Option (Invocation → Bool)))
+    (name : String) :
+    (CustomConditionRegistry.resolve { configured := some factory, fallback } name) = factory name := by
+  rfl
+
+/-- Resolution adds no filtering or projection to the callback's invocation payload. -/
+theorem customCondition_invoke_resolved
+    (registry : CustomConditionRegistry (CustomConditionInvocation DataView RelevantEntities FormalInvalidAddresses))
+    (name : String) (invocation : CustomConditionInvocation DataView RelevantEntities FormalInvalidAddresses)
+    (callback : CustomConditionInvocation DataView RelevantEntities FormalInvalidAddresses → Bool)
+    (resolved : registry.resolve name = some callback) :
+    registry.invoke name invocation = .ok (evalReachedCustomCondition callback invocation) := by
+  simp [CustomConditionRegistry.invoke, CustomConditionRegistry.evaluate, resolved, Except.map]
+  rfl
 
 end A12Kernel

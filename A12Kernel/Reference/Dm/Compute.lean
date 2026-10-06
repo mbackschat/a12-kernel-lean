@@ -73,6 +73,7 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
     (expression : Expr) (targetGroup? : Option GroupPath := none) :
     Lowering (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) :=
   match expression with
+  | .custom _ _ => refuse "CustomCondition" "not admitted in computation guards"
   | .compare .patternMatched left right => lowerPatternGuard .matched left right
   | .compare .patternViolated left right => lowerPatternGuard .violated left right
   | .parens body => lowerGuard model group suppress body targetGroup?

@@ -83,7 +83,7 @@ def negate : Expr → Except NegationRefusal Expr
       | none, "NotExactlyOneFieldFilled", none, none =>
           pure (.compare .eq (.call "NumberOfFilledFields" arguments none none) (.number "1"))
       | none, _, _, _ => throw { construct := id }
-  | .custom _ => throw { construct := "CustomCondition" }
+  | .custom _ _ => throw { construct := "CustomCondition" }
   | other => throw { construct := other.construct }
 
 def negateParts : List Expr → Except NegationRefusal (List Expr)

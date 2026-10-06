@@ -353,7 +353,7 @@ def Expr.construct : Expr → String
   | .entity _ => "Entity"
   | .constant id => id
   | .call id _ _ _ => id
-  | .custom _ => "CustomCondition"
+  | .custom _ _ => "CustomCondition"
   | .arith _ _ _ => "Arithmetic"
   | .braces _ => "Braces"
   | .compare .patternMatched _ _ => "PatternMatched"

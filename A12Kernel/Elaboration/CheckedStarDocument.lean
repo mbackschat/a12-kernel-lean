@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.SemanticIndex
 import A12Kernel.Elaboration.RuleIterationDomain
 import A12Kernel.Elaboration.ConstructedDateEvaluation
+import A12Kernel.Semantics.CustomCondition
 import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Semantics.Correlation
@@ -13,6 +14,7 @@ This boundary joins the immutable checked input to the existing checked star pat
 namespace A12Kernel
 
 inductive CheckedAddressingError where
+  | customCondition (cause : CustomConditionLookupError)
   | unsupportedIndexedFillQuantifier
   | semanticIndex (cause : SemanticIndexContextError)
   | indexPreliminary (cause : CheckedIndexPreliminaryError)

@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.CustomConditionLocks
 import A12Kernel.Reference.Dm.ScalarMembershipLocks
 import A12Kernel.Reference.Dm.HavingComparisonLocks
 import A12Kernel.Reference.Dm.HavingCalendarLocks

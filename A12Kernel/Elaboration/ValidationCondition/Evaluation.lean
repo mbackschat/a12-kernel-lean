@@ -16,6 +16,7 @@ namespace ValidationConditionLeaf
 def evalSelected (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance) :
     ValidationConditionLeaf model → Verdict
+  | .customCondition name => (context.customResult name.value).toOption.getD .unknown
   | .flat condition => condition.evalSelected context.fields isRelevant
   | .scalarTemporal comparison =>
       if comparison.fieldIds.all isRelevant then
@@ -71,7 +72,7 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .groupList operator [.starredGroupPresence _] =>
       operator.toStarredGroupFillQuantifier?.isSome
   | .repetitionNotUnique _ => true
-  | .customFieldValidity _ | .stringPattern _ | .constructedDateValidity _ _ | .stringExpression _ => true
+  | .customCondition _ | .customFieldValidity _ | .stringPattern _ | .constructedDateValidity _ _ | .stringExpression _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
   | _ => false
@@ -161,6 +162,7 @@ def evalAddressedPartial?
     (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult) :
     ValidationConditionLeaf model →
       Option (Except CheckedAddressingError Verdict)
+  | .customCondition name => some ((context.scalar.customResult name.value).mapError .customCondition)
   | .flat condition =>
       some (evalFlatLeafAddressedPartial condition context isRelevant)
   | .firstFilledComparison comparison =>
@@ -264,6 +266,7 @@ def evalFirstFilledComparisonAddressedResult (context : AddressedValidationEvalu
 /-- Evaluate one addressed leaf through the same relevance rules. Ordered numeric and starred group-list sources preserve structural addressing failures; direct scalar/group leaves remain the exact pure evaluator lifted into that channel. -/
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
     ValidationConditionLeaf model → Except CheckedAddressingError Verdict
+  | .customCondition name => (context.scalar.customResult name.value).mapError .customCondition
   | .stringPattern leaf => do
       let source := leaf.condition.field.id
       if !context.directRelevant source then return .unknown
