@@ -88,6 +88,18 @@ namespace AuthoredDateLiteral
 def admittedIn (literal : AuthoredDateLiteral) (model : FlatModel) (anchorYear : Int) : Bool :=
   literal.valid && anchorYear == model.baseYearOrDefault
 
+/-- Literal validity uses the authored common-year rule; runtime completion uses the model's shared anchor (spec/05 §1). Year agreement remains an admission question for the consuming operator. -/
+def completedDate? (literal : AuthoredDateLiteral) (model : FlatModel) : Option CivilDate := do
+  if !literal.valid then none
+  let parts := literal.parts model.baseYearOrDefault
+  CivilDate.ofYmd? parts.year parts.month parts.day
+
+def comparisonInstant? (literal : AuthoredDateLiteral) (model : FlatModel) : Option Instant := do
+  let civil ← literal.completedDate? model
+  let profile ← ModelZone.ConcreteProfile.ofId? model.timeZoneId
+  let value ← profile.resolveStoredDate? civil
+  pure value.instant
+
 end AuthoredDateLiteral
 
 inductive SurfaceDateDifferenceOperand (Field : Type := SurfaceFieldPath) where

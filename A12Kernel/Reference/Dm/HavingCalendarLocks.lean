@@ -374,4 +374,53 @@ example : runModel dates "[Rows/N] > 0 And [$Expected] < Today" true
       { dates with fields := dates.fields ++ [{
         id := 6, name := "Token", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } }] } "Token" = some (false, true) := by native_decide
 
+example : [("MM-dd", "03-05", "07-14", "05.03."), ("MM", "03", "07", "01.03.")].all
+    (fun (format, first, second, literal) =>
+      let fixture := formatted format format
+      runModel fixture s!"[Rows/Tag] == \"{literal}\"" false "unused" first second ==
+        some (.fired .omission, ["value 9"]) &&
+      runModel fixture s!"\"13.07.\" < [Rows/Tag]" false "unused" first second
+        (ruleExpected := if format == "MM" then "0" else "5") ==
+          some (.fired .omission, [if format == "MM" then "value 0" else "value 5"]) &&
+      runModel fixture "" false first first second (operationOverride := some "1")
+        (ruleCondition := some s!"FieldFilled(Error) And [Expected] == \"{literal}\"")
+        (computationPrecondition := some s!"[Expected] == \"{literal}\"") ==
+          some (.fired .value, ["value 1"])) = true := by native_decide
+
+private def ordinaryAdmissions (fixture : FlatModel) (condition : String) : List Bool :=
+  match (parseText .english condition).toOption with
+  | none => [false, false]
+  | some parsed => [(lowerCondition fixture ["Form"] false parsed.body).isOk,
+      (lowerComputation fixture .english {
+        group := ["Form"], name := "Total", targetRelPath := "../Out", commonPrecondition := none,
+        alternatives := [{ precondition := some condition, operation := "1" }], errorCodesToSuppress := [] }).isOk]
+
+example : [none, some 2023, some 2024].all (fun baseYear =>
+    ["MM-dd", "yyyy-MM-dd"].all (fun format =>
+      ["05.03.", "05.03.2024"].all (fun literal =>
+        let fixture := formatted format format baseYear
+        let expected := baseYear.isSome || ((format == "yyyy-MM-dd") == (literal == "05.03.2024"))
+        [s!"[Rows/Tag] == \"{literal}\"", s!"\"{literal}\" < [Rows/Tag]"].all (fun condition =>
+          (admissions fixture condition).all (· == expected)) &&
+        [s!"[Expected] == \"{literal}\"", s!"\"{literal}\" < [Expected]"].all (fun condition =>
+          (ordinaryAdmissions fixture condition).all (· == expected))))) = true := by native_decide
+
+example : [none, some 2024].all (fun baseYear =>
+    let fixture := formatted "MM-dd" "MM-dd" baseYear
+    refused fixture "[Rows/Tag] < \"29.02.\"" &&
+    (ordinaryAdmissions fixture "[Expected] < \"29.02.\"").all (!·)) = true := by native_decide
+
+example : ["UTC", "Europe/Berlin"].all (fun zone =>
+    [none, some 2024].all (fun baseYear =>
+      let fixture := { formatted "MM-dd" "MM-dd" baseYear with timeZoneId := zone }
+      runModel fixture "[Rows/Tag] < \"01.03.\"" false "02-29" "02-29" "03-01" ==
+        some (.fired .omission, ["value 9"]) &&
+      runModel fixture "" false "02-29" "02-29" "03-01" (operationOverride := some "1")
+        (ruleCondition := some "FieldFilled(Error) And \"01.03.\" > [Expected]")
+        (computationPrecondition := some "\"01.03.\" > [Expected]") ==
+          some (.fired .value, ["value 1"]))) = true := by native_decide
+
+example : runModel (formatted "MM-dd" "MM-dd" (some 2023)) "[Rows/Tag] < \"01.03.\"" false
+    "unused" "02-29" "03-01" = some (.notFired, []) := by native_decide
+
 end A12Kernel.Dm.HavingCalendarLocks

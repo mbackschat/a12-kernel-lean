@@ -119,7 +119,8 @@ private def temporalConstantAdmitted (model : FlatModel) (op : TemporalCompariso
   | .baseYearValue zone year => zone == model.timeZoneId && model.baseYear == some year && op.admitsBaseYear field.components
   | .baseYearRangeValue zone year _ => zone == model.timeZoneId && model.baseYear == some year &&
       op.admitsFormats true field.components TemporalComponents.fullDate
-  | .literalValue _ => op.admitsFormats model.hasBaseYear field.components TemporalComponents.fullDate
+  | .literalValue _ components => components.isDateLiteral &&
+      op.admitsFormats model.hasBaseYear field.components components
   | .fieldValue _ => false
 
 /-- Each side is checked in its own environment; comparability and Boolean/Confirm restrictions retain their ordinary rules. -/

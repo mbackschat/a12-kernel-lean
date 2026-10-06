@@ -30,7 +30,7 @@ def elaborateTemporalNumericExpression (model : FlatModel) (declaringGroup : Gro
     (targetGroup? : Option GroupPath := none) :
     Except TemporalNumericExpressionError (CheckedTemporalNumericExpression model) := do
   match surface with
-  | .dateLiteral _ | .timeLiteral _ | .dateTimeLiteral _ => throw .literalNotAllowed
+  | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _ => throw .literalNotAllowed
   | _ => pure ()
   if !surface.admittedSourceSlot then throw .sourceSlot
   let source ← (elaborateScalarTemporalExpression model declaringGroup surface targetGroup?).mapError .source

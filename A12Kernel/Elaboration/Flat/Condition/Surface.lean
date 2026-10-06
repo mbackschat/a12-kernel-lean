@@ -600,8 +600,6 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
               let literalPath := ["<date-literal>"]
               if !literalComponents.isDateLiteral then
                 throw (.invalidTemporalLiteralComponents literalPath)
-              else if !literalComponents.year && !model.hasBaseYear then
-                throw (.temporalLiteralNeedsBaseYear literalPath)
               else
                 let comparison := op.toTemporal
                 if comparison.admitsFormats model.hasBaseYear
@@ -611,7 +609,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
                       id := declaration.id
                       kind := kind
                       components := components })
-                    (.literalValue instant)))
+                    (.literalValue instant literalComponents)))
                 else
                   throw (.temporalFormatsIncompatible declaration.path literalPath)
           | literal =>

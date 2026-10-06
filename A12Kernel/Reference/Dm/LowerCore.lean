@@ -193,13 +193,11 @@ def isTemporalConstant (text : String) : Bool :=
   (civilDateConstant? text).isSome || (yearlessDateConstant? text).isSome ||
     (timeConstant? text).isSome || (dateTimeConstant? text).isSome
 
-/-- A `DD.MM.YYYY` date constant resolved in the model zone. -/
+/-- Preserve authored year presence while resolving Date literals in the model zone (spec/05 §1). -/
 def dateConstant? (model : FlatModel) (text : String) : Option SurfaceLiteral := do
-  let civil ← civilDateConstant? text
-  let profile ← ModelZone.ConcreteProfile.ofId? model.timeZoneId
-  let value ← profile.resolveStoredDate? civil
-  pure (.date { year := true, month := true, day := true, hour := false, minute := false,
-                second := false } value.instant)
+  let literal ← authoredDateLiteral? text
+  let instant ← literal.comparisonInstant? model
+  pure (.date literal.components instant)
 
 def CompareOp.toSurface? : CompareOp → Option SurfaceComparisonOp
   | .eq => some .equal

@@ -93,13 +93,10 @@ def StringLengthComparisonOp.toNumeric : StringLengthComparisonOp → NumericCom
   | .greater => .greater
   | .greaterEqual => .greaterEqual
 
-/-- The typed comparison fragment. The reduced direct-Number route receives only a
-    rational literal and therefore cannot enforce authored-scale compatibility; the
-    checked numeric-expression route retains that metadata. Confirm admits only the
-    legal `True` literal, made implicit in its constructor. -/
+/-- Literal components remain separate from the resolved instant so year agreement survives model-anchor completion (spec/05 §1). The field payload serves ordinary and correlated readers. -/
 inductive FlatTemporalOperand (Field : Type := FlatTemporalField) where
   | fieldValue (field : Field)
-  | literalValue (instant : Instant)
+  | literalValue (instant : Instant) (components : TemporalComponents := TemporalComponents.fullDate)
   | todayValue (zoneId : String)
   | baseYearValue (zoneId : String) (year : Int)
   | baseYearRangeValue (zoneId : String) (year : Int)
@@ -505,7 +502,7 @@ def FlatContext.resolveLocalDateComparisonOperand
 def FlatTemporalOperand.resolve (context : FlatContext) : FlatTemporalOperand →
     SimpleComparisonOperand Instant
   | .fieldValue field => context.resolveTemporalComparisonOperand field
-  | .literalValue instant => .value instant true
+  | .literalValue instant _ => .value instant true
   | .todayValue zoneId =>
       match context.world.bind (·.today? zoneId) with
       | some instant => .value instant true

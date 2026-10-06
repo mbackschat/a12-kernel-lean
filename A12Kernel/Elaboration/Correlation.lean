@@ -383,13 +383,9 @@ private def FlatModel.resolveHavingTemporalConstant (model : FlatModel)
         | .range endpoint => pure (.baseYearRangeValue model.timeZoneId year endpoint,
             comparison.admitsFormats true field.components TemporalComponents.fullDate)
     | .literal literal => do
-        if !literal.valid then throw .numericExpressionUnsupported
-        if literal.year.isNone && !model.hasBaseYear then throw (.text (.temporalLiteralNeedsBaseYear ["<date-literal>"]))
-        let some profile := ModelZone.ConcreteProfile.ofId? model.timeZoneId | throw .numericExpressionUnsupported
-        let parts := literal.parts model.baseYearOrDefault
-        let some civil := CivilDate.ofYmd? parts.year parts.month parts.day | throw .numericExpressionUnsupported
-        let some value := profile.resolveStoredDate? civil | throw .numericExpressionUnsupported
-        pure (.literalValue value.instant, comparison.admitsFormats model.hasBaseYear field.components TemporalComponents.fullDate)
+        let some instant := literal.comparisonInstant? model | throw .numericExpressionUnsupported
+        pure (.literalValue instant literal.components,
+          comparison.admitsFormats model.hasBaseYear field.components literal.components)
   if !admitted then throw .numericExpressionUnsupported
   pure (some (match position with
     | .left => .temporal comparison operand (.fieldValue field)

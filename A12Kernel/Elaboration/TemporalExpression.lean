@@ -31,7 +31,7 @@ private def scalarComponents (model : FlatModel) (components : TemporalComponent
   if components.hasDate then components.withBaseYear model.hasBaseYear else components
 
 private def temporalConstant : SurfaceScalarTemporalExpression → Bool
-  | .now | .today | .dateLiteral _ | .timeLiteral _ | .dateTimeLiteral _ => true
+  | .now | .today | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _ => true
   | .group source => temporalConstant source
   | _ => false
 
@@ -68,8 +68,12 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       pure (.apply (.extremum operator) first rest, components)
   | .now => pure (.atom .now, TemporalComponents.now)
   | .today => do pure (.atom (.today (← scalarProfile model)), TemporalComponents.fullDate)
-  | .dateLiteral value => do
-      pure (.atom (.dateLiteral (← scalarProfile model) value), TemporalComponents.fullDate)
+  | .dateLiteral value yearPresent => do
+      let value ← if yearPresent then pure value else do
+        let source : AuthoredDateLiteral := { year := none, month := value.civil.parts.month, day := value.civil.parts.day }
+        let some value := (source.completedDate? model).bind FullDate.ofCivil? | throw .unsupportedSource
+        pure value
+      pure (.atom (.dateLiteral (← scalarProfile model) value (yearPresent || model.hasBaseYear)), { TemporalComponents.fullDate with year := yearPresent })
   | .timeLiteral value => pure (.atom (.fixed (.time value)), TemporalComponents.time)
   | .dateTimeLiteral value => do
       let profile ← scalarProfile model
@@ -137,7 +141,7 @@ private def resolveScalarTemporalProjection (model : FlatModel) (rowGroup : Grou
     (targetGroup? : Option GroupPath) (surface : SurfaceScalarTemporalExpression) (part : TemporalNumericPart) :
     Except ScalarTemporalExpressionError (ScalarTemporalNumericAtom model) := do
   match surface with
-  | .dateLiteral _ | .timeLiteral _ | .dateTimeLiteral _ => throw .unsupportedSource
+  | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _ => throw .unsupportedSource
   | _ => pure ()
   if !surface.admittedSourceSlot then throw .unsupportedSource
   let (source, components) ← resolveScalarTemporalExpression model rowGroup targetGroup? surface
@@ -311,9 +315,10 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       match profile.resolveLocal? value with
       | some instant => pure (.value (.instant instant) true)
       | none => throw .dateTimeLabelUnresolved
-  | .dateLiteral profile value =>
+  | .dateLiteral profile value yearPresent =>
       match resolvedScalarDate profile value with
-      | some value => pure (.value (.date value) true)
+      | some value => pure (.value (if yearPresent then .date value else
+          .yearless value { month := value.parts.month, day := value.parts.day }) true)
       | none => throw .dateTimeLabelUnresolved
   | .fixed value => pure (.value value true)
   | .baseYearBound profile year bound =>

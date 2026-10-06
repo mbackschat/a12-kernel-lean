@@ -97,7 +97,7 @@ private theorem temporalOperand_resolve_agreesOn
         simpa [FlatTemporalOperand.fields, FlatTemporalOperand.fieldValues, FlatField.id] using relevant)
       simp_all [FlatTemporalOperand.resolve,
         FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy]
-  | literalValue instant => rfl
+  | literalValue instant components => rfl
   | todayValue zoneId =>
       simp [FlatTemporalOperand.resolve, worldAgreement]
   | baseYearValue zoneId year =>

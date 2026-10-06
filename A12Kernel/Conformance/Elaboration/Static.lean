@@ -138,10 +138,9 @@ example :
   native_decide
 
 example :
-    errorOf (elaborate model ["Order"]
+    (elaborate model ["Order"]
       (compare .less (absolute ["Order"] "RecurringDate")
-        (dateLiteral monthDayComponents 101000))) =
-        some (.temporalLiteralNeedsBaseYear ["<date-literal>"]) ∧
+        (dateLiteral monthDayComponents 101000))).isOk = true ∧
       (elaborate baseYearModel ["Order"]
         (compare .less (absolute ["Order"] "RecurringDate")
           (dateLiteral monthDayComponents 101000))).isOk = true := by

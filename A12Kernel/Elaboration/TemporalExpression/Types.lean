@@ -23,7 +23,7 @@ inductive SurfaceScalarTemporalExpression where
       (first : SurfaceScalarTemporalExpression) (rest : List SurfaceScalarTemporalExpression)
   | now
   | today
-  | dateLiteral (value : FullDate)
+  | dateLiteral (value : FullDate) (yearPresent : Bool := true)
   | timeLiteral (value : TimeOfDay)
   | dateTimeLiteral (value : LocalDateTime)
   | rangeBound (reference : SurfaceFieldPath) (bound : DateRangeBound)
@@ -43,7 +43,7 @@ inductive SurfaceScalarTemporalExpression where
 operation checks its own slot (spec/12 §3, grammar `datumAngabe`/`datumAngabe2`). -/
 def SurfaceScalarTemporalExpression.admittedSourceSlot : SurfaceScalarTemporalExpression → Bool
   | .group _ | .extremum _ _ | .combine _ _ _ => false
-  | .field _ | .now | .today | .dateLiteral _ | .timeLiteral _ | .dateTimeLiteral _
+  | .field _ | .now | .today | .dateLiteral _ _ | .timeLiteral _ | .dateTimeLiteral _
   | .dateTimeConstruction _ _ | .valueAsDate _ _ | .rangeBound _ _ | .baseYearBound _ | .dateConstruction _ | .calendarShift _ _ _
   | .timeConstruction _ | .dateFromDateTime _ | .timeFromDateTime _ | .subdayShift _ _ _ => true
 
@@ -113,7 +113,7 @@ inductive ScalarTemporalAtom (model : FlatModel) where
   | fixed (value : ScalarTemporalValue)
   | now
   | today (profile : ModelZone.ConcreteProfile)
-  | dateLiteral (profile : ModelZone.ConcreteProfile) (value : FullDate)
+  | dateLiteral (profile : ModelZone.ConcreteProfile) (value : FullDate) (yearPresent : Bool := true)
   | dateTimeLiteral (profile : ModelZone.ConcreteProfile) (value : LocalDateTime)
   | dateConstruction (components : CheckedConstructedDateComponents model)
   | timeConstruction (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model)))
