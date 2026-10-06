@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.CheckedStarDocument
 
 /-! # Shared checked Number entity lists
 
-This boundary owns the common authoring contract for Number-valued entity lists consumed by `FirstFilledValue`, `Sum`, `MinValue`, `MaxValue`, and Number-valued `NumberOfDifferentValues`. It resolves every direct, plain-star, filtered-star, and group slot in authored order; inherits direct-field duplication, fixed-group duplication, and strict-overlap rejection from the shared shape; retains the consuming operator’s arity rule; and certifies every expanded declaration as Number-valued. Runtime consumers retain their own scan semantics.
+This boundary owns the common authoring contract for Number-valued entity lists consumed by `FirstFilledValue`, `Sum`, `MinValue`, `MaxValue`, and Number-valued `NumberOfDifferentValues`. It resolves every direct, plain-star, filtered-star, group and index-selected slot in authored order; inherits direct-field duplication, fixed-group duplication, and strict-overlap rejection from the shared shape; retains the consuming operator’s arity rule; and certifies every expanded declaration as Number-valued. Runtime consumers retain their own scan semantics.
 -/
 
 namespace A12Kernel
@@ -112,9 +112,77 @@ def valueListExtentRelevant (group : CheckedNumberEntityGroup model)
 
 end CheckedNumberEntityGroup
 
+/-- Homogeneous Number declarations behind one checked index selection. The complete expansion
+and signedness certificate retain the same aggregate assumptions as an ordinary group slot. -/
+structure CheckedSelectedNumberEntity (model : FlatModel) where
+  private mk ::
+  source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)
+  first : FlatNumberField
+  rest : List FlatNumberField
+  allNumber : (match source with
+    | .inl source => [source.targetDeclaration]
+    | .inr source => source.declarations).all (fun d => d.toNumberField?.isSome) = true
+  expansionOwned : (match source with
+    | .inl source => [source.targetDeclaration]
+    | .inr source => source.declarations).filterMap FlatFieldDecl.toNumberField? = first :: rest
+  uniformSigned : rest.all (·.info.signed == first.info.signed) = true
+
+namespace CheckedSelectedNumberEntity
+
+def groupPath (source : CheckedSelectedNumberEntity model) : GroupPath :=
+  match source.source with
+  | .inl source => source.targetDeclaration.groupPath
+  | .inr source => source.groupPath
+
+def isAlreadyMany (source : CheckedSelectedNumberEntity model) : Bool :=
+  match source.source with | .inl _ => false | .inr _ => true
+
+def referencesField (source : CheckedSelectedNumberEntity model) (field : FieldId) : Bool :=
+  match source.source with
+  | .inl source => source.referencesField field
+  | .inr source => source.referencesField field
+
+/-- The selected extent supplies addresses and omission; the Number scanner keeps its own
+empty-value and poison policy (spec/08 §4.1 and spec/04 aggregates). -/
+def sideWith (source : CheckedSelectedNumberEntity model) (phase : Phase)
+    (document : Document) (outer : Env) (direct : FieldId → CheckedCell)
+    (stored : FieldId → Option String) (read : Env → FieldId → CheckedCell)
+    (column : SemanticIndexColumnReader) :
+    Except CheckedAddressingError (ResolvedValueListSide .number) := do
+  match source.source with
+  | .inl source =>
+      let value ← source.observeColumnWith phase column outer direct stored
+      pure { cells := [value.asNumberValueListCell], hasUninstantiatedTail := false, hasHaving := false }
+  | .inr source =>
+      let selected ← source.selectWith phase column outer direct stored
+      match selected with
+      | .empty =>
+          -- A missing group supplies empty fields (spec/08 §4.1); a missing lower-star parent
+          -- supplies no extent, preserving KeyedStarNumberAggregate's zero-cell account.
+          pure { cells := [], hasUninstantiatedTail := match source.target with
+                   | .group _ => true | .star _ | .starredGroup _ => false
+                 hasHaving := false }
+      | .unknown cause | .poison cause =>
+          pure { cells := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }
+      | .value environment =>
+          let rows ← source.rows document environment |>.mapError .addressing
+          pure { cells := rows.flatMap fun (declaration, environments, _) =>
+                   environments.map fun row => (observeCell phase (read row declaration.id)).asNumberValueListCell
+                 hasUninstantiatedTail := rows.any (·.2.2), hasHaving := false }
+
+def sideIn (source : CheckedSelectedNumberEntity model) (phase : Phase)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError (ResolvedValueListSide .number) :=
+  source.sideWith phase document.source.toDocument outer document.flatContext.read
+    document.flatContext.storedText document.computationFillContext.read
+    (document.resolveSemanticIndexColumnWith document.read)
+
+end CheckedSelectedNumberEntity
+
 /-- A checked Number slot retains exactly the owner needed by its direct, plain-star, filtered-star, or group-scope runtime consumer. -/
 inductive CheckedNumberEntityOperand (model : FlatModel) where
   | field (source : CheckedNumberEntityField model)
+  | selected (source : CheckedSelectedNumberEntity model)
   | star (source : CheckedStarNumberSource model)
   | starHaving (source : CheckedStarNumberHavingSource model)
   | group (source : CheckedNumberEntityGroup model)
@@ -123,35 +191,38 @@ namespace CheckedNumberEntityOperand
 
 def directFieldId? : CheckedNumberEntityOperand model → Option FieldId
   | .field source => some source.field.id
-  | .star _ | .starHaving _ | .group _ => none
+  | .selected _ | .star _ | .starHaving _ | .group _ => none
 
 def directField? :
     CheckedNumberEntityOperand model → Option FlatNumberField
   | .field source => some source.field
-  | .star _ | .starHaving _ | .group _ => none
+  | .selected _ | .star _ | .starHaving _ | .group _ => none
 
 /-- The retained group slot, for a consumer that must re-render or analyse the authored operand. -/
 def groupSlot? :
     CheckedNumberEntityOperand model → Option (CheckedNumberEntityGroup model)
   | .group source => some source
-  | .field _ | .star _ | .starHaving _ => none
+  | .field _ | .selected _ | .star _ | .starHaving _ => none
 
 /-- Whether one authored slot satisfies the multiple-operand requirement by itself. A star denotes a row set and a group denotes a field scope, so both are already-many; this is deliberately weaker than "is a star". -/
 def isAlreadyMany : CheckedNumberEntityOperand model → Bool
+  | .selected source => source.isAlreadyMany
   | .field _ => false
   | .star _ | .starHaving _ | .group _ => true
 
 def hasHaving : CheckedNumberEntityOperand model → Bool
   | .starHaving _ => true
-  | .field _ | .star _ | .group _ => false
+  | .field _ | .selected _ | .star _ | .group _ => false
 
 def scaleSummary : CheckedNumberEntityOperand model → NumericScaleSummary
+  | .selected source => source.rest.foldl (fun acc field => acc.union (NumericScaleSummary.field field.info.scale)) (NumericScaleSummary.field source.first.info.scale)
   | .field source => NumericScaleSummary.field source.field.info.scale
   | .star source => NumericScaleSummary.field source.field.info.scale
   | .starHaving source => NumericScaleSummary.field source.source.field.info.scale
   | .group source => source.scaleSummary
 
 def declarationSigned : CheckedNumberEntityOperand model → Bool
+  | .selected source => source.first.info.signed
   | .field source => source.field.info.signed
   | .star source => source.field.info.signed
   | .starHaving source => source.source.field.info.signed
@@ -168,6 +239,7 @@ def referencesField (field : FieldId)
       source.source.field.id == field ||
         filterReads source.having field
   | .group source => source.referencesField field
+  | .selected source => source.referencesField field
 
 end CheckedNumberEntityOperand
 
@@ -238,6 +310,7 @@ end CheckedNumberEntitySource
 def CheckedNumberEntitySource.bindingScopes (source : CheckedNumberEntitySource model) : List (List RepeatableLevel) :=
   source.operands.flatMap fun
     | .field field => [field.declaration.repeatableScope]
+    | .selected _ => [[]]
     | .star source => [source.source.bindingScope]
     | .starHaving source => [source.source.source.bindingScope,
         model.repeatableScopeForGroupPath source.bindingGroup]
@@ -413,11 +486,30 @@ private def certifyNumberEntityGroup (model : FlatModel)
       (((model.groupSubtreeFields source.groupPath).head?).bind
         FlatFieldDecl.toNumberField?).isSome)
 
+private def certifySelectedNumberEntity (model : FlatModel)
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
+    Except NumberEntityElabError (CheckedNumberEntityOperand model) := do
+  let declarations := match source with | .inl s => [s.targetDeclaration] | .inr s => s.declarations
+  let path := match source with | .inl s => s.targetDeclaration.path | .inr s => s.entityPath
+  if hAll : declarations.all (fun d => d.toNumberField?.isSome) = true then
+    match hFields : declarations.filterMap FlatFieldDecl.toNumberField? with
+    | [] => throw (.groupExpansionEmpty path)
+    | first :: rest =>
+        if hSigned : rest.all (·.info.signed == first.info.signed) = true then
+          pure (.selected { source, first, rest, allNumber := hAll, expansionOwned := hFields, uniformSigned := hSigned })
+        else throw (.groupExpansionMixedSign path)
+  else
+    match source with
+    | .inl s => throw (.fieldKindMismatch s.targetDeclaration.path s.targetDeclaration.policy.kind.surfaceKind)
+    | .inr _ => throw (.groupExpansionNotNumber path
+        (declarations.filterMap fun d => if d.toNumberField?.isSome then none else some d.policy.kind.surfaceKind)
+        ((declarations.head?).bind FlatFieldDecl.toNumberField?).isSome)
+
 private def certifyNumberEntityOperand (model : FlatModel)
     (declaringGroup bindingGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except NumberEntityElabError (CheckedNumberEntityOperand model)
-  | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
-  | .keyed source => throw (.shape (.unsupportedIndexedOperand source.entityPath))
+  | .indexed source => certifySelectedNumberEntity model (.inl source)
+  | .keyed source => certifySelectedNumberEntity model (.inr source)
   | .field declaration _ =>
       match hField : declaration.toNumberField? with
       | none => throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)
@@ -558,6 +650,7 @@ def resolveCheckedValidationOperand
     Except CheckedAddressingError
       (ResolvedCheckedNumberEntityOperand model) :=
   match source with
+  | .selected selection => .error (.addressing (.unsupportedGroupOperand selection.groupPath))
   | .field direct => do
       let core ← document.resolveCheckedDirectEntityOperandCoreAt outer direct.field.id
       pure { source, core }
@@ -583,6 +676,7 @@ def resolveCheckedPartialValidationOperand
     Except CheckedAddressingError
       (ResolvedCheckedNumberEntityOperand model) :=
   match source with
+  | .selected selection => .error (.addressing (.unsupportedGroupOperand selection.groupPath))
   | .field direct =>
       if scope.coversCell model direct.declaration.path outer then do
         let core ← document.resolveCheckedDirectEntityOperandCoreAt outer direct.field.id

@@ -111,6 +111,7 @@ def CheckedNumberEntityOperand.referencePointers (environment : Env) :
       Except ReferenceProjectionError (List MessagePointer)
   | .field source => (concreteFieldPointer source.declaration environment).map ([·])
   | .star source => (starFieldPointer source.source environment).map ([·])
+  | .selected _ => .error .unclassifiedOperand
   | .starHaving _ => .error .filteredStarOperand
   | .group slot => slot.source.referencePointers environment
 

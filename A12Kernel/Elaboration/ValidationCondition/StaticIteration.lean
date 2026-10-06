@@ -56,6 +56,7 @@ private def checkedHavingOuterIterationScope
 private def checkedNumberOperandIterationScope :
     CheckedNumberEntityOperand model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
+  | .selected _ => pure none
   | .field source =>
       pure (if source.declaration.repeatableScope.isEmpty then none
         else some source.declaration.repeatableScope)

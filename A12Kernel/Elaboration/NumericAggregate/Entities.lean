@@ -99,6 +99,7 @@ def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
     (starRead : Env → FieldId → RawCell) :
     Except StarAddressingError (ResolvedValueListSide .number) :=
   match checked with
+  | .selected source => .error (.unsupportedGroupOperand source.groupPath)
   | .field source => pure (source.resolvedAggregateSide direct)
   | .star source => source.resolvedValueSide document outer starRead
   | .starHaving source =>
@@ -112,6 +113,7 @@ def resolvedValidationAggregateSideIn
     (read : Env → FieldId → CheckedCell) :
     Except StarAddressingError (ResolvedValueListSide .number) :=
   match checked with
+  | .selected source => .error (.unsupportedGroupOperand source.groupPath)
   | .field source =>
       pure (source.resolvedAggregateSideAt .validation direct)
   | .star source => do
@@ -128,10 +130,12 @@ def resolvedValidationAggregateSideIn
 def resolvedComputationAggregateSide
     (checked : CheckedNumberEntityOperand model)
     (document : Document) (outer : Env) (direct : FlatContext)
-    (filterRead starRead : Env → FieldId → CheckedCell) :
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath)) :
     Except StarAddressingError
       (Sum (ResolvedValueListSide .number) NumericOperand) :=
   match checked with
+  | .selected source => .inl <$> selectedRead source
   | .field source =>
       pure (.inl (source.resolvedAggregateSideAt .computation direct))
   | .star source => do
@@ -186,9 +190,11 @@ def resolvedCheckedDocumentValidationAggregateSide
     Except CheckedAddressingError
       (Sum (ResolvedValueListSide .number) NumericOperand) :=
   do
+    if let .selected source := checked then
+      return .inl (← source.sideIn .validation document outer)
     let resolved ← checked.resolveCheckedValidationOperand document outer world
     let side := match checked with
-      | .star _ | .starHaving _ | .group _ =>
+      | .selected _ | .star _ | .starHaving _ | .group _ =>
           resolved.inCapacityValueListSideAt .validation
       | .field _ => resolved.valueListSideAt .validation
     match side.available with
@@ -219,6 +225,7 @@ def resolvedCheckedDocumentComputationAggregateSide
     Except CheckedAddressingError
       (Sum (ResolvedValueListSide .number) NumericOperand) :=
   match checked with
+  | .selected source => .inl <$> source.sideIn .computation document outer
   | .field source =>
       resolvedCheckedDocumentSide document .computation source.field
         [[]] false false
@@ -254,6 +261,7 @@ def resolvedCheckedDocumentPartialAggregateSide
       (Sum (ResolvedValueListSide .number)
         PartialValidationNumberAggregateResult) :=
   match checked with
+  | .selected source => .error (.addressing (.unsupportedGroupOperand source.groupPath))
   | .field source =>
       if scope.coversCell model source.declaration.path [] then do
         match ← resolvedCheckedDocumentSide document .validation source.field
@@ -296,6 +304,7 @@ private def resolvedPartialViewAggregateSide
       (Sum (ResolvedValueListSide .number)
         PartialValidationNumberAggregateResult) :=
   match checked with
+  | .selected source => .error (.addressing (.addressing (.unsupportedGroupOperand source.groupPath)))
   | .field source =>
       if scope.coversCell model source.declaration.path [] then
         resolvedPartialViewSide read
@@ -341,6 +350,7 @@ def resolvedCheckedDocumentPartialValueCountSide
       (Sum (ResolvedValueListSide .number)
         PartialValidationNumberAggregateResult) :=
   match checked with
+  | .selected source => .error (.addressing (.unsupportedGroupOperand source.groupPath))
   | .field source =>
       if scope.coversCell model source.declaration.path [] then do
         match ← resolvedCheckedDocumentSide document .validation source.field
@@ -379,6 +389,7 @@ def resolvedPartialAggregateSide (checked : CheckedNumberEntityOperand model)
       (Sum (ResolvedValueListSide .number)
         PartialValidationNumberAggregateResult) :=
   match checked with
+  | .selected source => .error (.unsupportedGroupOperand source.groupPath)
   | .field source =>
       if scope.coversCell model source.declaration.path [] then
         pure (.inl (source.resolvedAggregateSide direct))
@@ -399,6 +410,7 @@ def resolvedPartialValueCountSide (checked : CheckedNumberEntityOperand model)
       (Sum (ResolvedValueListSide .number)
         PartialValidationNumberAggregateResult) :=
   match checked with
+  | .selected source => .error (.unsupportedGroupOperand source.groupPath)
   | .field source =>
       if scope.coversCell model source.declaration.path [] then
         pure (.inl (source.resolvedAggregateSide direct))
@@ -461,12 +473,13 @@ def evaluateComputationAggregate (checked : CheckedNumberEntitySource model)
     (op : NumericAggregateOp) (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
-    (world : Option World := none) :
+    (world : Option World := none)
+    (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath)) :
     Except StarAddressingError NumericOperand :=
   let direct : FlatContext := { read := directRead, world }
   checked.evaluateAggregateWith op fun operand =>
     operand.resolvedComputationAggregateSide document outer direct
-      filterRead starRead
+      filterRead starRead selectedRead
 
 /-- Evaluate validation-phase aggregate accumulation from one immutable model-certified checked document. Every operator resolves through the one capacity-aware side, so `Sum` cannot drift away from the extrema and the distinct count on the extent they share. -/
 def evaluateCheckedDocumentValidationAggregate
@@ -584,12 +597,13 @@ def evaluateValueCountComputation (checked : CheckedNumberEntitySource model)
     (expected : Rat) (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
-    (world : Option World := none) :
+    (world : Option World := none)
+    (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath)) :
     Except StarAddressingError NumericOperand :=
   let direct : FlatContext := { read := directRead, world }
   checked.evaluateValueCountWith expected fun operand =>
     operand.resolvedComputationAggregateSide document outer direct
-      filterRead starRead
+      filterRead starRead selectedRead
 
 /-- Evaluate validation-phase numeric value count through the checked-document aggregate resolver, retaining per-selected-cell filter provenance. -/
 def evaluateCheckedDocumentValueCountValidation

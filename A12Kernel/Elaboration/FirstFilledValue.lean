@@ -115,6 +115,7 @@ private def scanCheckedFirstFilledNumberOperandWith
     CheckedFirstFilledNumberOperand model →
       Except StarAddressingError
         (FirstFilledNumberScanState ⊕ PartialValidationFirstFilledNumberResult)
+  | .selected source => .error (.unsupportedGroupOperand source.groupPath)
   | .field source =>
       let relevant := scope.coversCell model source.declaration.path []
       if relevant then
@@ -190,9 +191,11 @@ end CheckedNumberEntitySource
 /-- Resolve one reached Number operand at the scan's environment. -/
 private def CheckedNumberEntityOperand.computationSelection
     (document : Document) (outer : Env) (direct : FlatContext)
-    (filterRead starRead : Env → FieldId → CheckedCell) :
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number)) :
     CheckedFirstFilledNumberOperand model →
       Except StarAddressingError (FirstFilledComputationSelection .number)
+  | .selected source => (.side ·) <$> selectedRead source
   | .field source => pure (.cell (source.field.valueListCellAt .computation direct))
   | .star source => do
       let resolved ← source.source.path.resolveInCapacity document outer
@@ -215,10 +218,11 @@ def evaluateComputationFirstFilled
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
-    (world : Option World := none) :
+    (world : Option World := none)
+    (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath)) :
     Except StarAddressingError FirstFilledNumberResult := do
   match ← scanComputationFirstFilledSelections outer .unsupportedDateCalendar
-      (·.computationSelection document outer { read := directRead, world } filterRead starRead)
+      (·.computationSelection document outer { read := directRead, world } filterRead starRead selectedRead)
       checked.operands {} with
   | .inl state => pure state.finish
   | .inr result => pure result.asNumber
@@ -245,6 +249,12 @@ private def scanCheckedDocumentValidationOperand
     CheckedFirstFilledNumberOperand model →
       Except CheckedAddressingError
         (FirstFilledScanState ⊕ PartialValidationFirstFilledNumberResult)
+  | .selected source => do
+      if scope != .full then throw (.addressing (.unsupportedGroupOperand source.groupPath))
+      let side ← source.sideIn .validation document outer
+      pure (match scanFirstFilledItems id side.cells (state.enterOperand side) with
+        | .inl next => .inl next
+        | .inr result => .inr (.evaluated result.asNumber))
   | .field source =>
       if scope.coversCell model source.declaration.path outer then do
         match state.step
@@ -341,6 +351,11 @@ private def scanCheckedDocumentComputationOperand
     CheckedFirstFilledNumberOperand model →
       Except CheckedAddressingError
         (FirstFilledScanState ⊕ FirstFilledNumberResult)
+  | .selected source => do
+      let side ← source.sideIn .computation document outer
+      pure (match scanFirstFilledItems id side.cells (state.enterOperand side) with
+        | .inl next => .inl next
+        | .inr result => .inr result.asNumber)
   | .field source => do
       match state.step
           (← document.numberValueListCellAt .computation [] source.field) with

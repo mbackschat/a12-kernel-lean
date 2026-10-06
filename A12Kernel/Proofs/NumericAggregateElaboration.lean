@@ -166,15 +166,17 @@ theorem checkedNumberEntityOperand_aggregateSide_delegates
         filteredSource.resolvedValueSide (world := context.world) document outer filterRead starRead := by
   exact ⟨rfl, rfl, rfl⟩
 
-/-- Full-validation aggregate and value-count consumers obtain their one-operand side from the rich checked projection, then retain the established first-formal-cause terminal result. Plain and filtered stars plus group operands narrow to their declared-capacity extent; only a direct field keeps the complete formal-cell view. -/
+/-- Full-validation aggregate consumers obtain selected sides from their certified index view and ordinary sides from the rich checked projection, then retain the established first-formal-cause terminal result. Plain and filtered stars plus group operands narrow to their declared-capacity extent; only a direct field keeps the complete formal-cell view. -/
 theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
     (checked : CheckedNumberEntityOperand model)
     (document : CheckedDocument model) (outer : Env) (world : Option World := none) :
     checked.resolvedCheckedDocumentValidationAggregateSide (world := world) document outer =
       (do
+        if let .selected source := checked then
+          return .inl (← source.sideIn .validation document outer)
         let resolved ← checked.resolveCheckedValidationOperand (world := world) document outer
         let side := match checked with
-          | .star _ | .starHaving _ | .group _ =>
+          | .selected _ | .star _ | .starHaving _ | .group _ =>
               resolved.inCapacityValueListSideAt .validation
           | .field _ => resolved.valueListSideAt .validation
         match side.available with

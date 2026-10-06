@@ -343,6 +343,9 @@ def numberEntityConsumerSlots
     (source : CheckedNumberEntitySource model) :
     List NumberEntityConsumerSlot :=
   source.operands.map fun
+    | .selected operand =>
+        { field := operand.first.id, repeated := operand.isAlreadyMany, filtered := false,
+          signed := operand.first.info.signed }
     | .field operand =>
         { field := operand.field.id, repeated := false, filtered := false,
           signed := operand.field.info.signed }

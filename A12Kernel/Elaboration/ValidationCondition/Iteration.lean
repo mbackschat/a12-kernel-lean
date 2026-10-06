@@ -114,7 +114,7 @@ private def orderedNumericDirectWrapperLiteralGuardAt
 private def numberEntityOperandReferenceScope? :
     CheckedNumberEntityOperand model →
       Option (List RepeatableLevel)
-  | .field _ => some []
+  | .field _ | .selected _ => some []
   | .star checked => checkedStarBindingScope checked.source
   | .starHaving checked => checkedStarBindingScope checked.source.source
   | .group slot =>

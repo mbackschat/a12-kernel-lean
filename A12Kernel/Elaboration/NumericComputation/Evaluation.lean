@@ -82,10 +82,11 @@ def evaluateComputation (checked : CheckedNumberEntitySource model)
     (op : NumericAggregateOp) (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
-    (world : Option World := none) :
+    (world : Option World := none)
+    (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath)) :
     Except StarAddressingError NumericComputationResult := do
   pure ((← checked.evaluateComputationAggregate op document outer directRead
-    filterRead starRead world).toComputationResult)
+    filterRead starRead world selectedRead).toComputationResult)
 
 end CheckedNumberEntitySource
 
@@ -506,6 +507,13 @@ def groupCountOperandsDecided
     Except NumericComputationFault Bool := do
   pure ((← operands.mapM (context.groupCountOperandDecided model)).all id)
 
+/-- Resolve selected Number operands through the same current overlay as ordinary aggregate fields. -/
+def selectedNumberSide (context : NumericComputationEvaluationContext)
+    (source : CheckedSelectedNumberEntity model) : Except StarAddressingError (ResolvedValueListSide .number) := do
+  let some column := context.indexColumn? | throw (.unsupportedGroupOperand source.groupPath)
+  source.sideWith .computation context.document context.outer context.scalar.read
+    context.scalar.storedText context.starRead column |>.mapError (fun _ => .unsupportedGroupOperand source.groupPath)
+
 /-- Evaluate one model-checked atom against its complete direct/repeatable computation inputs. Addressing failures stay explicit and cannot collapse into a numeric value, clean absence, or formal poison. -/
 def readCheckedNumericComputationAtom
     (context : NumericComputationEvaluationContext) :
@@ -524,13 +532,13 @@ def readCheckedNumericComputationAtom
   | .firstFilled source => do
       let result ←
         (source.evaluateComputationFirstFilled (world := context.scalar.world) context.document context.outer
-          context.scalar.read context.filterRead context.starRead).mapError
+          context.scalar.read context.filterRead context.starRead (selectedRead := context.selectedNumberSide)).mapError
             NumericComputationFault.repeatableAddressing
       pure result.asComputationResult
   | .valueCount expected source =>
       (source.evaluateValueCountComputation (world := context.scalar.world) expected context.document
         context.outer context.scalar.read context.filterRead
-        context.starRead).map NumericOperand.toComputationResult
+        context.starRead (selectedRead := context.selectedNumberSide)).map NumericOperand.toComputationResult
           |>.mapError NumericComputationFault.repeatableAddressing
   | .tokenDistinctCount source =>
       (source.evaluateDistinctComputation (world := context.scalar.world) context.document context.outer
@@ -560,7 +568,7 @@ def readCheckedNumericComputationAtom
       context.scalar.readNumericComputationAtomWith
         (fun op aggregate =>
           (aggregate.evaluateComputation op context.document context.outer
-            context.scalar.read context.filterRead context.starRead context.scalar.world).mapError
+            context.scalar.read context.filterRead context.starRead context.scalar.world context.selectedNumberSide).mapError
               NumericComputationFault.repeatableAddressing)
         (context.readFilledGroupCount model) source
 

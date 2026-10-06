@@ -338,11 +338,13 @@ private inductive OperandShape where
   | direct
   | star
   | filteredStar
+  | selected
   | group
   deriving Repr, DecidableEq
 
 private def operandShape :
     CheckedNumberEntityOperand model → OperandShape
+  | .selected _ => .selected
   | .field _ => .direct
   | .star _ => .star
   | .starHaving _ => .filteredStar
@@ -350,6 +352,7 @@ private def operandShape :
 
 private def operandField :
     CheckedNumberEntityOperand model → FieldId
+  | .selected source => source.first.id
   | .field source => source.field.id
   | .star source => source.field.id
   | .starHaving source => source.source.field.id
