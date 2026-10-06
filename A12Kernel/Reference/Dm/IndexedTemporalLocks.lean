@@ -16,7 +16,9 @@ private def model (kind : TemporalKind) (components : TemporalComponents) (forma
       { id := 5, name := "Code", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } },
       temporal 6 "A" ["Form", "Rows", "Body"] [10], temporal 7 "B" ["Form", "Rows", "Body"] [10],
       temporal 8 "Value" ["Form", "Rows", "Children"] [10,20],
-      { id := 9, name := "Flag", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } }]
+      { id := 9, name := "Flag", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 10, name := "Amount", groupPath := ["Form", "Rows"], repeatableScope := [10],
+        policy := { kind := .number { scale := 0, signed := true } } }]
     repeatableGroups := [
       { level := 10, path := ["Form", "Rows"], repeatability := some 3, indexField := some 5 },
       { level := 20, path := ["Form", "Rows", "Children"], repeatability := some 3 }] }
@@ -37,7 +39,7 @@ private structure Scenario where
 
 private def input (low high : String) (scenario : Scenario) : Lean.Json :=
   let row (key a b : String) (children : List String) := Lean.Json.mkObj [
-    ("Code", .str key), ("Body", Lean.Json.mkObj [("A", .str a), ("B", .str b)]),
+    ("Code", .str key), ("Amount", .str (if key == "R1" then "1" else "2")), ("Body", Lean.Json.mkObj [("A", .str a), ("B", .str b)]),
     ("Children", .arr (children.map fun value => Lean.Json.mkObj [("Value", .str value)]).toArray)]
   Lean.Json.mkObj [("Form", Lean.Json.mkObj [
     ("Out", .str "bad"), ("Flag", .str "99"), ("Low", .str low), ("High", .str high), ("Key", .str scenario.key),
@@ -399,6 +401,8 @@ example : evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-01"
 
 private inductive PartialReadChange where
   | unchanged | unavailable | unavailableError | malformed | copyLow
+  | keyText (value : String)
+  | structural
 
 private def partialReadback (expression : String) (field : FieldId) (change : PartialReadChange)
     (partialMode : TemporalPartialMode := .full) : Option (Sum Verdict (List String)) := do
@@ -424,7 +428,9 @@ private def partialReadback (expression : String) (field : FieldId) (change : Pa
       | .unavailable => pure none
       | .unavailableError => .error (.partialUnavailable row current)
       | .malformed => pure (some malformedCheckedCell)
-      | .copyLow => pure (some (document.flatContext.read 2)) }
+      | .copyLow => pure (some (document.flatContext.read 2))
+      | .structural => .error (.checkedDocumentRequired ["injected"])
+      | .keyText text => pure (some (checkAdmittedRawCell (.parsed (.str text)))) }
   let result ← leaf.evalAddressedPartial? context .full (fun _ => true)
     (fun _ _ => .error (.checkedDocumentRequired [])) none
   pure (match result with
@@ -455,5 +461,27 @@ example : profiles.all (fun (kind, components, format, low, high) =>
       { key := "missing", partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } == some (.inl .notFired) &&
     evaluate kind components format low high "FieldValuesNotUnique(Rows/Children*/Value For Key)" false none
       { children := some [], partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } == some (.inl .notFired)) = true := by native_decide
+
+example : partialReadback "[Rows/Amount For Key] == 2" 4 (.keyText "R2") = some (.inl (.fired .value)) ∧
+    partialReadback "FieldValuesNotUnique(Rows/Body For Key)" 4 (.keyText "R2") = some (.inl .notFired) ∧
+    partialReadback "FieldValuesNotUnique(Rows/Body/A For Key,Rows/Body/B For Key)" 4 (.keyText "R2") = some (.inl .notFired) ∧
+    partialReadback "FieldValuesNotUnique(Rows/Code For Key,Key)" 4 (.keyText "R2") = some (.inl (.fired .value)) := by native_decide
+
+example : ["FieldValuesNotUnique(Rows/Body For Key)", "FieldValuesNotUnique(Rows/Code For Key,Key)",
+    "[Rows/Amount For Key] == 2"].all (fun expression =>
+      (partialReadback expression 4 .unavailable).isSome &&
+      partialReadback expression 4 .unavailableError == partialReadback expression 4 .unavailable) = true := by native_decide
+
+example : ["FieldValuesNotUnique(Rows/Body For Key)", "FieldValuesNotUnique(Rows/Code For Key,Key)",
+    "[Rows/Amount For Key] == 2"].all (fun expression =>
+      partialReadback expression 4 .structural == some (.inr ["injected"])) = true := by native_decide
+
+example : [PartialReadChange.unchanged, .keyText "R2", .unavailable, .unavailableError, .malformed, .structural].all
+    (fun change => partialReadback "FieldValuesNotUnique(Rows/Body For \"R1\")" 4 change ==
+      some (.inl (.fired .value))) = true := by native_decide
+
+example : partialReadback "[Rows/Amount For Key] == 2" 4 .unchanged = some (.inl .notFired) ∧
+    partialReadback "FieldValuesNotUnique(Rows/Body For Key)" 4 .unchanged = some (.inl (.fired .value)) ∧
+    partialReadback "FieldValuesNotUnique(Rows/Body For Key)" 4 .malformed = some (.inl .notFired) := by native_decide
 
 end A12Kernel.Dm.IndexedTemporalLocks

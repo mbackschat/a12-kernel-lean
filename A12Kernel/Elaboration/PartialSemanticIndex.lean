@@ -13,11 +13,16 @@ def CheckedSemanticIndexSource.selectPartial (source : CheckedSemanticIndexSourc
     | .literal .. => pure (checkAdmittedRawCell .empty)
     | .field declaration =>
         if !view.relevance.coversField model declaration.id [] then return none
-        match ← read [] declaration.id with
+        let available ← match read [] declaration.id with
+          | .error (.partialUnavailable _ _) => pure none
+          | result => result
+        match available with
         | none => return none
         | some cell => pure cell
-  let key ← source.observeCurrentKey .validation (fun _ => keyCell)
-    (view.index.base.storedTextIn []) |>.mapError .semanticIndex
+  let stored := fun field => do
+    let address ← (view.index.base.cellAddress [] field).toOption
+    view.index.base.storedTextForCell address keyCell
+  let key ← source.observeCurrentKey .validation (fun _ => keyCell) stored |>.mapError .semanticIndex
   let column ← view.index.resolveIndexColumn source.group outer
     (includeAddress := fun address => view.isAddressRelevant address && !view.silentlyUnavailable.contains address)
       |>.mapError (CheckedAddressingError.semanticIndex ∘ SemanticIndexContextError.checkedColumn)
