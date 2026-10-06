@@ -190,6 +190,20 @@ def checkedCellWithRead (checked : CheckedDocument model)
   let address ← checked.cellAddress environment field
   read address |>.mapError .document
 
+/-- Keep key spelling coherent with an exact-address checked read. Unchanged cells retain their
+stored spelling; changed text-bearing payloads carry it themselves. A changed parsed-only payload
+cannot reconstruct its spelling and requires a document overlay (spec/08 exact index identity). -/
+def storedTextWithRead (checked : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) (field : FieldId) : Option String := do
+  let address ← (checked.cellAddress environment field).toOption
+  let cell ← (read address).toOption
+  if (checked.read address).toOption == some cell then
+    checked.storedTextAt address
+  else match cell.parsed with
+    | some (.str text) | some (.enum text) | some (.partialDate text) => some text
+    | _ => none
+
 /-- Keep generated index preparation while reading selected computation payloads from the current
 dependency view. An index field itself uses its prepared cell because computation targets cannot
 be index fields (`spec/09`). -/

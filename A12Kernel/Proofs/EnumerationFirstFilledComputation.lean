@@ -12,7 +12,7 @@ theorem checkedEnumerationFirstFilled_sources_allowed
   simpa [CheckedEnumerationFirstFilledSource.allowedFor] using
     operation.sourceAllowed
 
-/-- Checked Enumeration-target `FirstFilledValue` excludes its target from every direct or starred source slot. -/
+/-- Checked Enumeration-target `FirstFilledValue` excludes its target from every direct, selected or starred source slot. -/
 theorem checkedEnumerationFirstFilled_excludes_target_reference
     (operation : CheckedEnumerationFirstFilledComputationOperation model) :
     operation.source.referencesField operation.target.field = false :=

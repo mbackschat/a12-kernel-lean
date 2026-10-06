@@ -379,11 +379,16 @@ def lowerProjectedTokenOperand (model : FlatModel) (group : GroupPath) (argument
       let _ ← lowerEntityOperand model group argument
       refuse "EntityOperand" "group in a value count"
 
-/-- An Enumeration `FirstFilledValue` source: each operand a direct or starred field keeping its
-category projection, a starred one its own filter. -/
+/-- An Enumeration `FirstFilledValue` source retains selected identity, direct/category projection,
+and each ordinary star’s own filter. -/
 def lowerEnumerationFirstFilledSource (model : FlatModel) (group : GroupPath) (arguments : List Argument) :
     Lowering SurfaceEnumerationFirstFilledSource := do
   let operand (argument : Argument) : Lowering SurfaceEnumerationFirstFilledOperand := do
+    if let .mk (.entity { index := some _, .. }) none none := argument then
+      match ← lowerEntityOperand model group argument with
+      | .indexed source => return .indexed source
+      | .keyed source => return .keyed source
+      | _ => refuse "EntityOperand" "indexed source"
     match ← lowerProjectedTokenOperand model group argument with
     | .field source => pure (.field source)
     | .star source projection => pure (.star source projection)

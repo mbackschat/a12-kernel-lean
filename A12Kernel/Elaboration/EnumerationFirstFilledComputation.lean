@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.EnumerationComputationResult
 import A12Kernel.Elaboration.CheckedStarDocument
-import A12Kernel.Elaboration.FieldEntityList
+import A12Kernel.Elaboration.SelectedTokenEntity
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Elaboration.StarEnumerationValueList
 import A12Kernel.Semantics.FirstFilledValue
@@ -14,9 +14,11 @@ A self-read is classified by its **reading mode** rather than by the authored sh
 
 namespace A12Kernel
 
-/-- One direct or optionally filtered starred Enumeration/category source in an Enumeration-target `FirstFilledValue`. -/
+/-- One direct, index-selected, or optionally filtered starred Enumeration/category source in an Enumeration-target `FirstFilledValue`. -/
 inductive SurfaceEnumerationFirstFilledOperand where
   | field (operand : SurfaceTextFieldOperand)
+  | indexed (source : SurfaceSemanticIndex)
+  | keyed (source : SurfaceKeyedEntityExtent)
   | star (path : SurfaceStarFieldPath)
       (projectionRef : EnumerationProjectionRef := .stored)
       (having : Option SurfaceCorrelatedHaving := none)
@@ -33,6 +35,8 @@ namespace SurfaceEnumerationFirstFilledOperand
 /-- Lower one slot to the shared entity-list surface, retaining the reading form so the shared repeated-operand gate keeps a stored read and a category projection of one field apart. -/
 def toFieldEntityOperand : SurfaceEnumerationFirstFilledOperand →
     SurfaceFieldEntityOperand
+  | .indexed source => .indexed source
+  | .keyed source => .keyed source
   | .field (.direct path) => .field path .stored
   | .field (.category path category) => .field path (.projected category)
   | .star path _ none => .star path
@@ -51,6 +55,14 @@ def toFieldEntitySource (source : SurfaceEnumerationFirstFilledSource) :
 
 end SurfaceEnumerationFirstFilledSource
 
+/-- Recover every declaration-owned Enumeration projection; a String slot cannot disappear
+from an assignment's whole-domain compatibility check (spec/09 computation source compatibility). -/
+def CheckedSelectedTokenEntity.enumerationProjections? (source : CheckedSelectedTokenEntity model) :
+    Option (List CheckedEnumerationProjection) :=
+  source.slots.mapM fun slot => match slot.operand with
+    | .string _ => none
+    | .enumeration operand => model.checkedEnumerationOperandIn? slot.declaration.repeatableScope operand
+
 /-- One checked source slot tied to the exact validated model, reading scope, and selected Enumeration projection. -/
 inductive CheckedEnumerationFirstFilledOperand (model : FlatModel)
     (scope : List RepeatableLevel) where
@@ -58,37 +70,48 @@ inductive CheckedEnumerationFirstFilledOperand (model : FlatModel)
       (projection : CheckedEnumerationProjection)
       (owned : model.checkedEnumerationOperandIn? scope operand = some projection)
   | star (source : CheckedStarEnumerationSource model)
+  | selected (source : CheckedSelectedTokenEntity model)
+      (projections : List CheckedEnumerationProjection)
+      (owned : source.enumerationProjections? = some projections)
 
 namespace CheckedEnumerationFirstFilledOperand
 
 def directFieldId? : CheckedEnumerationFirstFilledOperand model scope →
     Option FieldId
   | .field _ operand _ _ => some operand.field.id
-  | .star _ => none
+  | .star _ | .selected .. => none
 
 /-- The identity this family's repeated-operand rule compares. It matches the shared gate's identity: a stored read and a category projection of one field are two operands, so only a same-form repeat is a duplicate. -/
 def operandIdentity? : CheckedEnumerationFirstFilledOperand model scope →
     Option (FieldId × EnumerationProjectionRef)
   | .field _ operand _ _ => some (operand.field.id, operand.projectionRef)
-  | .star _ => none
+  | .star _ | .selected .. => none
 
 def isStar : CheckedEnumerationFirstFilledOperand model scope → Bool
+  | .field .. | .selected .. => false
+  | .star _ => true
+
+def isAlreadyMany : CheckedEnumerationFirstFilledOperand model scope → Bool
   | .field .. => false
   | .star _ => true
+  | .selected source .. => source.isAlreadyMany
 
 def path : CheckedEnumerationFirstFilledOperand model scope → List String
   | .field path _ _ _ => path
   | .star source => source.source.declaration.path
+  | .selected source .. => source.path
 
-def projection : CheckedEnumerationFirstFilledOperand model scope →
-    CheckedEnumerationProjection
-  | .field _ _ projection _ => projection
-  | .star source => source.operand
+def projections : CheckedEnumerationFirstFilledOperand model scope →
+    List CheckedEnumerationProjection
+  | .field _ _ projection _ => [projection]
+  | .star source => [source.operand]
+  | .selected _ projections _ => projections
 
-/-- Fields owned by one source slot in read order. A filtered star inventories its selected Enumeration field before fields read only by `Having`. -/
+/-- Complete scheduling dependencies include index/key reads, even when the value scan stops early. Selected slots inventory the model declarations; a filtered star keeps its source before filter-only fields. -/
 def fieldDependencies : CheckedEnumerationFirstFilledOperand model scope →
     List FieldId
   | .field _ source _ _ => [source.field.id]
+  | .selected source .. => (model.fields.filter (fun field => source.referencesField field.id)).map (·.id)
   | .star source =>
       source.source.declaration.id ::
         (source.filter.map (fun having => having.condition.fieldIds)).getD []
@@ -102,18 +125,18 @@ private def isStoredDirect : CheckedEnumerationFirstFilledOperand model scope �
       match source.projectionRef with
       | .stored => true
       | .category _ => false
-  | .star _ => false
+  | .star _ | .selected .. => false
 
 private def isCategory : CheckedEnumerationFirstFilledOperand model scope → Bool
   | .field _ source _ _ =>
       match source.projectionRef with
       | .stored => false
       | .category _ => true
-  | .star _ => false
+  | .star _ | .selected .. => false
 
 def allowedFor (operand : CheckedEnumerationFirstFilledOperand model scope)
     (target : CheckedEnumerationProjection) : Bool :=
-  operand.projection.compatibleWithTarget target
+  operand.projections.all (·.compatibleWithTarget target)
 
 end CheckedEnumerationFirstFilledOperand
 
@@ -146,7 +169,7 @@ structure CheckedEnumerationFirstFilledSource (model : FlatModel)
   first : CheckedEnumerationFirstFilledOperand model scope
   rest : List (CheckedEnumerationFirstFilledOperand model scope)
   modelWellFormed : model.validate.isOk = true
-  requiredMultiplicity : (first.isStar || !rest.isEmpty) = true
+  requiredMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true
   uniqueDirectOperands :
     firstDuplicateDirectEnumerationFirstFilledField? (first :: rest) = none
 
@@ -156,7 +179,7 @@ def operands (source : CheckedEnumerationFirstFilledSource model scope) :
     List (CheckedEnumerationFirstFilledOperand model scope) :=
   source.first :: source.rest
 
-/-- Complete checked-plan field inventory in first authored occurrence order. Runtime may stop before later operands or filter reads. -/
+/-- Complete checked-plan field inventory follows authored slots and each slot’s owned dependency order. Runtime may stop before later operands or filter reads. -/
 def fieldDependencies (source : CheckedEnumerationFirstFilledSource model scope) :
     List FieldId :=
   (source.operands.flatMap (fun operand => operand.fieldDependencies)).eraseDups
@@ -194,7 +217,7 @@ private def measuredTargetReadMode?
   if !source.allowedFor target then
     none
   else if selfReads.any (fun operand => operand.isCategory) then
-    if operands.length == 2 && operands.all (fun operand => !operand.isStar) then
+    if operands.length == 2 && operands.all (fun operand => operand.isStoredDirect || operand.isCategory) then
       some .projected
     else
       none
@@ -213,6 +236,8 @@ inductive EnumerationFirstFilledComputationElabError where
   | target (error : EnumerationComputationElabError)
   | shape (error : FieldEntityShapeElabError)
   | directSource (error : ElabError)
+  | selectedSource (error : TokenEntityGroupError)
+  | selectedNotEnumeration (path : List String)
   | starSource (error : StarEnumerationValueListElabError)
   | sourceIncompatible (sourcePath targetPath : List String)
   | targetSelfReference (field : FieldId)
@@ -264,11 +289,21 @@ private def certifyDirectEnumerationFirstFilledOperand
       throw (.directSource
         (.textFieldOperandKindMismatch declaration.path actual.surfaceKind))
 
+private def certifySelectedEnumerationFirstFilledOperand
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
+    Except EnumerationFirstFilledComputationElabError (CheckedEnumerationFirstFilledOperand model scope) := do
+  let selected ← CheckedSelectedTokenEntity.certify source |>.mapError .selectedSource
+  match owned : selected.enumerationProjections? with
+  | none => throw (.selectedNotEnumeration selected.path)
+  | some projections => pure (.selected selected projections owned)
+
 private def certifyEnumerationFirstFilledOperand
     (declaringGroup : GroupPath) (scope : List RepeatableLevel) :
     ResolvedFieldEntityOperand model → SurfaceEnumerationFirstFilledOperand →
       Except EnumerationFirstFilledComputationElabError
         (CheckedEnumerationFirstFilledOperand model scope)
+  | .indexed source, .indexed _ => certifySelectedEnumerationFirstFilledOperand (.inl source)
+  | .keyed source, .keyed _ => certifySelectedEnumerationFirstFilledOperand (.inr source)
   | .field declaration form, .field _ =>
       certifyDirectEnumerationFirstFilledOperand model scope declaration
         (match form with
@@ -306,7 +341,7 @@ def elaborateEnumerationFirstFilledSource
     |>.mapError .shape
   let first ← certifyEnumerationFirstFilledOperand declaringGroup scope shape.first authored.first
   let rest ← certifyEnumerationFirstFilledOperands declaringGroup scope shape.rest authored.rest
-  if hMultiplicity : (first.isStar || !rest.isEmpty) = true then
+  if hMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true then
     match hDuplicate :
         firstDuplicateDirectEnumerationFirstFilledField? (first :: rest) with
     | some _ => throw .incoherentCore
@@ -396,6 +431,7 @@ private def scanEnumerationFirstFilledOperand
     CheckedEnumerationFirstFilledOperand model [] →
       Except StarAddressingError
         (FirstFilledScanState ⊕ FirstFilledTokenResult)
+  | .selected source .. => throw (.unsupportedGroupOperand source.path)
   | .field _ operand _ _ =>
       match state.step ((FlatTextFieldOperand.enumeration operand).checkedValueListCellAt
           .computation (direct.read operand.field.id)) with
@@ -464,6 +500,14 @@ private def scanCheckedDocumentOperand
     CheckedEnumerationFirstFilledOperand model scope →
       Except CheckedAddressingError
         (FirstFilledScanState ⊕ FirstFilledTokenResult)
+  | .selected source .. => do
+      let side ← source.sideWith .computation document.source.toDocument outer
+        (document.computationCellAt read outer) (document.storedTextWithRead read outer)
+        (document.computationCellAt read) (document.resolveSemanticIndexColumnWith read)
+      match scanFirstFilledItems id side.cells
+          (state.enterSelection side.cells.isEmpty side.hasUninstantiatedTail side.hasHaving) with
+      | .inl next => pure (.inl next)
+      | .inr result => pure (.inr result.asToken)
   | .field _ operand _ _ => do
       match state.step (← checkedDirectCellAt document read outer operand) with
       | .continue next => pure (.inl next)

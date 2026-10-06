@@ -191,7 +191,7 @@ def evaluateAt (operation : CheckedStringFirstFilledComputation model)
   let selected ← scanComputationFirstFilledSelections environment .unsupportedDateCalendar
       (·.computationSelection (world := world) input.source.toDocument environment (input.computationCellAt read)
         (selectedRead := fun source => source.sideWith .computation input.source.toDocument environment
-          (input.computationCellAt read environment) (input.storedTextIn environment) (input.computationCellAt read)
+          (input.computationCellAt read environment) (input.storedTextWithRead read environment) (input.computationCellAt read)
           (input.resolveSemanticIndexColumnWith read) |>.mapError (fun _ => .unsupportedGroupOperand source.path)))
       operation.source.operands {}
     |>.mapError .source

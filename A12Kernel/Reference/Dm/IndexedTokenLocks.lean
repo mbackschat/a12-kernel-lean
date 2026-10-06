@@ -39,6 +39,8 @@ private structure Scenario where
   mixedTokenKinds : Bool := false
   scalarPlan : Bool := false
   rowTarget : Bool := false
+  wideTarget : Bool := false
+  displaySecond : Bool := false
 
 private def input (scenario : Scenario) : Lean.Json :=
   let row (key a b : String) (children : List String) := Lean.Json.mkObj [
@@ -60,6 +62,13 @@ private def evaluate (enumeration : Bool) (expression : String) (computation : B
     { model with fields := model.fields.map fun field =>
         if field.id == 7 then { field with policy := { kind := .string }, enumeration := none } else field }
     else model
+  let model := { model with fields := model.fields.map fun field =>
+    if scenario.wideTarget && (field.id == 2 || field.id == 10) then
+      { field with enumeration := some { storedTokens := ["A", "B", "C", "D"] } }
+    else if scenario.displaySecond && field.id == 7 then
+      { field with enumeration := some {
+          storedTokens := ["A", "B"], displayFacts := [{ locale := "en", stored := "A", display := "Alpha" }] } }
+    else field }
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (readDocument {
@@ -108,7 +117,7 @@ example : [false, true].all (fun enumeration => operands.all fun operands =>
 example : [false, true].all (fun enumeration => operands.all fun operands =>
     evaluate enumeration ("FirstFilledValue(" ++ operands ++ ") == \"A\"") false == some (.inl (.fired .value)) &&
     evaluate enumeration ("FirstFilledValue(" ++ operands ++ ")") true none { tokenTarget := true } ==
-      (if enumeration then none else some (.inr "value A"))) = true := by native_decide
+      some (.inr "value A")) = true := by native_decide
 
 example : [false, true].all (fun enumeration => operands.all fun operands =>
     evaluate enumeration ("AtLeastOneFieldValueIncludedInValueList(" ++ operands ++ " In Ref)") false ==
@@ -253,5 +262,82 @@ example : [false, true].all (fun enumeration =>
     evaluate enumeration "1" true
       (some "AtLeastOneFieldValueIncludedInValueList(Rows/Body For Key In Ref) Or FieldFilled(Ref)")
       { secondCode := "" } == some (.inr "cleared")) = true := by native_decide
+
+example : operands.all (fun operands => [false, true].all fun repeated =>
+    evaluate true ("FirstFilledValue(" ++ operands ++ ")") true none
+      { tokenTarget := true, rowTarget := repeated } ==
+        some (.inr (if repeated then "value A,value A" else "value A"))) = true := by native_decide
+
+example : [false, true].all (fun repeated =>
+    [({ tokenTarget := true, key := "missing", producer := some ("Key", "\"R1\"") } : Scenario),
+      { tokenTarget := true, firstA := "bad", producer := some ("Rows/Body/A", "[Ref]") }].all fun scenario =>
+        evaluate true "FirstFilledValue(Rows/Body For Key)" true none { scenario with rowTarget := repeated } ==
+          some (.inr (if repeated then "value A,value A" else "value A"))) = true := by native_decide
+
+example : [({ key := "missing" } : Scenario), { secondCode := "R1" }, { secondCode := "" },
+    { firstA := "bad" }].all (fun scenario =>
+      evaluate true "FirstFilledValue(Rows/Body For Key)" true none { scenario with tokenTarget := true } ==
+        some (.inr "cleared")) = true ∧
+    evaluate true "FirstFilledValue(Rows/Body For Key)" true none { tokenTarget := true, firstA := "", secondB := "A" } =
+      some (.inr "value A") := by native_decide
+
+example : evaluate true "FirstFilledValue(Rows/Children*/Value For Key)" true none
+    { tokenTarget := true, children := ["A", "bad"] } = some (.inr "value A") ∧
+    evaluate true "FirstFilledValue(Rows/Children*/Value For Key)" true none
+    { tokenTarget := true, children := ["bad", "A"] } = some (.inr "cleared") ∧
+    evaluate true "FirstFilledValue(Rows/Children*/Value For Key,Ref)" true none
+    { tokenTarget := true, children := [] } = some (.inr "value A") := by native_decide
+
+example : [({ distinctEnumerationDomain := true } : Scenario), { displaySecond := true },
+    { mixedTokenKinds := true }].all (fun scenario =>
+      evaluate true "FirstFilledValue(Rows/Body For Key)" true none { scenario with tokenTarget := true } == none) = true ∧
+    evaluate true "FirstFilledValue(Rows/Body For Key)" true none
+      { tokenTarget := true, distinctEnumerationDomain := true, wideTarget := true, firstA := "", secondB := "C" } =
+        some (.inr "value C") := by native_decide
+
+private def selectedEnumerationSource : Option (CheckedEnumerationFirstFilledSource (model true) []) := do
+  let parsed ← (parseText .english "FirstFilledValue(Rows/Body For Key)").toOption
+  let .call _ arguments none none := parsed.body | none
+  let source ← (lowerEnumerationFirstFilledSource (model true) ["Form"] arguments).toOption
+  (elaborateEnumerationFirstFilledSource (model true) ["Form"] [] source ["Form"]).toOption
+
+example : selectedEnumerationSource.any (fun source =>
+    [3,5,6,7].all source.referencesField && !source.referencesField 2 &&
+    match source.evaluate { instantiatedRows := [], rawCells := fun _ => none } [] { read := fun _ => .empty } (fun _ _ => malformedCheckedCell)
+        (fun _ _ => .empty) with
+    | .error (.unsupportedGroupOperand path) => path == ["Form", "Rows", "Body"]
+    | _ => false) = true := by native_decide
+
+example : ["FirstFilledValue(Rows/Body/A For Key)",
+    "FirstFilledValue(Rows/Body/A For Key,Rows/Body/A For Key)",
+    "FirstFilledValue(Rows/TextOut For Key,Ref)"].all (fun expression =>
+      evaluate true expression true none { tokenTarget := true, rowTarget := true } == none) = true := by native_decide
+
+private def selectedAssignmentWithRead (enumeration : Bool) (operand : String)
+    (oldKey newKey : String) : Option StringTargetOutcome := do
+  let m := model enumeration
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler m).toOption
+  let data ← (readDocument { flat := m, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (input { key := oldKey })).toOption
+  let document ← (checkDocument prepared "en_US" data.data).toOption
+  let parsed ← (parseText .english ("FirstFilledValue(" ++ operand ++ ")")).toOption
+  let .call _ arguments none none := parsed.body | none
+  let read := fun address =>
+    if address.field == 3 then pure { rawPresent := true, parsed := some (.str newKey), findings := [] }
+    else document.read address
+  if enumeration then
+    let authored ← (lowerEnumerationFirstFilledSource m ["Form"] arguments).toOption
+    let source ← (elaborateEnumerationFirstFilledSource m ["Form"] [] authored ["Form"]).toOption
+    pure (← (source.evaluateCheckedDocumentWithRead document read []).toOption).asComputationResult.asExactStringTargetOutcome
+  else
+    let authored ← (lowerEntitySource m ["Form"] arguments).toOption
+    let operation ← (checkStringFirstFilledComputation m ["Form"] 2 authored).toOption
+    pure (← (operation.evaluateAt none document read []).toOption).outcome
+
+example : [false, true].all (fun enumeration =>
+    ["Rows/Body For Key", "Rows/Children*/Value For Key"].all fun operand =>
+      selectedAssignmentWithRead enumeration operand "missing" "R1" == some (.accepted ⟨"A", by decide⟩) &&
+      selectedAssignmentWithRead enumeration operand "R1" "missing" == some .noValue) = true := by native_decide
 
 end A12Kernel.Dm.IndexedTokenLocks
