@@ -273,7 +273,7 @@ theorem checkedNumberEntitySource_checkedDocumentPartial_skipsHaving
     simp [CheckedNumberEntitySource.evaluateCheckedDocumentPartialAggregate,
       CheckedNumberEntitySource.evaluateCheckedDocumentPartialValueCount,
       CheckedNumberEntitySource.evaluatePartialAggregateWith,
-      CheckedNumberEntitySource.evaluatePartialValueCountWith, hasHaving,
+      CheckedNumberEntitySource.evaluatePartialValueCountWith, evalPartialResolvedValueCountOperands, hasHaving,
       pure, Except.pure]
 
 /-- The call-local partial-view route retains the same source-wide filter gate before topology, relevance, or any projected cell read. -/

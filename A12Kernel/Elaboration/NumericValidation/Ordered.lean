@@ -67,7 +67,7 @@ private def checkedNumberEntitySourceAdmittedIn
     (rowGroup : GroupPath) (scope : NumericOperandScope) : Bool :=
   match scope with
   | .modelWideCheckedComputation => true
-  | .sameGroupAddressed => source.directResolvedFields?.isNone
+  | .sameGroupAddressed => source.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
   | .sameGroup | .modelWideNonrepeatable =>
       match source.directResolvedFields? with
       | none => false
@@ -85,7 +85,7 @@ private def checkedTokenValueCountAdmittedIn
     (rowGroup : GroupPath) (scope : NumericOperandScope) : Bool :=
   match scope with
   | .modelWideCheckedComputation => true
-  | .sameGroupAddressed => source.source.directFields?.isNone
+  | .sameGroupAddressed => source.source.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
   | .sameGroup | .modelWideNonrepeatable =>
       match source.source.directFields? with
       | none => false
@@ -126,8 +126,8 @@ def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
           | .ok declaration => !declaration.repeatableScope.isEmpty
           | .error _ => false
   | .firstFilled source => source.directResolvedFields?.isNone || source.bindingScopes.any (!·.isEmpty)
-  | .valueCount _ source => source.directResolvedFields?.isNone
-  | .tokenValueCount source => source.source.directFields?.isNone
+  | .valueCount _ source => source.directResolvedFields?.isNone || source.bindingScopes.any (!·.isEmpty)
+  | .tokenValueCount source => source.source.directFields?.isNone || source.source.bindingScopes.any (!·.isEmpty)
   | .booleanValueCount source => source.directFields?.isNone
   | .aggregate _ _ | .sumOfProducts _ => true
   | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
@@ -279,8 +279,7 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
   | .ordinary (.filledGroupCount _) => false
   | .ordinary _ | .aggregate _ _ | .filledGroupCountMixed _ | .firstFilled _ => true
   | .filledFieldCount source => source.supportsPartialCount
-  | .indexed _ => true
-  | .valueCount _ _ | .tokenValueCount _
+  | .indexed _ | .valueCount _ _ | .tokenValueCount _ => true
   | .booleanValueCount _ | .sumOfProducts _
   | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ => false
 

@@ -95,10 +95,12 @@ private def resolveEntityAtom (model : FlatModel) (rowGroup bindingGroup : Group
         (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup)).map (.valueCount expected)
         |>.mapError .numberSource
   | .tokenValueCount expected source =>
-      (elaborateTokenValueCountSource model rowGroup expected source).map .tokenValueCount
+      (elaborateTokenValueCountSource model rowGroup expected source
+        (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup)).map .tokenValueCount
         |>.mapError .tokenSource
   | .tokenEntityValueCount expected source =>
-      (elaborateTokenEntityValueCountSource model rowGroup expected source).map .tokenValueCount
+      (elaborateTokenEntityValueCountSource model rowGroup expected source
+        (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup)).map .tokenValueCount
         |>.mapError .tokenSource
   | .booleanValueCount expected source =>
       (elaborateBooleanValueCountSource model rowGroup expected source).map .booleanValueCount

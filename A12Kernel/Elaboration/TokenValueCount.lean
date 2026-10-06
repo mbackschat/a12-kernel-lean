@@ -178,10 +178,10 @@ private def finishTokenValueCountSource (expected : String)
 def elaborateTokenValueCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : String)
     (authored : SurfaceTokenValueCountSource) (fixedTargetGroup? : Option GroupPath := none)
-    (writtenGroup : GroupPath := declaringGroup) :
+    (writtenGroup : GroupPath := declaringGroup) (bindingGroup? : Option GroupPath := none) :
     Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
   let source ← elaborateProjectedTokenEntitySource model declaringGroup authored
-      (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup)
+      (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup) (bindingGroup? := bindingGroup?)
     |>.mapError .source
   finishTokenValueCountSource expected source
 
@@ -191,10 +191,10 @@ def elaborateTokenValueCountSource (model : FlatModel)
 def elaborateTokenEntityValueCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : String)
     (authored : SurfaceTokenEntitySource) (fixedTargetGroup? : Option GroupPath := none)
-    (writtenGroup : GroupPath := declaringGroup) :
+    (writtenGroup : GroupPath := declaringGroup) (bindingGroup? : Option GroupPath := none) :
     Except TokenValueCountElabError (CheckedTokenValueCountSource model) := do
   let source ← elaborateTokenEntitySource model declaringGroup authored
-      (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup)
+      (fixedTargetGroup? := fixedTargetGroup?) (writtenGroup := writtenGroup) (bindingGroup? := bindingGroup?)
     |>.mapError .source
   finishTokenValueCountSource expected source
 
@@ -354,20 +354,8 @@ def evaluatePartialValidation
     (directRead : FieldId → CheckedCell)
     (starRead : Env → FieldId → CheckedCell) :
     Except StarAddressingError PartialValidationAggregateResult :=
-  if checked.source.hasHaving then
-    pure .skippedHaving
-  else do
-    match ← scanResolvedValueListOperands
-        (state := ResolvedValueCountSide .token)
-        (terminal := PartialValidationAggregateResult)
-        (fun operand => operand.resolvedPartialValueCountSide document outer
-          scope directRead starRead)
-        (fun cause => .evaluated (.unknown cause))
-        (fun accumulated _ side => accumulated.appendResolved side)
-        checked.source.operands .empty with
-    | .inl side =>
-        pure (.evaluated (evalValueCountAggregate checked.expected side))
-    | .inr result => pure result
+  evalPartialResolvedValueCountOperands checked.expected checked.source.operands checked.source.hasHaving
+    (fun operand => operand.resolvedPartialValueCountSide document outer scope directRead starRead)
 
 end CheckedTokenValueCountSource
 

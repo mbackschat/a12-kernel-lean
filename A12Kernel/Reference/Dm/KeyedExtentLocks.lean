@@ -307,9 +307,9 @@ private def partialUnsupported (expression : String) : Bool :=
   | some (.error .unsupportedCondition) => true
   | _ => false
 
-example : partialUnsupported "NumberOfValueInFields(2 In Packages/Items* For Key) == 3" = true := by native_decide
+example : partialUnsupported "SumOfProducts(Packages*/Header,Packages*/Header) == 2" = true := by native_decide
 
-example : partialUnsupported "NumberOfValueInFields(2 In Packages/Items* For Key) == 3 Or FieldFilled(Out)" = true := by native_decide
+example : partialUnsupported "SumOfProducts(Packages*/Header,Packages*/Header) == 2 Or FieldFilled(Out)" = true := by native_decide
 
 example : partialVerdict "FirstFilledValue(Packages/Items*/Weight For Key) == 2"
     [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Items", "Weight"]] = some (.fired .value) ∧
@@ -369,7 +369,7 @@ example : ["Sum", "MinValue", "MaxValue", "NumberOfDifferentValues"].all (fun op
     partialVerdict (operator ++ "(Packages/Header For Key,Packages/Header For \"P2\") == 0")
       [relevant ["Key"], relevant ["Packages"]] "P1" false false "bad" == some .unknown) = true := by native_decide
 
-private def aggregateReadback (expression : String) (formalFirst unavailableFirst : Bool) (laterUnavailable : Bool := true) (checkedInput : Bool := false) : Option Verdict := do
+private def aggregateReadback (expression : String) (formalFirst unavailableFirst : Bool) (laterFault : Bool := true) (checkedInput : Bool := false) : Option Verdict := do
   let document ← input "P1"
   let parsed ← (parseText .english expression).toOption
   let checked ← (lowerCondition model ["Form"] false parsed.body).toOption
@@ -380,7 +380,7 @@ private def aggregateReadback (expression : String) (formalFirst unavailableFirs
       if field == 3 && row.lookup 20 == some 1 then
         pure (if unavailableFirst then none else if formalFirst then some malformedCheckedCell
           else some (checkAdmittedRawCell (.parsed (.num 8))))
-      else if field == 3 && laterUnavailable then .error (.partialUnavailable row field)
+      else if field == 3 && laterFault then .error (.checkedDocumentRequired ["unreached"])
       else (fun addressed => some addressed.cell) <$> document.addressedCell row field }
   let result ← leaf.evalAddressedPartial? context .full (fun _ => true)
     (fun _ _ => .error (.checkedDocumentRequired [])) none
@@ -414,5 +414,36 @@ example : partialAggregateFamily "Packages/Dims For Key" ["7", "3", "4", "2"]
       [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Dims"]] (baseModel := dimsModel) = true ∧
     partialVerdict "Sum(Packages/Dims For Key) == 7"
       [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Dims", "Width"]] (baseModel := dimsModel) = some .unknown := by native_decide
+
+example : partialVerdict "NumberOfValueInFields(2 In Packages/Items* For Key) == 3"
+    [relevant ["Key"], relevant ["Packages"]] = some (.fired .value) ∧
+    partialVerdict "NumberOfValueInFields(2 In Packages/Items*/Weight For Key) == 1"
+      [relevant ["Key"], relevant ["Packages"]] = some (.fired .value) ∧
+    partialVerdict "NumberOfValueInFields(3 In Packages/Dims For Key) == 1"
+      [relevant ["Key"], relevant ["Packages"]] (baseModel := dimsModel) = some (.fired .value) := by native_decide
+
+example : partialVerdict "NumberOfValueInFields(2 In Packages/Items*/Weight For Key) == 1"
+    [relevant ["Key"], relevant ["Packages", "Code"], concreteItem 1 1, concreteItem 1 2] = some .unknown ∧
+    partialVerdict "NumberOfValueInFields(2 In Packages/Items*/Weight For Key) == 1"
+      [relevant ["Key"], relevant ["Packages", "Code"], packageWeights 1, concreteItem 2 1] = some (.fired .value) ∧
+    partialVerdict "NumberOfValueInFields(2 In Packages/Items*/Weight For Key) == 0"
+      [relevant ["Key"], relevant ["Packages"]] "missing" = some (.fired .value) ∧
+    partialVerdict "NumberOfValueInFields(2 In Packages/Items*/Weight For Key) == 0"
+      [relevant ["Key"], concreteRow 1, concreteRow 2] "missing" = some .unknown ∧
+    partialVerdict "NumberOfValueInFields(2 In Packages/Items*/Weight For Key) == 1"
+      [relevant ["Key"], relevant ["Packages"]] "1" false true = some (.fired .value) := by native_decide
+
+example : aggregateReadback "NumberOfValueInFields(8 In Packages/Items*/Weight For Key) == 1" false false false = some (.fired .value) ∧
+    aggregateReadback "NumberOfValueInFields(8 In Packages/Items*/Weight For Key) == 1" false false = none ∧
+    aggregateReadback "NumberOfValueInFields(8 In Packages/Items*/Weight For Key) == 1" true false = some .unknown ∧
+    aggregateReadback "NumberOfValueInFields(8 In Packages/Items*/Weight For Key) == 1" false true = some .unknown := by native_decide
+
+example : partialVerdict "NumberOfValueInFields(1 In Key,Out) == 1"
+    [relevant ["Key"]] "1" false true = some (.fired .value) ∧
+    partialVerdict "NumberOfValueInFields(1 In Key,Out) == 1" [] "1" false true = some .unknown ∧
+    partialVerdict "NumberOfValueInFields(2 In Packages/Items* For Key) == 3"
+      [relevant ["Key"], concreteRow 1] "P1" true = some (.fired .value) ∧
+    partialVerdict "NumberOfValueInFields(2 In Packages/Items* For Key) == 3"
+      [relevant ["Key"], relevant ["Packages"]] "P1" true = some .unknown := by native_decide
 
 end A12Kernel.Dm.KeyedExtentLocks

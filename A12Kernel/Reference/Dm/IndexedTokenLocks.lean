@@ -197,7 +197,7 @@ example : generated "NumberOfDifferentValues(Rows/Body For Key)" = some (.fired 
     generated "1" (some "AtLeastOneFieldValueIncludedInValueList(Rows/Body For Key In Ref)") "missing" = some .notFired := by native_decide
 
 private def ordinaryRule (selected partialRun : Bool) (scope : ValidationRelevanceScope := .full)
-    (enumeration : Bool := false) (scenario : Scenario := {}) (operandOverride : Option String := none) :
+    (enumeration : Bool := false) (scenario : Scenario := {}) (operandOverride : Option String := none) (conditionOverride : Option String := none) :
     Option (Except OrdinaryRepeatableRuleEvaluationError (Option Verdict)) := do
   let m := model enumeration
   let world : World := { now := { epochMillis := 0 } }
@@ -206,7 +206,7 @@ private def ordinaryRule (selected partialRun : Bool) (scope : ValidationRelevan
     flat := m, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] } (input scenario)).toOption
   let document ← (checkDocument prepared "en_US" data.data).toOption
   let operands := operandOverride.getD (if selected then "Rows/Body For Key" else "Ref,TextOut")
-  let parsed ← (parseText .english ("FieldFilled(Ref) And FirstFilledValue(" ++ operands ++ ") == \"A\"")).toOption
+  let parsed ← (parseText .english ("FieldFilled(Ref) And (" ++ conditionOverride.getD ("FirstFilledValue(" ++ operands ++ ") == \"A\"") ++ ")")).toOption
   let condition ← (lowerCondition m ["Form"] false parsed.body).toOption
   let rule ← (assembleResolvedValidationRule m condition 4 "SELECTED" .error { parts := [] }).toOption
   if partialRun then
@@ -238,6 +238,57 @@ example : [false, true].all (fun enumeration =>
     partialSelected enumeration "Rows/Body For Key,Ref" [["Rows", "Body"]] { key := "missing" } == some (.fired .omission) &&
     partialSelected enumeration "Rows/Body For Key,Ref" [] { key := "missing" } == some .unknown &&
     partialSelected enumeration "Ref,Rows/Body For Key" [] { key := "missing" } == some (.fired .value)) = true := by native_decide
+
+example : [false, true].all (fun enumeration => [("Rows/Body For Key", Polarity.value), ("Rows/Children*/Value For Key", Polarity.omission)].all fun (operand, polarity) =>
+    let expression := some ("NumberOfValueInFields(\"A\" In " ++ operand ++ ") == 1")
+    match ordinaryRule true true .full enumeration {} none expression,
+        ordinaryRule true false .full enumeration {} none expression with
+    | some (.ok (some partialResult)), some (.ok (some fullResult)) =>
+        partialResult == .fired polarity && fullResult == partialResult
+    | _, _ => false) = true := by native_decide
+
+private def tokenPartialCount (enumeration : Bool) (operand : String) (expected : Nat)
+    (scope : ValidationRelevanceScope) (scenario : Scenario := {}) : Option Verdict := do
+  (← ordinaryRule true true scope enumeration scenario none
+    (some ("NumberOfValueInFields(\"A\" In " ++ operand ++ ") == " ++ toString expected))).toOption.join
+
+private def tokenCountCoverage (paths : List (List String)) : ValidationRelevanceScope :=
+  .partialSet ((["Ref"] :: ["Key"] :: ["Rows", "Code"] :: paths).map fun path =>
+    { path := "Form" :: path, indices := ("Form" :: path).map fun _ => .all })
+
+example : [false, true].all (fun enumeration =>
+    tokenPartialCount enumeration "Rows/Body For Key" 1 (tokenCountCoverage [["Rows", "Body", "A"]]) == some .unknown &&
+    tokenPartialCount enumeration "Rows/Body For Key" 1 (tokenCountCoverage [["Rows", "Body"]]) == some (.fired .value) &&
+    tokenPartialCount enumeration "Rows/Body/A For Key,Ref" 2 (tokenCountCoverage [["Rows", "Body", "A"]]) == some (.fired .value) &&
+    tokenPartialCount enumeration "Rows/Children*/Value For Key" 0 .full { key := "missing" } == some (.fired .value) &&
+    tokenPartialCount enumeration "Rows/Children*/Value For Key" 0 (tokenCountCoverage []) { key := "missing" } == some .unknown &&
+    tokenPartialCount enumeration "Rows/Body For Key" 1 .full { secondB := "bad" } == some .unknown &&
+    tokenPartialCount enumeration "Ref,TextOut" 1 .full == some (.fired .value)) = true := by native_decide
+
+private def boundCount (enumeration numeric partialRun : Bool) : Option (List Verdict) := do
+  let m := model enumeration
+  let m := if numeric then { m with fields := m.fields.map fun field =>
+    if field.id == 6 || field.id == 7 then
+      { field with policy := { kind := .number { scale := 0, signed := true } }, enumeration := none, stringPolicy := {} }
+    else field } else m
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler m).toOption
+  let data ← (readDocument { flat := m, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (input { firstA := if numeric then "1" else "A", secondB := if numeric then "2" else "B" })).toOption
+  let document ← (checkDocument prepared "en_US" data.data).toOption
+  let literal := if numeric then "1" else "\"A\""
+  let parsed ← (parseText .english ("FieldFilled(TextOut) And NumberOfValueInFields(" ++ literal ++ " In Body/A,Body/B) == 1")).toOption
+  let condition ← (lowerCondition m ["Form", "Rows"] false parsed.body).toOption
+  let rule ← (assembleResolvedValidationRule m condition 10 "BOUND_COUNT" .error { parts := [] }).toOption
+  if partialRun then
+    match ← (rule.evalOrdinaryRepeatablePartial document .full).toOption with
+    | .skipped => pure []
+    | .evaluated rows => pure (rows.filterMap fun (_, result) =>
+        match result with | .skipped => none | .evaluated outcome => some outcome.verdict)
+  else pure ((← (rule.evalOrdinaryRepeatableFull document).toOption).map (·.2.verdict))
+
+example : [(false, false), (true, false), (false, true)].all (fun (enumeration, numeric) =>
+    boundCount enumeration numeric false == some [.fired .value, .unknown, .notFired] &&
+    boundCount enumeration numeric true == some [.fired .value, .unknown]) = true := by native_decide
 
 private def selectedSource : Option (CheckedTokenEntitySource (model false)) := do
   let parsed ← (parseText .english "FirstFilledValue(Rows/Body For Key)").toOption

@@ -389,12 +389,13 @@ def certifyTokenEntityShape (model : FlatModel)
 def elaborateTokenEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceTokenEntitySource)
     (arity : EntityListArity := .manyRequired) (writtenGroup : GroupPath := declaringGroup)
-    (fixedTargetGroup? : Option GroupPath := none) :
+    (fixedTargetGroup? : Option GroupPath := none) (bindingGroup? : Option GroupPath := none) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored arity fixedTargetGroup?
+  let shape ← elaborateFieldEntityShapeIn model declaringGroup
+      (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored arity fixedTargetGroup?
       (writtenGroup := writtenGroup)
     |>.mapError .shape
-  certifyTokenEntityShape model declaringGroup shape (fixedTargetGroup?.getD writtenGroup)
+  certifyTokenEntityShape model declaringGroup shape ((bindingGroup?.or fixedTargetGroup?).getD writtenGroup)
 
 /-- A path-resolved projection-bearing token slot. Keeping this intermediate private preserves duplicate-before-certification diagnostics without exposing a second checked representation. -/
 private inductive ResolvedProjectedTokenEntityOperand
@@ -426,7 +427,8 @@ private def bindingScope :
 end ResolvedProjectedTokenEntityOperand
 
 private def resolveProjectedTokenEntityOperand (model : FlatModel)
-    (declaringGroup : GroupPath) (fixedTargetGroup? : Option GroupPath) (writtenGroup : GroupPath) :
+    (declaringGroup : GroupPath) (fixedTargetGroup? : Option GroupPath) (writtenGroup : GroupPath)
+    (bindingGroup? : Option GroupPath) :
     SurfaceProjectedTokenEntityOperand →
       Except TokenEntityElabError
         (ResolvedProjectedTokenEntityOperand model)
@@ -440,7 +442,14 @@ private def resolveProjectedTokenEntityOperand (model : FlatModel)
       -- shared shape's field does, so the target places its refusal.
       let declaration ← (match fixedTargetGroup? with
           | some _ => model.resolveFieldDeclarationUnchecked declaringGroup reference
-          | none => model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup)
+          | none => match bindingGroup? with
+              | none => model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup
+              | some bindingGroup => do
+                  let declaration ← model.resolveFieldDeclarationUnchecked declaringGroup reference
+                  let bound := model.repeatableScopeForGroupPath bindingGroup
+                  if let some unbound := model.unboundReadLevel? declaringGroup writtenGroup declaration.repeatableScope bound then
+                    throw (ResolveError.unboundOperandLevel declaration.path unbound)
+                  declaration.requireRepetitionBoundBy bound)
         |>.mapError (fun error => .shape (.resolve error))
       pure (.field declaration projectionRef)
   | .star source projectionRef => do
@@ -471,7 +480,7 @@ private def firstDuplicateResolvedProjectedTokenField? :
             firstDuplicateResolvedProjectedTokenField? remaining
 
 private def certifyProjectedTokenEntityOperand (model : FlatModel)
-    (declaringGroup : GroupPath) :
+    (declaringGroup bindingGroup : GroupPath) :
     ResolvedProjectedTokenEntityOperand model →
       Except TokenEntityElabError (CheckedTokenEntityOperand model)
   | .field declaration projectionRef => do
@@ -479,23 +488,23 @@ private def certifyProjectedTokenEntityOperand (model : FlatModel)
         (← certifyDirectTokenOperand model declaration projectionRef))
   | .star source projectionRef having => do
       pure (.star
-        (← certifyStarTokenOperand declaringGroup source having projectionRef))
+        (← certifyStarTokenOperand declaringGroup source having projectionRef (bindingGroup := bindingGroup)))
 
 /-- Resolve paths before exact-reference duplication and cardinality, then certify kind, category, and `Having` in authored order. This is the sole projection-bearing token entity-list authoring boundary. -/
 def elaborateProjectedTokenEntitySource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceProjectedTokenEntitySource)
     (arity : EntityListArity := .manyRequired) (fixedTargetGroup? : Option GroupPath := none)
-    (writtenGroup : GroupPath := declaringGroup) :
+    (writtenGroup : GroupPath := declaringGroup) (bindingGroup? : Option GroupPath := none) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) :=
   match hModel : model.validate with
   | .error error => .error (.shape (.resolve error))
   | .ok () => do
       let first ←
-        resolveProjectedTokenEntityOperand model declaringGroup fixedTargetGroup? writtenGroup
+        resolveProjectedTokenEntityOperand model declaringGroup fixedTargetGroup? writtenGroup bindingGroup?
           authored.first
       let rest ← authored.rest.mapM fun operand =>
-        resolveProjectedTokenEntityOperand model declaringGroup fixedTargetGroup? writtenGroup
+        resolveProjectedTokenEntityOperand model declaringGroup fixedTargetGroup? writtenGroup bindingGroup?
           operand
       -- The shared shape's list-wide gate, asked of this boundary's own resolved slots.
       if let some targetGroup := fixedTargetGroup? then
@@ -507,9 +516,9 @@ def elaborateProjectedTokenEntitySource (model : FlatModel)
       | none =>
           if arity.allowsSole || first.isStar || !rest.isEmpty then
             let checkedFirst ←
-              certifyProjectedTokenEntityOperand model declaringGroup first
+              certifyProjectedTokenEntityOperand model declaringGroup (bindingGroup?.getD declaringGroup) first
             let checkedRest ← rest.mapM fun operand =>
-              certifyProjectedTokenEntityOperand model declaringGroup operand
+              certifyProjectedTokenEntityOperand model declaringGroup (bindingGroup?.getD declaringGroup) operand
             assembleTokenEntitySource (by rw [hModel]; rfl)
               checkedFirst checkedRest arity
           else
@@ -682,7 +691,7 @@ def resolveCheckedValidationOperand
   | .selected selection => throw (.addressing (.unsupportedGroupOperand selection.path))
   | .field direct => do
       let core ←
-        document.resolveCheckedDirectEntityOperandCore direct.operand.field.id
+        document.resolveCheckedDirectEntityOperandCoreAt outer direct.operand.field.id
       pure (.ofCore source direct.operand core)
   | .star starSource => do
       let having := starSource.filter.map fun filter => filter.condition

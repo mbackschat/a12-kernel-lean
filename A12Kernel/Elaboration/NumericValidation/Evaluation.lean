@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.PartialValueCount
 import A12Kernel.Elaboration.NumericValidation.Resolution
 import A12Kernel.Elaboration.NumericValidation.Expression
 import A12Kernel.Elaboration.PartialGroupCount
@@ -529,6 +530,19 @@ def OrderedNumericComparison.evalAddressedResult (comparison : OrderedNumericCom
     { comparison with left, right }
   pure (resolved.evalWith id)
 
+private def resolvePartialValueCount (context : AddressedValidationEvaluationContext model)
+    (evaluate : CheckedDocument model → Except CheckedAddressingError PartialValidationNumberAggregateResult) :
+    Except CheckedAddressingError (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
+  let document ← match context.input with
+    | .checked document | .partialView document _ => pure document
+    | .legacy _ _ => throw (.checkedDocumentRequired [])
+  match evaluate document with
+  | .error (.partialUnavailable _ _) => pure (.error .silentlyUnavailable)
+  | .error error => throw error
+  | .ok .skippedHaving => pure (.error .groupState)
+  | .ok .nonRelevant => pure (.error .nonRelevant)
+  | .ok (.evaluated operand) => pure operand.toValidationArithmetic
+
 /-- Resolve one atom after the public support check. Unsupported branches make recursion total but are unreachable through `evalAddressedPartial?`; they cannot become public semantic UNKNOWN. -/
 private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
     (atom : OrderedNumericValidationAtom model)
@@ -599,6 +613,12 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
               | none => pure (.error .groupState)
               | some available => pure (.ok (.value available.1 available.2))
           | none | some .skippedHaving => pure (.error .groupState)
+  | .valueCount expected source =>
+      resolvePartialValueCount context fun document =>
+        source.evaluatePartialValueCountDocument expected document context.outer scope context.readPartialCell
+  | .tokenValueCount source =>
+      resolvePartialValueCount context fun document =>
+        source.evaluatePartialValueCountDocument document context.outer scope context.readPartialCell
   | .firstFilled source =>
       match context.input with
       | .legacy _ _ => throw (.checkedDocumentRequired [])
@@ -609,7 +629,6 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
           | .error error => throw error
           | .ok .nonRelevant => pure (.error .nonRelevant)
           | .ok (.evaluated result) => pure result.asValidationOperand.toValidationArithmetic
-  | .valueCount _ _ | .tokenValueCount _
   | .booleanValueCount _ | .sumOfProducts _
   | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ =>
       pure (.error .groupState)

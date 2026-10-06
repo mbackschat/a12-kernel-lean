@@ -659,19 +659,7 @@ def evaluatePartialValueCountWith
       Except Error (Sum (ResolvedValueListSide .number)
         PartialValidationNumberAggregateResult)) :
     Except Error PartialValidationNumberAggregateResult :=
-  if checked.hasHaving then
-    pure .skippedHaving
-  else do
-    match ← scanResolvedValueListOperands
-        (state := ResolvedValueCountSide .number)
-        (terminal := PartialValidationNumberAggregateResult)
-        resolve
-        (fun cause => .evaluated (.unknown cause))
-        (fun accumulated _ side => accumulated.appendResolved side)
-        checked.operands ResolvedValueCountSide.empty with
-    | .inl accumulated =>
-        pure (.evaluated (evalValueCountAggregate expected accumulated))
-    | .inr result => pure result
+  evalPartialResolvedValueCountOperands expected checked.operands checked.hasHaving resolve
 
 /-- Evaluate the unfiltered numeric value count under partial validation. A locally visible filter skips the rule before topology, relevance, or target reads, matching the other entity-list aggregate leaves. -/
 def evaluatePartialValueCount (checked : CheckedNumberEntitySource model)

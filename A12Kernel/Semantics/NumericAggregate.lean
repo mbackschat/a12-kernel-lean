@@ -286,6 +286,20 @@ def evalResolvedValueCountOperands
   | .inl side => pure (evalValueCountAggregate expected side)
   | .inr result => pure result
 
+/-- Partial value counts reuse the same authored-order fold across Number and token carriers.
+Rule-wide filter skipping and nonrelevance stay outside the formal cell domain (spec/10 §5). -/
+def evalPartialResolvedValueCountOperands {kind : ValueListKind} (expected : ValueListAtom kind)
+    (operands : List α) (hasHaving : Bool)
+    (resolve : α → Except error (Sum (ResolvedValueListSide kind) PartialValidationAggregateResult)) :
+    Except error PartialValidationAggregateResult := do
+  if hasHaving then return .skippedHaving
+  match ← scanResolvedValueListOperands
+      (state := ResolvedValueCountSide kind) (terminal := PartialValidationAggregateResult)
+      resolve (fun cause => .evaluated (.unknown cause))
+      (fun accumulated _ side => accumulated.appendResolved side) operands .empty with
+  | .inl side => pure (.evaluated (evalValueCountAggregate expected side))
+  | .inr result => pure result
+
 /-- One row-aligned pair consumed by `SumOfProducts`. Empty cells remain explicit so each declaration can supply its own numeric missing direction before multiplication. -/
 structure ResolvedNumericProductRow where
   left : ValueListCell .number
