@@ -113,7 +113,7 @@ theorem numericComputationEvaluationContext_tokenValueCount_delegates
     (source : CheckedTokenValueCountSource model) :
     context.readCheckedNumericComputationAtom (.tokenValueCount source) =
       ((source.evaluateComputation (world := context.scalar.world) context.document context.outer
-        context.scalar.read context.filterRead context.starRead).map
+        context.scalar.read context.filterRead context.starRead (selectedRead := context.selectedTokenSide)).map
           NumericOperand.toComputationResult).mapError
             NumericComputationFault.repeatableAddressing := by
   rfl

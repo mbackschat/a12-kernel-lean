@@ -72,13 +72,8 @@ theorem checkedTokenValueCount_checkedValidation_usesMeasuredProjection
     checked.evaluateCheckedDocumentValidation document outer =
       evalResolvedValueCountOperands checked.expected checked.source.operands
         (fun operand => do
-          let resolved ←
-            operand.resolveCheckedValidationOperand document outer
-          match operand with
-          | .group _ | .star _ =>
-              pure (.inl (resolved.inCapacityValueListSideAt .validation))
-          | .field _ =>
-              pure (.inl (resolved.valueListSideAt .validation))) := by
+          pure (.inl (← operand.checkedValidationSide document outer
+            (inCapacity := operand.isAlreadyMany)))) := by
   rfl
 
 /-- A retained Boolean/Confirm group omits no descendant: every declaration in the recursive

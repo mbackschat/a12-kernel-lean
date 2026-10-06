@@ -514,6 +514,13 @@ def selectedNumberSide (context : NumericComputationEvaluationContext)
   source.sideWith .computation context.document context.outer context.scalar.read
     context.scalar.storedText context.starRead column |>.mapError (fun _ => .unsupportedGroupOperand source.groupPath)
 
+def selectedTokenSide (context : NumericComputationEvaluationContext)
+    (source : CheckedSelectedTokenEntity model) : Except StarAddressingError (ResolvedValueListSide .token) :=
+  source.sideWith .computation context.document context.outer context.scalar.read
+    context.scalar.storedText context.starRead
+    (context.indexColumn?.getD context.scalar.semanticIndexColumnReader)
+    |>.mapError (fun _ => .unsupportedGroupOperand source.path)
+
 /-- Evaluate one model-checked atom against its complete direct/repeatable computation inputs. Addressing failures stay explicit and cannot collapse into a numeric value, clean absence, or formal poison. -/
 def readCheckedNumericComputationAtom
     (context : NumericComputationEvaluationContext) :
@@ -542,7 +549,8 @@ def readCheckedNumericComputationAtom
           |>.mapError NumericComputationFault.repeatableAddressing
   | .tokenDistinctCount source =>
       (source.evaluateDistinctComputation (world := context.scalar.world) context.document context.outer
-        context.scalar.read context.filterRead context.starRead).map NumericOperand.toComputationResult
+        context.scalar.read context.filterRead context.starRead
+        (selectedRead := context.selectedTokenSide)).map NumericOperand.toComputationResult
           |>.mapError .repeatableAddressing
   | .temporalDistinctCount run =>
       (run.evaluateComputation (world := context.scalar.world) context.document context.outer
@@ -550,7 +558,8 @@ def readCheckedNumericComputationAtom
           |>.mapError .repeatableAddressing
   | .tokenValueCount source =>
       (source.evaluateComputation (world := context.scalar.world) context.document context.outer
-        context.scalar.read context.filterRead context.starRead).map
+        context.scalar.read context.filterRead context.starRead
+        (selectedRead := context.selectedTokenSide)).map
           NumericOperand.toComputationResult
         |>.mapError NumericComputationFault.repeatableAddressing
   | .booleanValueCount source =>

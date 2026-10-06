@@ -24,6 +24,7 @@ namespace CheckedTokenEntityOperand
 def declaredKinds : CheckedTokenEntityOperand model → List SurfaceScalarKind
   | .field source => [source.declaration.policy.kind.surfaceKind]
   | .star source => [source.source.declaration.policy.kind.surfaceKind]
+  | .selected source => source.slots.map (·.declaration.policy.kind.surfaceKind)
   | .group source => source.declaredKinds
 
 end CheckedTokenEntityOperand
@@ -107,8 +108,7 @@ def evaluateCheckedDocumentValuesNotUnique
     (world : Option World := none) : Except CheckedAddressingError Verdict := do
   let tagged ← collectTaggedValueListCells
     (fun operand => do
-      let resolved ← operand.resolveCheckedValidationOperand (world := world) document outer
-      pure (resolved.valueListSideAt .validation))
+      operand.checkedValidationSide (world := world) document outer)
     checked.source.operands
   pure (evalValuesNotUniqueVerdict tagged)
 

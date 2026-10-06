@@ -197,6 +197,9 @@ private def scanToken (context : ScalarComputationContext)
     (source : CheckedTokenEntityOperand model) (state : State) :
     Except ComputationPredicateError (ComputationHavingScanResult State Result) := do
   match source with
+  | .selected source => do
+      let side ← (source.sideAt .computation context).mapError .indexSelection
+      pure (scanCells consume side.cells state)
   | .field source => pure (scanCells consume (source.resolvedSideAt .computation context.read).cells state)
   | .group source =>
       let addressed ← addressed context

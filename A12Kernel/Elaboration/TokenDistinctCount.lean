@@ -147,17 +147,19 @@ in-capacity group/star extent. The distinct fold has no value-count-specific mat
 def evaluateDistinctComputation (checked : CheckedTokenEntitySource model)
     (document : Document) (outer : Env) (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
-    (world : Option World := none) :
+    (world : Option World := none)
+    (selectedRead : CheckedSelectedTokenEntity model → Except StarAddressingError (ResolvedValueListSide .token) :=
+      fun source => .error (.unsupportedGroupOperand source.path)) :
     Except StarAddressingError NumericOperand := do
   match ← scanResolvedValueListOperands
       (state := ResolvedValueListSide .token) (terminal := NumericOperand)
-      (fun operand => operand.resolvedComputationSide (world := world) document outer directRead filterRead starRead)
+      (fun operand => operand.resolvedComputationSide (world := world) document outer directRead filterRead starRead (selectedRead := selectedRead))
       (fun cause => .unknown cause) (fun accumulated _ side => accumulated.append side)
       checked.operands ResolvedValueListSide.empty with
   | .inl side => pure (evalDistinctCountAggregate side)
   | .inr result => pure result
 
-/-- Evaluate full validation from the immutable checked document through the shared rich addressed operand construction. Consumer-specific first-unavailability stopping and distinct-token folding remain here. -/
+/-- Evaluate full validation from the immutable checked document through the shared phase-resolved token sides. Consumer-specific first-unavailability stopping and distinct-token folding remain here. -/
 def evaluateCheckedDocumentDistinctValidation
     (checked : CheckedTokenEntitySource model)
     (document : CheckedDocument model) (outer : Env)
@@ -166,9 +168,7 @@ def evaluateCheckedDocumentDistinctValidation
   match ← scanResolvedValueListOperands
       (state := ResolvedValueListSide .token) (terminal := NumericOperand)
       (fun operand => do
-        let resolved ←
-          operand.resolveCheckedValidationOperand (world := world) document outer
-        pure (.inl (resolved.inCapacityValueListSideAt .validation)))
+        pure (.inl (← operand.checkedValidationSide (world := world) document outer (inCapacity := true))))
       (fun cause => .unknown cause)
       (fun accumulated _ side => accumulated.append side)
       checked.operands ResolvedValueListSide.empty with

@@ -74,7 +74,7 @@ private def checkedNumberOperandIterationScope :
 private def checkedTokenOperandIterationScope :
     CheckedTokenEntityOperand model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
-  | .field _ => pure none
+  | .field _ | .selected _ => pure none
   | .star source =>
       match source.filter with
       | none => pure (checkedStarBindingScope source.source)

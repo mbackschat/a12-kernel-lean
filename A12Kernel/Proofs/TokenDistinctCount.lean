@@ -97,7 +97,8 @@ theorem checkedTokenDistinctField_partial_relevance
     simp [CheckedTokenEntityOperand.resolvedPartialValidationSide, relevant] <;>
     rfl
 
-/-- The checked-document distinct-count route obtains every slot from the shared rich token resolver before applying its existing first-unavailability scan and fold. -/
+/-- Checked distinct counts share the token-side reader, including index selection, before the
+existing first-unavailability scan and fold. -/
 theorem checkedTokenDistinctSource_checkedDocument_delegates
     (checked : CheckedTokenEntitySource model)
     (document : CheckedDocument model) (outer : Env) (world : Option World := none) :
@@ -107,9 +108,7 @@ theorem checkedTokenDistinctSource_checkedDocument_delegates
             (state := ResolvedValueListSide .token)
             (terminal := NumericOperand)
             (fun operand => do
-              let resolved ←
-                operand.resolveCheckedValidationOperand (world := world) document outer
-              pure (.inl (resolved.inCapacityValueListSideAt .validation)))
+              pure (.inl (← operand.checkedValidationSide (world := world) document outer (inCapacity := true))))
             (fun cause => .unknown cause)
             (fun accumulated _ side => accumulated.append side)
             checked.operands {

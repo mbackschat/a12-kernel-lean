@@ -129,7 +129,7 @@ private def numberEntityReferenceScopes?
 private def tokenEntityOperandReferenceScope? :
     CheckedTokenEntityOperand model →
       Option (List RepeatableLevel)
-  | .field _ => some []
+  | .field _ | .selected _ => some []
   | .star checked => checkedStarBindingScope checked.source
   | .group slot =>
       let scope := slot.source.bindingScope

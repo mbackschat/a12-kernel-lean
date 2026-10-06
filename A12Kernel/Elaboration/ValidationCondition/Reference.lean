@@ -254,6 +254,7 @@ def CheckedTokenStarSource.referencePointers (source : CheckedTokenStarSource mo
 def CheckedTokenEntityOperand.referencePointers (environment : Env) :
     CheckedTokenEntityOperand model →
       Except ReferenceProjectionError (List MessagePointer)
+  | .selected _ => throw .unclassifiedOperand
   | .field source =>
       (concreteFieldPointer source.declaration environment).map ([·])
   | .star source => source.referencePointers environment

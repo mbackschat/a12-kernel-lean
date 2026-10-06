@@ -28,15 +28,19 @@ namespace CheckedTokenEntityOperand
 def declarations : CheckedTokenEntityOperand model → List FlatFieldDecl
   | .field source => [source.declaration]
   | .star source => [source.source.declaration]
+  | .selected source => source.slots.map (·.declaration)
   | .group source => source.slots.map (·.declaration)
 
 /-- Resolve one reached slot at the scan's environment `outer`: a field read at it, a star's
-in-capacity rows below it, filtered or not, and a group's cells in the shared walk's order. -/
+in-capacity rows below it, filtered or not, or a selected/group extent in the shared walk's order. -/
 def computationSelection (document : Document) (outer : Env)
     (read : Env → FieldId → CheckedCell)
-    (world : Option World := none) :
+    (world : Option World := none)
+    (selectedRead : CheckedSelectedTokenEntity model → Except StarAddressingError (ResolvedValueListSide .token) :=
+      fun source => .error (.unsupportedGroupOperand source.path)) :
     CheckedTokenEntityOperand model →
       Except StarAddressingError (FirstFilledComputationSelection .token)
+  | .selected source => (.side ·) <$> selectedRead source
   | .field source => pure (.cell (source.valueListCellAt .computation (read outer)))
   | .star source => do
       let resolved ← source.source.path.resolveInCapacity document outer
@@ -185,7 +189,10 @@ def evaluateAt (operation : CheckedStringFirstFilledComputation model)
   let targetPath ← environment.pathForScope operation.target.repeatableScope
     |>.mapError .targetEnvironment
   let selected ← scanComputationFirstFilledSelections environment .unsupportedDateCalendar
-      (·.computationSelection (world := world) input.source.toDocument environment (input.computationCellAt read))
+      (·.computationSelection (world := world) input.source.toDocument environment (input.computationCellAt read)
+        (selectedRead := fun source => source.sideWith .computation input.source.toDocument environment
+          (input.computationCellAt read environment) (input.storedTextIn environment) (input.computationCellAt read)
+          (input.resolveSemanticIndexColumnWith read) |>.mapError (fun _ => .unsupportedGroupOperand source.path)))
       operation.source.operands {}
     |>.mapError .source
   let result : FirstFilledTokenResult := match selected with

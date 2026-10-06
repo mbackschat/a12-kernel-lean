@@ -158,6 +158,7 @@ private def scanCheckedFirstFilledTokenOperand
     CheckedTokenEntityOperand model →
       Except StarAddressingError
         (FirstFilledScanState ⊕ PartialValidationFirstFilledTokenResult)
+  | .selected source => .error (.unsupportedGroupOperand source.path)
   | .group source =>
       -- No observation measures a token group on this raw-`Document` route
       -- ([SG5](../../docs/gaps/numeric-and-temporal.md#gap-sg5-number-token-group-runtime)), so it
@@ -231,6 +232,7 @@ private def resolveCheckedFirstFilledValidationSide
     (world : Option World := none) :
     Except CheckedAddressingError (ResolvedValueListSide .token) := do
   match source with
+  | .selected source => source.sideIn .validation document outer
   | .field direct => do
       let addressed ← document.fullValidationAddressedCell outer direct.declaration.id
       pure { cells := [direct.operand.checkedValueListCellAt .validation addressed.cell]
@@ -245,7 +247,7 @@ private def resolveCheckedFirstFilledValidationSide
 def supportsCheckedFirstFilledValidation
     (checked : CheckedTokenEntitySource model) : Bool :=
   checked.operands.all fun
-    | .group _ => true
+    | .group _ | .selected _ => true
     | .field source => source.projectionRef == .stored
     | .star source => source.projectionRef == .stored
 
@@ -288,6 +290,7 @@ def evaluateCheckedFirstFilledValidation?
 private def checkedPartialTokenAddresses (document : CheckedDocument model) (outer : Env) :
     CheckedTokenEntityOperand model →
       Except CheckedAddressingError (List (FlatFieldDecl × FlatTextFieldOperand × Env))
+  | .selected source => throw (.addressing (.unsupportedGroupOperand source.path))
   | .field source => pure [(source.declaration, source.operand, outer)]
   | .star source => do
       let resolved ← (source.source.path.resolveInCapacity document.source.toDocument outer).mapError .addressing

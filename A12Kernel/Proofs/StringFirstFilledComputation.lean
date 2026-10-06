@@ -14,7 +14,7 @@ theorem stringFirstFilledCell_value (field : FlatStringField) (value : String)
   have observed : observeCell .computation ({
       rawPresent := true, parsed := some (Value.str value), findings := [] } : CheckedCell) =
         .value (Value.str value) := rfl
-  simp only [FlatTextFieldOperand.checkedValueListCellAt, observed, nonempty]
+  simp only [FlatTextFieldOperand.checkedValueListCellAt, FlatTextFieldOperand.observedValueListCell, observed, nonempty]
   rfl
 
 /-- A reached malformed source remains poison rather than an ordinary empty String. -/

@@ -543,7 +543,10 @@ def evaluateFull (checked : CheckedTokenEntityValueListSource model)
     (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) :
     Except CheckedAddressingError Verdict := do
-  pure (← checked.resolveFull (world := world) document outer).evaluate
+  let (fields, values) ← checked.quantifier.resolveSidesOrdered
+    (fun () => checked.fields.operands.mapM (·.checkedValidationSide (world := world) document outer))
+    (fun () => checked.values.operands.mapM (·.checkedValidationSide (world := world) document outer))
+  pure (checked.quantifier.evalOrdered fields values)
 
 private def resolvePartialFields
     (checked : CheckedTokenEntityValueListSource model)
