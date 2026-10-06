@@ -194,6 +194,7 @@ private def certifyAtLeastOneDateRangeOverlapScalarShape :
       Except AtLeastOneDateRangeOverlapsElabError
         FlatFieldDecl
   | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
+  | .keyed source => throw (.shape (.unsupportedIndexedOperand source.entityPath))
   | .field declaration .stored => pure declaration
   | .field declaration form =>
       throw (.unsupportedReadForm .scalar declaration.path form)
@@ -391,6 +392,7 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
   let scalarDeclaration ←
     match scalarOperand with
     | .indexed source => throw (.source (.shape (.unsupportedIndexedOperand source.targetDeclaration.path)))
+    | .keyed source => throw (.source (.shape (.unsupportedIndexedOperand source.entityPath)))
     | .field declaration .stored => pure declaration
     | .field declaration form => throw (.unsupportedReadForm declaration.path form)
     | .star source => throw (.pluralScalarNotDirect source.declaration.path)

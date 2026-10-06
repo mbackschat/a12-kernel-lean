@@ -5,6 +5,18 @@ import A12Kernel.Semantics.SemanticIndex
 
 namespace A12Kernel
 
+/-- Column poison precedes selection for every selected payload and consumer projection. -/
+theorem semanticIndexSelected_computation_unavailable {α β : Type}
+    (cause : FormalCause) (selected : Option α) (observe : α → CellObservation β) :
+    semanticIndexSelected .computation (some cause) selected observe = .poison cause := by
+  rfl
+
+/-- A validation match delegates to its consumer independently of unrelated column invalidity. -/
+theorem semanticIndexSelected_validation_match {α β : Type}
+    (unavailable : Option FormalCause) (selected : α) (observe : α → CellObservation β) :
+    semanticIndexSelected .validation unavailable (some selected) observe = observe selected := by
+  rfl
+
 private def resolvedIndexEntry (token : String) (target : CheckedCell) :
     ResolvedSemanticIndexEntry :=
   { token, target }

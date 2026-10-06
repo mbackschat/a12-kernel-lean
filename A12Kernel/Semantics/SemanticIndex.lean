@@ -46,6 +46,8 @@ instance : Coe String SemanticIndexKey := ⟨SemanticIndexKey.text⟩
 structure ResolvedSemanticIndexEntry where
   token : SemanticIndexKey
   target : CheckedCell
+  /-- Checked columns preserve the physical row; scalar-only legacy columns have no address. -/
+  environment : Option Env := none
   deriving Repr, DecidableEq
 
 /-- A resolved index column. `entries` omits every unavailable key row and every participant in a duplicate key; `unavailableKey` records one such cause when one exists. -/
@@ -53,6 +55,39 @@ structure ResolvedSemanticIndexColumn where
   entries : List ResolvedSemanticIndexEntry
   unavailableKey : Option FormalCause
   deriving Repr, DecidableEq
+
+/-- Phase policy is independent of the selected payload: field reads and row selection share
+validation's per-lookup failure and computation's per-column failure (`spec/08` §4.2). -/
+@[simp] def semanticIndexSelected {α β : Type} (phase : Phase)
+    (unavailableKey : Option FormalCause) (selected : Option α)
+    (observe : α → CellObservation β) : CellObservation β :=
+  match phase with
+  | .validation => match selected with
+    | some value => observe value
+    | none => match unavailableKey with
+      | some cause => .unknown cause
+      | none => .empty
+  | .computation => match unavailableKey with
+    | some cause => .poison cause
+    | none => match selected with
+      | some value => observe value
+      | none => .empty
+
+/-- Decode an observed key without collapsing formal unavailability into a failed match. The
+index declaration chooses numeric identity or exact stored text (`spec/08` §4.1). -/
+def semanticIndexObserved {α : Type} (phase : Phase) (numericIndex : Bool)
+    (key : CellObservation) (lookup : SemanticIndexKey → CellObservation α)
+    (noMatch : CellObservation α) : CellObservation α :=
+  let unavailable (cause : FormalCause) := match phase with
+    | .validation => CellObservation.unknown cause
+    | .computation => CellObservation.poison cause
+  match key with
+  | .empty => noMatch
+  | .unknown cause | .poison cause => unavailable cause
+  | .value value => match numericIndex, value with
+    | true, .num number => lookup (.number number)
+    | false, .str text => if text.isEmpty then noMatch else lookup (.text text)
+    | _, _ => unavailable .malformed
 
 namespace ResolvedSemanticIndexColumn
 
@@ -74,18 +109,8 @@ def targetFor? (token : SemanticIndexKey) :
 /-- Read one already-normalized semantic-index key under the phase-specific lookup policy. Inputs that violate the preceding unique-key contract are outside the claimed fragment; this total function chooses the first supplied clean match. Presence and field-fill consumers remain separate projections of the resulting observation. -/
 def lookupKey (column : ResolvedSemanticIndexColumn)
     (phase : Phase) (token : SemanticIndexKey) : CellObservation :=
-  match phase with
-  | .validation =>
-      match targetFor? token column.entries with
-      | some target => observeCell .validation target
-      | none => column.noMatch .validation
-  | .computation =>
-      match column.unavailableKey with
-      | some cause => .poison cause
-      | none =>
-          match targetFor? token column.entries with
-          | some target => observeCell .computation target
-          | none => column.noMatch .computation
+  semanticIndexSelected phase column.unavailableKey (targetFor? token column.entries)
+    (observeCell phase)
 
 /-- Preserve the original exact-text literal-key surface as a thin projection into the common canonical-key lookup. -/
 def lookupValue (column : ResolvedSemanticIndexColumn)
@@ -128,8 +153,16 @@ between the two key domains, so no consumer chooses one by hand. -/
 def lookupObservationForIndex (column : ResolvedSemanticIndexColumn)
     (phase : Phase) (numericIndex : Bool) (key : CellObservation) :
     CellObservation :=
-  if numericIndex then column.lookupNumberObservation phase key
-  else column.lookupTextObservation phase key.asText
+  semanticIndexObserved phase numericIndex key (column.lookupKey phase) (column.noMatch phase)
+
+/-- Select a certified row while retaining the same missing and failure outcomes as a cell lookup.
+Scalar-only columns carry no environments and are not an addressed selection source. -/
+def lookupEnvironment (column : ResolvedSemanticIndexColumn) (phase : Phase)
+    (numericIndex : Bool) (key : CellObservation) : CellObservation (Option Env) :=
+  let lookup token := semanticIndexSelected phase column.unavailableKey
+    (column.entries.find? (fun entry => entry.token == token)) (fun entry => .value entry.environment)
+  semanticIndexObserved phase numericIndex key lookup
+    (semanticIndexSelected phase column.unavailableKey (none : Option ResolvedSemanticIndexEntry) (fun entry => .value entry.environment))
 
 /-- Feed one resolved numeric-key validation lookup into the same direct-comparison empty and polarity rule as the exact-text entry point. -/
 def validationNumberKeyOperand (column : ResolvedSemanticIndexColumn)

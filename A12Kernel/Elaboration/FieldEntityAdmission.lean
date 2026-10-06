@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.Flat.FieldValueRead
-import A12Kernel.Elaboration.SemanticIndex
+import A12Kernel.Elaboration.KeyedEntityExtent
 import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.CorrelationInputs
@@ -33,6 +33,7 @@ structure SurfaceHavingDirectFieldSource where
 
 /-- The source-shape failures shared by every homogeneous aggregate family. -/
 inductive FieldEntityShapeElabError where
+  | keyed (error : KeyedEntityExtentError)
   | unsupportedIndexedOperand (path : List String)
   | semanticIndex (error : SemanticIndexElabError)
   | resolve (error : ResolveError)
@@ -67,6 +68,8 @@ quantifiers accept a *sole unstarred field* operand, where the entity-list carri
 each carrier passes the `EntityListArity` it applies. -/
 def FieldEntityShapeElabError.diagnostic? :
     FieldEntityShapeElabError → Option KernelStaticDiagnostic
+  | .keyed (.index error) => error.diagnostic?
+  | .keyed _ => none
   | .unsupportedIndexedOperand _ => none
   | .semanticIndex error => error.diagnostic?
   | .tooFewFields => some .paramSizeInvalidN

@@ -606,7 +606,7 @@ def toSemanticIndexColumnWith (column : ResolvedCheckedIndexColumn model)
         |>.mapError .environment
       let target ← read { field := target, path }
         |>.mapError .document
-      pure { token := entry.key, target }
+      pure { token := entry.key, target, environment := some entry.environment }
   pure { entries, unavailableKey := column.unavailableKey }
 
 /-- The immutable validation view is the current-reader projection specialized to preliminary cells. -/

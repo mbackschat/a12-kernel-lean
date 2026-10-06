@@ -188,6 +188,11 @@ structure CheckedSemanticIndexSelection (model : FlatModel) where
   keyOwned : key.admittedBy model = true
   keyAgrees : key.agreesWith indexDeclaration = true
 
+/-- Retain the selector's identity when the selected payload is the index field itself. This
+projection lets selected extents reuse the field reader's normalization and current-key handling. -/
+def CheckedSemanticIndexSelection.numericIndex (selection : CheckedSemanticIndexSelection model) : Bool :=
+  match selection.indexDeclaration.policy.kind with | .number _ => true | _ => false
+
 /-- A literal semantic index statically selecting the exact group that contains the authored rule.
 Runtime row presence remains outside this certificate. -/
 structure CheckedRuleGroupSemanticIndexSource (model : FlatModel) where
@@ -213,6 +218,14 @@ structure CheckedSemanticIndexSource (model : FlatModel) where
     model.admitsSingleGroupDeclaration group targetDeclaration = true
   keyOwned : key.admittedBy model = true
   keyAgrees : key.agreesWith indexDeclaration = true
+
+def CheckedSemanticIndexSelection.indexSource (selection : CheckedSemanticIndexSelection model) :
+    CheckedSemanticIndexSource model := {
+  group := selection.group, indexDeclaration := selection.indexDeclaration,
+  targetDeclaration := selection.indexDeclaration, key := selection.key,
+  modelWellFormed := selection.modelWellFormed, groupOwned := selection.groupOwned,
+  indexDeclared := selection.indexDeclared, indexOwned := selection.indexOwned,
+  targetOwned := selection.indexOwned, keyOwned := selection.keyOwned, keyAgrees := selection.keyAgrees }
 
 /-- A Number selected field keeps its own scale and empty-fillability metadata independently
 of the index field's identity domain (`spec/08` §4). -/
@@ -351,6 +364,14 @@ private def elaborateSemanticIndexSelectionWithValidatedModel
       throw .incoherentCore
   else
     throw .incoherentCore
+
+/-- Certify the shared selection before an extent consumer binds the chosen row. -/
+def elaborateSemanticIndexSelection (model : FlatModel) (declaringGroup : GroupPath)
+    (group : RepeatableGroupDecl) (key : SurfaceSemanticIndexKey) :
+    Except SemanticIndexElabError (CheckedSemanticIndexSelection model) :=
+  match hModel : model.validate with
+  | .error error => .error (.resolve error)
+  | .ok () => elaborateSemanticIndexSelectionWithValidatedModel model declaringGroup group key hModel
 
 /-- One exact group selected by a literal text key, retaining the resolved group, index declaration,
 and authored token for carrier-specific static checks. -/

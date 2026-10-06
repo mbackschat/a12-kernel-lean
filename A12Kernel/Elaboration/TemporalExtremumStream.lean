@@ -75,6 +75,7 @@ private def directDeclaration :
     ResolvedFieldEntityOperand model →
       Except TemporalExtremumStreamError FlatFieldDecl
   | .indexed source => throw (.indexedOperandNotSupported source.targetDeclaration.path)
+  | .keyed source => throw (.indexedOperandNotSupported source.entityPath)
   | .field declaration _ => pure declaration
   | .star source => throw (.operandNeedsAddressing source.declaration.path)
   | .starHaving source _ => throw (.operandNeedsAddressing source.declaration.path)
@@ -264,6 +265,7 @@ private def operandExtent (document : CheckedDocument model) (outer : Env)
     ResolvedFieldEntityOperand model →
       Except TemporalExtremumStreamFault ResolvedCheckedEntityOperandCore
   | .indexed source => throw (.declined (.indexedOperandNotSupported source.targetDeclaration.path))
+  | .keyed source => throw (.declined (.indexedOperandNotSupported source.entityPath))
   | .field declaration _ =>
       (document.resolveCheckedDirectEntityOperandCore declaration.id).mapError .addressing
   | .star source =>

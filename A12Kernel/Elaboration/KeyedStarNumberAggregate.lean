@@ -86,14 +86,14 @@ def evaluateValidation (checked : CheckedKeyedStarNumberSource model)
     (op : NumericAggregateOp) (preliminary : CheckedIndexPreliminary model) (outer : Env := []) :
     Except KeyedStarNumberContextError NumericOperand := do
   let column ← preliminary.resolveIndexColumn checked.indexGroup outer |>.mapError .column
-  match column.selectableEntryFor? (.text checked.token) with
-  | some entry =>
+  let resolved ← column.toSemanticIndexColumn preliminary column.indexDeclaration.id |>.mapError .column
+  match resolved.lookupEnvironment .validation false (.value (.str checked.token)) with
+  | .value (some environment) =>
       checked.star.evaluateCheckedDocumentValidationAggregate op preliminary.base
-        entry.environment |>.mapError .addressing
-  | none =>
-      match column.unavailableKey with
-      | some cause => pure (.unknown cause)
-      | none => pure op.overNoCells
+        environment |>.mapError .addressing
+  | .value none => throw (.addressing (.checkedDocumentRequired checked.indexGroup.path))
+  | .empty => pure op.overNoCells
+  | .unknown cause | .poison cause => pure (.unknown cause)
 
 end CheckedKeyedStarNumberSource
 

@@ -252,13 +252,7 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
 def namesField (model : FlatModel) (group : GroupPath) (path : SurfaceFieldPath) : Bool :=
   (model.resolveFieldDeclarationUnchecked group path).toOption.isSome
 
-def lowerIndexedSource (model : FlatModel) (group : GroupPath)
-    (path : Path) (key : IndexKey) : Lowering SurfaceSemanticIndex := do
-  let some target := path.toFieldPath? | refuse "SemanticIndex" "target path"
-  let declaration ← elaborated "SemanticIndex" (model.resolveFieldDeclarationUnchecked group target)
-  let selectedGroup ← elaborated "SemanticIndex" (model.lookupUniqueRepeatablePath declaration.groupPath)
-  let some indexId := selectedGroup.indexField | refuse "SemanticIndex" "missing index"
-  let index ← elaborated "SemanticIndex" (model.lookupUniqueId indexId)
+private def lowerIndexKey (index : FlatFieldDecl) (key : IndexKey) : Lowering SurfaceSemanticIndexKey := do
   let key ← match key with
     | .literal authored => do
         let spelling := normalizeLinebreaks authored
@@ -280,14 +274,52 @@ def lowerIndexedSource (model : FlatModel) (group : GroupPath)
     | .path authored => do
         let some field := authored.toFieldPath? | refuse "SemanticIndex" "key path"
         pure (.field field)
-  pure { target, key }
+  pure key
+
+def lowerIndexedSource (model : FlatModel) (group : GroupPath)
+    (path : Path) (key : IndexKey) : Lowering SurfaceSemanticIndex := do
+  let some target := path.toFieldPath? | refuse "SemanticIndex" "target path"
+  let declaration ← elaborated "SemanticIndex" (model.resolveFieldDeclarationUnchecked group target)
+  let selectedGroup ← elaborated "SemanticIndex" (model.lookupUniqueRepeatablePath declaration.groupPath)
+  let some indexId := selectedGroup.indexField | refuse "SemanticIndex" "missing index"
+  let index ← elaborated "SemanticIndex" (model.lookupUniqueId indexId)
+  pure { target, key := ← lowerIndexKey index key }
+
+private def lowerKeyedExtent (model : FlatModel) (group : GroupPath)
+    (path : Path) (key : IndexKey) : Lowering SurfaceKeyedEntityExtent := do
+  if path.correlated then refuse "SemanticIndex" "correlated extent"
+  let (target, targetGroup) ← if path.segments.any (·.star) then do
+      let unstarred : Path := { path with segments := path.segments.map fun segment => { segment with star := false } }
+      if unstarred.toFieldPath?.any (namesField model group) then
+        let some star := path.toStarFieldPath? | refuse "SemanticIndex" "starred extent"
+        let source ← elaborated "SemanticIndex" (elaborateStarFieldPath model group star)
+        pure (SurfaceKeyedEntityTarget.star star, source.declaration.groupPath)
+      else
+        let target : SurfaceStarGroupPath := { base := path.base, groups := path.starGroups }
+        let source ← elaborated "SemanticIndex" (elaborateStarredGroupOperandSource model group target)
+        let resolved := match source with
+          | .terminalRepeatable source => source.group.path
+          | .terminalPresence source => source.groupPath
+        pure (SurfaceKeyedEntityTarget.starredGroup target, resolved)
+    else do
+      let some target := path.toGroupPath? | refuse "SemanticIndex" "group extent"
+      let resolved ← elaborated "SemanticIndex" (target.resolveAgainst group)
+      pure (SurfaceKeyedEntityTarget.group target, resolved)
+  let groups := (model.repeatableScopeForGroupPath targetGroup).filterMap fun level =>
+    (model.repeatableGroupAtLevel? level).filter (·.indexField.isSome)
+  let some selectedGroup := groups.getLast? | refuse "SemanticIndex" "missing index"
+  let some indexId := selectedGroup.indexField | refuse "SemanticIndex" "missing index"
+  let index ← elaborated "SemanticIndex" (model.lookupUniqueId indexId)
+  pure { target, key := ← lowerIndexKey index key }
 
 /-- One entity-list operand. -/
 def lowerEntityOperand (model : FlatModel) (group : GroupPath) :
     Argument → Lowering SurfaceFieldEntityOperand
   | .mk (.constant "RuleGroup") none none => pure (.group (.ruleGroup false))
   | .mk (.entity { path, index := some key, category := none }) none none =>
-      (.indexed ·) <$> lowerIndexedSource model group path key
+      if path.toFieldPath?.any (namesField model group) then
+        (.indexed ·) <$> lowerIndexedSource model group path key
+      else (.keyed ·) <$> lowerKeyedExtent model group path key
   | .mk (.entity { path, index := none, category }) none filter => do
       if path.correlated then refuse "EntityOperand" "correlated"
       let terminalStar := path.segments.getLast?.any (·.star)

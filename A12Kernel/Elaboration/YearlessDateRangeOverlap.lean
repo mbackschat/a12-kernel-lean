@@ -248,6 +248,7 @@ def certifyYearlessDateRangeOverlapOperand (model : FlatModel)
       Except YearlessDateRangesOverlapElabError
         (CheckedYearlessDateRangeOverlapOperand model)
   | .indexed source => throw (.source (.shape (.unsupportedIndexedOperand source.targetDeclaration.path)))
+  | .keyed source => throw (.source (.shape (.unsupportedIndexedOperand source.entityPath)))
   | .field declaration .stored =>
       .direct <$> certifyYearlessDateRangeOverlapField model declaration
   | .field declaration form =>

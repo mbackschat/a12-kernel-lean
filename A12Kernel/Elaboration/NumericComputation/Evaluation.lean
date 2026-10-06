@@ -10,6 +10,10 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
     (indexColumn? : Option SemanticIndexColumnReader) :
     Except NumericComputationFault (Except FormalCause Nat) := do
   match operand with
+  | .keyed source => do
+      let some readColumn := indexColumn? | throw .repeatableContextRequired
+      let slots ← source.computationSlotsIn context readColumn |>.mapError .indexSelection
+      return (numberOfFilledFieldsForComputation slots)
   | .indexed source => do
       let some readColumn := indexColumn? | throw .repeatableContextRequired
       let observation ← source.observeColumnWith .computation readColumn context.row
@@ -634,7 +638,7 @@ def CheckedNumericComputationAtom.numericComputationFault? :
     CheckedNumericComputationAtom model → Option NumericComputationFault
   | .filledFieldCount source => source.operands.findSome? fun operand =>
       match operand with
-      | .indexed _ => none
+      | .indexed _ | .keyed _ => none
       | operand => if operand.hasHaving then none else
         match CheckedFieldFillList.computationSources { operands := [operand] } with
         | .ok _ => none

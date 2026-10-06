@@ -314,6 +314,7 @@ private def certifyTokenEntityOperand (model : FlatModel)
   -- The authored read form is kept: a category read certifies through its projection, which reading
   -- the field stored would silently replace.
   | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
+  | .keyed source => throw (.shape (.unsupportedIndexedOperand source.entityPath))
   | .field declaration form =>
       let projectionRef : EnumerationProjectionRef := match form with
         | .stored => .stored

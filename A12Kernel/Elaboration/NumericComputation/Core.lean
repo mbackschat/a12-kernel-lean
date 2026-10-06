@@ -49,7 +49,7 @@ def FlatModel.admitsNumericComputationOperand
       !source.operands.isEmpty && source.rowBoundBool scope &&
         source.operands.all fun operand =>
           match operand with
-          | .indexed _ => true
+          | .indexed _ | .keyed _ => true
           | operand =>
             let structural : CheckedFieldFillOperand model := match operand with
               | .star source => .star (.plain source.declaringGroup source.source)

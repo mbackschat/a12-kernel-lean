@@ -256,6 +256,7 @@ def certifyTemporalUniquenessOperand (model : FlatModel)
         (CheckedTemporalUniquenessOperand model) :=
   match operand with
   | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
+  | .keyed source => throw (.shape (.unsupportedIndexedOperand source.entityPath))
   | .field declaration _ =>
       do pure (.field (← certifyTemporalUniquenessField declaration))
   | .star source =>

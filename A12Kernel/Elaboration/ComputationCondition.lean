@@ -259,7 +259,7 @@ def FlatModel.elaborateComputationGroupList (model : FlatModel)
   if let some duplicate := firstDuplicateResolvedEntityOperand? operands then
     throw (.shape (match duplicate with
       | .field (field, _) | .indexed (field, _) => .duplicateOperand field
-      | .fixedGroup path => .duplicateGroupOperand path))
+      | .fixedGroup path | .keyedGroup path _ => .duplicateGroupOperand path))
   if let some (left, right) := firstResolvedOperandOverlap? operands then
     throw (.shape (.overlappingOperands left right))
   if let some path := operands.findSome? ResolvedFieldEntityOperand.rootGroupPath? then

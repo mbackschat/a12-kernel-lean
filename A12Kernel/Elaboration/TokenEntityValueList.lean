@@ -401,7 +401,7 @@ private def crossListRepeat? (operands : List (ResolvedFieldEntityOperand model)
     Option FieldEntityShapeElabError :=
   match firstDuplicateResolvedEntityOperand? operands with
   | some (.field (field, _)) | some (.indexed (field, _)) => some (.duplicateOperand field)
-  | some (.fixedGroup path) => some (.duplicateGroupOperand path)
+  | some (.fixedGroup path) | some (.keyedGroup path _) => some (.duplicateGroupOperand path)
   | none => (firstResolvedOperandOverlap? operands).map fun (ancestor, descendant) =>
       .overlappingOperands ancestor descendant
 

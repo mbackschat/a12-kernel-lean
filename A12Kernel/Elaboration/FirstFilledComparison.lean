@@ -220,7 +220,7 @@ private def partialFirstFilledAddresses (document : CheckedDocument model) (oute
       let (reads, _) ← (model.groupOperandReads document.source.toDocument outer
         source.source.boundLevelCount source.declarations (·.repeatableScope)).mapError .addressing
       pure reads
-  | .indexed _ => throw .unsupportedIndexedFillQuantifier
+  | .indexed _ | .keyed _ => throw .unsupportedIndexedFillQuantifier
 
 private def scanPartialFirstFilledCells {model : FlatModel} (scope : ValidationRelevanceScope)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :

@@ -32,6 +32,7 @@ namespace A12Kernel
 inductive CheckedFieldFillOperand (model : FlatModel) where
   | field (declaration : FlatFieldDecl)
   | indexed (source : CheckedSemanticIndexSource model)
+  | keyed (source : CheckedKeyedEntityExtent model)
   | star (source : CheckedFilledFieldStarSource model)
   | group (source : CheckedFilledFieldCountGroupSource model)
 
@@ -59,6 +60,7 @@ namespace CheckedFieldFillOperand
 def declarations : CheckedFieldFillOperand model → List FlatFieldDecl
   | .field declaration => [declaration]
   | .indexed source => [source.targetDeclaration]
+  | .keyed source => source.declarations
   | .star source => [source.source.declaration]
   | .group source => source.declarations
 
@@ -66,6 +68,7 @@ def declarations : CheckedFieldFillOperand model → List FlatFieldDecl
 def groupPath : CheckedFieldFillOperand model → GroupPath
   | .field declaration => declaration.groupPath
   | .indexed source => source.targetDeclaration.groupPath
+  | .keyed source => source.groupPath
   | .star source => source.source.declaration.groupPath
   | .group source => source.source.groupPath
 
@@ -73,7 +76,7 @@ def groupPath : CheckedFieldFillOperand model → GroupPath
 scope conflicts for the ordinary iteration merger. -/
 def bindingScopes : CheckedFieldFillOperand model → List (List RepeatableLevel)
   | .field declaration => [declaration.repeatableScope]
-  | .indexed _ => [[]]
+  | .indexed _ | .keyed _ => [[]]
   | .star source => source.source.bindingScope ::
       (source.filter.toList.flatMap fun filter =>
         (CorrelatedHaving.outerIterationScopes model filter.condition).filterMap id)
@@ -89,6 +92,7 @@ def hasHaving : CheckedFieldFillOperand model → Bool
 def referencesField (operand : CheckedFieldFillOperand model) (field : FieldId)
     (havingReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) : Bool :=
   operand.declarations.any (·.id == field) || match operand with
+    | .keyed source => source.referencesField field
     | .indexed source => source.indexDeclaration.id == field ||
         match source.key with
         | .field declaration => declaration.id == field
@@ -101,6 +105,10 @@ def observations (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) :
     CheckedFieldFillOperand model → Except CheckedAddressingError (List CellObservation)
   | .indexed source => List.singleton <$> source.observeDocument document outer .validation
+  | .keyed source => do
+      let selected ← source.selectWith .validation (document.resolveSemanticIndexColumnWith document.read) outer
+        document.flatContext.read document.flatContext.storedText
+      source.observationsWith .validation document.source.toDocument selected document.computationFillContext.read
   | .field declaration => do
       -- EntityUtil.resolveIterations retains the bound singleton; RuntimeController's
       -- isWertAngegeben observes its formal state rather than treating it as a reopened extent.
@@ -114,6 +122,7 @@ def observations (document : CheckedDocument model) (outer : Env)
 
 def fillCapacity? : CheckedFieldFillOperand model → Option Nat
   | .indexed _ => some 1
+  | .keyed source => source.capacity?
   | .field declaration => model.declarationSlots? declaration.repeatableScope.length declaration
   | .star source => if source.hasHaving then none else
       model.declarationSlots? source.source.path.firstStar source.source.declaration
@@ -139,6 +148,10 @@ def computationSlots (document : CheckedDocument model) (outer : Env) :
     CheckedFieldFillOperand model → Except CheckedAddressingError (List ComputationFillSlot)
   | .indexed source => do
       pure [(← source.observeDocument document outer .computation).asComputationFillSlot]
+  | .keyed source => do
+      let selected ← source.selectWith .computation (document.resolveSemanticIndexColumnWith document.read) outer
+        document.flatContext.read document.flatContext.storedText
+      source.computationSlotsWith document.source.toDocument selected document.computationFillContext.read
   | .field declaration =>
       computationCoreSlots <$> document.resolveCheckedDirectEntityOperandCoreAt outer declaration.id
   | .star source => do
@@ -192,7 +205,7 @@ private def CheckedFieldFillOperand.partialCount
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
     Except CheckedAddressingError (Option PartialValidationFilledFieldCountResult) := do
   let rows ← match operand with
-    | .indexed _ => return none
+    | .indexed _ | .keyed _ => return none
     | .field declaration =>
         if !scope.coversAggregateExtent model declaration.path declaration.repeatableScope [] outer then
           return some .nonRelevant
@@ -226,7 +239,7 @@ def rowBoundBool (list : CheckedFieldFillList model) (scope : List RepeatableLev
 
 def hasIndexed (list : CheckedFieldFillList model) : Bool :=
   list.operands.any fun operand => match operand with
-    | .indexed _ => true
+    | .indexed _ | .keyed _ => true
     | _ => false
 
 def hasHaving (list : CheckedFieldFillList model) : Bool :=
@@ -289,7 +302,7 @@ for the model-independent computation guard. -/
 def computationSources (list : CheckedFieldFillList model) :
     Except FieldFillListElabError (List ComputationFillSource) := do
   let sources ← list.operands.mapM fun
-    | .indexed _ => throw .unsupportedOperand
+    | .indexed _ | .keyed _ => throw .unsupportedOperand
     | .field declaration => pure [ComputationFillSource.direct declaration.id]
     | .star source => do
         if source.hasHaving then throw .unsupportedOperand
@@ -386,6 +399,7 @@ def elaborateFieldFillList (model : FlatModel) (rowGroup : GroupPath)
     (groupReadScope := .ruleBound)).mapError .shape
   let operands ← ((authored.first :: authored.rest).zip shape.operands).mapM fun
     | (_, .indexed source) => pure (.indexed source)
+    | (_, .keyed source) => pure (.keyed source)
     | (_, .field declaration .stored) => pure (.field declaration)
     | (_, .star source) => pure (.star (.plain rowGroup source))
     | (_, .starHaving source having) => do
@@ -423,6 +437,7 @@ def elaborateComputationFieldFillList (model : FlatModel)
         pure (.star (← (CheckedFilledFieldStarSource.withHaving model declaringGroup targetGroup
           source having targetGroup).mapError .having))
     | .indexed source => pure (.indexed source)
+    | .keyed source => pure (.keyed source)
     | .field _ (.projected _) => throw .unsupportedOperand
   pure { operands }
 

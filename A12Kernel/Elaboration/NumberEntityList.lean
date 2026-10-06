@@ -417,6 +417,7 @@ private def certifyNumberEntityOperand (model : FlatModel)
     (declaringGroup bindingGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except NumberEntityElabError (CheckedNumberEntityOperand model)
   | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
+  | .keyed source => throw (.shape (.unsupportedIndexedOperand source.entityPath))
   | .field declaration _ =>
       match hField : declaration.toNumberField? with
       | none => throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)

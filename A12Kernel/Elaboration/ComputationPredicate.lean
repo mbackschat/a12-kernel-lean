@@ -347,10 +347,14 @@ def evalChecked (predicate : CheckedComputationPredicate model)
       | .calendarUnavailable | .indexedOperandNotSupported => .temporalUnavailable)
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
   | .fieldFill operator source =>
-      source.evalCheckedWith operator context filterRead .fieldFill fun indexed => do
-        let some readColumn := indexColumn? | throw .contextRequired
-        indexed.observeColumnWith .computation readColumn context.row context.read context.storedText
-          |>.mapError .indexSelection
+      source.evalCheckedWith operator context filterRead .fieldFill
+        (fun indexed => do
+          let some readColumn := indexColumn? | throw .contextRequired
+          indexed.observeColumnWith .computation readColumn context.row context.read context.storedText
+            |>.mapError .indexSelection)
+        (fun keyed => do
+          let some readColumn := indexColumn? | throw .contextRequired
+          keyed.computationSlotsIn context readColumn |>.mapError .indexSelection)
   | .overlap source => (source.evalChecked context filterRead).mapError fun
       | .contextRequired => .contextRequired
       | .addressing error => .addressing error

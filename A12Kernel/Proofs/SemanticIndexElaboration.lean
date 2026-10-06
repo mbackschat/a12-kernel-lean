@@ -131,6 +131,11 @@ theorem checkedNumberSemanticIndex_preliminary_is_numeric
   simp only [ResolvedSemanticIndexColumn.lookupObservationForIndex,
     CheckedSemanticIndexSource.numericIndex]
   split at witness <;> simp_all
+  cases key with
+  | value value => cases value <;> cases phase <;> rfl
+  | empty => cases phase <;> rfl
+  | unknown cause => cases phase <;> rfl
+  | poison cause => cases phase <;> rfl
 
 /-- A successfully resolved checked source delegates phase behavior and numeric-key comparison to the existing resolved semantic-index evaluator. -/
 theorem checkedNumberSemanticIndex_lookupValue_delegates
