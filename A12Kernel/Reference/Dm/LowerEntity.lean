@@ -280,7 +280,8 @@ def lowerIndexedSource (model : FlatModel) (group : GroupPath)
     (path : Path) (key : IndexKey) : Lowering SurfaceSemanticIndex := do
   let some target := path.toFieldPath? | refuse "SemanticIndex" "target path"
   let declaration ← elaborated "SemanticIndex" (model.resolveFieldDeclarationUnchecked group target)
-  let selectedGroup ← elaborated "SemanticIndex" (model.lookupUniqueRepeatablePath declaration.groupPath)
+  let some selectedGroup := model.semanticIndexGroupForPath? declaration.groupPath
+    | refuse "SemanticIndex" "missing index"
   let some indexId := selectedGroup.indexField | refuse "SemanticIndex" "missing index"
   let index ← elaborated "SemanticIndex" (model.lookupUniqueId indexId)
   pure { target, key := ← lowerIndexKey index key }
@@ -305,9 +306,7 @@ private def lowerKeyedExtent (model : FlatModel) (group : GroupPath)
       let some target := path.toGroupPath? | refuse "SemanticIndex" "group extent"
       let resolved ← elaborated "SemanticIndex" (target.resolveAgainst group)
       pure (SurfaceKeyedEntityTarget.group target, resolved)
-  let groups := (model.repeatableScopeForGroupPath targetGroup).filterMap fun level =>
-    (model.repeatableGroupAtLevel? level).filter (·.indexField.isSome)
-  let some selectedGroup := groups.getLast? | refuse "SemanticIndex" "missing index"
+  let some selectedGroup := model.semanticIndexGroupForPath? targetGroup | refuse "SemanticIndex" "missing index"
   let some indexId := selectedGroup.indexField | refuse "SemanticIndex" "missing index"
   let index ← elaborated "SemanticIndex" (model.lookupUniqueId indexId)
   pure { target, key := ← lowerIndexKey index key }

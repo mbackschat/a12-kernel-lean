@@ -144,9 +144,7 @@ def elaborateKeyedEntityExtent (model : FlatModel) (declaringGroup : GroupPath)
     | .star path => do
         let source ← elaborateStarFieldPath model declaringGroup path |>.mapError .star
         pure (CheckedKeyedEntityTarget.star source, source.declaration.groupPath, some source.path.firstStar)
-  let groups := (model.repeatableScopeForGroupPath targetGroup).filterMap fun level =>
-    (model.repeatableGroupAtLevel? level).filter (·.indexField.isSome)
-  let some group := groups.getLast? | throw (.index (.missingIndexField targetGroup))
+  let some group := model.semanticIndexGroupForPath? targetGroup | throw (.index (.missingIndexField targetGroup))
   let selection ← elaborateSemanticIndexSelection model declaringGroup group authored.key |>.mapError .index
   let depth := selection.indexDeclaration.repeatableScope.length
   if let some firstStar := firstStar? then

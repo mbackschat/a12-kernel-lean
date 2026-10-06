@@ -200,8 +200,21 @@ structure CheckedRuleGroupSemanticIndexSource (model : FlatModel) where
   selection : CheckedSemanticIndexSelection model
   groupSelected : (selection.group.path == ruleGroup) = true
 
-/-- A semantic-index source certified against one exact target group, its declared index field, one
-selected target declaration in that group, and a literal or dynamic key. The index and target kinds
+/-- The index binds the nearest indexed ancestor (spec/08 §4); fixed descendants retain the
+same row address, while an additional repeatable level needs its own addressing carrier. -/
+def FlatModel.semanticIndexGroupForPath? (model : FlatModel) (path : GroupPath) : Option RepeatableGroupDecl :=
+  ((model.repeatableScopeForGroupPath path).filterMap fun level =>
+    (model.repeatableGroupAtLevel? level).filter (·.indexField.isSome)).getLast?
+
+def FlatModel.admitsSemanticIndexTarget (model : FlatModel)
+    (group : RepeatableGroupDecl) (declaration : FlatFieldDecl) : Bool :=
+  match model.lookupUniqueId declaration.id with
+  | .error _ => false
+  | .ok admitted => admitted == declaration && group.path.isPrefixOf declaration.groupPath &&
+      declaration.repeatableScope == [group.level]
+
+/-- A semantic-index source certified against one indexed ancestor, its declared index field, one
+selected target declaration at the same repeatable scope, and a literal or dynamic key. The index and target kinds
 are unconstrained here: the shared column owner decides the index identity, and the selected target's
 kind belongs to whichever consumer reads it. -/
 structure CheckedSemanticIndexSource (model : FlatModel) where
@@ -215,7 +228,7 @@ structure CheckedSemanticIndexSource (model : FlatModel) where
   indexOwned :
     model.admitsSingleGroupDeclaration group indexDeclaration = true
   targetOwned :
-    model.admitsSingleGroupDeclaration group targetDeclaration = true
+    model.admitsSemanticIndexTarget group targetDeclaration = true
   keyOwned : key.admittedBy model = true
   keyAgrees : key.agreesWith indexDeclaration = true
 
@@ -225,7 +238,13 @@ def CheckedSemanticIndexSelection.indexSource (selection : CheckedSemanticIndexS
   targetDeclaration := selection.indexDeclaration, key := selection.key,
   modelWellFormed := selection.modelWellFormed, groupOwned := selection.groupOwned,
   indexDeclared := selection.indexDeclared, indexOwned := selection.indexOwned,
-  targetOwned := selection.indexOwned, keyOwned := selection.keyOwned, keyAgrees := selection.keyAgrees }
+  targetOwned := by
+    have pathSelf (path : GroupPath) : path.isPrefixOf path = true := by
+      induction path <;> simp_all [GroupPath.isPrefixOf]
+    have owned := selection.indexOwned
+    cases resolved : model.lookupUniqueId selection.indexDeclaration.id <;>
+      simp_all [FlatModel.admitsSingleGroupDeclaration, FlatModel.admitsSemanticIndexTarget, pathSelf],
+  keyOwned := selection.keyOwned, keyAgrees := selection.keyAgrees }
 
 /-- A Number selected field keeps its own scale and empty-fillability metadata independently
 of the index field's identity domain (`spec/08` §4). -/
@@ -434,9 +453,8 @@ def elaborateRuleGroupSemanticIndexSource (model : FlatModel)
         selection := checked.selection
         groupSelected := checked.groupSelected }
 
-/-- Resolve the target first, then require its exact one-level repeatable group, its declared index
-field of any kind, and a literal whose identity domain matches that index or a nonrepeatable field
-key. -/
+/-- Resolve the target before its nearest indexed ancestor, retaining the target at the same
+one-level row scope. The key is a declaration-admitted literal or a nonrepeatable field. -/
 def elaborateSemanticIndexSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceSemanticIndex) :
     Except SemanticIndexElabError (CheckedSemanticIndexSource model) :=
@@ -445,12 +463,12 @@ def elaborateSemanticIndexSource (model : FlatModel)
   | .ok () => do
       let targetDeclaration ← model.resolveFieldDeclarationUnchecked
         declaringGroup authored.target |>.mapError .resolve
-      let group ← model.lookupUniqueRepeatablePath targetDeclaration.groupPath
-        |>.mapError .resolve
+      let some group := model.semanticIndexGroupForPath? targetDeclaration.groupPath
+        | throw (.missingIndexField targetDeclaration.groupPath)
       let selection ← elaborateSemanticIndexSelectionWithValidatedModel model declaringGroup
         group authored.key hModel
       if hTargetOwned :
-          model.admitsSingleGroupDeclaration selection.group targetDeclaration = true then
+          model.admitsSemanticIndexTarget selection.group targetDeclaration = true then
         pure {
           group := selection.group
           indexDeclaration := selection.indexDeclaration
@@ -634,7 +652,7 @@ private def NumberIndexCandidate.directUnavailable? :
 
 private def NumberIndexCandidates.toColumn
     (candidates : List NumberIndexCandidate) (level : RepeatableLevel)
-    (context : SingleGroupValidationContext) (targetField : FlatNumberField) :
+    (readTarget : RowIndex → CheckedCell) :
     ResolvedSemanticIndexColumn :=
   let results := evalRepetitionNotUnique (candidates.map (·.resolved level))
   let unavailableKey := match
@@ -652,7 +670,7 @@ private def NumberIndexCandidates.toColumn
     | .present (.number key), .notFired =>
         some {
           token := SemanticIndexKey.number key
-          target := context.read pair.1.row targetField.id
+          target := readTarget pair.1.row
         }
     | _, _ => none
   { entries, unavailableKey }
@@ -722,7 +740,7 @@ def resolveColumn (checked : CheckedNumberSemanticIndexSource model)
   let context := model.checkSingleGroupContext checked.group raw
   pure (NumberIndexCandidates.toColumn
     (scanNumberIndexKeys context checked.indexField raw.candidates)
-    checked.group.level context checked.targetField)
+    checked.group.level (fun row => checked.targetDeclaration.checkRaw (raw.read row checked.targetDeclaration.id)))
 
 /-- Evaluate the checked literal or dynamic Number lookup through the sole resolved phase-policy owner. -/
 def lookupValue (checked : CheckedNumberSemanticIndexSource model)

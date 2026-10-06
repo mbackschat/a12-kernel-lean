@@ -217,6 +217,20 @@ private def keyContext (raw : RawCell) : RawFlatContext := {
   read id := if id == selectorId then raw else .empty
 }
 
+private def fixedDescendantRead (groups : GroupPath) (phase : Phase) (target : RawCell) : Option CellObservation := do
+  let path := items.path ++ groups
+  let model := { model with fields := [keyDecl, { targetDecl with groupPath := path }, selectorDecl] }
+  let source ← (elaborateNumberSemanticIndexSource model ["Order"]
+    { authored 5 with target := { base := .absolute, groups := path, field := "Amount" } }).toOption
+  (source.lookupValue (raw [1,2] (fun row => if row == 1 then .parsed (.num 5) else .parsed (.num 6))
+    (fun row => if row == 1 then target else .parsed (.num 99))) emptyKeyContext phase).toOption
+
+example : [[], ["Body"], ["Body", "Details"]].all (fun groups =>
+    fixedDescendantRead groups .validation (.parsed (.num 7)) == some (.value (.num 7)) &&
+    fixedDescendantRead groups .computation (.parsed (.num 7)) == some (.value (.num 7)) &&
+    fixedDescendantRead groups .validation .empty == some .empty &&
+    fixedDescendantRead groups .computation .empty == some .empty) = true := by native_decide
+
 private def contextErrorOf {value : Type} :
     Except SemanticIndexContextError value → Option SemanticIndexContextError
   | .ok _ => none

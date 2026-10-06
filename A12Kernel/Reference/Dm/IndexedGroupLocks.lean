@@ -124,6 +124,54 @@ private def conditionalPair : Option (List String) := do
 example : validation "AllGroupsFilled(Rows/Code For Key,Key)" = some (.fired .value) ∧
     computation "AllGroupsFilled(Rows/Code For Key,Key)" = some "value 1" := by native_decide
 
+example : validation "FieldFilled(Rows/Body/A For Key)" "R2" = some (.fired .value) ∧
+    computation "FieldFilled(Rows/Body/A For Key)" "R2" = some "value 1" ∧
+    validation "FieldFilled(Rows/Body/A For Key)" = some .unknown ∧
+    computation "FieldFilled(Rows/Body/A For Key)" = some "cleared" ∧
+    validation "FieldNotFilled(Rows/Body/A For Key)" "missing" = some (.fired .omission) ∧
+    computation "FieldNotFilled(Rows/Body/A For Key)" "missing" = some "value 1" := by native_decide
+
+example : validation "[Rows/Body/A For Key] == 2" "R2" = some (.fired .value) ∧
+    computation "[Rows/Body/A For Key] == 2" "R2" = some "value 1" ∧
+    computation "[Rows/Body/A For Key] == 7" "R1" "bad" false "R2" (some ("Rows/Body/A", "7")) = some "value 1" ∧
+    computation "FieldFilled(Rows/Body/A For Key)" "missing" "2" false "R2" (some ("Key", "\"R1\"")) = some "value 1" := by native_decide
+
+example : validation "AllGroupsFilled(Rows/Body/A For Key,Key)" "R2" = some (.fired .value) ∧
+    computation "AllGroupsFilled(Rows/Body/A For Key,Key)" "R2" = some "value 1" ∧
+    validation "NoGroupFilled(Rows/Body For Key,Rows/Body/A For Key)" = none ∧
+    computation "NoGroupFilled(Rows/Body For Key,Rows/Body/A For Key)" = none ∧
+    validation "FieldFilled(Rows/Children/C For Key)" = none ∧
+    computation "FieldFilled(Rows/Children/C For Key)" = none := by native_decide
+
+private def descendantAggregates := [
+  "Sum(Rows/Body/A For Key,Rows/Body/A For \"R2\") == 9",
+  "MinValue(Rows/Body/A For Key,Rows/Body/A For \"R2\") == 2",
+  "MaxValue(Rows/Body/A For Key,Rows/Body/A For \"R2\") == 7",
+  "NumberOfDifferentValues(Rows/Body/A For Key,Rows/Body/A For \"R2\") == 2",
+  "FirstFilledValue(Rows/Body/A For Key,Rows/Body/A For \"R2\") == 7",
+  "NumberOfValueInFields(2 In Rows/Body/A For Key,Rows/Body/A For \"R2\") == 1"]
+
+example : descendantAggregates.all (fun expression =>
+    validation expression "R1" "7" == some (.fired .value) &&
+    computation expression "R1" "7" == some "value 1") = true := by native_decide
+
+private def descendantFillOutcomes : List (Option Verdict × Option String) :=
+  ["AllFieldsFilled", "NoFieldFilled", "AtLeastOneFieldFilled", "MoreThanOneFieldFilled",
+    "NotAllFieldsFilled", "NotExactlyOneFieldFilled", "FieldsNotCollectivelyFilled"].map fun operator =>
+    let expression := operator ++ "(Rows/Body/A For Key,Rows/Body/B For Key)"
+    (validation expression "R2", computation expression "R2")
+
+example : validation "NumberOfFilledFields(Rows/Body/A For Key,Rows/Body/B For Key) == 1" "R2" = some (.fired .omission) ∧
+    computation "NumberOfFilledFields(Rows/Body/A For Key,Rows/Body/B For Key) == 1" "R2" = some "value 1" := by native_decide
+
+example : descendantFillOutcomes = [
+    (some .unknown, some "cleared"), (some .unknown, some "cleared"),
+    (some (.fired .value), some "value 1"), (some .unknown, some "cleared"),
+    (some (.fired .omission), some "value 1"), (some .unknown, some "cleared"),
+    (some (.fired .omission), some "value 1")] ∧
+    validation "FieldFilled(Rows/Body/A For Key)" "R2" "bad" true = some .unknown ∧
+    computation "FieldFilled(Rows/Body/A For Key)" "R2" "bad" true = some "cleared" := by native_decide
+
 private def classification : Option Bool := do
   let parsed ← (parseText .english "GroupFilled(Rows/Body For Key)").toOption
   let condition ← (lowerCondition model ["Form"] false parsed.body).toOption
