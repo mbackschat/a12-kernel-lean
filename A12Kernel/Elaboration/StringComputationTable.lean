@@ -160,10 +160,10 @@ def toResolved (table : CheckedStringComputationTable model) (prior : PriorStrin
 /-- Evaluate through the sole resolved first-match owner and an explicitly prepared target matcher. Selection completes before the chosen String expression can produce no value, rejection, or poison. -/
 def evaluateOutcomeWithPattern (table : CheckedStringComputationTable model)
     (wholeValueMatches? : Option (String → Bool)) (context : StringComputationContext)
-    (guardContext : ScalarComputationContext) :
+    (guardContext : ScalarComputationContext) (indexColumn? : Option SemanticIndexColumnReader := none) :
     Except CheckedStringComputationFault StringTargetOutcome :=
   match (table.toResolved .empty).evaluateOutcomeWithGuard
-      (fun condition => condition.evalChecked guardContext)
+      (fun condition => condition.evalChecked guardContext indexColumn?)
       CheckedStringComputationFault.guard CheckedStringComputationFault.operation wholeValueMatches? context with
   | .error (.guard (.predicate .valueFailure)) => .ok .invalidNoValue
   | result => result

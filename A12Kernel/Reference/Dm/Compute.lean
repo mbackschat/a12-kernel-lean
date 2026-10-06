@@ -84,6 +84,10 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
       let mut result ← lowerGuard model group suppress first targetGroup?
       for part in rest do result := join result (← lowerGuard model group suppress part targetGroup?)
       pure result
+  | .call "FieldFilled" [.mk (.entity { path, index := some key, category := none }) none none] none none =>
+      (.predicate ∘ .indexedFieldPresence .filled) <$> lowerIndexedSource model group path key
+  | .call "FieldNotFilled" [.mk (.entity { path, index := some key, category := none }) none none] none none =>
+      (.predicate ∘ .indexedFieldPresence .notFilled) <$> lowerIndexedSource model group path key
   | .call "FieldFilled" [.mk field none none] none none => match field.fieldEntity? with
       | some path => pure (.fieldFilled path)
       | none => refuse "Guard" "FieldFilled operand"

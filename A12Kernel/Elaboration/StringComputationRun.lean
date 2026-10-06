@@ -52,14 +52,14 @@ namespace CheckedStringComputationTable
 def evaluateCompletion (table : CheckedStringComputationTable model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (context : StringComputationContext)
-    (guardContext : ScalarComputationContext) :
+    (guardContext : ScalarComputationContext) (indexColumn? : Option SemanticIndexColumnReader := none) :
     Except StringComputationRunFault StringComputationRunCompletion :=
   match patterns.targetMatcher? table.targetField with
   | none =>
       .error (.evaluation table.targetField
         (.operation (.targetPatternUnavailable table.targetField)))
   | some matcher =>
-      match table.evaluateOutcomeWithPattern matcher context guardContext with
+      match table.evaluateOutcomeWithPattern matcher context guardContext indexColumn? with
       | .error fault => .error (.evaluation table.targetField fault)
       | .ok outcome =>
           match StringDependencyCell.ofOutcome outcome with

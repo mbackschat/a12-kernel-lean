@@ -39,26 +39,6 @@ inductive ResolvedGroupListOperand (model : FlatModel) where
   | starredGroup (source : CheckedStarredGroupSource model)
   | starredGroupPresence (source : CheckedStarredGroupPresenceSource model)
 
-/-- Presence operators for an ordinary non-starred repeatable field reference. Evaluation reuses the established scalar presence observation after the rule environment has selected one exact field instance. -/
-inductive RepeatableFieldPresenceOperator where
-  | filled
-  | notFilled
-  deriving Repr, DecidableEq
-
-namespace RepeatableFieldPresenceOperator
-
-def canFireOnEmpty : RepeatableFieldPresenceOperator → Bool
-  | .filled => false
-  | .notFilled => true
-
-def eval (operator : RepeatableFieldPresenceOperator)
-    (observation : CellObservation) : Verdict :=
-  match operator with
-  | .filled => observation.evalValidationFilled
-  | .notFilled => observation.evalValidationNotFilled
-
-end RepeatableFieldPresenceOperator
-
 namespace ResolvedGroupListOperand
 
 def entityPath : ResolvedGroupListOperand model → List String
@@ -236,6 +216,7 @@ end ConditionTree
 
 /-- The validation leaf families admitted by this checked condition boundary, indexed by the one model that owns every retained source certificate. -/
 inductive ValidationConditionLeaf (model : FlatModel) where
+  | indexedFieldPresence (operator : RepeatableFieldPresenceOperator) (source : CheckedSemanticIndexSource model)
   | customCondition (name : CheckedCustomConditionName)
   | flat (condition : FlatConditionLeaf)
   | numeric (scope : NumericOperandScope) (comparison : NumericComparison)
@@ -290,6 +271,7 @@ private def numericClassificationSource : NumericValidationAtom → Bool
   | .stringRange _ _ _ | .fieldValueAsNumber _ | .aggregate _ _ | .filledGroupCount _ => true
 
 private def orderedNumericClassificationSource : OrderedNumericValidationAtom model → Bool
+  | .indexed _ => true
   | .temporalPart source => !source.source.fieldIds.isEmpty
   | .ordinary source => numericClassificationSource source
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _ | .booleanValueCount _
@@ -319,7 +301,7 @@ def ValidationConditionLeaf.requiresClassificationPass : ValidationConditionLeaf
   | .groupPresence operator reference => !reference.isRoot || operator == .notFilled
   | .groupList operator operands =>
       !operands.any (·.isRootGroup) || operator == .noGroupFilled
-  | .repeatableFieldPresence operator _ => operator == .notFilled
+  | .indexedFieldPresence operator _ | .repeatableFieldPresence operator _ => operator == .notFilled
   | .repetitionNotUnique _ => true
   | .guardedRootCurrentRepetition _ _ _ | .guardedRepeatableCurrentRepetition _ _ _ => false
   | .iteratedDateRange (.pluralOverlap source) => source.hasHaving
@@ -538,7 +520,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .numeric _ _ | .orderedNumeric _ _ => false
   | .groupPresence operator _ => operator.canFireOnEmpty
   | .groupList operator _ => operator.canFireOnEmpty
-  | .repeatableFieldPresence operator _ => operator.canFireOnEmpty
+  | .indexedFieldPresence operator _ | .repeatableFieldPresence operator _ => operator.canFireOnEmpty
   | .repetitionNotUnique _ => false
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
@@ -569,6 +551,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .groupPresence _ reference, field => reference.referencesField model field
   | .groupList _ operands, field =>
       operands.any fun operand => operand.referencesField field
+  | .indexedFieldPresence _ source, field => source.referencesField field
   | .repeatableFieldPresence _ declaration, field =>
       declaration.id == field
   | .repetitionNotUnique source, field =>
@@ -596,6 +579,7 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | .orderedNumeric _ comparison, field => comparison.referencesErrorField field
   | .iteratedDateRange condition, field => condition.referencesErrorField field
   | leaf@(.flat _), field | leaf@(.numeric _ _), field | leaf@(.groupPresence _ _), field
+  | leaf@(.indexedFieldPresence _ _), field
   | leaf@(.groupList _ _), field | leaf@(.repeatableFieldPresence _ _), field
   | leaf@(.repetitionNotUnique _), field | leaf@(.guardedRootCurrentRepetition _ _ _), field
   | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field
@@ -618,7 +602,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
   | .orderedNumeric _ comparison => comparison.hasHaving
   | .iteratedDateRange condition => !condition.filters.isEmpty
   | .flat _ | .numeric _ _ | .groupPresence _ _ | .groupList _ _
-  | .repeatableFieldPresence _ _ | .repetitionNotUnique _
+  | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ | .repetitionNotUnique _
   | .guardedRootCurrentRepetition _ _ _
   | .guardedRepeatableCurrentRepetition _ _ _
   | .customFieldValidity _ | .stringPattern _ => false
@@ -637,7 +621,7 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .groupList _ operands =>
       operands.any fun operand =>
         operand.isStarred || operand.iterationScope.isSome
-  | .repeatableFieldPresence _ _ => true
+  | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ => true
   | .repetitionNotUnique _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => true
@@ -674,6 +658,7 @@ def wellFormedBool (rowGroup : GroupPath) :
       reference.presenceWellFormedBool model rowGroup
   | .groupList operator operands =>
       ResolvedGroupListOperands.wellFormedBool operator operands rowGroup
+  | .indexedFieldPresence _ _ => true
   | .repeatableFieldPresence _ declaration =>
       match model.lookupUniqueId declaration.id with
       | .ok checked =>
@@ -704,7 +689,7 @@ def wellFormedBool (rowGroup : GroupPath) :
   | .customFieldValidity leaf => leaf.operand.declaration.repeatableScope.isEmpty
   -- The rule's row must bind every level the operand leaves unstarred above its own depth.
   | .fieldFill _ source =>
-      !source.hasIndexed && source.bindingScope.all (model.repeatableScopeForGroupPath rowGroup).contains
+      source.bindingScope.all (model.repeatableScopeForGroupPath rowGroup).contains
   | .stringPattern leaf => model.admitsStringPatternField leaf.condition.field &&
       (model.fieldRepeatableScope leaf.condition.field.id).isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
 

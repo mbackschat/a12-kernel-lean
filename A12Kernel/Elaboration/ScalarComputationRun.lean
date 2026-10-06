@@ -396,8 +396,10 @@ def evaluateStep (run : CheckedScalarComputationRun model)
     CheckedScalarComputationStep model →
       Except ScalarComputationRunFault ScalarComputationCompletion
   | .string table =>
+      let current := run.documentFor state input
       match table.evaluateCompletion patterns
-          (run.stringContext state input) (run.numberContext world state input) with
+          (run.stringContext state input) (run.numberContext world state input)
+          (some (current.resolveSemanticIndexColumnWith current.read)) with
       | .ok completion => .ok (.string completion)
       | .error cause => .error (.string cause)
   | .number table =>

@@ -34,8 +34,8 @@ private def scanValues (kind : ScanKind) (read : slot → ComputationFillSlot)
   | .inr result => .terminated result
 
 private def scanSources
-    (consume : Operand → Bool → Except ComputationFillError SearchResult) :
-    List Operand → Bool → Except ComputationFillError SearchResult
+    (consume : Operand → Bool → Except Error SearchResult) :
+    List Operand → Bool → Except Error SearchResult
   | [], seen => pure (.exhausted seen)
   | source :: rest, seen => do
       match ← consume source seen with
@@ -118,14 +118,28 @@ private def scanOperand (kind : ScanKind) (context : ScalarComputationContext)
         scanExpanded kind context declaration.id axes source.source.boundLevelCount seen)
       source.declarations seen
 
-def evalChecked (source : CheckedComputationFieldFill model) (operator : FieldFillQuantifier)
-    (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell) :
-    Except ComputationFillError ComputationConditionResult :=
+/-- The indexed operand shares the scan continuation with ordinary operands, preserving
+short-circuiting before lookup and phase-specific poison at a reached read (`spec/08` §4.2). -/
+def evalCheckedWith (source : CheckedComputationFieldFill model) (operator : FieldFillQuantifier)
+    (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell)
+    (liftError : ComputationFillError → Error)
+    (indexedRead : CheckedSemanticIndexSource model → Except Error CellObservation) :
+    Except Error ComputationConditionResult :=
   operator.evalComputationUsing fun kind => do
-    match ← scanSources (scanOperand kind context filterRead) source.source.operands false with
+    let consume operand seen := match operand with
+      | .indexed indexed => do
+          let observation ← indexedRead indexed
+          pure (scanValues kind id [observation.asComputationFillSlot] seen)
+      | operand => (scanOperand kind context filterRead operand seen).mapError liftError
+    match ← scanSources consume source.source.operands false with
     | .exhausted _ => pure .exhausted
     | .terminated result => pure result
     | .poison cause => pure (.poison cause)
+
+def evalChecked (source : CheckedComputationFieldFill model) (operator : FieldFillQuantifier)
+    (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell) :
+    Except ComputationFillError ComputationConditionResult :=
+  source.evalCheckedWith operator context filterRead id (fun _ => .error .indexedOperandNotSupported)
 
 end CheckedComputationFieldFill
 end A12Kernel

@@ -38,7 +38,7 @@ def evalSelected (context : ValidationEvaluationContext)
       | some states =>
           (operator.evalPresence states).asConservativeVerdict
       | none => .unknown
-  | .repeatableFieldPresence _ _ => .unknown
+  | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ => .unknown
   | .repetitionNotUnique _ => .unknown
   | .guardedRootCurrentRepetition guard _ comparison =>
       Verdict.conj
@@ -309,6 +309,11 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
             (document.groupPresenceInput reference.path context.outer
               .fullyRelevant false).mapError .group
           pure (operator.eval input.derive)
+  | .indexedFieldPresence operator source => do
+      let document ← match context.input with
+        | .checked document => pure document
+        | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired source.group.path)
+      pure (operator.eval (← source.observeDocument document context.outer .validation))
   | .repeatableFieldPresence operator declaration => do
       pure (operator.eval
         (observeCell .validation

@@ -13,6 +13,7 @@ namespace CheckedNumericComputationAtom
 /-- Mirror the exact context-required branches of the existing scalar Numeric evaluator. -/
 def supportsScalarEvaluation :
     CheckedNumericComputationAtom model → Bool
+  | .indexed _ => false
   | .filledFieldCount source => source.computationSources.toOption.any fun sources =>
       sources.all fun | .direct _ => true | .expanded _ _ _ => false
   | .firstFilled source | .valueCount _ source =>

@@ -216,8 +216,10 @@ def executeStep (plan : CheckedMixedComputationPlan model compilePattern) (world
       pure { state with rows := state.rows ++ outcomes.map numberPlacement
                         outcomes := state.outcomes ++ outcomes.map .number }
   | .string table => do
+      let current := plan.documentFor state input
       let completion ← (table.evaluateCompletion patterns (plan.stringContext state input)
-        ((plan.documentFor state input).scalarComputationContext world)).mapError .string
+        (current.scalarComputationContext world)
+        (some (current.resolveSemanticIndexColumnWith current.read))).mapError .string
       pure { state with fixed := state.fixed ++ [.string completion]
                         outcomes := state.outcomes ++ [.string completion.targetField completion.outcome] }
   | .document step => do

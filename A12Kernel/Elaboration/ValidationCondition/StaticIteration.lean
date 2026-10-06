@@ -246,6 +246,7 @@ private def ordinaryNumericAtomIterationScope
 private def orderedNumericAtomIterationScope :
     OrderedNumericValidationAtom model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
+  | .indexed _ => pure none
   | .temporalPart source =>
       mergeIterationScopeList (source.source.fieldIds.map fun field =>
         let scope := model.fieldRepeatableScope field
@@ -314,6 +315,7 @@ def orderedNumericComparisonIterationScope
 def ordinaryIterationScope :
     ValidationCondition model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
+  | .leaf (.indexedFieldPresence _ _) => pure none
   | .leaf (.repeatableFieldPresence _ declaration) =>
       pure (some declaration.repeatableScope)
   | .leaf (.constructedDateValidity _ source) =>

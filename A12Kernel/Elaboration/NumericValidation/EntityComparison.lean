@@ -31,6 +31,7 @@ and temporal, tried in that order on the same authored list.
 namespace A12Kernel
 
 inductive EntityNumericComparisonElabError where
+  | semanticIndex (error : SemanticIndexElabError)
   | temporalExpression (error : TemporalNumericExpressionError)
   | ordinary (error : NumericValidationElabError)
   | numberSource (error : NumberEntityElabError)
@@ -65,6 +66,8 @@ private def SurfaceNumericAtom.ofEntityAtom? :
 private def resolveEntityAtom (model : FlatModel) (rowGroup bindingGroup : GroupPath) :
     SurfaceNumericComputationAtom →
       Except EntityNumericComparisonElabError (OrderedNumericValidationAtom model)
+  | .indexed source =>
+      (elaborateNumericSemanticIndexSource model rowGroup source).map .indexed |>.mapError .semanticIndex
   | .temporalPart source part =>
       (elaborateTemporalNumericExpression model rowGroup source part (some bindingGroup)).map .temporalPart
         |>.mapError .temporalExpression

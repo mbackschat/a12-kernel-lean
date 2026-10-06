@@ -43,6 +43,7 @@ private def FlatModel.admitsTemporalComputationOperand
 
 def FlatModel.admitsNumericComputationOperand
     (model : FlatModel) (scope : List RepeatableLevel) : CheckedNumericComputationAtom model → Bool
+  | .indexed _ => true
   | .temporalPart source => model.directFieldsBoundBy scope source.source.fieldIds
   | .filledFieldCount source =>
       !source.operands.isEmpty && source.rowBoundBool scope &&
@@ -153,6 +154,7 @@ def CheckedNumericComputationAtom.numericScaleSummary
   | .numeric source =>
       source.summaryWith FlatFieldDecl.numericScaleSummary
         CheckedNumberEntitySource.aggregateScaleSummary
+  | .indexed source => NumericScaleSummary.field source.field.info.scale
   | .firstFilled source => source.scaleSummary
   | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _
   | .valueCount _ _ | .filledFieldCount _ => NumericScaleSummary.field 0
@@ -197,6 +199,7 @@ def NumericComputationAtom.referencesField (model : FlatModel) (field : FieldId)
 def CheckedNumericComputationAtom.references
     (model : FlatModel) (field : FieldId) :
     CheckedNumericComputationAtom model → Bool
+  | .indexed source => source.toCheckedSemanticIndexSource.referencesField field
   | .filledFieldCount source => source.referencesField field
   | .firstFilled source => source.referencesField field
   | .valueCount _ source => source.referencesField field
@@ -329,6 +332,8 @@ def FlatModel.elaborateNumericComputationAtom
     (model : FlatModel) (declaringGroup targetGroup : GroupPath) :
     SurfaceNumericComputationAtom →
       Except NumericComputationElabError (CheckedNumericComputationAtom model)
+    | .indexed source =>
+        (elaborateNumericSemanticIndexSource model declaringGroup source).map .indexed |>.mapError .semanticIndex
     | .temporalPart source part =>
         (elaborateTemporalNumericExpression model declaringGroup source part (some targetGroup)).map .temporalPart
           |>.mapError .temporalExpression

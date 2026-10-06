@@ -19,6 +19,7 @@ inductive SurfaceScalarMembershipMembers where
   deriving Repr, DecidableEq
 
 inductive SurfaceComputationPredicate where
+  | indexedFieldPresence (operator : RepeatableFieldPresenceOperator) (source : SurfaceSemanticIndex)
   | pattern (source : SurfaceStringPatternCondition)
   | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceConstructedDateComponents)
   | typeValidity (operation : CustomFieldValidityOp) (source : SurfaceFieldPath) (name : String)
@@ -35,6 +36,7 @@ inductive SurfaceComputationPredicate where
   | scalarOverlap (source : SurfaceAtLeastOneDateRangeOverlapsSource)
 
 inductive ComputationPredicateElabError where
+  | semanticIndex (error : SemanticIndexElabError)
   | pattern (error : ComputationStringPatternElabError)
   | typeOperand (error : CustomFieldValidityOperandElabError)
   | typeName (error : CustomFieldValidityElabError)
@@ -54,6 +56,7 @@ inductive ComputationPredicateElabError where
   deriving Repr, DecidableEq
 
 inductive ComputationPredicateError where
+  | indexSelection (error : CheckedAddressingError)
   | stringExpression (error : StringComputationFault)
   /-- Runtime failure at a reached guard becomes the target's calculation-value error, separately
   from inherited operand poison (comparison-guard grid, 2026-10-04). -/
@@ -68,6 +71,7 @@ inductive ComputationPredicateError where
 /-- Retain typed source certificates and authored filters; computation traversal keeps reached
 errors distinct from validation's unknown verdict. -/
 inductive CheckedComputationPredicate (model : FlatModel) where
+  | indexedFieldPresence (operator : RepeatableFieldPresenceOperator) (source : CheckedSemanticIndexSource model)
   | pattern (source : CheckedComputationStringPattern model)
   | dateValidity (operation : ConstructedDateValidityOp) (source : CheckedConstructedDateComponents model)
   | typeValidity (operation : CustomFieldValidityOp)
@@ -95,6 +99,7 @@ def referencesField (predicate : CheckedComputationPredicate model) (field : Fie
   | .fieldComparison source => source.referencesField field
   | .valueList source | .scalarValueList _ source => source.referencesField field
   | .scalarNumberLiterals _ source _ => source.field.id == field
+  | .indexedFieldPresence _ source => source.referencesField field
   | .fieldFill _ source => source.referencesField field
   | .uniqueness source => source.referencesField field
   | .overlap source => source.referencesField field
@@ -109,6 +114,7 @@ def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List R
   | .fieldComparison source => source.rowBoundBool scope
   | .valueList source | .scalarValueList _ source => source.bindingScopes.all (·.isPrefixOf scope)
   | .scalarNumberLiterals _ source _ => source.declaration.repeatableScope.isPrefixOf scope
+  | .indexedFieldPresence _ _ => true
   | .fieldFill _ source => source.rowBoundBool scope
   | .uniqueness source => source.bindingScopes.all (·.isPrefixOf scope)
   | .overlap source => source.rowBoundBool scope
@@ -296,11 +302,19 @@ private def evalValueList (operator : ComputationValueListOperator)
 its consumer continuation, so a deciding subject avoids the suffix beyond its prefetched successor. -/
 def evalChecked (predicate : CheckedComputationPredicate model)
     (context : ScalarComputationContext)
-    (filterRead? : Option (Env → FieldId → CheckedCell) := none) :
+    (filterRead? : Option (Env → FieldId → CheckedCell) := none)
+    (indexColumn? : Option SemanticIndexColumnReader := none) :
     Except ComputationPredicateError ComputationConditionResult :=
   let filterRead := filterRead?.getD (fun row field =>
     (context.addressed.map (fun addressed => addressed.read row field)).getD (context.read field))
   match predicate with
+  | .indexedFieldPresence operator source => do
+      let some readColumn := indexColumn? | throw .contextRequired
+      let observation ← source.observeColumnWith .computation readColumn context.row context.read context.storedText
+        |>.mapError .indexSelection
+      pure (match operator with
+        | .filled => observation.evalComputationFilled
+        | .notFilled => observation.evalComputationNotFilled)
   | .pattern source => (source.eval { read := context.read }).mapError .stringExpression
   | .dateValidity operation source => do
       let observation ← (source.evaluateComponentsWith (fun component =>
@@ -332,7 +346,11 @@ def evalChecked (predicate : CheckedComputationPredicate model)
       | .dateTimeLabelUnresolved | .componentNumberInvalid => .valueFailure
       | .calendarUnavailable | .indexedOperandNotSupported => .temporalUnavailable)
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
-  | .fieldFill operator source => (source.evalChecked operator context filterRead).mapError .fieldFill
+  | .fieldFill operator source =>
+      source.evalCheckedWith operator context filterRead .fieldFill fun indexed => do
+        let some readColumn := indexColumn? | throw .contextRequired
+        indexed.observeColumnWith .computation readColumn context.row context.read context.storedText
+          |>.mapError .indexSelection
   | .overlap source => (source.evalChecked context filterRead).mapError fun
       | .contextRequired => .contextRequired
       | .addressing error => .addressing error
@@ -385,6 +403,9 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
     (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
     Except ComputationPredicateElabError (CheckedComputationPredicate model) := do
   match surface with
+  | .indexedFieldPresence operator source =>
+      CheckedComputationPredicate.indexedFieldPresence operator <$>
+        (elaborateSemanticIndexSource model declaringGroup source).mapError .semanticIndex
   | .pattern source => CheckedComputationPredicate.pattern <$>
       (elaborateComputationStringPattern compilePattern model declaringGroup targetGroup source).mapError .pattern
   | .dateValidity operation source => do

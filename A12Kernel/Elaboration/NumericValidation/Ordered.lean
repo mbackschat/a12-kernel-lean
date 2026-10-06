@@ -13,6 +13,7 @@ namespace A12Kernel
 
 /-- A numeric leaf either delegates one established scalar atom unchanged or retains a model-certified first-filled, aggregate, or row-product source for full addressed validation. -/
 inductive OrderedNumericValidationAtom (model : FlatModel) where
+  | indexed (source : CheckedNumericSemanticIndexSource model)
   | temporalPart (source : CheckedTemporalNumericExpression model)
   | ordinary (source : NumericValidationAtom)
   | firstFilled (source : CheckedNumberEntitySource model)
@@ -97,6 +98,7 @@ private def checkedTokenValueCountAdmittedIn
             | .modelWideCheckedComputation => true
 
 def summary : OrderedNumericValidationAtom model → NumericScaleSummary
+  | .indexed source => NumericScaleSummary.field source.field.info.scale
   | .temporalPart _ => NumericScaleSummary.field 0
   | .ordinary source => numericValidationSummary source
   | .firstFilled source => source.scaleSummary
@@ -112,6 +114,7 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
 /-- Structural coordinates and group counts retain their binding requirements independently of
     field dependencies. Field-backed atoms require addressing when a checked declaration repeats. -/
 def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
+  | .indexed _ => true
   | .temporalPart source => source.source.fieldIds.any fun field =>
       (model.lookupUniqueId field).toOption.any (fun declaration => !declaration.repeatableScope.isEmpty)
   | .ordinary (.boundCurrentRepetition _) => true
@@ -134,6 +137,7 @@ def admitted (atom : OrderedNumericValidationAtom model)
     (rowGroup : GroupPath)
     (scope : NumericOperandScope) : Bool :=
   match atom with
+  | .indexed _ => scope == .sameGroupAddressed || scope == .modelWideCheckedComputation
   | .temporalPart source => source.source.fieldIds.all fun field =>
       (model.lookupUniqueId field).toOption.any fun declaration => match scope with
         | .sameGroup => declaration.groupPath == rowGroup && declaration.repeatableScope.isEmpty
@@ -180,6 +184,7 @@ def admitted (atom : OrderedNumericValidationAtom model)
 def referencesField (atom : OrderedNumericValidationAtom model)
     (field : FieldId) : Bool :=
   match atom with
+  | .indexed source => source.toCheckedSemanticIndexSource.referencesField field
   | .temporalPart source => source.source.referencesField field
   | .ordinary source => source.referencesField model field
   | .firstFilled source => source.referencesField field
@@ -211,7 +216,7 @@ def referencesErrorField (atom : OrderedNumericValidationAtom model)
   | .temporalDistinctCount run =>
       run.source.referencesField field CorrelatedHaving.referencesMarkedField
   | .filledFieldCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
+  | .indexed _ | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
       atom.referencesField field
 
 /-- Whether this exact checked atom retains any filtered entity-list slot. This is static source structure, not a statement about which runtime branch or candidate will be reached. -/
@@ -223,7 +228,7 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
   | .tokenDistinctCount source => source.hasHaving
   | .temporalDistinctCount run => run.source.hasHaving
   | .filledFieldCount source => source.hasHaving
-  | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
+  | .indexed _ | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
 
 end OrderedNumericValidationAtom
 
@@ -276,7 +281,7 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
   | .filledFieldCount source => source.supportsPartialCount
   | .valueCount _ _ | .tokenValueCount _
   | .booleanValueCount _ | .sumOfProducts _
-  | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ => false
+  | .indexed _ | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ => false
 
 def OrderedNumericComparison.supportsAddressedPartial
     (comparison : OrderedNumericComparison model) : Bool :=

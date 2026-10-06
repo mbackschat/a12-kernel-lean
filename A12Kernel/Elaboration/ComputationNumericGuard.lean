@@ -18,6 +18,7 @@ inductive CheckedComputationConditionError where
 
 def CheckedComputationConditionError.toNumericFault :
     CheckedComputationConditionError → NumericComputationFault
+  | .predicate (.indexSelection error) => .indexSelection error
   | .primitive error => .guardBinding error
   | .numeric error => error
   | .predicate (.stringExpression error) => .stringExpression error
@@ -93,21 +94,21 @@ def evalCheckedIn (condition : CheckedComputationCondition model)
             context.document.rawCells { field, path } } }
   ComputationConditionOf.evalCheckedWith condition scalar CheckedComputationConditionError.primitive
     (fun atom => (context.readCheckedNumericComputationAtom atom).mapError .numeric)
-    (fun source => (source.evalChecked scalar (some context.filterRead)).mapError .predicate)
+    (fun source => (source.evalChecked scalar (some context.filterRead) context.indexColumn?).mapError .predicate)
 
 /-- The addressed overlay carries completed producers into aggregate and filtered reads too.
 The numeric operation reader owns empty substitution, reached poison and every atom's fold. -/
 def evalChecked (condition : CheckedComputationCondition model)
-    (context : ScalarComputationContext) :
+    (context : ScalarComputationContext) (indexColumn? : Option SemanticIndexColumnReader := none) :
     Except CheckedComputationConditionError ComputationConditionResult :=
   match context.addressed with
   | some addressed => condition.evalCheckedIn {
       scalar := context, document := addressed.document, outer := context.row
-      filterRead := addressed.read, starRead := addressed.read }
+      filterRead := addressed.read, starRead := addressed.read, indexColumn? }
   | none =>
       ComputationConditionOf.evalCheckedWith condition context CheckedComputationConditionError.primitive
         (fun atom => (context.readCheckedNumericComputationAtom atom).mapError .numeric)
-        (fun source => (source.evalChecked context).mapError .predicate)
+        (fun source => (source.evalChecked context (indexColumn? := indexColumn?)).mapError .predicate)
 
 def withCommon (common own : Option (CheckedComputationCondition model)) :
     Option (CheckedComputationCondition model) :=
@@ -142,9 +143,9 @@ def expandCommonPrecondition (common : Option (CheckedComputationCondition model
     { alternative with precondition := CheckedComputationCondition.withCommon common alternative.precondition }
 
 def selectFirstChecked (alternatives : List (CheckedComputationAlternative model Operation))
-    (context : ScalarComputationContext) :
+    (context : ScalarComputationContext) (indexColumn? : Option SemanticIndexColumnReader := none) :
     Except CheckedComputationConditionError (ComputationAlternativeSelection Operation) :=
-  ComputationAlternative.selectFirstWith (fun condition => condition.evalChecked context) alternatives
+  ComputationAlternative.selectFirstWith (fun condition => condition.evalChecked context indexColumn?) alternatives
 
 def selectFirstCheckedIn (alternatives : List (CheckedComputationAlternative model Operation))
     (context : NumericComputationEvaluationContext) :

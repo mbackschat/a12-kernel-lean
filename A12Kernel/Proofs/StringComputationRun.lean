@@ -41,8 +41,9 @@ theorem stringComputationTable_evaluateCompletion_faultTarget
     (table : CheckedStringComputationTable model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (context : StringComputationContext) (guardContext : ScalarComputationContext)
+    {indexColumn? : Option SemanticIndexColumnReader}
     (fault : StringComputationRunFault)
-    (evaluated : table.evaluateCompletion patterns context guardContext = .error fault) :
+    (evaluated : table.evaluateCompletion patterns context guardContext indexColumn? = .error fault) :
     fault.target = table.targetField := by
   unfold CheckedStringComputationTable.evaluateCompletion at evaluated
   split at evaluated

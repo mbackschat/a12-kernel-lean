@@ -78,6 +78,7 @@ inductive SemanticIndexElabError where
   /-- The literal key's identity domain disagrees with the declared index field's: a numeric literal
   against a text-identity index, or a text literal against a Number one. -/
   | indexKeyDomainMismatch (path : List String) (key : SemanticIndexKey)
+  | targetNotNumber (path : List String)
   /-- The reduced raw-context route needs a Number index and a Number target; the general
   preliminary route does not. -/
   | reducedRouteNeedsNumber (path : List String)
@@ -102,7 +103,7 @@ def diagnostic? : SemanticIndexElabError → Option KernelStaticDiagnostic
   | .keyContainedInIndexedGroup _ _ => some .semanticIndexContainedInIndex
   | .resolve error => error.diagnostic?
   | .group _ | .missingIndexField _ | .indexKeyDomainMismatch _ _
-  | .reducedRouteNeedsNumber _ | .incoherentCore => none
+  | .targetNotNumber _ | .reducedRouteNeedsNumber _ | .incoherentCore => none
 
 /-- Exact diagnostic projection measured for the `RuleGroup` literal suffix. A missing index on
 other carriers requires its own evidence before it can inherit this code
@@ -213,7 +214,20 @@ structure CheckedSemanticIndexSource (model : FlatModel) where
   keyOwned : key.admittedBy model = true
   keyAgrees : key.agreesWith indexDeclaration = true
 
+/-- A Number selected field keeps its own scale and empty-fillability metadata independently
+of the index field's identity domain (`spec/08` §4). -/
+structure CheckedNumericSemanticIndexSource (model : FlatModel) extends CheckedSemanticIndexSource model where
+  field : FlatNumberField
+  targetNumber : targetDeclaration.toNumberField? = some field
+
 namespace CheckedSemanticIndexSource
+
+/-- Selection reads both the index and any dynamic key, even when its target is a different field. -/
+def referencesField (source : CheckedSemanticIndexSource model) (field : FieldId) : Bool :=
+  source.targetDeclaration.id == field || source.indexDeclaration.id == field ||
+    match source.key with
+    | .field declaration => declaration.id == field
+    | .literal _ _ => false
 
 /-- Whether the declared index field compares by numeric value. This is the sole place the two key
 identity domains are chosen between. -/
@@ -706,5 +720,13 @@ def validationNumberOperand (checked : CheckedNumberSemanticIndexSource model)
   pure (column.validationNumberObservedKeyOperand checked.targetField.info key)
 
 end CheckedNumberSemanticIndexSource
+
+/-- Refine an already checked selection by the target's Number kind, without narrowing the index kind. -/
+def elaborateNumericSemanticIndexSource (model : FlatModel) (declaringGroup : GroupPath)
+    (surface : SurfaceSemanticIndex) : Except SemanticIndexElabError (CheckedNumericSemanticIndexSource model) := do
+  let source ← elaborateSemanticIndexSource model declaringGroup surface
+  match h : source.targetDeclaration.toNumberField? with
+  | none => throw (.targetNotNumber source.targetDeclaration.path)
+  | some field => pure { toCheckedSemanticIndexSource := source, field, targetNumber := h }
 
 end A12Kernel

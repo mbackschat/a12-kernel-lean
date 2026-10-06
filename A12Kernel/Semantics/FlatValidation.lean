@@ -752,6 +752,27 @@ def evalValidationNotFilled : CellObservation → Verdict
 
 end CellObservation
 
+/-- Presence of one field selected by ordinary iteration or semantic index shares the scalar
+observation and omission rules (`spec/03` §2). -/
+inductive RepeatableFieldPresenceOperator where
+  | filled
+  | notFilled
+  deriving Repr, DecidableEq
+
+namespace RepeatableFieldPresenceOperator
+
+def canFireOnEmpty : RepeatableFieldPresenceOperator → Bool
+  | .filled => false
+  | .notFilled => true
+
+def eval (operator : RepeatableFieldPresenceOperator)
+    (observation : CellObservation) : Verdict :=
+  match operator with
+  | .filled => observation.evalValidationFilled
+  | .notFilled => observation.evalValidationNotFilled
+
+end RepeatableFieldPresenceOperator
+
 def FlatField.evalFilled (field : FlatField) (context : FlatContext) : Verdict :=
   (field.observeValidation context).evalValidationFilled
 

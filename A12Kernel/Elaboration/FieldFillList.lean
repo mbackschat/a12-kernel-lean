@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.FilledFieldStarCount
 
 The seven field-fill quantifiers and `NumberOfFilledFields` take an entity list: direct fields,
 starred fields and groups, mixed ([`spec/02`](../../spec/02-logic-and-formal-errors.md) §A.4). The
-count additionally admits index-selected fields; indexed quantifiers remain explicitly unsupported. Each
+count and quantifiers also support index-selected fields through their shared phase-aware lookup. Each
 operand keeps the source that already owns its reading: a direct field reads its cell at the rule's
 row, a starred field its in-capacity rows, and a group the checked group source's in-capacity
 subtree. The list concatenates their validation observations, so the count's rule (an invalid cell
@@ -96,21 +96,11 @@ def referencesField (operand : CheckedFieldFillOperand model) (field : FieldId)
     | .star source => source.filter.any fun filter => havingReads filter.condition field
     | _ => false
 
-private def indexedObservation (document : CheckedDocument model) (outer : Env)
-    (source : CheckedSemanticIndexSource model) (phase : Phase) :
-    Except CheckedAddressingError CellObservation := do
-  let preliminary ← (document.applySelectedFullIndexPreliminary [source.indexDeclaration.id])
-    |>.mapError .indexPreliminary
-  let column ← source.resolvePreliminaryColumn preliminary outer |>.mapError .semanticIndex
-  let key ← source.observeCurrentKey phase
-    (document.computationCellAt preliminary.readAuthoredValidation [])
-    (document.storedTextIn []) |>.mapError .semanticIndex
-  pure (column.lookupObservationForIndex phase source.numericIndex key)
 
 def observations (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) :
     CheckedFieldFillOperand model → Except CheckedAddressingError (List CellObservation)
-  | .indexed source => List.singleton <$> indexedObservation document outer source .validation
+  | .indexed source => List.singleton <$> source.observeDocument document outer .validation
   | .field declaration => do
       -- EntityUtil.resolveIterations retains the bound singleton; RuntimeController's
       -- isWertAngegeben observes its formal state rather than treating it as a reopened extent.
@@ -148,7 +138,7 @@ the validation tally's total tail cannot preserve this order. -/
 def computationSlots (document : CheckedDocument model) (outer : Env) :
     CheckedFieldFillOperand model → Except CheckedAddressingError (List ComputationFillSlot)
   | .indexed source => do
-      pure [(← indexedObservation document outer source .computation).asComputationFillSlot]
+      pure [(← source.observeDocument document outer .computation).asComputationFillSlot]
   | .field declaration =>
       computationCoreSlots <$> document.resolveCheckedDirectEntityOperandCoreAt outer declaration.id
   | .star source => do
@@ -333,7 +323,6 @@ def evaluateFill? (list : CheckedFieldFillList model) (operator : FieldFillQuant
     (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) :
     Except CheckedAddressingError (Option ValidationFillOutcome) := do
-  if list.hasIndexed then throw .unsupportedIndexedFillQuantifier
   if list.hasHaving then
     let declared := match operator with
       | .allFieldsFilled | .notAllFieldsFilled | .fieldsNotCollectivelyFilled => true
@@ -396,8 +385,7 @@ def elaborateFieldFillList (model : FlatModel) (rowGroup : GroupPath)
     (categoryGate := if consumer == .quantifier then .behindRootGate else .absent)
     (groupReadScope := .ruleBound)).mapError .shape
   let operands ← ((authored.first :: authored.rest).zip shape.operands).mapM fun
-    | (_, .indexed source) =>
-        if consumer == .count then pure (.indexed source) else throw .unsupportedOperand
+    | (_, .indexed source) => pure (.indexed source)
     | (_, .field declaration .stored) => pure (.field declaration)
     | (_, .star source) => pure (.star (.plain rowGroup source))
     | (_, .starHaving source having) => do
@@ -417,7 +405,7 @@ and multiplicity gates (`spec/09` §5). Resolved group expansions retain that bi
 re-entering validation's rule-group resolver. -/
 def elaborateComputationFieldFillList (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (authored : SurfaceFieldEntitySource)
-    (consumer : FieldFillListConsumer := .quantifier) :
+    (_consumer : FieldFillListConsumer := .quantifier) :
     Except FieldFillListElabError (CheckedFieldFillList model) := do
   let shape ← (elaborateFieldEntityShapeIn model declaringGroup
     (model.repeatableScopeForGroupPath targetGroup) authored .manyRequired
@@ -434,8 +422,7 @@ def elaborateComputationFieldFillList (model : FlatModel)
     | .starHaving source having => do
         pure (.star (← (CheckedFilledFieldStarSource.withHaving model declaringGroup targetGroup
           source having targetGroup).mapError .having))
-    | .indexed source =>
-        if consumer == .count then pure (.indexed source) else throw .unsupportedOperand
+    | .indexed source => pure (.indexed source)
     | .field _ (.projected _) => throw .unsupportedOperand
   pure { operands }
 

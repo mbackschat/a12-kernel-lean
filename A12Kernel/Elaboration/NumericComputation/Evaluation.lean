@@ -12,11 +12,9 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
   match operand with
   | .indexed source => do
       let some readColumn := indexColumn? | throw .repeatableContextRequired
-      let column ← readColumn source.group source.targetDeclaration.id context.row
-        |>.mapError .indexSelection
-      let key ← source.observeCurrentKey .computation context.read context.storedText
-        |>.mapError (NumericComputationFault.indexSelection ∘ CheckedAddressingError.semanticIndex)
-      return match column.lookupObservationForIndex .computation source.numericIndex key with
+      let observation ← source.observeColumnWith .computation readColumn context.row
+        context.read context.storedText |>.mapError .indexSelection
+      return match observation with
         | .value _ => .ok 1
         | .empty => .ok 0
         | .unknown cause | .poison cause => .error cause
@@ -281,6 +279,7 @@ def readTemporalNumericExpression (context : ScalarComputationContext)
 def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
     CheckedNumericComputationAtom model →
       Except NumericComputationFault NumericComputationResult
+  | .indexed _ => throw .repeatableContextRequired
   | .temporalPart source => context.readTemporalNumericExpression source
   | .filledFieldCount source => source.evaluateComputationCount context
   | .firstFilled source =>
@@ -508,6 +507,11 @@ def readCheckedNumericComputationAtom
     (context : NumericComputationEvaluationContext) :
     CheckedNumericComputationAtom model →
       Except NumericComputationFault NumericComputationResult
+  | .indexed source => do
+      let some readColumn := context.indexColumn? | throw .repeatableContextRequired
+      let observation ← source.toCheckedSemanticIndexSource.observeColumnWith .computation readColumn context.outer
+        context.scalar.read context.scalar.storedText |>.mapError .indexSelection
+      pure ((observation.asDirectNumericComparisonOperand source.field.info).toComputationResult)
   | .temporalPart source => context.scalar.readTemporalNumericExpression source
   | .filledFieldCount source =>
       source.evaluateComputationCount { context.scalar with
@@ -635,7 +639,7 @@ def CheckedNumericComputationAtom.numericComputationFault? :
         match CheckedFieldFillList.computationSources { operands := [operand] } with
         | .ok _ => none
         | .error error => some (.fieldFillSource error)
-  | .temporalPart _ | .firstFilled _ => none
+  | .indexed _ | .temporalPart _ | .firstFilled _ => none
   | .valueCount _ _ => none
   | .tokenDistinctCount _ | .temporalDistinctCount _ => none
   | .tokenValueCount _ => none

@@ -201,7 +201,8 @@ def execute (table : CheckedRowComputationTable model) (world : World)
     (fun environment => atRow environment family.noValue DocumentComputationReadBack.empty)
     (fun environment => do
       let context := (document.computationContextAt environment).withWorld world
-      match CheckedComputationAlternative.selectFirstChecked table.alternatives context with
+      match CheckedComputationAlternative.selectFirstChecked table.alternatives context
+          (some (document.resolveSemanticIndexColumnWith document.read)) with
       | .error (.predicate .valueFailure) => atRow environment (.valueError family) DocumentComputationReadBack.poison
       | .error error => throw (.guardBinding error)
       | .ok .noMatch => atRow environment family.noValue DocumentComputationReadBack.empty

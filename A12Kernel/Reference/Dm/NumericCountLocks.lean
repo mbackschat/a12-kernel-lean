@@ -327,16 +327,16 @@ private def indexedSurface : SurfaceFieldEntitySource := {
     target := { base := .absolute, groups := ["Form", "Rows"], field := "Qty" }
     key := .literal (.number 1) }] }
 
-private def indexedQuantifierRefused (operator : FieldFillQuantifier) : Option (Bool × Bool) := do
+private def indexedQuantifierSupported (operator : FieldFillQuantifier) : Option (Bool × Bool) := do
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler indexedModel).toOption
   let input ← (checkDocument prepared "en_US" (indexedInput "2" false)).toOption
   let source ← (elaborateFieldFillList indexedModel ["Form"] indexedSurface).toOption
-  pure (!(CheckedValidationCondition.checkCore indexedModel ["Form"] (.leaf (.fieldFill operator source)) (by native_decide)).isOk,
-    !(source.evaluateFill? operator input []).isOk)
+  pure ((CheckedValidationCondition.checkCore indexedModel ["Form"] (.leaf (.fieldFill operator source)) (by native_decide)).isOk,
+    (source.evaluateFill? operator input []).isOk)
 
-example : indexedQuantifierRefused .atLeastOneFieldFilled = some (true, true) ∧
-    indexedQuantifierRefused .noFieldFilled = some (true, true) := by native_decide
+example : indexedQuantifierSupported .atLeastOneFieldFilled = some (true, true) ∧
+    indexedQuantifierSupported .noFieldFilled = some (true, true) := by native_decide
 
 example : [CheckedSemanticIndexKey.literal (.text "wrong"),
     .field { id := 1, groupPath := ["Form"], name := "Anchor", policy := { kind := .boolean } }].all

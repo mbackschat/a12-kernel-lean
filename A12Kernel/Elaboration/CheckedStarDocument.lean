@@ -43,6 +43,29 @@ the document retains index preparation and exact selected addresses. -/
 abbrev SemanticIndexColumnReader := RepeatableGroupDecl → FieldId → Env →
   Except CheckedAddressingError ResolvedSemanticIndexColumn
 
+/-- Read a certified key and target through one phase-aware selection path. The column reader
+retains current computed payloads; `spec/08` §4.2 owns per-lookup versus per-column failure. -/
+def CheckedSemanticIndexSource.observeColumnWith (source : CheckedSemanticIndexSource model)
+    (phase : Phase) (readColumn : SemanticIndexColumnReader) (outer : Env)
+    (read : FieldId → CheckedCell) (stored : FieldId → Option String) :
+    Except CheckedAddressingError CellObservation := do
+  let column ← readColumn source.group source.targetDeclaration.id outer
+  let key ← source.observeCurrentKey phase read stored |>.mapError .semanticIndex
+  pure (column.lookupObservationForIndex phase source.numericIndex key)
+
+/-- Full validation reads the selected target through the same checked preliminary column as counts.
+The index owns generated findings; the document owns the current key spelling (`spec/08` §4.2). -/
+def CheckedSemanticIndexSource.observeDocument (source : CheckedSemanticIndexSource model)
+    (document : CheckedDocument model) (outer : Env) (phase : Phase) :
+    Except CheckedAddressingError CellObservation := do
+  let preliminary ← document.applySelectedFullIndexPreliminary [source.indexDeclaration.id]
+    |>.mapError .indexPreliminary
+  let column ← source.resolvePreliminaryColumn preliminary outer |>.mapError .semanticIndex
+  let key ← source.observeCurrentKey phase
+    (fun field => (preliminary.readAuthoredValidation { field, path := [] }).toOption.getD malformedCheckedCell)
+    (fun field => document.storedTextAt { field, path := [] }) |>.mapError .semanticIndex
+  pure (column.lookupObservationForIndex phase source.numericIndex key)
+
 /-- Compatibility name for the original one-star projection API. -/
 abbrev CheckedStarDocumentError := CheckedAddressingError
 

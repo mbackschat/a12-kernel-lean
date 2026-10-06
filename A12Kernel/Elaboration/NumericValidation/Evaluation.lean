@@ -110,6 +110,7 @@ def resolve (atom : OrderedNumericValidationAtom model)
     (context : ValidationEvaluationContext) (isRelevant : FlatRelevance) :
     Except NumericValidationUnavailable NumericArithmeticOutcome :=
   match atom with
+  | .indexed _ => .error .groupState
   | .ordinary source =>
       if source.allRelevant isRelevant then
         context.resolveNumericValidationAtom source
@@ -289,6 +290,12 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
     Except CheckedAddressingError
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   match atom with
+  | .indexed source => do
+      let document ← match context.input with
+        | .checked document => pure document
+        | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired source.group.path)
+      let observation ← source.toCheckedSemanticIndexSource.observeDocument document context.outer .validation
+      pure ((observation.asDirectNumericComparisonOperand source.field.info).toValidationArithmetic)
   | .temporalPart source => do
       let fields ← temporalNumericFields source context
       (source.evalResult .validation fields).mapError (fun _ => .temporalUnavailable)
@@ -596,7 +603,7 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
           | .ok (.evaluated result) => pure result.asValidationOperand.toValidationArithmetic
   | .valueCount _ _ | .tokenValueCount _
   | .booleanValueCount _ | .sumOfProducts _
-  | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ =>
+  | .indexed _ | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ =>
       pure (.error .groupState)
 
 /-- Evaluate a partial addressed numeric comparison. `none` means the atom family or filter shape is structurally unsupported; a reached relevance failure is numeric UNKNOWN. The caller must apply the rule-wide `Having` skip first. -/

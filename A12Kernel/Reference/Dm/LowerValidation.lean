@@ -337,6 +337,14 @@ private partial def scaleRefusal? (model : FlatModel) (rowGroup : GroupPath) (su
       | .error _ => none
   | _ => none
 
+private def lowerIndexedPresence (model : FlatModel) (rowGroup bindingGroup : GroupPath)
+    (operator : RepeatableFieldPresenceOperator) (path : Path) (key : IndexKey) :
+    Lowering (CheckedValidationCondition model) := do
+  let source ← lowerIndexedSource model rowGroup path key
+  let checked ← elaborated "SemanticIndex" (elaborateSemanticIndexSource model rowGroup source)
+  elaborated "SemanticIndex" (CheckedValidationCondition.checkCore model bindingGroup
+    (.leaf (.indexedFieldPresence operator checked)) checked.modelWellFormed rowGroup)
+
 /-- Lower a rule condition at its rule group. `suppress` is the `@SuppressWarning` preamble. -/
 partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress : Bool) (condition : Expr)
     (world : World := { now := { epochMillis := 0 } })
@@ -350,6 +358,10 @@ partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress 
       ((CheckedValidationCondition.fromFlat checked).bind (·.atBinding bindingGroup)).toOption
   match whole, condition with
   | some checked, _ => pure checked
+  | none, .call "FieldFilled" [.mk (.entity { path, index := some key, category := none }) none none] none none =>
+      lowerIndexedPresence model rowGroup bindingGroup .filled path key
+  | none, .call "FieldNotFilled" [.mk (.entity { path, index := some key, category := none }) none none] none none =>
+      lowerIndexedPresence model rowGroup bindingGroup .notFilled path key
   | none, .custom name quoted => do
       let spelling := if quoted then CustomConditionNameSpelling.quoted name else .unquoted name
       let some checkedName := checkCustomConditionName (fun _ => false) spelling

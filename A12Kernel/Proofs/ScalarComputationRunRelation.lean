@@ -17,14 +17,15 @@ private theorem checkedStringComputationTable_evaluateCompletion_target
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (context : StringComputationContext) (guardContext : ScalarComputationContext)
     (completion : StringComputationRunCompletion)
+    {indexColumn? : Option SemanticIndexColumnReader}
     (evaluated :
-      table.evaluateCompletion patterns context guardContext = .ok completion) :
+      table.evaluateCompletion patterns context guardContext indexColumn? = .ok completion) :
     completion.targetField = table.targetField := by
   cases matcher : patterns.targetMatcher? table.targetField with
   | none =>
       simp [CheckedStringComputationTable.evaluateCompletion, matcher] at evaluated
   | some targetMatcher =>
-      cases outcome : table.evaluateOutcomeWithPattern targetMatcher context guardContext with
+      cases outcome : table.evaluateOutcomeWithPattern targetMatcher context guardContext indexColumn? with
       | error fault =>
           simp [CheckedStringComputationTable.evaluateCompletion,
             matcher, outcome] at evaluated
@@ -72,7 +73,9 @@ theorem scalarComputationRun_evaluateStep_target
   cases step with
   | string table =>
       cases result : table.evaluateCompletion patterns
-          (run.stringContext state input) (run.numberContext world state input) with
+          (run.stringContext state input) (run.numberContext world state input)
+          (some ((run.documentFor state input).resolveSemanticIndexColumnWith
+            (run.documentFor state input).read)) with
       | error fault =>
           simp [CheckedScalarComputationRun.evaluateStep, result] at evaluated
       | ok stringCompletion =>

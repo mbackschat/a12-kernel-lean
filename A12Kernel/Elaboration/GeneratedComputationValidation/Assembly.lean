@@ -443,6 +443,7 @@ def CheckedNumericComputationAtom.toValidationAtom :
   | .valueCount expected source =>
       pure (.valueCount expected source)
   | .tokenDistinctCount source => pure (.tokenDistinctCount source)
+  | .indexed source => pure (.indexed source)
   | .temporalPart source => pure (.temporalPart source)
   | .temporalDistinctCount run => pure (.temporalDistinctCount run)
   | .tokenValueCount source =>
@@ -583,6 +584,8 @@ private def generatedGuardCondition (model : FlatModel) (world? : Option World) 
         operand, operation
         validity := { name, validator? := world.resolveCustomFieldValidator? name } }))
   | .leaf (.predicate (.temporal source)) => pure (.leaf (.scalarTemporal source))
+  | .leaf (.predicate (.indexedFieldPresence operator source)) =>
+      pure (.leaf (.indexedFieldPresence operator source))
   | .leaf (.predicate (.fieldFill operator source)) => pure (.leaf (.fieldFill operator source.source))
   | .leaf (.predicate (.uniqueness source)) => pure (.leaf (.valuesNotUnique source))
   | .leaf (.predicate (.overlap source)) => pure (.leaf (.iteratedDateRange source.toValidation))

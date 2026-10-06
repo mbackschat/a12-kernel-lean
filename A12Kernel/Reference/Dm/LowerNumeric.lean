@@ -94,6 +94,8 @@ def lowerValidationNumericAtom : Expr → Lowering SurfaceNumericAtom :=
 entity lists. -/
 def lowerComputationNumericAtom (model : FlatModel) (group : GroupPath) :
     Expr → Lowering SurfaceNumericComputationAtom
+  | .value { path, index := some key, category := none } =>
+      (.indexed ·) <$> lowerIndexedSource model group path key
   | .call "NumberOfFilledFields" arguments none none =>
       (.filledFieldCount ·) <$> lowerEntitySource model group arguments
   | .call "FirstFilledValue" arguments none none =>

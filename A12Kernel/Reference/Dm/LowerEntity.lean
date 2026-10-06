@@ -252,8 +252,8 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
 def namesField (model : FlatModel) (group : GroupPath) (path : SurfaceFieldPath) : Bool :=
   (model.resolveFieldDeclarationUnchecked group path).toOption.isSome
 
-private def lowerIndexedEntity (model : FlatModel) (group : GroupPath)
-    (path : Path) (key : IndexKey) : Lowering SurfaceFieldEntityOperand := do
+def lowerIndexedSource (model : FlatModel) (group : GroupPath)
+    (path : Path) (key : IndexKey) : Lowering SurfaceSemanticIndex := do
   let some target := path.toFieldPath? | refuse "SemanticIndex" "target path"
   let declaration ← elaborated "SemanticIndex" (model.resolveFieldDeclarationUnchecked group target)
   let selectedGroup ← elaborated "SemanticIndex" (model.lookupUniqueRepeatablePath declaration.groupPath)
@@ -280,14 +280,14 @@ private def lowerIndexedEntity (model : FlatModel) (group : GroupPath)
     | .path authored => do
         let some field := authored.toFieldPath? | refuse "SemanticIndex" "key path"
         pure (.field field)
-  pure (.indexed { target, key })
+  pure { target, key }
 
 /-- One entity-list operand. -/
 def lowerEntityOperand (model : FlatModel) (group : GroupPath) :
     Argument → Lowering SurfaceFieldEntityOperand
   | .mk (.constant "RuleGroup") none none => pure (.group (.ruleGroup false))
   | .mk (.entity { path, index := some key, category := none }) none none =>
-      lowerIndexedEntity model group path key
+      (.indexed ·) <$> lowerIndexedSource model group path key
   | .mk (.entity { path, index := none, category }) none filter => do
       if path.correlated then refuse "EntityOperand" "correlated"
       let terminalStar := path.segments.getLast?.any (·.star)

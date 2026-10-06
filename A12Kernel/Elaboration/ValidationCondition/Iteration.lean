@@ -191,7 +191,7 @@ private def numericEntityGuardShape? :
   -- The token distinct count shares the Number one's fold, but no measurement crosses that carrier
   -- boundary for the guard, so it classifies nothing and an iterating rule it alone would guard stays
   -- refused as unclassified.
-  | .temporalPart _ | .ordinary _ | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
+  | .indexed _ | .temporalPart _ | .ordinary _ | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
   | .temporalDistinctCount _ => none
 
 private def positiveCountThresholdIsUnguarded
@@ -333,6 +333,7 @@ private def ValidationConditionLeaf.iterationGuardAt
         | .notFilled => .unguarded
       else
         .noReference
+  | .indexedFieldPresence _ _ => .noReference
   | .repeatableFieldPresence operator declaration =>
       if declaration.repeatableScope.contains level then
         match operator with
@@ -431,7 +432,7 @@ def supportsOrdinaryIteration
     (condition : ValidationCondition model) : Bool :=
   condition.allLeaves fun
     | .flat _ | .groupPresence _ _ | .groupList _ _
-    | .repeatableFieldPresence _ _
+    | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _
     | .guardedRootCurrentRepetition _ _ _ => true
     | .guardedRepeatableCurrentRepetition _ _ _ => true
     | .iteratedDateRange _ => true
