@@ -63,7 +63,7 @@ def evalSelected (context : ValidationEvaluationContext)
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
-  | .valuesNotUnique (.number _) | .valuesNotUnique (.token _) => true
+  | .valuesNotUnique _ => true
   | .indexedFieldPresence _ _ | .keyedGroupPresence _ _ | .valueList _ => true
   | .firstFilledComparison comparison => !comparison.hasHaving
   | .tokenComparison comparison => !comparison.hasHaving
@@ -165,7 +165,6 @@ def evalAddressedPartial?
     (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult) :
     ValidationConditionLeaf model →
       Option (Except CheckedAddressingError Verdict)
-  | .valuesNotUnique (.temporal _) => none
   | .valuesNotUnique source =>
       match context.input with
       | .legacy _ _ => none

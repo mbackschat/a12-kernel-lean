@@ -19,7 +19,7 @@ private def partialListSide {kind : ValueListKind} {model : FlatModel}
     (selection : Option (CellObservation PartialSelectedExtent)) (emptyScalar : Bool)
     (scope : ValidationRelevanceScope)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
-    (classify : FlatFieldDecl → CheckedCell → Except CheckedAddressingError (ValueListCell kind)) :
+    (classify : FlatFieldDecl → Env → CheckedCell → Except CheckedAddressingError (ValueListCell kind)) :
     Except CheckedAddressingError (ResolvedValueListSide kind) := do
   match selection with
   | none => pure { (ResolvedValueListSide.empty (kind := kind)) with hasNonRelevant := true }
@@ -36,7 +36,7 @@ private def partialListSide {kind : ValueListKind} {model : FlatModel}
             | result => result
           match cell with
           | none => side := { side with hasNonRelevant := true }
-          | some cell => side := { side with cells := (← classify declaration cell) :: side.cells }
+          | some cell => side := { side with cells := (← classify declaration environment cell) :: side.cells }
         else side := { side with hasNonRelevant := true }
       pure { side with cells := if emptyScalar && extent.addresses.isEmpty then [.empty] else side.cells.reverse }
 
@@ -54,7 +54,7 @@ def CheckedNumberEntityOperand.resolvePartialValueListSide (source : CheckedNumb
     | .group source => partialListExtent document outer scope (model.groupSubtreeFields source.groupPath) source.source.boundLevelCount
     | .starHaving _ => return { (ResolvedValueListSide.empty (kind := .number)) with hasHaving := true }
   partialListSide (model := model) selection (!source.isAlreadyMany) scope read
-    (fun _ cell => pure (observeCell .validation cell).asNumberValueListCell)
+    (fun _ _ cell => pure (observeCell .validation cell).asNumberValueListCell)
 
 /-- Retain declaration-owned token witnesses and operand-local relevance for both list consumers. -/
 def CheckedTokenEntityOperand.resolvePartialValueListSide (source : CheckedTokenEntityOperand model)
@@ -68,10 +68,39 @@ def CheckedTokenEntityOperand.resolvePartialValueListSide (source : CheckedToken
           (fun declaration bound reopened environment => scope.coversValueListExtent model declaration.path bound reopened environment)
     | .star source => partialListExtent document outer scope [source.source.declaration] source.source.path.firstStar
     | .group source => partialListExtent document outer scope (source.slots.map (·.declaration)) source.source.boundLevelCount
-  partialListSide (model := model) selection (!source.isAlreadyMany) scope read fun declaration cell => do
+  partialListSide (model := model) selection (!source.isAlreadyMany) scope read fun declaration _ cell => do
     let some operand := source.tokenOperands.find? (·.field.id == declaration.id)
       | throw (.checkedDocumentRequired declaration.path)
     pure (operand.checkedValueListCellAt .validation cell)
+
+/-- Partial temporal uniqueness retains concrete witnesses and exact spelling. A supplied
+parsed-only replacement needs an overlaid document; stale backing text cannot stand in for it. -/
+def CheckedTemporalUniquenessOperand.resolvePartialValueListSide
+    (source : CheckedTemporalUniquenessOperand model)
+    (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    Except CheckedAddressingError (ResolvedValueListSide .token) := do
+  if source.hasHaving then return { (ResolvedValueListSide.empty (kind := .token)) with hasHaving := true }
+  let selection ← match source with
+    | .field source => partialListExtent document outer scope [source.declaration] source.declaration.repeatableScope.length
+    | .selected source _ =>
+        resolvePartialSelectedExtent source.source document scope outer read
+          (fun declaration bound reopened environment => scope.coversValueListExtent model declaration.path bound reopened environment)
+    | .star path source _ => partialListExtent document outer scope [source.declaration] path.path.firstStar
+    | .group source => partialListExtent document outer scope source.declarations source.source.boundLevelCount
+  let emptyScalar := match source with
+    | .field _ => true
+    | .selected source _ => match source.source with | .inl _ => true | .inr _ => false
+    | _ => false
+  partialListSide (model := model) selection emptyScalar scope read fun declaration environment cell => do
+    match observeCell .validation cell with
+    | .value (.temporal _) | .value (.partialDate _) =>
+        let address ← document.cellAddress environment declaration.id
+        let some stored := document.storedTextForCell address cell
+          | throw (.checkedDocumentRequired declaration.path)
+        pure (temporalUniquenessCell cell (some stored))
+    | .value _ => throw (.checkedDocumentRequired declaration.path)
+    | _ => pure (temporalUniquenessCell cell none)
 
 /-- Execute the three list quantifiers without discarding concrete witnesses from an incomplete
 selected extent. The whole-source filter gate precedes selection and target reads. -/
@@ -114,7 +143,10 @@ def CheckedValuesNotUniqueCondition.evaluatePartialDocument (source : CheckedVal
         let tagged ← collectTaggedValueListCells
           (fun operand => operand.resolvePartialValueListSide document outer scope read) source.source.operands
         pure (evalValuesNotUniqueVerdict tagged)
-    | .temporal _ => throw (.checkedDocumentRequired [])
+    | .temporal source => do
+        let tagged ← collectTaggedValueListCells
+          (fun operand => operand.resolvePartialValueListSide document outer scope read) source.operands
+        pure (evalValuesNotUniqueVerdict tagged)
   pure (.evaluated verdict)
 
 end A12Kernel

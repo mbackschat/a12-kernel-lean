@@ -193,7 +193,7 @@ def declarations (group : CheckedTemporalUniquenessGroup model) :
 def format (group : CheckedTemporalUniquenessGroup model) : String :=
   group.first.format
 
-/-- The expansion's leading declared precision, which its own component gate makes shared. -/
+/-- The leading declaration's precision; exact format agreement does not make partial modes uniform. -/
 def partialMode (group : CheckedTemporalUniquenessGroup model) : TemporalPartialMode :=
   group.first.partialMode
 
@@ -412,7 +412,7 @@ def diagnostic? : TemporalValuesNotUniqueElabError → Option KernelStaticDiagno
 end TemporalValuesNotUniqueElabError
 
 /-- Project one addressed temporal cell to its compared identity. The decoded value is deliberately discarded in favour of the exact stored text; empty and formally unavailable cells keep their own states, because this operator skips both alike. -/
-private def temporalUniquenessCell (cell : CheckedCell) (stored : Option String) :
+def temporalUniquenessCell (cell : CheckedCell) (stored : Option String) :
     ValueListCell .token :=
   match observeCell .validation cell, stored with
   | .value _, some text => .present text

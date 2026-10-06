@@ -32,6 +32,8 @@ private structure Scenario where
   temporalGuard : Bool := false
   scalarPlan : Bool := false
   secondFormat : Option String := none
+  partialCoverage : Option (List RelevantEntityPattern) := none
+  partialMode : TemporalPartialMode := .full
 
 private def input (low high : String) (scenario : Scenario) : Lean.Json :=
   let row (key a b : String) (children : List String) := Lean.Json.mkObj [
@@ -52,10 +54,13 @@ private def evaluate (kind : TemporalKind) (components : TemporalComponents) (fo
             temporalTargetPolicy := some { format := "yyyy-MM-dd" } }
         else field }
     else model
-  let model := match scenario.secondFormat with
+  let model : FlatModel := match scenario.secondFormat with
     | none => model
     | some format => { model with fields := model.fields.map fun field =>
         if field.id == 7 then { field with temporalTargetPolicy := some { format } } else field }
+  let model : FlatModel := { model with fields := model.fields.map fun field =>
+    { field with temporalTargetPolicy := field.temporalTargetPolicy.map fun policy =>
+        { policy with partialMode := scenario.partialMode } } }
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (readDocument {
@@ -80,9 +85,17 @@ private def evaluate (kind : TemporalKind) (components : TemporalComponents) (fo
     let target := if numberTarget then "/Flag" else "/Out"
     pure (.inr (String.intercalate "," ((results.filter (·.pointer.endsWith target)).map (·.outcome))))
   else
-    let parsed ← (parseText .english expression).toOption
+    let parsed ← (parseText .english (if scenario.partialCoverage.isSome then
+      "FieldFilled(Flag) And (" ++ expression ++ ")" else expression)).toOption
     let condition ← (lowerCondition model ["Form"] false parsed.body).toOption
-    Sum.inl <$> (condition.core.evalAddressed {
+    if let some coverage := scenario.partialCoverage then
+      let rule ← (assembleResolvedValidationRule model condition 9 "PARTIAL_TEMPORAL" .error { parts := [] }).toOption
+      let result ← (rule.evalAddressedPartial document (.partialSet (
+        { path := ["Form", "Flag"], indices := [.all, .all] } :: coverage))).toOption
+      match result with
+      | .evaluated result => return .inl result.verdict
+      | .skipped => some (.inr "skipped")
+    else Sum.inl <$> (condition.core.evalAddressed {
       scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable },
       outer := [], input := .checked document }).toOption
 
@@ -329,5 +342,118 @@ example : profiles.all (fun (kind, components, format, low, high) =>
         { scenario with temporalGuard := true } == some (.inr ("value " ++ low)) &&
       evaluate kind components format low high "1" true (some guard)
         { scenario with scalarPlan := true } == some (.inr "value 1")) = true := by native_decide
+
+private def relevant (path : List String) : RelevantEntityPattern :=
+  { path := "Form" :: path, indices := (List.range (path.length + 1)).map fun _ => .all }
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    ["Rows/Body For Key", "Rows/Children*/Value For Key", "Rows/Children* For Key",
+      "Rows/Body/A For Key,Rows/Body/B For Key"].all fun operands =>
+      let expression := "FieldValuesNotUnique(" ++ operands ++ ")"
+      evaluate kind components format low high expression false none
+        { firstA := some high, children := some [low, low],
+          partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } == some (.inl (.fired .value)) &&
+      evaluate kind components format low high expression false none
+        { partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } == some (.inl .notFired)) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    evaluate kind components format low low "FieldValuesNotUnique(Low,High)" false none
+      { partialCoverage := some [relevant ["Low"], relevant ["High"]] } == some (.inl (.fired .value)) &&
+    evaluate kind components format low high "FieldValuesNotUnique(Rows*/Body)" false none
+      { firstA := some high, partialCoverage := some [relevant ["Rows"]] } == some (.inl (.fired .value))) = true := by native_decide
+
+private def concreteChild (child : Nat) : RelevantEntityPattern :=
+  { path := ["Form", "Rows", "Children", "Value"], indices := [.all, .concrete 1, .concrete child, .all] }
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    ["Rows/Children*/Value For Key", "Rows/Children* For Key"].all fun operands =>
+      let expression := "FieldValuesNotUnique(" ++ operands ++ ")"
+      evaluate kind components format low high expression false none
+        { children := some [low, low], partialCoverage := some [relevant ["Key"], relevant ["Rows", "Code"],
+            concreteChild 1, concreteChild 2] } == some (.inl (.fired .value)) &&
+      evaluate kind components format low high expression false none
+        { children := some [low, low], partialCoverage := some [relevant ["Key"], relevant ["Rows", "Code"],
+            concreteChild 1] } == some (.inl .notFired)) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    let expression := "FieldValuesNotUnique(Rows/Body For Key)"
+    evaluate kind components format low high expression false none
+      { firstA := some high, partialCoverage := some [relevant ["Key"], relevant ["Rows", "Code"], relevant ["Rows", "Body", "A"]] } == some (.inl .notFired) &&
+    evaluate kind components format low high expression false none
+      { firstA := some high, secondCode := "R1", partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } == some (.inl .notFired) &&
+    evaluate kind components format low high expression false none
+      { firstA := some high, secondCode := "R1", partialCoverage := some [relevant ["Key"],
+          { path := ["Form", "Rows"], indices := [.all, .concrete 1] }] } == some (.inl (.fired .value)) &&
+    evaluate kind components format low high expression false none
+      { firstA := some high, secondCode := "", partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } == some (.inl (.fired .value)) &&
+    evaluate kind components format low high expression false none
+      { firstA := some high, partialCoverage := some [relevant ["Rows"]] } == some (.inl .notFired)) = true := by native_decide
+
+example : [TemporalPartialMode.dayOptional, .monthOptional, .yearOptional].all (fun partialMode =>
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-06-00" "2024-06-00" "FieldValuesNotUnique(Rows/Body For Key)" false none
+      { partialMode, partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } == some (.inl (.fired .value))) = true := by native_decide
+
+example : evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-01"
+    "FieldFilled(Flag) Or FieldValuesNotUnique(Rows*/Body/A Having (FieldFilled(Rows/Body/A)))" false none
+    { partialCoverage := some [relevant ["Rows"]] } = some (.inr "skipped") := by native_decide
+
+private inductive PartialReadChange where
+  | unchanged | unavailable | unavailableError | malformed | copyLow
+
+private def partialReadback (expression : String) (field : FieldId) (change : PartialReadChange)
+    (partialMode : TemporalPartialMode := .full) : Option (Sum Verdict (List String)) := do
+  let sourceModel : FlatModel := { (model .date .fullDate "yyyy-MM-dd") with
+    fields := (model .date .fullDate "yyyy-MM-dd").fields.map fun declaration =>
+      { declaration with temporalTargetPolicy := declaration.temporalTargetPolicy.map fun policy => { policy with partialMode } } }
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler sourceModel).toOption
+  let low := if partialMode == .full then "2024-01-01" else "2024-01-00"
+  let high := if partialMode == .full then "2024-01-03" else "2024-02-00"
+  let input ← (readDocument {
+    flat := sourceModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (input low high { firstA := some high })).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let parsed ← (parseText .english expression).toOption
+  let checked ← (lowerCondition sourceModel ["Form"] false parsed.body).toOption
+  let .leaf leaf := checked.core | none
+  let context : AddressedValidationEvaluationContext sourceModel := {
+    scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }, outer := []
+    input := .partialView document fun row current =>
+      if current != field then (fun addressed => some addressed.cell) <$> document.addressedCell row current
+      else match change with
+      | .unchanged => (fun addressed => some addressed.cell) <$> document.addressedCell row current
+      | .unavailable => pure none
+      | .unavailableError => .error (.partialUnavailable row current)
+      | .malformed => pure (some malformedCheckedCell)
+      | .copyLow => pure (some (document.flatContext.read 2)) }
+  let result ← leaf.evalAddressedPartial? context .full (fun _ => true)
+    (fun _ _ => .error (.checkedDocumentRequired [])) none
+  pure (match result with
+    | .ok verdict => .inl verdict
+    | .error (.checkedDocumentRequired path) => .inr path
+    | .error _ => .inr ["unexpected failure"])
+
+example : partialReadback "FieldValuesNotUnique(Rows/Body For Key)" 6 .unchanged = some (.inl (.fired .value)) ∧
+    [PartialReadChange.unavailable, .unavailableError, .malformed].all
+      (fun change => partialReadback "FieldValuesNotUnique(Rows/Body For Key)" 6 change == some (.inl .notFired)) = true := by native_decide
+
+example : partialReadback "FieldValuesNotUnique(Rows/Body For Key)" 6 .copyLow =
+      some (.inr ["Form", "Rows", "Body", "A"]) ∧
+    partialReadback "FieldValuesNotUnique(Low,High)" 3 .copyLow =
+      some (.inr ["Form", "High"]) ∧
+    partialReadback "FieldValuesNotUnique(Rows/Body For Key)" 6 .copyLow .dayOptional = some (.inl .notFired) ∧
+    partialReadback "FieldValuesNotUnique(Low,High)" 3 .copyLow .dayOptional = some (.inl (.fired .value)) := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    [[low, "bad", low], [low, low, "bad"]].all fun children =>
+      evaluate kind components format low high "FieldValuesNotUnique(Rows/Children*/Value For Key)" false none
+        { children := some children, partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } == some (.inl (.fired .value))) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    evaluate kind components format low low "FieldValuesNotUnique(Low,High)" false none
+      { partialCoverage := some [relevant ["Low"]] } == some (.inl .notFired) &&
+    evaluate kind components format low high "FieldValuesNotUnique(Rows/Body For Key)" false none
+      { key := "missing", partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } == some (.inl .notFired) &&
+    evaluate kind components format low high "FieldValuesNotUnique(Rows/Children*/Value For Key)" false none
+      { children := some [], partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } == some (.inl .notFired)) = true := by native_decide
 
 end A12Kernel.Dm.IndexedTemporalLocks
