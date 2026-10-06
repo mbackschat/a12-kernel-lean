@@ -157,9 +157,12 @@ private def booleanValueCountReferenceScopes?
 private def productReferenceScopes?
     (source : CheckedNumericProductAggregate model) :
     Option (List (List RepeatableLevel)) := do
-  let left ← checkedStarBindingScope source.left.source
-  let right ← checkedStarBindingScope source.right.source
-  pure [left, right]
+  match source with
+  | .selected _ => pure []
+  | .row source =>
+      let left ← checkedStarBindingScope source.left.source
+      let right ← checkedStarBindingScope source.right.source
+      pure [left, right]
 
 private structure NumericEntityGuardShape where
   referenceScopes : List (List RepeatableLevel)

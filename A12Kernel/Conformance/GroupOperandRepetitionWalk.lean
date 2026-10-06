@@ -16,7 +16,7 @@ import A12Kernel.Elaboration.TokenDistinctCount
 import A12Kernel.Elaboration.TokenValuesNotUnique
 import A12Kernel.Elaboration.TokenValueCount
 import A12Kernel.Elaboration.TokenEntityValueList
-import A12Kernel.Elaboration.NumericAggregate.Fields
+import A12Kernel.Elaboration.NumericAggregate.Products
 
 /-! # A group operand's repetition walk
 

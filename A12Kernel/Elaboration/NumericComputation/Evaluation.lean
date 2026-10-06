@@ -69,9 +69,11 @@ namespace CheckedNumericProductAggregate
 /-- Project the checked paired-row fold through computation-phase reads. Required-only emptiness remains numeric zero; every other reached formal invalidity becomes poison. -/
 def evaluateComputation (checked : CheckedNumericProductAggregate model)
     (document : Document) (outer : Env)
-    (read : Env → FieldId → CheckedCell) :
+    (read : Env → FieldId → CheckedCell)
+    (selectedRead : CheckedKeyedNumberProductOperand model → Except StarAddressingError (ResolvedValueListSide .number) :=
+      fun source => .error (.unsupportedGroupOperand source.source.groupPath)) :
     Except StarAddressingError NumericComputationResult := do
-  pure ((← checked.evaluateAt .computation document outer read).toComputationResult)
+  pure ((← checked.evaluateAt .computation document outer read selectedRead).toComputationResult)
 
 end CheckedNumericProductAggregate
 
@@ -514,6 +516,12 @@ def selectedNumberSide (context : NumericComputationEvaluationContext)
   source.sideWith .computation context.document context.outer context.scalar.read
     context.scalar.storedText context.starRead column |>.mapError (fun _ => .unsupportedGroupOperand source.groupPath)
 
+def selectedProductSide (context : NumericComputationEvaluationContext)
+    (source : CheckedKeyedNumberProductOperand model) : Except StarAddressingError (ResolvedValueListSide .number) := do
+  let some column := context.indexColumn? | throw (.unsupportedGroupOperand source.source.groupPath)
+  source.sideWith .computation context.document context.outer context.scalar.read
+    context.scalar.storedText context.starRead column |>.mapError (fun _ => .unsupportedGroupOperand source.source.groupPath)
+
 def selectedTokenSide (context : NumericComputationEvaluationContext)
     (source : CheckedSelectedTokenEntity model) : Except StarAddressingError (ResolvedValueListSide .token) :=
   source.sideWith .computation context.document context.outer context.scalar.read
@@ -591,7 +599,7 @@ def readCheckedNumericComputationAtom
         |>.mapError NumericComputationFault.repeatableAddressing
   | .sumOfProducts source =>
       (source.evaluateComputation context.document context.outer
-        context.starRead).mapError NumericComputationFault.repeatableAddressing
+        context.starRead context.selectedProductSide).mapError NumericComputationFault.repeatableAddressing
   | .filledGroupCountMixed operands => do
       let readings ← operands.mapM (context.readGroupCountOperand model)
       pure (.value (numberOfFilledGroupsForComputationOperands readings))

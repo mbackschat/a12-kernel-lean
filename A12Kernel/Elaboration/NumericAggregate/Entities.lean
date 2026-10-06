@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.PartialSemanticIndex
-import A12Kernel.Elaboration.NumericAggregate.Fields
+import A12Kernel.Elaboration.NumericAggregate.Products
 
 /-! # Checked mixed entity-list numeric aggregates and value counts -/
 

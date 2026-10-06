@@ -496,4 +496,20 @@ theorem numericProductAggregate_singleton_tail
       (NumericArithmeticOp.multiply.eval left right)) .both := by
   cases leftSigned <;> cases rightSigned <;> rfl
 
+/-- Formal checking consumes the entire left list even when the right list is shorter. -/
+theorem independentNumericProduct_left_unavailable
+    (left right : ResolvedValueListSide .number) (leftSigned rightSigned : Bool)
+    (cause : FormalCause) (unavailable : left.available = .error cause) :
+    evalIndependentNumericProductAggregate left right leftSigned rightSigned = .unknown cause := by
+  simp [evalIndependentNumericProductAggregate, unavailable]
+
+/-- A known left list cannot hide a formal failure anywhere in the right list. The availability
+hypothesis is the generic full-stream scan, not a predicate on the zipped prefix. -/
+theorem independentNumericProduct_right_unavailable
+    (left right : ResolvedValueListSide .number) (leftSigned rightSigned : Bool)
+    (cause : FormalCause) (leftKnown : left.available = .ok ())
+    (unavailable : right.available = .error cause) :
+    evalIndependentNumericProductAggregate left right leftSigned rightSigned = .unknown cause := by
+  simp [evalIndependentNumericProductAggregate, leftKnown, unavailable]
+
 end A12Kernel

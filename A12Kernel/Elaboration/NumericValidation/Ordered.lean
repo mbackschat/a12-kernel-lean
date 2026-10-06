@@ -201,7 +201,7 @@ def referencesField (atom : OrderedNumericValidationAtom model)
   | .booleanValueCount source => source.referencesField field
   | .aggregate _ source => source.referencesField field
   | .sumOfProducts source =>
-      source.left.field.id == field || source.right.field.id == field
+      source.referencesField field
   | .filledGroupCountMixed operands =>
       operands.any fun operand => operand.referencesField model field
   | .filledFieldCount source => source.referencesField field

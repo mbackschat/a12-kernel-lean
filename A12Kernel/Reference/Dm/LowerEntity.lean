@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.IndexKeyShape
 import A12Kernel.Semantics.NumericInput
 import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.TokenEntityList
-import A12Kernel.Elaboration.NumericAggregate.Fields
+import A12Kernel.Elaboration.NumericAggregate.Products
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 
 /-! # Lowering entity lists and row filters
@@ -396,15 +396,17 @@ def lowerEnumerationFirstFilledSource (model : FlatModel) (group : GroupPath) (a
   let first :: rest ← arguments.mapM operand | refuse "EntityOperand" "empty"
   pure { first, rest }
 
-/-- `SumOfProducts(left, right)` over two starred fields, each with its own optional filter. -/
-def lowerProductAggregate (arguments : List Argument) : Lowering SurfaceNumericProductAggregate := do
-  let [.mk (.entity { path := leftPath, index := none, category := none }) none leftFilter,
-      .mk (.entity { path := rightPath, index := none, category := none }) none rightFilter] := arguments
+/-- `SumOfProducts(left, right)` retains each starred field's key and optional filter for checked admission. -/
+def lowerProductAggregate (model : FlatModel) (group : GroupPath) (arguments : List Argument) : Lowering SurfaceNumericProductAggregate := do
+  let [.mk (.entity { path := leftPath, index := leftIndex, category := none }) none leftFilter,
+      .mk (.entity { path := rightPath, index := rightIndex, category := none }) none rightFilter] := arguments
     | refuse "SumOfProducts" "operands"
   let some left := leftPath.toStarFieldPath? | refuse "SumOfProducts" "operand"
   let some right := rightPath.toStarFieldPath? | refuse "SumOfProducts" "operand"
   pure { left, right, leftHaving := ← leftFilter.mapM lowerHaving
-         rightHaving := ← rightFilter.mapM lowerHaving }
+         rightHaving := ← rightFilter.mapM lowerHaving
+         leftKey := ← leftIndex.mapM (fun key => (·.key) <$> lowerKeyedExtent model group leftPath key)
+         rightKey := ← rightIndex.mapM (fun key => (·.key) <$> lowerKeyedExtent model group rightPath key) }
 
 /-- A filled-group count operand: a starred group keeps its stars, anything else is a fixed group. -/
 def lowerGroupCountOperand : Argument → Lowering SurfaceGroupCountOperand

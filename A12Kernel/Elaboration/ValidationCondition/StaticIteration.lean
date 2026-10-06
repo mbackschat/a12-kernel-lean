@@ -277,7 +277,8 @@ private def orderedNumericAtomIterationScope :
         | .group source => pure (groupScope source.source))
   | .booleanValueCount source =>
       checkedBooleanValueCountSourceIterationScope source
-  | .sumOfProducts source =>
+  | .sumOfProducts (.selected _) => pure none
+  | .sumOfProducts (.row source) =>
       mergeIterationScopes
         (checkedStarBindingScope source.left.source)
         (checkedStarBindingScope source.right.source)

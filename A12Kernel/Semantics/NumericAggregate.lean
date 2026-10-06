@@ -352,6 +352,17 @@ def evalNumericProductAggregate
   | .ok (amount, fillability) =>
       .value amount (if side.hasUninstantiatedTail then .both else fillability)
 
+/-- Independently selected product lists pair by position, but both complete lists must be
+formally available, including an unpaired tail (spec/07 §4, keyed products). -/
+def evalIndependentNumericProductAggregate (left right : ResolvedValueListSide .number)
+    (leftSigned rightSigned : Bool) : NumericOperand :=
+  match left.available, right.available with
+  | .error cause, _ | _, .error cause => .unknown cause
+  | .ok (), .ok () => evalNumericProductAggregate {
+      rows := (left.cells.zip right.cells).map fun (left, right) => { left, right }
+      leftSigned, rightSigned
+      hasUninstantiatedTail := left.hasUninstantiatedTail || right.hasUninstantiatedTail }
+
 /-- The Number-valued field-list aggregate operations whose resolved folds share one classified-cell owner. -/
 inductive NumericAggregateOp where
   | sum

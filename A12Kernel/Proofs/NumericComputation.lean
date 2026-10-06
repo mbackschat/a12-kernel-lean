@@ -192,7 +192,7 @@ theorem numericComputationEvaluationContext_product_delegates
     (source : CheckedNumericProductAggregate model) :
     context.readCheckedNumericComputationAtom (.sumOfProducts source) =
       (source.evaluateComputation context.document context.outer
-        context.starRead).mapError
+        context.starRead context.selectedProductSide).mapError
           NumericComputationFault.repeatableAddressing := by
   rfl
 
@@ -204,12 +204,12 @@ theorem scalarComputationContext_product_requiresContext
       .error .repeatableContextRequired := by
   rfl
 
-/-- A checked product atom reports exactly its two owned field references. -/
+/-- A checked product atom preserves its value and selector dependencies. -/
 theorem checkedNumericComputationAtom_product_references
     (source : CheckedNumericProductAggregate model) (field : FieldId) :
     CheckedNumericComputationAtom.references model field
         (.sumOfProducts source) =
-      (source.left.field.id == field || source.right.field.id == field) := by
+      (source.referencesField field) := by
   rfl
 
 /-- A checked product atom derives its result-scale summary from the existing multiplication-shaped pair summary. -/

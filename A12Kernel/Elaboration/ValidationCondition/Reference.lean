@@ -302,12 +302,14 @@ def CheckedBooleanValueCountSource.referencePointers
   (·.flatten) <$> checked.operands.mapM
     (CheckedBooleanValueCountOperand.referencePointers environment)
 
-/-- A row-paired product references both starred value fields and carries no filter at all. Its certificate forces one shared star path, so the two pointers differ only in field identity — which is why this needs no pairing notion of its own. -/
+/-- An unkeyed product references both starred fields on its shared path. Selected products need a selected-coordinate pointer account and are refused here. -/
 def CheckedNumericProductAggregate.referencePointers
     (checked : CheckedNumericProductAggregate model) (environment : Env) :
     Except ReferenceProjectionError (List MessagePointer) := do
-  pure [← starFieldPointer checked.left.source environment,
-    ← starFieldPointer checked.right.source environment]
+  match checked with
+  | .selected _ => throw .unclassifiedOperand
+  | .row checked => pure [← starFieldPointer checked.left.source environment,
+      ← starFieldPointer checked.right.source environment]
 
 /-- Field-fill lists retain operand shape: expanded descendants and starred fields need the
 existing wildcard projection, not the direct-field sieve. Filter coordinates remain unclassified. -/

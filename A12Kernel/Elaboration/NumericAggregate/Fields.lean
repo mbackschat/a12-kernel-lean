@@ -35,6 +35,8 @@ structure SurfaceNumericProductAggregate where
   right : SurfaceStarFieldPath
   leftHaving : Option SurfaceCorrelatedHaving := none
   rightHaving : Option SurfaceCorrelatedHaving := none
+  leftKey : Option SurfaceSemanticIndexKey := none
+  rightKey : Option SurfaceSemanticIndexKey := none
   deriving Repr, DecidableEq
 
 /-- Fail-closed errors specific to the paired-row aggregate boundary. -/
@@ -49,6 +51,7 @@ inductive NumericProductAggregateElabError where
   | wildcardAtLowestLevelRequired
   | repeatableLevelRequired
   | incompatibleTopology
+  | keyed (error : KeyedEntityExtentError)
   deriving Repr, DecidableEq
 
 /-- Exact Kernel class for each measured `SumOfProducts` refusal. Unresolved paths, kind errors, and the defensive topology branch remain deliberately unmapped. -/
@@ -61,10 +64,10 @@ def NumericProductAggregateElabError.diagnostic? :
   | .wildcardAtLowestLevelRequired => some .wildcardAtLowestLevelRequired
   | .repeatableLevelRequired => some .repeatableLevelRequired
   | .source (.path (.containmentBelowStar unbound)) => unbound.diagnostic?
-  | .source _ | .incompatibleTopology => none
+  | .source _ | .incompatibleTopology | .keyed _ => none
 
 /-- Two Number-star declarations certified against one model, one immediate owning group, one declaring scope that binds every unstarred repeatable ancestor, and one identical lowest-repeatable-star plan. Runtime row alignment follows from this shared plan rather than from zipping independently expanded lists. -/
-structure CheckedNumericProductAggregate (model : FlatModel) where
+structure CheckedRowNumericProductAggregate (model : FlatModel) where
   declaringGroup : GroupPath
   left : CheckedStarNumberSource model
   right : CheckedStarNumberSource model
@@ -185,11 +188,12 @@ the filter and before the repeatable level are measured separately
 ([inbound](../../../docs/SOURCES.md#inbound-2026-09-21-corrections)). Where the filter stands against
 the repeatable-level gate is not measured, since only a filtered operand on no repeatable level would
 separate them. -/
-def elaborateNumericProductAggregate (model : FlatModel)
+def elaborateRowNumericProductAggregate (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumericProductAggregate)
     (writtenGroup : GroupPath := declaringGroup) :
     Except NumericProductAggregateElabError
-      (CheckedNumericProductAggregate model) := do
+      (CheckedRowNumericProductAggregate model) := do
+  if authored.leftKey.isSome || authored.rightKey.isSome then throw .incompatibleTopology
   let leftRead ← readNumericProductOperand model declaringGroup writtenGroup authored.left
   let rightRead ← readNumericProductOperand model declaringGroup writtenGroup authored.right
   if leftRead.declaration.groupPath != rightRead.declaration.groupPath then
@@ -220,17 +224,17 @@ def elaborateNumericProductAggregate (model : FlatModel)
   else
     throw (.differentGroups left.groupPath right.groupPath)
 
-namespace CheckedNumericProductAggregate
+namespace CheckedRowNumericProductAggregate
 
 /-- `SumOfProducts` adds the two exact declaration scales, exactly like one checked multiplication. -/
-def scaleSummary (checked : CheckedNumericProductAggregate model) :
+def scaleSummary (checked : CheckedRowNumericProductAggregate model) :
     NumericScaleSummary :=
   NumericScaleSummary.binary .multiply
     (NumericScaleSummary.field checked.left.field.info.scale)
     (NumericScaleSummary.field checked.right.field.info.scale)
 
 /-- Classify both declarations at each environment of the one shared canonical topology. -/
-def selectedSideAt (checked : CheckedNumericProductAggregate model)
+def selectedSideAt (checked : CheckedRowNumericProductAggregate model)
     (phase : Phase) (resolved : ResolvedStarTopology)
     (read : Env → FieldId → CheckedCell) : ResolvedNumericProductSide :=
   { rows := resolved.environments.map fun environment => {
@@ -241,7 +245,7 @@ def selectedSideAt (checked : CheckedNumericProductAggregate model)
     hasUninstantiatedTail := resolved.domain.hasOpenTail }
 
 /-- Resolve the common topology's in-capacity extent once and evaluate the paired-row fold in the requested phase, an over-limit pair contributing nothing on either arm ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-row-star-scans)). -/
-def evaluateAt (checked : CheckedNumericProductAggregate model)
+def evaluateAt (checked : CheckedRowNumericProductAggregate model)
     (phase : Phase) (document : Document) (outer : Env)
     (read : Env → FieldId → CheckedCell) :
     Except StarAddressingError NumericOperand := do
@@ -257,7 +261,7 @@ private def checkedDocumentValueListCellAt
   pure (source.checkedValueListCell phase addressed.cell environment)
 
 /-- Resolve the in-capacity extent of the product's one certified topology against the immutable checked input, then read each left/right pair in kernel encounter order. -/
-def evaluateCheckedDocumentAt (checked : CheckedNumericProductAggregate model)
+def evaluateCheckedDocumentAt (checked : CheckedRowNumericProductAggregate model)
     (phase : Phase) (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError NumericOperand := do
   let resolved ←
@@ -277,7 +281,7 @@ def evaluateCheckedDocumentAt (checked : CheckedNumericProductAggregate model)
   })
 
 /-- Check either owned declaration from raw storage without inventing a third policy. -/
-private def checkedRawCell (checked : CheckedNumericProductAggregate model)
+private def checkedRawCell (checked : CheckedRowNumericProductAggregate model)
     (read : Env → FieldId → RawCell) (environment : Env)
     (field : FieldId) : CheckedCell :=
   if field == checked.left.field.id then
@@ -288,14 +292,14 @@ private def checkedRawCell (checked : CheckedNumericProductAggregate model)
     malformedCheckedCell
 
 /-- Full validation checks raw cells through the two certified declarations and uses the validation face of formal invalidity. -/
-def evaluateValidation (checked : CheckedNumericProductAggregate model)
+def evaluateValidation (checked : CheckedRowNumericProductAggregate model)
     (document : Document) (outer : Env)
     (read : Env → FieldId → RawCell) :
     Except StarAddressingError NumericOperand :=
   checked.evaluateAt .validation document outer (checked.checkedRawCell read)
 
 /-- Partial validation evaluates this pair aggregate only when both declarations cover every row in the one resolved common stream for the current iteration environment. Coverage may be supplied across multiple relevance entities, but wildcarding one field alone remains insufficient. This Lean representation therefore checks the complete present row-coordinate extent and keeps `SumOfProducts` separate from the four combiner aggregates' normalized universal gate. Maintained Kernel observations establish complete-cross-product versus partial coverage per iteration row, but do not distinguish declared capacity from rows present in the document; no correspondence claim is made for that unrepresented distinction. -/
-def evaluatePartial (checked : CheckedNumericProductAggregate model)
+def evaluatePartial (checked : CheckedRowNumericProductAggregate model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) :
     Except StarAddressingError PartialValidationNumberAggregateResult := do
@@ -308,7 +312,7 @@ def evaluatePartial (checked : CheckedNumericProductAggregate model)
   else
     pure .nonRelevant
 
-end CheckedNumericProductAggregate
+end CheckedRowNumericProductAggregate
 
 /-- A nonempty resolved field list certified against one flat model. -/
 structure CheckedNumericAggregateFields (model : FlatModel) where

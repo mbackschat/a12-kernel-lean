@@ -40,7 +40,7 @@ inductive SurfaceNumericComputationAtom where
       (source : SurfaceBooleanValueCountSource)
   | sumOfProducts (source : SurfaceNumericProductAggregate)
 
-/-- One checked numeric computation atom. Ordinary scalar/entity-list sources retain the shared resolved atom, `FirstFilledValue` and value count retain their distinct scans over that same entity-list source, and `SumOfProducts` retains its proof-bearing common-row plan. -/
+/-- One checked numeric computation atom. Ordinary scalar/entity-list sources retain the shared resolved atom, `FirstFilledValue` and value count retain their distinct scans over that same entity-list source, and `SumOfProducts` retains its certified common-row or independently selected plan. -/
 inductive CheckedNumericComputationAtom (model : FlatModel) where
   | indexed (source : CheckedNumericSemanticIndexSource model)
   | indexedString (source : CheckedIndexedStringNumericSource model)

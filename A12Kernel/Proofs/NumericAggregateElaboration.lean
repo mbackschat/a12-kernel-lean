@@ -49,20 +49,20 @@ theorem resolvedNumericAggregate_distinctCount_scaleSummary
 
 /-- A checked product pair exposes one path identity; consumers never need to compare independently resolved row streams. -/
 theorem checkedNumericProductAggregate_samePath
-    (checked : CheckedNumericProductAggregate model) :
+    (checked : CheckedRowNumericProductAggregate model) :
     checked.left.source.path = checked.right.source.path :=
   checked.samePath
 
 /-- Every unstarred repeatable ancestor of a checked product pair lies in the pair's declaring scope. This is the static availability certificate; callers still supply the corresponding runtime environment. -/
 theorem checkedNumericProductAggregate_bindingScopeBound
-    (checked : CheckedNumericProductAggregate model) :
+    (checked : CheckedRowNumericProductAggregate model) :
     checked.left.source.bindingScope.isPrefixOf
       (model.repeatableScopeForGroupPath checked.declaringGroup) = true :=
   checked.bindingScopeBound
 
 /-- The checked pair's result scale is exactly the existing multiplication summary of its two declaration scales. -/
 theorem checkedNumericProductAggregate_scaleSummary
-    (checked : CheckedNumericProductAggregate model) :
+    (checked : CheckedRowNumericProductAggregate model) :
     checked.scaleSummary = NumericScaleSummary.binary .multiply
       (NumericScaleSummary.field checked.left.field.info.scale)
       (NumericScaleSummary.field checked.right.field.info.scale) := by
@@ -70,14 +70,14 @@ theorem checkedNumericProductAggregate_scaleSummary
 
 /-- Once the common path resolves to its in-capacity extent, phase-specific checked evaluation delegates exactly to one shared-topology product side and the pure fold. -/
 theorem checkedNumericProductAggregate_evaluateAt_of_resolved
-    (checked : CheckedNumericProductAggregate model) (phase : Phase)
+    (checked : CheckedRowNumericProductAggregate model) (phase : Phase)
     (document : Document) (outer : Env)
     (read : Env → FieldId → CheckedCell) (resolved : ResolvedStarTopology)
     (resolvedPath : checked.left.source.path.resolveInCapacity document outer = .ok resolved) :
     checked.evaluateAt phase document outer read =
       .ok (evalNumericProductAggregate
         (checked.selectedSideAt phase resolved read)) := by
-  unfold CheckedNumericProductAggregate.evaluateAt
+  unfold CheckedRowNumericProductAggregate.evaluateAt
   rw [resolvedPath]
   rfl
 

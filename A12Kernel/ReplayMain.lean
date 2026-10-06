@@ -31,6 +31,7 @@ import A12Kernel.Reference.Dm.IndexedTokenLocks
 import A12Kernel.Reference.Dm.IndexedStringNumericLocks
 import A12Kernel.Reference.Dm.IndexedNumberTextLocks
 import A12Kernel.Reference.Dm.IndexedBooleanCountLocks
+import A12Kernel.Reference.Dm.IndexedProductLocks
 import A12Kernel.Reference.Dm.FieldFillGuardLocks
 import A12Kernel.Reference.Dm.TemporalExpressionLocks
 import A12Kernel.Reference.Dm.TemporalRowsetLocks

@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.ValidationCondition
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.ValidationRuleGroupOperand
 import A12Kernel.Elaboration.NumericAggregate.Entities
-import A12Kernel.Elaboration.NumericAggregate.Fields
+import A12Kernel.Elaboration.NumericAggregate.Products
 import A12Kernel.Elaboration.NumericComputation.Core
 import A12Kernel.Elaboration.DateRangeFirstFilledComputation
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation
