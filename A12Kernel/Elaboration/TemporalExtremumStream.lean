@@ -299,6 +299,36 @@ private def operandExtent (document : CheckedDocument model) (outer : Env)
         (CheckedEntityGroupSource.starredPresence source).boundLevelCount
         (model.groupSubtreeFields source.groupPath)).mapError .addressing
 
+/-- Selected temporal operands retain the shared index phase policy and each reached declaration.
+An absent lower-star parent has no extent; an absent ordinary group retains missing provenance. -/
+def selectedSide (source : ResolvedFieldEntityOperand model)
+    (phase : Phase) (context : ScalarComputationContext)
+    (project : FlatFieldDecl → CellObservation → Except CheckedAddressingError (SimpleComparisonOperand α)) :
+    Except CheckedAddressingError (ResolvedTemporalAggregateSide α) := do
+  let some addressed := context.addressed | throw (.checkedDocumentRequired source.entityPath)
+  match source with
+  | .indexed selected =>
+      let observation ← selected.observeColumnWith phase context.semanticIndexColumnReader context.row context.read context.storedText
+      pure { operands := [← project selected.targetDeclaration observation], hasUninstantiatedTail := false, hasHaving := false }
+  | .keyed selected =>
+      match ← selected.selectWith phase context.semanticIndexColumnReader context.row context.read context.storedText with
+      | .unknown cause | .poison cause => pure { operands := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }
+      | .empty =>
+          let tail := match selected.target with | .group _ => true | .star _ | .starredGroup _ => false
+          pure { operands := [], hasUninstantiatedTail := tail, hasHaving := false }
+      | .value environment =>
+          let rows ← (selected.rows addressed.document environment).mapError .addressing
+          let mut operands := []
+          for (declaration, environments, _) in rows do
+            for row in environments do
+              let value ← project declaration (observeCell phase (addressed.read row declaration.id))
+              operands := value :: operands
+              if phase == .computation then
+                if let .unknown _ := value then
+                  return { operands := operands.reverse, hasUninstantiatedTail := rows.any (·.2.2), hasHaving := false }
+          pure { operands := operands.reverse, hasUninstantiatedTail := rows.any (·.2.2), hasHaving := false }
+  | _ => throw (.addressing (.unsupportedGroupOperand source.entityPath))
+
 /-- Read one admitted operand list against an immutable checked document.
 
     Operands stay in authored order and each star's rows in canonical topology order, which is what
@@ -320,11 +350,17 @@ def readAddressedSideWith (expected : TemporalComponents)
     let extents ←
       ((admitted.shape.first :: admitted.shape.rest).zip
         admitted.filters).mapM fun (operand, filter) =>
-          operandExtent (world := world) document outer filter operand
+          match operand with
+          | .indexed _ | .keyed _ =>
+              (selectedSide operand phase {
+                read := document.flatContext.read, storedText := document.flatContext.storedText, world, row := outer,
+                addressed := some document.indexedComputationFillContext } (fun _ observation => pure (project observation))).mapError .addressing
+          | _ => do
+              let core ← operandExtent (world := world) document outer filter operand
+              pure { operands := core.inCapacityAddressedCells.map fun addressed => project (observeCell phase addressed.cell)
+                     hasUninstantiatedTail := core.hasUninstantiatedTail, hasHaving := core.hasHaving }
     pure {
-      operands := extents.flatMap fun core =>
-        core.inCapacityAddressedCells.map fun addressed =>
-          project (observeCell phase addressed.cell)
+      operands := extents.flatMap (·.operands)
       hasUninstantiatedTail := extents.any (·.hasUninstantiatedTail)
       hasHaving := extents.any (·.hasHaving) }
 

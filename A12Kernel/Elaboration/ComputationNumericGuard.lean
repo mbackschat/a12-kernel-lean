@@ -82,9 +82,11 @@ that same reader, so a `Having` source cannot silently switch to the selected-va
 def evalCheckedIn (condition : CheckedComputationCondition model)
     (context : NumericComputationEvaluationContext) :
     Except CheckedComputationConditionError ComputationConditionResult :=
+  let addressed := context.scalar.addressed.getD {
+    document := context.document, read := context.starRead }
   let scalar := { context.scalar with
     row := context.outer
-    addressed := some {
+    addressed := some { addressed with
       document := context.document
       read := context.starRead
       storedText := fun row field => match context.scalar.addressed with

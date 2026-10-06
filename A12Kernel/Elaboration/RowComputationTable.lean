@@ -150,7 +150,7 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
   | .stringExpression operation =>
       let field := operation.target.targetField
       let some matcher := patterns.targetMatcher? field | throw (.targetPatternUnavailable field)
-      let context := document.computationContextAt environment
+      let context := document.indexedComputationContextAt environment
       let result ← (operation.expression.eval .computation { read := context.read } context.numberText).mapError .stringExpression
       let term := StringTerm.ofOperand result
       let outcome := operation.target.declaration.checkStringExpressionTarget matcher term.store
@@ -163,10 +163,10 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
   | .booleanConstant operation => pure (booleanOutcome operation.operation.operation)
   | .fixedBooleanConstant operation => pure (booleanOutcome operation.operation.operation)
   | .temporalExpression operation =>
-      let context := document.computationContextAt environment
+      let context := document.indexedComputationContextAt environment
       (operation.run (context.withWorld world)).mapError .readBack
   | .dateRangeConstruction operation =>
-      let outcome ← (operation.evaluateWith (document.computationContextAt environment).read).mapError .dateRangeConstruction
+      let outcome ← (operation.evaluateWith (document.indexedComputationContextAt environment).read).mapError .dateRangeConstruction
       pure (.dateRange outcome, ← (DocumentComputationReadBack.dateRange model operation.target.policy outcome).mapError .readBack)
   | .enumeration operation =>
       let result ← (operation.evaluateAtWithRead document.read environment).mapError .enumeration
@@ -200,7 +200,7 @@ def execute (table : CheckedRowComputationTable model) (world : World)
   document.computationTargetOutcomes scope .rows
     (fun environment => atRow environment family.noValue DocumentComputationReadBack.empty)
     (fun environment => do
-      let context := (document.computationContextAt environment).withWorld world
+      let context := (document.indexedComputationContextAt environment).withWorld world
       match CheckedComputationAlternative.selectFirstChecked table.alternatives context
           (some (document.resolveSemanticIndexColumnWith document.read)) with
       | .error (.predicate .valueFailure) => atRow environment (.valueError family) DocumentComputationReadBack.poison

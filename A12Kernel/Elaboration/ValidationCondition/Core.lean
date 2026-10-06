@@ -655,7 +655,8 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
   | .customCondition _ => true
   | .stringPattern leaf => !(model.fieldRepeatableScope leaf.condition.field.id).isEmpty
   | .constructedDateValidity _ _ | .stringExpression _ => true
-  | .scalarTemporal comparison => comparison.declarations.any fun field => !field.repeatableScope.isEmpty
+  | .scalarTemporal comparison => comparison.left.requiresAddressed || comparison.right.requiresAddressed ||
+      comparison.bindingScopes.any (fun scope => !scope.isEmpty)
   | .firstFilledComparison _ | .tokenComparison _ | .valueList _ | .valuesNotUnique _ => true
   | .orderedNumeric _ comparison =>
       comparison.requiresAddressedValidation
@@ -685,9 +686,7 @@ def wellFormedBool (rowGroup : GroupPath) :
   | .stringExpression comparison => comparison.declarations.all fun field =>
       field.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
   | .scalarTemporal comparison =>
-      !comparison.left.requiresAddressed && !comparison.right.requiresAddressed &&
-        comparison.declarations.all fun field =>
-          field.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
+      comparison.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
   | .valuesNotUnique source => source.admittedMultiplicity && source.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains
   | .valueList source => source.bindingScopes.flatten.all

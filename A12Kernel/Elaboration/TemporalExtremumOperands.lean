@@ -147,8 +147,8 @@ def componentsOf? (declaration : FlatFieldDecl) : Option TemporalComponents :=
 private def operandDeclarations (model : FlatModel) :
     ResolvedFieldEntityOperand model →
       Except TemporalExtremumOperandElabError (List FlatFieldDecl)
-  | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
-  | .keyed source => throw (.shape (.unsupportedIndexedOperand source.entityPath))
+  | .indexed source => pure [source.targetDeclaration]
+  | .keyed source => pure source.declarations
   | .field declaration _ => pure [declaration]
   | .star source | .starHaving source _ => pure [source.declaration]
   | .group reference =>

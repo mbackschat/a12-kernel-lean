@@ -340,8 +340,8 @@ def ordinaryIterationScope :
       mergeIterationScopeList (comparison.declarations.map fun field =>
         if field.repeatableScope.isEmpty then none else some field.repeatableScope)
   | .leaf (.scalarTemporal comparison) =>
-      mergeIterationScopeList (comparison.declarations.map fun field =>
-        if field.repeatableScope.isEmpty then none else some field.repeatableScope)
+      mergeIterationScopeList (comparison.bindingScopes.map fun scope =>
+        if scope.isEmpty then none else some scope)
   | .leaf (.firstFilledComparison comparison) =>
       mergeIterationScopeList (comparison.bindingScopes.map fun scope =>
         if scope.isEmpty then none else some scope)

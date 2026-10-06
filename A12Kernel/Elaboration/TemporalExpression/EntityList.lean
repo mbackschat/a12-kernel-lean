@@ -45,12 +45,24 @@ namespace CheckedTemporalExtremumOperands
 
 /-- Scheduling includes filter reads even when every candidate is excluded. -/
 def fieldIds (source : CheckedTemporalExtremumOperands model) : List FieldId :=
-  (source.shape.operands.flatMap (·.expansionDeclarations)).map (·.id) ++
+  source.shape.operands.flatMap (fun operand => match operand with
+    | .indexed selected => (model.fields.filter (fun field => selected.referencesField field.id)).map (·.id)
+    | .keyed selected => (model.fields.filter (fun field => selected.referencesField field.id)).map (·.id)
+    | operand => operand.expansionDeclarations.map (·.id)) ++
     source.filters.flatMap (fun filter => filter.toList.flatMap (·.fieldIds))
 
 def bindingScopes (source : CheckedTemporalExtremumOperands model) : List (List RepeatableLevel) :=
   source.shape.operands.map (·.bindingScope) ++
     (if source.filters.any Option.isSome then [source.filterBindingScope] else [])
+
+/-- Index and star selection own their free row levels; another operand's binding must not
+turn their scheduling dependencies into ordinary current-row reads (spec/08 §4). -/
+def boundFieldIds (source : CheckedTemporalExtremumOperands model) : List FieldId :=
+  source.shape.operands.flatMap (fun operand =>
+    (operand.expansionDeclarations.filter fun field =>
+      field.repeatableScope.isPrefixOf operand.bindingScope).map (·.id)) ++
+    (source.filters.flatMap (fun filter => filter.toList.flatMap (·.fieldIds))).filter fun field =>
+      (model.fieldRepeatableScope field).isPrefixOf source.filterBindingScope
 
 private def addressed (context : ScalarComputationContext) :
     Except ScalarTemporalEvaluationFault ComputationFillContext :=
@@ -112,7 +124,10 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
 private def readOperand (phase : Phase) (context : ScalarComputationContext)
     (filter : Option CorrelatedHaving) : ResolvedFieldEntityOperand model →
     Except ScalarTemporalEvaluationFault (ResolvedTemporalAggregateSide ScalarTemporalValue)
-  | .indexed _ | .keyed _ => throw .indexedOperandNotSupported
+  | source@(.indexed _) | source@(.keyed _) =>
+      (TemporalExtremumStream.selectedSide source phase context (fun declaration observation => do
+        let some field := declaration.toTemporalField? | throw (.addressing (.unsupportedGroupOperand declaration.groupPath))
+        pure (projectScalarTemporalObservation model field observation))).mapError (fun _ => .calendarUnavailable)
   | .field declaration _ => do
       pure { operands := [← readField model phase declaration (context.read declaration.id)]
              hasUninstantiatedTail := false, hasHaving := false }

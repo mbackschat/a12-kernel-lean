@@ -379,7 +379,7 @@ component must not read the original target's spelling (calendar review-control 
 def numberContext (run : CheckedScalarComputationRun model)
     (world : World) (state : ScalarComputationRunState)
     (input : CheckedDocument model) : ScalarComputationContext :=
-  (input.scalarComputationContext world).withFixedOverlay (fun field =>
+  (input.indexedScalarComputationContext world).withFixedOverlay (fun field =>
     match state.find? field with
     | some completion => some completion.numberCell
     | none =>

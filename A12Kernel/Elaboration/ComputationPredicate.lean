@@ -340,6 +340,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
     (filterRead? : Option (Env → FieldId → CheckedCell) := none)
     (indexColumn? : Option SemanticIndexColumnReader := none) :
     Except ComputationPredicateError ComputationConditionResult :=
+  let context := (indexColumn?.map (context.withIndexColumnReader model)).getD context
   let filterRead := filterRead?.getD (fun row field =>
     (context.addressed.map (fun addressed => addressed.read row field)).getD (context.read field))
   match predicate with

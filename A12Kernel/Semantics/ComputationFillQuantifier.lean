@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.SemanticIndexColumn
 import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.StarAddressing
@@ -34,6 +35,9 @@ structure ComputationFillContext where
   read : Env → FieldId → CheckedCell
   /-- Exact current storage paired with checked reads; temporal uniqueness compares this identity. -/
   storedText : Env → FieldId → Option String := fun _ _ => none
+  /-- Prepared index entries are immutable because index fields cannot be computed (spec/09).
+  Target payloads are projected through the current read channel after selecting a row. -/
+  indexColumn : RepeatableLevel → Env → Option ResolvedSemanticIndexColumn := fun _ _ => none
 
 inductive ComputationFillError where
   | indexedOperandNotSupported

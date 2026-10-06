@@ -243,7 +243,7 @@ def CheckedSemanticIndexSelection.indexSource (selection : CheckedSemanticIndexS
       induction path <;> simp_all [GroupPath.isPrefixOf]
     have owned := selection.indexOwned
     cases resolved : model.lookupUniqueId selection.indexDeclaration.id <;>
-      simp_all [FlatModel.admitsSingleGroupDeclaration, FlatModel.admitsSemanticIndexTarget, pathSelf],
+      simp_all [FlatModel.admitsSingleGroupDeclaration, FlatModel.admitsSemanticIndexTarget],
   keyOwned := selection.keyOwned, keyAgrees := selection.keyAgrees }
 
 /-- A Number selected field keeps its own scale and empty-fillability metadata independently

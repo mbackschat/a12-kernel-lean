@@ -204,6 +204,20 @@ def resolveSemanticIndexColumnWith (checked : CheckedDocument model)
       (if group.indexField == some target then preliminary.readComputation else read) target
       |>.mapError (CheckedAddressingError.semanticIndex ∘ SemanticIndexContextError.checkedColumn)
 
+/-- Supply prepared columns without binding selected target reads to the immutable document. -/
+def indexedComputationFillContext (checked : CheckedDocument model) : ComputationFillContext :=
+  { checked.computationFillContext with
+    indexColumn := fun level outer => do
+      let group ← model.repeatableGroupAtLevel? level
+      let index ← group.indexField
+      (checked.resolveSemanticIndexColumnWith checked.read group index outer).toOption }
+
+def indexedComputationContextAt (checked : CheckedDocument model) (environment : Env) : ScalarComputationContext :=
+  { checked.computationContextAt environment with addressed := some checked.indexedComputationFillContext }
+
+def indexedScalarComputationContext (checked : CheckedDocument model) (world : World) : ScalarComputationContext :=
+  { checked.scalarComputationContext world with addressed := some checked.indexedComputationFillContext }
+
 /-- One field's checked cell at an environment through a caller-supplied exact-address view, the
 computation scans' read. An address the environment cannot form reads as malformed: each scanning
 carrier's binding certificate makes that unreachable, so no semantic channel carries it. -/
@@ -474,5 +488,27 @@ def resolveCheckedPartialValidationEntityOperandCore
   }
 
 end CheckedStarFieldPath
+
+/-- Keep prepared index cells for an index-field target; other payloads use the current overlay.
+Missing preparation or row identity is structural failure, never an empty selected value. -/
+def ScalarComputationContext.semanticIndexColumnReader (context : ScalarComputationContext) : SemanticIndexColumnReader :=
+  fun group target outer => do
+    let some addressed := context.addressed | throw (.checkedDocumentRequired group.path)
+    let some column := addressed.indexColumn group.level outer | throw (.checkedDocumentRequired group.path)
+    if group.indexField == some target then return column
+    let entries ← column.entries.mapM fun entry => do
+      let some environment := entry.environment | throw (.checkedDocumentRequired group.path)
+      pure { entry with target := addressed.read environment target }
+    pure { column with entries }
+
+/-- Existing checked evaluators may already own the prepared-column resolver. Retain its index
+entries in the addressed context so nested temporal reads share the current payload overlay. -/
+def ScalarComputationContext.withIndexColumnReader (context : ScalarComputationContext) (model : FlatModel)
+    (column : SemanticIndexColumnReader) : ScalarComputationContext :=
+  { context with addressed := context.addressed.map fun addressed =>
+      { addressed with indexColumn := fun level outer => do
+          let group ← model.repeatableGroupAtLevel? level
+          let index ← group.indexField
+          (column group index outer).toOption } }
 
 end A12Kernel

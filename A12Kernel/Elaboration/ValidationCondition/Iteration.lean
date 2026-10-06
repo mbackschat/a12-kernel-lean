@@ -290,7 +290,7 @@ private def ValidationConditionLeaf.iterationGuardAt
   | .stringPattern leaf =>
       if (model.fieldRepeatableScope leaf.condition.field.id).contains level then .guarded else .noReference
   | .scalarTemporal comparison =>
-      if comparison.declarations.any (·.repeatableScope.contains level) then .guarded else .noReference
+      if comparison.bindingScopes.any (·.contains level) then .guarded else .noReference
   | .guardedRepeatableCurrentRepetition guard _ _ =>
       if guard.repeatableScope.contains level then .guarded else .noReference
   | .groupList operator operands =>
@@ -412,7 +412,8 @@ def ordinaryRepeatableFields (condition : ValidationCondition model) :
   | .leaf (.stringExpression comparison) =>
       comparison.declarations.filter fun field => !field.repeatableScope.isEmpty
   | .leaf (.scalarTemporal comparison) =>
-      comparison.declarations.filter fun field => !field.repeatableScope.isEmpty
+      (comparison.left.boundFieldIds ++ comparison.right.boundFieldIds).filterMap fun field =>
+        (model.lookupUniqueId field).toOption.filter (fun declaration => !declaration.repeatableScope.isEmpty)
   | .leaf (.orderedNumeric _ comparison) =>
       authoredNumericRepeatableFields
           (ordinaryNumericAtomRepeatableFields model) comparison.left ++
@@ -474,7 +475,9 @@ def evalWithTemporalResult (condition : ValidationCondition model)
     (firstFilledResult : CheckedFirstFilledComparison model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
       fun _ => pure .unknown)
     (customResult : String → Except Error Verdict := fun name =>
-      pure ((context.customResult name).toOption.getD .unknown)) :
+      pure ((context.customResult name).toOption.getD .unknown))
+    (temporalAddressed : CheckedScalarTemporalComparison model → Except Error (Option ComputationFillContext × Env) :=
+      fun _ => pure (none, [])) :
     Except Error Verdict :=
   let readLeaf : ValidationConditionLeaf model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
     fun leaf => match leaf with
@@ -483,7 +486,8 @@ def evalWithTemporalResult (condition : ValidationCondition model)
       | .scalarTemporal comparison =>
           if comparison.fieldIds.all isRelevant then do
             let fields ← (temporalFields comparison).mapError Sum.inl
-            (comparison.evalResult .validation fields).mapError Sum.inr
+            let (addressed, row) ← (temporalAddressed comparison).mapError Sum.inl
+            (comparison.evalResult .validation fields addressed row).mapError Sum.inr
           else pure .unknown
       | leaf@(.orderedNumeric _ comparison) =>
           if comparison.hasTemporalExpression then numericResult comparison
@@ -540,7 +544,11 @@ def evalFull (condition : ValidationCondition model)
 /-- Bind only a reached temporal leaf to exact row cells; the row-binding grid separates this view from the scalar context without changing the temporal evaluator. -/
 private def addressedTemporalFields (context : AddressedValidationEvaluationContext model)
     (comparison : CheckedScalarTemporalComparison model) : Except CheckedAddressingError FlatContext := do
-  let cells ← comparison.fieldIds.mapM fun field => do
+  for scope in comparison.bindingScopes do
+    discard <| (context.outer.pathForScope scope).mapError CheckedAddressingError.environment
+  let fields := comparison.fieldIds.filter fun field =>
+    (context.outer.pathForScope (model.fieldRepeatableScope field)).isOk
+  let cells ← fields.mapM fun field => do
     pure (field, ← context.readCell context.outer field)
   let storedText ← match context.input with
     | .checked document | .partialView document _ => pure (document.storedTextIn context.outer)
@@ -553,6 +561,14 @@ private def addressedTemporalFields (context : AddressedValidationEvaluationCont
   pure { context.scalar.fields with
     storedText
     read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell }
+
+private def addressedTemporalContext (context : AddressedValidationEvaluationContext model)
+    (comparison : CheckedScalarTemporalComparison model) :
+    Except CheckedAddressingError (Option ComputationFillContext × Env) := do
+  if !comparison.left.requiresAddressed && !comparison.right.requiresAddressed then return (none, context.outer)
+  match context.input with
+  | .checked document => pure (some document.indexedComputationFillContext, context.outer)
+  | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired [])
 
 /-- A legal extensible String can fail numeric conversion at runtime; the generated rule
 handler catches that failure outside the Boolean tree (spec/05 §3), unlike a missing host input. -/
@@ -567,6 +583,7 @@ def evalAddressed (condition : ValidationCondition model)
   condition.evalWithTemporalResult context.scalar context.directRelevant
     (fun leaf => leaf.evalAddressed context) (.error .temporalUnavailable)
     (addressedTemporalFields context)
+    (temporalAddressed := addressedTemporalContext context)
     (numericResult := fun comparison => comparison.evalAddressedResult context)
     (leafRuntimeFault? := constructedComponentRuntimeFault?)
     (firstFilledResult := ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context)
@@ -581,6 +598,7 @@ def evalAddressedWithRepetitionNotUnique
   condition.evalWithTemporalResult context.scalar context.directRelevant
     (fun leaf => leaf.evalAddressedWithRepetitionNotUnique context result?) (.error .temporalUnavailable)
     (addressedTemporalFields context)
+    (temporalAddressed := addressedTemporalContext context)
     (numericResult := fun comparison => comparison.evalAddressedResult context)
     (leafRuntimeFault? := constructedComponentRuntimeFault?)
     (firstFilledResult := ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context)
@@ -598,6 +616,7 @@ def evalAddressedWithRepetitionNotUniqueResult
     (.error (.inl .temporalUnavailable))
     (fun comparison => (addressedTemporalFields context comparison).mapError Sum.inl)
     (fun fault => .error (.inr fault))
+    (temporalAddressed := fun comparison => (addressedTemporalContext context comparison).mapError Sum.inl)
     (numericResult := fun comparison => (comparison.evalAddressedResult context).mapError fun
       | .inl error => .inl (.inl error)
       | .inr fault => .inr fault)

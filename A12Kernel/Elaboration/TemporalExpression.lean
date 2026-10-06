@@ -618,6 +618,9 @@ def bindingScopes (expression : CheckedScalarTemporalExpression model) : List (L
     (fun field => ((model.lookupUniqueId field).toOption.map (·.repeatableScope)).toList)
     (·.bindingScopes) expression.core
 
+def boundFieldIds (expression : CheckedScalarTemporalExpression model) : List FieldId :=
+  scalarTemporalDependencies false (fun field => [field]) (·.boundFieldIds) expression.core
+
 /-- Expanded operands need topology and selected row reads; a flat validation carrier must defer
 these expressions to the existing addressed extrema carrier. -/
 def requiresAddressed (expression : CheckedScalarTemporalExpression model) : Bool :=
@@ -641,6 +644,9 @@ namespace CheckedScalarTemporalComparison
 
 def fieldIds (comparison : CheckedScalarTemporalComparison model) : List FieldId :=
   comparison.left.fieldIds ++ comparison.right.fieldIds
+
+def bindingScopes (comparison : CheckedScalarTemporalComparison model) : List (List RepeatableLevel) :=
+  comparison.left.bindingScopes ++ comparison.right.bindingScopes
 
 def declarations (comparison : CheckedScalarTemporalComparison model) : List FlatFieldDecl :=
   comparison.fieldIds.filterMap fun field => (model.lookupUniqueId field).toOption

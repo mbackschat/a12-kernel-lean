@@ -399,7 +399,8 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
       (concreteFieldPointer declaration environment).map ([·])
   | .stringExpression comparison =>
       sievedFieldPointers model (fun declaration => comparison.referencesField declaration.id) environment
-  | .scalarTemporal comparison =>
+  | .scalarTemporal comparison => do
+      if comparison.left.requiresAddressed || comparison.right.requiresAddressed then throw .unclassifiedOperand
       sievedFieldPointers model
         (fun declaration => comparison.referencesField declaration.id) environment
   | .flat condition =>

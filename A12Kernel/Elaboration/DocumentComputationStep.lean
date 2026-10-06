@@ -417,7 +417,7 @@ def ofScalarTemporalExpression? (expression : CheckedScalarTemporalExpression mo
       target := operation.target, family := operation.family
       operationReferencesField := operation.expression.referencesField
       excludesTarget := operation.excludesTarget
-      run world _ document := operation.run (document.scalarComputationContext world) }
+      run world _ document := operation.run (document.indexedScalarComputationContext world) }
 
 def referencesField (step : CheckedDocumentComputationStep model) (field : FieldId) : Bool :=
   step.precondition.any (·.val.referencesField field) || step.operationReferencesField field
@@ -804,7 +804,7 @@ def guarded (guard : CheckedComputationCondition model) (step : CheckedDocumentC
           rw [guardWellFormed, guardExcludesTarget, previousGuard.property.1, previousGuard.property.2]
           decide⟩
   run world matchers document := do
-    match guard.evalChecked (document.scalarComputationContext world) with
+    match guard.evalChecked (document.indexedScalarComputationContext world) with
     | .error (.predicate .valueFailure) => pure (.valueError step.family, DocumentComputationReadBack.poison)
     | .error error => throw (.guardBinding error)
     | .ok .holds => step.run world matchers document
