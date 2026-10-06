@@ -30,6 +30,7 @@ import A12Kernel.Reference.Dm.KeyedExtentLocks
 import A12Kernel.Reference.Dm.IndexedGroupLocks
 import A12Kernel.Reference.Dm.IndexedTemporalLocks
 import A12Kernel.Reference.Dm.PartialTemporalLocks
+import A12Kernel.Reference.Dm.PartialStringExpressionLocks
 import A12Kernel.Reference.Dm.IndexedTimeComponentLocks
 import A12Kernel.Reference.Dm.DateComponentLocks
 import A12Kernel.Reference.Dm.DateValidityLocks

@@ -110,9 +110,10 @@ def concatOperands : SimpleComparisonOperand String → SimpleComparisonOperand 
 
 /-- One ordered String evaluator serves validation, guards and stores. The caller provides already
 classified String or Number-text reads, so storage-regime selection remains with the document. -/
-def evalOperandWithSource (fieldId : Atom → FieldId) (phase : Phase)
-    (read : Atom → Except StringComputationFault (SimpleComparisonOperand String)) :
-    StringExpr Atom → Except StringComputationFault (SimpleComparisonOperand String)
+def evalOperandWithSource [Monad m] [MonadExceptOf StringComputationFault m]
+    (fieldId : Atom → FieldId) (phase : Phase)
+    (read : Atom → m (SimpleComparisonOperand String)) :
+    StringExpr Atom → m (SimpleComparisonOperand String)
   | .field fieldId | .fieldValueAsString fieldId => read fieldId
   | .category fieldId projection => do
       match ← read fieldId with

@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.ValidationCondition.Core
 import A12Kernel.Elaboration.PartialEntityValueList
+import A12Kernel.Elaboration.StringExpression.Partial
 
 /-! # Checked validation-leaf evaluation
 
@@ -75,7 +76,7 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .groupList operator [.starredGroupPresence _] =>
       operator.toStarredGroupFillQuantifier?.isSome
   | .repetitionNotUnique _ => true
-  | .stringExpression comparison => !comparison.hasIndexed
+  | .stringExpression _ => true
   | .constructedDateValidity _ source => !source.scalarCore.hasHaving
   | .scalarTemporal source => !source.left.core.hasHaving && !source.right.core.hasHaving
   | .customCondition _ | .customFieldValidity _ | .indexedCustomFieldValidity _ | .stringPattern _ | .indexedStringPattern _ => true
@@ -251,7 +252,10 @@ def evalAddressedPartial?
           comparison.evaluatePartial? document context.outer scope context.readCell
       | .legacy _ _ => none
   | .stringExpression comparison =>
-      if comparison.hasIndexed then none else some (evalStringExpressionAddressed context isRelevant comparison)
+      match context.input with
+      | .checked document | .partialView document _ =>
+          some (comparison.evalPartial document scope context.outer context.readPartialCell isRelevant)
+      | .legacy _ _ => none
   | leaf@(.scalarTemporal _) => (leaf.evalTemporalPartialResult? context scope).map
       (Except.mapError fun | .inl error => error | .inr fault => fault.toAddressing)
   | leaf@(.constructedDateValidity operation source) =>

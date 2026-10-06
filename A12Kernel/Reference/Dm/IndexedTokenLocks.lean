@@ -705,7 +705,7 @@ private def stringPartialAdmission (condition : String) : Option Bool := do
   let .leaf leaf := checked.core | none
   pure leaf.supportsAddressedPartial
 
-example : stringPartialAdmission "[Rows/Body/A For Key] + \"!\" == \"A!\"" = some false ∧
+example : stringPartialAdmission "[Rows/Body/A For Key] + \"!\" == \"A!\"" = some true ∧
     stringPartialAdmission "[Ref] + \"!\" == \"A!\"" = some true := by native_decide
 
 end A12Kernel.Dm.IndexedTokenLocks
