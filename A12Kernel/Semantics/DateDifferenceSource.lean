@@ -34,6 +34,13 @@ inductive ResolvedDateDifferenceOperand (Field : Type := FlatTemporalField) wher
 
 namespace ResolvedDateDifferenceOperand
 
+/-- Read the model-local civil day from this evaluation's clock, as required by spec/05 §7.
+No instant is cached in the checked operand. -/
+def todayParts? (profile : ModelZone.ConcreteProfile) (world? : Option World) : Option DateParts := do
+  let world ← world?
+  pure (← profile.localDate? world.now).civil.parts
+
+
 def fields : ResolvedDateDifferenceOperand Field → List Field
   | .field source => [source]
   | .literal _ _ | .baseYear _ _ | .today _ => []

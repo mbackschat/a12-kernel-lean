@@ -103,8 +103,9 @@ def valueListCell (checked : CheckedStarNumberSource model)
 def selectedValidationHavingValueSide (checked : CheckedStarNumberSource model)
     (resolved : ResolvedStarTopology) (having : CorrelatedHaving)
     (filterRead : Env → FieldId → CheckedCell) (outer : Env)
-    (read : Env → FieldId → RawCell) : ResolvedValueListSide .number :=
-  checked.source.selectedValidationHavingValueListSide resolved having filterRead
+    (read : Env → FieldId → RawCell)
+    (world : Option World := none) : ResolvedValueListSide .number :=
+  checked.source.selectedValidationHavingValueListSide (world := world) resolved having filterRead
     outer (checked.valueListCell read)
 
 /-- Resolve nested rows once and classify every canonical leaf through the declaration-owned Number boundary. -/
@@ -135,9 +136,10 @@ def resolvedPartialAllRowsValueSide (checked : CheckedStarNumberSource model)
 def resolvedValidationHavingValueSide (checked : CheckedStarNumberSource model)
     (document : Document) (outer : Env) (having : CorrelatedHaving)
     (filterRead : Env → FieldId → CheckedCell)
-    (read : Env → FieldId → RawCell) :
+    (read : Env → FieldId → RawCell)
+    (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide .number) :=
-  checked.source.resolvedValidationHavingValueListSide document outer having
+  checked.source.resolvedValidationHavingValueListSide (world := world) document outer having
     filterRead (checked.valueListCell read)
 
 end CheckedStarNumberSource
@@ -148,9 +150,10 @@ namespace CheckedStarNumberHavingSource
 def resolvedValueSide (checked : CheckedStarNumberHavingSource model)
     (document : Document) (outer : Env)
     (filterRead : Env → FieldId → CheckedCell)
-    (read : Env → FieldId → RawCell) :
+    (read : Env → FieldId → RawCell)
+    (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide .number) :=
-  checked.source.resolvedValidationHavingValueSide document outer checked.having
+  checked.source.resolvedValidationHavingValueSide (world := world) document outer checked.having
     filterRead read
 
 end CheckedStarNumberHavingSource

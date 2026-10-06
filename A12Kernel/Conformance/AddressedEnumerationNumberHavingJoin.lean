@@ -93,10 +93,10 @@ private def consumer? (authored : SurfaceEnumerationFirstFilledSource) :
   (checkAddressedEnumerationFirstFilledComputation model ["Form", "Rows"]
     target.id authored).toOption
 
-private def plan? : Option (CheckedAddressedEnumerationNumberHavingJoin model) := do
+private def plan? (filter : SurfaceCorrelatedHaving := having "ComputedGate") : Option (CheckedAddressedEnumerationNumberHavingJoin model) := do
   let numberProducer ← numberProducer?
   let enumerationProducer ← enumerationProducer?
-  let consumer ← consumer? (source "ComputedChoice" (having "ComputedGate"))
+  let consumer ← consumer? (source "ComputedChoice" filter)
   (checkAddressedEnumerationNumberHavingJoin numberProducer enumerationProducer
     consumer).toOption
 
@@ -246,11 +246,11 @@ private def dependentNumberProducer? (sourceName := "ComputedChoice") :
   (checkAddressedFieldValueAsNumber model ["Form", "Rows", "Items"]
     computedGate.id (.category (bare sourceName) "Numeric")).toOption
 
-private def serialPlan? :
+private def serialPlan? (filter : SurfaceCorrelatedHaving := having "ComputedGate") :
     Option (CheckedAddressedEnumerationToNumberHavingCascade model) := do
   let enumerationProducer ← enumerationProducer?
   let numberProducer ← dependentNumberProducer?
-  let consumer ← consumer? (source "ComputedChoice" (having "ComputedGate"))
+  let consumer ← consumer? (source "ComputedChoice" filter)
   (checkAddressedEnumerationToNumberHavingCascade enumerationProducer
     numberProducer consumer).toOption
 
@@ -697,5 +697,33 @@ example : resultApplicationSummary? = some {
     ({ field := target.id, path := [3] }, .presentEmpty)]
 } := by
   native_decide
+
+private def clockedFilter : SurfaceCorrelatedHaving := .and (having "ComputedGate")
+  (.numeric .equal (.atom (.dayDifference .today (.literal { year := some 1970, month := 1, day := 1 })))
+    (.literal { value := 0, authoredScale := 0 }))
+
+private def clockedJoin? : Option Bool := do
+  let input ← input?
+  let plain ← plan?
+  let checked ← plan? clockedFilter
+  let baseline ← (plain.execute input).toOption
+  let current ← (checked.execute input (world := some { now := { epochMillis := 0 } })).toOption
+  let later ← (checked.execute input (world := some { now := { epochMillis := 86400000 } })).toOption
+  let values := fun (outcomes : AddressedEnumerationNumberHavingJoinOutcomes) => outcomes.consumer.map (·.result)
+  pure (values current == values baseline && values later != values baseline && !(checked.execute input).isOk)
+
+private def clockedCascade? : Option Bool := do
+  let input ← input?
+  let plain ← serialPlan?
+  let checked ← serialPlan? clockedFilter
+  let baseline ← (plain.execute input).toOption
+  let current ← (checked.execute input (world := some { now := { epochMillis := 0 } })).toOption
+  let later ← (checked.execute input (world := some { now := { epochMillis := 86400000 } })).toOption
+  let formal := checked.executeResultWithFormalInputs input (world := some { now := { epochMillis := 0 } })
+  let values := fun (outcomes : AddressedEnumerationToNumberHavingCascadeOutcomes) => outcomes.consumer.map (·.result)
+  pure (values current == values baseline && values later != values baseline &&
+    !(checked.execute input).isOk && formal.isOk)
+
+example : clockedJoin? = some true ∧ clockedCascade? = some true := by native_decide
 
 end A12Kernel.Conformance.AddressedEnumerationNumberHavingJoin

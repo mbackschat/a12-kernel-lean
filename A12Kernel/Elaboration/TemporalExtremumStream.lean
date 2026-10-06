@@ -259,14 +259,15 @@ inductive TemporalExtremumStreamFault where
     core carries its own uninstantiated-tail bit, a group's included, which `spec/05` turns into
     missing provenance on a selected value: a subtree with spare capacity is not given. -/
 private def operandExtent (document : CheckedDocument model) (outer : Env)
-    (filter : Option CorrelatedHaving) :
+    (filter : Option CorrelatedHaving)
+    (world : Option World := none) :
     ResolvedFieldEntityOperand model →
       Except TemporalExtremumStreamFault ResolvedCheckedEntityOperandCore
   | .indexed source => throw (.declined (.indexedOperandNotSupported source.targetDeclaration.path))
   | .field declaration _ =>
       (document.resolveCheckedDirectEntityOperandCore declaration.id).mapError .addressing
   | .star source =>
-      (source.resolveCheckedValidationEntityOperandCore document outer none).mapError .addressing
+      (source.resolveCheckedValidationEntityOperandCore (world := world) document outer none).mapError .addressing
   | .group reference =>
       (document.resolveCheckedGroupEntityOperandCore outer
         (CheckedEntityGroupSource.fixed (model := model) reference).boundLevelCount
@@ -287,7 +288,7 @@ private def operandExtent (document : CheckedDocument model) (outer : Env)
   | .starHaving source _ =>
       match filter with
       | some condition =>
-          (source.resolveCheckedValidationEntityOperandCore document outer
+          (source.resolveCheckedValidationEntityOperandCore (world := world) document outer
             (some condition)).mapError .addressing
       | none =>
           throw (.declined (.operandNeedsAddressing source.declaration.path))
@@ -305,7 +306,8 @@ private def operandExtent (document : CheckedDocument model) (outer : Env)
 def readAddressedSideWith (expected : TemporalComponents)
     (project : CellObservation → SimpleComparisonOperand α)
     (admitted : CheckedTemporalExtremumOperands model)
-    (document : CheckedDocument model) (outer : Env) (phase : Phase) :
+    (document : CheckedDocument model) (outer : Env) (phase : Phase)
+    (world : Option World := none) :
     Except TemporalExtremumStreamFault (ResolvedTemporalAggregateSide α) := do
   if admitted.components ≠ expected then
     throw (.declined (.componentsMismatch expected admitted.components))
@@ -316,7 +318,7 @@ def readAddressedSideWith (expected : TemporalComponents)
     let extents ←
       ((admitted.shape.first :: admitted.shape.rest).zip
         admitted.filters).mapM fun (operand, filter) =>
-          operandExtent document outer filter operand
+          operandExtent (world := world) document outer filter operand
     pure {
       operands := extents.flatMap fun core =>
         core.inCapacityAddressedCells.map fun addressed =>
@@ -327,28 +329,31 @@ def readAddressedSideWith (expected : TemporalComponents)
 /-- Evaluate one admitted complete-Date extremum against an immutable checked document. -/
 def evalAddressedDate (admitted : CheckedTemporalExtremumOperands model)
     (op : TemporalExtremumOp) (document : CheckedDocument model)
-    (outer : Env) (phase : Phase) :
+    (outer : Env) (phase : Phase)
+    (world : Option World := none) :
     Except TemporalExtremumStreamFault (SimpleComparisonOperand FullDate) := do
   pure (evalDateExtremumAggregate op
-    (← readAddressedSideWith TemporalComponents.fullDate
+    (← readAddressedSideWith (world := world) TemporalComponents.fullDate
       CellObservation.asDateExtremumOperand admitted document outer phase))
 
 /-- Evaluate one admitted complete-clock extremum against an immutable checked document. -/
 def evalAddressedTime (admitted : CheckedTemporalExtremumOperands model)
     (op : TemporalExtremumOp) (document : CheckedDocument model)
-    (outer : Env) (phase : Phase) :
+    (outer : Env) (phase : Phase)
+    (world : Option World := none) :
     Except TemporalExtremumStreamFault (SimpleComparisonOperand TimeOfDay) := do
   pure (evalTimeExtremumAggregate op
-    (← readAddressedSideWith TemporalComponents.time
+    (← readAddressedSideWith (world := world) TemporalComponents.time
       CellObservation.asTimeExtremumOperand admitted document outer phase))
 
 /-- Evaluate one admitted complete-DateTime extremum against an immutable checked document. -/
 def evalAddressedDateTime (admitted : CheckedTemporalExtremumOperands model)
     (op : TemporalExtremumOp) (document : CheckedDocument model)
-    (outer : Env) (phase : Phase) :
+    (outer : Env) (phase : Phase)
+    (world : Option World := none) :
     Except TemporalExtremumStreamFault (SimpleComparisonOperand Instant) := do
   pure (evalDateTimeExtremumAggregate op
-    (← readAddressedSideWith TemporalComponents.now
+    (← readAddressedSideWith (world := world) TemporalComponents.now
       CellObservation.asDateTimeExtremumOperand admitted document outer phase))
 
 /-- Read one admitted complete-DateTime operand list into its fold side.

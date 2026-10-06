@@ -124,7 +124,8 @@ def analyze (plan : CheckedAddressedEnumerationNumberHavingJoin model) :
 
 /-- Complete both independent producers, combine their exact-address views, then run the lazy filtered consumer. -/
 def execute (plan : CheckedAddressedEnumerationNumberHavingJoin model)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (world : Option World := none) :
     Except AddressedEnumerationNumberHavingJoinFault
       AddressedEnumerationNumberHavingJoinOutcomes := do
   let numberProducer ← plan.numberProducer.execute input |>.mapError .numberProducer
@@ -135,7 +136,7 @@ def execute (plan : CheckedAddressedEnumerationNumberHavingJoin model)
       |>.mapError fun error => .enumerationDependency error.target error.cause
   let read := readAfterEnumerationDependenciesWith enumerationDependencies
     (readAfterNumericDependencies input numberProducer)
-  let consumer ← plan.consumer.executeWithRead input read |>.mapError .consumer
+  let consumer ← plan.consumer.executeWithRead (world := world) input read |>.mapError .consumer
   pure { numberProducer, enumerationProducer, consumer }
 
 /-- Execute once, then classify all three retained phases against the immutable source document. -/
@@ -144,11 +145,12 @@ def executeResult (plan : CheckedAddressedEnumerationNumberHavingJoin model)
     (numberPayloadAt : CellAddr → NumberPayload)
     (numberMessages : List (ComputationFormalMessage NumberPayload))
     (enumerationProducerResidualMessages consumerResidualMessages :
-      List StringResidual) :
+      List StringResidual)
+    (world : Option World := none) :
     Except AddressedEnumerationNumberHavingJoinFault
       (AddressedEnumerationNumberHavingJoinRunView
         model NumberPayload StringResidual) := do
-  let outcomes ← plan.execute input
+  let outcomes ← plan.execute (world := world) input
   pure {
     plan
     number := NumericComputationRunView.fromSourceOutcomesWithMessages
@@ -315,7 +317,8 @@ def analyze (plan : CheckedAddressedEnumerationToNumberHavingCascade model) :
 def executeWithFallbackRead
     (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
     (input : CheckedDocument model)
-    (fallbackRead : CellAddr → Except CheckedDocumentError CheckedCell) :
+    (fallbackRead : CellAddr → Except CheckedDocumentError CheckedCell)
+    (world : Option World := none) :
     Except AddressedEnumerationToNumberHavingCascadeFault
       AddressedEnumerationToNumberHavingCascadeOutcomes := do
   let enumerationProducer ← plan.enumerationProducer.executeWithRead input
@@ -330,15 +333,16 @@ def executeWithFallbackRead
     |>.mapError .numberProducer
   let read := readAfterEnumerationDependenciesWith enumerationDependencies
     (readAfterNumericDependenciesWith numberProducer fallbackRead)
-  let consumer ← plan.consumer.executeWithRead input read |>.mapError .consumer
+  let consumer ← plan.consumer.executeWithRead (world := world) input read |>.mapError .consumer
   pure { enumerationProducer, numberProducer, consumer }
 
 /-- Execute all three phases over the immutable checked document. -/
 def execute (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (world : Option World := none) :
     Except AddressedEnumerationToNumberHavingCascadeFault
       AddressedEnumerationToNumberHavingCascadeOutcomes :=
-  plan.executeWithFallbackRead input input.read
+  plan.executeWithFallbackRead (world := world) input input.read
 
 /-- Execute through one fallback view, then classify all three retained phases against the immutable source document. -/
 def executeResultWithFallbackRead
@@ -348,11 +352,12 @@ def executeResultWithFallbackRead
     (numberPayloadAt : CellAddr → NumberPayload)
     (numberMessages : List (ComputationFormalMessage NumberPayload))
     (enumerationProducerResidualMessages consumerResidualMessages :
-      List StringResidual) :
+      List StringResidual)
+    (world : Option World := none) :
     Except AddressedEnumerationToNumberHavingCascadeFault
       (AddressedEnumerationToNumberHavingCascadeRunView
         model NumberPayload StringResidual) := do
-  let outcomes ← plan.executeWithFallbackRead input fallbackRead
+  let outcomes ← plan.executeWithFallbackRead (world := world) input fallbackRead
   pure {
     plan
     enumerationProducer := projectAddressedEnumerationResults input
@@ -370,11 +375,12 @@ def executeResult (plan : CheckedAddressedEnumerationToNumberHavingCascade model
     (numberPayloadAt : CellAddr → NumberPayload)
     (numberMessages : List (ComputationFormalMessage NumberPayload))
     (enumerationProducerResidualMessages consumerResidualMessages :
-      List StringResidual) :
+      List StringResidual)
+    (world : Option World := none) :
     Except AddressedEnumerationToNumberHavingCascadeFault
       (AddressedEnumerationToNumberHavingCascadeRunView
         model NumberPayload StringResidual) :=
-  plan.executeResultWithFallbackRead input input.read numberPayloadAt
+  plan.executeResultWithFallbackRead (world := world) input input.read numberPayloadAt
     numberMessages enumerationProducerResidualMessages consumerResidualMessages
 
 /-- Bind all three analyzed operations to one call-global direct-field inventory. -/
@@ -387,13 +393,14 @@ def formalInputPlan
 /-- Prepare the selected direct inputs once, then run all three typed phases through that fallback while retaining the eager inventory only at the whole-call boundary. -/
 def executeResultWithFormalInputs
     (plan : CheckedAddressedEnumerationToNumberHavingCascade model)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (world : Option World := none) :
     Except AddressedEnumerationToNumberHavingCascadeCheckedResultFault
       (AddressedEnumerationToNumberHavingCascadeFormalInputRunView model) := do
   let inputPlan ← plan.formalInputPlan |>.mapError .formalInput
   let prepared ← inputPlan.prepare input |>.mapError .preliminary
   let noResidual := ([] : List ComputationFormalInputFinding)
-  match plan.executeResultWithFallbackRead input
+  match plan.executeResultWithFallbackRead (world := world) input
       prepared.preliminary.readComputation (fun _ => ()) [] noResidual
       noResidual with
   | .error cause =>

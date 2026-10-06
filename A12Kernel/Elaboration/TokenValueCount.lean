@@ -258,10 +258,11 @@ token projection, exactly as this carrier's computation arm already did.
     The over-repetition findings stay on the immutable checked document either way. -/
 def evaluateCheckedDocumentValidation
     (checked : CheckedTokenValueCountGroupSource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError NumericOperand := do
   let resolved ← (CheckedTokenEntityOperand.group checked.group)
-    |>.resolveCheckedValidationOperand document outer
+    |>.resolveCheckedValidationOperand (world := world) document outer
   let side := (ResolvedValueCountSide.empty : ResolvedValueCountSide .token)
     |>.appendResolved (resolved.inCapacityValueListSideAt .validation)
   pure (evalValueCountAggregate checked.expected side)
@@ -295,11 +296,12 @@ def evaluateDirectAt? (checked : CheckedTokenValueCountSource model)
 def evaluateValidation (checked : CheckedTokenValueCountSource model)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (starRead : Env → FieldId → CheckedCell) :
+    (starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError NumericOperand :=
   evalResolvedValueCountOperands
     checked.expected checked.source.operands fun operand => do
-      pure (.inl (← operand.resolvedValidationSide document outer
+      pure (.inl (← operand.resolvedValidationSide (world := world) document outer
         directRead starRead))
 
 /-- Full validation over the immutable checked document reuses the shared addressed token operand and retains per-slot filter provenance for the existing value-count fold.
@@ -319,12 +321,13 @@ def evaluateValidation (checked : CheckedTokenValueCountSource model)
     and a category star reads the same in-capacity stream without a measurement of its own. -/
 def evaluateCheckedDocumentValidation
     (checked : CheckedTokenValueCountSource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError NumericOperand :=
   evalResolvedValueCountOperands
     checked.expected checked.source.operands fun operand => do
       let resolved ←
-        operand.resolveCheckedValidationOperand document outer
+        operand.resolveCheckedValidationOperand (world := world) document outer
       match operand with
       | .group _ | .star _ =>
           pure (.inl (resolved.inCapacityValueListSideAt .validation))
@@ -335,11 +338,12 @@ def evaluateCheckedDocumentValidation
 def evaluateComputation (checked : CheckedTokenValueCountSource model)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (filterRead starRead : Env → FieldId → CheckedCell) :
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError NumericOperand :=
   evalResolvedValueCountOperands
     checked.expected checked.source.operands fun operand =>
-      operand.resolvedComputationSide document outer directRead
+      operand.resolvedComputationSide (world := world) document outer directRead
         filterRead starRead
 
 /-- Partial validation skips any filtered rule before topology or reads; otherwise it uses the local existential value-list account matching the measured numeric outcome pattern and reuses the same count fold. -/

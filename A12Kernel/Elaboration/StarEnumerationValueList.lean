@@ -188,9 +188,10 @@ def valueListCell (checked : CheckedStarEnumerationSource model)
 def resolvedValueSide (checked : CheckedStarEnumerationSource model)
     (document : Document) (outer : Env)
     (filterRead : Env → FieldId → CheckedCell)
-    (read : Env → FieldId → RawCell) :
+    (read : Env → FieldId → RawCell)
+    (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide .token) :=
-  checked.source.resolvedOptionalValidationHavingValueListSide document outer
+  checked.source.resolvedOptionalValidationHavingValueListSide (world := world) document outer
     checked.filter filterRead (checked.valueListCell read)
 
 /-- Resolve partial relevance before reading or projecting retained Enumeration cells. -/
@@ -216,8 +217,9 @@ def resolvedValuesSide (checked : CheckedStarEnumerationValueListSource model) :
 def evaluateFull (checked : CheckedStarEnumerationValueListSource model)
     (document : Document) (outer : Env)
     (filterRead : Env → FieldId → CheckedCell)
-    (read : Env → FieldId → RawCell) : Except StarAddressingError Verdict := do
-  let fields ← checked.fields.resolvedValueSide document outer filterRead read
+    (read : Env → FieldId → RawCell)
+    (world : Option World := none) : Except StarAddressingError Verdict := do
+  let fields ← checked.fields.resolvedValueSide (world := world) document outer filterRead read
   pure (checked.quantifier.eval fields checked.resolvedValuesSide)
 
 /-- Skip a filtered rule before topology or reads; otherwise classify partial relevance per expanded cell. -/
@@ -255,7 +257,7 @@ def evaluateFull (checked : CheckedEnumerationValueListStarValuesSource model)
     (document : Document) (outer : Env) (context : FlatContext)
     (filterRead : Env → FieldId → CheckedCell)
     (read : Env → FieldId → RawCell) : Except StarAddressingError Verdict := do
-  let values ← checked.values.resolvedValueSide document outer filterRead read
+  let values ← checked.values.resolvedValueSide (world := context.world) document outer filterRead read
   pure (checked.quantifier.eval (checked.resolvedFieldsSide context) values)
 
 /-- Partial evaluation retains direct per-cell relevance and the starred values side's separate extent fact. -/

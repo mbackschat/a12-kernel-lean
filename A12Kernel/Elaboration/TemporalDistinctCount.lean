@@ -554,10 +554,11 @@ private def temporalDistinctCountCell
     form. -/
 def CheckedTemporalDistinctCountOperand.resolveDistinctCountCore
     (operand : CheckedTemporalDistinctCountOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
   match operand with
-  | .slot inner => inner.resolveValidationCore document outer
+  | .slot inner => inner.resolveValidationCore (world := world) document outer
   | .group source =>
       document.resolveCheckedGroupEntityOperandCore outer
         source.source.boundLevelCount source.declarations
@@ -628,10 +629,11 @@ def arm (operation : CheckedTemporalDistinctCountRun model) :
     hold operands the Base Year supplements differently — a yearless `MM-dd` beside a complete date
     reduces to the same identity because the Base Year supplies the one component it lacks. -/
 def evaluate (operation : CheckedTemporalDistinctCountRun model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError NumericOperand := do
   let sides ← operation.source.operands.mapM fun operand => do
-    let core ← operand.resolveDistinctCountCore document outer
+    let core ← operand.resolveDistinctCountCore (world := world) document outer
     pure ({
       cells := core.addressedCells.map
         (fun addressed => temporalDistinctCountCell .validation operand.components model.baseYear
@@ -648,7 +650,8 @@ def evaluate (operation : CheckedTemporalDistinctCountRun model)
 private def computationSide (operation : CheckedTemporalDistinctCountRun model)
     (document : Document) (outer : Env) (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
-    (operand : CheckedTemporalDistinctCountOperand model) :
+    (operand : CheckedTemporalDistinctCountOperand model)
+    (world : Option World := none) :
     Except StarAddressingError (Sum (ResolvedValueListSide operation.arm.kind) NumericOperand) := do
   let project := temporalDistinctCountCell .computation operand.components model.baseYear operation.arm
   let groupSide := fun (boundCount : Nat) (declarations : List FlatFieldDecl) => do
@@ -672,7 +675,7 @@ private def computationSide (operation : CheckedTemporalDistinctCountRun model)
           let consume := fun cells environment => match read environment with
             | .unknown cause => .inr cause
             | cell => .inl (cell :: cells)
-          match ← (having.scanComputation { read := filterRead } outer consume resolved.environments []).mapError (fun _ => .unsupportedDateCalendar) with
+          match ← (having.scanComputation { read := filterRead, world } outer consume resolved.environments []).mapError (fun _ => .unsupportedDateCalendar) with
           | .exhausted reversed => pure (.inl {
               cells := reversed.reverse
               hasUninstantiatedTail := resolved.domain.hasOpenTail
@@ -683,10 +686,11 @@ private def computationSide (operation : CheckedTemporalDistinctCountRun model)
     `scanResolvedValueListOperands` preserves the shared slot-unavailability and authored-order rules. -/
 def evaluateComputation (operation : CheckedTemporalDistinctCountRun model)
     (document : Document) (outer : Env) (directRead : FieldId → CheckedCell)
-    (filterRead starRead : Env → FieldId → CheckedCell) : Except StarAddressingError NumericOperand := do
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) : Except StarAddressingError NumericOperand := do
   match ← scanResolvedValueListOperands
       (state := ResolvedValueListSide operation.arm.kind) (terminal := NumericOperand)
-      (operation.computationSide document outer directRead filterRead starRead)
+      (operation.computationSide (world := world) document outer directRead filterRead starRead)
       (fun cause => .unknown cause)
       (fun accumulated _ side => accumulated.append side)
       operation.source.operands ResolvedValueListSide.empty with

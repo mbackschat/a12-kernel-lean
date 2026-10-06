@@ -278,17 +278,17 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
         | .inr _ => .temporalUnavailable
   | .tokenComparison comparison =>
       match context.input with
-      | .checked document => comparison.evaluateFull document context.outer
+      | .checked document => comparison.evaluateFull (world := context.scalar.fields.world) document context.outer
       | .legacy _ _ | .partialView _ _ => .error (.checkedDocumentRequired [])
   | .constructedDateValidity operation source =>
       evalConstructedDateAddressed context context.directRelevant operation source
   | .valuesNotUnique source =>
       match context.input with
-      | .checked document => source.evaluateFull document context.outer
+      | .checked document => source.evaluateFull (world := context.scalar.fields.world) document context.outer
       | .legacy _ _ | .partialView _ _ => .error (.checkedDocumentRequired [])
   | .valueList source =>
       match context.input with
-      | .checked document => source.evaluateFull document context.outer
+      | .checked document => source.evaluateFull (world := context.scalar.fields.world) document context.outer
       | .legacy _ _ | .partialView _ _ => .error (.checkedDocumentRequired [])
   | .orderedNumeric _ comparison => comparison.evalAddressed context
   | .groupList operator operands => do
@@ -315,7 +315,7 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
   | .iteratedDateRange condition =>
       match context.input with
       | .checked document | .partialView document _ =>
-          condition.verdictOf document context.outer
+          condition.verdictOf (world := context.scalar.fields.world) document context.outer
       | .legacy _ _ =>
           -- The legacy scalar channel carries no checked document, and this leaf reads at a row.
           .error (.checkedDocumentRequired [])
@@ -333,7 +333,7 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
   | .fieldFill operator source =>
       match context.input with
       | .checked document => do
-          let outcome? ← source.evaluateFill? operator document context.outer
+          let outcome? ← source.evaluateFill? (world := context.scalar.fields.world) operator document context.outer
           pure ((outcome?.map ValidationFillOutcome.asConservativeVerdict).getD .unknown)
       | .legacy _ _ | .partialView _ _ =>
           .error (.checkedDocumentRequired ((source.operands.head?.map (·.groupPath)).getD []))

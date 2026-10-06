@@ -585,12 +585,13 @@ def resolvedValidationSide
     (checked : CheckedBooleanValueCountOperand model expected)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (starRead : Env → FieldId → CheckedCell) :
+    (starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide .token) :=
   match checked with
   | .field source => pure (directSideAt source .validation directRead)
   | .star source =>
-      source.source.resolvedOptionalValidationHavingValueListSide
+      source.source.resolvedOptionalValidationHavingValueListSide (world := world)
         document outer source.filter starRead
         (starCellAt source .validation starRead)
   | .group source =>
@@ -601,7 +602,8 @@ def resolvedComputationSide
     (checked : CheckedBooleanValueCountOperand model expected)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (filterRead starRead : Env → FieldId → CheckedCell) :
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError
       (Sum (ResolvedValueListSide .token) NumericOperand) :=
   match checked with
@@ -614,7 +616,7 @@ def resolvedComputationSide
           pure (.inl (resolved.toResolvedSide
             (starCellAt source .computation starRead)))
       | some having =>
-          let filterContext : CorrelationContext := { read := filterRead }
+          let filterContext : CorrelationContext := { read := filterRead, world }
           let consume := fun cells environment =>
             match starCellAt source .computation starRead environment with
             | .unknown cause => .inr cause
@@ -647,13 +649,14 @@ def resolvedComputationSide
     ([checkpoint](../../docs/sources/group-and-iteration-probes.md#src-filtered-starred-field-capacity)). -/
 def resolvedCheckedValidationSide
     (checked : CheckedBooleanValueCountOperand model expected)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError (ResolvedValueListSide .token) := do
   let core ← match checked with
     | .field source =>
         document.resolveCheckedDirectEntityOperandCore source.declaration.id
     | .star source =>
-        source.source.resolveCheckedValidationEntityOperandCore document outer
+        source.source.resolveCheckedValidationEntityOperandCore (world := world) document outer
           (source.filter.map (·.condition))
     | .group source =>
         document.resolveCheckedGroupEntityOperandCore outer
@@ -677,32 +680,35 @@ namespace CheckedBooleanValueCountSource
 def evaluateValidation (checked : CheckedBooleanValueCountSource model)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (starRead : Env → FieldId → CheckedCell) :
+    (starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError NumericOperand :=
   evalResolvedValueCountOperands
     (booleanValueCountToken checked.expected) checked.operands fun operand => do
-      pure (.inl (← operand.resolvedValidationSide document outer
+      pure (.inl (← operand.resolvedValidationSide (world := world) document outer
         directRead starRead))
 
 /-- Full validation over the immutable checked document reuses the common addressed entity core before applying Boolean/Confirm classification. -/
 def evaluateCheckedDocumentValidation
     (checked : CheckedBooleanValueCountSource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError NumericOperand :=
   evalResolvedValueCountOperands
     (booleanValueCountToken checked.expected) checked.operands fun operand => do
       pure (.inl (←
-        operand.resolvedCheckedValidationSide document outer))
+        operand.resolvedCheckedValidationSide (world := world) document outer))
 
 /-- Computation uses the same checked source and tally while retaining computation-phase filter and value poison. -/
 def evaluateComputation (checked : CheckedBooleanValueCountSource model)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (filterRead starRead : Env → FieldId → CheckedCell) :
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError NumericOperand :=
   evalResolvedValueCountOperands
     (booleanValueCountToken checked.expected) checked.operands fun operand =>
-      operand.resolvedComputationSide document outer directRead
+      operand.resolvedComputationSide (world := world) document outer directRead
         filterRead starRead
 
 end CheckedBooleanValueCountSource

@@ -102,7 +102,8 @@ namespace CheckedAddressedEnumerationFirstFilledJoin
 
 /-- Complete both independent producer phases, expose their union as transient exact-address cells, then execute the lazy ordered consumer. -/
 def execute (join : CheckedAddressedEnumerationFirstFilledJoin model)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (world : Option World := none) :
     Except AddressedEnumerationFirstFilledJoinFault
       AddressedEnumerationFirstFilledJoinOutcomes := do
   let firstProducer ← join.firstProducer.execute input |>.mapError .firstProducer
@@ -112,17 +113,18 @@ def execute (join : CheckedAddressedEnumerationFirstFilledJoin model)
   let secondDependencies ← projectEnumerationDependencyCells secondProducer
     |>.mapError fun error => .secondDependency error.target error.cause
   let dependencies := firstDependencies ++ secondDependencies
-  let consumer ← join.consumer.executeWithRead input
+  let consumer ← join.consumer.executeWithRead (world := world) input
       (readAfterEnumerationDependencies input dependencies) |>.mapError .consumer
   pure { firstProducer, secondProducer, consumer }
 
 /-- Execute once, then classify the three retained phases independently against immutable source-target state. -/
 def executeResult (join : CheckedAddressedEnumerationFirstFilledJoin model)
     (input : CheckedDocument model)
-    (firstResidual secondResidual consumerResidual : List ResidualMessage) :
+    (firstResidual secondResidual consumerResidual : List ResidualMessage)
+    (world : Option World := none) :
     Except AddressedEnumerationFirstFilledJoinFault
       (AddressedEnumerationFirstFilledJoinRunView model ResidualMessage) := do
-  let outcomes ← join.execute input
+  let outcomes ← join.execute (world := world) input
   pure {
     join
     firstProducer := projectAddressedEnumerationResults input firstResidual

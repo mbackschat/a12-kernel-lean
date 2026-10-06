@@ -33,7 +33,8 @@ def sources : CheckedTokenComparisonOperand model → List (CheckedFirstFilledTo
   | .firstFilled source _ => [source]
 
 def evaluate (operand : CheckedTokenComparisonOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError (SimpleComparisonOperand String) :=
   match operand with
   | .literal value => pure (if value.isEmpty then .notEvaluated else .value value true)
@@ -44,7 +45,7 @@ def evaluate (operand : CheckedTokenComparisonOperand model)
         hasUninstantiatedTail := false, hasHaving := false }).asValidationOperand)
   | .firstFilled source supported =>
       FirstFilledTokenResult.asValidationOperand <$>
-        source.evaluateSupportedFirstFilledValidation document outer supported
+        source.evaluateSupportedFirstFilledValidation (world := world) document outer supported
 
 def fields : CheckedTokenComparisonOperand model → List (CheckedTokenField model)
   | .field source => [source]
@@ -124,9 +125,10 @@ def bindingScopes (comparison : CheckedTokenComparison model) : List (List Repea
       | _ => [])
 
 def evaluateFull (comparison : CheckedTokenComparison model)
-    (document : CheckedDocument model) (outer : Env) : Except CheckedAddressingError Verdict := do
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) : Except CheckedAddressingError Verdict := do
   pure (comparison.operator.evalSymmetric (· == ·)
-    (← comparison.left.evaluate document outer) (← comparison.right.evaluate document outer))
+    (← comparison.left.evaluate (world := world) document outer) (← comparison.right.evaluate (world := world) document outer))
 
 def evaluatePartial? (comparison : CheckedTokenComparison model)
     (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)

@@ -117,12 +117,6 @@ def references (field : FieldId) : ResolvedDateDifferenceOperand → Bool
   | .field source => source.id == field
   | .baseYear _ _ | .today _ => false
 
-/-- Read the model-local civil day from this evaluation's clock, as required by spec/05 §7.
-No instant is cached in the checked operand. -/
-def todayParts? (profile : ModelZone.ConcreteProfile) (world? : Option World) : Option DateParts := do
-  let world ← world?
-  pure (← profile.localDate? world.now).civil.parts
-
 def validationOperand (context : FlatContext) :
     ResolvedDateDifferenceOperand → DateDifferenceOperand
   | .literal source year => .value (source.parts year)

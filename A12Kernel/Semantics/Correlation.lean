@@ -315,6 +315,7 @@ def CorrelatedHavingLeaf.evalComputationIn (context : CorrelationContext)
   | .numeric comparison => comparison.evalComputationWith (HavingNumericAtom.readComputation context frame)
   | leaf => leaf.evalComputationInResolving {
       read := fun env field => .ok (context.read env field)
+      world := context.world
       bindingError := fun _ => (), unsupportedDateCalendar := () } frame
 
 /-- The shared effectful tree preserves support faults and computation short-circuiting. -/

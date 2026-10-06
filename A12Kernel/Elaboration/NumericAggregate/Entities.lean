@@ -102,7 +102,7 @@ def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
   | .field source => pure (source.resolvedAggregateSide direct)
   | .star source => source.resolvedValueSide document outer starRead
   | .starHaving source =>
-      source.resolvedValueSide document outer filterRead starRead
+      source.resolvedValueSide (world := direct.world) document outer filterRead starRead
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 /-- Resolve one full-validation aggregate slot from a caller-prepared checked view. Direct and repeated cells therefore share one validation phase without resampling declaration checks. A plain or filtered star narrows to its declared-capacity extent, answering as the checked-document route does; this route filters only the in-capacity rows, so an over-limit row is never kept, whichever way the filter would judge it, and cannot make the filter unknown ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)). -/
@@ -121,7 +121,7 @@ def resolvedValidationAggregateSideIn
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
       pure (source.source.source.selectedValidationHavingValueListSide resolved
-        source.having read outer (source.source.checkedValueListCellAt .validation read))
+        source.having read outer (source.source.checkedValueListCellAt .validation read) direct.world)
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 /-- Resolve one aggregate slot at computation phase. Filtered stars use the runtime iterator's one-kept-successor lookahead and stop at the first reached filter or target poison; plain stars and direct fields preserve the same checked-cell classification without validation's unknown-as-drop projection. A plain or filtered star narrows to its declared-capacity extent, which the Kernel applies on the computation arm too, so an over-limit row neither contributes nor poisons ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm); filtered: [checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)). -/
@@ -140,7 +140,7 @@ def resolvedComputationAggregateSide
         (source.checkedValueListCellAt .computation starRead)))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
-      let filterContext : CorrelationContext := { read := filterRead }
+      let filterContext : CorrelationContext := { read := filterRead, world := direct.world }
       let consume := fun cells environment =>
         match source.source.checkedValueListCellAt .computation
             starRead environment with
@@ -181,11 +181,12 @@ def resolvedComputationAggregateSide
     index above it, and that pair is measured on both forms. -/
 def resolvedCheckedDocumentValidationAggregateSide
     (checked : CheckedNumberEntityOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError
       (Sum (ResolvedValueListSide .number) NumericOperand) :=
   do
-    let resolved ← checked.resolveCheckedValidationOperand document outer
+    let resolved ← checked.resolveCheckedValidationOperand document outer world
     let side := match checked with
       | .star _ | .starHaving _ | .group _ =>
           resolved.inCapacityValueListSideAt .validation
@@ -213,7 +214,8 @@ def resolvedCheckedDocumentValidationAggregateSide
     arm and the whole validation arm already use. -/
 def resolvedCheckedDocumentComputationAggregateSide
     (checked : CheckedNumberEntityOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError
       (Sum (ResolvedValueListSide .number) NumericOperand) :=
   match checked with
@@ -230,7 +232,7 @@ def resolvedCheckedDocumentComputationAggregateSide
         | .unknown cause => pure (.inr cause)
         | cell => pure (.inl (cell :: cells))
       match ← source.having.scanComputationResolving
-          document.resolvingCorrelationContext outer consume
+          (document.resolvingCorrelationContext world) outer consume
           resolved.environments [] with
       | .exhausted reversed =>
           pure (.inl {
@@ -458,9 +460,10 @@ def evaluateValidationAggregateIn (checked : CheckedNumberEntitySource model)
 def evaluateComputationAggregate (checked : CheckedNumberEntitySource model)
     (op : NumericAggregateOp) (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (filterRead starRead : Env → FieldId → CheckedCell) :
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError NumericOperand :=
-  let direct : FlatContext := { read := directRead }
+  let direct : FlatContext := { read := directRead, world }
   checked.evaluateAggregateWith op fun operand =>
     operand.resolvedComputationAggregateSide document outer direct
       filterRead starRead
@@ -469,17 +472,19 @@ def evaluateComputationAggregate (checked : CheckedNumberEntitySource model)
 def evaluateCheckedDocumentValidationAggregate
     (checked : CheckedNumberEntitySource model)
     (op : NumericAggregateOp) (document : CheckedDocument model)
-    (outer : Env) : Except CheckedAddressingError NumericOperand :=
+    (outer : Env)
+    (world : Option World := none) : Except CheckedAddressingError NumericOperand :=
   checked.evaluateAggregateWith op fun operand =>
-    operand.resolvedCheckedDocumentValidationAggregateSide document outer
+    operand.resolvedCheckedDocumentValidationAggregateSide document outer world
 
 /-- Evaluate computation-phase aggregate accumulation from the same checked document without changing filter or poison timing. -/
 def evaluateCheckedDocumentComputationAggregate
     (checked : CheckedNumberEntitySource model)
     (op : NumericAggregateOp) (document : CheckedDocument model)
-    (outer : Env) : Except CheckedAddressingError NumericOperand :=
+    (outer : Env)
+    (world : Option World := none) : Except CheckedAddressingError NumericOperand :=
   checked.evaluateAggregateWith op fun operand =>
-    operand.resolvedCheckedDocumentComputationAggregateSide document outer
+    operand.resolvedCheckedDocumentComputationAggregateSide document outer world
 
 /-- Run the common partial aggregate fold after the caller selects a raw or checked-document operand resolver. The source-wide filter skip remains before every resolver call. -/
 def evaluatePartialAggregateWith
@@ -578,9 +583,10 @@ def evaluateValueCountValidationIn (checked : CheckedNumberEntitySource model)
 def evaluateValueCountComputation (checked : CheckedNumberEntitySource model)
     (expected : Rat) (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (filterRead starRead : Env → FieldId → CheckedCell) :
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError NumericOperand :=
-  let direct : FlatContext := { read := directRead }
+  let direct : FlatContext := { read := directRead, world }
   checked.evaluateValueCountWith expected fun operand =>
     operand.resolvedComputationAggregateSide document outer direct
       filterRead starRead
@@ -588,18 +594,20 @@ def evaluateValueCountComputation (checked : CheckedNumberEntitySource model)
 /-- Evaluate validation-phase numeric value count through the checked-document aggregate resolver, retaining per-selected-cell filter provenance. -/
 def evaluateCheckedDocumentValueCountValidation
     (checked : CheckedNumberEntitySource model)
-    (expected : Rat) (document : CheckedDocument model) (outer : Env) :
+    (expected : Rat) (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError NumericOperand :=
   checked.evaluateValueCountWith expected fun operand =>
-    operand.resolvedCheckedDocumentValidationAggregateSide document outer
+    operand.resolvedCheckedDocumentValidationAggregateSide document outer world
 
 /-- Evaluate computation-phase numeric value count through the shared capacity-aware computation resolver and the established one-kept-successor filter traversal. -/
 def evaluateCheckedDocumentValueCountComputation
     (checked : CheckedNumberEntitySource model)
-    (expected : Rat) (document : CheckedDocument model) (outer : Env) :
+    (expected : Rat) (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError NumericOperand :=
   checked.evaluateValueCountWith expected fun operand =>
-    operand.resolvedCheckedDocumentComputationAggregateSide document outer
+    operand.resolvedCheckedDocumentComputationAggregateSide document outer world
 
 /-- Run the common partial value-count fold over a raw or checked-document operand resolver. -/
 def evaluatePartialValueCountWith

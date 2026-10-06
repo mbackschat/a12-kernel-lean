@@ -153,7 +153,8 @@ private def scanCheckedFirstFilledTokenOperand
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (directRead : FieldId → CheckedCell)
     (starRead : Env → FieldId → CheckedCell)
-    (state : FirstFilledScanState) :
+    (state : FirstFilledScanState)
+    (world : Option World := none) :
     CheckedTokenEntityOperand model →
       Except StarAddressingError
         (FirstFilledScanState ⊕ PartialValidationFirstFilledTokenResult)
@@ -174,7 +175,7 @@ private def scanCheckedFirstFilledTokenOperand
       let selected := match source.filter with
         | none => resolved.environments
         | some filter =>
-            filter.condition.selectEnvironments { read := starRead } outer
+            filter.condition.selectEnvironments { read := starRead, world } outer
               resolved.environments
       pure (source.scanPartialFirstFilledState scope starRead selected
         (state.enterSelection selected.isEmpty resolved.domain.hasOpenTail
@@ -183,15 +184,16 @@ private def scanCheckedFirstFilledTokenOperand
 private def scanCheckedFirstFilledTokenOperands
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (directRead : FieldId → CheckedCell)
-    (starRead : Env → FieldId → CheckedCell) :
+    (starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     List (CheckedTokenEntityOperand model) → FirstFilledScanState →
       Except StarAddressingError PartialValidationFirstFilledTokenResult
   | [], _ => pure (.evaluated .noValue)
   | operand :: remaining, state => do
-      match ← scanCheckedFirstFilledTokenOperand document outer scope directRead
+      match ← scanCheckedFirstFilledTokenOperand (world := world) document outer scope directRead
           starRead state operand with
       | .inl next =>
-          scanCheckedFirstFilledTokenOperands document outer scope directRead starRead
+          scanCheckedFirstFilledTokenOperands (world := world) document outer scope directRead starRead
             remaining next
       | .inr result => pure result
 
@@ -225,7 +227,8 @@ private def groupFirstFilledRuntimeShape?
 
 private def resolveCheckedFirstFilledValidationSide
     (source : CheckedTokenEntityOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError (ResolvedValueListSide .token) := do
   match source with
   | .field direct => do
@@ -233,7 +236,7 @@ private def resolveCheckedFirstFilledValidationSide
       pure { cells := [direct.operand.checkedValueListCellAt .validation addressed.cell]
              hasUninstantiatedTail := false, hasHaving := false }
   | .star _ | .group _ => do
-      pure ((← source.resolveCheckedValidationOperand document outer)
+      pure ((← source.resolveCheckedValidationOperand (world := world) document outer)
         |>.inCapacityValueListSideAt .validation)
 
 /-- Stored-token sources share the same scan across direct, starred and group operands.
@@ -247,24 +250,26 @@ def supportsCheckedFirstFilledValidation
     | .star source => source.projectionRef == .stored
 
 private def scanCheckedFirstFilledValidationOperands
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     List (CheckedTokenEntityOperand model) → FirstFilledScanState →
       Except CheckedAddressingError FirstFilledTokenResult
   | [], _ => pure .noValue
   | operand :: remaining, state => do
-      let side ← resolveCheckedFirstFilledValidationSide operand document outer
+      let side ← resolveCheckedFirstFilledValidationSide (world := world) operand document outer
       match scanFirstFilledItems id side.cells (state.enterOperand side) with
       | .inl next =>
-          scanCheckedFirstFilledValidationOperands document outer remaining next
+          scanCheckedFirstFilledValidationOperands (world := world) document outer remaining next
       | .inr result => pure result.asToken
 
 /-- Evaluate a supported stored-token source. The support proof excludes projected slots before
 traversal, so condition consumers need no fallback that could disguise an unsupported shape. -/
 def evaluateSupportedFirstFilledValidation
     (checked : CheckedTokenEntitySource model) (document : CheckedDocument model) (outer : Env)
-    (_supported : checked.supportsCheckedFirstFilledValidation = true) :
+    (_supported : checked.supportsCheckedFirstFilledValidation = true)
+    (world : Option World := none) :
     Except CheckedAddressingError FirstFilledTokenResult :=
-  scanCheckedFirstFilledValidationOperands document outer checked.operands {}
+  scanCheckedFirstFilledValidationOperands (world := world) document outer checked.operands {}
 
 /-- Evaluate one already-admitted direct/plain-star/filtered-star/group token source against the immutable
     checked document. A bound direct slot retains its formal findings; reopened star/group slots select their
@@ -272,10 +277,11 @@ def evaluateSupportedFirstFilledValidation
     `none` denotes a projected source outside this stored-token account. -/
 def evaluateCheckedFirstFilledValidation?
     (checked : CheckedTokenEntitySource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError (Option FirstFilledTokenResult) :=
   if supported : checked.supportsCheckedFirstFilledValidation = true then do
-    pure (some (← checked.evaluateSupportedFirstFilledValidation document outer supported))
+    pure (some (← checked.evaluateSupportedFirstFilledValidation (world := world) document outer supported))
   else
     pure none
 
@@ -361,9 +367,10 @@ def evaluatePartialFirstFilledValidation
     (checked : CheckedTokenEntitySource model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (directRead : FieldId → CheckedCell)
-    (starRead : Env → FieldId → CheckedCell) :
+    (starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError PartialValidationFirstFilledTokenResult :=
-  scanCheckedFirstFilledTokenOperands document outer scope directRead starRead
+  scanCheckedFirstFilledTokenOperands (world := world) document outer scope directRead starRead
     checked.operands {}
 
 end CheckedTokenEntitySource

@@ -33,7 +33,8 @@ def declarations : CheckedTokenEntityOperand model → List FlatFieldDecl
 /-- Resolve one reached slot at the scan's environment `outer`: a field read at it, a star's
 in-capacity rows below it, filtered or not, and a group's cells in the shared walk's order. -/
 def computationSelection (document : Document) (outer : Env)
-    (read : Env → FieldId → CheckedCell) :
+    (read : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     CheckedTokenEntityOperand model →
       Except StarAddressingError (FirstFilledComputationSelection .token)
   | .field source => pure (.cell (source.valueListCellAt .computation (read outer)))
@@ -42,7 +43,7 @@ def computationSelection (document : Document) (outer : Env)
       let classify := source.valueListCellAt .computation read
       pure <| match source.filter with
         | none => .rows resolved.environments resolved.domain.hasOpenTail classify
-        | some having => .filtered having.condition { read } resolved.environments
+        | some having => .filtered having.condition { read, world } resolved.environments
             resolved.domain.hasOpenTail classify
   | .group source => (.side ·) <$> source.resolvedSideIn .computation document outer read
 
@@ -178,12 +179,13 @@ def referencesField (operation : CheckedStringFirstFilledComputation model) (fie
 String target policy and the target's prepared matcher. -/
 def evaluateAt (operation : CheckedStringFirstFilledComputation model)
     (matcher : Option (String → Bool)) (input : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env)
+    (world : Option World := none) :
     Except StringFirstFilledComputationFault StringFirstFilledComputationOutcome := do
   let targetPath ← environment.pathForScope operation.target.repeatableScope
     |>.mapError .targetEnvironment
   let selected ← scanComputationFirstFilledSelections environment .unsupportedDateCalendar
-      (·.computationSelection input.source.toDocument environment (input.computationCellAt read))
+      (·.computationSelection (world := world) input.source.toDocument environment (input.computationCellAt read))
       operation.source.operands {}
     |>.mapError .source
   let result : FirstFilledTokenResult := match selected with
@@ -206,34 +208,38 @@ def clearedAt (operation : CheckedStringFirstFilledComputation model) (environme
 scope with a clear at each over-limit row, through a caller-supplied exact-address view. -/
 def executeWithMatcher (operation : CheckedStringFirstFilledComputation model)
     (matcher : Option (String → Bool)) (input : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (world : Option World := none) :
     Except StringFirstFilledComputationFault (List StringFirstFilledComputationOutcome) :=
   input.computationTargetOutcomes operation.target.repeatableScope .targetRows operation.clearedAt
-    (operation.evaluateAt matcher input read)
+    (operation.evaluateAt (world := world) matcher input read)
 
 /-- Run with the target's prepared matcher, which must be present before any instance runs. -/
 def executeWithRead (operation : CheckedStringFirstFilledComputation model)
     (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (world : Option World := none) :
     Except StringFirstFilledComputationFault (List StringFirstFilledComputationOutcome) := do
   let matcher ← match patterns.targetMatcher? operation.targetField with
     | some matcher => pure matcher
     | none => throw (.targetPatternUnavailable operation.targetField)
-  operation.executeWithMatcher matcher input read
+  operation.executeWithMatcher (world := world) matcher input read
 
 def execute (operation : CheckedStringFirstFilledComputation model)
-    (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model) :
+    (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model)
+    (world : Option World := none) :
     Except StringFirstFilledComputationFault (List StringFirstFilledComputationOutcome) :=
-  operation.executeWithRead patterns input input.read
+  operation.executeWithRead (world := world) patterns input input.read
 
 /-- Classify caller-view outcomes against the immutable source target at the same addresses. -/
 def executeResultWithRead (operation : CheckedStringFirstFilledComputation model)
     (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (residualMessages : List ResidualMessage) :
+    (residualMessages : List ResidualMessage)
+    (world : Option World := none) :
     Except StringFirstFilledComputationFault
       (StringFirstFilledComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.executeWithRead patterns input read
+  let outcomes ← operation.executeWithRead (world := world) patterns input read
   pure {
     operation
     string := StringComputationRunView.fromSourcedOutcomes residualMessages
@@ -244,10 +250,11 @@ def executeResultWithRead (operation : CheckedStringFirstFilledComputation model
 
 def executeResult (operation : CheckedStringFirstFilledComputation model)
     (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model)
-    (residualMessages : List ResidualMessage) :
+    (residualMessages : List ResidualMessage)
+    (world : Option World := none) :
     Except StringFirstFilledComputationFault
       (StringFirstFilledComputationRunView model ResidualMessage) :=
-  operation.executeResultWithRead patterns input input.read residualMessages
+  operation.executeResultWithRead (world := world) patterns input input.read residualMessages
 
 end CheckedStringFirstFilledComputation
 
@@ -281,12 +288,13 @@ def formalInputPlan (operation : CheckedStringFirstFilledComputation model) :
 /-- Prepare the selected sources once, retain every eager finding, and run lazily through the
 prepared read. -/
 def executeResultWithFormalInputs (operation : CheckedStringFirstFilledComputation model)
-    (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model) :
+    (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model)
+    (world : Option World := none) :
     Except StringFirstFilledCheckedResultFault
       (StringFirstFilledComputationRunView model ComputationFormalInputFinding) := do
   let plan ← operation.formalInputPlan |>.mapError .formalInput
   let prepared ← plan.prepare input |>.mapError .preliminary
-  match operation.executeResultWithRead patterns input prepared.preliminary.readComputation
+  match operation.executeResultWithRead (world := world) patterns input prepared.preliminary.readComputation
       prepared.formalErrorsInOperands with
   | .error cause => .error (.execution prepared.formalErrorsInOperands cause)
   | .ok result => .ok result

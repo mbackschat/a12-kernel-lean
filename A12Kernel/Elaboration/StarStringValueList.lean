@@ -149,9 +149,10 @@ def valueListCell (checked : CheckedStarStringSource model)
 def resolvedValueSide (checked : CheckedStarStringSource model)
     (document : Document) (outer : Env)
     (filterRead : Env → FieldId → CheckedCell)
-    (read : Env → FieldId → CheckedCell) :
+    (read : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide .token) :=
-  checked.source.resolvedOptionalValidationHavingValueListSide document outer
+  checked.source.resolvedOptionalValidationHavingValueListSide (world := world) document outer
     checked.filter filterRead (checked.valueListCell read)
 
 /-- Resolve nested topology once, remove nonrelevant leaves before String checking, and retain the separate wildcard/ancestor extent fact. -/
@@ -178,9 +179,10 @@ def resolvedValuesSide (checked : CheckedStarStringValueListSource model) :
 def evaluateFull (checked : CheckedStarStringValueListSource model)
     (document : Document) (outer : Env)
     (filterRead : Env → FieldId → CheckedCell)
-    (read : Env → FieldId → CheckedCell) :
+    (read : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError Verdict := do
-  let fields ← checked.fields.resolvedValueSide document outer filterRead read
+  let fields ← checked.fields.resolvedValueSide (world := world) document outer filterRead read
   pure (checked.quantifier.eval fields checked.resolvedValuesSide)
 
 /-- Skip a filtered rule before topology or target reads; otherwise classify relevance per expanded cell and keep literal members always relevant. -/
@@ -218,7 +220,7 @@ def evaluateFull (checked : CheckedStringValueListStarValuesSource model)
     (document : Document) (outer : Env) (context : FlatContext)
     (filterRead : Env → FieldId → CheckedCell)
     (read : Env → FieldId → CheckedCell) : Except StarAddressingError Verdict := do
-  let values ← checked.values.resolvedValueSide document outer filterRead read
+  let values ← checked.values.resolvedValueSide (world := context.world) document outer filterRead read
   pure (checked.quantifier.eval (checked.resolvedFieldsSide context) values)
 
 /-- Partial evaluation preserves direct per-cell relevance and the starred values side's separate wildcard/ancestor extent fact before the common asymmetric dispatcher. -/

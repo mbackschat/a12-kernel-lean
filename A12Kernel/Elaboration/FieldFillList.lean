@@ -107,7 +107,8 @@ private def indexedObservation (document : CheckedDocument model) (outer : Env)
     (document.storedTextIn []) |>.mapError .semanticIndex
   pure (column.lookupObservationForIndex phase source.numericIndex key)
 
-def observations (document : CheckedDocument model) (outer : Env) :
+def observations (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     CheckedFieldFillOperand model → Except CheckedAddressingError (List CellObservation)
   | .indexed source => List.singleton <$> indexedObservation document outer source .validation
   | .field declaration => do
@@ -116,7 +117,7 @@ def observations (document : CheckedDocument model) (outer : Env) :
       let addressed ← document.fullValidationAddressedCell outer declaration.id
       pure [observeCell .validation addressed.cell]
   | .star source => do
-      let core ← source.source.resolveCheckedValidationEntityOperandCore document outer
+      let core ← source.source.resolveCheckedValidationEntityOperandCore (world := world) document outer
         (source.filter.map (·.condition))
       pure (core.inCapacityAddressedCells.map fun addressed => observeCell .validation addressed.cell)
   | .group source => source.observations document outer
@@ -163,13 +164,14 @@ def computationSlots (document : CheckedDocument model) (outer : Env) :
 missing slots separately; subtracting selected instantiated cells from unfiltered capacity would
 count dropped rows as omissions (the filtered field-fill grid, 2026-10-03). -/
 def validationRange? (operand : CheckedFieldFillOperand model) (declared : Bool)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError (Option ValidationFillRange) := do
-  let observations ← operand.observations document outer
+  let observations ← operand.observations (world := world) document outer
   let tally : ValidationFillTally := observations.foldl (fun total cell => total.combine cell.asValidationFillTally)
     { filled := 0, empty := 0, unknown := 0, uninstantiated := 0 }
   let missing? ← if !declared then pure (some 0) else match operand with
-    | .star source => source.selectedMissingCount? document outer
+    | .star source => source.selectedMissingCount? (world := world) document outer
     | _ => pure (operand.fillCapacity?.map (· - observations.length))
   pure (missing?.map fun missing =>
     { tally := { tally with uninstantiated := missing }, hasHaving := operand.hasHaving })
@@ -282,9 +284,10 @@ def fillCapacity? (list : CheckedFieldFillList model) : Option Nat :=
 def countCapacity? (list : CheckedFieldFillList model) : Option Nat :=
   sum? (list.operands.map (·.countCapacity?))
 
-def observations (list : CheckedFieldFillList model) (document : CheckedDocument model) (outer : Env) :
+def observations (list : CheckedFieldFillList model) (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError (List CellObservation) :=
-  (·.flatten) <$> list.operands.mapM (·.observations document outer)
+  (·.flatten) <$> list.operands.mapM (·.observations (world := world) document outer)
 
 /-- Resolve computation slots in authored operand and declaration order. -/
 def computationSlots (list : CheckedFieldFillList model) (document : CheckedDocument model)
@@ -314,8 +317,9 @@ def computationSources (list : CheckedFieldFillList model) :
 quantifiers supply the missing tail separately; counting a formally unknown instantiated cell as
 missing would turn the undecided all-full case into a false omission. -/
 def validationFillTally (list : CheckedFieldFillList model) (document : CheckedDocument model)
-    (outer : Env) : Except CheckedAddressingError ValidationFillTally := do
-  pure ((← list.observations document outer).foldl
+    (outer : Env)
+    (world : Option World := none) : Except CheckedAddressingError ValidationFillTally := do
+  pure ((← list.observations (world := world) document outer).foldl
     (init := ({ filled := 0, empty := 0, unknown := 0, uninstantiated := 0 } : ValidationFillTally))
     fun tally observation => tally.combine observation.asValidationFillTally)
 
@@ -326,17 +330,18 @@ invalid, while `AtLeastOneFieldFilled` still fires on a filled sibling, so the t
 document holding both, deliberately. `none` when a declared-range quantifier needs a maximum the
 model does not retain. -/
 def evaluateFill? (list : CheckedFieldFillList model) (operator : FieldFillQuantifier)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError (Option ValidationFillOutcome) := do
   if list.hasIndexed then throw .unsupportedIndexedFillQuantifier
   if list.hasHaving then
     let declared := match operator with
       | .allFieldsFilled | .notAllFieldsFilled | .fieldsNotCollectivelyFilled => true
       | _ => false
-    let ranges ← list.operands.mapM (·.validationRange? declared document outer)
+    let ranges ← list.operands.mapM (·.validationRange? (world := world) declared document outer)
     pure ((ranges.mapM id).map operator.evalValidationRanges)
   else do
-    let tally ← list.validationFillTally document outer
+    let tally ← list.validationFillTally (world := world) document outer
     match operator with
     | .allFieldsFilled | .notAllFieldsFilled | .fieldsNotCollectivelyFilled =>
         pure (list.fillCapacity?.map fun capacity =>
@@ -348,9 +353,10 @@ def evaluateFill? (list : CheckedFieldFillList model) (operator : FieldFillQuant
 /-- Count movement retains whether filled content came from a filtered operand, rather than
 whether a filter was merely authored (`RuntimeController.anzahlAngegebenerEntities`, kernel 30.8.1). -/
 def evaluateCountOperand? (list : CheckedFieldFillList model) (document : CheckedDocument model)
-    (outer : Env) : Except CheckedAddressingError (Option NumericOperand) := do
+    (outer : Env)
+    (world : Option World := none) : Except CheckedAddressingError (Option NumericOperand) := do
   let contributions ← list.operands.mapM fun operand => do
-    pure (operand.hasHaving, numberOfFilledFields (← operand.observations document outer))
+    pure (operand.hasHaving, numberOfFilledFields (← operand.observations (world := world) document outer))
   let available := contributions.foldlM (m := Option) (init := ((0 : Nat), false)) fun (total, filtered) (having, count) =>
     match count with
     | .unknown => none

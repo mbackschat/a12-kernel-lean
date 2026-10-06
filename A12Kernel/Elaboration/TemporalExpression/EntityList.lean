@@ -89,6 +89,7 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
   let read := fun row => readField model phase source.declaration (contextRead.read row source.declaration.id)
   let correlation : ResolvingCorrelationContext ScalarTemporalEvaluationFault := {
     read := fun row field => pure (contextRead.read row field)
+    world := context.world
     unsupportedDateCalendar := .calendarUnavailable
     bindingError := fun _ => .calendarUnavailable }
   let values ← match filter, phase with

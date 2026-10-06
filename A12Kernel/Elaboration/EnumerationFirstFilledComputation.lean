@@ -379,10 +379,11 @@ private def scanFilteredEnumerationFirstFilledStar
     (having : CheckedStarHaving model source.source source.declaringGroup)
     (filterRead : Env → FieldId → CheckedCell)
     (starRead : Env → FieldId → RawCell) (outer : Env)
-    (resolved : ResolvedStarTopology) (state : FirstFilledScanState) :
+    (resolved : ResolvedStarTopology) (state : FirstFilledScanState)
+    (world : Option World := none) :
     Except Unit (FirstFilledScanState ⊕ FirstFilledTokenResult) := do
   match ← scanFilteredComputationFirstFilled having.condition
-      { read := filterRead } outer
+      { read := filterRead, world } outer
       (source.valueListCellAt .computation starRead)
       resolved.environments resolved.domain.hasOpenTail state with
   | .inl next => pure (.inl next)
@@ -408,7 +409,7 @@ private def scanEnumerationFirstFilledOperand
             (state.enterSelection resolved.environments.isEmpty
               resolved.domain.hasOpenTail false))
       | some having =>
-          (scanFilteredEnumerationFirstFilledStar source having filterRead
+          (scanFilteredEnumerationFirstFilledStar (world := direct.world) source having filterRead
             starRead outer resolved state).mapError (fun _ => .unsupportedDateCalendar)
 
 private def scanEnumerationFirstFilledOperands
@@ -432,9 +433,10 @@ namespace CheckedEnumerationFirstFilledSource
 def evaluate (source : CheckedEnumerationFirstFilledSource model [])
     (document : Document) (outer : Env) (directRead : RawFlatContext)
     (filterRead : Env → FieldId → CheckedCell)
-    (starRead : Env → FieldId → RawCell) :
+    (starRead : Env → FieldId → RawCell)
+    (world : Option World := none) :
     Except StarAddressingError FirstFilledTokenResult :=
-  scanEnumerationFirstFilledOperands document outer (model.checkContext directRead)
+  scanEnumerationFirstFilledOperands document outer { (model.checkContext directRead) with world }
     filterRead starRead source.operands {}
 
 private def checkedDirectCellAt (document : CheckedDocument model)
@@ -457,7 +459,8 @@ private def checkedStarCellAt (document : CheckedDocument model)
 private def scanCheckedDocumentOperand
     (document : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env)
-    (state : FirstFilledScanState) :
+    (state : FirstFilledScanState)
+    (world : Option World := none) :
     CheckedEnumerationFirstFilledOperand model scope →
       Except CheckedAddressingError
         (FirstFilledScanState ⊕ FirstFilledTokenResult)
@@ -480,7 +483,7 @@ private def scanCheckedDocumentOperand
           | .inr result => pure (.inr result.asToken)
       | some having =>
           match ← scanFilteredComputationFirstFilledResolving having.condition
-              (document.resolvingCorrelationContextWithRead read) outer
+              (document.resolvingCorrelationContextWithRead (world := world) read) outer
               (fun environment => checkedStarCellAt document read environment source)
               resolved.environments resolved.domain.hasOpenTail state with
           | .inl next => pure (.inl next)
@@ -488,30 +491,33 @@ private def scanCheckedDocumentOperand
 
 private def scanCheckedDocumentOperands
     (document : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env)
+    (world : Option World := none) :
     List (CheckedEnumerationFirstFilledOperand model scope) → FirstFilledScanState →
       Except CheckedAddressingError FirstFilledTokenResult
   | [], _ => pure .noValue
   | operand :: remaining, state => do
-      match ← scanCheckedDocumentOperand document read outer state operand with
+      match ← scanCheckedDocumentOperand (world := world) document read outer state operand with
       | .inl next =>
-          scanCheckedDocumentOperands document read outer remaining next
+          scanCheckedDocumentOperands (world := world) document read outer remaining next
       | .inr result => pure result
 
 /-- Evaluate the checked Enumeration/category source through one exact-address read view. Exact reads and resolving filters share the view while topology remains owned by the immutable checked document. -/
 def evaluateCheckedDocumentWithRead
     (source : CheckedEnumerationFirstFilledSource model scope)
     (document : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError FirstFilledTokenResult :=
-  scanCheckedDocumentOperands document read outer source.operands {}
+  scanCheckedDocumentOperands (world := world) document read outer source.operands {}
 
 /-- Evaluate the checked Enumeration/category source against one immutable checked document. -/
 def evaluateCheckedDocument
     (source : CheckedEnumerationFirstFilledSource model scope)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError FirstFilledTokenResult :=
-  source.evaluateCheckedDocumentWithRead document document.read outer
+  source.evaluateCheckedDocumentWithRead (world := world) document document.read outer
 
 end CheckedEnumerationFirstFilledSource
 
@@ -521,9 +527,10 @@ namespace CheckedEnumerationFirstFilledComputationOperation
 def evaluate (operation : CheckedEnumerationFirstFilledComputationOperation model)
     (document : Document) (outer : Env) (directRead : RawFlatContext)
     (filterRead : Env → FieldId → CheckedCell)
-    (starRead : Env → FieldId → RawCell) :
+    (starRead : Env → FieldId → RawCell)
+    (world : Option World := none) :
     Except StarAddressingError StringTargetOutcome := do
-  let selected ← operation.source.evaluate document outer directRead
+  let selected ← operation.source.evaluate (world := world) document outer directRead
     filterRead starRead
   pure selected.asComputationResult.asExactStringTargetOutcome
 
@@ -534,10 +541,11 @@ def executeResult
     (directRead : RawFlatContext)
     (filterRead : Env → FieldId → CheckedCell)
     (starRead : Env → FieldId → RawCell)
-    (residualMessages : List ResidualMessage) :
+    (residualMessages : List ResidualMessage)
+    (world : Option World := none) :
     Except StarAddressingError
       (EnumerationComputationRunView model ResidualMessage) := do
-  let selected ← operation.source.evaluate input.source.toDocument outer
+  let selected ← operation.source.evaluate (world := world) input.source.toDocument outer
     directRead filterRead starRead
   pure (EnumerationComputationRunView.fromTokenResult operation.target input
     residualMessages selected.asComputationResult)

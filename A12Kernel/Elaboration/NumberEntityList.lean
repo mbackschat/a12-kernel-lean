@@ -552,7 +552,8 @@ namespace CheckedNumberEntityOperand
 /-- Resolve one full-validation operand through the sole checked topology, filter, and addressed-cell owners. -/
 def resolveCheckedValidationOperand
     (source : CheckedNumberEntityOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError
       (ResolvedCheckedNumberEntityOperand model) :=
   match source with
@@ -566,7 +567,7 @@ def resolveCheckedValidationOperand
   | .starHaving filtered => do
       let core ←
         filtered.source.source.resolveCheckedValidationEntityOperandCore
-          document outer (some filtered.having)
+          document outer (some filtered.having) world
       pure { source, core }
   | .group slot => do
       let core ← document.resolveCheckedGroupEntityOperandCore outer

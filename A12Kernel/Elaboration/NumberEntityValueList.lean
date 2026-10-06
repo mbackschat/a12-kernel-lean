@@ -75,31 +75,35 @@ def hasHaving (checked : CheckedNumberEntityValueListSource model) : Bool :=
 
 private def resolveFullFields
     (checked : CheckedNumberEntityValueListSource model)
-    (document : CheckedDocument model) (outer : Env) :=
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :=
   checked.fields.operands.mapM fun operand =>
-    operand.resolveCheckedValidationOperand document outer
+    operand.resolveCheckedValidationOperand (world := world) document outer
 
 private def resolveFullValues
     (checked : CheckedNumberEntityValueListSource model)
-    (document : CheckedDocument model) (outer : Env) :=
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :=
   checked.values.operands.mapM fun operand =>
-    operand.resolveCheckedValidationOperand document outer
+    operand.resolveCheckedValidationOperand (world := world) document outer
 
 /-- Construct both rich sides in the kernel's operator-specific side order, without flattening authored operand boundaries. -/
 def resolveFull (checked : CheckedNumberEntityValueListSource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError
       (ResolvedCheckedNumberEntityValueList model) := do
   let (fields, values) ← checked.quantifier.resolveSidesOrdered
-    (fun () => checked.resolveFullFields document outer)
-    (fun () => checked.resolveFullValues document outer)
+    (fun () => checked.resolveFullFields (world := world) document outer)
+    (fun () => checked.resolveFullValues (world := world) document outer)
   pure { quantifier := checked.quantifier, fields, values }
 
 /-- Resolve and execute full validation while retaining structural addressing failure outside the semantic verdict. -/
 def evaluateFull (checked : CheckedNumberEntityValueListSource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError Verdict := do
-  pure (← checked.resolveFull document outer).evaluate
+  pure (← checked.resolveFull (world := world) document outer).evaluate
 
 private def resolvePartialFields
     (checked : CheckedNumberEntityValueListSource model)

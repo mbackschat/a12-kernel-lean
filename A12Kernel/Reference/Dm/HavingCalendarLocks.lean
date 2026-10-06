@@ -113,7 +113,7 @@ example : ["DifferenceInMonths", "DifferenceInYears", "DifferenceInDays"].all (f
     refused dates s!"{op}(\"01.03.2024\", \"01.03.2025\") > 0" &&
     refused dates s!"{op}($Expected, \"01.03.2025\") > 0" &&
     admitted dates s!"[Rows/N] > 0 And {op}($Expected, \"01.03.2025\") > 0" &&
-    refused dates s!"{op}(Rows/Tag, Today) > 0" &&
+    admitted dates s!"{op}(Rows/Tag, Today) > 0" &&
     refused dates s!"{op}(Rows/Tag, Now) > 0") = true := by native_decide
 
 example : runModel dates "[Rows/N] > 0 And DifferenceInDays($Expected, \"02.03.2024\") == 1" true
@@ -144,7 +144,8 @@ example : certifiedSource (.literal { year := none, month := 3, day := 1 } 2024)
     certifiedSource (.literal { year := none, month := 2, day := 29 } 2024) = false ∧
     certifiedSource (.baseYear 2024 .direct) = true ∧
     certifiedSource (.baseYear 2025 .direct) = false ∧
-    certifiedSource (.today .utc) = false := by native_decide
+    certifiedSource (.today .utc) = true ∧
+    certifiedSource (.today .europeBerlin) = false := by native_decide
 
 
 private def baseYearSources : List (String × List String) :=
@@ -206,5 +207,92 @@ example : ["StartOfDateRange", "EndOfDateRange"].all (fun bound =>
       { dates with baseYear := some 2024, fields := dates.fields ++ [{
         id := 6, name := "Token", groupPath := ["Form", "Rows"]
         repeatableScope := [10], policy := { kind := .string } }] } "Token" == some (true, false)) = true := by native_decide
+
+
+example : [("DifferenceInYears", "1"), ("DifferenceInMonths", "12"), ("DifferenceInDays", "365")].all
+    (fun (op, expected) =>
+      runModel dates s!"{op}(Rows/Tag, Today) == {expected}" false "" "1969-01-01" "1970-01-01" ==
+        some (.fired .omission, ["value 9"]) &&
+      runModel dates s!"{op}(Rows/Tag, Today) == {expected}" false "" "1969-01-01" "1970-01-01"
+        (clock := { epochMillis := 31536000000 }) == some (.notFired, ["value 5"])) = true := by native_decide
+
+example : [("Sum", "9", "5"), ("MinValue", "2", "5"), ("MaxValue", "7", "5"),
+    ("FirstFilledValue", "2", "5"), ("NumberOfDifferentValues", "2", "1"),
+    ("NumberOfFilledFields", "2", "1")].all (fun (op, first, second) =>
+      let expression := s!"{op}(Rows*/N Having DifferenceInDays(Rows/Tag, Today) == 365)"
+      runModel dates "" false "" "1969-01-01" "1970-01-01"
+        (operationOverride := some expression) (ruleExpected := first) == some (.fired .omission, ["value " ++ first]) &&
+      runModel dates "" false "" "1969-01-01" "1970-01-01"
+        (operationOverride := some expression) (ruleExpected := first)
+        (clock := { epochMillis := 31536000000 }) == some (.notFired, ["value " ++ second])) = true := by native_decide
+
+private def clockFilter : String := "[Rows/N] > 0 And DifferenceInDays(Today, \"01.01.1970\") == 0"
+
+private def booleanTags : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == 3 then { field with policy := { kind := .boolean } } else field }
+
+example : [(model, "NumberOfValueInFields(2 In Rows*/N", "1", "keep", "drop"),
+    (model, "NumberOfValueInFields(\"keep\" In Rows*/Tag", "2", "keep", "drop"),
+    (model, "NumberOfDifferentValues(Rows*/Tag", "2", "keep", "drop"),
+    (booleanTags, "NumberOfValueInFields(True In Rows*/Tag", "2", "true", "false"),
+    (dates, "NumberOfDifferentValues(Rows*/Tag", "2", "1970-01-01", "1971-01-01")].all
+    (fun (fixture, operationStart, count, first, second) =>
+      let operation := some (operationStart ++ " Having " ++ clockFilter ++ ")")
+      runModel fixture "" false "" first second (operationOverride := operation) (ruleExpected := count) ==
+        some (.fired .omission, ["value " ++ count]) &&
+      runModel fixture "" false "" first second (operationOverride := operation) (ruleExpected := count)
+        (clock := { epochMillis := 86400000 }) == some (.notFired, ["value 0"])) = true := by native_decide
+
+private def stringTarget : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == 5 then { field with policy := { kind := .string } } else field }
+
+example : runModel stringTarget "" false "" "keep" "drop"
+    (operationOverride := some s!"FirstFilledValue(Rows*/Tag Having {clockFilter})") (ruleExpected := "\"keep\"") =
+      some (.fired .omission, ["value keep"]) ∧
+    runModel stringTarget "" false "" "keep" "drop"
+      (operationOverride := some s!"FirstFilledValue(Rows*/Tag Having {clockFilter})") (ruleExpected := "\"keep\"")
+      (clock := { epochMillis := 86400000 }) = some (.notFired, []) := by native_decide
+
+example : [("AtLeastOneFieldFilled", Verdict.unknown), ("FieldValuesNotUnique", Verdict.notFired)].all
+    (fun (op, emptyVerdict) =>
+      let guard := s!"{op}(Rows*/Tag Having {clockFilter})"
+      runModel model "" false "" "keep" "drop" (operationOverride := some "1")
+        (ruleCondition := some ("FieldFilled(Error) And " ++ guard)) (computationPrecondition := some guard) ==
+          some (.fired .omission, ["value 1"]) &&
+      runModel model "" false "" "keep" "drop" (operationOverride := some "1")
+        (ruleCondition := some ("FieldFilled(Error) And " ++ guard)) (computationPrecondition := some guard)
+        (clock := { epochMillis := 86400000 }) == some (emptyVerdict, [])) = true := by native_decide
+
+example : runModel dates "DifferenceInDays(Rows/Tag, Today) == 0" false "" "1969-12-31" "1970-01-01"
+    (clock := { epochMillis := -1800000 }) = some (.fired .omission, ["value 9"]) ∧
+    runModel { dates with timeZoneId := "Europe/Berlin" } "DifferenceInDays(Rows/Tag, Today) == 0" false "" "1969-12-31" "1970-01-01"
+      (clock := { epochMillis := -1800000 }) = some (.notFired, ["value 5"]) ∧
+    runModel dates "DifferenceInDays(Today, Rows/Tag) == -365" false "" "1969-01-01" "1970-01-01" =
+      some (.fired .omission, ["value 9"]) := by native_decide
+
+private def enumerationTarget : FlatModel := { stringTarget with fields := stringTarget.fields.map fun field =>
+  if field.id == 3 || field.id == 5 then { field with
+    policy := { kind := .enumeration }, enumeration := some { storedTokens := ["keep", "drop"] } } else field }
+
+example : runModel enumerationTarget "" false "" "keep" "drop"
+    (operationOverride := some s!"FirstFilledValue(Rows*/Tag Having {clockFilter})") (ruleExpected := "\"keep\"") =
+      some (.fired .omission, ["value keep"]) ∧
+    runModel enumerationTarget "" false "" "keep" "drop"
+      (operationOverride := some s!"FirstFilledValue(Rows*/Tag Having {clockFilter})") (ruleExpected := "\"keep\"")
+      (clock := { epochMillis := 86400000 }) = some (.notFired, []) := by native_decide
+
+example : refused dates "DifferenceInDays(Today, \"01.01.1970\") == 0" ∧
+    refused dates "DifferenceInDays(Rows/Tag, Now) == 0" ∧
+    refused { dates with timeZoneId := "America/New_York" } "DifferenceInYears(Rows/Tag, Today) == 0" := by native_decide
+
+example : [(model, "keep", "drop"), (dates, "1970-01-01", "1971-01-01")].all
+    (fun (fixture, first, second) =>
+      let guard := s!"FieldValuesNotUnique(Rows*/Tag Having {clockFilter})"
+      runModel fixture "" false "" first second (operationOverride := some "1")
+        (ruleCondition := some ("FieldFilled(Error) And " ++ guard)) (computationPrecondition := some guard) ==
+          some (.fired .omission, ["value 1"]) &&
+      runModel fixture "" false "" first second (operationOverride := some "1")
+        (ruleCondition := some ("FieldFilled(Error) And " ++ guard)) (computationPrecondition := some guard)
+        (clock := { epochMillis := 86400000 }) == some (.notFired, [])) = true := by native_decide
 
 end A12Kernel.Dm.HavingCalendarLocks

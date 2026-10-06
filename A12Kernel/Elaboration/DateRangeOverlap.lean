@@ -58,7 +58,8 @@ def hasHaving : CheckedDateRangesOverlapOperand model → Bool
 
 /-- Resolve one full-validation operand through the shared checked direct/star addressing and filter boundary. -/
 def resolveValidationCore (operand : CheckedDateRangesOverlapOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
   match operand with
   | .field source =>
@@ -66,7 +67,7 @@ def resolveValidationCore (operand : CheckedDateRangesOverlapOperand model)
       -- either, and an operand the rule's own iteration binds must be read at its row.
       document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
   | .star path _ filter =>
-      path.resolveCheckedValidationEntityOperandCore document outer filter
+      path.resolveCheckedValidationEntityOperandCore (world := world) document outer filter
 
 end CheckedDateRangesOverlapOperand
 
@@ -127,10 +128,11 @@ def declaration : CheckedSingularDateRangesOverlapOperand model → FlatFieldDec
 
 /-- Resolve one singular full-validation operand through the existing checked direct/star addressing boundary. -/
 def resolveValidationCore (operand : CheckedSingularDateRangesOverlapOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
   match operand with
-  | .canonical source => source.resolveValidationCore document outer
+  | .canonical source => source.resolveValidationCore (world := world) document outer
   | .fragmentField source =>
       document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
 
@@ -410,10 +412,11 @@ namespace CheckedSingularDateRangesOverlapOperand
 /-- Resolve and project one admitted operand without discarding authored identity, concrete addresses, topology, or filter provenance. -/
 def resolveCheckedValidation
     (source : CheckedSingularDateRangesOverlapOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except DateRangesOverlapEvaluationError
       (ResolvedCheckedDateRangesOverlapOperand model) := do
-  let core ← (source.resolveValidationCore document outer).mapError .addressing
+  let core ← (source.resolveValidationCore (world := world) document outer).mapError .addressing
   let semantic ← checkedDateRangeOperandSemantic core
   pure { source, core, semantic }
 
@@ -437,11 +440,12 @@ namespace CheckedDateRangesOverlapSource
 /-- Resolve every authored singular-overlap operand against the same checked document in authored order, then expose the established pure verdict. -/
 def evaluateCheckedDocument
     (checked : CheckedDateRangesOverlapSource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except DateRangesOverlapEvaluationError
       (CheckedDateRangesOverlapResult model) := do
   let operands ← checked.operands.mapM fun source =>
-    source.resolveCheckedValidation document outer
+    source.resolveCheckedValidation (world := world) document outer
   pure { operands }
 
 end CheckedDateRangesOverlapSource

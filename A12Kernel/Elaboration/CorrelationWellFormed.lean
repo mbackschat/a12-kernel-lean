@@ -146,7 +146,7 @@ private def calendarSourceAdmitted (model : FlatModel)
     ResolvedDateDifferenceOperand HavingTemporalRef → Bool
   | .literal source anchorYear => source.admittedIn model anchorYear
   | .baseYear year _ => model.baseYear == some year
-  | .today _ => false
+  | .today profile => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
   | .field reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
       declaration.toTemporalField? == some reference.field &&
         repeatableScopeAvailable declaration.repeatableScope (reference.origin.availableLevels candidateLevels outerLevels)

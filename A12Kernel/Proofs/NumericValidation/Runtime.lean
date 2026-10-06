@@ -165,7 +165,7 @@ theorem orderedNumericValidationAtom_aggregate_checkedDocument_delegates
         (.aggregate op source) {
           scalar, outer, input := .checked document
         } =
-      (source.evaluateCheckedDocumentValidationAggregate
+      (source.evaluateCheckedDocumentValidationAggregate (world := scalar.fields.world)
         op document outer).map NumericOperand.toValidationArithmetic := by
   rfl
 
@@ -180,7 +180,7 @@ theorem orderedNumericValidationAtom_firstFilled_checkedDocument_delegates
         } =
       (do
         let result ←
-          source.evaluateCheckedDocumentValidation document outer .full true
+          source.evaluateCheckedDocumentValidation (world := scalar.fields.world) document outer .full true
         match result with
         | .nonRelevant => pure (.error .nonRelevant)
         | .evaluated result =>
@@ -210,7 +210,7 @@ theorem orderedNumericValidationAtom_valueCount_checkedDocument_delegates
         (.valueCount expected source) {
           scalar, outer, input := .checked document
         } =
-      (source.evaluateCheckedDocumentValueCountValidation
+      (source.evaluateCheckedDocumentValueCountValidation (world := scalar.fields.world)
         expected document outer).map NumericOperand.toValidationArithmetic := by
   rfl
 
@@ -223,7 +223,7 @@ theorem orderedNumericValidationAtom_tokenValueCount_addressed_delegates
         (.tokenValueCount source) {
           scalar, outer, input := .legacy document read
         } =
-      ((source.evaluateValidation document outer
+      ((source.evaluateValidation (world := scalar.fields.world) document outer
         scalar.fields.read read).mapError CheckedAddressingError.addressing).map
           NumericOperand.toValidationArithmetic := by
   rfl
@@ -237,7 +237,7 @@ theorem orderedNumericValidationAtom_tokenValueCount_checkedDocument_delegates
         (.tokenValueCount source) {
           scalar, outer, input := .checked document
         } =
-      (source.evaluateCheckedDocumentValidation
+      (source.evaluateCheckedDocumentValidation (world := scalar.fields.world)
         document outer).map NumericOperand.toValidationArithmetic := by
   rfl
 

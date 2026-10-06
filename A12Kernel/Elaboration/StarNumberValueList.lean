@@ -137,11 +137,12 @@ namespace CheckedStarNumberValueListFields
 def resolvedValueSide (checked : CheckedStarNumberValueListFields model)
     (document : Document) (outer : Env)
     (filterRead : Env → FieldId → CheckedCell)
-    (read : Env → FieldId → RawCell) :
+    (read : Env → FieldId → RawCell)
+    (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide .number) :=
   match checked with
   | .star source => source.resolvedValueSide document outer read
-  | .starHaving source => source.resolvedValueSide document outer filterRead read
+  | .starHaving source => source.resolvedValueSide (world := world) document outer filterRead read
 
 end CheckedStarNumberValueListFields
 
@@ -204,9 +205,10 @@ emission remain with the later general checked validation owner. -/
 def evaluateFull (checked : CheckedStarNumberValueListSource model)
     (document : Document) (outer : Env) (raw : RawFlatContext)
     (filterRead : Env → FieldId → CheckedCell)
-    (starRead : Env → FieldId → RawCell) :
+    (starRead : Env → FieldId → RawCell)
+    (world : Option World := none) :
     Except StarAddressingError Verdict := do
-  let fields ← checked.fields.resolvedValueSide document outer filterRead starRead
+  let fields ← checked.fields.resolvedValueSide (world := world) document outer filterRead starRead
   pure (checked.quantifier.eval fields (checked.resolvedValuesSide raw))
 
 /-- Evaluate the unfiltered partial-validation leaf after its containing rule's independent error-field gate. A locally visible `Having` skips before topology, relevance, or either value reader; otherwise both sides classify nonrelevance per cell and delegate to the shared asymmetric quantifier core. -/

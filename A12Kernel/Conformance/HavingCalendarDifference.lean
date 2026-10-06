@@ -24,6 +24,7 @@ private def frame : CorrelationFrame := { innerEnv := [(10, 1)], outerEnv := [(1
 private def pair (first second : CheckedCell) : CorrelationContext := {
   read := fun _ id => if id == 1 then first else second }
 private def resolving (context : CorrelationContext) : ResolvingCorrelationContext String := {
+  world := context.world
   read := fun env id => .ok (context.read env id)
   bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar" }
 
@@ -86,5 +87,31 @@ example : (HavingNumericAtom.dayDifference .utc (.baseYear 2024 .direct)
     (.literal { year := none, month := 3, day := 1 } 2024)).readComputationResolving {
       read := fun _ _ => .error "unexpected read", bindingError := fun _ => "binding"
       unsupportedDateCalendar := "calendar" } frame = .ok (.value 60) := by native_decide
+
+private def clockAtoms : List HavingNumericAtom :=
+  [.dateDifference .months (.field (reference .inner 1)) (.today .utc),
+   .dateDifference .years (.today .utc) (.field (reference .inner 1)),
+   .dayDifference .utc (.field (reference .inner 1)) (.today .utc)]
+
+example : clockAtoms.all (fun atom =>
+    let noClock := pair (dateCell .storedGregorian) (dateCell .storedGregorian)
+    let clock := { noClock with world := some { now := { epochMillis := 0 } } }
+    atom.readComputation noClock frame == .error () &&
+    atom.readValidationResolving (resolving noClock) frame == .error "calendar" &&
+    atom.readComputation clock frame == .ok (.value 0) &&
+    atom.readValidationResolving (resolving clock) frame == .ok (.ok (.value 0 .fixed)) &&
+    atom.origins == [.inner] && CorrelatedHaving.fieldIds (condition atom) == [1] &&
+    CorrelatedHaving.markedFieldIds (condition atom) == [] &&
+    CorrelatedHaving.evalComputationIn (.or holds (condition atom)) noClock frame == .ok .holds &&
+    CorrelatedHaving.evalComputationIn (.and fails (condition atom)) noClock frame == .ok .notTrue &&
+    CorrelatedHaving.evalComputationIn (.and holds (condition atom)) noClock frame == .error ()) = true := by native_decide
+
+example : clockAtoms.all (fun atom =>
+    [emptyCell, invalid].all (fun cell =>
+      atom.readComputation (pair cell (dateCell .storedGregorian)) frame == .error ()) &&
+    atom.readComputation { (pair emptyCell (dateCell .storedGregorian)) with
+      world := some { now := { epochMillis := 0 } } } frame == .ok (.value 0) &&
+    atom.readComputation { (pair invalid (dateCell .storedGregorian)) with
+      world := some { now := { epochMillis := 0 } } } frame == .ok (.poison .malformed)) = true := by native_decide
 
 end A12Kernel.Conformance.HavingCalendarDifference

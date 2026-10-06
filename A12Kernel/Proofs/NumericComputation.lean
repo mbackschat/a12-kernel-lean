@@ -91,7 +91,7 @@ theorem numericComputationEvaluationContext_aggregate_delegates
     (context : NumericComputationEvaluationContext)
     (source : CheckedNumberEntitySource model) (op : NumericAggregateOp) :
     context.readCheckedNumericComputationAtom (.numeric (.aggregate op source)) =
-      (source.evaluateComputation op context.document context.outer
+      (source.evaluateComputation (world := context.scalar.world) op context.document context.outer
         context.scalar.read context.filterRead context.starRead).mapError
           NumericComputationFault.repeatableAddressing := by
   rfl
@@ -101,7 +101,7 @@ theorem numericComputationEvaluationContext_valueCount_delegates
     (context : NumericComputationEvaluationContext)
     (source : CheckedNumberEntitySource model) (expected : Rat) :
     context.readCheckedNumericComputationAtom (.valueCount expected source) =
-      ((source.evaluateValueCountComputation expected context.document
+      ((source.evaluateValueCountComputation (world := context.scalar.world) expected context.document
         context.outer context.scalar.read context.filterRead
         context.starRead).map NumericOperand.toComputationResult).mapError
           NumericComputationFault.repeatableAddressing := by
@@ -112,7 +112,7 @@ theorem numericComputationEvaluationContext_tokenValueCount_delegates
     (context : NumericComputationEvaluationContext)
     (source : CheckedTokenValueCountSource model) :
     context.readCheckedNumericComputationAtom (.tokenValueCount source) =
-      ((source.evaluateComputation context.document context.outer
+      ((source.evaluateComputation (world := context.scalar.world) context.document context.outer
         context.scalar.read context.filterRead context.starRead).map
           NumericOperand.toComputationResult).mapError
             NumericComputationFault.repeatableAddressing := by
@@ -123,7 +123,7 @@ theorem numericComputationEvaluationContext_booleanValueCount_delegates
     (context : NumericComputationEvaluationContext)
     (source : CheckedBooleanValueCountSource model) :
     context.readCheckedNumericComputationAtom (.booleanValueCount source) =
-      ((source.evaluateComputation context.document context.outer
+      ((source.evaluateComputation (world := context.scalar.world) context.document context.outer
         context.scalar.read context.filterRead context.starRead).map
           NumericOperand.toComputationResult).mapError
             NumericComputationFault.repeatableAddressing := by

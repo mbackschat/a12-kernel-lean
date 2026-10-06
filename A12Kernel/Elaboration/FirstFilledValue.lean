@@ -131,7 +131,7 @@ private def scanCheckedFirstFilledNumberOperandWith
           resolved.domain.hasOpenTail false))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
-      let selected := source.having.selectEnvironments { read := filterRead } outer
+      let selected := source.having.selectEnvironments { read := filterRead, world := direct.world } outer
         resolved.environments
       pure (source.source.scanPartialValidationFirstFilledStateWith scope
         (classifyStar source.source) selected
@@ -200,7 +200,7 @@ private def CheckedNumberEntityOperand.computationSelection
         (source.checkedValueListCellAt .computation starRead))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
-      pure (.filtered source.having { read := filterRead } resolved.environments
+      pure (.filtered source.having { read := filterRead, world := direct.world } resolved.environments
         resolved.domain.hasOpenTail (source.source.checkedValueListCellAt .computation starRead))
   -- The group's cells in the shared walk's declaration-major index order: every row of one
   -- declaration before the next, measured over a repeatable descendant
@@ -214,10 +214,11 @@ def evaluateComputationFirstFilled
     (checked : CheckedNumberEntitySource model)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (filterRead starRead : Env → FieldId → CheckedCell) :
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError FirstFilledNumberResult := do
   match ← scanComputationFirstFilledSelections outer .unsupportedDateCalendar
-      (·.computationSelection document outer { read := directRead } filterRead starRead)
+      (·.computationSelection document outer { read := directRead, world } filterRead starRead)
       checked.operands {} with
   | .inl state => pure state.finish
   | .inr result => pure result.asNumber
@@ -239,7 +240,8 @@ private def scanDeclaredValidationFirstFilled
 private def scanCheckedDocumentValidationOperand
     (document : CheckedDocument model) (outer : Env)
     (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → Except CheckedAddressingError CheckedCell) (state : FirstFilledScanState) :
+    (read : Env → FieldId → Except CheckedAddressingError CheckedCell) (state : FirstFilledScanState)
+    (world : Option World := none) :
     CheckedFirstFilledNumberOperand model →
       Except CheckedAddressingError
         (FirstFilledScanState ⊕ PartialValidationFirstFilledNumberResult)
@@ -266,7 +268,7 @@ private def scanCheckedDocumentValidationOperand
         (source.source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
       let selected ← source.having.selectEnvironmentsResolving
-        document.resolvingCorrelationContext outer resolved.environments
+        (document.resolvingCorrelationContext world) outer resolved.environments
       source.source.scanPartialValidationFirstFilledStateResolvingWith scope
         (fun environment =>
           (fun cell => (observeCell .validation cell).asNumberValueListCell) <$> read environment source.source.field.id)
@@ -283,15 +285,16 @@ private def scanCheckedDocumentValidationOperand
 private def scanCheckedDocumentValidationOperands
     (document : CheckedDocument model) (outer : Env)
     (scope : ValidationRelevanceScope)
-    (read : Env → FieldId → Except CheckedAddressingError CheckedCell) :
+    (read : Env → FieldId → Except CheckedAddressingError CheckedCell)
+    (world : Option World := none) :
     List (CheckedFirstFilledNumberOperand model) → FirstFilledScanState →
       Except CheckedAddressingError PartialValidationFirstFilledNumberResult
   | [], state => pure (.evaluated state.finish)
   | operand :: remaining, state => do
-      match ← scanCheckedDocumentValidationOperand document outer scope read
+      match ← scanCheckedDocumentValidationOperand (world := world) document outer scope read
           state operand with
       | .inl next =>
-          scanCheckedDocumentValidationOperands document outer scope read
+          scanCheckedDocumentValidationOperands (world := world) document outer scope read
             remaining next
       | .inr result => pure result
 
@@ -300,13 +303,14 @@ def evaluateCheckedDocumentValidation
     (checked : CheckedNumberEntitySource model)
     (document : CheckedDocument model) (outer : Env)
     (scope : ValidationRelevanceScope) (fullDomain : Bool := false)
-    (read? : Option (Env → FieldId → Except CheckedAddressingError CheckedCell) := none) :
+    (read? : Option (Env → FieldId → Except CheckedAddressingError CheckedCell) := none)
+    (world : Option World := none) :
     Except CheckedAddressingError PartialValidationFirstFilledNumberResult :=
   let read := read?.getD fun row field => do
     let addressed ← if fullDomain then document.fullValidationAddressedCell row field
       else document.addressedCell row field
     pure addressed.cell
-  scanCheckedDocumentValidationOperands document outer scope read
+  scanCheckedDocumentValidationOperands (world := world) document outer scope read
     checked.operands {}
 
 /-- Scan one unfiltered checked Number star over its in-capacity extent through a caller-supplied exact-address view while retaining immutable topology and the shared cross-operand prefix state. -/
@@ -332,7 +336,8 @@ def scanCheckedStarDocumentComputationWithRead
 
 private def scanCheckedDocumentComputationOperand
     (document : CheckedDocument model) (outer : Env)
-    (state : FirstFilledScanState) :
+    (state : FirstFilledScanState)
+    (world : Option World := none) :
     CheckedFirstFilledNumberOperand model →
       Except CheckedAddressingError
         (FirstFilledScanState ⊕ FirstFilledNumberResult)
@@ -349,7 +354,7 @@ private def scanCheckedDocumentComputationOperand
         (source.source.source.path.resolveInCapacity document.source.toDocument outer)
           |>.mapError .addressing
       match ← scanFilteredComputationFirstFilledResolving source.having
-          document.resolvingCorrelationContext outer
+          (document.resolvingCorrelationContext world) outer
           (fun environment =>
             document.numberValueListCellAt .computation environment
               source.source.field)
@@ -360,22 +365,24 @@ private def scanCheckedDocumentComputationOperand
       .error (.addressing (.unsupportedGroupOperand slot.groupPath))
 
 private def scanCheckedDocumentComputationOperands
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     List (CheckedFirstFilledNumberOperand model) → FirstFilledScanState →
       Except CheckedAddressingError FirstFilledNumberResult
   | [], state => pure state.finish
   | operand :: remaining, state => do
-      match ← scanCheckedDocumentComputationOperand document outer state operand with
+      match ← scanCheckedDocumentComputationOperand (world := world) document outer state operand with
       | .inl next =>
-          scanCheckedDocumentComputationOperands document outer remaining next
+          scanCheckedDocumentComputationOperands (world := world) document outer remaining next
       | .inr result => pure result
 
 /-- Evaluate computation-phase `FirstFilledValue` against the same checked document. The shared successor scan preserves filter poison and structural-failure timing. -/
 def evaluateCheckedDocumentComputation
     (checked : CheckedNumberEntitySource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError FirstFilledNumberResult :=
-  scanCheckedDocumentComputationOperands document outer checked.operands {}
+  scanCheckedDocumentComputationOperands (world := world) document outer checked.operands {}
 
 end CheckedNumberEntitySource
 

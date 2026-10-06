@@ -38,10 +38,11 @@ namespace CheckedStarFieldPath
     filtered counts cannot drift apart into two accounts of the same fold. -/
 private def countInCapacity (checked : CheckedStarFieldPath model)
     (document : CheckedDocument model) (outer : Env)
-    (having : Option CorrelatedHaving) :
+    (having : Option CorrelatedHaving)
+    (world : Option World := none) :
     Except CheckedAddressingError FilledFieldCount := do
   let resolved ←
-    checked.resolveCheckedValidationEntityOperandCore document outer having
+    checked.resolveCheckedValidationEntityOperandCore (world := world) document outer having
   pure (numberOfFilledFields
     (resolved.inCapacityAddressedCells.map fun addressed =>
       observeCell .validation addressed.cell))
@@ -49,9 +50,10 @@ private def countInCapacity (checked : CheckedStarFieldPath model)
 /-- Count one capacity-bounded plain-star field extent in full validation. Over-limit rows remain in the immutable checked document but do not enter this operator's evaluation domain. -/
 def evaluateFilledFieldCountValidation
     (checked : CheckedStarFieldPath model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError FilledFieldCount :=
-  checked.countInCapacity document outer none
+  checked.countInCapacity (world := world) document outer none
 
 /-- Count a plain starred field in partial validation only when its normalized field-specific identifiers establish the complete reduced-universal extent. The gate precedes topology and cell reads. -/
 def evaluatePartialFilledFieldCountValidation
@@ -122,9 +124,10 @@ def elaborate (model : FlatModel) (declaringGroup : GroupPath)
     and cannot contribute its own formal invalidity to the count. -/
 def evaluateFilledFieldCountValidation
     (checked : CheckedFilledFieldStarSource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError FilledFieldCount :=
-  checked.source.countInCapacity document outer (checked.filter.map (·.condition))
+  checked.source.countInCapacity (world := world) document outer (checked.filter.map (·.condition))
 
 /-- Count a starred field under partial coverage. A filtered operand is skipped before topology and
     cell reads, and the skip is **unconditional**: relevance over the filter's own operand fields
@@ -144,7 +147,8 @@ def evaluatePartialFilledFieldCountValidation
 view; physical candidates retain the ordinary checked-document resolver. Captured reads and the
 star's bound prefix must denote instantiated rows before missing candidate slots may be explored. -/
 def selectedMissingCount? (checked : CheckedFilledFieldStarSource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError (Option Nat) := do
   let some candidates ← checked.source.declaredEnvironments? document outer | return none
   let scope := checked.source.declaration.repeatableScope
@@ -157,7 +161,7 @@ def selectedMissingCount? (checked : CheckedFilledFieldStarSource model)
       for scope in (CorrelatedHaving.outerIterationScopes model filter.condition).filterMap id do
         document.requireInstantiatedEnvironment scope outer
       let selected ← filter.condition.selectEnvironmentsResolving
-        (document.resolvingCorrelationContextWithRead document.readDeclared) outer missing
+        (document.resolvingCorrelationContextWithRead (world := world) document.readDeclared) outer missing
       pure (some selected.length)
 
 end CheckedFilledFieldStarSource

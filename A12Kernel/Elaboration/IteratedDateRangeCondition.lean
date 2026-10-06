@@ -219,7 +219,8 @@ def wellFormedIn (condition : IteratedDateRangeCondition model)
 through the row the enclosing rule is evaluating and reuses its carrier's comparison or scan
 unchanged; a read failure projects into the leaf's addressing channel rather than being dropped. -/
 def verdictOf (condition : IteratedDateRangeCondition model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError Verdict :=
   let address (declaration : FlatFieldDecl) : CellAddr :=
     { field := declaration.id, path := [] }
@@ -278,25 +279,25 @@ def verdictOf (condition : IteratedDateRangeCondition model)
         leftLabel.asValidationSimpleOperand
         rightLabel.asValidationSimpleOperand)
   | .overlap source => do
-      let result ← (source.evaluateCheckedDocument document outer).mapError
+      let result ← (source.evaluateCheckedDocument (world := world) document outer).mapError
         (DateRangesOverlapEvaluationError.toAddressing
           { field := source.first.declaration.id, path := [] })
       pure result.verdict
   | .pluralOverlap source => do
-      let result ← (source.evaluateCheckedDocument document outer).mapError
+      let result ← (source.evaluateCheckedDocument (world := world) document outer).mapError
         (DateRangesOverlapEvaluationError.toAddressing
           { field := source.scalar.declaration.id, path := [] })
       pure result.verdict
   | .yearlessOverlap source =>
       -- The fallback address is only reached by the incoherent-extent class, which names no cell;
       -- the first operand's own declaration is the nearest honest coordinate for it.
-      (evaluateYearlessDateRangeOverlapOperands source.operands document
+      (evaluateYearlessDateRangeOverlapOperands (world := world) source.operands document
         outer).mapError
         (YearlessDateRangesOverlapEvaluationError.toAddressing
           { field := (source.first.source?.map (·.declaration.id)).getD 0
             path := [] })
   | .yearlessPluralOverlap source =>
-      (evaluateYearlessAtLeastOneDateRangeOverlapsOperands
+      (evaluateYearlessAtLeastOneDateRangeOverlapsOperands (world := world)
         (.direct source.scalar) source.operands document outer).mapError
         (YearlessDateRangesOverlapEvaluationError.toAddressing
           { field := source.scalar.declaration.id, path := [] })

@@ -63,10 +63,11 @@ namespace CheckedNumberValuesNotUniqueSource
 Deliberately **not** `resolvedCheckedDocumentValidationAggregateSide`: that resolver converts the first unavailable cell into an operand-level unknown terminal, which is what the aggregates beside this operator need and what this one must not do. -/
 def evaluateCheckedDocumentValuesNotUnique
     (checked : CheckedNumberEntitySource model)
-    (document : CheckedDocument model) (outer : Env) : Except CheckedAddressingError Verdict := do
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) : Except CheckedAddressingError Verdict := do
   let tagged ← collectTaggedValueListCells
     (fun operand => do
-      let resolved ← operand.resolveCheckedValidationOperand document outer
+      let resolved ← operand.resolveCheckedValidationOperand (world := world) document outer
       pure (resolved.valueListSideAt .validation))
     checked.operands
   pure (evalValuesNotUniqueVerdict tagged)

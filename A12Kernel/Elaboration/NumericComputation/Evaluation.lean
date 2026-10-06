@@ -27,7 +27,8 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
         let resolved ← (source.source.path.resolveInCapacity addressed.document context.row).mapError
           (NumericComputationFault.guardBinding ∘ ComputationConditionError.fieldFill ∘ ComputationFillError.addressing)
         let result ← (filter.condition.scanComputationResolving
-          { read := fun row field => pure ((filterRead?.getD addressed.read) row field)
+          { world := context.world
+            read := fun row field => pure ((filterRead?.getD addressed.read) row field)
             unsupportedDateCalendar := .addressing .unsupportedDateCalendar
             bindingError := fun error => ComputationFillError.addressing error.toStarAddressingError }
           context.row (fun count row => pure (match observeCell .computation
@@ -78,10 +79,11 @@ namespace CheckedNumberEntitySource
 def evaluateComputation (checked : CheckedNumberEntitySource model)
     (op : NumericAggregateOp) (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (filterRead starRead : Env → FieldId → CheckedCell) :
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError NumericComputationResult := do
   pure ((← checked.evaluateComputationAggregate op document outer directRead
-    filterRead starRead).toComputationResult)
+    filterRead starRead world).toComputationResult)
 
 end CheckedNumberEntitySource
 
@@ -297,12 +299,12 @@ def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
       | none => throw .repeatableContextRequired
   | .tokenDistinctCount source => do
       if source.directFields?.isNone then throw .repeatableContextRequired
-      (source.evaluateDistinctComputation { instantiatedRows := [], rawCells := fun _ => none } {} context.read (fun _ => context.read)
+      (source.evaluateDistinctComputation (world := context.world) { instantiatedRows := [], rawCells := fun _ => none } {} context.read (fun _ => context.read)
         (fun _ => context.read)).map NumericOperand.toComputationResult
           |>.mapError .repeatableAddressing
   | .temporalDistinctCount run => do
       if !run.source.isDirectOnly then throw .repeatableContextRequired
-      (run.evaluateComputation { instantiatedRows := [], rawCells := fun _ => none } {} context.read (fun _ => context.read)
+      (run.evaluateComputation (world := context.world) { instantiatedRows := [], rawCells := fun _ => none } {} context.read (fun _ => context.read)
         (fun _ => context.read)).map NumericOperand.toComputationResult
           |>.mapError .repeatableAddressing
   | .tokenValueCount source =>
@@ -518,30 +520,30 @@ def readCheckedNumericComputationAtom
         addressed := some { document := context.document, read := context.starRead } } (some context.filterRead) context.indexColumn?
   | .firstFilled source => do
       let result ←
-        (source.evaluateComputationFirstFilled context.document context.outer
+        (source.evaluateComputationFirstFilled (world := context.scalar.world) context.document context.outer
           context.scalar.read context.filterRead context.starRead).mapError
             NumericComputationFault.repeatableAddressing
       pure result.asComputationResult
   | .valueCount expected source =>
-      (source.evaluateValueCountComputation expected context.document
+      (source.evaluateValueCountComputation (world := context.scalar.world) expected context.document
         context.outer context.scalar.read context.filterRead
         context.starRead).map NumericOperand.toComputationResult
           |>.mapError NumericComputationFault.repeatableAddressing
   | .tokenDistinctCount source =>
-      (source.evaluateDistinctComputation context.document context.outer
+      (source.evaluateDistinctComputation (world := context.scalar.world) context.document context.outer
         context.scalar.read context.filterRead context.starRead).map NumericOperand.toComputationResult
           |>.mapError .repeatableAddressing
   | .temporalDistinctCount run =>
-      (run.evaluateComputation context.document context.outer
+      (run.evaluateComputation (world := context.scalar.world) context.document context.outer
         context.scalar.read context.filterRead context.starRead).map NumericOperand.toComputationResult
           |>.mapError .repeatableAddressing
   | .tokenValueCount source =>
-      (source.evaluateComputation context.document context.outer
+      (source.evaluateComputation (world := context.scalar.world) context.document context.outer
         context.scalar.read context.filterRead context.starRead).map
           NumericOperand.toComputationResult
         |>.mapError NumericComputationFault.repeatableAddressing
   | .booleanValueCount source =>
-      (source.evaluateComputation context.document context.outer
+      (source.evaluateComputation (world := context.scalar.world) context.document context.outer
         context.scalar.read context.filterRead context.starRead).map
           NumericOperand.toComputationResult
         |>.mapError NumericComputationFault.repeatableAddressing
@@ -555,7 +557,7 @@ def readCheckedNumericComputationAtom
       context.scalar.readNumericComputationAtomWith
         (fun op aggregate =>
           (aggregate.evaluateComputation op context.document context.outer
-            context.scalar.read context.filterRead context.starRead).mapError
+            context.scalar.read context.filterRead context.starRead context.scalar.world).mapError
               NumericComputationFault.repeatableAddressing)
         (context.readFilledGroupCount model) source
 

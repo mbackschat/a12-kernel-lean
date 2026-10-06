@@ -128,12 +128,13 @@ namespace CheckedTokenEntitySource
 def evaluateDistinctValidation (checked : CheckedTokenEntitySource model)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (starRead : Env → FieldId → CheckedCell) :
+    (starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError NumericOperand := do
   match ← scanResolvedValueListOperands
       (state := ResolvedValueListSide .token) (terminal := NumericOperand)
       (fun operand => do
-        pure (.inl (← operand.resolvedValidationSide document outer
+        pure (.inl (← operand.resolvedValidationSide (world := world) document outer
           directRead starRead)))
       (fun cause => .unknown cause)
       (fun accumulated _ side => accumulated.append side)
@@ -145,11 +146,12 @@ def evaluateDistinctValidation (checked : CheckedTokenEntitySource model)
 in-capacity group/star extent. The distinct fold has no value-count-specific matching state. -/
 def evaluateDistinctComputation (checked : CheckedTokenEntitySource model)
     (document : Document) (outer : Env) (directRead : FieldId → CheckedCell)
-    (filterRead starRead : Env → FieldId → CheckedCell) :
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError NumericOperand := do
   match ← scanResolvedValueListOperands
       (state := ResolvedValueListSide .token) (terminal := NumericOperand)
-      (fun operand => operand.resolvedComputationSide document outer directRead filterRead starRead)
+      (fun operand => operand.resolvedComputationSide (world := world) document outer directRead filterRead starRead)
       (fun cause => .unknown cause) (fun accumulated _ side => accumulated.append side)
       checked.operands ResolvedValueListSide.empty with
   | .inl side => pure (evalDistinctCountAggregate side)
@@ -158,13 +160,14 @@ def evaluateDistinctComputation (checked : CheckedTokenEntitySource model)
 /-- Evaluate full validation from the immutable checked document through the shared rich addressed operand construction. Consumer-specific first-unavailability stopping and distinct-token folding remain here. -/
 def evaluateCheckedDocumentDistinctValidation
     (checked : CheckedTokenEntitySource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError NumericOperand := do
   match ← scanResolvedValueListOperands
       (state := ResolvedValueListSide .token) (terminal := NumericOperand)
       (fun operand => do
         let resolved ←
-          operand.resolveCheckedValidationOperand document outer
+          operand.resolveCheckedValidationOperand (world := world) document outer
         pure (.inl (resolved.inCapacityValueListSideAt .validation)))
       (fun cause => .unknown cause)
       (fun accumulated _ side => accumulated.append side)

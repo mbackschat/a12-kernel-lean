@@ -52,11 +52,12 @@ def admittedMultiplicity : CheckedValuesNotUniqueCondition model → Bool
   | .token _ | .temporal _ => true
 
 def evaluateFull (source : CheckedValuesNotUniqueCondition model)
-    (document : CheckedDocument model) (outer : Env) : Except CheckedAddressingError Verdict :=
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) : Except CheckedAddressingError Verdict :=
   match source with
-  | .number source => CheckedNumberValuesNotUniqueSource.evaluateCheckedDocumentValuesNotUnique source document outer
-  | .token source => source.evaluateCheckedDocumentValuesNotUnique document outer
-  | .temporal source => source.evaluateCheckedDocumentValuesNotUnique document outer
+  | .number source => CheckedNumberValuesNotUniqueSource.evaluateCheckedDocumentValuesNotUnique (world := world) source document outer
+  | .token source => source.evaluateCheckedDocumentValuesNotUnique (world := world) document outer
+  | .temporal source => source.evaluateCheckedDocumentValuesNotUnique (world := world) document outer
 
 end CheckedValuesNotUniqueCondition
 

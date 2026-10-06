@@ -458,12 +458,13 @@ namespace CheckedAtLeastOneDateRangeOverlapsListOperand
 /-- Resolve one admitted list operand without erasing its authored field/group boundary, filter provenance, or checked group extent. -/
 def resolveCheckedValidation
     (source : CheckedAtLeastOneDateRangeOverlapsListOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except DateRangesOverlapEvaluationError
       (ResolvedCheckedAtLeastOneDateRangeOverlapListOperand model) :=
   match source with
   | .field fieldSource => do
-      let core ← (fieldSource.resolveValidationCore document outer)
+      let core ← (fieldSource.resolveValidationCore (world := world) document outer)
         |>.mapError .addressing
       let semantic ← checkedDateRangeOperandSemantic core
       pure {
@@ -504,22 +505,24 @@ namespace CheckedAtLeastOneDateRangeOverlapsSource
 
 private def resolveUntilFirstOverlap
     (scalar : ResolvedDateRangeSlot)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     List (CheckedAtLeastOneDateRangeOverlapsListOperand model) →
       Except DateRangesOverlapEvaluationError
         (List (ResolvedCheckedAtLeastOneDateRangeOverlapListOperand model))
   | [] => pure []
   | source :: remaining => do
-      let resolved ← source.resolveCheckedValidation document outer
+      let resolved ← source.resolveCheckedValidation (world := world) document outer
       match evalAtLeastOneDateRangeOverlaps scalar [resolved.semantic] with
       | .fired _ => pure [resolved]
       | _ => pure (resolved ::
-          (← resolveUntilFirstOverlap scalar document outer remaining))
+          (← resolveUntilFirstOverlap (world := world) scalar document outer remaining))
 
 /-- Resolve the scalar first, then resolve authored list operands against the same immutable checked document only through the first overlap. -/
 def evaluateCheckedDocument
     (checked : CheckedAtLeastOneDateRangeOverlapsSource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except DateRangesOverlapEvaluationError
       (CheckedAtLeastOneDateRangeOverlapsResult model) := do
   let scalar ←
@@ -528,7 +531,7 @@ def evaluateCheckedDocument
   | .skipped => pure { source := checked, scalar, operands := [] }
   | .kept _ => do
       let operands ←
-        resolveUntilFirstOverlap scalar.semantic document outer checked.operands
+        resolveUntilFirstOverlap (world := world) scalar.semantic document outer checked.operands
       pure { source := checked, scalar, operands }
 
 end CheckedAtLeastOneDateRangeOverlapsSource

@@ -160,7 +160,7 @@ theorem checkedStringValueListStarValues_evaluateFull_of_resolved
     (filterRead : Env → FieldId → CheckedCell)
     (read : Env → FieldId → CheckedCell)
     (values : ResolvedValueListSide .token)
-    (resolved : checked.values.resolvedValueSide document outer filterRead read =
+    (resolved : checked.values.resolvedValueSide (world := context.world) document outer filterRead read =
       .ok values) :
     checked.evaluateFull document outer context filterRead read =
       .ok (checked.quantifier.eval (checked.resolvedFieldsSide context) values) := by

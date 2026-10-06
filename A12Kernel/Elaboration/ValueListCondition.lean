@@ -49,12 +49,13 @@ def bindingScopes : CheckedValueListCondition model → List (List RepeatableLev
 /-- Evaluate the certified sides through the shared ordered quantifier. Literal values form one
 fully known operand and carry no document addresses. -/
 def evaluateFull (source : CheckedValueListCondition model)
-    (document : CheckedDocument model) (outer : Env) : Except CheckedAddressingError Verdict :=
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) : Except CheckedAddressingError Verdict :=
   match source with
-  | .number source => source.evaluateFull document outer
-  | .token source => source.evaluateFull document outer
+  | .number source => source.evaluateFull (world := world) document outer
+  | .token source => source.evaluateFull (world := world) document outer
   | .literals source => do
-      let fields ← source.fields.operands.mapM (·.resolveCheckedValidationOperand document outer)
+      let fields ← source.fields.operands.mapM (·.resolveCheckedValidationOperand (world := world) document outer)
       pure (source.quantifier.evalOrdered (fields.map (·.valueListSideAt .validation))
         [{ cells := (source.firstValue :: source.restValues).map (ValueListCell.present (kind := .token)),
            hasUninstantiatedTail := false, hasHaving := false }])

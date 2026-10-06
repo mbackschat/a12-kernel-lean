@@ -192,16 +192,17 @@ inductive CorrelatedNumberOperand where
   | unknown (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- The only document operation needed by the shared correlation evaluator. Topology
-    adapters construct environments; this seam reads a checked field through one. -/
+/-- Topology adapters supply environments; the shared evaluator reads their checked fields and the caller-owned evaluation clock. Retaining one World prevents candidate and captured reads from sampling different dates (spec/05 §7, clock-source semantics). -/
 structure CorrelationContext where
   read : Env → FieldId → CheckedCell
+  world : Option World := none
 
 /-- The addressed counterpart of `CorrelationContext`. It preserves caller-owned field-read failures and maps repetition-binding and calendar-support failures into that same explicit error channel. -/
 structure ResolvingCorrelationContext (Error : Type) where
   read : Env → FieldId → Except Error CheckedCell
   bindingError : EnvBindingError → Error
   unsupportedDateCalendar : Error
+  world : Option World := none
 
 /-- Resolve one numeric filter reference through the selected environment and caller-selected phase. Empty-to-zero is local to numeric comparison; formal invalidity retains its cause for the consuming phase projection. -/
 def HavingNumberRef.resolveInAt (reference : HavingNumberRef) (phase : Phase)
@@ -338,23 +339,32 @@ private def readHavingCalendarDifference (phase : Phase)
   let second ← readOperand observe right
   pure (evaluate first second)
 
-private def readHavingDateOperand (read : HavingTemporalRef → Except Error CellObservation) :
+private def readHavingToday (world : Option World) (unavailable : Error)
+    (profile : ModelZone.ConcreteProfile) : Except Error DateParts :=
+  match ResolvedDateDifferenceOperand.todayParts? profile world with
+  | some parts => pure parts
+  | none => throw unavailable
+
+private def readHavingDateOperand (world : Option World) (unavailable : Error)
+    (read : HavingTemporalRef → Except Error CellObservation) :
     ResolvedDateDifferenceOperand HavingTemporalRef → Except Error DateDifferenceOperand :=
-  ResolvedDateDifferenceOperand.readDateOperand read (fun _ => pure .unsupportedCalendar)
+  ResolvedDateDifferenceOperand.readDateOperand read
+    (fun profile => DateDifferenceOperand.value <$> readHavingToday world unavailable profile)
 
 private def readHavingDayOperand (profile : ModelZone.ConcreteProfile)
-    (read : HavingTemporalRef → Except Error CellObservation) :
+    (world : Option World) (unavailable : Error) (read : HavingTemporalRef → Except Error CellObservation) :
     ResolvedDateDifferenceOperand HavingTemporalRef → Except Error CalendarDayDifferenceOperand :=
-  ResolvedDateDifferenceOperand.readDayOperand profile read (fun _ => pure .unsupportedCalendar)
+  ResolvedDateDifferenceOperand.readDayOperand profile read
+    (fun sourceProfile => CalendarDayDifferenceOperand.ofParts sourceProfile <$> readHavingToday world unavailable sourceProfile)
 
 def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : CorrelationFrame) :
     HavingNumericAtom → Except Unit NumericArithmeticOutcome
   | .dateDifference unit left right =>
       (readHavingCalendarDifference .validation (fun env field => .ok (context.read env field)) frame
-        readHavingDateOperand (DateDifferenceOperand.evaluate unit) left right).bind (fun result => result.bind havingArithmetic)
+        (readHavingDateOperand context.world ()) (DateDifferenceOperand.evaluate unit) left right).bind (fun result => result.bind havingArithmetic)
   | .dayDifference profile left right =>
       (readHavingCalendarDifference .validation (fun env field => .ok (context.read env field)) frame
-        (readHavingDayOperand profile) (CalendarDayDifferenceOperand.evaluate profile) left right).bind (fun result => result.bind havingArithmetic)
+        (readHavingDayOperand profile context.world ()) (CalendarDayDifferenceOperand.evaluate profile) left right).bind (fun result => result.bind havingArithmetic)
   | .aggregate op first rest =>
       match readHavingAggregate (Error := Empty) .validation (fun env field => .ok (context.read env field)) frame op first rest with
       | .ok operand => havingArithmetic operand
@@ -388,9 +398,9 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
     (frame : CorrelationFrame) :
     HavingNumericAtom → Except Error (Except Unit NumericArithmeticOutcome)
   | .dateDifference unit left right => do
-      pure ((← readHavingCalendarDifference .validation context.read frame readHavingDateOperand (DateDifferenceOperand.evaluate unit) left right).bind havingArithmetic)
+      pure ((← readHavingCalendarDifference .validation context.read frame (readHavingDateOperand context.world context.unsupportedDateCalendar) (DateDifferenceOperand.evaluate unit) left right).bind havingArithmetic)
   | .dayDifference profile left right => do
-      pure ((← readHavingCalendarDifference .validation context.read frame (readHavingDayOperand profile) (CalendarDayDifferenceOperand.evaluate profile) left right).bind havingArithmetic)
+      pure ((← readHavingCalendarDifference .validation context.read frame (readHavingDayOperand profile context.world context.unsupportedDateCalendar) (CalendarDayDifferenceOperand.evaluate profile) left right).bind havingArithmetic)
   | .aggregate op first rest => do
       pure (havingArithmetic (← readHavingAggregate .validation context.read frame op first rest))
   | .dateTimeDifference unit left right => do
@@ -422,10 +432,10 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
 def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) : HavingNumericAtom → Except Error NumericComputationResult
   | .dateDifference unit left right => do
-      let result ← readHavingCalendarDifference .computation context.read frame readHavingDateOperand (DateDifferenceOperand.evaluate unit) left right
+      let result ← readHavingCalendarDifference .computation context.read frame (readHavingDateOperand context.world context.unsupportedDateCalendar) (DateDifferenceOperand.evaluate unit) left right
       (result.map NumericOperand.toComputationResult).mapError fun _ => context.unsupportedDateCalendar
   | .dayDifference profile left right => do
-      let result ← readHavingCalendarDifference .computation context.read frame (readHavingDayOperand profile) (CalendarDayDifferenceOperand.evaluate profile) left right
+      let result ← readHavingCalendarDifference .computation context.read frame (readHavingDayOperand profile context.world context.unsupportedDateCalendar) (CalendarDayDifferenceOperand.evaluate profile) left right
       (result.map NumericOperand.toComputationResult).mapError fun _ => context.unsupportedDateCalendar
   | .aggregate op first rest => do
       pure ((← readHavingAggregate .computation context.read frame op first rest).toComputationResult)
@@ -463,6 +473,7 @@ def HavingNumericAtom.readComputation (context : CorrelationContext)
       | none => .domainFailure)
   | atom => atom.readComputationResolving {
       read := fun env field => .ok (context.read env field)
+      world := context.world
       bindingError := fun _ => (), unsupportedDateCalendar := () } frame
 
 end A12Kernel

@@ -202,8 +202,8 @@ def ofAddressedFieldValueAsString? (operation : CheckedAddressedFieldValueAsStri
 projection reads it. -/
 def ofAddressedEnumerationFirstFilled? (operation : CheckedAddressedEnumerationFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.target.field .enumeration operation.source.referencesField fun _ _ _ document => do
-    let outcomes ← (operation.execute document).mapError .enumerationFirstFilled
+  checked? operation.target.field .enumeration operation.source.referencesField fun _ world _ document => do
+    let outcomes ← (operation.execute (world := some world) document).mapError .enumerationFirstFilled
     readBack (outcomes.map fun entry => (entry.targetField, entry.result.asExactStringTargetOutcome))
       .enumeration fun _ outcome => pure (DocumentComputationReadBack.enumeration
         operation.target.projection outcome)
@@ -211,8 +211,8 @@ def ofAddressedEnumerationFirstFilled? (operation : CheckedAddressedEnumerationF
 /-- A per-row String `FirstFilledValue` over its entity-list source. -/
 def ofStringFirstFilled? (operation : CheckedStringFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .string operation.referencesField fun _ _ patterns document => do
-    let outcomes ← (operation.execute patterns document).mapError .stringFirstFilled
+  checked? operation.targetField .string operation.referencesField fun _ world patterns document => do
+    let outcomes ← (operation.execute (world := some world) patterns document).mapError .stringFirstFilled
     readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .string
       fun _ => DocumentComputationReadBack.string
 

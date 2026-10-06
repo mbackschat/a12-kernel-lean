@@ -547,7 +547,10 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     | .baseYear source => match model.baseYear with
         | some year => pure (.baseYear year source)
         | none => throw .numericExpressionUnsupported
-    | .now | .today => throw .numericExpressionUnsupported
+    | .today => match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+        | some profile => pure (.today profile)
+        | none => throw .numericExpressionUnsupported
+    | .now => throw .numericExpressionUnsupported
   let condition ← elaborateHavingCoreWith {
     aggregate := fun op first rest => do
       if rest.isEmpty then throw .numericExpressionUnsupported
@@ -641,8 +644,9 @@ namespace CheckedStarFieldPath
 def selectedValidationHavingValueListSide (_checked : CheckedStarFieldPath model)
     (resolved : ResolvedStarTopology) (having : CorrelatedHaving)
     (filterRead : Env → FieldId → CheckedCell) (outer : Env)
-    (classify : Env → ValueListCell kind) : ResolvedValueListSide kind :=
-  let filterContext : CorrelationContext := { read := filterRead }
+    (classify : Env → ValueListCell kind)
+    (world : Option World := none) : ResolvedValueListSide kind :=
+  let filterContext : CorrelationContext := { read := filterRead, world }
   let selected := having.selectEnvironments filterContext outer resolved.environments
   { cells := selected.map classify
     hasUninstantiatedTail := resolved.domain.hasOpenTail
@@ -652,23 +656,25 @@ def selectedValidationHavingValueListSide (_checked : CheckedStarFieldPath model
 def resolvedValidationHavingValueListSide (checked : CheckedStarFieldPath model)
     (document : Document) (outer : Env) (having : CorrelatedHaving)
     (filterRead : Env → FieldId → CheckedCell)
-    (classify : Env → ValueListCell kind) :
+    (classify : Env → ValueListCell kind)
+    (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide kind) := do
   let resolved ← checked.path.resolveInCapacity document outer
-  pure (checked.selectedValidationHavingValueListSide resolved having filterRead outer classify)
+  pure (checked.selectedValidationHavingValueListSide resolved having filterRead outer classify world)
 
 /-- Dispatch one optional checked validation filter without duplicating the filter-before-classification branch in each scalar-kind adapter. -/
 def resolvedOptionalValidationHavingValueListSide
     (checked : CheckedStarFieldPath model) (document : Document) (outer : Env)
     (filter : Option (CheckedStarHaving model checked declaringGroup))
     (filterRead : Env → FieldId → CheckedCell)
-    (classify : Env → ValueListCell kind) :
+    (classify : Env → ValueListCell kind)
+    (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide kind) :=
   match filter with
   | none => checked.resolvedValueListSide document outer classify
   | some having =>
       checked.resolvedValidationHavingValueListSide document outer
-        having.condition filterRead classify
+        having.condition filterRead classify world
 
 end CheckedStarFieldPath
 

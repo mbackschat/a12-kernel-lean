@@ -145,7 +145,7 @@ private def scanNumber (context : ScalarComputationContext)
   | .starHaving source =>
       let addressed ← addressed context
       let resolved ← (source.source.source.path.resolveInCapacity addressed.document context.row).mapError .addressing
-      (source.having.scanComputation { read := filterRead } context.row
+      (source.having.scanComputation { read := filterRead, world := context.world } context.row
         (fun state environment => consume state
           (source.source.checkedValueListCellAt .computation addressed.read environment))
         resolved.environments state).mapError (fun _ => .temporalUnavailable)
@@ -167,7 +167,7 @@ private def scanToken (context : ScalarComputationContext)
       match source.filter with
       | none => pure (scanCells consume
           (resolved.toResolvedSide (source.valueListCellAt .computation addressed.read)).cells state)
-      | some having => (having.condition.scanComputation { read := filterRead } context.row
+      | some having => (having.condition.scanComputation { read := filterRead, world := context.world } context.row
           (fun state environment => consume state
             (source.valueListCellAt .computation addressed.read environment)) resolved.environments state).mapError (fun _ => .temporalUnavailable)
 
@@ -219,6 +219,7 @@ private def scanTemporal (context : ScalarComputationContext)
       | some having =>
           having.scanComputationResolving
             { read := fun row field => pure (filterRead row field)
+              world := context.world
               unsupportedDateCalendar := .temporalUnavailable
               bindingError := fun error => .addressing error.toStarAddressingError }
             context.row (fun seen row => ValueListCell.duplicateComputationStep (kind := .token) seen <$> read row)

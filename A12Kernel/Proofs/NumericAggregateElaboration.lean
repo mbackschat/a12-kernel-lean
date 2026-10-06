@@ -163,16 +163,16 @@ theorem checkedNumberEntityOperand_aggregateSide_delegates
         starSource.resolvedValueSide document outer starRead ∧
       (CheckedNumberEntityOperand.starHaving filteredSource).resolvedAggregateSide
         document outer context filterRead starRead =
-        filteredSource.resolvedValueSide document outer filterRead starRead := by
+        filteredSource.resolvedValueSide (world := context.world) document outer filterRead starRead := by
   exact ⟨rfl, rfl, rfl⟩
 
 /-- Full-validation aggregate and value-count consumers obtain their one-operand side from the rich checked projection, then retain the established first-formal-cause terminal result. Plain and filtered stars plus group operands narrow to their declared-capacity extent; only a direct field keeps the complete formal-cell view. -/
 theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
     (checked : CheckedNumberEntityOperand model)
-    (document : CheckedDocument model) (outer : Env) :
-    checked.resolvedCheckedDocumentValidationAggregateSide document outer =
+    (document : CheckedDocument model) (outer : Env) (world : Option World := none) :
+    checked.resolvedCheckedDocumentValidationAggregateSide (world := world) document outer =
       (do
-        let resolved ← checked.resolveCheckedValidationOperand document outer
+        let resolved ← checked.resolveCheckedValidationOperand (world := world) document outer
         let side := match checked with
           | .star _ | .starHaving _ | .group _ =>
               resolved.inCapacityValueListSideAt .validation
@@ -186,11 +186,11 @@ theorem checkedNumberEntityOperand_checkedValidationAggregate_usesRichProjection
     every full-validation aggregate or value-count consumer classifies availability. -/
 theorem checkedNumberEntityFilteredStar_checkedValidationAggregate_usesCapacityProjection
     (source : CheckedStarNumberHavingSource model)
-    (document : CheckedDocument model) (outer : Env) :
-    (CheckedNumberEntityOperand.starHaving source).resolvedCheckedDocumentValidationAggregateSide
+    (document : CheckedDocument model) (outer : Env) (world : Option World := none) :
+    (CheckedNumberEntityOperand.starHaving source).resolvedCheckedDocumentValidationAggregateSide (world := world)
         document outer = (do
       let resolved ←
-        (CheckedNumberEntityOperand.starHaving source).resolveCheckedValidationOperand
+        (CheckedNumberEntityOperand.starHaving source).resolveCheckedValidationOperand (world := world)
           document outer
       let side := resolved.inCapacityValueListSideAt .validation
       match side.available with

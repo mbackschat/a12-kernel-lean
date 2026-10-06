@@ -103,10 +103,11 @@ namespace CheckedTokenValuesNotUniqueSource
 /-- Evaluate the uniqueness predicate from one immutable model-certified checked document. Slots resolve in authored order and every reached cell reaches the scan, because this operator skips a formally unavailable cell instead of suppressing on it. The result carries firing polarity because a reached filter retypes the message. -/
 def evaluateCheckedDocumentValuesNotUnique
     (checked : CheckedTokenValuesNotUniqueSource model)
-    (document : CheckedDocument model) (outer : Env) : Except CheckedAddressingError Verdict := do
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) : Except CheckedAddressingError Verdict := do
   let tagged ← collectTaggedValueListCells
     (fun operand => do
-      let resolved ← operand.resolveCheckedValidationOperand document outer
+      let resolved ← operand.resolveCheckedValidationOperand (world := world) document outer
       pure (resolved.valueListSideAt .validation))
     checked.source.operands
   pure (evalValuesNotUniqueVerdict tagged)

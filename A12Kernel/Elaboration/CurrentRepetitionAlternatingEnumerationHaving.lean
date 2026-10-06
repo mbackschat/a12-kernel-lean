@@ -107,12 +107,13 @@ def executeWithConsumerFallbackRead
     (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
     (input : CheckedDocument model)
-    (fallbackRead : CellAddr → Except CheckedDocumentError CheckedCell) :
+    (fallbackRead : CellAddr → Except CheckedDocumentError CheckedCell)
+    (world : Option World := none) :
     Except CurrentRepetitionAlternatingEnumerationHavingFault
       CurrentRepetitionAlternatingEnumerationHavingOutcomes := do
   let chain ← plan.chain.execute patterns input |>.mapError .chain
   let numberOutcomes := chain.rows.flatMap fun row => [row.first, row.third]
-  let consumer ← plan.consumer.executeWithRead input
+  let consumer ← plan.consumer.executeWithRead (world := world) input
       (readAfterNumericDependenciesWith numberOutcomes fallbackRead)
     |>.mapError .consumer
   pure { chain, consumer }
@@ -120,10 +121,11 @@ def executeWithConsumerFallbackRead
 /-- Execute every phase against the immutable checked input. -/
 def execute (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (world : Option World := none) :
     Except CurrentRepetitionAlternatingEnumerationHavingFault
       CurrentRepetitionAlternatingEnumerationHavingOutcomes :=
-  plan.executeWithConsumerFallbackRead patterns input input.read
+  plan.executeWithConsumerFallbackRead (world := world) patterns input input.read
 
 /-- Execute through one final-consumer fallback view and classify every phase against the same immutable source. -/
 def executeResultWithConsumerFallbackRead
@@ -134,11 +136,12 @@ def executeResultWithConsumerFallbackRead
     (numberPayloadAt : CellAddr → NumberPayload)
     (numberMessages : List (ComputationFormalMessage NumberPayload))
     (chainStringResidualMessages consumerResidualMessages :
-      List StringResidual) :
+      List StringResidual)
+    (world : Option World := none) :
     Except CurrentRepetitionAlternatingEnumerationHavingFault
       (CurrentRepetitionAlternatingEnumerationHavingRunView
         model NumberPayload StringResidual) := do
-  let outcomes ← plan.executeWithConsumerFallbackRead patterns input fallbackRead
+  let outcomes ← plan.executeWithConsumerFallbackRead (world := world) patterns input fallbackRead
   pure {
     plan
     chain := {
@@ -160,11 +163,12 @@ def executeResult
     (numberPayloadAt : CellAddr → NumberPayload)
     (numberMessages : List (ComputationFormalMessage NumberPayload))
     (chainStringResidualMessages consumerResidualMessages :
-      List StringResidual) :
+      List StringResidual)
+    (world : Option World := none) :
     Except CurrentRepetitionAlternatingEnumerationHavingFault
       (CurrentRepetitionAlternatingEnumerationHavingRunView
         model NumberPayload StringResidual) :=
-  plan.executeResultWithConsumerFallbackRead patterns input input.read
+  plan.executeResultWithConsumerFallbackRead (world := world) patterns input input.read
     numberPayloadAt numberMessages chainStringResidualMessages
     consumerResidualMessages
 
@@ -179,12 +183,13 @@ def formalInputPlan
 def executeResultWithFormalInputs
     (plan : CheckedCurrentRepetitionAlternatingEnumerationHaving model)
     (patterns : PreparedFlatStringPatterns model compilePattern)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (world : Option World := none) :
     Except CurrentRepetitionAlternatingEnumerationHavingCheckedResultFault
       (CurrentRepetitionAlternatingEnumerationHavingFormalInputRunView model) := do
   let inputPlan ← plan.formalInputPlan |>.mapError .formalInput
   let prepared ← inputPlan.prepare input |>.mapError .preliminary
-  let phases ← plan.executeResultWithConsumerFallbackRead patterns input
+  let phases ← plan.executeResultWithConsumerFallbackRead (world := world) patterns input
     prepared.preliminary.readComputation (fun _ => ()) [] [] []
     |>.mapError .execution
   pure {

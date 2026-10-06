@@ -198,14 +198,15 @@ def hasFilter : CheckedYearlessDateRangeOverlapOperand model → Bool
 /-- Resolve the operand's addressed cells into yearless slots. A direct field contributes exactly one; a star contributes one per instantiated row in canonical address order, so an empty row becomes a skipped slot rather than disappearing. -/
 def resolveCheckedValidation
     (operand : CheckedYearlessDateRangeOverlapOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except YearlessDateRangesOverlapEvaluationError
       (OverlapOperand YearlessInterval) :=
   match operand with
   | .direct source => source.resolveCheckedValidationAt document outer
   | .star path _ filter => do
       let core ←
-        (path.resolveCheckedValidationEntityOperandCore document outer filter)
+        (path.resolveCheckedValidationEntityOperandCore (world := world) document outer filter)
           |>.mapError .addressing
       let slots ← core.addressedCells.mapM
         CheckedYearlessDateRangeOverlapField.slotFor
@@ -319,26 +320,28 @@ def elaborateYearlessDateRangesOverlapSource (model : FlatModel)
 /-- Evaluate the any-pair scan over admitted unconfigured yearless operands of any admitted shape, in authored order. -/
 def evaluateYearlessDateRangeOverlapOperands
     (operands : List (CheckedYearlessDateRangeOverlapOperand model))
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except YearlessDateRangesOverlapEvaluationError Verdict := do
   let resolved ← operands.mapM fun operand =>
-    operand.resolveCheckedValidation document outer
+    operand.resolveCheckedValidation (world := world) document outer
   pure (evalYearlessRangesOverlap resolved)
 
 /-- Evaluate the scalar-versus-list scan where each list entry may be any admitted operand shape, including a group carrier. The scalar stays a direct stored field, which is the only scalar shape the Kernel admits. -/
 def evaluateYearlessAtLeastOneDateRangeOverlapsOperands
     (scalar : CheckedYearlessDateRangeOverlapOperand model)
     (list : List (CheckedYearlessDateRangeOverlapOperand model))
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except YearlessDateRangesOverlapEvaluationError Verdict := do
-  let scalarOperand ← scalar.resolveCheckedValidation document outer
+  let scalarOperand ← scalar.resolveCheckedValidation (world := world) document outer
   match scalarOperand.slots with
   | [slot] =>
       match slot with
       | .skipped => pure Verdict.notFired
       | .kept _ => do
           let operands ← list.mapM fun operand =>
-            operand.resolveCheckedValidation document outer
+            operand.resolveCheckedValidation (world := world) document outer
           pure (evalAtLeastOneYearlessRangeOverlaps slot operands)
   | slots => throw (.incoherentDirectOperand slots.length)
 

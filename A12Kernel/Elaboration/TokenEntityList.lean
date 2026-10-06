@@ -623,9 +623,10 @@ def resolvedUnfilteredSideAt (checked : CheckedTokenStarSource model)
 /-- Full validation resolves topology and its optional checked filter before classifying selected token cells. -/
 def resolvedValidationSide (checked : CheckedTokenStarSource model)
     (document : Document) (outer : Env)
-    (read : Env → FieldId → CheckedCell) :
+    (read : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide .token) :=
-  checked.source.resolvedOptionalValidationHavingValueListSide document outer
+  checked.source.resolvedOptionalValidationHavingValueListSide (world := world) document outer
     checked.filter read (checked.valueListCellAt .validation read)
 
 /-- Partial all-rows validation checks wildcard/ancestor extent before reading any selected target. Filtered rules are skipped by the owning whole-source consumer. -/
@@ -665,7 +666,8 @@ namespace CheckedTokenEntityOperand
 /-- Resolve one full-validation token operand through the sole checked topology, filter, and addressed-cell owners while retaining its exact String/Enumeration projection certificate. A group slot reads its whole `(row × field)` extent from the model's repeatability through the same shared walk. -/
 def resolveCheckedValidationOperand
     (source : CheckedTokenEntityOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError
       (ResolvedCheckedTokenEntityOperand model) :=
   match source with
@@ -676,7 +678,7 @@ def resolveCheckedValidationOperand
   | .star starSource => do
       let having := starSource.filter.map fun filter => filter.condition
       let core ←
-        starSource.source.resolveCheckedValidationEntityOperandCore
+        starSource.source.resolveCheckedValidationEntityOperandCore (world := world)
           document outer having
       pure (.ofCore source starSource.operand core)
   | .group slot => do
@@ -721,11 +723,12 @@ def resolveCheckedPartialValidationOperand
 def resolvedValidationSide (checked : CheckedTokenEntityOperand model)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (starRead : Env → FieldId → CheckedCell) :
+    (starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide .token) :=
   match checked with
   | .field source => pure (source.resolvedSideAt .validation directRead)
-  | .star source => source.resolvedValidationSide document outer starRead
+  | .star source => source.resolvedValidationSide (world := world) document outer starRead
   | .group slot => .error (.unsupportedGroupOperand slot.groupPath)
 
 /-- Resolve one unfiltered token slot under partial-validation relevance, preserving rule-level skip/nonrelevance outside the cell domain. -/
@@ -787,7 +790,8 @@ def resolvedComputationSide
     (checked : CheckedTokenEntityOperand model)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
-    (filterRead starRead : Env → FieldId → CheckedCell) :
+    (filterRead starRead : Env → FieldId → CheckedCell)
+    (world : Option World := none) :
     Except StarAddressingError
       (Sum (ResolvedValueListSide .token) NumericOperand) :=
   match checked with
@@ -801,7 +805,7 @@ def resolvedComputationSide
           pure (.inl (resolved.toResolvedSide
             (source.valueListCellAt .computation starRead)))
       | some having =>
-          let filterContext : CorrelationContext := { read := filterRead }
+          let filterContext : CorrelationContext := { read := filterRead, world }
           let consume := fun cells environment =>
             match source.valueListCellAt .computation starRead environment with
             | .unknown cause => .inr cause

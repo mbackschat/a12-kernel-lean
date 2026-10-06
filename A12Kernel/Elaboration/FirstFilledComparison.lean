@@ -153,15 +153,16 @@ def elaborateFirstFilledComparison (model : FlatModel) (declaringGroup bindingGr
             throw .unsupportedSource
       pure { left, right, operator, modelWellFormed := by rw [h]; rfl }
 
-private def scanTypedFirstFilled (document : CheckedDocument model) (outer : Env) :
+private def scanTypedFirstFilled (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     List (CheckedFieldFillOperand model) → FirstFilledScanState →
       Except CheckedAddressingError (SimpleComparisonOperand Value)
   | [], _ => pure .notEvaluated
   | operand :: rest, state => do
-      let cells ← operand.observations document outer
+      let cells ← operand.observations (world := world) document outer
       let state := state.enterSelection cells.isEmpty false operand.hasHaving
       match scanFirstFilledObservations cells state with
-      | .inl next => scanTypedFirstFilled document outer rest next
+      | .inl next => scanTypedFirstFilled (world := world) document outer rest next
       | .inr result => pure result
 
 inductive FirstFilledComparisonValue where
@@ -206,7 +207,7 @@ private def CheckedFirstFilledComparisonOperand.evaluate
       let addressed ← (document.fullValidationAddressedCell outer declaration.id).mapError Sum.inl
       pure (projectFirstFilledValue model declaration (observeCell .validation addressed.cell).asValidationSimpleOperand)
   | .firstFilled source => do
-      let result ← (scanTypedFirstFilled document outer source.source.operands {}).mapError Sum.inl
+      let result ← (scanTypedFirstFilled (world := context.world) document outer source.source.operands {}).mapError Sum.inl
       pure (projectFirstFilledValue model source.first result)
 
 private def partialFirstFilledAddresses (document : CheckedDocument model) (outer : Env) :

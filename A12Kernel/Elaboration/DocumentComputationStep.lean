@@ -646,8 +646,8 @@ def ofEnumerationFirstFilled (operation : CheckedEnumerationFirstFilledComputati
   family := .enumeration
   operationReferencesField := operation.source.referencesField
   excludesTarget := operation.targetNotReferenced
-  run _ _ document := do
-    let selected ← (operation.source.evaluateCheckedDocument document []).mapError
+  run world _ document := do
+    let selected ← (operation.source.evaluateCheckedDocument (world := some world) document []).mapError
       .enumerationFirstFilled
     let outcome := selected.asComputationResult.asExactStringTargetOutcome
     pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
@@ -660,10 +660,10 @@ private def ofStringFirstFilledAtRoot (operation : CheckedStringFirstFilledCompu
   family := .string
   operationReferencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
-  run _ matchers document := do
+  run world matchers document := do
     let matcher ← (matchers operation.targetField).getDM
       (throw (.stringFirstFilled (.targetPatternUnavailable operation.targetField)))
-    let entry ← (operation.evaluateAt matcher document document.read []).mapError .stringFirstFilled
+    let entry ← (operation.evaluateAt (world := some world) matcher document document.read []).mapError .stringFirstFilled
     let cell ← DocumentComputationReadBack.string entry.outcome
     pure (.string entry.outcome, cell)
 

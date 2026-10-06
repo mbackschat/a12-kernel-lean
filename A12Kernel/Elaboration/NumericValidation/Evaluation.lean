@@ -317,10 +317,10 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
             (source.evaluateValidationIn document context.outer
               .full context.scalar.fields read).mapError .addressing
         | .checked document =>
-            source.evaluateCheckedDocumentValidation
+            source.evaluateCheckedDocumentValidation (world := context.scalar.fields.world)
               document context.outer .full true
         | .partialView document _ =>
-            source.evaluateCheckedDocumentValidation
+            source.evaluateCheckedDocumentValidation (world := context.scalar.fields.world)
               document context.outer .full
       match result with
       | .nonRelevant => pure (.error .nonRelevant)
@@ -332,28 +332,28 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
             (source.evaluateValueCountValidationIn expected document
               context.outer context.scalar.fields read).mapError .addressing
         | .checked document | .partialView document _ =>
-            source.evaluateCheckedDocumentValueCountValidation
+            source.evaluateCheckedDocumentValueCountValidation (world := context.scalar.fields.world)
               expected document context.outer
       pure result.toValidationArithmetic
   | .tokenValueCount source =>
       match context.input with
       | .legacy document read => do
           let result ←
-            (source.evaluateValidation document context.outer
+            (source.evaluateValidation (world := context.scalar.fields.world) document context.outer
               context.scalar.fields.read read).mapError .addressing
           pure result.toValidationArithmetic
       | .checked document | .partialView document _ =>
-          (source.evaluateCheckedDocumentValidation
+          (source.evaluateCheckedDocumentValidation (world := context.scalar.fields.world)
             document context.outer).map NumericOperand.toValidationArithmetic
   | .booleanValueCount source =>
       match context.input with
       | .legacy document read => do
           let result ←
-            (source.evaluateValidation document context.outer
+            (source.evaluateValidation (world := context.scalar.fields.world) document context.outer
               context.scalar.fields.read read).mapError .addressing
           pure result.toValidationArithmetic
       | .checked document | .partialView document _ =>
-          (source.evaluateCheckedDocumentValidation
+          (source.evaluateCheckedDocumentValidation (world := context.scalar.fields.world)
             document context.outer).map NumericOperand.toValidationArithmetic
   | .aggregate op source =>
       let result ← match context.input with
@@ -362,7 +362,7 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
               context.scalar.fields read).mapError .addressing
         | .checked document | .partialView document _ =>
             source.evaluateCheckedDocumentValidationAggregate
-              op document context.outer
+              op document context.outer context.scalar.fields.world
       pure result.toValidationArithmetic
   | .sumOfProducts source =>
       match context.input with
@@ -401,7 +401,7 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
   | .filledFieldCount source =>
       match context.input with
       | .checked document => do
-          match ← source.evaluateCountOperand? document context.outer with
+          match ← source.evaluateCountOperand? (world := context.scalar.fields.world) document context.outer with
           | some operand => pure operand.toValidationArithmetic
           | none => pure (.error .groupState)
       | .legacy _ _ | .partialView _ _ => pure (.error .groupState)
@@ -409,17 +409,17 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
       match context.input with
       | .legacy document read => do
           let result ←
-            (source.evaluateDistinctValidation document context.outer
+            (source.evaluateDistinctValidation (world := context.scalar.fields.world) document context.outer
               context.scalar.fields.read read).mapError .addressing
           pure result.toValidationArithmetic
       | .checked document | .partialView document _ =>
-          (source.evaluateCheckedDocumentDistinctValidation
+          (source.evaluateCheckedDocumentDistinctValidation (world := context.scalar.fields.world)
             document context.outer).map NumericOperand.toValidationArithmetic
   -- The temporal fold reads the checked document's decoded cells, which the legacy input lacks.
   | .temporalDistinctCount run =>
       match context.input with
       | .checked document =>
-          (run.evaluate document context.outer).map NumericOperand.toValidationArithmetic
+          (run.evaluate (world := context.scalar.fields.world) document context.outer).map NumericOperand.toValidationArithmetic
       | .legacy _ _ | .partialView _ _ => pure (.error .groupState)
 
 /-- Addressed temporal extraction keeps cell addressing and temporal execution as separate effects. -/

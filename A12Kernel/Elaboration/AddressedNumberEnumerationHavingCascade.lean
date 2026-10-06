@@ -113,11 +113,12 @@ def analyze (plan : CheckedAddressedNumberEnumerationHavingCascade model) :
 
 /-- Complete the Number phase, expose only its exact-address dependency cells, then run the lazy mixed Enumeration consumer. -/
 def execute (plan : CheckedAddressedNumberEnumerationHavingCascade model)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (world : Option World := none) :
     Except AddressedNumberEnumerationHavingCascadeFault
       AddressedNumberEnumerationHavingCascadeOutcomes := do
   let producer ← plan.producer.execute input |>.mapError .producer
-  let consumer ← plan.consumer.executeWithRead input
+  let consumer ← plan.consumer.executeWithRead (world := world) input
       (readAfterNumericDependencies input producer) |>.mapError .consumer
   pure { producer, consumer }
 
@@ -126,12 +127,13 @@ def executeResult (plan : CheckedAddressedNumberEnumerationHavingCascade model)
     (input : CheckedDocument model)
     (numberPayloadAt : CellAddr → NumberPayload)
     (numberMessages : List (ComputationFormalMessage NumberPayload))
-    (stringResidualMessages : List StringResidual) :
+    (stringResidualMessages : List StringResidual)
+    (world : Option World := none) :
     Except AddressedNumberEnumerationHavingCascadeFault
       (AddressedNumberEnumerationHavingCascadeRunView
         model NumberPayload StringResidual) := do
   let producer ← plan.producer.execute input |>.mapError .producer
-  let enumeration ← plan.consumer.executeResultWithRead input
+  let enumeration ← plan.consumer.executeResultWithRead (world := world) input
       (readAfterNumericDependencies input producer) stringResidualMessages
     |>.mapError .consumer
   pure {

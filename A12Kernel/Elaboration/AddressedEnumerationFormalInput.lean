@@ -60,13 +60,13 @@ def formalInputPlan
 /-- Prepare every selected operand once, then preserve lazy runtime reads while retaining the eager inventory beside either result arm. -/
 def executeResultWithFormalInputs
     (operation : CheckedAddressedEnumerationFirstFilledComputation model)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model) (world : Option World := none) :
     Except AddressedEnumerationFirstFilledCheckedResultFault
       (AddressedEnumerationFirstFilledComputationRunView model
         ComputationFormalInputFinding) := do
   let plan ← operation.formalInputPlan |>.mapError .formalInput
   let prepared ← plan.prepare input |>.mapError .preliminary
-  match operation.executeResultWithRead input
+  match operation.executeResultWithRead (world := world) input
       prepared.preliminary.readComputation
       prepared.formalErrorsInOperands with
   | .error cause =>

@@ -36,7 +36,7 @@ private structure Inputs where
   rowTarget : Bool := false
   stringTarget : Bool := false
 
-private def run (guard a b c : String) (inputs : Inputs := {}) : Option (List String) := do
+private def run (guard a b c : String) (inputs : Inputs := {}) (clock : Instant := { epochMillis := 0 }) : Option (List String) := do
   let model := if inputs.yearless then { model with fields := model.fields.map fun field =>
       if field.policy.kind == .dateRange then
         { field with dateRangePolicy := some { format := "MM-dd", separator := "/" } }
@@ -54,7 +54,7 @@ private def run (guard a b c : String) (inputs : Inputs := {}) : Option (List St
     ("Pool", Lean.Json.mkObj inputs.pool)])]
   let input ← (readDocument dm data).toOption
   if !input.refusals.isEmpty then none
-  let world : World := { now := { epochMillis := 0 } }
+  let world : World := { now := clock }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
   let consumer : DmComputation := {
@@ -182,5 +182,12 @@ example : run "DateRangesOverlap(Pool)" january touching march = none ∧
     run "DateRangesOverlap(Rows*/R Having [$Out] > 0)" january touching march = none ∧
     run "AtLeastOneDateRangeOverlaps(Rows*/R In A)" january touching march = none ∧
     run "DateRangesOverlap(A,Rows/R)" january touching march = none := by native_decide
+
+example : ["DateRangesOverlap(Rows*/R", "AtLeastOneDateRangeOverlaps(A In Rows*/R"].all
+    (fun start =>
+      let guard := start ++ " Having [Rows/Gate] > 0 And DifferenceInDays(Today, \"01.01.1970\") == 0)"
+      run guard january touching march { rows := [row january "1", row touching "1"] } == holds &&
+      run guard january touching march { rows := [row january "1", row touching "1"] }
+        (clock := { epochMillis := 86400000 }) == misses) = true := by native_decide
 
 end A12Kernel.Dm.ComputationOverlapLocks

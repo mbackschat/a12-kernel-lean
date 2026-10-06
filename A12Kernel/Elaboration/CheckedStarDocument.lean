@@ -259,19 +259,23 @@ def fullValidationAddressedCell (checked : CheckedDocument model)
 
 /-- Correlation reads through one caller-supplied exact-address view and preserve field/address failures separately from semantic UNKNOWN or computation poison. -/
 def resolvingCorrelationContextWithRead (checked : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (world : Option World := none) :
     ResolvingCorrelationContext CheckedAddressingError where
   read environment field :=
     checked.checkedCellWithRead read environment field
   unsupportedDateCalendar := .temporalUnavailable
+  world := world
   bindingError := .environment
 
 /-- Correlation reads from the same immutable checked input. -/
-def resolvingCorrelationContext (checked : CheckedDocument model) :
+def resolvingCorrelationContext (checked : CheckedDocument model)
+    (world : Option World := none) :
     ResolvingCorrelationContext CheckedAddressingError :=
   { read := fun environment field =>
       (checked.fullValidationAddressedCell environment field).map (·.cell)
     unsupportedDateCalendar := .temporalUnavailable
+    world := world
     bindingError := .environment }
 
 /-- Resolve one direct entity-list occurrence through the same model-owned address query as every starred occurrence. -/
@@ -406,7 +410,8 @@ def declaredEnvironments? (source : CheckedStarFieldPath model)
 def resolveCheckedValidationEntityOperandCore
     (source : CheckedStarFieldPath model)
     (checked : CheckedDocument model) (outer : Env)
-    (having : Option CorrelatedHaving) :
+    (having : Option CorrelatedHaving)
+    (world : Option World := none) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore := do
   let topology ←
     (source.path.resolveInCapacity checked.source.toDocument outer).mapError .addressing
@@ -414,7 +419,7 @@ def resolveCheckedValidationEntityOperandCore
     | none => pure topology.environments
     | some condition =>
         condition.selectEnvironmentsResolving
-          checked.resolvingCorrelationContext outer topology.environments
+          (checked.resolvingCorrelationContext world) outer topology.environments
   let addressedCells ← selected.mapM (source.addressedCell checked)
   pure {
     topology := some topology

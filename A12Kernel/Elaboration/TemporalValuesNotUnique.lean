@@ -167,13 +167,14 @@ def hasHaving : CheckedTemporalUniquenessOperand model → Bool
 
 /-- Resolve one slot against the immutable checked document through the shared kind-neutral entity core, which owns topology, addressing, filter selection, and omitted-tail extent. -/
 def resolveValidationCore (operand : CheckedTemporalUniquenessOperand model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
   match operand with
   | .field source =>
       document.resolveCheckedDirectEntityOperandCore source.declaration.id
   | .star path _ filter =>
-      path.resolveCheckedValidationEntityOperandCore document outer filter
+      path.resolveCheckedValidationEntityOperandCore (world := world) document outer filter
   | .group source =>
       document.resolveCheckedGroupEntityOperandCore outer
         source.source.boundLevelCount source.declarations
@@ -342,11 +343,12 @@ namespace CheckedTemporalValuesNotUniqueSource
 /-- Evaluate the temporal uniqueness predicate from one immutable model-certified checked document. Slots resolve in authored order and every reached cell reaches the scan, because this operator skips a formally unavailable cell instead of suppressing on it. -/
 def evaluateCheckedDocumentValuesNotUnique
     (checked : CheckedTemporalValuesNotUniqueSource model)
-    (document : CheckedDocument model) (outer : Env) :
+    (document : CheckedDocument model) (outer : Env)
+    (world : Option World := none) :
     Except CheckedAddressingError Verdict := do
   let tagged ← collectTaggedValueListCells
     (fun operand => do
-      let core ← operand.resolveValidationCore document outer
+      let core ← operand.resolveValidationCore (world := world) document outer
       pure {
         cells := core.addressedCells.map temporalUniquenessCell
         hasUninstantiatedTail := core.hasUninstantiatedTail

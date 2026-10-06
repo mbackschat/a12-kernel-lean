@@ -17,7 +17,8 @@ def model : FlatModel := {
 def runModel (model : FlatModel) (filter : String) (fresh : Bool)
     (expected first second : String) (producerOperation : String := "\"drop\"")
     (extra : List (String × Json) := []) (operationOverride : Option String := none)
-    (ruleExpected : String := "9") : Option (Verdict × List String) := do
+    (ruleExpected : String := "9") (clock : Instant := { epochMillis := 0 })
+    (ruleCondition : Option String := none) (computationPrecondition : Option String := none) : Option (Verdict × List String) := do
   let dm : DmModel := {
     flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let row := fun (tag n : String) => Json.mkObj [("Tag", Json.str tag), ("N", Json.str n)]
@@ -25,20 +26,20 @@ def runModel (model : FlatModel) (filter : String) (fresh : Bool)
     ("Error", Json.str "ready"), ("Expected", Json.str expected),
     ("Rows", Json.arr #[row first "2", row second "5", row first "7"])] ++ extra))])).toOption
   if !input.refusals.isEmpty then none
-  let world : World := { now := { epochMillis := 0 } }
+  let world : World := { now := clock }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
   let operation := operationOverride.getD ("Sum(Rows*/N Having " ++ filter ++ ")")
   let rule ← (checkRule dm .english {
     group := ["Form"], name := "Selected", errorCode := "SELECTED", errorEntityRelPath := "../Error",
-    condition := "FieldFilled(Error) And " ++ operation ++ " == " ++ ruleExpected, severity := "ERROR" }).toOption
+    condition := ruleCondition.getD ("FieldFilled(Error) And " ++ operation ++ " == " ++ ruleExpected), severity := "ERROR" }).toOption
   let context : AddressedValidationEvaluationContext model := {
     scalar := { fields := document.flatContext.withWorld world, groups := GroupPresenceContext.unavailable }
     outer := [], input := .checked document }
   let verdict := (← (rule.evalAddressedFull context true).toOption).verdict
   let (_, computation) ← (lowerComputation model .english {
     group := ["Form"], name := "Total", targetRelPath := "../Out", commonPrecondition := none,
-    alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).toOption
+    alternatives := [{ precondition := computationPrecondition, operation }], errorCodesToSuppress := [] }).toOption
   let computations ← if fresh then do
       let (_, producer) ← (lowerComputation model .english {
         group := ["Form"], name := "Expected", targetRelPath := "../Expected", commonPrecondition := none,

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.AddressedEnumerationFormalInput
 import A12Kernel.Elaboration.AddressedNumberEnumerationHavingCascade
 import A12Kernel.Elaboration.RepeatableNumberAggregateProducer
 
@@ -404,5 +405,24 @@ example : (do
       target2 := .presentValue ⟨"B", by decide⟩
     } := by
   native_decide
+
+private def clockedFilter : SurfaceCorrelatedHaving := .and selectedByComputedGate
+  (.numeric .equal (.atom (.dayDifference .today (.literal { year := some 1970, month := 1, day := 1 })))
+    (.literal { value := 0, authoredScale := 0 }))
+
+private def clockedResults? (world : Option World) : Option (List TokenComputationResult × List String) := do
+  let input ← document? [row 10 [1], row 20 [1, 1]] [
+    cell limit [1] "1" (.parsed (.num 1)), cell rawGate [1, 1] "1" (.parsed (.num 1)),
+    cell computedGate [1, 1] "1" (.parsed (.num 1)), cell choice [1, 1] "A" (.parsed (.enum "A"))]
+  let producer ← producer?
+  let consumer ← consumer? clockedFilter
+  let plan ← (checkAddressedNumberEnumerationHavingCascade (.direct producer) consumer).toOption
+  let result ← (plan.execute input (world := world)).toOption
+  let formal ← (consumer.executeResultWithFormalInputs input (world := world)).toOption
+  pure (result.consumer.map (·.result), formal.string.withoutErrors.map (·.value.text))
+
+example : clockedResults? (some { now := { epochMillis := 0 } }) = some ([.value "A"], ["A"]) ∧
+    clockedResults? (some { now := { epochMillis := 86400000 } }) = some ([.noValue], []) ∧
+    clockedResults? none = none := by native_decide
 
 end A12Kernel.Conformance.AddressedNumberEnumerationHavingCascade

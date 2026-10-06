@@ -79,14 +79,15 @@ private def evaluateAtWithRead
     (operation : CheckedAddressedEnumerationFirstFilledComputation model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (environment : Env) :
+    (environment : Env)
+    (world : Option World := none) :
     Except AddressedEnumerationFirstFilledComputationFault
       AddressedEnumerationComputationOutcome := do
   let targetPath ←
     environment.pathForScope operation.target.declaration.repeatableScope
       |>.mapError .targetEnvironment
   let selected ←
-    operation.source.evaluateCheckedDocumentWithRead input read environment
+    operation.source.evaluateCheckedDocumentWithRead (world := world) input read environment
     |>.mapError .source
   pure {
     targetField := { field := operation.target.field, path := targetPath }
@@ -111,28 +112,31 @@ def clearedAt (operation : CheckedAddressedEnumerationFirstFilledComputation mod
 def executeWithRead
     (operation : CheckedAddressedEnumerationFirstFilledComputation model)
     (input : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (world : Option World := none) :
     Except AddressedEnumerationFirstFilledComputationFault
       (List AddressedEnumerationComputationOutcome) := do
   input.computationRowOutcomes operation.target.declaration.repeatableScope .targetRows
-    operation.clearedAt (operation.evaluateAtWithRead input read)
+    operation.clearedAt (operation.evaluateAtWithRead (world := world) input read)
 
 /-- Execute one lazy first-filled scan per in-capacity target row in document order, and a clear at each over-limit row. -/
 def execute (operation : CheckedAddressedEnumerationFirstFilledComputation model)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model)
+    (world : Option World := none) :
     Except AddressedEnumerationFirstFilledComputationFault
       (List AddressedEnumerationComputationOutcome) :=
-  operation.executeWithRead input input.read
+  operation.executeWithRead (world := world) input input.read
 
 /-- Execute through one caller-supplied exact-address view and classify the resulting rows while retaining the checked Enumeration operation that produced them. -/
 def executeResultWithRead
     (operation : CheckedAddressedEnumerationFirstFilledComputation model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (residualMessages : List ResidualMessage) :
+    (residualMessages : List ResidualMessage)
+    (world : Option World := none) :
     Except AddressedEnumerationFirstFilledComputationFault
       (AddressedEnumerationFirstFilledComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.executeWithRead input read
+  let outcomes ← operation.executeWithRead (world := world) input read
   pure {
     operation
     string := projectAddressedTokenResults input residualMessages outcomes
@@ -141,10 +145,11 @@ def executeResultWithRead
 /-- Classify exact row outcomes against the immutable source target state through the shared model-certified Enumeration result. -/
 def executeResult
     (operation : CheckedAddressedEnumerationFirstFilledComputation model)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage)
+    (world : Option World := none) :
     Except AddressedEnumerationFirstFilledComputationFault
       (AddressedEnumerationFirstFilledComputationRunView model ResidualMessage) :=
-  operation.executeResultWithRead input input.read residualMessages
+  operation.executeResultWithRead (world := world) input input.read residualMessages
 
 end CheckedAddressedEnumerationFirstFilledComputation
 
