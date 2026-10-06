@@ -92,7 +92,8 @@ theorem stringComputationField_readsNormalized (context : StringComputationConte
     (nonempty : (normalizeEvaluatedString text).isEmpty = false) :
     (StringExpr.field field).eval context =
       .ok (.text (normalizeEvaluatedString text)) := by
-  simp [StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.readOperandAt, read,
+  simp [StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith,
+    StringExpr.evalOperandWithSource, StringExpr.readOperandAt, StringExpr.readObservedOperand, read,
     checkedString_phasesReadNormalized text nonempty .computation, nonempty] <;> rfl
 
 end A12Kernel

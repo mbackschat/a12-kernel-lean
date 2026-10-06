@@ -173,10 +173,10 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
         | _ => none
       let stringSurface : Option (SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) := do
         let operator ← match op with | .eq => some EqualityOp.equal | .ne => some EqualityOp.notEqual | _ => none
-        let left ← (lowerStringExpr left).toOption
-        let right ← (lowerStringExpr right).toOption
-        if isCompoundStringExpression left || isCompoundStringExpression right then
-          some (SurfaceComputationConditionOf.predicate (.stringExpression operator left right))
+        let left ← (lowerSelectedStringExpr model group left).toOption
+        let right ← (lowerSelectedStringExpr model group right).toOption
+        if isStringExpressionComparisonOperand left || isStringExpressionComparisonOperand right then
+          some (SurfaceComputationConditionOf.predicate (.selectedStringExpression operator left right))
         else none
       let temporalSurface := do
         let operator ← op.toSurface?
@@ -336,9 +336,11 @@ private def lowerComputationWith (allowParallelGuards : Bool)
       | none => pure step
       | some guard => (step.guard? guard).getDM (refuse "DocumentStep" "guard admission")
     pure (target, .document step)
-  if (row || target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .dateRange ||
+  if (row || (target.policy.kind == .string && operations.any (fun expression =>
+      (lowerSelectedStringExpr model computation.group expression).toOption.any fun source =>
+        source.fields.any fun | .inr _ => true | .inl _ => false)) || target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .dateRange ||
       (target.temporalTargetPolicy.isSome && operations.length > 1)) &&
-      operations.all (isRowAlternativeOperation target) then
+      operations.all (isRowAlternativeOperation model computation.group target) then
     let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do
       let operation ← lowerRowAlternativeOperation model computation.group target expression
       pure ({ precondition, operation } : CheckedComputationAlternative model _)

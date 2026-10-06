@@ -44,6 +44,7 @@ inductive StringComputationFault where
   | fieldKindMismatch (field : FieldId)
   | invalidRange (start finish : Nat)
   | unalignedUtf16Range (field : FieldId) (start finish : Nat)
+  | indexedReadUnavailable
   | targetPatternUnavailable (field : FieldId)
   deriving Repr, DecidableEq
 
@@ -84,14 +85,18 @@ namespace StringExpr
 
 /-- A String read keeps omission provenance independently of its text. Validation and computation
 share the operand domain; computation alone stops at a reached formal cause (String grid, 2026-10-04). -/
-def readOperandAt (phase : Phase) (read : FieldId → CheckedCell) (fieldId : FieldId) :
+def readObservedOperand (fieldId : FieldId) (observation : CellObservation) :
     Except StringComputationFault (SimpleComparisonOperand String) :=
-  match observeCell phase (read fieldId) with
+  match observation with
   | .empty => pure .notEvaluated
   | .value (.str text) | .value (.enum text) =>
       if text.isEmpty then pure .notEvaluated else pure (.value text true)
   | .value _ => throw (.fieldKindMismatch fieldId)
   | .poison cause | .unknown cause => pure (.unknown cause)
+
+def readOperandAt (phase : Phase) (read : FieldId → CheckedCell) (fieldId : FieldId) :
+    Except StringComputationFault (SimpleComparisonOperand String) :=
+  readObservedOperand fieldId (observeCell phase (read fieldId))
 
 /-- Absence contributes empty text without becoming fixed provenance; formal unavailability keeps
 its cause. The range and concatenation runtime grid separates these from empty comparison results. -/
@@ -105,9 +110,9 @@ def concatOperands : SimpleComparisonOperand String → SimpleComparisonOperand 
 
 /-- One ordered String evaluator serves validation, guards and stores. The caller provides already
 classified String or Number-text reads, so storage-regime selection remains with the document. -/
-def evalOperandWith (phase : Phase)
-    (read : FieldId → Except StringComputationFault (SimpleComparisonOperand String)) :
-    StringExpr FieldId → Except StringComputationFault (SimpleComparisonOperand String)
+def evalOperandWithSource (fieldId : Atom → FieldId) (phase : Phase)
+    (read : Atom → Except StringComputationFault (SimpleComparisonOperand String)) :
+    StringExpr Atom → Except StringComputationFault (SimpleComparisonOperand String)
   | .field fieldId | .fieldValueAsString fieldId => read fieldId
   | .category fieldId projection => do
       match ← read fieldId with
@@ -117,21 +122,35 @@ def evalOperandWith (phase : Phase)
           | none => pure (.unknown .malformed)
       | other => pure other
   | .literal value => pure (.value value true)
-  | .range fieldId start finish => do
+  | .range source start finish => do
       if !validStringRange start finish then throw (.invalidRange start finish)
-      match ← read fieldId with
+      match ← read source with
       | .notEvaluated => pure (.value "" false)
       | .unknown cause => pure (.unknown cause)
       | .value value given =>
           if utf16CodeUnitLength value < finish then pure (.value "" given)
           else match utf16CodeUnitSlice? value (start - 1) finish with
             | some selected => pure (.value selected given)
-            | none => throw (.unalignedUtf16Range fieldId start finish)
+            | none => throw (.unalignedUtf16Range (fieldId source) start finish)
   | .concat left right => do
-      let left ← left.evalOperandWith phase read
+      let left ← left.evalOperandWithSource fieldId phase read
       match phase, left with
       | .computation, .unknown cause => pure (.unknown cause)
-      | _, _ => pure (concatOperands left (← right.evalOperandWith phase read))
+      | _, _ => pure (concatOperands left (← right.evalOperandWithSource fieldId phase read))
+
+def evalOperandWith (phase : Phase)
+    (read : FieldId → Except StringComputationFault (SimpleComparisonOperand String))
+    (expression : StringExpr FieldId) : Except StringComputationFault (SimpleComparisonOperand String) :=
+  expression.evalOperandWithSource id phase read
+
+/-- Preserve the authored tree while replacing only resolved source identities. -/
+def mapSources (replace : Atom → Source) : StringExpr Atom Category → StringExpr Source Category
+  | .field source => .field (replace source)
+  | .category source projection => .category (replace source) projection
+  | .fieldValueAsString source => .fieldValueAsString (replace source)
+  | .range source start finish => .range (replace source) start finish
+  | .literal text => .literal text
+  | .concat left right => .concat (left.mapSources replace) (right.mapSources replace)
 
 /-- Root storage consumes the same expression result without needing validation's omission flag. -/
 def eval (context : StringComputationContext) (expression : StringExpr FieldId) :

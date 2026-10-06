@@ -43,6 +43,8 @@ private structure Scenario where
   displaySecond : Bool := false
   validSecond : Bool := false
   fixedRows : Bool := false
+  stringExpressionTarget : Bool := false
+  category : Bool := false
 
 private def input (scenario : Scenario) : Lean.Json :=
   let row (key a b : String) (children : List String) := Lean.Json.mkObj [
@@ -57,6 +59,13 @@ private def input (scenario : Scenario) : Lean.Json :=
 
 private def scenarioModel (enumeration : Bool) (scenario : Scenario) : FlatModel :=
   let model := model enumeration
+  let model : FlatModel := { model with fields := model.fields.map fun field =>
+    if scenario.stringExpressionTarget && (field.id == 2 || field.id == 10) then
+      { field with policy := { kind := .string }, enumeration := none, stringPolicy := {} }
+    else if scenario.category then
+      { field with enumeration := field.enumeration.map fun specification =>
+          { specification with categories := [{ name := "Kind", tokens := ["alpha", "beta"] }] } }
+    else field }
   let model := if scenario.distinctEnumerationDomain then
     { model with fields := model.fields.map fun field =>
         if field.id == 7 then { field with enumeration := some { storedTokens := ["C", "D"] } } else field }
@@ -69,8 +78,9 @@ private def scenarioModel (enumeration : Bool) (scenario : Scenario) : FlatModel
     if scenario.wideTarget && (field.id == 2 || field.id == 10) then
       { field with enumeration := some { storedTokens := ["A", "B", "C", "D"] } }
     else if scenario.displaySecond && field.id == 7 then
-      { field with enumeration := some {
-          storedTokens := ["A", "B"], displayFacts := [{ locale := "en", stored := "A", display := "Alpha" }] } }
+      { field with enumeration := field.enumeration.map fun specification =>
+          { specification with displayFacts := [{ locale := "en", stored := "A", display := "Alpha" },
+            { locale := "en", stored := "B", display := "Beta" }] } }
     else field }
   if scenario.fixedRows then
     { model with fields := model.fields.map fun field => { field with repeatableScope := field.repeatableScope.filter (· != 10) }
@@ -607,5 +617,95 @@ example : [false, true].all (fun enumeration =>
       some (.fired .value) &&
     tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Body) == 2" .full { fixedRows := true } false ==
       some (.fired .value)) = true := by native_decide
+
+
+example : [false, true].all (fun enumeration =>
+    evaluate enumeration "[Rows/Body/A For Key] + \"!\" == \"A!\"" false == some (.inl (.fired .value)) &&
+    evaluate enumeration "[Rows/Body/A For Key] + \"!\"" true none
+      { tokenTarget := true, stringExpressionTarget := true } == some (.inr "value A!") &&
+    evaluate enumeration "1" true (some "[Rows/Body/A For Key] + \"!\" == \"A!\"") == some (.inr "value 1") &&
+    evaluate enumeration "[Rows/Body/A For \"R1\"] + [Rows/Body/A For \"R2\"] == \"BA\"" false none
+      { firstA := "B", validSecond := true } == some (.inl (.fired .value))) = true := by native_decide
+
+example : evaluate false "RangeAsString(Rows/Body/A For Key,1,1) + \"x\" == \"Ax\"" false == some (.inl (.fired .value)) ∧
+    evaluate false "RangeAsString(Rows/Body/A For Key,1,1) + \"x\"" true none
+      { tokenTarget := true, stringExpressionTarget := true, rowTarget := true } == some (.inr "value Ax,value Ax") ∧
+    evaluate true "[Rows/Body/A For Key->Kind] + \"!\" == \"alpha!\"" false none
+      { category := true } == some (.inl (.fired .value)) := by native_decide
+
+
+example : [false, true].all (fun enumeration =>
+    [(({ key := "missing" } : Scenario), Verdict.fired .omission, "value !"),
+      ({ firstA := "" }, .fired .omission, "value !"),
+      ({ firstA := "bad" }, .unknown, "cleared"), ({ secondCode := "R1" }, .unknown, "cleared")].all
+      fun (scenario, verdict, result) =>
+        evaluate enumeration "[Rows/Body/A For Key] + \"!\" == \"!\"" false none scenario == some (.inl verdict) &&
+        evaluate enumeration "[Rows/Body/A For Key] + \"!\"" true none
+          { scenario with tokenTarget := true, stringExpressionTarget := true } == some (.inr result)) = true := by native_decide
+
+example : evaluate false "RangeAsString(Rows/Body/A For Key,1,2) + \"!\" == \"!\"" false == some (.inl (.fired .value)) ∧
+    evaluate false "RangeAsString(Rows/Body/A For Key,1,2) + \"!\" == \"!\"" false none
+      { firstA := "" } == some (.inl (.fired .omission)) ∧
+    evaluate true "[Rows/Body/B For Key->Kind] + \"!\" == \"beta!\"" false none
+      { category := true, displaySecond := true } == some (.inl (.fired .value)) := by native_decide
+
+example : [false, true].all (fun repeated =>
+    let expected value := some (.inr (if repeated then value ++ "," ++ value else value))
+    evaluate false "[Rows/Body/A For Key] + \"!\"" true none
+      { tokenTarget := true, stringExpressionTarget := true, rowTarget := repeated,
+        key := "missing", firstA := "B", producer := some ("Key", "\"R1\"") } == expected "value B!" &&
+    evaluate false "[Rows/Body/A For Key] + \"!\"" true none
+      { tokenTarget := true, stringExpressionTarget := true, rowTarget := repeated,
+        firstA := "bad", producer := some ("Rows/Body/A", "[Ref]") } == expected "value A!") = true := by native_decide
+
+example : evaluate false "\"ok\"" true (some "[Rows/Body/A For Key] + \"!\" == \"A!\"")
+    { tokenTarget := true, stringExpressionTarget := true } == some (.inr "value ok") ∧
+    evaluate false "FieldValueAsString(Out) + [Rows/Body/A For Key]" true none
+      { tokenTarget := true, stringExpressionTarget := true } == some (.inr "value 99A") := by native_decide
+
+example : ["RangeAsString([Rows/Body/A For Key],1,1) + \"!\"", "RangeAsString(Rows/Body/A For Key,0,1)",
+    "[Rows/Body/A For 1] + \"!\"", "FieldValueAsString(Rows/Out For Key) + \"!\""].all
+    (fun expression => (evaluate false expression true none
+      { tokenTarget := true, stringExpressionTarget := true }).isNone) = true ∧
+    (evaluate true "RangeAsString(Rows/Body/A For Key,1,1) + \"!\"" false).isNone = true ∧
+    (evaluate true "[Rows/Body/B For Key] + \"!\" == \"B!\"" false none { displaySecond := true }).isNone = true ∧
+    (evaluate false "[Rows/TextOut For Key] + \"!\"" true none
+      { tokenTarget := true, stringExpressionTarget := true, rowTarget := true }).isNone = true := by native_decide
+
+
+example : evaluate true "[Rows/Body/A For Key->Kind] == \"alpha\"" false none
+    { category := true } == some (.inl (.fired .value)) ∧
+    evaluate true "1" true (some "[Rows/Body/B For Key->Kind] == \"beta\"")
+      { category := true } == some (.inr "value 1") := by native_decide
+
+example : ["[Rows/Body/A For Key->Kind] == \"outside\"", "\"A\" != [Rows/Body/A For Key->Kind]"].all
+    (fun condition => (evaluate true condition false none { category := true }).isNone &&
+      (evaluate true "1" true (some condition) { category := true }).isNone) = true := by native_decide
+
+example : ["[Rows/Body/A For Key->Kind] == [Rows/Body/B For Key]",
+    "[Rows/Body/B For Key] == [Rows/Body/A For Key->Kind]"].all (fun condition =>
+      evaluate true condition false none { category := true, displaySecond := true } == some (.inl .notFired) &&
+      evaluate true "1" true (some condition) { category := true, displaySecond := true } == some (.inr "cleared")) = true := by native_decide
+
+private def selectedStringBindings (expression : String) : Option (List FieldId × List FieldId) := do
+  let m := model false
+  let parsed ← (parseText .english expression).toOption
+  let surface ← (lowerSelectedStringExpr m ["Form"] parsed.body).toOption
+  let checked ← (elaborateSelectedBoundStringExpression m ["Form"] ["Form"] surface).toOption
+  pure (checked.declarations.map (·.id), checked.boundDeclarations.map (·.id))
+
+example : selectedStringBindings "[Rows/Body/A For Key] + \"!\"" = some ([3, 5, 6], [3]) ∧
+    selectedStringBindings "[Rows/Body/A For \"R1\"] + [Ref]" = some ([5, 6, 4], [4]) ∧
+    selectedStringBindings "[Rows/Body/A] + [Ref]" = none := by native_decide
+
+private def stringPartialAdmission (condition : String) : Option Bool := do
+  let m := model false
+  let parsed ← (parseText .english condition).toOption
+  let checked ← (lowerCondition m ["Form"] false parsed.body).toOption
+  let .leaf leaf := checked.core | none
+  pure leaf.supportsAddressedPartial
+
+example : stringPartialAdmission "[Rows/Body/A For Key] + \"!\" == \"A!\"" = some false ∧
+    stringPartialAdmission "[Ref] + \"!\" == \"A!\"" = some true := by native_decide
 
 end A12Kernel.Dm.IndexedTokenLocks

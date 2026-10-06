@@ -75,7 +75,8 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .groupList operator [.starredGroupPresence _] =>
       operator.toStarredGroupFillQuantifier?.isSome
   | .repetitionNotUnique _ => true
-  | .customCondition _ | .customFieldValidity _ | .stringPattern _ | .constructedDateValidity _ _ | .stringExpression _ => true
+  | .stringExpression comparison => !comparison.hasIndexed
+  | .customCondition _ | .customFieldValidity _ | .stringPattern _ | .constructedDateValidity _ _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
   | _ => false
@@ -105,6 +106,16 @@ an empty contribution. The common fold still checks reached range operations (sp
 private def evalStringExpressionAddressed
     (context : AddressedValidationEvaluationContext model) (isRelevant : FlatRelevance)
     (comparison : CheckedStringExpressionComparison model) : Except CheckedAddressingError Verdict := do
+  if comparison.hasIndexed then
+    match context.input with
+    | .checked document =>
+        let cells ← comparison.boundDeclarations.mapM fun declaration => do
+          pure (declaration.id, ← context.readCell context.outer declaration.id)
+        let selected := { (document.indexedComputationContextAt context.outer) with
+          read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell }
+        return ← (comparison.eval { context.scalar.fields with read := selected.read }
+          selected.numberText (some selected)).mapError .stringExpression
+    | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired [])
   let document ← match context.input with
     | .checked document | .partialView document _ => pure document
     | .legacy _ _ => throw (.checkedDocumentRequired [])
@@ -194,7 +205,7 @@ def evalAddressedPartial?
           comparison.evaluatePartial? document context.outer scope context.readCell
       | .legacy _ _ => none
   | .stringExpression comparison =>
-      some (evalStringExpressionAddressed context isRelevant comparison)
+      if comparison.hasIndexed then none else some (evalStringExpressionAddressed context isRelevant comparison)
   | .constructedDateValidity operation source =>
       some (evalConstructedDateAddressed context isRelevant operation source)
   | .indexedFieldPresence operator source =>

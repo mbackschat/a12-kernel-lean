@@ -36,7 +36,7 @@ def CheckedComputationStringPattern.eval (checked : CheckedComputationStringPatt
 def CheckedComputationStringPattern.toValidation?
     (checked : CheckedComputationStringPattern model) (rowGroup : GroupPath) :
     Option (CheckedStringPatternLeaf model) := do
-  let .field fieldId := checked.source.core | none
+  let .field (.inl fieldId) := checked.source.core | none
   let field : FlatStringField := { id := fieldId }
   if !(model.fieldRepeatableScope fieldId).isPrefixOf (model.repeatableScopeForGroupPath rowGroup) then none
   if hField : model.admitsStringPatternField field = true then

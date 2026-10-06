@@ -400,7 +400,8 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
   | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ => throw .unclassifiedOperand
   | .repeatableFieldPresence _ declaration =>
       (concreteFieldPointer declaration environment).map ([·])
-  | .stringExpression comparison =>
+  | .stringExpression comparison => do
+      if comparison.hasIndexed then throw .unclassifiedOperand
       sievedFieldPointers model (fun declaration => comparison.referencesField declaration.id) environment
   | .scalarTemporal comparison => do
       if comparison.left.requiresAddressed || comparison.right.requiresAddressed then throw .unclassifiedOperand

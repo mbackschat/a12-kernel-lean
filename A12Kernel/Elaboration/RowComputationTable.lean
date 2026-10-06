@@ -24,7 +24,7 @@ inductive CheckedRowComputationOperation (model : FlatModel) where
 namespace CheckedRowComputationOperation
 
 def target : CheckedRowComputationOperation model → FieldId
-  | .stringExpression operation => operation.target.targetField
+  | .stringExpression operation => operation.targetField
   | .stringConstant operation => operation.checkedTarget.targetField
   | .enumeration operation => operation.target.field
   | .booleanConstant operation => operation.checkedTarget.targetField
@@ -33,7 +33,7 @@ def target : CheckedRowComputationOperation model → FieldId
   | .temporalExpression operation => operation.target
 
 def scope : CheckedRowComputationOperation model → List RepeatableLevel
-  | .stringExpression operation => operation.target.declaration.repeatableScope
+  | .stringExpression operation => operation.target.repeatableScope
   | .stringConstant operation => operation.checkedTarget.declaration.repeatableScope
   | .enumeration operation => operation.target.declaration.repeatableScope
   | .booleanConstant operation => operation.checkedTarget.declaration.repeatableScope
@@ -148,12 +148,12 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
     (environment : Env) : Except RowComputationTableFault (DocumentTargetOutcome × CheckedCell) := do
   match operation with
   | .stringExpression operation =>
-      let field := operation.target.targetField
+      let field := operation.targetField
       let some matcher := patterns.targetMatcher? field | throw (.targetPatternUnavailable field)
       let context := document.indexedComputationContextAt environment
-      let result ← (operation.expression.eval .computation { read := context.read } context.numberText).mapError .stringExpression
+      let result ← (operation.expression.eval .computation { read := context.read } context.numberText (some context)).mapError .stringExpression
       let term := StringTerm.ofOperand result
-      let outcome := operation.target.declaration.checkStringExpressionTarget matcher term.store
+      let outcome := operation.target.checkStringExpressionTarget matcher term.store
       pure (.string outcome, ← (DocumentComputationReadBack.string outcome).mapError .readBack)
   | .stringConstant operation =>
       let some matcher := patterns.targetMatcher? operation.checkedTarget.targetField

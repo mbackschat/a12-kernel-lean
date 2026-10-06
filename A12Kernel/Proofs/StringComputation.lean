@@ -6,13 +6,13 @@ import A12Kernel.Proofs.StringFieldPolicy
 namespace A12Kernel
 
 /-- Category projection preserves the selected operand's provenance and exact positional token. -/
-theorem stringCategory_preserves_projection (phase : Phase)
-    (read : FieldId → Except StringComputationFault (SimpleComparisonOperand String))
-    (fieldId : FieldId) (projection : ResolvedEnumerationCategory) (stored text : String) (given : Bool)
+theorem stringCategory_preserves_projection {Atom : Type} (address : Atom → FieldId) (phase : Phase)
+    (read : Atom → Except StringComputationFault (SimpleComparisonOperand String))
+    (fieldId : Atom) (projection : ResolvedEnumerationCategory) (stored text : String) (given : Bool)
     (selected : read fieldId = .ok (.value stored given))
     (projected : projection.categoryTokenFor? stored = some text) :
-    (StringExpr.category fieldId projection).evalOperandWith phase read = .ok (.value text given) := by
-  simp [StringExpr.evalOperandWith, selected, projected, bind, Except.bind, pure, Except.pure]
+    (StringExpr.category fieldId projection).evalOperandWithSource address phase read = .ok (.value text given) := by
+  simp [StringExpr.evalOperandWithSource, selected, projected, bind, Except.bind, pure, Except.pure]
 
 /-- The reduced Custom regime cannot turn an attempted value into an ordinary format rejection. -/
 theorem customStringTarget_accepts_attempt (policy : StringFieldPolicy)
@@ -20,30 +20,30 @@ theorem customStringTarget_accepts_attempt (policy : StringFieldPolicy)
     StringTargetRegime.custom.check policy matcher (.produced value) = .accepted value := rfl
 
 /-- Any poisoned subtree aborts computation concatenation before the right expression. -/
-theorem stringOperand_computation_poison_aborts
-    (read : FieldId → Except StringComputationFault (SimpleComparisonOperand String))
-    (left right : StringExpr) (cause : FormalCause)
-    (poison : left.evalOperandWith .computation read = .ok (.unknown cause)) :
-    (StringExpr.concat left right).evalOperandWith .computation read = .ok (.unknown cause) := by
-  simp [StringExpr.evalOperandWith, poison] <;> rfl
+theorem stringOperand_computation_poison_aborts {Atom : Type} (address : Atom → FieldId)
+    (read : Atom → Except StringComputationFault (SimpleComparisonOperand String))
+    (left right : StringExpr Atom) (cause : FormalCause)
+    (poison : left.evalOperandWithSource address .computation read = .ok (.unknown cause)) :
+    (StringExpr.concat left right).evalOperandWithSource address .computation read = .ok (.unknown cause) := by
+  simp [StringExpr.evalOperandWithSource, poison] <;> rfl
 
 /-- Validation still resolves the right expression after a left formal unknown. Structural read
 failure remains distinct from the left formal cause. -/
-theorem stringOperand_validation_observes_right_fault
-    (read : FieldId → Except StringComputationFault (SimpleComparisonOperand String))
-    (left right : StringExpr) (cause : FormalCause) (fault : StringComputationFault)
-    (unknown : left.evalOperandWith .validation read = .ok (.unknown cause))
-    (failed : right.evalOperandWith .validation read = .error fault) :
-    (StringExpr.concat left right).evalOperandWith .validation read = .error fault := by
-  simp [StringExpr.evalOperandWith, unknown, failed] <;> rfl
+theorem stringOperand_validation_observes_right_fault {Atom : Type} (address : Atom → FieldId)
+    (read : Atom → Except StringComputationFault (SimpleComparisonOperand String))
+    (left right : StringExpr Atom) (cause : FormalCause) (fault : StringComputationFault)
+    (unknown : left.evalOperandWithSource address .validation read = .ok (.unknown cause))
+    (failed : right.evalOperandWithSource address .validation read = .error fault) :
+    (StringExpr.concat left right).evalOperandWithSource address .validation read = .error fault := by
+  simp [StringExpr.evalOperandWithSource, unknown, failed] <;> rfl
 
 /-- Concatenation keeps omission provenance even when another operand supplies nonempty text. -/
-theorem stringOperand_missing_concat_literal
-    (phase : Phase) (read : FieldId → Except StringComputationFault (SimpleComparisonOperand String))
-    (left : StringExpr) (text : String)
-    (missing : left.evalOperandWith phase read = .ok .notEvaluated) :
-    (StringExpr.concat left (.literal text)).evalOperandWith phase read = .ok (.value text false) := by
-  cases phase <;> simp_all [StringExpr.evalOperandWith, StringExpr.concatOperands] <;> rfl
+theorem stringOperand_missing_concat_literal {Atom : Type} (address : Atom → FieldId)
+    (phase : Phase) (read : Atom → Except StringComputationFault (SimpleComparisonOperand String))
+    (left : StringExpr Atom) (text : String)
+    (missing : left.evalOperandWithSource address phase read = .ok .notEvaluated) :
+    (StringExpr.concat left (.literal text)).evalOperandWithSource address phase read = .ok (.value text false) := by
+  cases phase <;> simp_all [StringExpr.evalOperandWithSource, StringExpr.concatOperands] <;> rfl
 
 /-- `FieldValueAsString` adds no second runtime renderer: after the checked context selects the Number text, it has the same expression behavior as an ordinary field read. -/
 theorem fieldValueAsString_evaluates_selected_text
@@ -57,7 +57,7 @@ theorem emptyStringField_evaluates_noValue (context : StringComputationContext)
     (field : FieldId)
     (emptyRead : observeCell .computation (context.read field) = .empty) :
   (StringExpr.field field).eval context = .ok .noValue := by
-  simp [StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.readOperandAt, emptyRead] <;> rfl
+  simp [StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.evalOperandWithSource, StringExpr.readOperandAt, StringExpr.readObservedOperand, emptyRead] <;> rfl
 
 /-- `RangeAsString` is an evaluated coercion: a clean missing field yields empty text rather than the bare field term's `noValue`. -/
 theorem emptyStringRange_evaluates_emptyText (context : StringComputationContext)
@@ -68,7 +68,7 @@ theorem emptyStringRange_evaluates_emptyText (context : StringComputationContext
   have positive : 0 < start := Nat.lt_of_lt_of_le Nat.zero_lt_one startPositive
   have valid : validStringRange start finish = true := by
     simp [validStringRange, positive, ordered]
-  simp [StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.readOperandAt, emptyRead, valid] <;> rfl
+  simp [StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.evalOperandWithSource, StringExpr.readOperandAt, StringExpr.readObservedOperand, emptyRead, valid] <;> rfl
 
 /-- A formally invalid ranged source preserves its exact poison cause before any interval content decision. -/
 theorem poisonedStringRange_preserves_cause (context : StringComputationContext)
@@ -79,7 +79,7 @@ theorem poisonedStringRange_preserves_cause (context : StringComputationContext)
   have positive : 0 < start := Nat.lt_of_lt_of_le Nat.zero_lt_one startPositive
   have valid : validStringRange start finish = true := by
     simp [validStringRange, positive, ordered]
-  simp [StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.readOperandAt, poisonedRead, valid] <;> rfl
+  simp [StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.evalOperandWithSource, StringExpr.readOperandAt, StringExpr.readObservedOperand, poisonedRead, valid] <;> rfl
 
 /-- An end beyond the normalized UTF-16 length returns empty text, never the available prefix. -/
 theorem overshootingStringRange_evaluates_emptyText (context : StringComputationContext)
@@ -92,7 +92,7 @@ theorem overshootingStringRange_evaluates_emptyText (context : StringComputation
   have positive : 0 < start := Nat.lt_of_lt_of_le Nat.zero_lt_one startPositive
   have valid : validStringRange start finish = true := by
     simp [validStringRange, positive, ordered]
-  simp [StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.readOperandAt, valueRead, nonempty,
+  simp [StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.evalOperandWithSource, StringExpr.readOperandAt, StringExpr.readObservedOperand, valueRead, nonempty,
     valid, overshoots] <;> rfl
 
 /-- Concatenation consumes an empty field as `""`, so a non-empty literal still reaches the root store as its own value. -/
@@ -102,7 +102,7 @@ theorem emptyStringField_concat_literal_stores_literal (context : StringComputat
     (nonempty : literal ≠ "") :
   (StringExpr.concat (.field field) (.literal literal)).evaluate context =
       .ok (.produced { text := literal, nonempty }) := by
-  simp [StringExpr.evaluate, StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.readOperandAt, StringExpr.concatOperands, emptyRead,
+  simp [StringExpr.evaluate, StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.evalOperandWithSource, StringExpr.readOperandAt, StringExpr.readObservedOperand, StringExpr.concatOperands, emptyRead,
     StringTerm.store, nonempty] <;> rfl
 
 /-- The library evaluator preserves computation-phase formal invalidity as poison instead of collapsing it into ordinary absence. -/
@@ -110,7 +110,7 @@ theorem poisonedStringField_evaluates_poison (context : StringComputationContext
     (field : FieldId) (cause : FormalCause)
     (poisonedRead : observeCell .computation (context.read field) = .poison cause) :
     (StringExpr.field field).evaluate context = .ok (.poison cause) := by
-  simp [StringExpr.evaluate, StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.readOperandAt, poisonedRead,
+  simp [StringExpr.evaluate, StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.evalOperandWithSource, StringExpr.readOperandAt, StringExpr.readObservedOperand, poisonedRead,
     StringTerm.store] <;> rfl
 
 /-- A poisoned left field aborts concatenation before the arbitrary right expression is consulted. The result therefore depends only on the left read, preserving the computation language's read-driven poison order. -/
@@ -118,7 +118,7 @@ theorem poisonedLeftStringField_shortCircuits_concat (context : StringComputatio
     (field : FieldId) (cause : FormalCause) (right : StringExpr)
     (poisonedRead : observeCell .computation (context.read field) = .poison cause) :
     (StringExpr.concat (.field field) right).evaluate context = .ok (.poison cause) := by
-  simp [StringExpr.evaluate, StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.readOperandAt, StringExpr.concatOperands, poisonedRead,
+  simp [StringExpr.evaluate, StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.evalOperandWithSource, StringExpr.readOperandAt, StringExpr.readObservedOperand, StringExpr.concatOperands, poisonedRead,
     StringTerm.store] <;> rfl
 
 /-- A clean missing left field does not short-circuit: concatenation must still read and preserve a poisoned right field. -/
@@ -127,7 +127,7 @@ theorem emptyLeftStringField_reads_poisonedRight (context : StringComputationCon
     (emptyLeft : observeCell .computation (context.read left) = .empty)
     (poisonedRight : observeCell .computation (context.read right) = .poison cause) :
     (StringExpr.concat (.field left) (.field right)).evaluate context = .ok (.poison cause) := by
-  simp [StringExpr.evaluate, StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.readOperandAt, StringExpr.concatOperands, emptyLeft,
+  simp [StringExpr.evaluate, StringExpr.eval, StringTerm.ofOperand, StringExpr.evalOperandWith, StringExpr.evalOperandWithSource, StringExpr.readOperandAt, StringExpr.readObservedOperand, StringExpr.concatOperands, emptyLeft,
     poisonedRight, StringTerm.store] <;> rfl
 
 /-- A clean missing operand contributes the empty text on the left of concatenation. -/

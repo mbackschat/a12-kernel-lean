@@ -114,10 +114,10 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
   let stringExpression := match leaf with
     | .compare op left right =>
         let equality := match op with | .eq => some EqualityOp.equal | .ne => some .notEqual | _ => none
-        match equality, lowerStringExpr left, lowerStringExpr right with
+        match equality, lowerSelectedStringExpr model rowGroup left, lowerSelectedStringExpr model rowGroup right with
         | some op, .ok left, .ok right =>
-            if isCompoundStringExpression left || isCompoundStringExpression right then [do
-              let comparison ← elaborated "StringExpression" (elaborateStringExpressionComparison model rowGroup rowGroup op left right)
+            if isStringExpressionComparisonOperand left || isStringExpressionComparisonOperand right then [do
+              let comparison ← elaborated "StringExpression" (elaborateSelectedStringExpressionComparison model rowGroup rowGroup op left right)
               elaborated "StringExpression" (CheckedValidationCondition.fromStringExpression rowGroup comparison)] else []
         | _, _, _ => []
     | _ => []

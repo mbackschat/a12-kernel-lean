@@ -26,6 +26,7 @@ inductive SurfaceComputationPredicate where
   | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceConstructedDateComponents)
   | typeValidity (operation : CustomFieldValidityOp) (source : SurfaceFieldPath) (name : String)
   | stringExpression (operator : EqualityOp) (left right : StringExpr SurfaceFieldPath String)
+  | selectedStringExpression (operator : EqualityOp) (left right : SurfaceSelectedStringExpression)
   | temporal (operator : TemporalComparisonOp) (left right : SurfaceScalarTemporalExpression)
   | fieldComparison (operator : SurfaceComparisonOp) (left right : SurfaceFieldPath)
   | scalarMembership (operator : ValueListMembershipOp) (subject : SurfaceTextFieldOperand)
@@ -142,7 +143,7 @@ def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List R
   | .pattern source => source.source.declarations.all (·.repeatableScope.isPrefixOf scope)
   | .dateValidity _ source => source.fields.all (fun field => (model.fieldRepeatableScope field).isPrefixOf scope)
   | .typeValidity _ source _ => source.declaration.repeatableScope.isPrefixOf scope
-  | .stringExpression source => source.declarations.all (·.repeatableScope.isPrefixOf scope)
+  | .stringExpression source => source.boundDeclarations.all (·.repeatableScope.isPrefixOf scope)
   | .temporal source => (source.left.bindingScopes ++ source.right.bindingScopes).all (·.isPrefixOf scope)
   | .fieldComparison source => source.rowBoundBool scope
   | .valueList source | .scalarValueList _ source => source.bindingScopes.all (·.isPrefixOf scope)
@@ -397,7 +398,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
           | .notTrue => pure .notTrue
           | .poison cause => pure (.poison cause)
           | .validatorUnavailable => throw .valueFailure
-  | .stringExpression source => (source.evalComputation { read := context.read } context.numberText).mapError .stringExpression
+  | .stringExpression source => (source.evalComputation { read := context.read } context.numberText (some context)).mapError .stringExpression
   | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError (fun
       | .dateTimeLabelUnresolved | .componentNumberInvalid => .valueFailure
       | .calendarUnavailable | .indexedOperandNotSupported => .temporalUnavailable)
@@ -510,6 +511,8 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
           match elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn model declaringGroup scope source targetGroup (some targetGroup) with
           | .ok source => pure (.overlap (.yearlessScalar source))
           | .error _ => throw (.overlap (.pluralOverlap exactError))
+  | .selectedStringExpression op left right => .stringExpression <$>
+      (elaborateSelectedStringExpressionComparison model declaringGroup targetGroup op left right).mapError .stringExpression
   | .stringExpression op left right => .stringExpression <$>
       (elaborateStringExpressionComparison model declaringGroup targetGroup op left right).mapError .stringExpression
   | .temporal op left right => .temporal <$>

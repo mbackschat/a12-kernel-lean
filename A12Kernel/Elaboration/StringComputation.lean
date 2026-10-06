@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.SemanticIndex
 import A12Kernel.Elaboration.CheckedDocument
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Semantics.StringComputation
@@ -32,6 +33,7 @@ def FlatFieldDecl.checkStringExpressionTarget (declaration : FlatFieldDecl)
 
 /-- Fail-closed errors owned by checked String-computation expression lowering. Keeping this domain local avoids widening validation or public reference diagnostics. -/
 inductive StringComputationElabError where
+  | indexed (error : SemanticIndexElabError)
   | resolve (error : ResolveError)
   | fieldKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | rawStringValue (path : List String)

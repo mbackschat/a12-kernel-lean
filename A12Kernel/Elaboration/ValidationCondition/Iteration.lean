@@ -299,7 +299,7 @@ private def ValidationConditionLeaf.iterationGuardAt
   | .fieldFill _ source =>
       if source.bindingScope.contains level then .unclassified else .noReference
   | .stringExpression comparison =>
-      if comparison.declarations.any (·.repeatableScope.contains level) then .unclassified else .noReference
+      if comparison.boundDeclarations.any (·.repeatableScope.contains level) then .unclassified else .noReference
   | .firstFilledComparison comparison =>
       if comparison.bindingScopes.flatten.contains level then .unclassified else .noReference
   | .tokenComparison comparison =>
@@ -410,7 +410,7 @@ def ordinaryRepeatableFields (condition : ValidationCondition model) :
       source.fields.filterMap fun field =>
         (model.lookupUniqueId field).toOption.filter (fun declaration => !declaration.repeatableScope.isEmpty)
   | .leaf (.stringExpression comparison) =>
-      comparison.declarations.filter fun field => !field.repeatableScope.isEmpty
+      comparison.boundDeclarations.filter fun field => !field.repeatableScope.isEmpty
   | .leaf (.scalarTemporal comparison) =>
       (comparison.left.boundFieldIds ++ comparison.right.boundFieldIds).filterMap fun field =>
         (model.lookupUniqueId field).toOption.filter (fun declaration => !declaration.repeatableScope.isEmpty)

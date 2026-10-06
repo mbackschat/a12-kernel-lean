@@ -60,7 +60,7 @@ where
 
 /-- Temporal target profiles select expression projection; other kinds retain their established
 carrier choice. FirstFilledValue and bare Date literals keep their entity-stream and year-presence gates. -/
-def isRowAlternativeOperation (target : FlatFieldDecl) (expression : Expr) : Bool :=
+def isRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) (expression : Expr) : Bool :=
   if target.policy.kind == .dateRange then
     match expression with | .call "DateRange" [_, _] none none => true | _ => false
   else if target.temporalTargetPolicy.isSome then
@@ -68,7 +68,7 @@ def isRowAlternativeOperation (target : FlatFieldDecl) (expression : Expr) : Boo
     | .call "FirstFilledValue" _ _ _ => false
     | .string text => (authoredDateLiteral? text).isNone
     | _ => true
-  else if target.policy.kind == .string && (lowerStringExpr expression).isOk then true else
+  else if target.policy.kind == .string && (lowerSelectedStringExpr model group expression).isOk then true else
   match expression with
   | .constant "True" | .constant "False" => target.policy.kind == .boolean || target.policy.kind == .confirm
   | .string text => !isTemporalConstant text
@@ -94,7 +94,7 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
     return .temporalExpression operation
   if target.policy.kind == .string then
     return .stringExpression (← elaborated "StringExpression"
-      (elaborateRowStringExpression model group target.id (← lowerStringExpr expression)))
+      (elaborateSelectedRowStringExpression model group target.id (← lowerSelectedStringExpr model group expression)))
   match expression with
   | .constant "True" | .constant "False" =>
       if target.repeatableScope.isEmpty then

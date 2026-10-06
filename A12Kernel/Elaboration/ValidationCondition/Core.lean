@@ -683,7 +683,7 @@ def wellFormedBool (rowGroup : GroupPath) :
       (model.repeatableScopeForGroupPath rowGroup).contains
   | .tokenComparison comparison => comparison.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains
-  | .stringExpression comparison => comparison.declarations.all fun field =>
+  | .stringExpression comparison => comparison.boundDeclarations.all fun field =>
       field.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
   | .scalarTemporal comparison =>
       comparison.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
