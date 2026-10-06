@@ -1,10 +1,30 @@
 import A12Kernel.Elaboration.IndexedGroupFieldFill
 import A12Kernel.Elaboration.SemanticIndex
+import A12Kernel.Elaboration.IndexedStringNumeric
 import A12Kernel.Proofs.SemanticIndex
 
 /-! # Checked semantic-index construction laws -/
 
 namespace A12Kernel
+
+/-- The selected numeric consumer preserves formal failure independently of its text projection. -/
+theorem indexedStringNumeric_preserves_formalCause (projection : StringNumericProjection) (cause : FormalCause) :
+    projection.observe (.unknown cause) = .unknown cause ∧
+    projection.observe (.poison cause) = .unknown cause := by
+  cases projection <;> exact ⟨rfl, rfl⟩
+
+/-- Computation observes the same cause as poison, independently of the selected operation. -/
+theorem indexedStringNumeric_computation_poison (source : CheckedIndexedStringNumericSource model) (cause : FormalCause) :
+    source.computationResult (.poison cause) = .ok (.poison cause) := by
+  simp [CheckedIndexedStringNumericSource.computationResult,
+    (indexedStringNumeric_preserves_formalCause source.projection cause).2,
+    NumericOperand.toComputationResult]
+
+/-- Missing length can only grow, while numeric conversion's missing zero is symmetrically fillable (spec/03). -/
+theorem indexedStringNumeric_emptyProvenanceDiffers (source : ResolvedFieldValueAsNumberSource) :
+    StringNumericProjection.length.observe .empty ≠ (StringNumericProjection.asNumber source).observe .empty := by
+  simp [StringNumericProjection.observe, ResolvedFieldValueAsNumberSource.observeOperand,
+    CellObservation.asStringLengthOperand] <;> decide
 
 /-- The checked literal suffix cannot drift from `RuleGroup` to a child or sibling group: its
 certificate identifies the exact containing group supplied to elaboration. -/

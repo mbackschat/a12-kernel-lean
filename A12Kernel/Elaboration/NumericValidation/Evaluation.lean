@@ -112,7 +112,7 @@ def resolve (atom : OrderedNumericValidationAtom model)
     (context : ValidationEvaluationContext) (isRelevant : FlatRelevance) :
     Except NumericValidationUnavailable NumericArithmeticOutcome :=
   match atom with
-  | .indexed _ => .error .groupState
+  | .indexed _ | .indexedString _ => .error .groupState
   | .ordinary source =>
       if source.allRelevant isRelevant then
         context.resolveNumericValidationAtom source
@@ -304,6 +304,12 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
     Except CheckedAddressingError
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   match atom with
+  | .indexedString source => do
+      let document ← match context.input with
+        | .checked document => pure document
+        | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired source.selection.group.path)
+      let observation ← source.selection.observeDocument document context.outer .validation
+      pure ((source.projection.observe observation).toValidationArithmetic)
   | .indexed source => do
       let document ← match context.input with
         | .checked document => pure document
@@ -567,6 +573,13 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
     Except CheckedAddressingError
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   match atom with
+  | .indexedString source => do
+      let document ← match context.input with
+        | .checked document | .partialView document _ => pure document
+        | .legacy _ _ => throw (.checkedDocumentRequired source.selection.group.path)
+      match ← source.selection.observePartialDocument document scope context.outer context.readPartialCell with
+      | none => pure (.error .nonRelevant)
+      | some observation => pure ((source.projection.observe observation).toValidationArithmetic)
   | .indexed source => do
       let document ← match context.input with
         | .checked document | .partialView document _ => pure document

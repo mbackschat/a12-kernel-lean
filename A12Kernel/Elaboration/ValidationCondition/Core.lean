@@ -298,7 +298,7 @@ private def numericClassificationSource : NumericValidationAtom → Bool
   | .stringRange _ _ _ | .fieldValueAsNumber _ | .aggregate _ _ | .filledGroupCount _ => true
 
 private def orderedNumericClassificationSource : OrderedNumericValidationAtom model → Bool
-  | .indexed _ => true
+  | .indexed _ | .indexedString _ => true
   | .temporalPart source => !source.source.fieldIds.isEmpty
   | .ordinary source => numericClassificationSource source
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _ | .booleanValueCount _

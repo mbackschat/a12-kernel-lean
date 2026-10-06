@@ -32,6 +32,7 @@ namespace A12Kernel
 
 inductive EntityNumericComparisonElabError where
   | semanticIndex (error : SemanticIndexElabError)
+  | indexedString (error : IndexedStringNumericElabError)
   | temporalExpression (error : TemporalNumericExpressionError)
   | ordinary (error : NumericValidationElabError)
   | numberSource (error : NumberEntityElabError)
@@ -66,6 +67,8 @@ private def SurfaceNumericAtom.ofEntityAtom? :
 private def resolveEntityAtom (model : FlatModel) (rowGroup bindingGroup : GroupPath) :
     SurfaceNumericComputationAtom →
       Except EntityNumericComparisonElabError (OrderedNumericValidationAtom model)
+  | .indexedString source operation =>
+      (elaborateIndexedStringNumericSource model rowGroup source operation).map .indexedString |>.mapError .indexedString
   | .indexed source =>
       (elaborateNumericSemanticIndexSource model rowGroup source).map .indexed |>.mapError .semanticIndex
   | .temporalPart source part =>

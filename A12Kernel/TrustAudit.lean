@@ -1709,6 +1709,9 @@ run_cmd do
 #print axioms A12Kernel.checkedNumberSemanticIndex_lookupValue_delegates
 #print axioms A12Kernel.checkedSemanticIndex_preliminary_delegates
 #print axioms A12Kernel.checkedRuleGroupSemanticIndex_selectsRuleGroup
+#print axioms A12Kernel.indexedStringNumeric_preserves_formalCause
+#print axioms A12Kernel.indexedStringNumeric_computation_poison
+#print axioms A12Kernel.indexedStringNumeric_emptyProvenanceDiffers
 #print axioms A12Kernel.semanticIndex_missingIndex_requiresCarrierProjection
 #print axioms A12Kernel.checkedFilledFieldCountSemanticIndexPair_identity
 #print axioms A12Kernel.checkedTextSemanticIndexGroupSelection_identity

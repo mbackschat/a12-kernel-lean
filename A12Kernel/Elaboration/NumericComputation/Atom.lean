@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.IndexedStringNumeric
 import A12Kernel.Elaboration.TemporalNumericExpression
 import A12Kernel.Elaboration.AddressedRepeatableTarget
 import A12Kernel.Elaboration.DateRangeBoundComponent
@@ -25,6 +26,7 @@ abbrev NumericComputationAtom := ResolvedNumericAtom FlatFieldDecl
 /-- The complete computation surface keeps ordinary numeric atoms in their shared representation and adds distinct prefix-selecting and row-aligned aggregate atoms without creating another arithmetic tree. -/
 inductive SurfaceNumericComputationAtom where
   | indexed (source : SurfaceSemanticIndex)
+  | indexedString (source : SurfaceSemanticIndex) (operation : IndexedStringNumericOperation)
   | temporalPart (source : SurfaceScalarTemporalExpression) (part : TemporalNumericPart)
   | numeric (source : SurfaceNumericAtom SurfaceNumberEntitySource)
   | filledFieldCount (source : SurfaceFieldEntitySource)
@@ -41,6 +43,7 @@ inductive SurfaceNumericComputationAtom where
 /-- One checked numeric computation atom. Ordinary scalar/entity-list sources retain the shared resolved atom, `FirstFilledValue` and value count retain their distinct scans over that same entity-list source, and `SumOfProducts` retains its proof-bearing common-row plan. -/
 inductive CheckedNumericComputationAtom (model : FlatModel) where
   | indexed (source : CheckedNumericSemanticIndexSource model)
+  | indexedString (source : CheckedIndexedStringNumericSource model)
   | temporalPart (source : CheckedTemporalNumericExpression model)
   | numeric
       (source : ResolvedNumericAtom FlatFieldDecl
@@ -94,6 +97,7 @@ structure NumericComputationEvaluationContext where
 
 inductive NumericComputationElabError where
   | semanticIndex (error : SemanticIndexElabError)
+  | indexedString (error : IndexedStringNumericElabError)
   | temporalExpression (error : TemporalNumericExpressionError)
   /-- An operand's reference, or the declaring group's syntax. -/
   | resolve (error : ResolveError)
@@ -175,6 +179,7 @@ refusals at the node it inspects, so its result stays unmapped with the other co
 def targetDiagnostic? :
     NumericComputationElabError → Option KernelStaticDiagnostic
   | .semanticIndex error => error.diagnostic?
+  | .indexedString error => error.diagnostic?
   | .operationScaleMismatch _ _ => some .invalidCompareDecimalPlaces
   | .copyComparison _ _ refusal => some refusal.diagnostic
   | .operationNode diagnostic => diagnostic

@@ -44,6 +44,7 @@ private def FlatModel.admitsTemporalComputationOperand
 def FlatModel.admitsNumericComputationOperand
     (model : FlatModel) (scope : List RepeatableLevel) : CheckedNumericComputationAtom model → Bool
   | .indexed _ => true
+  | .indexedString source => model.directFieldsBoundBy scope source.boundFieldIds
   | .temporalPart source => model.directFieldsBoundBy scope source.source.boundFieldIds
   | .filledFieldCount source =>
       !source.operands.isEmpty && source.rowBoundBool scope &&
@@ -155,6 +156,7 @@ def CheckedNumericComputationAtom.numericScaleSummary
       source.summaryWith FlatFieldDecl.numericScaleSummary
         CheckedNumberEntitySource.aggregateScaleSummary
   | .indexed source => NumericScaleSummary.field source.field.info.scale
+  | .indexedString source => NumericScaleSummary.field source.projection.scale
   | .firstFilled source => source.scaleSummary
   | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _
   | .valueCount _ _ | .filledFieldCount _ => NumericScaleSummary.field 0
@@ -200,6 +202,7 @@ def CheckedNumericComputationAtom.references
     (model : FlatModel) (field : FieldId) :
     CheckedNumericComputationAtom model → Bool
   | .indexed source => source.toCheckedSemanticIndexSource.referencesField field
+  | .indexedString source => source.referencesField field
   | .filledFieldCount source => source.referencesField field
   | .firstFilled source => source.referencesField field
   | .valueCount _ source => source.referencesField field
@@ -332,6 +335,8 @@ def FlatModel.elaborateNumericComputationAtom
     (model : FlatModel) (declaringGroup targetGroup : GroupPath) :
     SurfaceNumericComputationAtom →
       Except NumericComputationElabError (CheckedNumericComputationAtom model)
+    | .indexedString source operation =>
+        (elaborateIndexedStringNumericSource model declaringGroup source operation).map .indexedString |>.mapError .indexedString
     | .indexed source =>
         (elaborateNumericSemanticIndexSource model declaringGroup source).map .indexed |>.mapError .semanticIndex
     | .temporalPart source part =>

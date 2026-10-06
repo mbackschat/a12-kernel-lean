@@ -284,7 +284,7 @@ def readTemporalNumericExpression (context : ScalarComputationContext)
 def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
     CheckedNumericComputationAtom model →
       Except NumericComputationFault NumericComputationResult
-  | .indexed _ => throw .repeatableContextRequired
+  | .indexed _ | .indexedString _ => throw .repeatableContextRequired
   | .temporalPart source => context.readTemporalNumericExpression source
   | .filledFieldCount source => source.evaluateComputationCount context
   | .firstFilled source =>
@@ -526,6 +526,11 @@ def readCheckedNumericComputationAtom
     (context : NumericComputationEvaluationContext) :
     CheckedNumericComputationAtom model →
       Except NumericComputationFault NumericComputationResult
+  | .indexedString source => do
+      let readColumn := context.indexColumn?.getD context.scalar.semanticIndexColumnReader
+      let observation ← source.selection.observeColumnWith .computation readColumn context.outer
+        context.scalar.read context.scalar.storedText |>.mapError .indexSelection
+      (source.computationResult observation).mapError .fieldKindMismatch
   | .indexed source => do
       let some readColumn := context.indexColumn? | throw .repeatableContextRequired
       let observation ← source.toCheckedSemanticIndexSource.observeColumnWith .computation readColumn context.outer
@@ -669,7 +674,7 @@ def CheckedNumericComputationAtom.numericComputationFault? :
         match CheckedFieldFillList.computationSources { operands := [operand] } with
         | .ok _ => none
         | .error error => some (.fieldFillSource error)
-  | .indexed _ | .temporalPart _ | .firstFilled _ => none
+  | .indexed _ | .indexedString _ | .temporalPart _ | .firstFilled _ => none
   | .valueCount _ _ => none
   | .tokenDistinctCount _ | .temporalDistinctCount _ => none
   | .tokenValueCount _ => none

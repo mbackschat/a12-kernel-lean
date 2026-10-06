@@ -325,7 +325,7 @@ def CheckedFieldFillList.referencePointers (source : CheckedFieldFillList model)
 def OrderedNumericValidationAtom.referencePointers (environment : Env) :
     OrderedNumericValidationAtom model →
       Except ReferenceProjectionError (List MessagePointer)
-  | .indexed _ => throw .unclassifiedOperand
+  | .indexed _ | .indexedString _ => throw .unclassifiedOperand
   | .temporalPart source =>
       sievedFieldPointers model (fun declaration => source.source.referencesField declaration.id) environment
   | .ordinary (.filledGroupCount groups) =>

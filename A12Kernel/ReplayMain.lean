@@ -28,6 +28,7 @@ import A12Kernel.Reference.Dm.KeyedExtentLocks
 import A12Kernel.Reference.Dm.IndexedGroupLocks
 import A12Kernel.Reference.Dm.IndexedTemporalLocks
 import A12Kernel.Reference.Dm.IndexedTokenLocks
+import A12Kernel.Reference.Dm.IndexedStringNumericLocks
 import A12Kernel.Reference.Dm.FieldFillGuardLocks
 import A12Kernel.Reference.Dm.TemporalExpressionLocks
 import A12Kernel.Reference.Dm.TemporalRowsetLocks

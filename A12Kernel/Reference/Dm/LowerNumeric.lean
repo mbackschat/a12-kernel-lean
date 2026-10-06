@@ -94,6 +94,17 @@ def lowerValidationNumericAtom : Expr → Lowering SurfaceNumericAtom :=
 entity lists. -/
 def lowerComputationNumericAtom (model : FlatModel) (group : GroupPath) :
     Expr → Lowering SurfaceNumericComputationAtom
+  | .call "Length" [.mk (.entity { path, index := some key, category := none }) none none] none none =>
+      (fun source => .indexedString source .length) <$> lowerIndexedSource model group path key
+  | .call "RangeAsNumber" [.mk (.entity { path, index := some key, category := none }) none none,
+      .mk (.number start) none none, .mk (.number finish) none none] none none => do
+      let source ← lowerIndexedSource model group path key
+      let some start := start.toNat? | refuse "RangeAsNumber" "start"
+      let some finish := finish.toNat? | refuse "RangeAsNumber" "finish"
+      pure (.indexedString source (.range start finish))
+  | .call "FieldValueAsNumber" [.mk (.entity { path, index := some key, category }) none none] none none =>
+      (fun source => .indexedString source (.asNumber (category.map EnumerationProjectionRef.category |>.getD .stored))) <$>
+        lowerIndexedSource model group path key
   | .value { path, index := some key, category := none } =>
       (.indexed ·) <$> lowerIndexedSource model group path key
   | .call "NumberOfFilledFields" arguments none none =>

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericValidation.Core
+import A12Kernel.Elaboration.IndexedStringNumeric
 import A12Kernel.Elaboration.TemporalNumericExpression
 import A12Kernel.Elaboration.FieldFillList
 import A12Kernel.Elaboration.TokenDistinctCount
@@ -14,6 +15,7 @@ namespace A12Kernel
 /-- A numeric leaf either delegates one established scalar atom unchanged or retains a model-certified first-filled, aggregate, or row-product source for full addressed validation. -/
 inductive OrderedNumericValidationAtom (model : FlatModel) where
   | indexed (source : CheckedNumericSemanticIndexSource model)
+  | indexedString (source : CheckedIndexedStringNumericSource model)
   | temporalPart (source : CheckedTemporalNumericExpression model)
   | ordinary (source : NumericValidationAtom)
   | firstFilled (source : CheckedNumberEntitySource model)
@@ -99,6 +101,7 @@ private def checkedTokenValueCountAdmittedIn
 
 def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .indexed source => NumericScaleSummary.field source.field.info.scale
+  | .indexedString source => NumericScaleSummary.field source.projection.scale
   | .temporalPart _ => NumericScaleSummary.field 0
   | .ordinary source => numericValidationSummary source
   | .firstFilled source => source.scaleSummary
@@ -114,7 +117,7 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
 /-- Structural coordinates and group counts retain their binding requirements independently of
     field dependencies. Field-backed atoms require addressing when a checked declaration repeats. -/
 def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
-  | .indexed _ => true
+  | .indexed _ | .indexedString _ => true
   | .temporalPart source => source.source.fieldIds.any fun field =>
       (model.lookupUniqueId field).toOption.any (fun declaration => !declaration.repeatableScope.isEmpty)
   | .ordinary (.boundCurrentRepetition _) => true
@@ -138,6 +141,10 @@ def admitted (atom : OrderedNumericValidationAtom model)
     (scope : NumericOperandScope) : Bool :=
   match atom with
   | .indexed _ => scope == .sameGroupAddressed || scope == .modelWideCheckedComputation
+  | .indexedString source =>
+      scope == .modelWideCheckedComputation ||
+        (scope == .sameGroupAddressed && source.boundFieldIds.all fun field =>
+          (model.fieldRepeatableScope field).isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
   | .temporalPart source => source.source.boundFieldIds.all fun field =>
       (model.lookupUniqueId field).toOption.any fun declaration => match scope with
         | .sameGroup => declaration.groupPath == rowGroup && declaration.repeatableScope.isEmpty
@@ -185,6 +192,7 @@ def referencesField (atom : OrderedNumericValidationAtom model)
     (field : FieldId) : Bool :=
   match atom with
   | .indexed source => source.toCheckedSemanticIndexSource.referencesField field
+  | .indexedString source => source.referencesField field
   | .temporalPart source => source.source.referencesField field
   | .ordinary source => source.referencesField model field
   | .firstFilled source => source.referencesField field
@@ -216,7 +224,7 @@ def referencesErrorField (atom : OrderedNumericValidationAtom model)
   | .temporalDistinctCount run =>
       run.source.referencesField field CorrelatedHaving.referencesMarkedField
   | .filledFieldCount source => source.referencesField field CorrelatedHaving.referencesMarkedField
-  | .indexed _ | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
+  | .indexed _ | .indexedString _ | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
       atom.referencesField field
 
 /-- Whether this exact checked atom retains any filtered entity-list slot. This is static source structure, not a statement about which runtime branch or candidate will be reached. -/
@@ -228,7 +236,7 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
   | .tokenDistinctCount source => source.hasHaving
   | .temporalDistinctCount run => run.source.hasHaving
   | .filledFieldCount source => source.hasHaving
-  | .indexed _ | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
+  | .indexed _ | .indexedString _ | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
 
 end OrderedNumericValidationAtom
 
@@ -279,7 +287,7 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
   | .ordinary (.filledGroupCount _) => false
   | .ordinary _ | .aggregate _ _ | .filledGroupCountMixed _ | .firstFilled _ => true
   | .filledFieldCount source => source.supportsPartialCount
-  | .indexed _ | .valueCount _ _ | .tokenValueCount _ | .tokenDistinctCount _ | .temporalDistinctCount _ => true
+  | .indexed _ | .indexedString _ | .valueCount _ _ | .tokenValueCount _ | .tokenDistinctCount _ | .temporalDistinctCount _ => true
   | .booleanValueCount _ | .sumOfProducts _
   | .temporalPart _ => false
 
