@@ -54,12 +54,13 @@ def referencesField (condition : CheckedComputationCondition model) (field : Fie
 
 def forbidsTarget (condition : CheckedComputationCondition model) (field : FieldId) : Bool :=
   ComputationConditionOf.forbidsTargetWith condition
-    (fun atom field => atom.references model field) (·.referencesField) field
+    (fun atom field => atom.references model field) (·.forbidsTarget) field
 
 def requiresProducer (condition : CheckedComputationCondition model) (consumer producer : FieldId)
     (producerProtected : ResolvedGroupReference → Bool) : Bool :=
   ComputationConditionOf.requiresProducerWith condition
-    (fun atom field => atom.references model field) (·.referencesField) consumer producer producerProtected
+    (fun atom field => atom.references model field)
+    (fun predicate field => predicate.requiresProducer consumer field producerProtected) consumer producer producerProtected
 
 def rowBoundBool (condition : CheckedComputationCondition model) (scope : List RepeatableLevel) : Bool :=
   condition.allLeaves fun
@@ -198,7 +199,17 @@ def FlatModel.elaborateCheckedComputationCondition (model : FlatModel)
   | .fieldFill operator source => (.leaf ∘ .predicate) <$>
       ((model.elaborateComputationPredicate declaringGroup targetGroup (.fieldFill operator source)).mapError .predicate)
   | .groupPresence operator source => model.liftPrimitiveComputationGuard declaringGroup targetGroup (.groupPresence operator source)
-  | .groupFill operator source => model.liftPrimitiveComputationGuard declaringGroup targetGroup (.groupFill operator source)
+  | .groupFill operator source =>
+      (model.elaborateComputationGroupListWith declaringGroup targetGroup operator source (fun operand => do
+        let pair (positive negative : CheckedComputationPredicate model) :
+            CheckedComputationCondition model × CheckedComputationCondition model :=
+          (.leaf (.predicate positive), .leaf (.predicate negative))
+        match operand with
+        | .indexed source => pure (pair (.indexedFieldPresence .filled source) (.indexedFieldPresence .notFilled source))
+        | .keyed source =>
+            if !source.isGroup then throw .unsupportedOperand
+            pure (pair (.keyedGroupPresence .filled source .ordinaryList) (.keyedGroupPresence .notFilled source .ordinaryList))
+        | _ => throw .unsupportedOperand)).mapError (.primitive ∘ .groupFill)
   | .and left right => do
       let left ← model.elaborateCheckedComputationCondition declaringGroup targetGroup left
       pure (.and left (← model.elaborateCheckedComputationCondition declaringGroup targetGroup right))

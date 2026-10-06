@@ -5,6 +5,8 @@ import A12Kernel.Elaboration.ValidationCondition.Iteration
 namespace A12Kernel
 
 inductive ValidationConditionAssemblyError where
+  | semanticIndex (error : SemanticIndexElabError)
+  | keyedGroup (error : KeyedEntityExtentError)
   | invalidModel (error : ResolveError)
   | groupReference (error : FixedGroupReferenceError)
   | fieldReference (error : ResolveError)
@@ -48,6 +50,8 @@ namespace ValidationConditionAssemblyError
     The exact-duplicate and ancestor-overlap classes are **two** Kernel classes, and one local error covers both, retaining both paths so the split is read off the data. Root-family classes are distinct and are reached only after strict overlap has had the chance to pre-empt them. -/
 def groupListDiagnostic? :
     ValidationConditionAssemblyError → Option KernelStaticDiagnostic
+  | .semanticIndex error => error.diagnostic?
+  | .keyedGroup error => (FieldEntityShapeElabError.keyed error).diagnostic?
   | .groupListNeedsMultipleOperands => some .paramSizeInvalid2
   | .overlappingGroupListOperands left right =>
       some (if left == right then .duplicateParam1 else .duplicateParam2)
@@ -451,6 +455,11 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup writtenGroup :
     SurfaceGroupListOperand →
       Except ValidationConditionAssemblyError
         (ResolvedGroupListOperand model)
+  | .indexed source => (.indexed ·) <$> (elaborateSemanticIndexSource model rowGroup source).mapError .semanticIndex
+  | .keyed source => do
+      let checked ← (elaborateKeyedEntityExtent model rowGroup source).mapError .keyedGroup
+      if !checked.isGroup then throw .incoherentCore
+      pure (.keyed checked)
   | .field reference => do
       let declaration ←
         (model.resolveNonrepeatableFieldUnchecked rowGroup reference writtenGroup).mapError
@@ -488,6 +497,14 @@ private def resolveGroupListOperands (model : FlatModel) (rowGroup writtenGroup 
 /-- Fixed singletons have an existing checked scalar owner. Keeping them out of the list leaf prevents a second representation of field or group presence. -/
 private def singletonGroupListCondition? (operator : GroupFillQuantifier) :
     ResolvedGroupListOperand model → Option (ValidationCondition model)
+  | .indexed source => match operator with
+      | .atLeastOneGroupFilled => some (.leaf (.indexedFieldPresence .filled source))
+      | .noGroupFilled => some (.leaf (.indexedFieldPresence .notFilled source))
+      | _ => none
+  | .keyed source => match operator with
+      | .atLeastOneGroupFilled => some (.leaf (.keyedGroupPresence .filled source))
+      | .noGroupFilled => some (.leaf (.keyedGroupPresence .notFilled source))
+      | _ => none
   | .field declaration =>
       match operator with
       | .atLeastOneGroupFilled =>

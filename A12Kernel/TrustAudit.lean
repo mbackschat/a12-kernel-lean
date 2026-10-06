@@ -609,6 +609,8 @@ run_cmd do
 #print axioms A12Kernel.ComputationGroupDependency.alternativesProtect_perm
 #print axioms A12Kernel.computationCondition_requires_own
 #print axioms A12Kernel.computationConditionOf_requires_own
+#print axioms A12Kernel.checkedComputationPredicate_requires_own
+#print axioms A12Kernel.checkedComputationCondition_requires_own
 #print axioms A12Kernel.ValueListCell.anyComputation_deciding_prefix
 #print axioms A12Kernel.ValueListCell.duplicateComputationStep_decides_iff
 #print axioms A12Kernel.ValueListCell.anyComputation_poison_prefix

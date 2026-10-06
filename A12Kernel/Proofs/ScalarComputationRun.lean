@@ -272,7 +272,7 @@ private theorem scalarComputationDependencies_perm
   unfold scalarComputationDependencies
   apply congrArg CheckedScalarComputationStep.requiresProducer
   funext producer reference
-  exact computationProducerProtection_perm model _ _ permuted producer reference
+  exact computationProducerProtection_perm model _ _ permuted producer reference CheckedComputationPredicate.groupReference?
 
 /-- A plan refused as a cycle has read-closed steps: the refusal never falls on an acyclic plan. -/
 theorem certifyScalarComputationPlan_cycle_readClosed

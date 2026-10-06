@@ -77,8 +77,8 @@ def requiresProducer (producerProtected : FieldId → ResolvedGroupReference →
 
 end CheckedScalarComputationStep
 
-def scalarComputationProducerProtection (steps : List (CheckedScalarComputationStep model)) :=
-  computationProducerProtection model CheckedScalarComputationStep.targetField CheckedScalarComputationStep.protectionConditions steps
+def scalarComputationProducerProtection (steps : List (CheckedScalarComputationStep model)) : FieldId → ResolvedGroupReference → Bool :=
+  fun producer reference => computationProducerProtection model CheckedScalarComputationStep.targetField CheckedScalarComputationStep.protectionConditions steps producer reference CheckedComputationPredicate.groupReference?
 
 def scalarComputationDependencies (steps : List (CheckedScalarComputationStep model)) :
     CheckedScalarComputationStep model → FieldId → Bool :=

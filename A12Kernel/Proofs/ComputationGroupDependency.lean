@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.ComputationGroupDependency
 import A12Kernel.Elaboration.ComputationGroupDependency
+import A12Kernel.Elaboration.ComputationNumericGuard
 
 /-! # Syntactic group-protection laws
 
@@ -113,9 +114,10 @@ theorem computationConditionOf_requires_own (condition : ComputationConditionOf 
 /-- Reordering computations cannot change a producer's syntactic group profile. -/
 theorem computationProducerProtection_perm (model : FlatModel) (targetOf : Step → FieldId)
     (conditionsOf : Step → List (Option (ComputationConditionOf Atom Predicate))) {left right : List Step}
-    (permuted : left.Perm right) (producer : FieldId) (reference : ResolvedGroupReference) :
-    computationProducerProtection model targetOf conditionsOf left producer reference =
-      computationProducerProtection model targetOf conditionsOf right producer reference := by
+    (permuted : left.Perm right) (producer : FieldId) (reference : ResolvedGroupReference)
+    (predicateReference : Predicate → Option (GroupPresenceOperator × ResolvedGroupReference) := fun _ => none) :
+    computationProducerProtection model targetOf conditionsOf left producer reference predicateReference =
+      computationProducerProtection model targetOf conditionsOf right producer reference predicateReference := by
   unfold computationProducerProtection FlatModel.computationProtectsGroup
   have conditionsPerm := (permuted.filter (fun step => targetOf step == producer)).flatMap_right conditionsOf
   cases resolution : model.lookupUniqueId producer with
@@ -123,5 +125,28 @@ theorem computationProducerProtection_perm (model : FlatModel) (targetOf : Step 
   | ok declaration =>
       simp only
       rw [ComputationGroupDependency.alternativesProtect_perm _ conditionsPerm _]
+
+theorem checkedComputationPredicate_requires_own (predicate : CheckedComputationPredicate model)
+    (target : FieldId) (protectedGroup : ResolvedGroupReference → Bool) :
+    predicate.requiresProducer target target protectedGroup = predicate.forbidsTarget target := by
+  cases predicate <;>
+    simp only [CheckedComputationPredicate.requiresProducer, CheckedComputationPredicate.forbidsTarget,
+      computationCondition_requires_own]
+
+theorem checkedComputationCondition_requires_own (condition : CheckedComputationCondition model)
+    (target : FieldId) (protectedGroup : ResolvedGroupReference → Bool) :
+    condition.requiresProducer target target protectedGroup = condition.forbidsTarget target := by
+  induction condition with
+  | leaf leaf =>
+      cases leaf with
+      | predicate predicate => exact checkedComputationPredicate_requires_own predicate target protectedGroup
+      | groupPresence operator source =>
+          exact computationConditionOf_requires_own (.leaf (.groupPresence operator source))
+            (fun (atom : CheckedNumericComputationAtom model) field => atom.references model field)
+            (CheckedComputationPredicate.forbidsTarget (model := model)) target protectedGroup
+      | _ => rfl
+  | and left right ihLeft ihRight | or left right ihLeft ihRight =>
+      simp only [CheckedComputationCondition.requiresProducer, CheckedComputationCondition.forbidsTarget] at ihLeft ihRight ⊢
+      simp only [ComputationConditionOf.requiresProducerWith, ComputationConditionOf.forbidsTargetWith, ihLeft, ihRight]
 
 end A12Kernel

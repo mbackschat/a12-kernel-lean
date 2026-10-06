@@ -104,9 +104,9 @@ def flattenStringComputationTables
   flattenStringComputationTablesFrom [] tables
 
 /-- Specialize the shared supplied-order dependency check to checked String tables. -/
-def stringComputationProducerProtection (tables : List (CheckedStringComputationTable model)) :=
-  computationProducerProtection model CheckedStringComputationTable.targetField
-    CheckedStringComputationTable.protectionConditions tables
+def stringComputationProducerProtection (tables : List (CheckedStringComputationTable model)) : FieldId → ResolvedGroupReference → Bool :=
+  fun producer reference => computationProducerProtection model CheckedStringComputationTable.targetField
+    CheckedStringComputationTable.protectionConditions tables producer reference CheckedComputationPredicate.groupReference?
 
 def firstForwardStringDependency?
     (tables : List (CheckedStringComputationTable model)) :

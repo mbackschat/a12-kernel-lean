@@ -333,7 +333,7 @@ private def ValidationConditionLeaf.iterationGuardAt
         | .notFilled => .unguarded
       else
         .noReference
-  | .indexedFieldPresence _ _ => .noReference
+  | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ => .noReference
   | .repeatableFieldPresence operator declaration =>
       if declaration.repeatableScope.contains level then
         match operator with
@@ -432,7 +432,7 @@ def supportsOrdinaryIteration
     (condition : ValidationCondition model) : Bool :=
   condition.allLeaves fun
     | .flat _ | .groupPresence _ _ | .groupList _ _
-    | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _
+    | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _
     | .guardedRootCurrentRepetition _ _ _ => true
     | .guardedRepeatableCurrentRepetition _ _ _ => true
     | .iteratedDateRange _ => true

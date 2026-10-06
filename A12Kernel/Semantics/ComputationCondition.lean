@@ -209,12 +209,12 @@ abbrev or (left right : ComputationCondition) : ComputationCondition :=
 The source expansion uses the same structure (`ExpandService.expandAndCreate`); retaining the
 leaves preserves runtime content reads; each leaf separately retains whether its authored
 shape permits conditional dependencies, since target checking precedes this expansion. -/
-def ofGroupList (operator : GroupFillQuantifier)
-    (first : ComputationCondition × ComputationCondition)
-    (rest : List (ComputationCondition × ComputationCondition)) : ComputationCondition :=
-  let positives (join : ComputationCondition → ComputationCondition → ComputationCondition) :=
+def ofGroupListWith (operator : GroupFillQuantifier)
+    (first : ComputationConditionOf Atom Predicate × ComputationConditionOf Atom Predicate)
+    (rest : List (ComputationConditionOf Atom Predicate × ComputationConditionOf Atom Predicate)) : ComputationConditionOf Atom Predicate :=
+  let positives (join : ComputationConditionOf Atom Predicate → ComputationConditionOf Atom Predicate → ComputationConditionOf Atom Predicate) :=
     rest.foldl (fun accumulated next => join accumulated next.1) first.1
-  let negatives (join : ComputationCondition → ComputationCondition → ComputationCondition) :=
+  let negatives (join : ComputationConditionOf Atom Predicate → ComputationConditionOf Atom Predicate → ComputationConditionOf Atom Predicate) :=
     rest.foldl (fun accumulated next => join accumulated next.2) first.2
   match operator with
   | .allGroupsFilled => positives .and
@@ -222,6 +222,11 @@ def ofGroupList (operator : GroupFillQuantifier)
   | .atLeastOneGroupFilled => positives .or
   | .notAllGroupsFilled => negatives .or
   | .groupsNotCollectivelyFilled => .and (positives .or) (negatives .or)
+
+def ofGroupList (operator : GroupFillQuantifier)
+    (first : ComputationCondition × ComputationCondition)
+    (rest : List (ComputationCondition × ComputationCondition)) : ComputationCondition :=
+  ofGroupListWith operator first rest
 
 /-- Complete operand membership, including a target contained by its positive group guard.
 Static target bans and conditional scheduling use separate queries. -/

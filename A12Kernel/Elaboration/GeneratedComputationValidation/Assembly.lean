@@ -584,6 +584,11 @@ private def generatedGuardCondition (model : FlatModel) (world? : Option World) 
         operand, operation
         validity := { name, validator? := world.resolveCustomFieldValidator? name } }))
   | .leaf (.predicate (.temporal source)) => pure (.leaf (.scalarTemporal source))
+  | .leaf (.predicate (.keyedGroupPresence operator source _)) =>
+      if source.isStarredGroup then
+        pure (ValidationCondition.groupList
+          (match operator with | .filled => .atLeastOneGroupFilled | .notFilled => .noGroupFilled) [.keyed source])
+      else pure (.leaf (.keyedGroupPresence operator source))
   | .leaf (.predicate (.indexedFieldPresence operator source)) =>
       pure (.leaf (.indexedFieldPresence operator source))
   | .leaf (.predicate (.fieldFill operator source)) => pure (.leaf (.fieldFill operator source.source))

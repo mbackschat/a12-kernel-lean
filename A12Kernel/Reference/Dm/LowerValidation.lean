@@ -44,6 +44,11 @@ private def plain : Argument → Option Expr
 segment carries the star. -/
 private def groupListOperand? (model : FlatModel) (rowGroup : GroupPath) :
     Expr → Option SurfaceGroupListOperand
+  | expression@(.entity { index := some _, .. }) => do
+      match ← (lowerEntityOperand model rowGroup (.mk expression none none)).toOption with
+      | .indexed source => some (.indexed source)
+      | .keyed source => some (.keyed source)
+      | _ => none
   | .entity { path, index := none, category := none } =>
       if path.correlated then none
       else if path.segments.any (·.star) then
@@ -345,6 +350,14 @@ private def lowerIndexedPresence (model : FlatModel) (rowGroup bindingGroup : Gr
   elaborated "SemanticIndex" (CheckedValidationCondition.checkCore model bindingGroup
     (.leaf (.indexedFieldPresence operator checked)) checked.modelWellFormed rowGroup)
 
+private def lowerKeyedGroupPresence (model : FlatModel) (rowGroup bindingGroup : GroupPath)
+    (operator : GroupPresenceOperator) (argument : Argument) : Lowering (CheckedValidationCondition model) := do
+  let .keyed source ← lowerEntityOperand model rowGroup argument | refuse "SemanticIndex" "group operand"
+  let checked ← elaborated "SemanticIndex" (elaborateKeyedEntityExtent model rowGroup source)
+  if !checked.isGroup || checked.isStarredGroup then refuse "SemanticIndex" "unstarred group operand"
+  elaborated "SemanticIndex" (CheckedValidationCondition.checkCore model bindingGroup
+    (.leaf (.keyedGroupPresence operator checked)) checked.selection.indexSource.modelWellFormed rowGroup)
+
 /-- Lower a rule condition at its rule group. `suppress` is the `@SuppressWarning` preamble. -/
 partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress : Bool) (condition : Expr)
     (world : World := { now := { epochMillis := 0 } })
@@ -362,6 +375,10 @@ partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress 
       lowerIndexedPresence model rowGroup bindingGroup .filled path key
   | none, .call "FieldNotFilled" [.mk (.entity { path, index := some key, category := none }) none none] none none =>
       lowerIndexedPresence model rowGroup bindingGroup .notFilled path key
+  | none, .call "GroupFilled" [argument@(.mk (.entity { index := some _, .. }) none none)] none none =>
+      lowerKeyedGroupPresence model rowGroup bindingGroup .filled argument
+  | none, .call "GroupNotFilled" [argument@(.mk (.entity { index := some _, .. }) none none)] none none =>
+      lowerKeyedGroupPresence model rowGroup bindingGroup .notFilled argument
   | none, .custom name quoted => do
       let spelling := if quoted then CustomConditionNameSpelling.quoted name else .unquoted name
       let some checkedName := checkCustomConditionName (fun _ => false) spelling

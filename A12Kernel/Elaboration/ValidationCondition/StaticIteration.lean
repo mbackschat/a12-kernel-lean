@@ -316,7 +316,7 @@ def orderedNumericComparisonIterationScope
 def ordinaryIterationScope :
     ValidationCondition model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
-  | .leaf (.indexedFieldPresence _ _) => pure none
+  | .leaf (.keyedGroupPresence _ _) | .leaf (.indexedFieldPresence _ _) => pure none
   | .leaf (.repeatableFieldPresence _ declaration) =>
       pure (some declaration.repeatableScope)
   | .leaf (.constructedDateValidity _ source) =>

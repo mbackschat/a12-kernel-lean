@@ -18,7 +18,7 @@ theorem checkedStringComputationTable_excludes_target
   have requiresOwn (guard : CheckedComputationCondition model) :
       guard.requiresProducer table.targetField table.targetField (producerProtected table.targetField) =
         guard.forbidsTarget table.targetField :=
-    computationConditionOf_requires_own guard _ _ _ _
+    checkedComputationCondition_requires_own guard _ _
   simp only [CheckedStringComputationTable.requiresProducer, requiresOwn,
     List.any_eq_false]
   intro alternative member

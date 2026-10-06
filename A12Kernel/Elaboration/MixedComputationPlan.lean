@@ -70,8 +70,8 @@ def requiresProducer (producerProtected : FieldId → ResolvedGroupReference →
 
 end MixedComputationStep
 
-def mixedComputationProducerProtection (steps : List (MixedComputationStep model compilePattern)) :=
-  computationProducerProtection model MixedComputationStep.targetField MixedComputationStep.protectionConditions steps
+def mixedComputationProducerProtection (steps : List (MixedComputationStep model compilePattern)) : FieldId → ResolvedGroupReference → Bool :=
+  fun producer reference => computationProducerProtection model MixedComputationStep.targetField MixedComputationStep.protectionConditions steps producer reference CheckedComputationPredicate.groupReference?
 
 def mixedComputationDependencies (steps : List (MixedComputationStep model compilePattern)) :
     MixedComputationStep model compilePattern → FieldId → Bool :=

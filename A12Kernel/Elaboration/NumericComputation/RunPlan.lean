@@ -96,9 +96,9 @@ def firstNonScalarNumericTable? :
         some table.targetField
 
 /-- Specialize the shared supplied-order dependency check to checked Number tables. -/
-def numericComputationProducerProtection (tables : List (CheckedNumericComputationTable model)) :=
-  computationProducerProtection model CheckedNumericComputationTable.targetField
-    CheckedNumericComputationTable.protectionConditions tables
+def numericComputationProducerProtection (tables : List (CheckedNumericComputationTable model)) : FieldId → ResolvedGroupReference → Bool :=
+  fun producer reference => computationProducerProtection model CheckedNumericComputationTable.targetField
+    CheckedNumericComputationTable.protectionConditions tables producer reference CheckedComputationPredicate.groupReference?
 
 def firstForwardNumericDependency?
     (tables : List (CheckedNumericComputationTable model)) :

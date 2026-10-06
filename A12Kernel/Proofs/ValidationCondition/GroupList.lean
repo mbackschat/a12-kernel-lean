@@ -75,7 +75,7 @@ theorem resolvedGroupListOperand_starredGroupPresence_checked
       } = .error (.checkedDocumentRequired source.groupPath) := by
   rfl
 
-/-- A group-list leaf requires the addressed evaluator exactly when one operand is starred or retains a nonempty repeatable scope already bound by the declaring rule. -/
+/-- A group-list leaf requires the addressed evaluator when an operand selects an index, is starred, or retains a bound repeatable scope. -/
 @[simp]
 theorem validationCondition_groupList_requiresAddressed
     (model : FlatModel) (operator : GroupFillQuantifier)
@@ -83,7 +83,7 @@ theorem validationCondition_groupList_requiresAddressed
     (ValidationCondition.groupList (model := model)
       operator operands).requiresAddressedValidation =
         operands.any fun operand =>
-          operand.isStarred || operand.iterationScope.isSome := by
+          operand.indexIdentity?.isSome || operand.isStarred || operand.iterationScope.isSome := by
   rfl
 
 /-- Addressed group-list evaluation combines each direct classification and starred terminal contribution once, then delegates to the established tally table. -/

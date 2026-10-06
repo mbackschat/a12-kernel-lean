@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.KeyedGroupPresence
 import A12Kernel.Elaboration.CustomCondition
 import A12Kernel.Elaboration.StringExpression
 import A12Kernel.Elaboration.NumericValidation
@@ -27,6 +28,8 @@ namespace A12Kernel
 
 /-- One authored operand of the kernel's group-list condition family. Despite the language-level name, the checked entity list admits fields, ordinary groups, and — for two operators — groups below starred repeatable ancestry. -/
 inductive SurfaceGroupListOperand where
+  | indexed (source : SurfaceSemanticIndex)
+  | keyed (source : SurfaceKeyedEntityExtent)
   | field (reference : SurfaceFieldPath)
   | group (reference : SurfaceGroupReference)
   | starredGroup (reference : SurfaceStarGroupPath)
@@ -34,6 +37,8 @@ inductive SurfaceGroupListOperand where
 
 /-- A group-list operand after model-owned resolution. Every variant retains its exact declaration or checked source, so overlap, topology, and checked-core coherence cannot be forged from paths alone. -/
 inductive ResolvedGroupListOperand (model : FlatModel) where
+  | indexed (source : CheckedSemanticIndexSource model)
+  | keyed (source : CheckedKeyedEntityExtent model)
   | field (declaration : FlatFieldDecl)
   | group (reference : ResolvedGroupReference)
   | starredGroup (source : CheckedStarredGroupSource model)
@@ -42,24 +47,31 @@ inductive ResolvedGroupListOperand (model : FlatModel) where
 namespace ResolvedGroupListOperand
 
 def entityPath : ResolvedGroupListOperand model → List String
+  | .indexed source => source.targetDeclaration.path
+  | .keyed source => source.entityPath
   | .field declaration => declaration.path
   | .group reference => reference.path
   | .starredGroup source => source.group.path
   | .starredGroupPresence source => source.groupPath
 
 def isRootGroup : ResolvedGroupListOperand model → Bool
+  | .indexed _ | .keyed _ => false
   | .field _ => false
   | .group reference => reference.isRoot
   | .starredGroup source => source.group.path.length == 1
   | .starredGroupPresence source => source.groupPath.length == 1
 
 def isStarred : ResolvedGroupListOperand model → Bool
+  | .indexed _ => false
+  | .keyed source => source.isStarredGroup
   | .starredGroup _ | .starredGroupPresence _ => true
   | .field _ | .group _ => false
 
 def referencesField (operand : ResolvedGroupListOperand model)
     (field : FieldId) : Bool :=
   match operand with
+  | .indexed source => source.referencesField field
+  | .keyed source => source.referencesField field
   | .field declaration => declaration.id == field
   | .group reference => reference.referencesField model field
   | .starredGroup source =>
@@ -74,6 +86,8 @@ def referencesField (operand : ResolvedGroupListOperand model)
 def wellFormedBool (operand : ResolvedGroupListOperand model)
     (rowGroup : GroupPath) : Bool :=
   match operand with
+  | .indexed _ => true
+  | .keyed source => source.isGroup
   | .field declaration =>
       match model.lookupUniqueId declaration.id with
       | .ok checked =>
@@ -86,6 +100,7 @@ def wellFormedBool (operand : ResolvedGroupListOperand model)
 
 private def overlapsStarred (path : GroupPath) :
     ResolvedGroupListOperand model → Bool
+  | .indexed _ | .keyed _ => false
   | .field declaration => path.isPrefixOf declaration.groupPath
   | .group reference =>
       reference.path.isPrefixOf path || path.isPrefixOf reference.path
@@ -98,11 +113,21 @@ private def overlapsStarred (path : GroupPath) :
         (path.isPrefixOf source.groupPath ||
           source.groupPath.isPrefixOf path)
 
+def indexIdentity? : ResolvedGroupListOperand model → Option (GroupPath × CheckedSemanticIndexKey)
+  | .indexed source => some (source.group.path, source.key)
+  | .keyed source => some (source.selection.group.path, source.selection.key)
+  | _ => none
+
 /-- Kernel entity-list duplicate checking rejects direct non-wildcard duplicates and every strict group/descendant pair. Repeated starred operands and unrelated siblings remain independent authored occurrences. -/
 def overlaps (left right : ResolvedGroupListOperand model) : Bool :=
+  if left.indexIdentity? != right.indexIdentity? then false else
   match left with
+  | .indexed _ | .keyed _ =>
+      if left.isStarred && right.isStarred && left.entityPath == right.entityPath then false
+      else left.entityPath.isPrefixOf right.entityPath || right.entityPath.isPrefixOf left.entityPath
   | .field leftDeclaration =>
       match right with
+      | .indexed _ | .keyed _ => false
       | .field rightDeclaration =>
           leftDeclaration.id == rightDeclaration.id
       | .group reference =>
@@ -113,6 +138,7 @@ def overlaps (left right : ResolvedGroupListOperand model) : Bool :=
           source.groupPath.isPrefixOf leftDeclaration.groupPath
   | .group leftReference =>
       match right with
+      | .indexed _ | .keyed _ => false
       | .field declaration =>
           leftReference.path.isPrefixOf declaration.groupPath
       | .group rightReference => leftReference.overlaps rightReference
@@ -138,7 +164,7 @@ def iterationScope :
   | .starredGroupPresence source =>
       let scope := source.path.bindingScope
       if scope.isEmpty then none else some scope
-  | .field _ => none
+  | .indexed _ | .keyed _ | .field _ => none
 
 end ResolvedGroupListOperand
 
@@ -216,6 +242,7 @@ end ConditionTree
 
 /-- The validation leaf families admitted by this checked condition boundary, indexed by the one model that owns every retained source certificate. -/
 inductive ValidationConditionLeaf (model : FlatModel) where
+  | keyedGroupPresence (operator : GroupPresenceOperator) (source : CheckedKeyedEntityExtent model)
   | indexedFieldPresence (operator : RepeatableFieldPresenceOperator) (source : CheckedSemanticIndexSource model)
   | customCondition (name : CheckedCustomConditionName)
   | flat (condition : FlatConditionLeaf)
@@ -301,6 +328,7 @@ def ValidationConditionLeaf.requiresClassificationPass : ValidationConditionLeaf
   | .groupPresence operator reference => !reference.isRoot || operator == .notFilled
   | .groupList operator operands =>
       !operands.any (·.isRootGroup) || operator == .noGroupFilled
+  | .keyedGroupPresence _ _ => true
   | .indexedFieldPresence operator _ | .repeatableFieldPresence operator _ => operator == .notFilled
   | .repetitionNotUnique _ => true
   | .guardedRootCurrentRepetition _ _ _ | .guardedRepeatableCurrentRepetition _ _ _ => false
@@ -411,12 +439,24 @@ def ResolvedGroupListOperand.evalDirectPresence?
       some (match context.groups reference.path with
         | some state => state.asGroupListPresence
         | none => .unavailable)
-  | .starredGroup _ | .starredGroupPresence _ => none
+  | .indexed _ | .keyed _ | .starredGroup _ | .starredGroupPresence _ => none
 
 def ResolvedGroupListOperand.evalAddressedTally
     (context : AddressedValidationEvaluationContext model) :
     ResolvedGroupListOperand model →
       Except CheckedAddressingError GroupListPresenceTally
+  | .indexed source => do
+      let document ← match context.input with
+        | .checked document => pure document
+        | _ => throw (.checkedDocumentRequired source.group.path)
+      pure (GroupListPresenceTally.ofStates [(← source.observeDocument document context.outer .validation).asGroupListPresence])
+  | .keyed source => do
+      let document ← match context.input with
+        | .checked document => pure document
+        | _ => throw (.checkedDocumentRequired source.groupPath)
+      match ← source.validationGroupStates document context.outer with
+      | none => pure (GroupListPresenceTally.ofStates [.unavailable])
+      | some states => pure (GroupListPresenceTally.ofGroupStates states)
   | .field declaration =>
       pure (GroupListPresenceTally.ofStates [if context.directRelevant
           declaration.id then
@@ -520,6 +560,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .numeric _ _ | .orderedNumeric _ _ => false
   | .groupPresence operator _ => operator.canFireOnEmpty
   | .groupList operator _ => operator.canFireOnEmpty
+  | .keyedGroupPresence operator _ => operator.canFireOnEmpty
   | .indexedFieldPresence operator _ | .repeatableFieldPresence operator _ => operator.canFireOnEmpty
   | .repetitionNotUnique _ => false
   | .guardedRootCurrentRepetition _ _ _ => false
@@ -551,6 +592,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .groupPresence _ reference, field => reference.referencesField model field
   | .groupList _ operands, field =>
       operands.any fun operand => operand.referencesField field
+  | .keyedGroupPresence _ source, field => source.referencesField field
   | .indexedFieldPresence _ source, field => source.referencesField field
   | .repeatableFieldPresence _ declaration, field =>
       declaration.id == field
@@ -579,6 +621,7 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | .orderedNumeric _ comparison, field => comparison.referencesErrorField field
   | .iteratedDateRange condition, field => condition.referencesErrorField field
   | leaf@(.flat _), field | leaf@(.numeric _ _), field | leaf@(.groupPresence _ _), field
+  | leaf@(.keyedGroupPresence _ _), field
   | leaf@(.indexedFieldPresence _ _), field
   | leaf@(.groupList _ _), field | leaf@(.repeatableFieldPresence _ _), field
   | leaf@(.repetitionNotUnique _), field | leaf@(.guardedRootCurrentRepetition _ _ _), field
@@ -602,7 +645,7 @@ def hasHaving : ValidationConditionLeaf model → Bool
   | .orderedNumeric _ comparison => comparison.hasHaving
   | .iteratedDateRange condition => !condition.filters.isEmpty
   | .flat _ | .numeric _ _ | .groupPresence _ _ | .groupList _ _
-  | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ | .repetitionNotUnique _
+  | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ | .repetitionNotUnique _
   | .guardedRootCurrentRepetition _ _ _
   | .guardedRepeatableCurrentRepetition _ _ _
   | .customFieldValidity _ | .stringPattern _ => false
@@ -620,8 +663,8 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
       !(model.repeatableScopeForGroupPath reference.path).isEmpty
   | .groupList _ operands =>
       operands.any fun operand =>
-        operand.isStarred || operand.iterationScope.isSome
-  | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ => true
+        operand.indexIdentity?.isSome || operand.isStarred || operand.iterationScope.isSome
+  | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ => true
   | .repetitionNotUnique _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => true
@@ -658,6 +701,7 @@ def wellFormedBool (rowGroup : GroupPath) :
       reference.presenceWellFormedBool model rowGroup
   | .groupList operator operands =>
       ResolvedGroupListOperands.wellFormedBool operator operands rowGroup
+  | .keyedGroupPresence _ source => source.isGroup && !source.isStarredGroup
   | .indexedFieldPresence _ _ => true
   | .repeatableFieldPresence _ declaration =>
       match model.lookupUniqueId declaration.id with

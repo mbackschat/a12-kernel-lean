@@ -121,7 +121,7 @@ private theorem checkedScalarComputationStep_excludes_target
       have requiresOwn (guard : CheckedComputationCondition model) :
           guard.requiresProducer step.target step.target (producerProtected step.target) =
             guard.forbidsTarget step.target :=
-        computationConditionOf_requires_own guard _ _ _ _
+        checkedComputationCondition_requires_own guard _ _
       simp only [CheckedScalarComputationStep.targetField, CheckedScalarComputationStep.requiresProducer,
         CheckedDocumentComputationStep.requiresProducer, requiresOwn]
       have guardExcludes : step.precondition.any (·.val.forbidsTarget step.target) = false := by

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.KeyedGroupPresence
 import A12Kernel.Elaboration.StringExpression
 import A12Kernel.Elaboration.ValueListCondition
 import A12Kernel.Elaboration.NumericAggregate.Entities
@@ -19,6 +20,7 @@ inductive SurfaceScalarMembershipMembers where
   deriving Repr, DecidableEq
 
 inductive SurfaceComputationPredicate where
+  | keyedGroupPresence (operator : GroupPresenceOperator) (source : SurfaceKeyedEntityExtent)
   | indexedFieldPresence (operator : RepeatableFieldPresenceOperator) (source : SurfaceSemanticIndex)
   | pattern (source : SurfaceStringPatternCondition)
   | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceConstructedDateComponents)
@@ -36,6 +38,7 @@ inductive SurfaceComputationPredicate where
   | scalarOverlap (source : SurfaceAtLeastOneDateRangeOverlapsSource)
 
 inductive ComputationPredicateElabError where
+  | keyedGroup (error : KeyedEntityExtentError)
   | semanticIndex (error : SemanticIndexElabError)
   | pattern (error : ComputationStringPatternElabError)
   | typeOperand (error : CustomFieldValidityOperandElabError)
@@ -71,6 +74,7 @@ inductive ComputationPredicateError where
 /-- Retain typed source certificates and authored filters; computation traversal keeps reached
 errors distinct from validation's unknown verdict. -/
 inductive CheckedComputationPredicate (model : FlatModel) where
+  | keyedGroupPresence (operator : GroupPresenceOperator) (source : CheckedKeyedEntityExtent model) (dependencyKind : ComputationGroupDependencyKind)
   | indexedFieldPresence (operator : RepeatableFieldPresenceOperator) (source : CheckedSemanticIndexSource model)
   | pattern (source : CheckedComputationStringPattern model)
   | dateValidity (operation : ConstructedDateValidityOp) (source : CheckedConstructedDateComponents model)
@@ -99,10 +103,39 @@ def referencesField (predicate : CheckedComputationPredicate model) (field : Fie
   | .fieldComparison source => source.referencesField field
   | .valueList source | .scalarValueList _ source => source.referencesField field
   | .scalarNumberLiterals _ source _ => source.field.id == field
+  | .keyedGroupPresence _ source _ => source.referencesField field
   | .indexedFieldPresence _ source => source.referencesField field
   | .fieldFill _ source => source.referencesField field
   | .uniqueness source => source.referencesField field
   | .overlap source => source.referencesField field
+
+private def keyedGroupDependencyCondition (operator : GroupPresenceOperator)
+    (source : CheckedKeyedEntityExtent model) (kind : ComputationGroupDependencyKind) : ComputationCondition :=
+  .leaf (.groupPresence operator {
+    reference := { path := source.groupPath, origin := .path }
+    content := model.computationGroupSource source.groupPath
+    members := source.declarations.map (·.id), dependencyKind := kind })
+
+def forbidsTarget (predicate : CheckedComputationPredicate model) (target : FieldId) : Bool :=
+  match predicate with
+  | .keyedGroupPresence operator source kind =>
+      source.selection.indexSource.referencesField target ||
+        (keyedGroupDependencyCondition operator source kind).forbidsTarget target
+  | predicate => predicate.referencesField target
+
+def requiresProducer (predicate : CheckedComputationPredicate model) (consumer producer : FieldId)
+    (protectedGroup : ResolvedGroupReference → Bool) : Bool :=
+  match predicate with
+  | .keyedGroupPresence operator source kind =>
+      source.selection.indexSource.referencesField producer ||
+        (keyedGroupDependencyCondition operator source kind).requiresProducer consumer producer protectedGroup
+  | predicate => predicate.referencesField producer
+
+/-- Conditional protection follows authored group identity even for keyed reads; the kernel's
+CalculationOperandsCollector and ConditionalCalculationGroupVisitor classify that same path. -/
+def groupReference? : CheckedComputationPredicate model → Option (GroupPresenceOperator × ResolvedGroupReference)
+  | .keyedGroupPresence operator source .conditionalPresence => some (operator, { path := source.groupPath, origin := .path })
+  | _ => none
 
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
   match predicate with
@@ -114,6 +147,7 @@ def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List R
   | .fieldComparison source => source.rowBoundBool scope
   | .valueList source | .scalarValueList _ source => source.bindingScopes.all (·.isPrefixOf scope)
   | .scalarNumberLiterals _ source _ => source.declaration.repeatableScope.isPrefixOf scope
+  | .keyedGroupPresence _ source _ => source.isGroup
   | .indexedFieldPresence _ _ => true
   | .fieldFill _ source => source.rowBoundBool scope
   | .uniqueness source => source.bindingScopes.all (·.isPrefixOf scope)
@@ -309,6 +343,9 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   let filterRead := filterRead?.getD (fun row field =>
     (context.addressed.map (fun addressed => addressed.read row field)).getD (context.read field))
   match predicate with
+  | .keyedGroupPresence operator source _ => do
+      let some column := indexColumn? | throw .contextRequired
+      source.computationGroupPresence operator context column |>.mapError .indexSelection
   | .indexedFieldPresence operator source => do
       let some readColumn := indexColumn? | throw .contextRequired
       let observation ← source.observeColumnWith .computation readColumn context.row context.read context.storedText
@@ -408,6 +445,10 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
     (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
     Except ComputationPredicateElabError (CheckedComputationPredicate model) := do
   match surface with
+  | .keyedGroupPresence operator source => do
+      let checked ← elaborateKeyedEntityExtent model declaringGroup source |>.mapError .keyedGroup
+      if !checked.isGroup || checked.isStarredGroup then throw .incoherent
+      pure (.keyedGroupPresence operator checked .conditionalPresence)
   | .indexedFieldPresence operator source =>
       CheckedComputationPredicate.indexedFieldPresence operator <$>
         (elaborateSemanticIndexSource model declaringGroup source).mapError .semanticIndex

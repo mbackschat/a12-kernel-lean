@@ -369,6 +369,7 @@ private def expressionPointers (environment : Env) :
 def ResolvedGroupListOperand.referencePointers (environment : Env) :
     ResolvedGroupListOperand model →
       Except ReferenceProjectionError (List MessagePointer)
+  | .indexed _ | .keyed _ => throw .unclassifiedOperand
   | .field declaration =>
       (concreteFieldPointer declaration environment).map ([·])
   | .starredGroup source =>
@@ -393,7 +394,7 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
   | .groupList _ operands =>
       (·.flatten) <$>
         operands.mapM (ResolvedGroupListOperand.referencePointers environment)
-  | .indexedFieldPresence _ _ => throw .unclassifiedOperand
+  | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ => throw .unclassifiedOperand
   | .repeatableFieldPresence _ declaration =>
       (concreteFieldPointer declaration environment).map ([·])
   | .stringExpression comparison =>

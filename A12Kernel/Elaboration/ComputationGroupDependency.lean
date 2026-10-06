@@ -79,8 +79,11 @@ def ResolvedGroupReference.requiresComputationProducer (reference : ResolvedGrou
 Callers supply common-expanded conditions; the model-bound query accounts for implicit guards. -/
 def computationProducerProtection (model : FlatModel) (targetOf : Step → FieldId)
     (conditionsOf : Step → List (Option (ComputationConditionOf Atom Predicate))) (steps : List Step)
-    (producer : FieldId) (reference : ResolvedGroupReference) : Bool :=
-  model.computationProtectsGroup producer reference.path ComputationConditionLeaf.groupReference?
+    (producer : FieldId) (reference : ResolvedGroupReference)
+    (predicateReference : Predicate → Option (GroupPresenceOperator × ResolvedGroupReference) := fun _ => none) : Bool :=
+  model.computationProtectsGroup producer reference.path (fun leaf => match leaf with
+    | .predicate source => predicateReference source
+    | leaf => leaf.groupReference?)
     ((steps.filter (fun step => targetOf step == producer)).flatMap conditionsOf)
 
 end A12Kernel

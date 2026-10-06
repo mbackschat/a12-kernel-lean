@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.KeyedGroupPresence
 import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.ComputationGroupDependency
 import A12Kernel.Elaboration.FieldFillList
@@ -246,10 +247,12 @@ private def FlatModel.elaborateComputationNumericGuard (model : FlatModel)
 /-- Resolve computation group lists with the common target-bound entity walk and overlap checks.
 The operator chooses whether a sole/root/starred operand is legal before each entity contributes
 its own presence leaves; fields are never replaced by their containing groups. -/
-def FlatModel.elaborateComputationGroupList (model : FlatModel)
+def FlatModel.elaborateComputationGroupListWith (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (operator : GroupFillQuantifier)
-    (authored : SurfaceFieldEntitySource) :
-    Except ComputationGroupListElabError ComputationCondition := do
+    (authored : SurfaceFieldEntitySource)
+    (selected : ResolvedFieldEntityOperand model → Except ComputationGroupListElabError
+      (ComputationConditionOf Atom Predicate × ComputationConditionOf Atom Predicate)) :
+    Except ComputationGroupListElabError (ComputationConditionOf Atom Predicate) := do
   let scope := model.repeatableScopeForGroupPath targetGroup
   let operands ← (resolveFieldEntityOperands model declaringGroup scope (some targetGroup)
     targetGroup (authored.first :: authored.rest)).mapError .shape
@@ -266,12 +269,14 @@ def FlatModel.elaborateComputationGroupList (model : FlatModel)
     if operator.requiresMultipleOperands then throw (.rootNotAllowed path)
     if operands.length != 1 then throw (.rootRequiresSoleOperand path)
   let isStarred : ResolvedFieldEntityOperand model → Bool
+    | .keyed source => source.isStarredGroup
     | .starredGroup _ | .starredGroupPresence _ => true
     | _ => false
   if operator.requiresMultipleOperands then
     if operands.any isStarred then throw (.starNotAllowed operator)
     if operands.length < 2 then throw .tooFewOperands
-  let group (reference : ResolvedGroupReference) (starPath : Option StarPath := none) :=
+  let group (reference : ResolvedGroupReference) (starPath : Option StarPath := none) :
+      ComputationConditionOf Atom Predicate × ComputationConditionOf Atom Predicate :=
     let source : ComputationGroupOperand := {
       reference := { reference with boundRepeatableScope := model.repeatableScopeForGroupPath reference.path }
       content := model.computationGroupSource reference.path
@@ -280,15 +285,21 @@ def FlatModel.elaborateComputationGroupList (model : FlatModel)
       dependencyKind := if reference.isRoot && starPath.isNone then .conditionalPresence else .ordinaryList }
     (ConditionTree.leaf (.groupPresence .filled source), ConditionTree.leaf (.groupPresence .notFilled source))
   let conditions ← operands.mapM fun operand => match operand with
-    | .field declaration .stored => pure (ComputationCondition.fieldFilled declaration.id,
-        ComputationCondition.fieldNotFilled declaration.id)
+    | .field declaration .stored => pure (.leaf (.fieldFilled declaration.id), .leaf (.fieldNotFilled declaration.id))
+    | operand@(.indexed _) | operand@(.keyed _) => selected operand
     | .group reference => pure (group reference)
     | .starredGroup source => pure (group { path := source.group.path, origin := .path } (some source.path))
     | .starredGroupPresence source => pure (group { path := source.groupPath, origin := .path } (some source.path))
     | _ => throw .unsupportedOperand
   match conditions with
   | [] => throw .tooFewOperands
-  | first :: rest => pure (ComputationCondition.ofGroupList operator first rest)
+  | first :: rest => pure (ComputationCondition.ofGroupListWith operator first rest)
+
+def FlatModel.elaborateComputationGroupList (model : FlatModel)
+    (declaringGroup targetGroup : GroupPath) (operator : GroupFillQuantifier)
+    (authored : SurfaceFieldEntitySource) : Except ComputationGroupListElabError ComputationCondition :=
+  model.elaborateComputationGroupListWith declaringGroup targetGroup operator authored
+    (fun _ => .error .unsupportedOperand)
 
 /-- Resolve a precondition's names left to right against a validated model, so its first unresolved
 name is the one reported. -/

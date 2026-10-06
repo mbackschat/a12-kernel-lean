@@ -94,6 +94,12 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
   | .call "FieldNotFilled" [.mk field none none] none none => match field.fieldEntity? with
       | some path => pure (.fieldNotFilled path)
       | none => refuse "Guard" "FieldNotFilled operand"
+  | .call "GroupFilled" [argument@(.mk (.entity { index := some _, .. }) none none)] none none => do
+      let .keyed source ← lowerEntityOperand model group argument | refuse "Guard/GroupFilled" "group operand"
+      pure (.predicate (.keyedGroupPresence .filled source))
+  | .call "GroupNotFilled" [argument@(.mk (.entity { index := some _, .. }) none none)] none none => do
+      let .keyed source ← lowerEntityOperand model group argument | refuse "Guard/GroupNotFilled" "group operand"
+      pure (.predicate (.keyedGroupPresence .notFilled source))
   | .call "GroupFilled" [.mk group none none] none none => match group.groupReference? with
       | some reference => pure (.groupPresence .filled reference)
       | none => refuse "Guard/GroupFilled" "group operand"
