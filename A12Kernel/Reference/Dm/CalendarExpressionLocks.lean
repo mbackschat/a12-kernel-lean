@@ -208,4 +208,31 @@ example : [(".5", "1"), ("-0", "2")].all (fun (century, day) =>
     (extensibleComponents false [day] 4 "2e3" "0" century).map (·.1) == some (
       ["Form/D:cleared", "Form/T:value 0" ++ day ++ ":00:00", "Form/N:value 0", "Form/H:value " ++ day])) := by native_decide
 
+private def completedLiteralResult (year : Int) (phase : Phase) (source : String) :
+    Option (TemporalComponents × SimpleComparisonOperand ScalarTemporalValue) := do
+  let fixture := { model with baseYear := some year }
+  let parsed ← (parseText .english source).toOption
+  let surface ← (lowerScalarTemporalExpression fixture ["Form"] parsed.body).toOption
+  let checked ← (elaborateScalarTemporalExpression fixture ["Form"] surface).toOption
+  let stored ← ModelZone.ConcreteProfile.europeBerlin.resolveCompletedDateParts? {
+    year, month := 3, day := 6 }
+  let result ← (checked.evalResult phase {
+    read := fun _ => checkAdmittedRawCell (.parsed (.temporal (.date stored))) }).toOption
+  pure (checked.components, result)
+
+example : [2023, 2024].all (fun year => [.validation, .computation].all (fun phase =>
+    [("AddDays(", ",1)"), ("AddMonths(", ",1)"), ("AddYears(", ",1)"),
+      ("DateTime(", ",\"12:00:00\")"), ("Min(", ",[D])"), ("Max(", ",[D])"),
+      ("AddMonths(AddYears(", ",1),1)")].all (fun (before, after) =>
+        let explicit := completedLiteralResult year phase s!"{before}\"05.03.{year}\"{after}"
+        explicit.isSome && completedLiteralResult year phase s!"{before}\"05.03.\"{after}" == explicit))) = true := by native_decide
+
+example : (do
+    let parsed ← (parseText .english "\"05.03.\"").toOption
+    let surface ← (lowerScalarTemporalExpression model ["Form"] parsed.body).toOption
+    let checked ← (elaborateScalarTemporalExpression model ["Form"] surface).toOption
+    pure (checked.components == TemporalComponents.fullDate && match checked.core with
+      | .atom (.dateLiteral _ _ authoredYear) => !authoredYear
+      | _ => false)) = some true := by native_decide
+
 end A12Kernel.Dm.CalendarExpressionLocks

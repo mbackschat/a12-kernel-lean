@@ -113,6 +113,7 @@ inductive ScalarTemporalAtom (model : FlatModel) where
   | fixed (value : ScalarTemporalValue)
   | now
   | today (profile : ModelZone.ConcreteProfile)
+  /-- Authored year presence survives effective Base-Year supplementation (spec/05 §1). -/
   | dateLiteral (profile : ModelZone.ConcreteProfile) (value : FullDate) (yearPresent : Bool := true)
   | dateTimeLiteral (profile : ModelZone.ConcreteProfile) (value : LocalDateTime)
   | dateConstruction (components : CheckedConstructedDateComponents model)

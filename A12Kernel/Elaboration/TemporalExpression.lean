@@ -73,7 +73,8 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
         let source : AuthoredDateLiteral := { year := none, month := value.civil.parts.month, day := value.civil.parts.day }
         let some value := (source.completedDate? model).bind FullDate.ofCivil? | throw .unsupportedSource
         pure value
-      pure (.atom (.dateLiteral (← scalarProfile model) value (yearPresent || model.hasBaseYear)), { TemporalComponents.fullDate with year := yearPresent })
+      pure (.atom (.dateLiteral (← scalarProfile model) value yearPresent),
+        scalarComponents model { TemporalComponents.fullDate with year := yearPresent })
   | .timeLiteral value => pure (.atom (.fixed (.time value)), TemporalComponents.time)
   | .dateTimeLiteral value => do
       let profile ← scalarProfile model
@@ -317,7 +318,7 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       | none => throw .dateTimeLabelUnresolved
   | .dateLiteral profile value yearPresent =>
       match resolvedScalarDate profile value with
-      | some value => pure (.value (if yearPresent then .date value else
+      | some value => pure (.value (if yearPresent || model.hasBaseYear then .date value else
           .yearless value { month := value.parts.month, day := value.parts.day }) true)
       | none => throw .dateTimeLabelUnresolved
   | .fixed value => pure (.value value true)
