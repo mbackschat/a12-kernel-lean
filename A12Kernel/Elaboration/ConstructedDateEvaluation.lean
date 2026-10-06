@@ -348,7 +348,8 @@ def validityVerdict (operation : ConstructedDateValidityOp) :
   | .valid => validVerdict
   | .invalid => invalidVerdict
 
-/-- Project one checked numeric component through the existing cause-free result family. A forged resolved UNKNOWN remains explicitly cause-free; checked evaluation never produces that branch. -/
+/-- Preserve cause-free UNKNOWN when projecting an observation. The direct component evaluator
+excludes that branch; recursive validity may produce it for a non-relevant component (spec/05 §3). -/
 def numericPart (observation : ConstructedDateObservation)
     (part : DateNumericPart) :
     Except FormalCause ConstructedDateNumericResult :=

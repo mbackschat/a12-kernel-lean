@@ -1,0 +1,1 @@
+{"computedField": "/Form/StaticTarget", "alternatives": [{"precondition": "Valid(Date(DayFromDate(Rows/FULL For Key),MonthFromDate(Rows/FULL For Key),YearFromDate(Rows/FULL For Key)))", "operation": "1"}], "messages": [{"locale": "en_US", "text": "probe"}]}

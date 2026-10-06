@@ -5,6 +5,32 @@ namespace A12Kernel
 abbrev ScalarDateComponent (model : FlatModel) :=
   Sum (Sum (CheckedConstructedDateSource model) (CheckedIndexedDateComponent model)) (ScalarTemporalNumericAtom model)
 
+/-- Validity requires an immediate entity component; extractor dependencies do not qualify
+(CheckDateValidityConditionImpl and Date-validity static grid, 2026-10-06). -/
+def CheckedConstructedDateComponents.hasImmediateEntity
+    (components : CheckedConstructedDateComponents model (ScalarDateComponent model)) : Bool :=
+  components.sources.any fun
+    | .inl (.inl (.numberField _)) | .inl (.inl (.stringField _))
+    | .inl (.inl (.dateYearField _)) | .inl (.inr _) => true
+    | _ => false
+
+/-- Preserve the established direct partial evaluator only when every component belongs to its
+original source domain; indexed and recursive operands have no partial interpretation here. -/
+def CheckedConstructedDateComponents.directComponents?
+    (components : CheckedConstructedDateComponents model (ScalarDateComponent model)) :
+    Option (CheckedConstructedDateComponents model) := do
+  let direct : ScalarDateComponent model → Option (CheckedConstructedDateSource model)
+    | .inl (.inl source) => some source
+    | _ => none
+  let day ← direct components.day
+  let month ← direct components.month
+  let year ← match components.year with
+    | .complete source => .complete <$> direct source
+    | .baseYear year => pure (.baseYear year)
+    | .centuryAndShortYear century shortYear => do
+        pure (.centuryAndShortYear (← direct century) (← direct shortYear))
+  pure { day, month, year, profile := components.profile, profileSelected := components.profileSelected }
+
 def elaborateScalarDateLeaf (model : FlatModel) (rowGroup : GroupPath)
     (scope : List RepeatableLevel) (position : ConstructedDateComponentPosition)
     (surface : Sum SurfaceConstructedDateSource SurfaceSemanticIndex) :
@@ -60,6 +86,14 @@ def observeScalarDateComponent (value : Except NumericValidationUnavailable Nume
   | .ok (.value value fillability) =>
       pure (if fillability.canGrow || fillability.canShrink then .empty
         else .value (temporalShiftAmountToInt32 value))
+
+def finishScalarDateValidity (checked : CheckedConstructedDateComponents model Source)
+    (observation : ConstructedDateObservation) (relevance : DateComponentRelevance) :
+    Except ScalarTemporalEvaluationFault ConstructedDateObservation :=
+  match observation with
+  | .unavailable cause => pure (.unavailable cause)
+  | _ => if relevance == .nonRelevant then pure (.resolved .unknown)
+      else (checked.applyProfileReality observation).mapError scalarDateFault
 
 def finishScalarDateComponents (checked : CheckedConstructedDateComponents model Source)
     (observation : ConstructedDateObservation) (relevance : DateComponentRelevance) :

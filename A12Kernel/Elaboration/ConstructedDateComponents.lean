@@ -296,6 +296,7 @@ def CheckedConstructedDateComponents.attach [SizeOf Source]
 
 /-- Static rejection before any component is read. -/
 inductive ConstructedDateComponentsElabError where
+  | onlyConstantsUsed
   | field (position : ConstructedDateComponentPosition) (error : ResolveError)
   | sourceKind (position : ConstructedDateComponentPosition) (field : FieldId)
   | declarationNotAdmitted (position : ConstructedDateComponentPosition)

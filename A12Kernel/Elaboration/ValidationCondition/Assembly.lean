@@ -25,6 +25,7 @@ inductive ValidationConditionAssemblyError where
   | multipleRepetitionNotUnique
   | stringPattern (error : StringPatternConditionElabError)
   | constructedDate (error : ConstructedDateComponentsElabError)
+  | scalarTemporal (error : ScalarTemporalExpressionError)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -71,7 +72,9 @@ def groupListDiagnostic? :
   -- these is measured as its own class through this projection.
   | .invalidModel _ | .repeatableFieldRequired _ | .emptyGroupList | .rowGroupMismatch _ _
   | .declaringGroupMismatch _ _
-  | .repetitionNotUnique _ | .iteratedDateRange _ | .multipleRepetitionNotUnique
+  | .repetitionNotUnique _ | .iteratedDateRange _ | .multipleRepetitionNotUnique => none
+  | .constructedDate .onlyConstantsUsed => some .onlyConstantsUsed
+  | .scalarTemporal error => error.dateValidityDiagnostic?
   | .constructedDate _ | .stringPattern _ | .incoherentCore => none
 
 end ValidationConditionAssemblyError
@@ -106,15 +109,16 @@ def fromFlat (condition : CheckedFlatCondition model) :
 
 /-- Compose either constructed-Date validity projection using the existing component certificate. -/
 def fromConstructedDateValidity (model : FlatModel) (rowGroup : GroupPath)
-    (operation : ConstructedDateValidityOp) (surface : SurfaceConstructedDateComponents)
+    (operation : ConstructedDateValidityOp) (surface : SurfaceConstructedDateComponents SurfaceScalarDateComponent)
     (bindingGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) := do
   match hModel : model.validate with
   | .error error => throw (.invalidModel error)
   | .ok () =>
-      let source ← (elaborateConstructedDateSources model surface
-        (model.repeatableScopeForGroupPath bindingGroup)).mapError .constructedDate
-      if source.fields.any (fun field =>
+      let source ← (elaborateScalarDateValidityComponents model rowGroup surface bindingGroup).mapError (fun
+        | .dateComponents error => .constructedDate error
+        | error => .scalarTemporal error)
+      if source.scalarBoundFieldIds.any (fun field =>
           (model.unboundReadLevel? rowGroup bindingGroup (model.fieldRepeatableScope field)
             (model.repeatableScopeForGroupPath bindingGroup)).isSome) then
         throw .incoherentCore

@@ -157,7 +157,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
           | _ => none
         match operation with
         | some operation => [do
-            let source ← lowerDateComponents model rowGroup arguments
+            let source ← lowerScalarDateComponents model rowGroup arguments
             elaborated id (CheckedValidationCondition.fromConstructedDateValidity
               model rowGroup operation source bindingGroup)]
         | none => []

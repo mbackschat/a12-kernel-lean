@@ -426,7 +426,9 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
       condition.operandDeclarations.mapM fun declaration =>
         concreteFieldPointer declaration environment
   | .constructedDateValidity _ source =>
-      sievedFieldPointers model (fun declaration => source.fields.contains declaration.id) environment
+      match source.directComponents? with
+      | some direct => sievedFieldPointers model (fun declaration => direct.fields.contains declaration.id) environment
+      | none => throw .unclassifiedOperand
   | .customCondition _ => pure []
   | .customFieldValidity leaf =>
       (concreteFieldPointer leaf.operand.declaration environment).map ([·])

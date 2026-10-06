@@ -42,6 +42,9 @@ inductive SurfaceScalarTemporalExpression where
   | subdayShift (unit : DateTimeSubdayUnit) (source : SurfaceScalarTemporalExpression)
       (amount : AuthoredNumericExpr (Sum SurfaceNumericAtom (TemporalNumericPart × SurfaceScalarTemporalExpression)))
 
+abbrev SurfaceScalarDateComponent :=
+  Sum (Sum SurfaceConstructedDateSource SurfaceSemanticIndex) (DateNumericPart × SurfaceScalarTemporalExpression)
+
 /-- `datumAngabe2` adds partial-Date interpretation to the ordinary `datumAngabe` source slot
 (GrammarOnly_ConditionParser.g4, rules at lines 479–492; spec/05 §§3,6). -/
 inductive TemporalSourceSlot where
@@ -77,6 +80,10 @@ inductive ScalarTemporalExpressionError where
   | unsupportedSource
   | incompatibleFormats
   deriving Repr, DecidableEq
+
+def ScalarTemporalExpressionError.dateValidityDiagnostic? : ScalarTemporalExpressionError → Option KernelStaticDiagnostic
+  | .dateComponents .onlyConstantsUsed => some .onlyConstantsUsed
+  | _ => none
 
 inductive ScalarTemporalValue where
   /-- Payload absence and non-relevance are independent of the enclosing operand's missing flag.

@@ -1283,7 +1283,7 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-distinct-count-component-omitting-fold"></a>
 - [The distinct count folds a component-omitting date at its declared precision](sources/temporal-runtime-fold-probes.md#src-distinct-count-component-omitting-fold)
 <a id="src-distinct-count-temporal-identity-both-strategies"></a>
-- [The distinct count's temporal identity is the decoded date on both codegen strategies](sources/temporal-runtime-fold-probes.md#src-distinct-count-temporal-identity-both-strategies)
+- [Distinct temporal identity, both strategies](sources/temporal-runtime-fold-probes.md#src-distinct-count-temporal-identity-both-strategies)
 <a id="src-having-numeric-expression-runtime"></a>
 - [Numeric filter expressions and captured repetition ordering](sources/having-filter-probes.md#src-having-numeric-expression-runtime)
 
@@ -1759,7 +1759,7 @@ Edit the source shard when its provenance or drill route changes; change this hu
 - [Filled-field count expression admission, 2026-10-03](sources/group-list-and-capacity-probes.md#src-filled-field-count-expressions)
 
 <a id="src-compositional-temporal-disposition"></a>
-- [Temporal source slots and runtime wall-label failures](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-disposition).
+- [Temporal slots and label failures](sources/temporal-runtime-fold-probes.md#src-compositional-temporal-disposition).
 
 <a id="src-string-expression-family"></a>
 - [Shared String expressions](sources/evaluation-and-application-routes.md#src-string-expression-family)
@@ -1778,3 +1778,6 @@ Edit the source shard when its provenance or drill route changes; change this hu
 
 <a id="src-product-partial-capacity"></a>
 - [Partial product declared capacity](sources/group-and-iteration-probes.md#src-product-partial-capacity)
+
+<a id="src-recursive-date-validity"></a>
+- [Date validity](sources/temporal-runtime-fold-probes.md#src-recursive-date-validity)

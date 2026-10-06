@@ -76,7 +76,8 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
       operator.toStarredGroupFillQuantifier?.isSome
   | .repetitionNotUnique _ => true
   | .stringExpression comparison => !comparison.hasIndexed
-  | .customCondition _ | .customFieldValidity _ | .stringPattern _ | .constructedDateValidity _ _ => true
+  | .constructedDateValidity _ source => source.directComponents?.isSome
+  | .customCondition _ | .customFieldValidity _ | .stringPattern _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
   | _ => false
@@ -84,7 +85,7 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
 /-- Select component cells at the current row before invoking the shared constructor. Partial
 unavailability retains a separate relevance bit: the empty placeholder permits later eager argument
 conversion, but no constructor value escapes when any source was unavailable (spec/05 §3). -/
-private def evalConstructedDateAddressed
+private def evalDirectConstructedDateAddressed
     (context : AddressedValidationEvaluationContext model) (isRelevant : FlatRelevance)
     (operation : ConstructedDateValidityOp) (source : CheckedConstructedDateComponents model) :
     Except CheckedAddressingError Verdict := do
@@ -100,6 +101,28 @@ private def evalConstructedDateAddressed
       context.scalar.fields.world) .validation >>= source.applyProfileReality).mapError .constructedDate
   pure (if cells.all (·.2.isSome) then (observation.validityVerdict operation).toOption.getD .unknown
     else .unknown)
+
+private def evalConstructedDateAddressed
+    (context : AddressedValidationEvaluationContext model) (isRelevant : FlatRelevance)
+    (operation : ConstructedDateValidityOp)
+    (source : CheckedConstructedDateComponents model (ScalarDateComponent model)) :
+    Except CheckedAddressingError Verdict := do
+  if let some direct := source.directComponents? then
+    return ← evalDirectConstructedDateAddressed context isRelevant operation direct
+  let document ← match context.input with
+    | .checked document => pure document
+    | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired [])
+  if !source.scalarBoundFieldIds.all isRelevant then return .unknown
+  for scope in source.scalarBindingScopes do
+    discard <| (context.outer.pathForScope scope).mapError CheckedAddressingError.environment
+  let fields := source.scalarFieldIds.filter fun field =>
+    (context.outer.pathForScope (model.fieldRepeatableScope field)).isOk
+  let cells ← fields.mapM fun field => do pure (field, ← context.readCell context.outer field)
+  let selected := { (document.indexedComputationContextAt context.outer) with
+    read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell
+    world := context.scalar.fields.world }
+  let observation ← (source.evaluateScalarValidity .validation selected).mapError (fun _ => .temporalUnavailable)
+  pure ((observation.validityVerdict operation).toOption.getD .unknown)
 
 /-- Partial relevance is independent of String omission: an unavailable operand never becomes
 an empty contribution. The common fold still checks reached range operations (spec/10 §12). -/
@@ -207,7 +230,7 @@ def evalAddressedPartial?
   | .stringExpression comparison =>
       if comparison.hasIndexed then none else some (evalStringExpressionAddressed context isRelevant comparison)
   | .constructedDateValidity operation source =>
-      some (evalConstructedDateAddressed context isRelevant operation source)
+      source.directComponents?.map (evalDirectConstructedDateAddressed context isRelevant operation)
   | .indexedFieldPresence operator source =>
       some do
         let document ← match context.input with

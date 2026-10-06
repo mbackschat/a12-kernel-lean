@@ -285,7 +285,7 @@ private def ValidationConditionLeaf.iterationGuardAt
   | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
   | .customCondition _ | .customFieldValidity _ => .noReference
   | .constructedDateValidity operation source =>
-      if source.fields.any (fun field => (model.fieldRepeatableScope field).contains level) then
+      if source.scalarBindingScopes.any (·.contains level) then
         match operation with
         | .valid => .guarded
         | .invalid => .unguarded
@@ -410,7 +410,7 @@ def ordinaryRepeatableFields (condition : ValidationCondition model) :
   match condition with
   | .leaf (.repeatableFieldPresence _ declaration) => [declaration]
   | .leaf (.constructedDateValidity _ source) =>
-      source.fields.filterMap fun field =>
+      source.scalarBoundFieldIds.filterMap fun field =>
         (model.lookupUniqueId field).toOption.filter (fun declaration => !declaration.repeatableScope.isEmpty)
   | .leaf (.stringExpression comparison) =>
       comparison.boundDeclarations.filter fun field => !field.repeatableScope.isEmpty

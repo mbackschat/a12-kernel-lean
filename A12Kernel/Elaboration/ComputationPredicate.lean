@@ -23,7 +23,7 @@ inductive SurfaceComputationPredicate where
   | keyedGroupPresence (operator : GroupPresenceOperator) (source : SurfaceKeyedEntityExtent)
   | indexedFieldPresence (operator : RepeatableFieldPresenceOperator) (source : SurfaceSemanticIndex)
   | pattern (source : SurfaceStringPatternCondition)
-  | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceConstructedDateComponents)
+  | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceConstructedDateComponents SurfaceScalarDateComponent)
   | typeValidity (operation : CustomFieldValidityOp) (source : SurfaceFieldPath) (name : String)
   | stringExpression (operator : EqualityOp) (left right : StringExpr SurfaceFieldPath String)
   | selectedStringExpression (operator : EqualityOp) (left right : SurfaceSelectedStringExpression)
@@ -59,6 +59,10 @@ inductive ComputationPredicateElabError where
   | overlap (error : IteratedDateRangeConditionElabError)
   deriving Repr, DecidableEq
 
+def ComputationPredicateElabError.dateValidityDiagnostic? : ComputationPredicateElabError → Option KernelStaticDiagnostic
+  | .temporal error => error.dateValidityDiagnostic?
+  | _ => none
+
 inductive ComputationPredicateError where
   | indexSelection (error : CheckedAddressingError)
   | stringExpression (error : StringComputationFault)
@@ -78,7 +82,7 @@ inductive CheckedComputationPredicate (model : FlatModel) where
   | keyedGroupPresence (operator : GroupPresenceOperator) (source : CheckedKeyedEntityExtent model) (dependencyKind : ComputationGroupDependencyKind)
   | indexedFieldPresence (operator : RepeatableFieldPresenceOperator) (source : CheckedSemanticIndexSource model)
   | pattern (source : CheckedComputationStringPattern model)
-  | dateValidity (operation : ConstructedDateValidityOp) (source : CheckedConstructedDateComponents model)
+  | dateValidity (operation : ConstructedDateValidityOp) (source : CheckedConstructedDateComponents model (ScalarDateComponent model))
   | typeValidity (operation : CustomFieldValidityOp)
       (source : CheckedCustomFieldValidityOperand model) (name : String)
   | stringExpression (source : CheckedStringExpressionComparison model)
@@ -97,7 +101,7 @@ namespace CheckedComputationPredicate
 def referencesField (predicate : CheckedComputationPredicate model) (field : FieldId) : Bool :=
   match predicate with
   | .pattern source => source.source.referencesField field
-  | .dateValidity _ source => source.fields.contains field
+  | .dateValidity _ source => source.scalarFieldIds.contains field
   | .typeValidity _ source _ => source.source == field
   | .stringExpression source => source.referencesField field
   | .temporal source => source.referencesField field
@@ -141,7 +145,7 @@ def groupReference? : CheckedComputationPredicate model → Option (GroupPresenc
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
   match predicate with
   | .pattern source => source.source.declarations.all (·.repeatableScope.isPrefixOf scope)
-  | .dateValidity _ source => source.fields.all (fun field => (model.fieldRepeatableScope field).isPrefixOf scope)
+  | .dateValidity _ source => source.scalarBindingScopes.all (·.isPrefixOf scope)
   | .typeValidity _ source _ => source.declaration.repeatableScope.isPrefixOf scope
   | .stringExpression source => source.boundDeclarations.all (·.repeatableScope.isPrefixOf scope)
   | .temporal source => (source.left.bindingScopes ++ source.right.bindingScopes).all (·.isPrefixOf scope)
@@ -374,10 +378,12 @@ def evalChecked (predicate : CheckedComputationPredicate model)
         | .notFilled => observation.evalComputationNotFilled)
   | .pattern source => (source.eval { read := context.read }).mapError .stringExpression
   | .dateValidity operation source => do
-      let observation ← (source.evaluateComponentsWith (fun component =>
-        component.readWith .computation context.read context.storedText context.world) >>= source.applyProfileReality)
-          |>.mapError (fun
-            | .stringNotConvertible _ _ => .valueFailure
+      let observation ← match source.directComponents? with
+        | some direct => (direct.evaluateComponentsWith (fun component =>
+            component.readWith .computation context.read context.storedText context.world) >>= direct.applyProfileReality)
+              |>.mapError (fun | .stringNotConvertible _ _ => .valueFailure | _ => .temporalUnavailable)
+        | none => (source.evaluateScalarValidity .computation context).mapError (fun
+            | .componentNumberInvalid | .dateTimeLabelUnresolved => .valueFailure
             | _ => .temporalUnavailable)
       pure (match observation.validityVerdict operation with
         | .error cause => .poison cause
@@ -474,9 +480,7 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
   | .pattern source => CheckedComputationPredicate.pattern <$>
       (elaborateComputationStringPattern compilePattern model declaringGroup targetGroup source).mapError .pattern
   | .dateValidity operation source => do
-      let checked ← (elaborateConstructedDateSources model source
-        (model.repeatableScopeForGroupPath targetGroup)).mapError (fun error => .temporal (.dateComponents error))
-      if checked.fields.isEmpty then throw .incoherent
+      let checked ← (elaborateScalarDateValidityComponents model declaringGroup source targetGroup).mapError .temporal
       pure (.dateValidity operation checked)
   | .typeValidity operation path name => do
       let declaration ← (model.resolveComputationFieldValueRead declaringGroup targetGroup path).mapError .read

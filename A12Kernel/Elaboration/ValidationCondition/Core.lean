@@ -282,7 +282,7 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   | stringExpression (comparison : CheckedStringExpressionComparison model)
   | scalarTemporal (comparison : CheckedScalarTemporalComparison model)
   | constructedDateValidity (operation : ConstructedDateValidityOp)
-      (source : CheckedConstructedDateComponents model)
+      (source : CheckedConstructedDateComponents model (ScalarDateComponent model))
 
 /-- One checked connective tree whose leaves retain their family-specific resolved certificates and evaluation policies. -/
 abbrev ValidationCondition (model : FlatModel) :=
@@ -348,7 +348,7 @@ def ValidationConditionLeaf.requiresClassificationPass : ValidationConditionLeaf
   | .tokenComparison _ => true
   | .stringExpression comparison => !comparison.declarations.isEmpty
   | .scalarTemporal comparison => !comparison.fieldIds.isEmpty
-  | .constructedDateValidity _ source => !source.fields.isEmpty
+  | .constructedDateValidity _ source => source.hasImmediateEntity
 
 namespace ValidationCondition
 
@@ -551,7 +551,7 @@ def liftsEmptyGate : ValidationConditionLeaf model → Bool
 def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .customCondition _ => true
   | .constructedDateValidity operation source =>
-      operation == .invalid || source.fields.isEmpty
+      operation == .invalid || source.scalarFieldIds.isEmpty
   | .firstFilledComparison _ | .tokenComparison _ => false
   | .stringExpression _ | .scalarTemporal _ => false
   | .valuesNotUnique _ => false
@@ -578,7 +578,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
 
 def referencesField : ValidationConditionLeaf model → FieldId → Bool
   | .customCondition _, _ => false
-  | .constructedDateValidity _ source, field => source.fields.contains field
+  | .constructedDateValidity _ source, field => source.scalarFieldIds.contains field
   | .firstFilledComparison comparison, field => comparison.referencesField field
   | .tokenComparison comparison, field => comparison.referencesField field
   | .stringExpression comparison, field => comparison.referencesField field
@@ -677,8 +677,8 @@ def requiresAddressedValidation : ValidationConditionLeaf model → Bool
 def wellFormedBool (rowGroup : GroupPath) :
     ValidationConditionLeaf model → Bool
   | .customCondition _ => true
-  | .constructedDateValidity _ source => source.fields.all fun field =>
-      (model.fieldRepeatableScope field).isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
+  | .constructedDateValidity _ source => source.scalarBindingScopes.all
+      (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
   | .firstFilledComparison comparison => comparison.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains
   | .tokenComparison comparison => comparison.bindingScopes.flatten.all

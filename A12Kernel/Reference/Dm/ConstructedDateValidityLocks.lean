@@ -36,7 +36,7 @@ example : ["Valid(Date(D, M, Y))", "Invalid(Date(D, M))",
     "Valid(Date(D, M, C, S))", "Invalid(Date(D, \"02\", \"2024\"))",
     "Valid(Date(D, MonthFromDate(Today), YearFromDate(Now)))",
     "Valid(Date(TextDay, M, Year))",
-    "Valid(Date(DayFromDate(Stamp), MonthFromDate(BaseYear), YearFromDate(EndOfDateRange(BaseYear))))"].all admitted := by native_decide
+    "Valid(Date(D, MonthFromDate(BaseYear), YearFromDate(EndOfDateRange(BaseYear))))"].all admitted := by native_decide
 
 example : ["Valid(Date(D))", "Valid(Date(D, M, Y, C, S))",
     "Valid(Date(D, M, 2024))", "Valid(Date(D, M, \"24\"))",
@@ -105,8 +105,8 @@ example : runWorlds "Valid(Date(D, MonthFromDate(Now), YearFromDate(Now)))"
 example : run "Valid(Date(TextDay, M, Year))"
     [("TextDay", "29"), ("M", "2"), ("Year", "2024")] "../TextDay" =
       some [("Form/TextDay", "VALUE_ERROR")] ∧
-    run "Valid(Date(DayFromDate(Stamp), MonthFromDate(Stamp), YearFromDate(Stamp)))"
-      [("Stamp", "2024-02-29")] "../Stamp" = some [("Form/Stamp", "VALUE_ERROR")] := by native_decide
+    run "Valid(Date(D, MonthFromDate(Stamp), YearFromDate(Stamp)))"
+      [("D", "29"), ("Stamp", "2024-02-29")] "../Stamp" = some [("Form/Stamp", "VALUE_ERROR")] := by native_decide
 
 private def references : Option (List FieldId × Bool) := do
   let expression ← (parseText .english "Invalid(Date(D, M, C, S))").toOption
@@ -221,8 +221,8 @@ example : [false, true].all (fun repeated =>
     compute guard [[("D", "29"), ("M", "2"), ("Y", "bad")]] repeated false 0 true ==
       some ["cleared", "cleared"]) := by native_decide
 
-example : compute "Valid(Date(DayFromDate(Stamp), MonthFromDate(Stamp), YearFromDate(Stamp)))"
-    [[("Stamp", "2024-02-29")]] = some ["value 1", "value 2"] ∧
+example : compute "Valid(Date(D, MonthFromDate(Stamp), YearFromDate(Stamp)))"
+    [[("D", "29"), ("Stamp", "2024-02-29")]] = some ["value 1", "value 2"] ∧
     compute "Valid(Date(D, MonthFromDate(BaseYear), YearFromDate(EndOfDateRange(BaseYear))))"
       [[("D", "1")]] = some ["value 1", "value 2"] := by native_decide
 
@@ -409,7 +409,7 @@ example : (rowValidityOutcomes "Valid" (some .full) [("", "2024"), ("bad", "2024
 
 example : [0, 951782400000].map (fun now =>
     (rowValidityOutcomes "Valid" (some .full) [("30", "2024")] false
-      (some "FieldFilled(Rows/D) And Valid(Date(\"30\",MonthFromDate(Now),YearFromDate(Now)))")
+      (some "FieldFilled(Rows/D) And Valid(Date(Rows/D,MonthFromDate(Now),YearFromDate(Now)))")
       (some { now := { epochMillis := now } })).map (fun rows => rows.map (·.2.verdict))) =
       [some [.fired .value], some [.notFired]] := by native_decide
 
@@ -425,8 +425,8 @@ example : rowOutcomes (rowValidityOutcomes "Valid" (some (.partialSet [
 
 example :
     let model := computationModel true
-    let source : SurfaceConstructedDateComponents := {
-      day := .numberField 1, month := .numberField 2, year := .complete (.numberField 3) }
+    let source : SurfaceConstructedDateComponents SurfaceScalarDateComponent := {
+      day := .inl (.inl (.numberField 1)), month := .inl (.inl (.numberField 2)), year := .complete (.inl (.inl (.numberField 3))) }
     (CheckedValidationCondition.fromConstructedDateValidity model ["Form"] .valid source ["Form", "Rows"]).isOk = true ∧
     (CheckedValidationCondition.fromConstructedDateValidity model ["Form", "Side"] .valid source ["Form", "Rows"]).isOk = false := by native_decide
 

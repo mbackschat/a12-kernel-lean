@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-06-05"></a>
+### SPEC-2026-10-06-05 — constructed-Date validity requires an immediate entity and preserves non-relevance
+
+- `status`: pending
+- `delta`: both validity predicates require an immediate component entity; nested extractor dependencies do not qualify. Cause-free non-relevance makes both guards not true: alternatives fall through, common guards clear cleanly. Later formal poison remains decisive. The invalid all-constant illustration of the Gregorian floor is removed without changing the runtime reality test.
+- `basis`: [Validity checkpoint](sources/temporal-runtime-fold-probes.md#src-recursive-date-validity), Kernel 30.8.1, clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`; both static arms and both runtime engines agree on the retained discriminators.
+- `canonical`: [spec/05 §3](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity), predicate admission and guard projection; §4 separates runtime floor from static legality.
+- `acceptance`: reconcile `MVK_ONLY_CONSTANTS_USED` for all-constant/all-extractor predicates against an immediate-field positive control; preserve cause-free clearing/fallthrough versus later poison in the six retained source forms. Introducing revision is the first commit containing this entry ID.
+
 <a id="spec-2026-10-06-04"></a>
 ### SPEC-2026-10-06-04 — Date components retain non-relevance without skipping later poison
 

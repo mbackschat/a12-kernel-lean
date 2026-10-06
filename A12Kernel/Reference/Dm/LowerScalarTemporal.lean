@@ -206,6 +206,12 @@ def lowerScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
     (expression : Expr) : Lowering SurfaceScalarTemporalExpression :=
   lowerScalarTemporalExpressionAt model rowGroup .value expression
 
+def lowerScalarDateComponents (model : FlatModel) (rowGroup : GroupPath)
+    (arguments : List Argument) : Lowering (SurfaceConstructedDateComponents SurfaceScalarDateComponent) := do
+  let .dateConstruction components ← lowerScalarTemporalExpression model rowGroup (.call "Date" arguments none none)
+    | refuse "Date" "component source"
+  pure components
+
 /-- Reuse established numeric atoms first; recursive temporal operands retain the common source
 syntax and enter the same checked projection on both numeric arms. -/
 def lowerCompleteComputationNumericAtom (model : FlatModel) (rowGroup : GroupPath)

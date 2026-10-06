@@ -1,0 +1,17 @@
+id	valid	outcome	verification	codes
+rule-Valid-constants	False	read	KERNEL_CONFIRMED	MVK_ONLY_CONSTANTS_USED
+comp-Valid-constants	False	rejected	KERNEL_CONFIRMED	MVK_ONLY_CONSTANTS_USED
+rule-Invalid-constants	False	read	KERNEL_CONFIRMED	MVK_ONLY_CONSTANTS_USED
+comp-Invalid-constants	False	rejected	KERNEL_CONFIRMED	MVK_ONLY_CONSTANTS_USED
+rule-Valid-extractors	False	read	KERNEL_CONFIRMED	MVK_ONLY_CONSTANTS_USED
+comp-Valid-extractors	False	rejected	KERNEL_CONFIRMED	MVK_ONLY_CONSTANTS_USED
+rule-Invalid-extractors	False	read	KERNEL_CONFIRMED	MVK_ONLY_CONSTANTS_USED
+comp-Invalid-extractors	False	rejected	KERNEL_CONFIRMED	MVK_ONLY_CONSTANTS_USED
+rule-Valid-recursive	False	read	KERNEL_CONFIRMED	MVK_ONLY_CONSTANTS_USED
+comp-Valid-recursive	False	rejected	KERNEL_CONFIRMED	MVK_ONLY_CONSTANTS_USED
+rule-Invalid-recursive	False	read	KERNEL_CONFIRMED	MVK_ONLY_CONSTANTS_USED
+comp-Invalid-recursive	False	rejected	KERNEL_CONFIRMED	MVK_ONLY_CONSTANTS_USED
+rule-Valid-immediate	True	read	KERNEL_CONFIRMED	-
+comp-Valid-immediate		preview	KERNEL_CONFIRMED	-
+rule-Invalid-immediate	True	read	KERNEL_CONFIRMED	-
+comp-Invalid-immediate		preview	KERNEL_CONFIRMED	-
