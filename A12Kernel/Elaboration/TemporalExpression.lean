@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TemporalExpression.EntityList
+import A12Kernel.Elaboration.TemporalExpression.Reads
 import A12Kernel.Elaboration.TemporalExpression.Dependencies
 
 namespace A12Kernel
@@ -320,75 +320,6 @@ def elaborateScalarTemporalComparison (model : FlatModel) (rowGroup : GroupPath)
       some <$> scalarProfile model else pure none
   pure { left, right, operator, comparisonZone?, modelWellFormed := left.modelWellFormed }
 
-private def liftScalarTemporal (wrap : α → ScalarTemporalValue) :
-    SimpleComparisonOperand α → SimpleComparisonOperand ScalarTemporalValue
-  | .value value given => .value (wrap value) given
-  | .notEvaluated => .notEvaluated
-  | .unknown cause => .unknown cause
-
-private def readScalarTemporalAmount (context : FlatContext) (phase : Phase) :
-    CheckedTemporalShiftAmount model → Except NumericValidationUnavailable NumericArithmeticOutcome
-  | .literal value => .ok (.value value .fixed)
-  | .field source _ =>
-      (context.resolveNumberComparisonOperandAt phase source).toValidationArithmetic
-  | .expression checked _ => checked.evalWith fun
-      | .field source => (context.resolveNumberComparisonOperandAt phase source).toValidationArithmetic
-      | _ => .error .groupState
-
-private def resolvedScalarDate (profile : ModelZone.ConcreteProfile) (date : FullDate) :
-    Option DateValue := do
-  let instant ← profile.resolveLocal? {
-    date, time := { hour := 0, minute := 0, second := 0, valid := by decide } }
-  pure { instant, parts := date.civil.parts, basis := .storedGregorian }
-
-private def readScalarValueAsDate (phase : Phase) (source : CheckedZonedValueAsDateSource model)
-    (cell : CheckedCell) (stored : Option String) :
-    Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
-  let checked := source.toCheckedValueAsDateSource.checkSourceText {
-    rawPresent := cell.rawPresent, parsed := stored, findings := cell.findings }
-  match source.toCheckedValueAsDateSource.observe phase checked with
-  | .empty => pure .notEvaluated
-  | .unavailable cause => pure (.unknown cause)
-  | .nonRelevant => pure (.value .nonRelevant true)
-  | .date date =>
-      let some value := resolvedScalarDate source.profile date | throw .calendarUnavailable
-      pure (.value (.date value) true)
-
-private def readScalarTimeComponent (context : FlatContext) (phase : Phase)
-    (component : CheckedTimeComponent model) : Except TimeComponentsFault TimeConstructionComponent :=
-  match component with
-  | .constant value => pure (.value value)
-  | .number checked => checked.classify (observeCell phase (context.read checked.source.id))
-  | .string checked => checked.classify (observeCell phase (context.read checked.source.id))
-  | .extractor checked => checked.classify (observeCell phase (context.read checked.source.id))
-  | .shiftedExtractor checked => do
-      let source := checked.source
-      let result ← ValueAsDateTimeResult.evaluateShiftedDateTimeObservation
-        source.profile source.unit source.source.id
-        (observeCell phase (context.read source.source.id))
-        (fun _ => pure (readScalarTemporalAmount context phase source.amount))
-        TimeComponentsFault.shifted
-      pure (result.asTimeOperand.extractComponent checked.part)
-
-private def readScalarTimeLeaf (phase : Phase) (context : ScalarComputationContext)
-    (component : Sum (CheckedTimeComponent model) (CheckedIndexedTimeComponent model)) :
-    Except ScalarTemporalEvaluationFault TimeConstructionComponent := do
-  let classify (source : CheckedTimeComponent model) (fields : FlatContext) :=
-    match readScalarTimeComponent fields phase source with
-    | .ok value => pure value
-    | .error (.stringNotConvertible _ _) => throw ScalarTemporalEvaluationFault.componentNumberInvalid
-    | .error _ => pure (.unavailable .malformed)
-  match component with
-  | .inl source => classify source { read := context.read, storedText := context.storedText, world := context.world }
-  | .inr source =>
-      let some addressed := context.addressed | throw .calendarUnavailable
-      match ← (source.selection.selectEnvironmentWith phase context.semanticIndexColumnReader
-          context.row context.read context.storedText).mapError (fun _ => .calendarUnavailable) with
-      | .empty => pure .empty
-      | .unknown cause | .poison cause => pure (.unavailable cause)
-      | .value row => classify source.source {
-          read := addressed.read row, storedText := addressed.storedText row, world := context.world }
-
 /-- Both shift families preserve source missingness when arithmetic has no value. Relevance is
 independent of that payload, while reached formal causes remain unavailable (BedingungsOperatorHelper.addTime;
 temporal numeric effects grid, 2026-10-04). The caller reaches the amount before this pure classification. -/
@@ -412,8 +343,11 @@ private def applyScalarTemporalShift
 
 mutual
 private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model))
     (atom : ScalarTemporalAtom model) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
+  if let some partialRead := partialRead? then
+    if let some result := readPartialScalarTemporalAtom context partialRead atom then return ← result
   match atom with
   | .indexed source =>
       let some field := source.targetDeclaration.toTemporalField? | throw .calendarUnavailable
@@ -434,29 +368,7 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       match profile.resolveCompletedDateParts? (baseYearRangeParts year bound) with
       | some value => pure (.value (.date value) true)
       | none => throw .calendarUnavailable
-  | .rangeBound profile source =>
-      match source with
-      | .exact bound => do
-          let range ← (CheckedDateRangeSource.observeRange bound.source.id phase
-            (context.read bound.source.id)).mapError (fun _ => .calendarUnavailable)
-          let selected ← (CheckedDateRangeSource.selectBound bound.source.id bound.bound range)
-            |>.mapError (fun _ => .calendarUnavailable)
-          pure (liftScalarTemporal (fun value => .date value) selected.asValidationSimpleOperand)
-      | .yearless bound => do
-          let range ← (CheckedDateRangeSource.observeRange bound.source.id phase
-            (context.read bound.source.id)).mapError (fun _ => .calendarUnavailable)
-          let selected ← (CheckedYearlessDateRangeBound.projectYearless bound.source.id bound.bound range)
-            |>.mapError (fun _ => .calendarUnavailable)
-          match selected with
-          | .empty => pure .notEvaluated
-          | .unknown cause | .poison cause => pure (.unknown cause)
-          | .value label =>
-              let key := label.completed bound.bound
-              -- The yearless comparison key stays independent of the runtime completion year.
-              -- KF201 and the range-expression grid retain February 29 at a month-only end.
-              let some value := profile.resolveCompletedDateParts? {
-                year := 2000, month := key.month, day := key.day } | throw .calendarUnavailable
-              pure (.value (.yearless value key) true)
+  | .rangeBound profile source => readScalarRangeBound phase profile source context.read
   | .now => pure (match context.world with
       | some world => .value (.instant world.now) true
       | none => .unknown .malformed)
@@ -476,26 +388,27 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       | .value row =>
           readScalarValueAsDate phase source.source (addressed.read row source.selection.targetDeclaration.id)
             (addressed.storedText row source.selection.targetDeclaration.id)
-  | .dateConstruction components => readRecursiveDateComponents phase context components
+  | .dateConstruction components => readRecursiveDateComponents phase context partialRead? components
   | .timeConstruction components => do
-      pure (match ← readRecursiveTimeComponents phase context components with
+      pure (match ← readRecursiveTimeComponents phase context partialRead? components with
       | .value time => .value (.time time) true
       | .unavailable cause => .unknown cause
       | .incomplete => .value .noValue false
       | .unreal => .value .noValue true
       | .nonRelevant => .value .nonRelevant true)
   | .field field => pure (readScalarTemporalField model phase field (context.read field.id))
-  | .entityExtremum operator source => source.evalScalar operator phase context
+  | .entityExtremum operator source => source.evalScalar operator phase context partialRead?
 
 termination_by (sizeOf atom, 0)
 
 private def applyScalarTemporalTransform (phase : Phase) (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model))
     (operation : ScalarTemporalTransform model)
     (source : SimpleComparisonOperand ScalarTemporalValue) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
   match operation with
   | .calendarShift profile unit amount =>
-      let amount ← readRecursiveScalarAmount phase context amount
+      let amount ← readRecursiveScalarAmount phase context partialRead? amount
       applyScalarTemporalShift source amount fun value amount => do
         let instant ← match value with
           | .date value | .yearless value _ => pure value.instant
@@ -510,7 +423,7 @@ private def applyScalarTemporalTransform (phase : Phase) (context : ScalarComput
         | .instant _ => pure (.instant shifted)
         | _ => throw .calendarUnavailable
   | .subdayShift _ unit amount =>
-      let amount ← readRecursiveScalarAmount phase context amount
+      let amount ← readRecursiveScalarAmount phase context partialRead? amount
       applyScalarTemporalShift source amount fun value amount =>
         match value with
         | .instant instant => pure (.instant (instant.shift unit (temporalShiftAmountToInt32 amount)))
@@ -544,6 +457,7 @@ termination_by (sizeOf operation, 0)
 /-- Constructor arguments have already been reached by the shared ordered application. A missing
 payload keeps its own provenance; non-relevance suppresses a result without inventing a formal cause. -/
 private def applyScalarTemporalOperation (phase : Phase) (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model))
     (operation : ScalarTemporalTransform model)
     (operands : List (SimpleComparisonOperand ScalarTemporalValue)) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
@@ -564,7 +478,7 @@ private def applyScalarTemporalOperation (phase : Phase) (context : ScalarComput
             | _ => false
           pure (.value .noValue (given date && given time))
       | _, _ => throw .calendarUnavailable
-  | _, [source] => applyScalarTemporalTransform phase context operation source
+  | _, [source] => applyScalarTemporalTransform phase context partialRead? operation source
   | _, _ => throw .calendarUnavailable
 
 termination_by (sizeOf operation, 1)
@@ -574,18 +488,22 @@ decreasing_by
   all_goals omega
 
 private def readRecursiveScalarAtom (phase : Phase) (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model))
     (atom : ScalarTemporalNumericAtom model) : Except ScalarTemporalEvaluationFault
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   match atom with
-  | .ordinary amount => pure (readScalarTemporalAmount { read := context.read, storedText := context.storedText, world := context.world } phase amount)
-  | .projection part profile source => part.observeScalar profile (← evalScalarTemporalCore phase context source)
+  | .ordinary amount => match partialRead? with
+      | some partialRead => readPartialScalarTemporalAmount partialRead context.row amount
+      | none => pure (readScalarTemporalAmount { read := context.read, storedText := context.storedText, world := context.world } phase amount)
+  | .projection part profile source => part.observeScalar profile (← evalScalarTemporalCore phase context partialRead? source)
 termination_by (sizeOf atom, 0)
 
 private def readRecursiveScalarAmount (phase : Phase) (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model))
     (amount : AuthoredNumericExpr (ScalarTemporalNumericAtom model)) : Except ScalarTemporalEvaluationFault
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   let resolved := amount.mapMSubterm fun atom _ => do
-    let value ← (readRecursiveScalarAtom phase context atom).mapError Sum.inr
+    let value ← (readRecursiveScalarAtom phase context partialRead? atom).mapError Sum.inr
     match phase, value with
     | .computation, .error (.formal cause) => throw (Sum.inl cause)
     | _, value => pure value
@@ -596,28 +514,36 @@ private def readRecursiveScalarAmount (phase : Phase) (context : ScalarComputati
 termination_by (sizeOf amount, 0)
 
 private def readRecursiveDateComponent (phase : Phase) (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model))
     (component : ScalarDateComponent model) :
     StateT DateComponentRelevance (Except ScalarTemporalEvaluationFault) CheckedConstructedDateComponent := do
   match component with
-  | .inl source => liftM (readScalarDateLeaf phase context source)
+  | .inl source => match partialRead? with
+      | none => liftM (readScalarDateLeaf phase context source)
+      | some partialRead =>
+          match ← liftM (readPartialScalarDateLeaf context partialRead source) with
+          | some value => pure value
+          | none => set DateComponentRelevance.nonRelevant *> pure .empty
   | .inr source =>
-      observeScalarDateComponent (← liftM (readRecursiveScalarAtom phase context source))
+      observeScalarDateComponent (← liftM (readRecursiveScalarAtom phase context partialRead? source))
 termination_by (sizeOf component, 0)
 
 private def observeRecursiveDateComponents (phase : Phase) (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model))
     (components : CheckedConstructedDateComponents model (ScalarDateComponent model)) :
     Except ScalarTemporalEvaluationFault (ConstructedDateObservation × DateComponentRelevance) :=
   (components.attach.evaluateComponentsWith
-    (fun ⟨source, _⟩ => readRecursiveDateComponent phase context source) phase).run .relevant
+    (fun ⟨source, _⟩ => readRecursiveDateComponent phase context partialRead? source) phase).run .relevant
 termination_by (sizeOf components, 0)
 decreasing_by
   all_goals apply Prod.Lex.left
   all_goals assumption
 
 private def readRecursiveDateComponents (phase : Phase) (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model))
     (components : CheckedConstructedDateComponents model (ScalarDateComponent model)) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
-  let (observation, relevance) ← observeRecursiveDateComponents phase context components
+  let (observation, relevance) ← observeRecursiveDateComponents phase context partialRead? components
   finishScalarDateComponents components observation relevance
 termination_by (sizeOf components, 1)
 decreasing_by
@@ -625,13 +551,16 @@ decreasing_by
   all_goals omega
 
 private def readRecursiveTimeComponents (phase : Phase) (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model))
     (components : TimeComponentPrefix (ScalarTimeComponent model)) :
     Except ScalarTemporalEvaluationFault TimeConstructionResult :=
   components.evaluateWithSubterm (fun component _ => do
     match component with
-    | .inl source => readScalarTimeLeaf phase context source
+    | .inl source => match partialRead? with
+        | some partialRead => readPartialScalarTimeLeaf context partialRead source
+        | none => readScalarTimeLeaf phase context source
     | .inr source =>
-        match ← readRecursiveScalarAtom phase context source with
+        match ← readRecursiveScalarAtom phase context partialRead? source with
         | .error (.formal cause) => pure (.unavailable cause)
         | .error .nonRelevant => pure .nonRelevant
         | .error _ => throw .calendarUnavailable
@@ -644,6 +573,7 @@ decreasing_by
   all_goals first | decreasing_tactic | (apply Prod.Lex.left; simp_all +arith <;> omega)
 
 private def evalScalarTemporalCore (phase : Phase) (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model))
     (expression : ScalarTemporalExpression model) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
   let reached (operand : SimpleComparisonOperand ScalarTemporalValue) :
@@ -653,10 +583,10 @@ private def evalScalarTemporalCore (phase : Phase) (context : ScalarComputationC
     | _, operand => .ok operand
   let result := expression.evalWithResultSubterm
     (fun atom _ => do
-      let operand ← (readScalarTemporalAtom model phase context atom).mapError Sum.inr
+      let operand ← (readScalarTemporalAtom model phase context partialRead? atom).mapError Sum.inr
       reached operand)
     (fun operation _ operands => do
-      reached (← (applyScalarTemporalOperation phase context operation operands).mapError Sum.inr))
+      reached (← (applyScalarTemporalOperation phase context partialRead? operation operands).mapError Sum.inr))
   match result with
   | .ok operand => .ok operand
   | .error (.inl cause) => .ok (.unknown cause)
@@ -666,9 +596,10 @@ end
 
 def CheckedConstructedDateComponents.evaluateScalarValidity
     (components : CheckedConstructedDateComponents model (ScalarDateComponent model))
-    (phase : Phase) (context : ScalarComputationContext) :
+    (phase : Phase) (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model) := none) :
     Except ScalarTemporalEvaluationFault ConstructedDateObservation := do
-  let (observation, relevance) ← observeRecursiveDateComponents phase context components
+  let (observation, relevance) ← observeRecursiveDateComponents phase context partialRead? components
   finishScalarDateValidity components observation relevance
 
 namespace CheckedScalarTemporalExpression
@@ -691,10 +622,11 @@ def referencesField (expression : CheckedScalarTemporalExpression model) (field 
 /-- Model-zone literal resolution belongs to execution, retaining value failure separately from
 missingness and operand poison (the DateTime constant zone-split checkpoint, spec/09). -/
 def evalResult (expression : CheckedScalarTemporalExpression model) (phase : Phase) (context : FlatContext)
-    (addressed : Option ComputationFillContext := none) (row : Env := []) :
+    (addressed : Option ComputationFillContext := none) (row : Env := [])
+    (partialRead? : Option (TemporalPartialReadContext model) := none) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) :=
   evalScalarTemporalCore phase
-    { read := context.read, storedText := context.storedText, world := context.world, addressed, row } expression.core
+    { read := context.read, storedText := context.storedText, world := context.world, addressed, row } partialRead? expression.core
 
 end CheckedScalarTemporalExpression
 
@@ -716,9 +648,10 @@ def referencesField (comparison : CheckedScalarTemporalComparison model) (field 
 keeps its existing identity domain (KF386 and the comparison-guard grid, 2026-10-04). -/
 private def readOperand (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
     (context : FlatContext) (addressed : Option ComputationFillContext) (row : Env)
-    (expression : CheckedScalarTemporalExpression model) :
+    (expression : CheckedScalarTemporalExpression model)
+    (partialRead? : Option (TemporalPartialReadContext model) := none) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
-  let operand ← expression.evalResult phase context addressed row
+  let operand ← expression.evalResult phase context addressed row partialRead?
   match comparison.comparisonZone?, operand with
   | _, .value .noValue _ => pure .notEvaluated
   | some _, .value (.date date) given => pure (.value (.instant date.instant) given)
@@ -735,15 +668,16 @@ def evalComputation (comparison : CheckedScalarTemporalComparison model)
 /-- Retain runtime label failure outside the comparison verdict; the enclosing rule owns its
 value-error projection (temporal review grid, 2026-10-03). -/
 def evalResult (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
-    (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := []) : Except ScalarTemporalEvaluationFault Verdict := do
+    (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := [])
+    (partialRead? : Option (TemporalPartialReadContext model) := none) : Except ScalarTemporalEvaluationFault Verdict := do
   match phase with
   | .computation => pure (match ← comparison.evalComputation context addressed row with
       | .holds => .fired .value
       | .notTrue => .notFired
       | .poison _ => .unknown)
   | .validation =>
-      let left ← comparison.readOperand phase context addressed row comparison.left
-      let right ← comparison.readOperand phase context addressed row comparison.right
+      let left ← comparison.readOperand phase context addressed row comparison.left partialRead?
+      let right ← comparison.readOperand phase context addressed row comparison.right partialRead?
       match left, right with
       | .value .nonRelevant _, _ | _, .value .nonRelevant _ => pure .unknown
       | _, _ => pure (evalSymmetricComparison (ScalarTemporalValue.holds comparison.operator) left right)
@@ -753,7 +687,7 @@ def evalAt (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
   match comparison.evalResult phase context addressed row with
   | .ok verdict => verdict
   | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => .fired .value
-  | .error .calendarUnavailable | .error .indexedOperandNotSupported => .unknown
+  | .error .calendarUnavailable | .error .indexedOperandNotSupported | .error (.addressing _) => .unknown
 
 def eval (comparison : CheckedScalarTemporalComparison model) (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := []) : Verdict :=
   comparison.evalAt .validation context addressed row

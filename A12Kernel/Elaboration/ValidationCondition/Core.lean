@@ -643,8 +643,9 @@ def hasHaving : ValidationConditionLeaf model → Bool
   | .firstFilledComparison comparison => comparison.hasHaving
   | .tokenComparison comparison => comparison.hasHaving
   | .fieldFill _ source => source.hasHaving
-  | .constructedDateValidity _ _ => false
-  | .stringExpression _ | .scalarTemporal _ => false
+  | .constructedDateValidity _ source => source.scalarCore.hasHaving
+  | .scalarTemporal source => source.left.core.hasHaving || source.right.core.hasHaving
+  | .stringExpression _ => false
   | .valuesNotUnique source => source.hasHaving
   | .valueList source => source.hasHaving
   | .orderedNumeric _ comparison => comparison.hasHaving

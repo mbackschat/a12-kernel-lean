@@ -93,6 +93,10 @@ end
 
 namespace ScalarTemporalExpression
 
+def hasHaving (expression : ScalarTemporalExpression model) : Bool :=
+  !(scalarTemporalDependencies false (fun _ => ([] : List Unit))
+    (fun source => if source.filters.any Option.isSome then [()] else []) (fun _ => []) expression).isEmpty
+
 /-- Stored-text requirements include recursively nested temporal operands. -/
 def storedTextFields (expression : ScalarTemporalExpression model) : List FieldId :=
   scalarTemporalDependencies true (fun field => [field]) (·.fieldIds)

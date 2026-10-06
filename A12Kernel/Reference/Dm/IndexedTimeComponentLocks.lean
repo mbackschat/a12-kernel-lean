@@ -235,19 +235,19 @@ example : currentSelected cases[2]! 4 (checkAdmittedRawCell (.parsed (.num 6))) 
     currentSelected cases[5]! 7 (checkAdmittedRawCell (.parsed (.str "06"))) =
     some ({ hour := 6, minute := 4, second := 5, valid := by decide }, true) := by native_decide
 
-private def excludedViews : Option Bool := do
+private def partialAndPointerBoundary : Option Bool := do
   let parsed ← (parseText .english (comparison cases[2]!)).toOption
   let condition ← (lowerCondition model ["Form"] false parsed.body).toOption
   let document ← checked {}
   let .leaf leaf := condition.core | none
-  pure (!condition.core.allLeaves ValidationConditionLeaf.supportsAddressedPartial &&
+  pure (condition.core.allLeaves ValidationConditionLeaf.supportsAddressedPartial &&
     (leaf.evalAddressedPartial? { scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }, outer := [], input := .checked document } .full (fun _ => true)
-      (fun _ _ => .error (.checkedDocumentRequired [])) none).isNone &&
+      (fun _ _ => .error (.checkedDocumentRequired [])) none).bind Except.toOption == some (.fired .value) &&
     match condition.core.referencePointers [] with
     | .error .unclassifiedOperand => true
     | _ => false)
 
-example : excludedViews = some true := by native_decide
+example : partialAndPointerBoundary = some true := by native_decide
 
 private def missingAddressed : Option Bool := do
   let document ← checked {}

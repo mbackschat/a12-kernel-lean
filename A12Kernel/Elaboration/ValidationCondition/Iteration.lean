@@ -484,26 +484,30 @@ def evalWithTemporalResult (condition : ValidationCondition model)
     (customResult : String → Except Error Verdict := fun name =>
       pure ((context.customResult name).toOption.getD .unknown))
     (temporalAddressed : CheckedScalarTemporalComparison model → Except Error (Option ComputationFillContext × Env) :=
-      fun _ => pure (none, [])) :
+      fun _ => pure (none, []))
+    (temporalPartialResult? : ValidationConditionLeaf model → Option (Except (Sum Error ScalarTemporalEvaluationFault) Verdict) :=
+      fun _ => none) :
     Except Error Verdict :=
   let readLeaf : ValidationConditionLeaf model → Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
-    fun leaf => match leaf with
-      | .customCondition name => (customResult name.value).mapError Sum.inl
-      | .firstFilledComparison comparison => firstFilledResult comparison
-      | .scalarTemporal comparison =>
-          if comparison.fieldIds.all isRelevant then do
-            let fields ← (temporalFields comparison).mapError Sum.inl
-            let (addressed, row) ← (temporalAddressed comparison).mapError Sum.inl
-            (comparison.evalResult .validation fields addressed row).mapError Sum.inr
-          else pure .unknown
-      | leaf@(.orderedNumeric _ comparison) =>
-          if comparison.hasTemporalExpression then numericResult comparison
-          else (evaluate leaf).mapError Sum.inl
-      | leaf@(.constructedDateValidity _ _) => (evaluate leaf).mapError fun error =>
-          match leafRuntimeFault? error with
-          | some fault => .inr fault
-          | none => .inl error
-      | leaf => (evaluate leaf).mapError Sum.inl
+    fun leaf => match temporalPartialResult? leaf with
+      | some result => result
+      | none => match leaf with
+        | .customCondition name => (customResult name.value).mapError Sum.inl
+        | .firstFilledComparison comparison => firstFilledResult comparison
+        | .scalarTemporal comparison =>
+            if comparison.fieldIds.all isRelevant then do
+              let fields ← (temporalFields comparison).mapError Sum.inl
+              let (addressed, row) ← (temporalAddressed comparison).mapError Sum.inl
+              (comparison.evalResult .validation fields addressed row).mapError Sum.inr
+            else pure .unknown
+        | leaf@(.orderedNumeric _ comparison) =>
+            if comparison.hasTemporalExpression then numericResult comparison
+            else (evaluate leaf).mapError Sum.inl
+        | leaf@(.constructedDateValidity _ _) => (evaluate leaf).mapError fun error =>
+            match leafRuntimeFault? error with
+            | some fault => .inr fault
+            | none => .inl error
+        | leaf => (evaluate leaf).mapError Sum.inl
   let hasCustom := condition.anyLeaf fun | .customCondition _ => true | _ => false
   let result : Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
     if hasCustom then condition.evalObservedM
@@ -530,7 +534,8 @@ def evalWithTemporalResult (condition : ValidationCondition model)
   | .error (.inl error) => .error error
   | .error (.inr fault@(.dateTimeLabelUnresolved))
   | .error (.inr fault@(.componentNumberInvalid)) => onTemporalValueFailure fault
-  | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported) => onTemporalUnavailable
+  | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported)
+  | .error (.inr (.addressing _)) => onTemporalUnavailable
 
 /-- Evaluate one mixed tree with the rule-owned truth and classification phases. -/
 def evalSelected (condition : ValidationCondition model)

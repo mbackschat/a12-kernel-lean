@@ -397,7 +397,7 @@ example : (do
       (rowRule "AddHours(Stamp,[Amount]) == [Stamp2]")).toOption
     pure (checked.condition.rowGroup, checked.condition.declaringGroup,
       checked.iterationScope, checked.supportsOrdinaryRepeatablePartial)) =
-    some (["Order", "Rows"], ["Order", "Rows"], some [10], false) := by native_decide
+    some (["Order", "Rows"], ["Order", "Rows"], some [10], true) := by native_decide
 
 example : runRows "AddHours(Rows/Stamp,[Amount]) == [Rows/Stamp2]"
     [clockRow "1"] true = some [] ∧

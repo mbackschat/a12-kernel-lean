@@ -420,11 +420,22 @@ private def evalOrdinaryPartialAdmittedAt
         | some result => result.mapError fun
             | .inl error => .inl (.inl (.conditionAddressing error))
             | .inr fault => .inr fault)
+      (temporalPartialResult? := fun leaf =>
+        (leaf.evalTemporalPartialResult? context scope).map (Except.mapError fun
+          | .inl error => .inl (.inl (.conditionAddressing error))
+          | .inr fault => .inr fault))
+      (numericResult := fun comparison =>
+        match comparison.evalAddressedPartialResult? context scope isRelevant resolveGroup with
+        | none => .error (.inl (.inl (.conditionAddressing .temporalUnavailable)))
+        | some result => result.mapError fun
+            | .inl error => .inl (.inl (.conditionAddressing error))
+            | .inr fault => .inr fault)
       (customResult := fun name => (context.scalar.customResult name).mapError
         (fun error => .inl (.conditionAddressing (.customCondition error))))
   match result with
   | .ok verdict => pure (.next environment (rule.core.emitAt errorPath verdict))
   | .error (.inl error) => throw error
+  | .error (.inr (.addressing error)) => throw (.conditionAddressing error)
   | .error (.inr _) => pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))
 
 /-- Execute one checked nonrepeatable addressed rule against the normalized partial document view. The scalar iteration plan fixes the empty environment and root error path; filtering and error-field relevance still gate execution before addressed leaf reads, while unsupported shapes and addressing failures remain structural errors outside semantic UNKNOWN. -/
@@ -545,6 +556,7 @@ private def evalOrdinaryRepeatableAt
       context repetitionNotUniqueResult? with
   | .ok verdict => pure (.next environment (rule.core.emitAt errorCell.address.path verdict))
   | .error (.inl error) => throw (.conditionAddressing error)
+  | .error (.inr (.addressing error)) => throw (.conditionAddressing error)
   | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported) => throw (.conditionAddressing .temporalUnavailable)
   | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid) =>
       pure (.abort environment (rule.core.emitAt failureErrorPath (.fired .value)))

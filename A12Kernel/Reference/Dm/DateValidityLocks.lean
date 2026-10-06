@@ -186,19 +186,19 @@ example : ["Date(Rows/Full For Key,\"2\",\"2024\")",
       ["Valid", "Invalid"].all fun operation => (validate (predicate operation source)).isNone &&
         (run (predicate operation source)).isNone) = true := by native_decide
 
-private def excludedViews (source : String) : Option Bool := do
+private def partialAndPointerBoundary (source : String) : Option Bool := do
   let document ← checked {}
   let parsed ← (parseText .english (predicate "Valid" source)).toOption
   let condition ← (lowerCondition model ["Form"] false parsed.body).toOption
   let .leaf leaf := condition.core | none
-  pure (!leaf.supportsAddressedPartial &&
+  pure (leaf.supportsAddressedPartial &&
     (leaf.evalAddressedPartial? { scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }, outer := [], input := .checked document } .full (fun _ => true)
-      (fun _ _ => .error (.checkedDocumentRequired [])) none).isNone &&
+      (fun _ _ => .error (.checkedDocumentRequired [])) none).bind Except.toOption == some (.fired .value) &&
     match condition.core.referencePointers [] with
     | .error .unclassifiedOperand => true
     | _ => false)
 
-example : forms.all (fun source => excludedViews source == some true) = true := by native_decide
+example : forms.all (fun source => partialAndPointerBoundary source == some true) = true := by native_decide
 
 private def staticCodes (source : String) : Option (Option String × Option String) := do
   let parsed ← (parseText .english source).toOption
@@ -281,7 +281,7 @@ example : ["Valid", "Invalid"].all (fun operation =>
 private def directRecursive := "Date(D,MonthFromDate(AddDays(Out,1)),YearFromDate(AddDays(Out,1)))"
 
 example : validate (predicate "Valid" directRecursive) = some (.fired .value) ∧
-    excludedViews directRecursive = some true := by native_decide
+    partialAndPointerBoundary directRecursive = some true := by native_decide
 
 example : ValidationConditionAssemblyError.emptyGroupList.groupListDiagnostic? = none := by decide
 

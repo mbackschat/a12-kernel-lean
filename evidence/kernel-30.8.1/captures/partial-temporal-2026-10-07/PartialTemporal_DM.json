@@ -1,0 +1,500 @@
+{
+  "header" : {
+    "id" : "PartialTemporal_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "PartialTemporal_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "UTC",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Rows/Items",
+                "name" : "Items",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/D",
+                    "name" : "D",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateType",
+                        "DateType" : {
+                          "format" : "yyyy-MM-dd"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Id",
+                "name" : "Id",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/D",
+                "name" : "D",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/T",
+                "name" : "T",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "positivesOnly" : true,
+                      "maxLength" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/S",
+                "name" : "S",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "probe"
+                      } ],
+                      "maxLength" : 2,
+                      "pattern" : "[0-9]+"
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "Id"
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Ref",
+            "name" : "Ref",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Key",
+            "name" : "Key",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Bad",
+            "name" : "Bad",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ],
+                  "maxLength" : 2,
+                  "pattern" : "[0-9]+"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Amount",
+            "name" : "Amount",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Low",
+            "name" : "Low",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DATE",
+            "name" : "DATE",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "DATE",
+              "errorCondition" : "FieldFilled(Ref) And ([Rows/D For Key] == \"01.02.2024\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/TIME",
+            "name" : "TIME",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "TIME",
+              "errorCondition" : "FieldFilled(Ref) And ([Rows/T For Key] == \"03:04:05\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LITERAL",
+            "name" : "LITERAL",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "LITERAL",
+              "errorCondition" : "FieldFilled(Ref) And ([Rows/D For \"B\"] == \"01.02.2024\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/HOURS",
+            "name" : "HOURS",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "HOURS",
+              "errorCondition" : "FieldFilled(Ref) And (HoursFromTime(Rows/T For Key) == 3)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MINUTES",
+            "name" : "MINUTES",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "MINUTES",
+              "errorCondition" : "FieldFilled(Ref) And (MinutesFromTime(Rows/T For Key) == 4)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/SECONDS",
+            "name" : "SECONDS",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "SECONDS",
+              "errorCondition" : "FieldFilled(Ref) And (SecondsFromTime(Rows/T For Key) == 5)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DAY",
+            "name" : "DAY",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "DAY",
+              "errorCondition" : "FieldFilled(Ref) And (DayFromDate(Rows/D For Key) == 1)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/SHIFT",
+            "name" : "SHIFT",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "SHIFT",
+              "errorCondition" : "FieldFilled(Ref) And (AddDays(Rows/D For Key,[Amount]) == \"02.02.2024\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/NESTEDSHIFT",
+            "name" : "NESTEDSHIFT",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "NESTEDSHIFT",
+              "errorCondition" : "FieldFilled(Ref) And (AddDays(Rows/D For Key,HoursFromTime(Rows/T For Key)) == \"04.02.2024\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/TIMECTOR",
+            "name" : "TIMECTOR",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "TIMECTOR",
+              "errorCondition" : "FieldFilled(Ref) And (Time(Rows/N For Key,\"4\",\"5\") == \"03:04:05\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DATERECURSIVE",
+            "name" : "DATERECURSIVE",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "DATERECURSIVE",
+              "errorCondition" : "FieldFilled(Ref) And (Date(DayFromDate(Rows/D For Key),\"2\",\"2024\") == \"01.02.2024\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DATEVALID",
+            "name" : "DATEVALID",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "DATEVALID",
+              "errorCondition" : "FieldFilled(Ref) And (Valid(Date(Rows/S For Key,\"2\",\"2024\")))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DATEINVALID",
+            "name" : "DATEINVALID",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "DATEINVALID",
+              "errorCondition" : "FieldFilled(Ref) And (Invalid(Date(Rows/S For Key,\"2\",\"2024\")))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/STAMP",
+            "name" : "STAMP",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "STAMP",
+              "errorCondition" : "FieldFilled(Ref) And (DateTime(Rows/D For Key,Rows/T For Key) == \"01.02.2024T03:04:05\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MINSCALAR",
+            "name" : "MINSCALAR",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "MINSCALAR",
+              "errorCondition" : "FieldFilled(Ref) And (Min([Rows/D For Key],\"01.03.2024\") == \"01.02.2024\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MINLIST",
+            "name" : "MINLIST",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "MINLIST",
+              "errorCondition" : "FieldFilled(Ref) And (MinValue(Rows/D For Key,Low) == \"01.02.2024\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MINSTAR",
+            "name" : "MINSTAR",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "MINSTAR",
+              "errorCondition" : "FieldFilled(Ref) And (MinValue(Rows*/D) == \"01.01.2024\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MAXSTAR",
+            "name" : "MAXSTAR",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "MAXSTAR",
+              "errorCondition" : "FieldFilled(Ref) And (MaxValue(Rows*/D) == \"01.02.2024\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LOWERSTAR",
+            "name" : "LOWERSTAR",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "LOWERSTAR",
+              "errorCondition" : "FieldFilled(Ref) And (MinValue(Rows/Items*/D For Key) == \"01.02.2024\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/LATERCONVERSION",
+            "name" : "LATERCONVERSION",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "LATERCONVERSION",
+              "errorCondition" : "FieldFilled(Ref) And (Time(HoursFromTime(Rows/T For Key),Bad) == \"03:04:00\" Or FieldFilled(Ref))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MINVALUEFALLBACK",
+            "name" : "MINVALUEFALLBACK",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "MINVALUEFALLBACK",
+              "errorCondition" : "FieldFilled(Ref) And MinValue(Rows/D For Key,Low) == \"01.03.2024\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/MAXVALUEFALLBACK",
+            "name" : "MAXVALUEFALLBACK",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "MAXVALUEFALLBACK",
+              "errorCondition" : "FieldFilled(Ref) And MaxValue(Rows/D For Key,Low) == \"01.03.2024\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

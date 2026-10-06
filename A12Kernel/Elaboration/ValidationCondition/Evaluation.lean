@@ -76,7 +76,8 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
       operator.toStarredGroupFillQuantifier?.isSome
   | .repetitionNotUnique _ => true
   | .stringExpression comparison => !comparison.hasIndexed
-  | .constructedDateValidity _ source => source.directComponents?.isSome
+  | .constructedDateValidity _ source => !source.scalarCore.hasHaving
+  | .scalarTemporal source => !source.left.core.hasHaving && !source.right.core.hasHaving
   | .customCondition _ | .customFieldValidity _ | .indexedCustomFieldValidity _ | .stringPattern _ | .indexedStringPattern _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
@@ -188,6 +189,28 @@ private def evalFlatLeafAddressedPartial
           | none => context.scalar.fields.read field }
       pure (leaf.evalSelected fields isRelevant)
 
+def evalTemporalPartialResult? (context : AddressedValidationEvaluationContext model)
+    (scope : ValidationRelevanceScope) : ValidationConditionLeaf model →
+    Option (Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault) Verdict)
+  | .scalarTemporal comparison => some do
+      let document ← match context.input with
+        | .checked document | .partialView document _ => pure document
+        | .legacy _ _ => throw (Sum.inl (.checkedDocumentRequired []))
+      let partialRead : TemporalPartialReadContext model := { document, scope, read := context.readPartialCell }
+      (comparison.evalResult .validation context.scalar.fields none context.outer (some partialRead))
+        |>.mapError ScalarTemporalEvaluationFault.separateAddressing
+  | .constructedDateValidity operation source =>
+      if source.directComponents?.isSome then none else some do
+        let document ← match context.input with
+          | .checked document | .partialView document _ => pure document
+          | .legacy _ _ => throw (Sum.inl (.checkedDocumentRequired []))
+        let partialRead : TemporalPartialReadContext model := { document, scope, read := context.readPartialCell }
+        let selected := { (document.indexedComputationContextAt context.outer) with world := context.scalar.fields.world }
+        let observation ← (source.evaluateScalarValidity .validation selected (some partialRead))
+          |>.mapError ScalarTemporalEvaluationFault.separateAddressing
+        pure ((observation.validityVerdict operation).toOption.getD .unknown)
+  | _ => none
+
 /-- Evaluate one partial addressed leaf. The caller supplies the sole relevance-selected group-product query; `none` is structural unsupported information, not semantic UNKNOWN. A reached but nonrelevant supported source returns the family's exact UNKNOWN result. A missing RNU result means that partial relevance excluded the current composite key, while a mismatched result is a structural preparation error. -/
 def evalAddressedPartial?
     (context : AddressedValidationEvaluationContext model)
@@ -229,8 +252,13 @@ def evalAddressedPartial?
       | .legacy _ _ => none
   | .stringExpression comparison =>
       if comparison.hasIndexed then none else some (evalStringExpressionAddressed context isRelevant comparison)
-  | .constructedDateValidity operation source =>
-      source.directComponents?.map (evalDirectConstructedDateAddressed context isRelevant operation)
+  | leaf@(.scalarTemporal _) => (leaf.evalTemporalPartialResult? context scope).map
+      (Except.mapError fun | .inl error => error | .inr fault => fault.toAddressing)
+  | leaf@(.constructedDateValidity operation source) =>
+      match source.directComponents? with
+      | some direct => some (evalDirectConstructedDateAddressed context isRelevant operation direct)
+      | none => (leaf.evalTemporalPartialResult? context scope).map
+          (Except.mapError fun | .inl error => error | .inr fault => fault.toAddressing)
   | .indexedFieldPresence operator source =>
       some do
         let document ← match context.input with

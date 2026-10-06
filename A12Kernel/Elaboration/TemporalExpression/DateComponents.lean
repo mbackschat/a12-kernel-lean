@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TemporalExpression.Types
+import A12Kernel.Elaboration.TemporalExpression.ReadContext
 
 namespace A12Kernel
 
@@ -15,7 +15,7 @@ def CheckedConstructedDateComponents.hasImmediateEntity
     | _ => false
 
 /-- Preserve the established direct partial evaluator only when every component belongs to its
-original source domain; indexed and recursive operands have no partial interpretation here. -/
+original source domain; its direct partial faults remain owned by the established evaluator. -/
 def CheckedConstructedDateComponents.directComponents?
     (components : CheckedConstructedDateComponents model (ScalarDateComponent model)) :
     Option (CheckedConstructedDateComponents model) := do
@@ -66,6 +66,25 @@ def readScalarDateLeaf (phase : Phase) (context : ScalarComputationContext) :
       | .unknown cause | .poison cause => pure (.unavailable cause)
       | .value row =>
           (source.source.readWith phase (addressed.read row) (addressed.storedText row) context.world).mapError scalarDateFault
+
+def readPartialScalarDateLeaf (context : ScalarComputationContext)
+    (partialRead : TemporalPartialReadContext model) :
+    Sum (CheckedConstructedDateSource model) (CheckedIndexedDateComponent model) →
+      Except ScalarTemporalEvaluationFault (Option CheckedConstructedDateComponent)
+  | .inl source => do
+      match source.fieldId? with
+      | none => some <$> (source.readWith .validation context.read context.storedText context.world).mapError scalarDateFault
+      | some field =>
+          let some cell ← partialRead.readCell context.row field | return none
+          let text ← partialRead.storedText context.row field cell
+          some <$> (source.readWith .validation (fun _ => cell) (fun _ => text) context.world).mapError scalarDateFault
+  | .inr source => do
+      match ← partialRead.selectedCell source.selection context.row with
+      | none => pure none
+      | some .empty => pure (some .empty)
+      | some (.unknown cause) | some (.poison cause) => pure (some (.unavailable cause))
+      | some (.value (cell, text)) =>
+          some <$> (source.source.readWith .validation (fun _ => cell) (fun _ => text) context.world).mapError scalarDateFault
 
 /-- Relevance is separate from component payload: a later poison still wins after a cause-free
 non-relevant extraction (Date-component ordering probe, 2026-10-06; spec/05 §3). -/

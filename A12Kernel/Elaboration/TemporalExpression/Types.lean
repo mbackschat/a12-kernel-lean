@@ -131,7 +131,17 @@ inductive ScalarTemporalEvaluationFault where
   | dateTimeLabelUnresolved
   | componentNumberInvalid
   | calendarUnavailable
+  | addressing (error : CheckedAddressingError)
   deriving Repr, DecidableEq
+
+def ScalarTemporalEvaluationFault.separateAddressing : ScalarTemporalEvaluationFault →
+    Sum CheckedAddressingError ScalarTemporalEvaluationFault
+  | .addressing error => .inl error
+  | fault => .inr fault
+
+def ScalarTemporalEvaluationFault.toAddressing : ScalarTemporalEvaluationFault → CheckedAddressingError
+  | .addressing error => error
+  | _ => .temporalUnavailable
 
 /-- Index selection retains the same declaration-certified partial-Date endpoint and model profile
 as a direct read; the selected row cannot substitute another field's policy (spec/08 §4). -/

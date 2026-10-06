@@ -1,4 +1,4 @@
-import A12Kernel.Elaboration.TemporalExpression.Types
+import A12Kernel.Elaboration.TemporalExpression.ReadContext
 import A12Kernel.Semantics.ComputationCondition
 
 namespace A12Kernel
@@ -139,16 +139,59 @@ private def readOperand (phase : Phase) (context : ScalarComputationContext)
   | .starredGroup source => readGroup phase context (.starred source) (model.groupSubtreeFields source.group.path)
   | .starredGroupPresence source => readGroup phase context (.starredPresence source) (model.groupSubtreeFields source.groupPath)
 
+private def readPartialOperand (partialRead : TemporalPartialReadContext model) (outer : Env) :
+    ResolvedFieldEntityOperand model → Except ScalarTemporalEvaluationFault
+      (ResolvedTemporalAggregateSide ScalarTemporalValue) := fun operand => do
+  let document := partialRead.document
+  let scope := partialRead.scope
+  let ordinary := fun (declarations : List FlatFieldDecl) (bound : Nat) => do
+    if !declarations.all (fun declaration => scope.coversAggregateExtent model declaration.path
+        (declaration.repeatableScope.take bound) (declaration.repeatableScope.drop bound) outer) then
+      return none
+    let (addresses, tail) ← model.groupOperandReads document.source.toDocument outer bound declarations
+      (·.repeatableScope) |>.mapError (ScalarTemporalEvaluationFault.addressing ∘ CheckedAddressingError.addressing)
+    pure (some (.value (addresses, tail)) : Option (CellObservation (List (FlatFieldDecl × Env) × Bool)))
+  let extent ← match operand with
+    | .indexed source => (resolvePartialSelectedAddresses (.inl source) document scope outer partialRead.read
+        (fun declaration bound reopened row => scope.coversAggregateExtent model declaration.path bound reopened row)).mapError .addressing
+    | .keyed source => (resolvePartialSelectedAddresses (.inr source) document scope outer partialRead.read
+        (fun declaration bound reopened row => scope.coversAggregateExtent model declaration.path bound reopened row)).mapError .addressing
+    | .field declaration _ => ordinary [declaration] declaration.repeatableScope.length
+    | .star source => ordinary [source.declaration] source.path.firstStar
+    | .group source => ordinary (model.groupSubtreeFields source.path) (CheckedEntityGroupSource.fixed (model := model) source).boundLevelCount
+    | .starredGroup source => ordinary (model.groupSubtreeFields source.group.path) (CheckedEntityGroupSource.starred source).boundLevelCount
+    | .starredGroupPresence source => ordinary (model.groupSubtreeFields source.groupPath) (CheckedEntityGroupSource.starredPresence source).boundLevelCount
+    | .starHaving _ _ => throw .indexedOperandNotSupported
+  match extent with
+  | none => pure { operands := [.value .nonRelevant true], hasUninstantiatedTail := false, hasHaving := false }
+  | some .empty => pure { operands := [.notEvaluated], hasUninstantiatedTail := false, hasHaving := false }
+  | some (.unknown cause) | some (.poison cause) =>
+      pure { operands := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }
+  | some (.value (addresses, tail)) =>
+      let operands ← addresses.mapM fun (declaration, row) => do
+        match ← partialRead.readCell row declaration.id with
+        | none => pure (.value .nonRelevant true)
+        | some cell => readField model .validation declaration cell
+      -- A missing scalar still occupies an authored slot; an empty selected lower-star does not
+      -- (partial-temporal fallback grid, 2026-10-07; spec/05 temporal extrema).
+      let operands := match operand with
+        | .indexed _ => if addresses.isEmpty then [.notEvaluated] else operands
+        | _ => operands
+      pure { operands, hasUninstantiatedTail := tail, hasHaving := false }
+
 /-- Computation stops at the first reached poison. Filter lookahead stays owned by the shared
 Having scanner; validation keeps its eager candidate selection (spec/05 and spec/09). -/
 def evalScalar (source : CheckedTemporalExtremumOperands model) (operator : TemporalExtremumOp)
-    (phase : Phase) (context : ScalarComputationContext) :
+    (phase : Phase) (context : ScalarComputationContext)
+    (partialRead? : Option (TemporalPartialReadContext model) := none) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
   let mut values := []
   let mut tail := false
   let mut hasHaving := false
   for (operand, filter) in source.shape.operands.zip source.filters do
-    let next ← readOperand phase context filter operand
+    let next ← match partialRead? with
+      | none => readOperand phase context filter operand
+      | some partialRead => readPartialOperand partialRead context.row operand
     if phase == .computation then
       for value in next.operands do
         if let .unknown cause := value then return .unknown cause

@@ -442,7 +442,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   | .stringExpression source => (source.evalComputation { read := context.read } context.numberText (some context)).mapError .stringExpression
   | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError (fun
       | .dateTimeLabelUnresolved | .componentNumberInvalid => .valueFailure
-      | .calendarUnavailable | .indexedOperandNotSupported => .temporalUnavailable)
+      | .calendarUnavailable | .indexedOperandNotSupported | .addressing _ => .temporalUnavailable)
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
   | .fieldFill operator source =>
       source.evalCheckedWith operator context filterRead .fieldFill

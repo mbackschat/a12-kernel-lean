@@ -1790,3 +1790,6 @@ Edit the source shard when its provenance or drill route changes; change this hu
 
 <a id="src-indexed-patterns"></a>
 - [Indexed pattern predicates](sources/computation-scheduling-probes.md#src-indexed-patterns)
+
+<a id="src-partial-temporal-reads"></a>
+- [Partial temporal reads](sources/temporal-runtime-fold-probes.md#src-partial-temporal-reads)

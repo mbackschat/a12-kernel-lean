@@ -675,7 +675,7 @@ private def indexedScalarDependencies : Option (List FieldId × List FieldId × 
 example : indexedScalarDependencies = some ([4,5,6], [4], [[]], true, [4]) := by native_decide
 
 example : (evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03"
-    "[Rows/Body/A For Key] == [Low]" false none { partialCoverage := some [] }).isNone = true ∧
+    "[Rows/Body/A For Key] == [Low]" false none { partialCoverage := some [] }) = some (.inl .unknown) ∧
     (evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03"
       "[Rows/Body/A For Key] == [Low]" false none { partialMode := .dayOptional }).isNone = true := by native_decide
 
@@ -808,7 +808,7 @@ example : evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
 
 example : evaluate .date .fullDate "yyyy-MM-dd" "2024-02-00" "2024-02-00"
     "ValueAsDate(Rows/Body/A For Key,FirstDay) == \"01.02.2024\"" false none
-    { partialMode := .dayOptional, fullDateTarget := true, partialCoverage := some [] } = none := by native_decide
+    { partialMode := .dayOptional, fullDateTarget := true, partialCoverage := some [] } = some (.inl .unknown) := by native_decide
 
 example : [(({ firstA := some "" } : Scenario), "value 1"),
     ({ key := "missing" }, "value 1"), ({ firstA := some "0000-00-00" }, "value 1"),

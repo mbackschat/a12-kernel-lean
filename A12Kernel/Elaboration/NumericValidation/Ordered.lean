@@ -236,7 +236,8 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
   | .tokenDistinctCount source => source.hasHaving
   | .temporalDistinctCount run => run.source.hasHaving
   | .filledFieldCount source => source.hasHaving
-  | .indexed _ | .indexedString _ | .temporalPart _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
+  | .temporalPart source => source.source.core.hasHaving
+  | .indexed _ | .indexedString _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
 
 end OrderedNumericValidationAtom
 
@@ -289,7 +290,7 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
   | .filledFieldCount source => source.supportsPartialCount
   | .indexed _ | .indexedString _ | .valueCount _ _ | .tokenValueCount _ | .booleanValueCount _ | .tokenDistinctCount _ | .temporalDistinctCount _ => true
   | .sumOfProducts _ => true
-  | .temporalPart _ => false
+  | .temporalPart source => !source.source.core.hasHaving
 
 def OrderedNumericComparison.supportsAddressedPartial
     (comparison : OrderedNumericComparison model) : Bool :=

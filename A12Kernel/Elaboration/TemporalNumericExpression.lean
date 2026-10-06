@@ -44,9 +44,10 @@ namespace CheckedTemporalNumericExpression
 
 /-- Project the common temporal result while retaining its independent missingness and failure. -/
 def evalResult (expression : CheckedTemporalNumericExpression model) (phase : Phase)
-    (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := []) : Except ScalarTemporalEvaluationFault
+    (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := [])
+    (partialRead? : Option (TemporalPartialReadContext model) := none) : Except ScalarTemporalEvaluationFault
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
-  expression.part.observeScalar expression.profile (← expression.source.evalResult phase context addressed row)
+  expression.part.observeScalar expression.profile (← expression.source.evalResult phase context addressed row partialRead?)
 
 end CheckedTemporalNumericExpression
 end A12Kernel
