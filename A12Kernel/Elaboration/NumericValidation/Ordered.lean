@@ -288,7 +288,7 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
   | .ordinary _ | .aggregate _ _ | .filledGroupCountMixed _ | .firstFilled _ => true
   | .filledFieldCount source => source.supportsPartialCount
   | .indexed _ | .indexedString _ | .valueCount _ _ | .tokenValueCount _ | .booleanValueCount _ | .tokenDistinctCount _ | .temporalDistinctCount _ => true
-  | .sumOfProducts _
+  | .sumOfProducts _ => true
   | .temporalPart _ => false
 
 def OrderedNumericComparison.supportsAddressedPartial

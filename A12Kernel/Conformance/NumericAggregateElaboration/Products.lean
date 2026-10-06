@@ -316,6 +316,33 @@ example :
           some (.evaluated (.value 26 .fixed)) := by
   native_decide
 
+example :
+    let values := cells3 (.parsed (.num 2)) (.parsed (.num 3)) .empty
+    let coverage (count : Nat) := ValidationRelevanceScope.partialSet (
+      [repeated.path, repeatedPrice.path].flatMap fun path =>
+        (List.range count).map fun row =>
+          productRelevance path [.concrete 1, .concrete (row + 1), .concrete 1])
+    productPartialOf [1, 2] values values (coverage 2) = some .nonRelevant ∧
+      productPartialOf [1, 2] values values (coverage 3) =
+        some (.evaluated (.value 13 .both)) := by native_decide
+
+example :
+    let unbounded := { productModel with repeatableGroups := productModel.repeatableGroups.map fun group =>
+      if group.level == 10 then { group with repeatability := none } else group }
+    let result := do
+      let checked ← (elaborateNumericProductAggregate unbounded ["Form"]
+        (productSource (productStar "Amount") (productStar "Price"))).toOption
+      let values := cells3 (.parsed (.num 2)) (.parsed (.num 3)) .empty
+      let concrete := ValidationRelevanceScope.partialSet (
+        [repeated.path, repeatedPrice.path].flatMap fun path =>
+          (List.range 3).map fun row =>
+            productRelevance path [.concrete 1, .concrete (row + 1), .concrete 1])
+      let incomplete ← (checked.evaluatePartial (productDocument [1, 2]) [] concrete (productRead values values)).toOption
+      let complete ← (checked.evaluatePartial (productDocument [1, 2]) []
+        (.partialSet [RelevantEntityPattern.allInstances ["Form"]]) (productRead values values)).toOption
+      pure (incomplete, complete)
+    result = some (.nonRelevant, .evaluated (.value 13 .both)) := by native_decide
+
 /- Result scale is the exact sum of both field scales and never gains literal expansion capability. -/
 example : productScale = some { scale := .exact 2, canExpandScale := false } := by
   native_decide

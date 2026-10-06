@@ -117,13 +117,15 @@ def computationSlotsIn (source : CheckedKeyedEntityExtent model) (context : Scal
 end CheckedKeyedEntityExtent
 
 /-- Selection owns phase policy, row identity and omitted extents (spec/08 §4.1); each value-list
-consumer supplies only its declaration-aware cell projection. -/
+consumer supplies its declaration-aware cell projection. Products retain omission on an absent
+selected star (spec/07 §4); ordinary list folds retain their established empty-extent policy. -/
 def selectedValueListSideWith {kind : ValueListKind}
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
     (phase : Phase) (document : Document) (outer : Env) (direct : FieldId → CheckedCell)
     (stored : FieldId → Option String) (read : Env → FieldId → CheckedCell)
     (column : SemanticIndexColumnReader)
-    (classify : FlatFieldDecl → CellObservation → Except CheckedAddressingError (ValueListCell kind)) :
+    (classify : FlatFieldDecl → CellObservation → Except CheckedAddressingError (ValueListCell kind))
+    (missingStarIsOmitted : Bool := false) :
     Except CheckedAddressingError (ResolvedValueListSide kind) := do
   match source with
   | .inl selected =>
@@ -133,7 +135,7 @@ def selectedValueListSideWith {kind : ValueListKind}
       match ← selected.selectWith phase column outer direct stored with
       | .empty =>
           pure { cells := [], hasUninstantiatedTail := match selected.target with
-                   | .group _ => true | .star _ | .starredGroup _ => false
+                   | .group _ => true | .star _ | .starredGroup _ => missingStarIsOmitted
                  hasHaving := false }
       | .unknown cause | .poison cause =>
           pure { cells := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }

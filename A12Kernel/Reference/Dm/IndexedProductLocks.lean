@@ -107,6 +107,113 @@ example : evaluate "SumOfProducts(Rows/Items*/N For Key, Rows/Items*/Q For Key)"
 example : evaluate (product "Key" "Key" ++ " == 38") false { left := ["2", "3", "5"] } =
     some (.inl (.fired .value)) := by native_decide
 
+example : evaluate (product "Key" "Key" ++ " == 0") false { key := "missing" } =
+    some (.inl (.fired .omission)) := by native_decide
+
+example : evaluate (product "Key" "\"R2\"" ++ " == 0") false
+    { key := "missing", right := ["3", "4", "6"] } = some (.inl (.fired .omission)) := by native_decide
+
+private def partialVerdict (condition : String) (coverage : List RelevantEntityPattern)
+    (scenario : Scenario := {}) (errorRelevant : Bool := true) : Option Verdict := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler model).toOption
+  let data ← (readDocument {
+    flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] } (input scenario)).toOption
+  let document ← (checkDocument prepared "en_US" data.data).toOption
+  let parsed ← (parseText .english ("FieldFilled(Out) And (" ++ condition ++ ")")).toOption
+  let checked ← (lowerCondition model ["Form"] false parsed.body).toOption
+  let rule ← (assembleResolvedValidationRule model checked 2 "PRODUCT" .error { parts := [] }).toOption
+  let result ← (rule.evalAddressedPartial document (.partialSet (
+    (if errorRelevant then [RelevantEntityPattern.allInstances ["Form", "Out"]] else []) ++ coverage))).toOption
+  match result with
+  | .evaluated result => pure result.verdict
+  | _ => none
+
+private def targetCoverage (parent child : RelevanceIndex) : RelevantEntityPattern :=
+  { path := ["Form", "Rows", "Items", "N"], indices := [.concrete 1, parent, child, .concrete 1] }
+
+private def selectionCoverage : List RelevantEntityPattern :=
+  [RelevantEntityPattern.allInstances ["Form", "Key"],
+   RelevantEntityPattern.allInstances ["Form", "Rows", "Code"]]
+
+example : [2, 3].all (fun capacity =>
+    let targets := (List.range capacity).map fun row => targetCoverage .all (.concrete (row + 1))
+    let expected := if capacity == 3 then Verdict.fired .omission else .unknown
+    partialVerdict (product "Key" "\"R2\"" ++ " == 6") (selectionCoverage ++ targets) == some expected &&
+    partialVerdict (product "Key" "Key" ++ " == 0") (selectionCoverage ++ targets)
+      { key := "missing" } == some expected) = true := by native_decide
+
+example : partialVerdict (product "Key" "\"R2\"" ++ " == 6")
+    (selectionCoverage ++ [targetCoverage (.concrete 1) .all, targetCoverage (.concrete 2) .all]) =
+      some (.fired .omission) ∧
+    partialVerdict (product "Key" "\"R2\"" ++ " == 6")
+      (selectionCoverage ++ [targetCoverage .all .all]) { left := ["2", "bad"] } = some .unknown := by native_decide
+
+private def allConcreteTargets : List RelevantEntityPattern :=
+  (List.range 3).flatMap fun parent => (List.range 3).map fun child =>
+    targetCoverage (.concrete (parent + 1)) (.concrete (child + 1))
+
+example : partialVerdict (product "Key" "\"R2\"" ++ " == 6")
+    (selectionCoverage ++ allConcreteTargets) = some (.fired .omission) ∧
+    partialVerdict (product "Key" "Key" ++ " == 0")
+      (selectionCoverage ++ allConcreteTargets) { key := "missing" } = some .unknown ∧
+    partialVerdict (product "Key" "Key" ++ " == 29")
+      (selectionCoverage ++ [targetCoverage (.concrete 1) .all]) = some (.fired .omission) ∧
+    partialVerdict (product "Key" "\"R2\"" ++ " == 6")
+      (selectionCoverage ++ [targetCoverage (.concrete 1) .all]) = some .unknown := by native_decide
+
+example : [product "Key" "\"R2\"", product "\"R2\"" "Key"].all (fun expression =>
+    partialVerdict (expression ++ " == 6") (selectionCoverage ++ [targetCoverage .all .all]) ==
+      some (.fired .omission) &&
+    partialVerdict (expression ++ " == 6") (selectionCoverage ++ [targetCoverage .all .all])
+      { left := ["2", "bad"] } == some .unknown &&
+    partialVerdict (expression ++ " == 0") (selectionCoverage ++ [targetCoverage .all .all])
+      { left := [] } == some (.fired .omission) &&
+    partialVerdict (expression ++ " == 6") (selectionCoverage ++ [targetCoverage .all .all])
+      { secondCode := "R1" } == some .unknown) = true := by native_decide
+
+example : partialVerdict (product "Key" "Key" ++ " == 29")
+    [targetCoverage .all .all, RelevantEntityPattern.allInstances ["Form", "Rows", "Code"]] = some .unknown ∧
+    partialVerdict (product "Key" "Key" ++ " == 29")
+      [targetCoverage .all .all, RelevantEntityPattern.allInstances ["Form", "Key"]] = some .unknown ∧
+    partialVerdict ("FieldFilled(Out) Or " ++ product "Key" "Key" ++ " == 29") [] = some (.fired .value) ∧
+    partialVerdict (product "Key" "Key" ++ " == 29 Or FieldFilled(Out)") [] = some (.fired .value) := by native_decide
+
+private def partialReadOutcome (expression : String) (field : FieldId) (replacement : Option CheckedCell)
+    (scenario : Scenario := {}) (fault : Bool := false) : Option (Except CheckedAddressingError Verdict) := do
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler model).toOption
+  let data ← (readDocument {
+    flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] } (input scenario)).toOption
+  let document ← (checkDocument prepared "en_US" data.data).toOption
+  let parsed ← (parseText .english expression).toOption
+  let checked ← (lowerCondition model ["Form"] false parsed.body).toOption
+  let .leaf leaf := checked.core | none
+  let context : AddressedValidationEvaluationContext model := {
+    scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }, outer := []
+    input := .partialView document fun environment requested =>
+      if field == requested then
+        if fault then throw (.checkedDocumentRequired ["test-read"]) else pure replacement
+      else (fun cell => some cell.cell) <$> document.addressedCell environment requested }
+  leaf.evalAddressedPartial? context .full (fun _ => true)
+    (fun _ _ => .error (.checkedDocumentRequired [])) none
+
+private def partialRead (expression : String) (field : FieldId) (replacement : Option CheckedCell) : Option Verdict := do
+  (← partialReadOutcome expression field replacement).toOption
+
+example : partialRead (product "Key" "\"R2\"" ++ " == 6") 4 none = some .unknown ∧
+    partialRead (product "Key" "\"R2\"" ++ " == 6") 1 none = some .unknown ∧
+    partialRead (product "Key" "\"R2\"" ++ " == 49") 4
+      (some (checkAdmittedRawCell (.parsed (.num 7)))) = some (.fired .omission) ∧
+    partialRead (product "Key" "Key" ++ " == 9") 1
+      (some (checkAdmittedRawCell (.parsed (.str "R2")))) = some (.fired .omission) := by native_decide
+
+example : (match partialReadOutcome (product "Key" "\"R2\"" ++ " == 6") 4 none {} true with
+    | some (.error (.checkedDocumentRequired path)) => path == ["test-read"]
+    | _ => false) = true ∧
+    partialVerdict (product "Key" "\"R2\"" ++ " == 6")
+      (selectionCoverage ++ [targetCoverage .all .all]) {} false = none ∧
+    partialVerdict "SumOfProducts(Rows/Items*/N For Key, Rows/Items*/Q For Key) == 49"
+      [RelevantEntityPattern.allInstances ["Form"]] = some (.fired .omission) := by native_decide
+
 private def generated (scenario : Scenario) : Option Verdict := do
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption

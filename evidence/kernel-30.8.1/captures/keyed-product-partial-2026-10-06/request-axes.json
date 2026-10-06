@@ -1,0 +1,1558 @@
+{
+  "model": "Kprod_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "validatePart"
+  ],
+  "rows": [
+    {
+      "name": "healthy-all9",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            3,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            2,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            2,
+            3,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            3,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            3,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            3,
+            3,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "healthy-key-wild-present",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "healthy-key-wild-capacity",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            3,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "healthy-lower-wild-parents",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            0,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            2,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "healthy-lower-wild-left",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "healthy-key-wild-pair",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invalid-tail-all9",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "bad"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            3,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            2,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            2,
+            3,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            3,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            3,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            3,
+            3,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invalid-tail-key-wild-present",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "bad"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invalid-tail-key-wild-capacity",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "bad"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            3,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invalid-tail-lower-wild-parents",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "bad"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            0,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            2,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invalid-tail-lower-wild-left",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "bad"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "invalid-tail-key-wild-pair",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "bad"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-key-all9",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "absent",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            3,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            2,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            2,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            2,
+            3,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            3,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            3,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            3,
+            3,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-key-key-wild-present",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "absent",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-key-key-wild-capacity",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "absent",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            3,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-key-lower-wild-parents",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "absent",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            0,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            2,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-key-lower-wild-left",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "absent",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            1,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "missing-key-key-wild-pair",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "absent",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Key"
+        },
+        {
+          "path": "/Form/Rows/Code"
+        },
+        {
+          "path": "/Form/Plain"
+        },
+        {
+          "path": "/Form/Rows/Items/N",
+          "reps": [
+            1,
+            0,
+            1,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "plain-concrete-2",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Plain/N",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Plain/N",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "name": "plain-concrete-3",
+      "documentInline": {
+        "Form": {
+          "Ref": "R",
+          "Key": "R1",
+          "Rows": [
+            {
+              "Code": "R1",
+              "Items": [
+                {
+                  "N": "2"
+                },
+                {
+                  "N": "5"
+                }
+              ]
+            },
+            {
+              "Code": "R2",
+              "Items": [
+                {
+                  "N": "3"
+                }
+              ]
+            }
+          ],
+          "Plain": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "3"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form/Ref"
+        },
+        {
+          "path": "/Form/Plain/N",
+          "reps": [
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Plain/N",
+          "reps": [
+            1,
+            2,
+            1
+          ]
+        },
+        {
+          "path": "/Form/Plain/N",
+          "reps": [
+            1,
+            3,
+            1
+          ]
+        }
+      ]
+    }
+  ]
+}

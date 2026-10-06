@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-06-03"></a>
+### SPEC-2026-10-06-03 — partial products require declared lower capacity
+
+- `status`: pending
+- `delta`: resolve the product extent uncertainty: finite partial `SumOfProducts` needs declared lower capacity, including absent slots, for both ordinary and independently keyed operands. A missing keyed parent needs wildcard coverage at that parent while concrete lower-capacity coverage suffices.
+- `basis`: [45-row capacity checkpoint](sources/group-and-iteration-probes.md#src-product-partial-capacity), Kernel 30.8.1, clean a12-dmkits `6f29ffcb8ef3e8b8d12d4edd0dc42c33555f89d1`; both engines agree, full and partial observations retained without catalog prose.
+- `canonical`: [spec/07](../spec/07-repetition-and-iteration.md), product extent; [spec/10](../spec/10-validation-and-polarity.md), operator-specific partial relevance.
+- `acceptance`: reconcile the canonical clauses and interpreter guards against present-only versus complete-capacity ordinary/keyed controls, absent-parent wildcard versus all-concrete coverage, and invalid unpaired tails. Preserve probe limits. Introducing revision is the first commit containing this entry ID.
+
 <a id="spec-2026-10-06-02"></a>
 ### SPEC-2026-10-06-02 — Boolean/Confirm partial value-count loop
 

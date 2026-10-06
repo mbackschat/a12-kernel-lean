@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericAggregate
 
 /-! # Checked Number aggregate lowering
 
-The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells through one resolver-parametric scan to the same aggregate folds. `SumOfProducts` instead checks exactly two unfiltered Number stars whose fields have the same immediate owning group and whose lowest-repeatable topology is identical, requires every unstarred repeatable ancestor to lie in the declaring scope, resolves that shared topology once, and exposes full/partial validation plus a phase-indexed checked-cell fold. The owning group may be a fixed descendant of the starred group. The full-validation faces of both checked sources reach generated computation validation through its bounded addressed context; unfiltered Number aggregates also reach ordinary partial rules through the call-local partial-view route, while `SumOfProducts` reaches ordinary addressed rules through the immutable checked-document projection. Group operands and concrete syntax remain outside.
+The established direct route resolves one unfiltered list of at least two distinct nonrepeatable Number fields into the aggregate atom used by checked numeric expressions. The ordinary entity-list route reuses the shared checked direct/plain-star/filtered-star source, resolves each slot lazily in authored order, and delegates the resulting cells through one resolver-parametric scan to the same aggregate folds. `SumOfProducts` instead checks exactly two unfiltered Number stars whose fields have the same immediate owning group and whose lowest-repeatable topology is identical, requires every unstarred repeatable ancestor to lie in the declaring scope, resolves that shared topology once, and exposes full/partial validation plus a phase-indexed checked-cell fold. The owning group may be a fixed descendant of the starred group. The full-validation faces of both checked sources reach generated computation validation through its bounded addressed context; unfiltered Number aggregates also reach ordinary partial rules through the call-local partial-view route, while `SumOfProducts` uses the shared declared-capacity relevance judgment and call-local partial reads in `NumericAggregate.Products`. Group operands and concrete syntax remain outside.
 -/
 
 namespace A12Kernel
@@ -28,6 +28,34 @@ inductive PartialValidationNumberAggregateViewResult where
   | silentlyUnavailable
   | result (result : PartialValidationNumberAggregateResult)
   deriving Repr, DecidableEq
+
+/-- Products need every declared coordinate, not only physical rows. A missing selected parent
+requires a wildcard there; finite lower capacity can be covered by concrete identifiers
+(spec/07 §4, partial-product capacity matrix, 2026-10-06). -/
+def CheckedStarFieldPath.productExtentRelevant (source : CheckedStarFieldPath model)
+    (scope : ValidationRelevanceScope) (outer : Env)
+    (missingParent : Option RepeatableLevel := none) : Except StarAddressingError Bool := do
+  let .partialSet entities := scope | return true
+  let mut prefixes : List (List RelevanceIndex) := [[]]
+  let mut path : GroupPath := []
+  for segment in source.declaration.path do
+    path := path ++ [segment]
+    let choices ← match model.repeatableGroups.find? (·.path == path) with
+      | none => pure [.concrete 1]
+      | some group =>
+          if missingParent == some group.level then pure [.all]
+          else if source.reopenedScope.contains group.level then
+            pure (match group.repeatability with
+              | none => [.all]
+              | some capacity => (List.range capacity).map fun row => .concrete (row + 1))
+          else do
+            let coordinate ← (outer.bindingAt group.level).mapError EnvBindingError.toStarAddressingError
+            pure [.concrete coordinate]
+    prefixes := prefixes.flatMap fun coordinates => choices.map fun index => coordinates ++ [index]
+  pure (prefixes.all fun indices => entities.any fun entity =>
+    match entity.projectOntoTarget? source.declaration.path with
+    | none => false
+    | some projected => projected.encompasses { path := source.declaration.path, indices })
 
 /-- A parser-independent `SumOfProducts` pair. Each operand retains its authored wildcard path and an optional correlated filter; the checked carrier accepts only two unfiltered Number paths with the measured lowest-level star shape. Groups remain unrepresentable here. -/
 structure SurfaceNumericProductAggregate where
@@ -298,19 +326,17 @@ def evaluateValidation (checked : CheckedRowNumericProductAggregate model)
     Except StarAddressingError NumericOperand :=
   checked.evaluateAt .validation document outer (checked.checkedRawCell read)
 
-/-- Partial validation evaluates this pair aggregate only when both declarations cover every row in the one resolved common stream for the current iteration environment. Coverage may be supplied across multiple relevance entities, but wildcarding one field alone remains insufficient. This Lean representation therefore checks the complete present row-coordinate extent and keeps `SumOfProducts` separate from the four combiner aggregates' normalized universal gate. Maintained Kernel observations establish complete-cross-product versus partial coverage per iteration row, but do not distinguish declared capacity from rows present in the document; no correspondence claim is made for that unrepresented distinction. -/
+/-- Partial products share the declared-capacity gate with independently selected products;
+the numeric fold still consumes only instantiated rows (spec/07 §4). -/
 def evaluatePartial (checked : CheckedRowNumericProductAggregate model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) :
     Except StarAddressingError PartialValidationNumberAggregateResult := do
+  if !(← checked.left.source.productExtentRelevant scope outer) ||
+      !(← checked.right.source.productExtentRelevant scope outer) then return .nonRelevant
   let resolved ← checked.left.source.path.resolveInCapacity document outer
-  if resolved.environments.all fun environment =>
-      checked.left.source.cellRelevant scope environment &&
-        checked.right.source.cellRelevant scope environment then
-    pure (.evaluated (evalNumericProductAggregate
-      (checked.selectedSideAt .validation resolved (checked.checkedRawCell read))))
-  else
-    pure .nonRelevant
+  pure (.evaluated (evalNumericProductAggregate
+    (checked.selectedSideAt .validation resolved (checked.checkedRawCell read))))
 
 end CheckedRowNumericProductAggregate
 

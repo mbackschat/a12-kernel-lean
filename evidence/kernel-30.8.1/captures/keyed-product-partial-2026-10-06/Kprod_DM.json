@@ -1,0 +1,243 @@
+{
+  "header" : {
+    "id" : "Kprod_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Kprod_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Ref",
+            "name" : "Ref",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Key",
+            "name" : "Key",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Form/Rows/Items",
+                "name" : "Items",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/N",
+                    "name" : "N",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0,
+                          "minFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/Q",
+                    "name" : "Q",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "NumberType",
+                        "NumberType" : {
+                          "maxFractionalDigits" : 0,
+                          "minFractionalDigits" : 0
+                        }
+                      }
+                    }
+                  } ]
+                }
+              } ],
+              "indexFieldName" : "Code"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Form/Plain",
+            "name" : "Plain",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Plain/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/P12",
+            "name" : "P12",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "P12",
+              "errorCondition" : "FieldFilled(Ref) And SumOfProducts(Rows/Items*/N For Key, Rows/Items*/N For \"R2\") == 6",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Inspect the product."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/P21",
+            "name" : "P21",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "P21",
+              "errorCondition" : "FieldFilled(Ref) And SumOfProducts(Rows/Items*/N For \"R2\", Rows/Items*/N For Key) == 6",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Inspect the product."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/P11",
+            "name" : "P11",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "P11",
+              "errorCondition" : "FieldFilled(Ref) And SumOfProducts(Rows/Items*/N For Key, Rows/Items*/N For Key) == 29",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Inspect the product."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/P1X",
+            "name" : "P1X",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "P1X",
+              "errorCondition" : "FieldFilled(Ref) And SumOfProducts(Rows/Items*/N For Key, Rows/Items*/N For \"missing\") == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Inspect the product."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/PXX",
+            "name" : "PXX",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "PXX",
+              "errorCondition" : "FieldFilled(Ref) And SumOfProducts(Rows/Items*/N For \"missing\", Rows/Items*/N For \"missing\") == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Inspect the product."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/PlainProduct",
+            "name" : "PlainProduct",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "PLAIN",
+              "errorCondition" : "FieldFilled(Ref) And SumOfProducts(Plain*/N, Plain*/N) == 13",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Inspect the product."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/P12Z",
+            "name" : "P12Z",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "P12Z",
+              "errorCondition" : "FieldFilled(Ref) And SumOfProducts(Rows/Items*/N For Key, Rows/Items*/N For \"R2\") == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Inspect the product."
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/P21Z",
+            "name" : "P21Z",
+            "Rule" : {
+              "errorEntityRelPath" : "../Ref",
+              "errorCode" : "P21Z",
+              "errorCondition" : "FieldFilled(Ref) And SumOfProducts(Rows/Items*/N For \"R2\", Rows/Items*/N For Key) == 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "Inspect the product."
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

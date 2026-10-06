@@ -1298,9 +1298,9 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-capacity-consumer-sweep"></a>
 - [The declared-capacity extent reaches the last four operand-stream consumers](sources/group-list-and-capacity-probes.md#src-capacity-consumer-sweep)
 <a id="src-validation-capacity-consumers"></a>
-- [Six more validation consumers leave an over-limit row out on full and partial validation, measured locally 2026-10-02](sources/group-list-and-capacity-probes.md#src-validation-capacity-consumers)
+- [Validation operand capacity](sources/group-list-and-capacity-probes.md#src-validation-capacity-consumers)
 <a id="src-group-capacity-consumers"></a>
-- [A starred or fixed group operand and a filtered star leave an over-limit row out too, under every measured partial scope, measured locally 2026-10-02](sources/group-list-and-capacity-probes.md#src-group-capacity-consumers)
+- [Group operand capacity](sources/group-list-and-capacity-probes.md#src-group-capacity-consumers)
 <a id="src-over-limit-finding-text"></a>
 - [`zuGrosseZeile` renders no coordinate, and two over-limit groups report independently](sources/over-repetition-probes.md#src-over-limit-finding-text)
 <a id="src-starred-group-count-computation"></a>
@@ -1771,3 +1771,6 @@ Edit the source shard when its provenance or drill route changes; change this hu
 
 <a id="src-type-validity-computation-guards"></a>
 - [Named-type computation guards](sources/computation-scheduling-probes.md#src-type-validity-computation-guards)
+
+<a id="src-product-partial-capacity"></a>
+- [Partial product declared capacity](sources/group-and-iteration-probes.md#src-product-partial-capacity)

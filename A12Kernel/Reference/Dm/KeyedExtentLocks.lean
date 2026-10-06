@@ -303,14 +303,15 @@ example : partialVerdict "[Packages/Header For Key] == 1"
 example : partialVerdict "FieldFilled(Out) Or [Packages/Header For Key] == 1" [] = some (.fired .value) ∧
     partialVerdict "[Packages/Header For Key] == 1 Or FieldFilled(Out)" [] = some (.fired .value) := by native_decide
 
-private def partialUnsupported (expression : String) : Bool :=
-  match partialOutcome expression [relevant ["Packages"], relevant ["Key"]] with
-  | some (.error .unsupportedCondition) => true
-  | _ => false
+example : partialVerdict "SumOfProducts(Packages*/Header,Packages*/Header) == 2"
+    [relevant ["Packages"]] = some (.fired .omission) ∧
+    partialVerdict "SumOfProducts(Packages*/Header,Packages*/Header) == 2"
+      [concreteRow 1, concreteRow 2] = some .unknown ∧
+    partialVerdict "SumOfProducts(Packages*/Header,Packages*/Header) == 2"
+      [concreteRow 1, concreteRow 2, concreteRow 3] = some (.fired .omission) := by native_decide
 
-example : partialUnsupported "SumOfProducts(Packages*/Header,Packages*/Header) == 2" = true := by native_decide
-
-example : partialUnsupported "SumOfProducts(Packages*/Header,Packages*/Header) == 2 Or FieldFilled(Out)" = true := by native_decide
+example : partialVerdict "SumOfProducts(Packages*/Header,Packages*/Header) == 2 Or FieldFilled(Out)"
+    [] = some (.fired .value) := by native_decide
 
 example : partialVerdict "FirstFilledValue(Packages/Items*/Weight For Key) == 2"
     [relevant ["Key"], relevant ["Packages", "Code"], relevant ["Packages", "Items", "Weight"]] = some (.fired .value) ∧
