@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.NumericValidation.Resolution
 import A12Kernel.Elaboration.NumericValidation.Expression
 import A12Kernel.Elaboration.PartialGroupCount
+import A12Kernel.Elaboration.PartialSemanticIndex
 
 /-! # Checked numeric-validation evaluation -/
 
@@ -538,6 +539,13 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
     Except CheckedAddressingError
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
   match atom with
+  | .indexed source => do
+      let document ← match context.input with
+        | .checked document | .partialView document _ => pure document
+        | .legacy _ _ => throw (.checkedDocumentRequired source.group.path)
+      match ← source.toCheckedSemanticIndexSource.observePartialDocument document scope context.outer context.readPartialCell with
+      | none => pure (.error .nonRelevant)
+      | some observation => pure ((observation.asDirectNumericComparisonOperand source.field.info).toValidationArithmetic)
   | .ordinary source =>
       if source.allRelevant isRelevant then
         resolveAddressedOrdinary source context
@@ -603,7 +611,7 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
           | .ok (.evaluated result) => pure result.asValidationOperand.toValidationArithmetic
   | .valueCount _ _ | .tokenValueCount _
   | .booleanValueCount _ | .sumOfProducts _
-  | .indexed _ | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ =>
+  | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ =>
       pure (.error .groupState)
 
 /-- Evaluate a partial addressed numeric comparison. `none` means the atom family or filter shape is structurally unsupported; a reached relevance failure is numeric UNKNOWN. The caller must apply the rule-wide `Having` skip first. -/

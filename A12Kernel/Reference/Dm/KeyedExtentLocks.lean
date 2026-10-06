@@ -16,17 +16,18 @@ private def model : FlatModel := {
     { level := 10, path := ["Form", "Packages"], repeatability := some 3, indexField := some 1 },
     { level := 20, path := ["Form", "Packages", "Items"], repeatability := some 2 }] }
 
-private def input (key : String) (duplicate : Bool := false) (bad : Bool := false) (invalidIndex : Bool := false) (emptySecond : Bool := false) : Option (CheckedDocument model) := do
+private def input (key : String) (duplicate : Bool := false) (bad : Bool := false) (invalidIndex : Bool := false) (emptySecond : Bool := false) (sourceModel : FlatModel := model) (header : String := "1") : Option (CheckedDocument sourceModel) := do
+  let numericIndex := (sourceModel.lookupUniqueId 1).toOption.any (fun field => field.policy.kind.surfaceKind == .number)
   let package (key : String) (weights : List String) := Lean.Json.mkObj [
-    ("Code", .str key), ("Header", .str "1"),
+    ("Code", .str key), ("Header", .str header),
     ("Items", .arr (weights.map fun weight => Lean.Json.mkObj [
       ("Weight", .str weight), ("Quantity", .str "2")]).toArray)]
   let data := Lean.Json.mkObj [("Form", Lean.Json.mkObj [
     ("Key", .str key), ("Out", .str "99"),
-    ("Packages", .arr #[package "P1" ["2", if bad then "bad" else "5"], package (if invalidIndex then "" else if duplicate then "P1" else "P2") (if emptySecond then [] else ["11"])])])]
-  let dm : DmModel := { flat := model, computations := [], rules := [], conditionLanguage := "en_US", refusals := [] }
+    ("Packages", .arr #[package (if numericIndex then "1" else "P1") ["2", if bad then "bad" else "5"], package (if invalidIndex then "" else if duplicate then (if numericIndex then "1" else "P1") else (if numericIndex then "2" else "P2")) (if emptySecond then [] else ["11"])])])]
+  let dm : DmModel := { flat := sourceModel, computations := [], rules := [], conditionLanguage := "en_US", refusals := [] }
   let input ← (readDocument dm data).toOption
-  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler model).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler sourceModel).toOption
   (checkDocument prepared "en_US" input.data).toOption
 
 private def validationVerdict (expression : String) (key : String := "P1") (duplicate : Bool := false) (bad : Bool := false) (invalidIndex : Bool := false) (emptySecond : Bool := false) : Option Verdict := do
@@ -227,5 +228,77 @@ example : computation "NumberOfValueInFields(2 In Packages/Items* For Key)" "Fie
 example : ["Sum", "MinValue", "MaxValue"].all (fun operator =>
     validationVerdict (operator ++ "(Packages/Items*/Weight For Key) == 0") "missing" == some (.fired .value) &&
     validationVerdict (operator ++ "(Packages/Items*/Weight For Key) == 0") "P2" false false false true == some (.fired .omission)) := by native_decide
+
+private def partialOutcome (expression : String) (coverage : List RelevantEntityPattern)
+    (key : String := "P1") (duplicate : Bool := false) (numericIndex : Bool := false) (header : String := "1") (invalidIndex : Bool := false) : Option (Except OrdinaryRepeatableRuleEvaluationError PartialRuleOutcome) := do
+  let sourceModel := if numericIndex then { model with fields := model.fields.map fun field =>
+    if field.id == 1 || field.id == 5 then { field with policy := { kind := .number { scale := 0, signed := true } } }
+    else field } else model
+  let document ← input (if numericIndex then key.replace "P" "" else key) duplicate false invalidIndex false sourceModel header
+  let parsed ← (parseText .english ("FieldFilled(Out) And (" ++ expression ++ ")")).toOption
+  let condition ← (lowerCondition sourceModel ["Form"] false parsed.body).toOption
+  let rule ← (assembleResolvedValidationRule sourceModel condition 6 "PARTIAL_INDEX" .error { parts := [] }).toOption
+  pure (rule.evalAddressedPartial document (.partialSet (
+    { path := ["Form", "Out"], indices := [.all, .all] } :: coverage)))
+
+private def partialVerdict (expression : String) (coverage : List RelevantEntityPattern)
+    (key : String := "P1") (duplicate : Bool := false) (numericIndex : Bool := false) (header : String := "1") (invalidIndex : Bool := false) : Option Verdict := do
+  let result ← (← partialOutcome expression coverage key duplicate numericIndex header invalidIndex).toOption
+  match result with | .evaluated result => some result.verdict | .skipped => none
+
+private def relevant (path : List String) : RelevantEntityPattern :=
+  { path := "Form" :: path, indices := (List.range (path.length + 1)).map fun _ => .all }
+
+private def concreteRow (row : Nat) : RelevantEntityPattern :=
+  { path := ["Form", "Packages"], indices := [.all, .concrete row] }
+
+example : ["FieldFilled(Packages/Header For \"P1\")", "[Packages/Header For \"P1\"] == 1",
+    "GroupFilled(Packages For \"P1\")"].all (fun expression =>
+      partialVerdict expression [relevant ["Packages"]] == some (.fired .value) &&
+      partialVerdict expression [concreteRow 1] == some (.fired .value) &&
+      partialVerdict expression [relevant ["Packages", "Header"]] == some .unknown) = true := by native_decide
+
+example : partialVerdict "GroupFilled(Packages For \"P1\")" [relevant ["Packages", "Code"]] = some (.fired .value) ∧
+    partialVerdict "FieldFilled(Packages/Header For \"P1\")" [relevant ["Packages", "Code"]] = some .unknown := by native_decide
+
+example : ["FieldNotFilled(Packages/Header For \"missing\")", "[Packages/Header For \"missing\"] == 0",
+    "GroupNotFilled(Packages For \"missing\")"].all (fun expression =>
+      partialVerdict expression [relevant ["Packages"]] == some (.fired .omission) &&
+      partialVerdict expression [concreteRow 1, concreteRow 2] == some .unknown &&
+      partialVerdict expression [relevant ["Packages", "Code"], concreteRow 1, concreteRow 2] == some .unknown) = true := by native_decide
+
+example : partialVerdict "FieldFilled(Packages/Header For Key)" [relevant ["Packages"]] = some .unknown ∧
+    partialVerdict "FieldFilled(Packages/Header For Key)" [relevant ["Packages"], relevant ["Key"]] = some (.fired .value) ∧
+    partialVerdict "FieldFilled(Packages/Header For \"P1\")" [concreteRow 1] "P1" true = some (.fired .value) ∧
+    partialVerdict "FieldFilled(Packages/Header For \"P1\")" [relevant ["Packages"]] "P1" true = some .unknown := by native_decide
+
+example : [false, true].all (fun numericIndex =>
+    let key := if numericIndex then "1" else "P1"
+    let missing := if numericIndex then "9" else "missing"
+    let selected := "[Packages/Header For \"" ++ key ++ "\"] == 1"
+    let absent := "[Packages/Header For \"" ++ missing ++ "\"] == 0"
+    partialVerdict selected [relevant ["Packages", "Code"], relevant ["Packages", "Header"]] "P1" false numericIndex == some (.fired .value) &&
+    partialVerdict absent [relevant ["Packages", "Code"], relevant ["Packages", "Header"]] "P1" false numericIndex == some (.fired .omission) &&
+    partialVerdict absent [concreteRow 1, concreteRow 2, relevant ["Packages", "Header"]] "P1" false numericIndex == some .unknown &&
+    partialVerdict "[Packages/Header For Key] == 1" [relevant ["Packages"], relevant ["Key"]] "P1" false numericIndex == some (.fired .value)) = true := by native_decide
+
+example : partialVerdict "[Packages/Header For Key] == 1"
+    [relevant ["Packages"], relevant ["Key"]] "bad" false true = some .unknown ∧
+    partialVerdict "FieldFilled(Packages/Header For \"P1\")" [relevant ["Packages"]] "P1" false false "bad" = some .unknown ∧
+    partialVerdict "FieldNotFilled(Packages/Header For \"P1\")" [relevant ["Packages"]] "P1" false false "" = some (.fired .omission) ∧
+    partialVerdict "FieldFilled(Packages/Header For \"P1\")" [relevant ["Packages"]] "P1" false false "1" true = some (.fired .value) ∧
+    partialVerdict "FieldNotFilled(Packages/Header For \"missing\")" [relevant ["Packages"]] "P1" false false "1" true = some .unknown := by native_decide
+
+example : partialVerdict "FieldFilled(Out) Or [Packages/Header For Key] == 1" [] = some (.fired .value) ∧
+    partialVerdict "[Packages/Header For Key] == 1 Or FieldFilled(Out)" [] = some (.fired .value) := by native_decide
+
+private def partialUnsupported (expression : String) : Bool :=
+  match partialOutcome expression [relevant ["Packages"], relevant ["Key"]] with
+  | some (.error .unsupportedCondition) => true
+  | _ => false
+
+example : partialUnsupported "NumberOfValueInFields(2 In Packages/Items* For Key) == 3" = true := by native_decide
+
+example : partialUnsupported "NumberOfValueInFields(2 In Packages/Items* For Key) == 3 Or FieldFilled(Out)" = true := by native_decide
 
 end A12Kernel.Dm.KeyedExtentLocks

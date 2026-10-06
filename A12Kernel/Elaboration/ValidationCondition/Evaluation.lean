@@ -62,6 +62,7 @@ def evalSelected (context : ValidationEvaluationContext)
 
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
+  | .indexedFieldPresence _ _ | .keyedGroupPresence _ _ => true
   | .firstFilledComparison comparison => !comparison.hasHaving
   | .tokenComparison comparison => !comparison.hasHaving
   | .flat _ | .groupPresence _ _ | .repeatableFieldPresence _ _ => true
@@ -180,6 +181,19 @@ def evalAddressedPartial?
       some (evalStringExpressionAddressed context isRelevant comparison)
   | .constructedDateValidity operation source =>
       some (evalConstructedDateAddressed context isRelevant operation source)
+  | .indexedFieldPresence operator source =>
+      some do
+        let document ← match context.input with
+          | .checked document | .partialView document _ => pure document
+          | .legacy _ _ => throw (.checkedDocumentRequired source.group.path)
+        let value ← source.observePartialDocument document scope context.outer context.readPartialCell
+        pure (value.map operator.eval |>.getD .unknown)
+  | .keyedGroupPresence operator source =>
+      some do
+        let document ← match context.input with
+          | .checked document | .partialView document _ => pure document
+          | .legacy _ _ => throw (.checkedDocumentRequired source.groupPath)
+        source.partialGroupPresence operator document scope context.outer context.readPartialCell
   | .repeatableFieldPresence operator declaration =>
       some (if isRelevant declaration.id then
         context.readPartialCell context.outer declaration.id |>.map fun cell? =>

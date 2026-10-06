@@ -390,7 +390,8 @@ def checkParallelIndexGroups (model : FlatModel)
 namespace CheckedIndexPreliminary
 
 def resolveIndexColumn (preliminary : CheckedIndexPreliminary model)
-    (group : RepeatableGroupDecl) (outer : Env := []) :
+    (group : RepeatableGroupDecl) (outer : Env := [])
+    (includeAddress : CellAddr → Bool := fun _ => true) :
     Except CheckedIndexColumnError (ResolvedCheckedIndexColumn model) := do
   if hGroup : model.repeatableGroups.contains group = true then
     let indexId ← match group.indexField with
@@ -404,7 +405,8 @@ def resolveIndexColumn (preliminary : CheckedIndexPreliminary model)
       let parentPath ←
         outer.pathForScope scope.dropLast |>.mapError .environment
       let rows := preliminary.base.source.instantiatedRows.filter fun row =>
-        row.group == group.level && row.path.dropLast == parentPath
+        row.group == group.level && row.path.dropLast == parentPath &&
+          includeAddress { field := declaration.id, path := row.path }
       let state ← preliminary.scanIndexRows group declaration scope rows {}
       pure {
         group
