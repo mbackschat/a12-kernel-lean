@@ -177,6 +177,19 @@ lake env lean A12Kernel/Conformance/CorrelationElaboration.lean
 
 Run `lake build` before handoff so the same examples also pass through the actual library import graph.
 
+### Exploratory Lean probes
+
+**Throwaway probes are piped, never written.** To check a constructor name, an operand's static legality, or one evaluation before committing to an expected value in a conformance case, stream the snippet in instead of creating a scratch file:
+
+```sh
+printf 'import A12Kernel.Semantics.NumericAggregate\nopen A12Kernel\n#eval repr (someQuery args)\n' \
+  | lake env lean /dev/stdin
+```
+
+Run it from the repository root so Lake resolves the package; a path outside the package loses the build search path. This leaves nothing to clean up, so it never creates an untracked project file and never needs a deletion. Use it before writing expected values rather than inferring a fixture's legality from a failing case: probe first, then write the case. `#eval` needs a `Repr` instance and aborts on a term that depends on `sorry`, so project a decidable view when the type has none.
+
+**When the probe's purpose is to produce a conformance case's expected values, put the `#eval` in that conformance module beside the fixture it will lock, then replace it with the `example`.** A piped probe is a *second* fixture, and a second fixture can differ from the one the case will use in a way neither file shows: a scratch projection that collapsed a row-level skip onto `notFired` produced expected values that the real module then rejected, costing a build round to attribute. Writing the probe where the case will live makes them the same definitions by construction. The piped form above stays right for the question it answers — a constructor name, an operand's legality, one evaluation — none of which is about a fixture you are also building.
+
 ## Reference-process harness and sample data
 
 [`A12Kernel/ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean) discovers the sibling `a12-kernel-reference` build artifact and invokes it as an operating-system process. It does not call `evaluateText` or any protocol decoder directly, so it covers executable wiring, arguments, stdin/stdout/stderr, and exit behavior in addition to JSON semantics. Lake's `needs` edge builds the tested executable first without making this gate part of the retained-kernel `lake test` claim.
