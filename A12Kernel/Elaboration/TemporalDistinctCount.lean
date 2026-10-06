@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.TemporalValuesNotUnique
+import A12Kernel.Elaboration.PartialSemanticIndex
 
 /-! # Checked temporal `NumberOfDifferentValues`
 
@@ -673,6 +674,68 @@ def evaluate (operation : CheckedTemporalDistinctCountRun model)
           hasNonRelevant := core.hasNonRelevant } : ResolvedValueListSide operation.arm.kind)
   pure (evalDistinctCountAggregate
     (sides.foldl ResolvedValueListSide.append ResolvedValueListSide.empty))
+
+/-- Partial distinct counts require the aggregate's reduced-universal extent gate before
+reading targets (spec/10 §5), then retain each declaration's decoded identity. -/
+private def resolvePartialSide (operation : CheckedTemporalDistinctCountRun model)
+    (operand : CheckedTemporalDistinctCountOperand model)
+    (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    Except CheckedAddressingError
+      (Sum (ResolvedValueListSide operation.arm.kind) PartialValidationAggregateResult) := do
+  let ordinary := fun (declarations : List FlatFieldDecl) (bound : Nat) => do
+    if !declarations.all (fun declaration => scope.coversAggregateExtent model declaration.path
+        (declaration.repeatableScope.take bound) (declaration.repeatableScope.drop bound) outer) then
+      return none
+    let (addresses, tail) ← model.groupOperandReads document.source.toDocument outer bound declarations
+      (·.repeatableScope) |>.mapError CheckedAddressingError.addressing
+    pure (some (.value { addresses, hasUninstantiatedTail := tail, extentRelevant := true }) :
+      Option (CellObservation PartialSelectedExtent))
+  let selection ← match operand with
+    | .selected source _ | .slot (.selected source _) =>
+        resolvePartialSelectedExtent source.source document scope outer read
+          (fun declaration bound reopened environment =>
+            scope.coversAggregateExtent model declaration.path bound reopened environment) true
+    | .group source => ordinary source.declarations source.source.boundLevelCount
+    | .slot (.group source) => ordinary source.declarations source.source.boundLevelCount
+    | .slot (.field source) => ordinary [source.declaration] source.declaration.repeatableScope.length
+    | .slot (.star path source _) => ordinary [source.declaration] path.path.firstStar
+  match selection with
+  | none => pure (.inr .nonRelevant)
+  | some (.unknown cause) | some (.poison cause) => pure (.inr (.evaluated (.unknown cause)))
+  | some .empty => pure (.inl { cells := [.empty], hasUninstantiatedTail := false, hasHaving := false })
+  | some (.value extent) =>
+      let mut reversed := []
+      for (declaration, environment) in extent.addresses do
+        let some cell ← read environment declaration.id
+          | throw (.partialUnavailable environment declaration.id)
+        let some field := declaration.toTemporalUniquenessField?
+          | throw (.checkedDocumentRequired declaration.path)
+        match temporalDistinctCountCell .validation field.components model.baseYear operation.arm cell with
+        | .unknown cause => return .inr (.evaluated (.unknown cause))
+        | cell => reversed := cell :: reversed
+      let emptyScalar := match operand with
+        | .selected source _ | .slot (.selected source _) =>
+            match source.source with | .inl _ => true | .inr _ => false
+        | _ => false
+      pure (.inl {
+        cells := if emptyScalar && extent.addresses.isEmpty then [.empty] else reversed.reverse
+        hasUninstantiatedTail := extent.hasUninstantiatedTail, hasHaving := false })
+
+/-- Count partial temporal identities through the existing ordered aggregate scan. Whole-rule
+filters skip first; unavailability remains separate from formal causes (spec/10 §5). -/
+def evaluatePartial (operation : CheckedTemporalDistinctCountRun model)
+    (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    Except CheckedAddressingError PartialValidationAggregateResult := do
+  if operation.source.hasHaving then return .skippedHaving
+  match ← scanResolvedValueListOperands
+      (operation.resolvePartialSide · document outer scope read)
+      (fun cause => .evaluated (.unknown cause))
+      (fun accumulated _ side => accumulated.append side)
+      operation.source.operands (ResolvedValueListSide.empty (kind := operation.arm.kind)) with
+  | .inl side => pure (.evaluated (evalDistinctCountAggregate side))
+  | .inr result => pure result
 
 /-- Resolve typed identities through the caller's current computation view. The group walk and
     filtered-star scan are shared with the other list consumers; only the temporal projection is

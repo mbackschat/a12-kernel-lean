@@ -629,8 +629,11 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
           | .error error => throw error
           | .ok .nonRelevant => pure (.error .nonRelevant)
           | .ok (.evaluated result) => pure result.asValidationOperand.toValidationArithmetic
+  | .temporalDistinctCount operation =>
+      resolvePartialValueCount context fun document =>
+        operation.evaluatePartial document context.outer scope context.readPartialCell
   | .booleanValueCount _ | .sumOfProducts _
-  | .temporalPart _ | .tokenDistinctCount _ | .temporalDistinctCount _ =>
+  | .temporalPart _ | .tokenDistinctCount _ =>
       pure (.error .groupState)
 
 /-- Evaluate a partial addressed numeric comparison. `none` means the atom family or filter shape is structurally unsupported; a reached relevance failure is numeric UNKNOWN. The caller must apply the rule-wide `Having` skip first. -/

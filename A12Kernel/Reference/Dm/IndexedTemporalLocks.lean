@@ -36,6 +36,7 @@ private structure Scenario where
   secondFormat : Option String := none
   partialCoverage : Option (List RelevantEntityPattern) := none
   partialMode : TemporalPartialMode := .full
+  validSecond : Bool := false
 
 private def input (low high : String) (scenario : Scenario) : Lean.Json :=
   let row (key a b : String) (children : List String) := Lean.Json.mkObj [
@@ -43,7 +44,8 @@ private def input (low high : String) (scenario : Scenario) : Lean.Json :=
     ("Children", .arr (children.map fun value => Lean.Json.mkObj [("Value", .str value)]).toArray)]
   Lean.Json.mkObj [("Form", Lean.Json.mkObj [
     ("Out", .str "bad"), ("Flag", .str "99"), ("Low", .str low), ("High", .str high), ("Key", .str scenario.key),
-    ("Rows", .arr #[row "R1" (scenario.firstA.getD low) high (scenario.children.getD [high, low]), row scenario.secondCode "bad" "bad" ["bad"]])])]
+    ("Rows", .arr #[row "R1" (scenario.firstA.getD low) high (scenario.children.getD [high, low]), row scenario.secondCode (if scenario.validSecond then low else "bad")
+      (if scenario.validSecond then high else "bad") (if scenario.validSecond then [low] else ["bad"])])])]
 
 private def evaluate (kind : TemporalKind) (components : TemporalComponents) (format low high expression : String)
     (computation : Bool) (guard : Option String := none) (scenario : Scenario := {}) : Option (Sum Verdict String) := do
@@ -405,7 +407,8 @@ private inductive PartialReadChange where
   | structural
 
 private def partialReadback (expression : String) (field : FieldId) (change : PartialReadChange)
-    (partialMode : TemporalPartialMode := .full) : Option (Sum Verdict (List String)) := do
+    (partialMode : TemporalPartialMode := .full) (structuralField : Option FieldId := none) :
+    Option (Sum Verdict (List String)) := do
   let sourceModel : FlatModel := { (model .date .fullDate "yyyy-MM-dd") with
     fields := (model .date .fullDate "yyyy-MM-dd").fields.map fun declaration =>
       { declaration with temporalTargetPolicy := declaration.temporalTargetPolicy.map fun policy => { policy with partialMode } } }
@@ -422,7 +425,8 @@ private def partialReadback (expression : String) (field : FieldId) (change : Pa
   let context : AddressedValidationEvaluationContext sourceModel := {
     scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }, outer := []
     input := .partialView document fun row current =>
-      if current != field then (fun addressed => some addressed.cell) <$> document.addressedCell row current
+      if structuralField == some current then .error (.checkedDocumentRequired ["injected"])
+      else if current != field then (fun addressed => some addressed.cell) <$> document.addressedCell row current
       else match change with
       | .unchanged => (fun addressed => some addressed.cell) <$> document.addressedCell row current
       | .unavailable => pure none
@@ -483,5 +487,99 @@ example : [PartialReadChange.unchanged, .keyText "R2", .unavailable, .unavailabl
 example : partialReadback "[Rows/Amount For Key] == 2" 4 .unchanged = some (.inl .notFired) ∧
     partialReadback "FieldValuesNotUnique(Rows/Body For Key)" 4 .unchanged = some (.inl (.fired .value)) ∧
     partialReadback "FieldValuesNotUnique(Rows/Body For Key)" 4 .malformed = some (.inl .notFired) := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    ["Low,High", "Rows*/Body", "Rows/Body For Key", "Rows/Children*/Value For Key",
+      "Rows/Children* For Key", "Rows/Body/A For Key,Rows/Body/B For Key"].all fun operands =>
+      let count := "NumberOfDifferentValues(" ++ operands ++ ")"
+      evaluate kind components format low high (count ++ " == 2") false none
+        { partialCoverage := some [relevant ["Low"], relevant ["High"], relevant ["Key"], relevant ["Rows"]],
+          secondCode := "R2", children := some [low, high] } ==
+        evaluate kind components format low high (count ++ " == 2") false none
+          { secondCode := "R2", children := some [low, high] }) = true := by native_decide
+
+example : evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03"
+    "NumberOfDifferentValues(Rows/Children*/Value For Key) == 2" false none
+    { partialCoverage := some [relevant ["Key"], relevant ["Rows", "Code"], concreteChild 1, concreteChild 2] } =
+      some (.inl .unknown) := by native_decide
+
+example : partialReadback "NumberOfDifferentValues(Rows/Body For Key) == 2" 6 .copyLow =
+    some (.inl (.fired .value)) := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    ["Low,High", "Rows*/Body", "Rows*/Children*/Value", "Rows*/Children*", "Rows/Body For Key",
+      "Rows/Children*/Value For Key", "Rows/Children* For Key",
+      "Rows/Body/A For Key,Rows/Body/B For Key"].all fun operands =>
+      let expression := "NumberOfDifferentValues(" ++ operands ++ ") == 2"
+      let scenario : Scenario := { validSecond := true }
+      let full := evaluate kind components format low high expression false none scenario
+      let expected := if operands == "Low,High" || operands == "Rows/Body For Key" ||
+          operands == "Rows/Body/A For Key,Rows/Body/B For Key" then Polarity.value else .omission
+      full == some (.inl (.fired expected)) &&
+      evaluate kind components format low high expression false none
+        { scenario with partialCoverage := some [relevant ["Low"], relevant ["High"], relevant ["Key"], relevant ["Rows"]] } == full) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    ["Rows/Body For Key", "Rows/Children*/Value For Key", "Rows/Children* For Key",
+      "Rows/Body/A For Key,Rows/Body/B For Key"].all fun operands =>
+      let expression := "NumberOfDifferentValues(" ++ operands ++ ") == 0"
+      let full := evaluate kind components format low high expression false none { key := "missing" }
+      full == some (.inl (.fired (if operands == "Rows/Children*/Value For Key" ||
+          operands == "Rows/Children* For Key" then .value else .omission))) &&
+      evaluate kind components format low high expression false none
+        { key := "missing", partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } == full) = true := by native_decide
+
+example : ["Rows/Body For Key", "Rows/Body/A For Key,Rows/Body/B For Key"].all (fun operands =>
+    let expression := "NumberOfDifferentValues(" ++ operands ++ ") == 2"
+    partialReadback expression 6 .malformed .full (some 7) == some (.inl .unknown) &&
+    partialReadback expression 7 .malformed .full (some 6) == some (.inr ["injected"]) &&
+    [PartialReadChange.unavailable, .unavailableError].all (fun change =>
+      partialReadback expression 6 change == some (.inl .unknown))) = true := by native_decide
+
+example : evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "01.01.2024"
+    "NumberOfDifferentValues(Rows/Body For Key) == 1" false none
+    { secondFormat := some "dd.MM.yyyy", partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } =
+      some (.inl (.fired .value)) := by native_decide
+
+example : [none, some 2024].all (fun baseYear =>
+    evaluate .date { TemporalComponents.fullDate with year := false } "MM-dd" "01-03" "03-02"
+      "NumberOfDifferentValues(Rows/Body For Key) == 2" false none
+      { baseYear, partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } ==
+        some (.inl (.fired .value))) = true := by native_decide
+
+example : evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03"
+    "FieldFilled(Flag) Or NumberOfDifferentValues(Rows*/Body/A Having (FieldFilled(Rows/Body/A))) == 2" false none
+    { partialCoverage := some [relevant ["Rows"]] } = some (.inr "skipped") := by native_decide
+
+example : ["Rows/Body For Key", "Rows/Children*/Value For Key", "Rows/Children* For Key"].all (fun operands =>
+    let expression := "NumberOfDifferentValues(" ++ operands ++ ") == 2"
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03" expression false none
+      { partialCoverage := some [relevant ["Rows"]] } == some (.inl .unknown) &&
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03" expression false none
+      { secondCode := "R1", partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } == some (.inl .unknown) &&
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03" expression false none
+      { secondCode := "", partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } ==
+        some (.inl (.fired (if operands == "Rows/Body For Key" then .value else .omission)))) = true := by native_decide
+
+example : ["Rows/Children*/Value For Key", "Rows/Children* For Key"].all (fun operands =>
+    let expression := "NumberOfDifferentValues(" ++ operands ++ ") == 0"
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03" expression false none
+      { children := some [], partialCoverage := some [relevant ["Key"], relevant ["Rows"]] } ==
+        some (.inl (.fired .omission))) = true := by native_decide
+
+example : ["Rows/Children*/Value For Key", "Rows/Children* For Key", "Rows*/Children*/Value"].all (fun operands =>
+    let expression := "NumberOfDifferentValues(" ++ operands ++ ") == 2"
+    let fieldWildcard : RelevantEntityPattern := {
+      path := ["Form", "Rows", "Children", "Value"], indices := [.all, .all, .all, .concrete 1] }
+    let concreteField : RelevantEntityPattern := {
+      fieldWildcard with indices := [.all, .concrete 1, .concrete 1, .concrete 1] }
+    let coverage := [relevant ["Key"], relevant ["Rows", "Code"], fieldWildcard]
+    let concreteGroup : RelevantEntityPattern := {
+      path := ["Form", "Rows", "Children"], indices := [.all, .concrete 1, .concrete 1] }
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03" expression false none
+      { validSecond := true, partialCoverage := some (concreteGroup :: coverage) } == some (.inl .unknown) &&
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03" expression false none
+      { validSecond := true, partialCoverage := some (concreteField :: coverage) } ==
+        some (.inl (.fired .omission))) = true := by native_decide
 
 end A12Kernel.Dm.IndexedTemporalLocks
