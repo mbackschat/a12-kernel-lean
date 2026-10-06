@@ -90,10 +90,52 @@ def referencesField (group : CheckedBooleanValueCountGroup model expected)
 
 end CheckedBooleanValueCountGroup
 
+/-- The selected extent retains every declaration; the authored constant certifies the whole
+Boolean/Confirm expansion before any runtime cell is counted (spec/04 value counts). -/
+structure CheckedSelectedBooleanCountEntity (model : FlatModel) (expected : Bool) where
+  private mk ::
+  source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)
+  kindAllowed : (match source with
+    | .inl source => [source.targetDeclaration]
+    | .inr source => source.declarations).all (fun d => booleanValueCountKindAllowed expected d.policy.kind) = true
+  nonempty : (match source with
+    | .inl source => [source.targetDeclaration]
+    | .inr source => source.declarations).isEmpty = false
+
+namespace CheckedSelectedBooleanCountEntity
+
+def declarations (source : CheckedSelectedBooleanCountEntity model expected) : List FlatFieldDecl :=
+  match source.source with | .inl source => [source.targetDeclaration] | .inr source => source.declarations
+
+def path (source : CheckedSelectedBooleanCountEntity model expected) : List String :=
+  match source.source with | .inl source => source.targetDeclaration.path | .inr source => source.entityPath
+
+def isAlreadyMany (source : CheckedSelectedBooleanCountEntity model expected) : Bool :=
+  match source.source with | .inl _ => false | .inr _ => true
+
+def referencesField (source : CheckedSelectedBooleanCountEntity model expected) (field : FieldId) : Bool :=
+  match source.source with | .inl source => source.referencesField field | .inr source => source.referencesField field
+
+def certify (expected : Bool)
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
+    Except BooleanValueCountElabError (CheckedSelectedBooleanCountEntity model expected) := do
+  let declarations := match source with | .inl source => [source.targetDeclaration] | .inr source => source.declarations
+  if allowed : declarations.all (fun d => booleanValueCountKindAllowed expected d.policy.kind) = true then
+    if nonempty : declarations.isEmpty = false then
+      pure { source, kindAllowed := allowed, nonempty }
+    else throw (.groupExpansionEmpty (match source with | .inl source => source.targetDeclaration.path | .inr source => source.entityPath))
+  else
+    match declarations.find? (fun d => !booleanValueCountKindAllowed expected d.policy.kind) with
+    | some d => throw (.fieldKindMismatch d.path expected d.policy.kind.surfaceKind)
+    | none => throw .incoherentCore
+
+end CheckedSelectedBooleanCountEntity
+
 /-- One checked Boolean/Confirm entity-list operand. -/
 inductive CheckedBooleanValueCountOperand (model : FlatModel)
     (expected : Bool) where
   | field (source : CheckedBooleanValueCountField model expected)
+  | selected (source : CheckedSelectedBooleanCountEntity model expected)
   | star (source : CheckedBooleanValueCountStarSource model expected)
   | group (source : CheckedBooleanValueCountGroup model expected)
 
@@ -102,30 +144,32 @@ namespace CheckedBooleanValueCountOperand
 def declarations :
     CheckedBooleanValueCountOperand model expected → List FlatFieldDecl
   | .field source => [source.declaration]
+  | .selected source => source.declarations
   | .star source => [source.source.declaration]
   | .group source => source.fields
 
 def directField? :
     CheckedBooleanValueCountOperand model expected → Option FlatFieldDecl
   | .field source => some source.declaration
-  | .star _ | .group _ => none
+  | .selected _ | .star _ | .group _ => none
 
 def directFieldId? :
     CheckedBooleanValueCountOperand model expected → Option FieldId
   | .field source => some source.declaration.id
-  | .star _ | .group _ => none
+  | .selected _ | .star _ | .group _ => none
 
 def isAlreadyMany : CheckedBooleanValueCountOperand model expected → Bool
   | .field _ => false
+  | .selected source => source.isAlreadyMany
   | .star _ | .group _ => true
 
 def groupSlot? : CheckedBooleanValueCountOperand model expected →
     Option (CheckedBooleanValueCountGroup model expected)
   | .group source => some source
-  | .field _ | .star _ => none
+  | .field _ | .selected _ | .star _ => none
 
 def hasHaving : CheckedBooleanValueCountOperand model expected → Bool
-  | .field _ => false
+  | .field _ | .selected _ => false
   | .star source => source.filter.isSome
   | .group _ => false
 
@@ -137,6 +181,7 @@ def referencesField (checked :
     Bool :=
   match checked with
   | .field source => source.declaration.id == field
+  | .selected source => source.referencesField field
   | .star source =>
       source.source.declaration.id == field ||
         match source.filter with
@@ -183,8 +228,8 @@ private def certifyBooleanValueCountOperand (model : FlatModel)
     ResolvedFieldEntityOperand model →
       Except BooleanValueCountElabError
         (CheckedBooleanValueCountOperand model expected)
-  | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
-  | .keyed source => throw (.shape (.unsupportedIndexedOperand source.entityPath))
+  | .indexed source => .selected <$> CheckedSelectedBooleanCountEntity.certify expected (.inl source)
+  | .keyed source => .selected <$> CheckedSelectedBooleanCountEntity.certify expected (.inr source)
   | .field declaration _ =>
       if hKind :
           booleanValueCountKindAllowed expected declaration.policy.kind = true then
@@ -383,7 +428,7 @@ def elaborateBooleanValueCountFixedGroupSource (model : FlatModel)
                   modelWellFormed := shape.modelWellFormed }
               else throw .incoherentCore
           | .starred _ | .starredPresence _ => throw .incoherentCore
-      | .field _ | .star _ => throw .incoherentCore
+      | .field _ | .selected _ | .star _ => throw .incoherentCore
   | _, _ => throw .incoherentCore
 
 /-- Resolve the measured two-field fixed `True` Boolean/Confirm group computation. -/
@@ -419,7 +464,7 @@ def elaborateBooleanValueCountStarredGroupSource (model : FlatModel)
           pure { group, measuredShape := hMeasured, modelWellFormed := hModel }
         else throw .incoherentCore
       else throw .incoherentCore
-  | .field _ | .star _ => throw .incoherentCore
+  | .field _ | .selected _ | .star _ => throw .incoherentCore
 
 /-- Resolve a measured one-axis Boolean/Confirm `True` group computation. -/
 def elaborateTrueValueCountStarredGroupSource (model : FlatModel)
@@ -441,15 +486,34 @@ def elaborateFalseValueCountStarredGroupSource (model : FlatModel)
 def booleanValueCountToken (expected : Bool) : String :=
   if expected then "true" else "false"
 
-/-- Project one already-checked Boolean/Confirm cell to the exact runtime token domain without consulting stored text. Empty remains unfilled; an impossible false Confirm fails closed. -/
-def booleanValueCountCellAt (phase : Phase)
-    (cell : CheckedCell) : ValueListCell .token :=
-  match observeCell phase cell with
+/-- Boolean/Confirm counting uses checked values, never stored or display tokens. -/
+def booleanValueCountObservation : CellObservation → ValueListCell .token
   | .empty => .empty
   | .value (.bool value) => .present (booleanValueCountToken value)
   | .value (.conf true) => .present (booleanValueCountToken true)
   | .value _ => .unknown .malformed
   | .unknown cause | .poison cause => .unknown cause
+
+/-- Project the phase observation; an impossible false Confirm fails closed. -/
+def booleanValueCountCellAt (phase : Phase) (cell : CheckedCell) : ValueListCell .token :=
+  booleanValueCountObservation (observeCell phase cell)
+
+namespace CheckedSelectedBooleanCountEntity
+
+def sideWith (source : CheckedSelectedBooleanCountEntity model expected) (phase : Phase)
+    (document : Document) (outer : Env) (direct : FieldId → CheckedCell)
+    (stored : FieldId → Option String) (read : Env → FieldId → CheckedCell)
+    (column : SemanticIndexColumnReader) : Except CheckedAddressingError (ResolvedValueListSide .token) :=
+  selectedValueListSideWith source.source phase document outer direct stored read column
+    (fun _ value => pure (booleanValueCountObservation value))
+
+def sideIn (source : CheckedSelectedBooleanCountEntity model expected) (phase : Phase)
+    (document : CheckedDocument model) (outer : Env) : Except CheckedAddressingError (ResolvedValueListSide .token) :=
+  source.sideWith phase document.source.toDocument outer document.flatContext.read
+    document.flatContext.storedText document.computationFillContext.read
+    (document.resolveSemanticIndexColumnWith document.read)
+
+end CheckedSelectedBooleanCountEntity
 
 /-- The group's cells on the reader route, read through a caller-supplied checked-cell view over the
 shared group walk `FlatModel.groupOperandReads`, as a Number group's are. -/
@@ -590,6 +654,7 @@ def resolvedValidationSide
     (world : Option World := none) :
     Except StarAddressingError (ResolvedValueListSide .token) :=
   match checked with
+  | .selected source => throw (.unsupportedGroupOperand source.path)
   | .field source => pure (directSideAt source .validation directRead)
   | .star source =>
       source.source.resolvedOptionalValidationHavingValueListSide (world := world)
@@ -604,10 +669,13 @@ def resolvedComputationSide
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
-    (world : Option World := none) :
+    (world : Option World := none)
+    (selectedRead : CheckedSelectedBooleanCountEntity model expected → Except StarAddressingError (ResolvedValueListSide .token) :=
+      fun source => .error (.unsupportedGroupOperand source.path)) :
     Except StarAddressingError
       (Sum (ResolvedValueListSide .token) NumericOperand) :=
   match checked with
+  | .selected source => .inl <$> selectedRead source
   | .field source =>
       pure (.inl (directSideAt source .computation directRead))
   | .star source => do
@@ -654,6 +722,7 @@ def resolvedCheckedValidationSide
     (world : Option World := none) :
     Except CheckedAddressingError (ResolvedValueListSide .token) := do
   let core ← match checked with
+    | .selected source => return ← source.sideIn .validation document outer
     | .field source =>
         document.resolveCheckedDirectEntityOperandCore source.declaration.id
     | .star source =>
@@ -665,7 +734,7 @@ def resolvedCheckedValidationSide
   let addressed := match checked with
     | .group _ => core.inCapacityAddressedCells
     | .star _ => core.inCapacityAddressedCells
-    | .field _ => core.addressedCells
+    | .field _ | .selected _ => core.addressedCells
   pure {
     cells := addressed.map fun cell =>
       booleanValueCountCellAt .validation cell.cell
@@ -705,12 +774,14 @@ def evaluateComputation (checked : CheckedBooleanValueCountSource model)
     (document : Document) (outer : Env)
     (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
-    (world : Option World := none) :
+    (world : Option World := none)
+    (selectedRead : CheckedSelectedBooleanCountEntity model checked.expected → Except StarAddressingError (ResolvedValueListSide .token) :=
+      fun source => .error (.unsupportedGroupOperand source.path)) :
     Except StarAddressingError NumericOperand :=
   evalResolvedValueCountOperands
     (booleanValueCountToken checked.expected) checked.operands fun operand =>
       operand.resolvedComputationSide (world := world) document outer directRead
-        filterRead starRead
+        filterRead starRead (selectedRead := selectedRead)
 
 end CheckedBooleanValueCountSource
 

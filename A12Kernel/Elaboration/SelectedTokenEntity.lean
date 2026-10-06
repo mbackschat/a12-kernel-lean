@@ -54,30 +54,11 @@ def sideWith (source : CheckedSelectedTokenEntity model) (phase : Phase)
     (document : Document) (outer : Env) (direct : FieldId → CheckedCell)
     (stored : FieldId → Option String) (read : Env → FieldId → CheckedCell)
     (column : SemanticIndexColumnReader) :
-    Except CheckedAddressingError (ResolvedValueListSide .token) := do
-  match source.source with
-  | .inl selected =>
-      let value ← selected.observeColumnWith phase column outer direct stored
-      pure {
-        cells := [source.first.operand.observedValueListCell value]
-        hasUninstantiatedTail := false, hasHaving := false }
-  | .inr selected =>
-      match ← selected.selectWith phase column outer direct stored with
-      | .empty =>
-          pure {
-            cells := []
-            hasUninstantiatedTail := match selected.target with
-              | .group _ => true | .star _ | .starredGroup _ => false
-            hasHaving := false }
-      | .unknown cause | .poison cause =>
-          pure { cells := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }
-      | .value environment =>
-          let rows ← (selected.rows document environment).mapError .addressing
-          let cells ← rows.flatMapM fun (declaration, environments, _) => do
-            let some slot := source.slots.find? (·.declaration.id == declaration.id)
-              | throw (.checkedDocumentRequired source.path)
-            pure (environments.map fun row => slot.operand.checkedValueListCellAt phase (read row declaration.id))
-          pure { cells, hasUninstantiatedTail := rows.any (·.2.2), hasHaving := false }
+    Except CheckedAddressingError (ResolvedValueListSide .token) :=
+  selectedValueListSideWith source.source phase document outer direct stored read column fun declaration value => do
+    let some slot := source.slots.find? (·.declaration.id == declaration.id)
+      | throw (.checkedDocumentRequired source.path)
+    pure (slot.operand.observedValueListCell value)
 
 def sideIn (source : CheckedSelectedTokenEntity model) (phase : Phase)
     (document : CheckedDocument model) (outer : Env) :

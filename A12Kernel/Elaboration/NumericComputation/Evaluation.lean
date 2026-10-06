@@ -521,6 +521,13 @@ def selectedTokenSide (context : NumericComputationEvaluationContext)
     (context.indexColumn?.getD context.scalar.semanticIndexColumnReader)
     |>.mapError (fun _ => .unsupportedGroupOperand source.path)
 
+def selectedBooleanCountSide (context : NumericComputationEvaluationContext)
+    (source : CheckedSelectedBooleanCountEntity model expected) : Except StarAddressingError (ResolvedValueListSide .token) :=
+  source.sideWith .computation context.document context.outer context.scalar.read
+    context.scalar.storedText context.starRead
+    (context.indexColumn?.getD context.scalar.semanticIndexColumnReader)
+    |>.mapError (fun _ => .unsupportedGroupOperand source.path)
+
 /-- Evaluate one model-checked atom against its complete direct/repeatable computation inputs. Addressing failures stay explicit and cannot collapse into a numeric value, clean absence, or formal poison. -/
 def readCheckedNumericComputationAtom
     (context : NumericComputationEvaluationContext) :
@@ -578,7 +585,8 @@ def readCheckedNumericComputationAtom
         |>.mapError NumericComputationFault.repeatableAddressing
   | .booleanValueCount source =>
       (source.evaluateComputation (world := context.scalar.world) context.document context.outer
-        context.scalar.read context.filterRead context.starRead).map
+        context.scalar.read context.filterRead context.starRead
+        (selectedRead := context.selectedBooleanCountSide)).map
           NumericOperand.toComputationResult
         |>.mapError NumericComputationFault.repeatableAddressing
   | .sumOfProducts source =>

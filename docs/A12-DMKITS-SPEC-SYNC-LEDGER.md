@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-06-02"></a>
+### SPEC-2026-10-06-02 — Boolean/Confirm partial value-count loop
+
+- `status`: pending
+- `delta`: extend the source-derived shared partial count-loop account to admitted Boolean/Confirm constants; their static kind/label gates precede token-count execution.
+- `basis`: [Boolean/Confirm count source route](sources/group-and-iteration-probes.md#src-boolean-value-count-partial-loop), kernel 30.8.1 at `cb66e51fa7ab90b650698f861bf670754e2e1e66`; source-only, no new runtime calibration.
+- `canonical`: [spec/10](../spec/10-validation-and-polarity.md), partial starred-count relevance.
+- `acceptance`: reconcile Boolean/Confirm routing through the String count entry and shared iterator/per-cell partial relevance. Preserve separate admission and mark the nonnumeric partial runtime matrices unmeasured. Introducing revision is the first commit containing this entry ID.
+
 <a id="spec-2026-10-06-01"></a>
 ### SPEC-2026-10-06-01 — reached custom-condition registration
 

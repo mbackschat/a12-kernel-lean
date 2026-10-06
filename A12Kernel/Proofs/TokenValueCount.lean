@@ -153,6 +153,12 @@ theorem checkedBooleanValueCount_false_fields_boolean
       cases kind : source.declaration.policy.kind <;>
         simp [booleanValueCountKindAllowed, kind] at allowed
       rfl
+  | selected source =>
+      intro declaration member
+      have allowed := List.all_eq_true.mp source.kindAllowed declaration member
+      cases kind : declaration.policy.kind <;>
+        simp [booleanValueCountKindAllowed, kind] at allowed
+      rfl
   | star source =>
       intro declaration member
       simp only [CheckedBooleanValueCountOperand.declarations,
@@ -192,5 +198,11 @@ theorem booleanValueCount_confirm_empty :
         (formalCheck { kind := .confirm } .presentEmpty) =
       .empty := by
   rfl
+
+/-- Selection cannot erase the cause before the common count fold observes it. -/
+theorem booleanValueCountObservation_preserves_cause (cause : FormalCause) :
+    booleanValueCountObservation (.unknown cause) = .unknown cause ∧
+      booleanValueCountObservation (.poison cause) = .unknown cause := by
+  exact ⟨rfl, rfl⟩
 
 end A12Kernel

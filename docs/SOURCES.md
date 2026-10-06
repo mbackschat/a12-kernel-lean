@@ -1428,21 +1428,23 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-filled-field-group-runtime"></a>
 - [Filled-field group-count runtime](sources/inbound-group-operand-batches.md#src-filled-field-group-runtime)
 <a id="src-group-operand-capacity-consumer-sweep"></a>
-- [Fixed-group over-limit extent across six carriers](sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)
+- [Fixed-group capacity: six carriers](sources/inbound-group-operand-batches.md#src-group-operand-capacity-consumer-sweep)
 <a id="src-starred-group-operand-extent"></a>
-- [Starred group operand extent and the malformed separator](sources/group-and-iteration-probes.md#src-starred-group-operand-extent)
+- [Starred groups: extent and malformed cells](sources/group-and-iteration-probes.md#src-starred-group-operand-extent)
 <a id="src-starred-field-operand-extent"></a>
-- [Starred field operand extent across the extrema, distinct count, and value count](sources/group-and-iteration-probes.md#src-starred-field-operand-extent)
+- [Starred fields: extrema and count extents](sources/group-and-iteration-probes.md#src-starred-field-operand-extent)
 <a id="src-token-starred-field-capacity"></a>
-- [Plain starred String value-count capacity](sources/group-and-iteration-probes.md#src-token-starred-field-capacity)
+- [String starred-count capacity](sources/group-and-iteration-probes.md#src-token-starred-field-capacity)
 <a id="src-boolean-starred-field-capacity"></a>
-- [Plain starred Boolean value-count capacity](sources/group-and-iteration-probes.md#src-boolean-starred-field-capacity)
+- [Boolean starred-count capacity](sources/group-and-iteration-probes.md#src-boolean-starred-field-capacity)
+<a id="src-boolean-value-count-partial-loop"></a>
+- [Boolean/Confirm partial counts](sources/group-and-iteration-probes.md#src-boolean-value-count-partial-loop)
 <a id="src-confirm-starred-field-capacity"></a>
-- [Plain starred Confirm value-count capacity and movement](sources/group-and-iteration-probes.md#src-confirm-starred-field-capacity)
+- [Confirm starred-count capacity and movement](sources/group-and-iteration-probes.md#src-confirm-starred-field-capacity)
 <a id="src-filtered-starred-field-capacity"></a>
-- [Filtered starred String, Boolean, and Confirm value-count capacity](sources/group-and-iteration-probes.md#src-filtered-starred-field-capacity)
+- [Filtered token/Boolean/Confirm count capacity](sources/group-and-iteration-probes.md#src-filtered-starred-field-capacity)
 <a id="src-capacity-projection-computation-arm"></a>
-- [Declared-capacity projection on the computation arm](sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)
+- [Computation capacity projection](sources/group-and-iteration-probes.md#src-capacity-projection-computation-arm)
 <a id="src-filtered-star-capacity-both-arms"></a>
 - [A filtered Number star answers from its in-capacity rows on both arms, so an over-limit row is never kept and never makes the filter unknown](sources/group-and-iteration-probes.md#src-filtered-star-capacity-both-arms)
 <a id="src-starred-field-operand-peer-reproduction"></a>

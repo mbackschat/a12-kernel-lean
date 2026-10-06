@@ -148,27 +148,9 @@ def sideWith (source : CheckedSelectedNumberEntity model) (phase : Phase)
     (document : Document) (outer : Env) (direct : FieldId → CheckedCell)
     (stored : FieldId → Option String) (read : Env → FieldId → CheckedCell)
     (column : SemanticIndexColumnReader) :
-    Except CheckedAddressingError (ResolvedValueListSide .number) := do
-  match source.source with
-  | .inl source =>
-      let value ← source.observeColumnWith phase column outer direct stored
-      pure { cells := [value.asNumberValueListCell], hasUninstantiatedTail := false, hasHaving := false }
-  | .inr source =>
-      let selected ← source.selectWith phase column outer direct stored
-      match selected with
-      | .empty =>
-          -- A missing group supplies empty fields (spec/08 §4.1); a missing lower-star parent
-          -- supplies no extent, preserving KeyedStarNumberAggregate's zero-cell account.
-          pure { cells := [], hasUninstantiatedTail := match source.target with
-                   | .group _ => true | .star _ | .starredGroup _ => false
-                 hasHaving := false }
-      | .unknown cause | .poison cause =>
-          pure { cells := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }
-      | .value environment =>
-          let rows ← source.rows document environment |>.mapError .addressing
-          pure { cells := rows.flatMap fun (declaration, environments, _) =>
-                   environments.map fun row => (observeCell phase (read row declaration.id)).asNumberValueListCell
-                 hasUninstantiatedTail := rows.any (·.2.2), hasHaving := false }
+    Except CheckedAddressingError (ResolvedValueListSide .number) :=
+  selectedValueListSideWith source.source phase document outer direct stored read column
+    (fun _ value => pure value.asNumberValueListCell)
 
 def sideIn (source : CheckedSelectedNumberEntity model) (phase : Phase)
     (document : CheckedDocument model) (outer : Env) :

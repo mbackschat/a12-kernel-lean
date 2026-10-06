@@ -118,13 +118,13 @@ theorem numericComputationEvaluationContext_tokenValueCount_delegates
             NumericComputationFault.repeatableAddressing := by
   rfl
 
-/-- The full computation context preserves the complete direct/star Boolean/Confirm source and erases only validation fillability after the shared exact-token tally. -/
+/-- The full computation context preserves the complete direct/star/group/selected Boolean/Confirm source and erases only validation fillability after the shared exact-token tally. -/
 theorem numericComputationEvaluationContext_booleanValueCount_delegates
     (context : NumericComputationEvaluationContext)
     (source : CheckedBooleanValueCountSource model) :
     context.readCheckedNumericComputationAtom (.booleanValueCount source) =
       ((source.evaluateComputation (world := context.scalar.world) context.document context.outer
-        context.scalar.read context.filterRead context.starRead).map
+        context.scalar.read context.filterRead context.starRead (selectedRead := context.selectedBooleanCountSide)).map
           NumericOperand.toComputationResult).mapError
             NumericComputationFault.repeatableAddressing := by
   rfl

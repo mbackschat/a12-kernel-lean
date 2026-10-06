@@ -2736,6 +2736,7 @@ run_cmd do
 #print axioms A12Kernel.checkedTimeFirstFilled_executeResult_projects
 #print axioms A12Kernel.timeFirstFilledRun_applyToChecked_delegates
 #print axioms A12Kernel.booleanValueCount_confirm_empty
+#print axioms A12Kernel.booleanValueCountObservation_preserves_cause
 #print axioms A12Kernel.checkBooleanConstantOperation_accepts_iff
 #print axioms A12Kernel.checkedBooleanConstantComputation_execute_exact
 #print axioms A12Kernel.checkedBooleanConstantComputation_executeResult_retains_definition

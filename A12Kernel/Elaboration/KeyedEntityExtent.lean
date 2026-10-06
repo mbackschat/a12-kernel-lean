@@ -116,6 +116,33 @@ def computationSlotsIn (source : CheckedKeyedEntityExtent model) (context : Scal
 
 end CheckedKeyedEntityExtent
 
+/-- Selection owns phase policy, row identity and omitted extents (spec/08 §4.1); each value-list
+consumer supplies only its declaration-aware cell projection. -/
+def selectedValueListSideWith {kind : ValueListKind}
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
+    (phase : Phase) (document : Document) (outer : Env) (direct : FieldId → CheckedCell)
+    (stored : FieldId → Option String) (read : Env → FieldId → CheckedCell)
+    (column : SemanticIndexColumnReader)
+    (classify : FlatFieldDecl → CellObservation → Except CheckedAddressingError (ValueListCell kind)) :
+    Except CheckedAddressingError (ResolvedValueListSide kind) := do
+  match source with
+  | .inl selected =>
+      let value ← selected.observeColumnWith phase column outer direct stored
+      pure { cells := [← classify selected.targetDeclaration value], hasUninstantiatedTail := false, hasHaving := false }
+  | .inr selected =>
+      match ← selected.selectWith phase column outer direct stored with
+      | .empty =>
+          pure { cells := [], hasUninstantiatedTail := match selected.target with
+                   | .group _ => true | .star _ | .starredGroup _ => false
+                 hasHaving := false }
+      | .unknown cause | .poison cause =>
+          pure { cells := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }
+      | .value environment =>
+          let rows ← selected.rows document environment |>.mapError .addressing
+          let cells ← rows.flatMapM fun (declaration, environments, _) =>
+            environments.mapM fun row => classify declaration (observeCell phase (read row declaration.id))
+          pure { cells, hasUninstantiatedTail := rows.any (·.2.2), hasHaving := false }
+
 /-- Bind the innermost declared index before checking the remaining unbound extent. A group
 without its own star may retain only nonrepeatable steps below the selected level (`spec/08` §4). -/
 def elaborateKeyedEntityExtent (model : FlatModel) (declaringGroup : GroupPath)

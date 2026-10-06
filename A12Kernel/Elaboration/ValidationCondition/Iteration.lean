@@ -143,7 +143,7 @@ private def tokenEntityReferenceScopes?
 private def booleanValueCountOperandReferenceScope? :
     CheckedBooleanValueCountOperand model expected →
       Option (List RepeatableLevel)
-  | .field _ => some []
+  | .field _ | .selected _ => some []
   | .star source => checkedStarBindingScope source.source
   | .group slot =>
       let scope := slot.source.bindingScope

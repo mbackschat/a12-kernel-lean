@@ -288,6 +288,7 @@ def CheckedTemporalDistinctCountOperand.referencePointers (environment : Env) :
 def CheckedBooleanValueCountOperand.referencePointers (environment : Env) :
     CheckedBooleanValueCountOperand model expected →
       Except ReferenceProjectionError (List MessagePointer)
+  | .selected _ => throw .unclassifiedOperand
   | .field source =>
       (concreteFieldPointer source.declaration environment).map ([·])
   | .star source =>

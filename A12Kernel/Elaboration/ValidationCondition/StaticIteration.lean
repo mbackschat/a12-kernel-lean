@@ -103,7 +103,7 @@ private def checkedTokenSourceIterationScope
 private def checkedBooleanValueCountOperandIterationScope :
     CheckedBooleanValueCountOperand model expected →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
-  | .field _ => pure none
+  | .field _ | .selected _ => pure none
   | .star source =>
       match source.filter with
       | none => pure (checkedStarBindingScope source.source)
