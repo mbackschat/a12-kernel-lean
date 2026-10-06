@@ -136,7 +136,7 @@ example :
         some (.unknown .malformed) := by native_decide
 
 example :
-    temporalExpressionResult (.timeConstruction (.minute (.inl (.constant "1")) (.inl (.constant "30"))))
+    temporalExpressionResult (.timeConstruction (.minute (.inl (.inl (.constant "1"))) (.inl (.inl (.constant "30")))))
       (.timeFromDateTime (.subdayShift .minutes .now (.literal { value := 90, authoredScale := 0 }))) =
         some (.fired .value) := by native_decide
 

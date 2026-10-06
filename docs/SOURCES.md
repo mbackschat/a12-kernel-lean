@@ -1575,7 +1575,7 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 <a id="src-first-filled-join"></a>
 - [A `FirstFilledValue` reads a computed upstream fresh, falls through a cleared one and ends its scan at a poisoned one, on seven kinds at a join, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-first-filled-join)
 <a id="src-extractor-join"></a>
-- [An extractor and a mixed shift read a computed DateTime and a computed amount fresh, a poisoned amount reaching only the shifts, and a String, Number and Boolean `FirstFilledValue` and `NumberOfValueInFields` read their computed upstreams by the shared rule, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-extractor-join)
+- [Extractor and mixed-shift joins](sources/computation-scheduling-probes.md#src-extractor-join)
 <a id="src-guard-on-malformed-source"></a>
 - [A fill guard on a malformed source field poisons both guarded copies and their readers, on a root and per repeatable row, measured locally 2026-10-02](sources/computation-scheduling-probes.md#src-guard-on-malformed-source)
 <a id="src-repeatable-row-alternatives"></a>
@@ -1781,3 +1781,6 @@ Edit the source shard when its provenance or drill route changes; change this hu
 
 <a id="src-recursive-date-validity"></a>
 - [Date validity](sources/temporal-runtime-fold-probes.md#src-recursive-date-validity)
+
+<a id="src-indexed-time-components"></a>
+- [Indexed Time components](sources/temporal-runtime-fold-probes.md#src-indexed-time-components)

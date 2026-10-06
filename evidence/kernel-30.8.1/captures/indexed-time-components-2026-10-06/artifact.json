@@ -1,0 +1,5937 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "IndexedTime_DM.json",
+    "locale" : "en_US",
+    "clock" : "2024-01-01T00:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "known",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ExtractorsComp",
+              "field" : "Form/Extractors",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extractors",
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MixedComp",
+              "field" : "Form/Mixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Mixed",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NestedComp",
+              "field" : "Form/Nested",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Nested",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NumberOneComp",
+              "field" : "Form/NumberOne",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/NumberOne",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NumberThreeComp",
+              "field" : "Form/NumberThree",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/NumberThree",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NumberTwoComp",
+              "field" : "Form/NumberTwo",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/NumberTwo",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Extract",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Extractors",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Fallback",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Mixed",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Nested",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_NumberOne",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_NumberThree",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_NumberTwo",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Stamp",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_StringThree",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MText",
+                "Form/Rows[2]/SText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "StampComp",
+              "field" : "Form/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second",
+                "Form/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "StringThreeComp",
+              "field" : "Form/StringThree",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MText",
+                "Form/Rows[2]/SText",
+                "Form/StringThree"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:00:00"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:00"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-01T03:04:05"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/Extractors",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Mixed",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Nested",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NumberOne",
+                "value" : "03:00:00"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "value" : "03:04:00"
+              },
+              {
+                "field" : "Form/Stamp",
+                "value" : "2024-02-01T03:04:05"
+              },
+              {
+                "field" : "Form/StringThree",
+                "value" : "03:04:05"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 3,
+                "ExtractAfter" : null,
+                "Extractors" : "03:04:05",
+                "ExtractorsAfter" : null,
+                "Fallback" : "03:04:05",
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : "03:04:05",
+                "MixedAfter" : null,
+                "Nested" : "03:04:05",
+                "NestedAfter" : null,
+                "NumberOne" : "03:00:00",
+                "NumberOneAfter" : null,
+                "NumberThree" : "03:04:05",
+                "NumberThreeAfter" : null,
+                "NumberTwo" : "03:04:00",
+                "NumberTwoAfter" : null,
+                "Stamp" : "2024-02-01T03:04:05",
+                "StampAfter" : null,
+                "StringThree" : "03:04:05",
+                "StringThreeAfter" : null,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "03",
+                    "Hour" : 3,
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ExtractorsComp",
+              "field" : "Form/Extractors",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extractors",
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MixedComp",
+              "field" : "Form/Mixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Mixed",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NestedComp",
+              "field" : "Form/Nested",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Nested",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NumberOneComp",
+              "field" : "Form/NumberOne",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/NumberOne",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NumberThreeComp",
+              "field" : "Form/NumberThree",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/NumberThree",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NumberTwoComp",
+              "field" : "Form/NumberTwo",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/NumberTwo",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Extract",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Extractors",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Fallback",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Mixed",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Nested",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_NumberOne",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_NumberThree",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_NumberTwo",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Stamp",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_StringThree",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MText",
+                "Form/Rows[2]/SText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "StampComp",
+              "field" : "Form/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second",
+                "Form/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "StringThreeComp",
+              "field" : "Form/StringThree",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MText",
+                "Form/Rows[2]/SText",
+                "Form/StringThree"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:00:00"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:00"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-01T03:04:05"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/Extractors",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Mixed",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Nested",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NumberOne",
+                "value" : "03:00:00"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "value" : "03:04:00"
+              },
+              {
+                "field" : "Form/Stamp",
+                "value" : "2024-02-01T03:04:05"
+              },
+              {
+                "field" : "Form/StringThree",
+                "value" : "03:04:05"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 3,
+                "ExtractAfter" : null,
+                "Extractors" : "03:04:05",
+                "ExtractorsAfter" : null,
+                "Fallback" : "03:04:05",
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : "03:04:05",
+                "MixedAfter" : null,
+                "Nested" : "03:04:05",
+                "NestedAfter" : null,
+                "NumberOne" : "03:00:00",
+                "NumberOneAfter" : null,
+                "NumberThree" : "03:04:05",
+                "NumberThreeAfter" : null,
+                "NumberTwo" : "03:04:00",
+                "NumberTwoAfter" : null,
+                "Stamp" : "2024-02-01T03:04:05",
+                "StampAfter" : null,
+                "StringThree" : "03:04:05",
+                "StringThreeAfter" : null,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "03",
+                    "Hour" : 3,
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 0,
+                "ExtractAfter" : null,
+                "Extractors" : null,
+                "ExtractorsAfter" : 1,
+                "Fallback" : "09:00:00",
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : null,
+                "MixedAfter" : 1,
+                "Nested" : null,
+                "NestedAfter" : 1,
+                "NumberOne" : null,
+                "NumberOneAfter" : 1,
+                "NumberThree" : null,
+                "NumberThreeAfter" : 1,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : 1,
+                "Stamp" : null,
+                "StampAfter" : 1,
+                "StringThree" : null,
+                "StringThreeAfter" : 1,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : null,
+                    "HText" : "",
+                    "Hour" : null,
+                    "Id" : "B",
+                    "MText" : "",
+                    "Minute" : null,
+                    "SText" : "",
+                    "Second" : null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 0,
+                "ExtractAfter" : null,
+                "Extractors" : null,
+                "ExtractorsAfter" : 1,
+                "Fallback" : "09:00:00",
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : null,
+                "MixedAfter" : 1,
+                "Nested" : null,
+                "NestedAfter" : 1,
+                "NumberOne" : null,
+                "NumberOneAfter" : 1,
+                "NumberThree" : null,
+                "NumberThreeAfter" : 1,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : 1,
+                "Stamp" : null,
+                "StampAfter" : 1,
+                "StringThree" : null,
+                "StringThreeAfter" : 1,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : null,
+                    "HText" : "",
+                    "Hour" : null,
+                    "Id" : "B",
+                    "MText" : "",
+                    "Minute" : null,
+                    "SText" : "",
+                    "Second" : null
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "missing",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Extract",
+                "Form/Key"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Extract",
+                "Form/Key"
+              ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Fallback",
+                "Form/Key"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Fallback",
+                "Form/Key"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 0,
+                "ExtractAfter" : null,
+                "Extractors" : null,
+                "ExtractorsAfter" : 1,
+                "Fallback" : "09:00:00",
+                "FallbackAfter" : null,
+                "Key" : "Z",
+                "Mixed" : null,
+                "MixedAfter" : 1,
+                "Nested" : null,
+                "NestedAfter" : 1,
+                "NumberOne" : null,
+                "NumberOneAfter" : 1,
+                "NumberThree" : null,
+                "NumberThreeAfter" : 1,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : 1,
+                "Stamp" : null,
+                "StampAfter" : 1,
+                "StringThree" : null,
+                "StringThreeAfter" : 1,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "03",
+                    "Hour" : 3,
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Extract",
+                "Form/Key"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Extract",
+                "Form/Key"
+              ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Fallback",
+                "Form/Key"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Fallback",
+                "Form/Key"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 0,
+                "ExtractAfter" : null,
+                "Extractors" : null,
+                "ExtractorsAfter" : 1,
+                "Fallback" : "09:00:00",
+                "FallbackAfter" : null,
+                "Key" : "Z",
+                "Mixed" : null,
+                "MixedAfter" : 1,
+                "Nested" : null,
+                "NestedAfter" : 1,
+                "NumberOne" : null,
+                "NumberOneAfter" : 1,
+                "NumberThree" : null,
+                "NumberThreeAfter" : 1,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : 1,
+                "Stamp" : null,
+                "StampAfter" : 1,
+                "StringThree" : null,
+                "StringThreeAfter" : 1,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "03",
+                    "Hour" : 3,
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "duplicate",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows[2]/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Id"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows[2]/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Id"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : null,
+                "ExtractAfter" : null,
+                "Extractors" : null,
+                "ExtractorsAfter" : null,
+                "Fallback" : null,
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : null,
+                "MixedAfter" : null,
+                "Nested" : null,
+                "NestedAfter" : null,
+                "NumberOne" : null,
+                "NumberOneAfter" : null,
+                "NumberThree" : null,
+                "NumberThreeAfter" : null,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : null,
+                "Stamp" : null,
+                "StampAfter" : null,
+                "StringThree" : null,
+                "StringThreeAfter" : null,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "B",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "03",
+                    "Hour" : 3,
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows[2]/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Id"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows[2]/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Id"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : null,
+                "ExtractAfter" : null,
+                "Extractors" : null,
+                "ExtractorsAfter" : null,
+                "Fallback" : null,
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : null,
+                "MixedAfter" : null,
+                "Nested" : null,
+                "NestedAfter" : null,
+                "NumberOne" : null,
+                "NumberOneAfter" : null,
+                "NumberThree" : null,
+                "NumberThreeAfter" : null,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : null,
+                "Stamp" : null,
+                "StampAfter" : null,
+                "StringThree" : null,
+                "StringThreeAfter" : null,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "B",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "03",
+                    "Hour" : 3,
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/Rows[2]/Clock",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Clock"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "Form/Rows[2]/HText",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/HText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "Form/Rows[2]/MText",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/MText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "Form/Rows[2]/SText",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/SText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Rows[2]/Hour",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Hour"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Rows[2]/Minute",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Minute"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Rows[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Form/Rows[2]/Clock",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Clock"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "stringFalschesMuster",
+                "field" : "Form/Rows[2]/HText",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/HText"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "stringFalschesMuster",
+                "field" : "Form/Rows[2]/MText",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/MText"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "stringFalschesMuster",
+                "field" : "Form/Rows[2]/SText",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/SText"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Rows[2]/Hour",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Hour"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Rows[2]/Minute",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Minute"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Rows[2]/Second",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Second"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : null,
+                "ExtractAfter" : null,
+                "Extractors" : null,
+                "ExtractorsAfter" : null,
+                "Fallback" : null,
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : null,
+                "MixedAfter" : null,
+                "Nested" : null,
+                "NestedAfter" : null,
+                "NumberOne" : null,
+                "NumberOneAfter" : null,
+                "NumberThree" : null,
+                "NumberThreeAfter" : null,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : null,
+                "Stamp" : null,
+                "StampAfter" : null,
+                "StringThree" : null,
+                "StringThreeAfter" : null,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "bad",
+                    "HText" : "bad",
+                    "Hour" : "bad",
+                    "Id" : "B",
+                    "MText" : "bad",
+                    "Minute" : "bad",
+                    "SText" : "bad",
+                    "Second" : "bad"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Form/Rows[2]/Clock",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Clock"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "Form/Rows[2]/HText",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/HText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "Form/Rows[2]/MText",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/MText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "Form/Rows[2]/SText",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/SText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Rows[2]/Hour",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Hour"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Rows[2]/Minute",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Minute"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Rows[2]/Second",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "datumFormatFalsch",
+                "field" : "Form/Rows[2]/Clock",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Clock"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "stringFalschesMuster",
+                "field" : "Form/Rows[2]/HText",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/HText"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "stringFalschesMuster",
+                "field" : "Form/Rows[2]/MText",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/MText"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "stringFalschesMuster",
+                "field" : "Form/Rows[2]/SText",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/SText"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Rows[2]/Hour",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Hour"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Rows[2]/Minute",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Minute"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Rows[2]/Second",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Second"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : null,
+                "ExtractAfter" : null,
+                "Extractors" : null,
+                "ExtractorsAfter" : null,
+                "Fallback" : null,
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : null,
+                "MixedAfter" : null,
+                "Nested" : null,
+                "NestedAfter" : null,
+                "NumberOne" : null,
+                "NumberOneAfter" : null,
+                "NumberThree" : null,
+                "NumberThreeAfter" : null,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : null,
+                "Stamp" : null,
+                "StampAfter" : null,
+                "StringThree" : null,
+                "StringThreeAfter" : null,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "bad",
+                    "HText" : "bad",
+                    "Hour" : "bad",
+                    "Id" : "B",
+                    "MText" : "bad",
+                    "Minute" : "bad",
+                    "SText" : "bad",
+                    "Second" : "bad"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "unreal",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ExtractorsComp",
+              "field" : "Form/Extractors",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extractors",
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NestedComp",
+              "field" : "Form/Nested",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Nested",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Extractors",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "00:04:05"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Extractors",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Nested",
+                "value" : "00:04:05"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 0,
+                "ExtractAfter" : null,
+                "Extractors" : "03:04:05",
+                "ExtractorsAfter" : null,
+                "Fallback" : "09:00:00",
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : null,
+                "MixedAfter" : 1,
+                "Nested" : "00:04:05",
+                "NestedAfter" : null,
+                "NumberOne" : null,
+                "NumberOneAfter" : 1,
+                "NumberThree" : null,
+                "NumberThreeAfter" : 1,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : 1,
+                "Stamp" : null,
+                "StampAfter" : 1,
+                "StringThree" : null,
+                "StringThreeAfter" : 1,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "24",
+                    "Hour" : 24,
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ExtractorsComp",
+              "field" : "Form/Extractors",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extractors",
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NestedComp",
+              "field" : "Form/Nested",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Nested",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Extractors",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "00:04:05"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Extractors",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Nested",
+                "value" : "00:04:05"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 0,
+                "ExtractAfter" : null,
+                "Extractors" : "03:04:05",
+                "ExtractorsAfter" : null,
+                "Fallback" : "09:00:00",
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : null,
+                "MixedAfter" : 1,
+                "Nested" : "00:04:05",
+                "NestedAfter" : null,
+                "NumberOne" : null,
+                "NumberOneAfter" : 1,
+                "NumberThree" : null,
+                "NumberThreeAfter" : 1,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : 1,
+                "Stamp" : null,
+                "StampAfter" : 1,
+                "StringThree" : null,
+                "StringThreeAfter" : 1,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "24",
+                    "Hour" : 24,
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "unselected-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ExtractorsComp",
+              "field" : "Form/Extractors",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extractors",
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MixedComp",
+              "field" : "Form/Mixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Mixed",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NestedComp",
+              "field" : "Form/Nested",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Nested",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NumberOneComp",
+              "field" : "Form/NumberOne",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/NumberOne",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NumberThreeComp",
+              "field" : "Form/NumberThree",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/NumberThree",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NumberTwoComp",
+              "field" : "Form/NumberTwo",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/NumberTwo",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Extract",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Extractors",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Fallback",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Mixed",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Nested",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_NumberOne",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_NumberThree",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_NumberTwo",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Stamp",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_StringThree",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MText",
+                "Form/Rows[2]/SText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "StampComp",
+              "field" : "Form/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second",
+                "Form/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "StringThreeComp",
+              "field" : "Form/StringThree",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MText",
+                "Form/Rows[2]/SText",
+                "Form/StringThree"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "Form/Rows/HText",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/HText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Rows/Hour",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Hour"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:00:00"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:00"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-01T03:04:05"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringFalschesMuster",
+                "field" : "Form/Rows/HText",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/HText"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Rows/Hour",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Hour"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/Extractors",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Mixed",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Nested",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NumberOne",
+                "value" : "03:00:00"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "value" : "03:04:00"
+              },
+              {
+                "field" : "Form/Stamp",
+                "value" : "2024-02-01T03:04:05"
+              },
+              {
+                "field" : "Form/StringThree",
+                "value" : "03:04:05"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 3,
+                "ExtractAfter" : null,
+                "Extractors" : "03:04:05",
+                "ExtractorsAfter" : null,
+                "Fallback" : "03:04:05",
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : "03:04:05",
+                "MixedAfter" : null,
+                "Nested" : "03:04:05",
+                "NestedAfter" : null,
+                "NumberOne" : "03:00:00",
+                "NumberOneAfter" : null,
+                "NumberThree" : "03:04:05",
+                "NumberThreeAfter" : null,
+                "NumberTwo" : "03:04:00",
+                "NumberTwoAfter" : null,
+                "Stamp" : "2024-02-01T03:04:05",
+                "StampAfter" : null,
+                "StringThree" : "03:04:05",
+                "StringThreeAfter" : null,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "bad",
+                    "Hour" : "bad",
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "03",
+                    "Hour" : 3,
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ExtractorsComp",
+              "field" : "Form/Extractors",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extractors",
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MixedComp",
+              "field" : "Form/Mixed",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Mixed",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NestedComp",
+              "field" : "Form/Nested",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Nested",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NumberOneComp",
+              "field" : "Form/NumberOne",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/NumberOne",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NumberThreeComp",
+              "field" : "Form/NumberThree",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/NumberThree",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "NumberTwoComp",
+              "field" : "Form/NumberTwo",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/NumberTwo",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Extract",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Extractors",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Fallback",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Mixed",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Nested",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_NumberOne",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_NumberThree",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_NumberTwo",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_Stamp",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RULE_StringThree",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MText",
+                "Form/Rows[2]/SText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "StampComp",
+              "field" : "Form/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second",
+                "Form/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "StringThreeComp",
+              "field" : "Form/StringThree",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/HText",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/MText",
+                "Form/Rows[2]/SText",
+                "Form/StringThree"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "Form/Rows/HText",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/HText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Rows/Hour",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Hour"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:00:00"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:00"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2024-02-01T03:04:05"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringFalschesMuster",
+                "field" : "Form/Rows/HText",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/HText"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Rows/Hour",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Hour"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/Extractors",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Mixed",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Nested",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NumberOne",
+                "value" : "03:00:00"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "value" : "03:04:00"
+              },
+              {
+                "field" : "Form/Stamp",
+                "value" : "2024-02-01T03:04:05"
+              },
+              {
+                "field" : "Form/StringThree",
+                "value" : "03:04:05"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 3,
+                "ExtractAfter" : null,
+                "Extractors" : "03:04:05",
+                "ExtractorsAfter" : null,
+                "Fallback" : "03:04:05",
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : "03:04:05",
+                "MixedAfter" : null,
+                "Nested" : "03:04:05",
+                "NestedAfter" : null,
+                "NumberOne" : "03:00:00",
+                "NumberOneAfter" : null,
+                "NumberThree" : "03:04:05",
+                "NumberThreeAfter" : null,
+                "NumberTwo" : "03:04:00",
+                "NumberTwoAfter" : null,
+                "Stamp" : "2024-02-01T03:04:05",
+                "StampAfter" : null,
+                "StringThree" : "03:04:05",
+                "StringThreeAfter" : null,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "bad",
+                    "Hour" : "bad",
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "03",
+                    "Hour" : 3,
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "omitted",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ]
+            },
+            {
+              "code" : "ExtractorsComp",
+              "field" : "Form/Extractors",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extractors",
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ]
+            },
+            {
+              "code" : "RULE_Extractors",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Extractors",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 0,
+                "ExtractAfter" : null,
+                "Extractors" : "03:04:05",
+                "ExtractorsAfter" : null,
+                "Fallback" : "09:00:00",
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : null,
+                "MixedAfter" : 1,
+                "Nested" : null,
+                "NestedAfter" : 1,
+                "NumberOne" : null,
+                "NumberOneAfter" : 1,
+                "NumberThree" : null,
+                "NumberThreeAfter" : 1,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : 1,
+                "Stamp" : null,
+                "StampAfter" : 1,
+                "StringThree" : null,
+                "StringThreeAfter" : 1,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [
+                "Form/Extract",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ]
+            },
+            {
+              "code" : "ExtractorsComp",
+              "field" : "Form/Extractors",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Extractors",
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ],
+              "fillToFix" : [
+                "Form/Fallback",
+                "Form/Key",
+                "Form/Rows[2]/Hour",
+                "Form/Rows[2]/Id",
+                "Form/Rows[2]/Minute",
+                "Form/Rows[2]/Second"
+              ]
+            },
+            {
+              "code" : "RULE_Extractors",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Key",
+                "Form/Rows[2]/Clock",
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Extractors",
+                "value" : "03:04:05"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 0,
+                "ExtractAfter" : null,
+                "Extractors" : "03:04:05",
+                "ExtractorsAfter" : null,
+                "Fallback" : "09:00:00",
+                "FallbackAfter" : null,
+                "Key" : "B",
+                "Mixed" : null,
+                "MixedAfter" : 1,
+                "Nested" : null,
+                "NestedAfter" : 1,
+                "NumberOne" : null,
+                "NumberOneAfter" : 1,
+                "NumberThree" : null,
+                "NumberThreeAfter" : 1,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : 1,
+                "Stamp" : null,
+                "StampAfter" : 1,
+                "StringThree" : null,
+                "StringThreeAfter" : 1,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty-key",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Extract",
+                "Form/Key"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Extract",
+                "Form/Key"
+              ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Fallback",
+                "Form/Key"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Fallback",
+                "Form/Key"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 0,
+                "ExtractAfter" : null,
+                "Extractors" : null,
+                "ExtractorsAfter" : 1,
+                "Fallback" : "09:00:00",
+                "FallbackAfter" : null,
+                "Key" : "",
+                "Mixed" : null,
+                "MixedAfter" : 1,
+                "Nested" : null,
+                "NestedAfter" : 1,
+                "NumberOne" : null,
+                "NumberOneAfter" : 1,
+                "NumberThree" : null,
+                "NumberThreeAfter" : 1,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : 1,
+                "Stamp" : null,
+                "StampAfter" : 1,
+                "StringThree" : null,
+                "StringThreeAfter" : 1,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "03",
+                    "Hour" : 3,
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ExtractComp",
+              "field" : "Form/Extract",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Extract",
+                "Form/Key"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Extract",
+                "Form/Key"
+              ]
+            },
+            {
+              "code" : "FallbackComp",
+              "field" : "Form/Fallback",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Fallback",
+                "Form/Key"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[-5]/Hour",
+                "/Form[1]/Rows[-5]/Id",
+                "/Form[1]/Rows[-5]/Minute",
+                "/Form[1]/Rows[-5]/Second",
+                "Form/Fallback",
+                "Form/Key"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Extract",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Extractors",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Fallback",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/FallbackAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Mixed",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Nested",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOne",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwo",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Stamp",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StampAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThree",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Extract",
+                "value" : "0"
+              },
+              {
+                "field" : "Form/ExtractorsAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Fallback",
+                "value" : "09:00:00"
+              },
+              {
+                "field" : "Form/MixedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NestedAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberOneAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberThreeAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/NumberTwoAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StampAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/StringThreeAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Extract" : 0,
+                "ExtractAfter" : null,
+                "Extractors" : null,
+                "ExtractorsAfter" : 1,
+                "Fallback" : "09:00:00",
+                "FallbackAfter" : null,
+                "Key" : "",
+                "Mixed" : null,
+                "MixedAfter" : 1,
+                "Nested" : null,
+                "NestedAfter" : 1,
+                "NumberOne" : null,
+                "NumberOneAfter" : 1,
+                "NumberThree" : null,
+                "NumberThreeAfter" : 1,
+                "NumberTwo" : null,
+                "NumberTwoAfter" : 1,
+                "Stamp" : null,
+                "StampAfter" : 1,
+                "StringThree" : null,
+                "StringThreeAfter" : 1,
+                "Rows" : [
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "01",
+                    "Hour" : 1,
+                    "Id" : "A",
+                    "MText" : "02",
+                    "Minute" : 2,
+                    "SText" : "03",
+                    "Second" : 3
+                  },
+                  {
+                    "Clock" : "03:04:05",
+                    "HText" : "03",
+                    "Hour" : 3,
+                    "Id" : "B",
+                    "MText" : "04",
+                    "Minute" : 4,
+                    "SText" : "05",
+                    "Second" : 5
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

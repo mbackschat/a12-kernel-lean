@@ -81,19 +81,21 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
         | some part => pure (.inr (part, ← lowerSourceSlot source))
         | none => .inl <$> lowerValidationNumericAtom expression
     | _ => .inl <$> lowerValidationNumericAtom expression
-  let lowerTimeComponent : Argument → Lowering (Sum SurfaceTimeComponent (TimeNumericPart × SurfaceScalarTemporalExpression))
-    | .mk (.string text) none none => pure (.inl (.constant text))
+  let lowerTimeComponent : Argument → Lowering (SurfaceScalarTimeComponent)
+    | .mk (.string text) none none => pure (.inl (.inl (.constant text)))
     | .mk (.call name [.mk source none none] none none) none none => do
         let some (.time part) := temporalNumericPart? name | refuse "Time" "component extractor"
         pure (.inr (part, ← lowerSourceSlot source))
+    | .mk (.entity { path, index := some key, category := none }) none none => do
+        pure (.inl (.inr (← lowerIndexedSource model rowGroup path key)))
     | .mk expression none none => do
         let declaration ← fieldOperand model rowGroup "Time" expression
         match declaration.policy.kind.surfaceKind with
-        | .number => pure (.inl (.number declaration.id))
-        | .string => pure (.inl (.string declaration.id))
+        | .number => pure (.inl (.inl (.number declaration.id)))
+        | .string => pure (.inl (.inl (.string declaration.id)))
         | _ => refuse "Time" "component kind"
     | _ => refuse "Time" "component"
-  let lowerTimeComponents : List Argument → Lowering (TimeComponentPrefix (Sum SurfaceTimeComponent (TimeNumericPart × SurfaceScalarTemporalExpression)))
+  let lowerTimeComponents : List Argument → Lowering (TimeComponentPrefix (SurfaceScalarTimeComponent))
     | [] => pure .empty
     | [hour] => do pure (.hour (← lowerTimeComponent hour))
     | [hour, minute] => do pure (.minute (← lowerTimeComponent hour) (← lowerTimeComponent minute))

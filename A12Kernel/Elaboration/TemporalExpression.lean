@@ -230,12 +230,24 @@ decreasing_by
 
 private def resolveScalarTimeComponent (model : FlatModel) (rowGroup : GroupPath)
     (targetGroup? : Option GroupPath) (position : TimeComponentPosition)
-    (surface : Sum SurfaceTimeComponent (TimeNumericPart × SurfaceScalarTemporalExpression)) :
-    Except ScalarTemporalExpressionError (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model)) := do
+    (surface : SurfaceScalarTimeComponent) :
+    Except ScalarTemporalExpressionError (ScalarTimeComponent model) := do
   match surface with
-  | .inl source =>
+  | .inl (.inl source) =>
       let scope := targetGroup?.map model.repeatableScopeForGroupPath |>.getD []
-      .inl <$> (elaborateTimeComponent model position source scope).mapError .timeComponents
+      let checked ← (elaborateTimeComponent model position source scope).mapError .timeComponents
+      pure (.inl (.inl checked))
+  | .inl (.inr authored) =>
+      let selection ← (elaborateSemanticIndexSource model rowGroup authored).mapError .indexed
+      let field := selection.targetDeclaration
+      let source ← match field.policy.kind.surfaceKind with
+        | .number => pure (SurfaceTimeComponent.number field.id)
+        | .string => pure (.string field.id)
+        | _ => throw .unsupportedSource
+      let source ← (elaborateTimeComponent model position source field.repeatableScope).mapError .timeComponents
+      if sameTarget : source.fieldDependencies = [selection.targetDeclaration.id] then
+        pure (.inl (.inr { selection, source, sameTarget }))
+      else throw .unsupportedSource
   | .inr (part, source) =>
       if position.extractor != part then throw .incompatibleFormats
       .inr <$> resolveScalarTemporalProjection model rowGroup targetGroup? source (.time part)
@@ -243,8 +255,8 @@ termination_by (sizeOf surface, 0)
 
 private def resolveScalarTimeComponents (model : FlatModel) (rowGroup : GroupPath)
     (targetGroup? : Option GroupPath)
-    (surface : TimeComponentPrefix (Sum SurfaceTimeComponent (TimeNumericPart × SurfaceScalarTemporalExpression))) :
-    Except ScalarTemporalExpressionError (TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model))) :=
+    (surface : TimeComponentPrefix (SurfaceScalarTimeComponent)) :
+    Except ScalarTemporalExpressionError (TimeComponentPrefix (ScalarTimeComponent model)) :=
   match surface with
   | .empty => pure .empty
   | .hour hour => do pure (.hour (← resolveScalarTimeComponent model rowGroup targetGroup? .hour hour))
@@ -357,6 +369,25 @@ private def readScalarTimeComponent (context : FlatContext) (phase : Phase)
         (fun _ => pure (readScalarTemporalAmount context phase source.amount))
         TimeComponentsFault.shifted
       pure (result.asTimeOperand.extractComponent checked.part)
+
+private def readScalarTimeLeaf (phase : Phase) (context : ScalarComputationContext)
+    (component : Sum (CheckedTimeComponent model) (CheckedIndexedTimeComponent model)) :
+    Except ScalarTemporalEvaluationFault TimeConstructionComponent := do
+  let classify (source : CheckedTimeComponent model) (fields : FlatContext) :=
+    match readScalarTimeComponent fields phase source with
+    | .ok value => pure value
+    | .error (.stringNotConvertible _ _) => throw ScalarTemporalEvaluationFault.componentNumberInvalid
+    | .error _ => pure (.unavailable .malformed)
+  match component with
+  | .inl source => classify source { read := context.read, storedText := context.storedText, world := context.world }
+  | .inr source =>
+      let some addressed := context.addressed | throw .calendarUnavailable
+      match ← (source.selection.selectEnvironmentWith phase context.semanticIndexColumnReader
+          context.row context.read context.storedText).mapError (fun _ => .calendarUnavailable) with
+      | .empty => pure .empty
+      | .unknown cause | .poison cause => pure (.unavailable cause)
+      | .value row => classify source.source {
+          read := addressed.read row, storedText := addressed.storedText row, world := context.world }
 
 /-- Both shift families preserve source missingness when arithmetic has no value. Relevance is
 independent of that payload, while reached formal causes remain unavailable (BedingungsOperatorHelper.addTime;
@@ -594,14 +625,11 @@ decreasing_by
   all_goals omega
 
 private def readRecursiveTimeComponents (phase : Phase) (context : ScalarComputationContext)
-    (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model))) :
+    (components : TimeComponentPrefix (ScalarTimeComponent model)) :
     Except ScalarTemporalEvaluationFault TimeConstructionResult :=
   components.evaluateWithSubterm (fun component _ => do
     match component with
-    | .inl source => match readScalarTimeComponent { read := context.read, storedText := context.storedText, world := context.world } phase source with
-        | .ok value => pure value
-        | .error (.stringNotConvertible _ _) => throw .componentNumberInvalid
-        | .error _ => pure (.unavailable .malformed)
+    | .inl source => readScalarTimeLeaf phase context source
     | .inr source =>
         match ← readRecursiveScalarAtom phase context source with
         | .error (.formal cause) => pure (.unavailable cause)

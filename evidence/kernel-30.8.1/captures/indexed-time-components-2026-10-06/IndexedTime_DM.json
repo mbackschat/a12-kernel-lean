@@ -1,0 +1,842 @@
+{
+  "header" : {
+    "id" : "IndexedTime_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "IndexedTime_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "UTC",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Id",
+                "name" : "Id",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Hour",
+                "name" : "Hour",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "positivesOnly" : true,
+                      "maxLength" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Minute",
+                "name" : "Minute",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "positivesOnly" : true,
+                      "maxLength" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Second",
+                "name" : "Second",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "positivesOnly" : true,
+                      "maxLength" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/HText",
+                "name" : "HText",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "probe"
+                      } ],
+                      "maxLength" : 2,
+                      "pattern" : "[0-9]+"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/MText",
+                "name" : "MText",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "probe"
+                      } ],
+                      "maxLength" : 2,
+                      "pattern" : "[0-9]+"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/SText",
+                "name" : "SText",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "errorMessage" : [ {
+                        "locale" : "en_US",
+                        "text" : "probe"
+                      } ],
+                      "maxLength" : 2,
+                      "pattern" : "[0-9]+"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Clock",
+                "name" : "Clock",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "Id"
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Key",
+            "name" : "Key",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NumberOne",
+            "name" : "NumberOne",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NumberOneAfter",
+            "name" : "NumberOneAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NumberOneComp",
+            "name" : "NumberOneComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NumberOne",
+              "computationAlternatives" : [ {
+                "operation" : "Time(Rows/Hour For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NumberOneAfterComp",
+            "name" : "NumberOneAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NumberOneAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(NumberOne)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RULE_NumberOne",
+            "name" : "RULE_NumberOne",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "RULE_NumberOne",
+              "errorCondition" : "FieldFilled(Key) And Time(Rows/Hour For Key) == \"03:00:00\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NumberTwo",
+            "name" : "NumberTwo",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NumberTwoAfter",
+            "name" : "NumberTwoAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NumberTwoComp",
+            "name" : "NumberTwoComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NumberTwo",
+              "computationAlternatives" : [ {
+                "operation" : "Time(Rows/Hour For Key,Rows/Minute For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NumberTwoAfterComp",
+            "name" : "NumberTwoAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NumberTwoAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(NumberTwo)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RULE_NumberTwo",
+            "name" : "RULE_NumberTwo",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "RULE_NumberTwo",
+              "errorCondition" : "FieldFilled(Key) And Time(Rows/Hour For Key,Rows/Minute For Key) == \"03:04:00\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NumberThree",
+            "name" : "NumberThree",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NumberThreeAfter",
+            "name" : "NumberThreeAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NumberThreeComp",
+            "name" : "NumberThreeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NumberThree",
+              "computationAlternatives" : [ {
+                "operation" : "Time(Rows/Hour For Key,Rows/Minute For Key,Rows/Second For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NumberThreeAfterComp",
+            "name" : "NumberThreeAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NumberThreeAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(NumberThree)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RULE_NumberThree",
+            "name" : "RULE_NumberThree",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "RULE_NumberThree",
+              "errorCondition" : "FieldFilled(Key) And Time(Rows/Hour For Key,Rows/Minute For Key,Rows/Second For Key) == \"03:04:05\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/StringThree",
+            "name" : "StringThree",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/StringThreeAfter",
+            "name" : "StringThreeAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/StringThreeComp",
+            "name" : "StringThreeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../StringThree",
+              "computationAlternatives" : [ {
+                "operation" : "Time(Rows/HText For Key,Rows/MText For Key,Rows/SText For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/StringThreeAfterComp",
+            "name" : "StringThreeAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../StringThreeAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(StringThree)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RULE_StringThree",
+            "name" : "RULE_StringThree",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "RULE_StringThree",
+              "errorCondition" : "FieldFilled(Key) And Time(Rows/HText For Key,Rows/MText For Key,Rows/SText For Key) == \"03:04:05\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Mixed",
+            "name" : "Mixed",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/MixedAfter",
+            "name" : "MixedAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MixedComp",
+            "name" : "MixedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Mixed",
+              "computationAlternatives" : [ {
+                "operation" : "Time(Rows/HText For Key,\"4\",Rows/Second For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/MixedAfterComp",
+            "name" : "MixedAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../MixedAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(Mixed)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RULE_Mixed",
+            "name" : "RULE_Mixed",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "RULE_Mixed",
+              "errorCondition" : "FieldFilled(Key) And Time(Rows/HText For Key,\"4\",Rows/Second For Key) == \"03:04:05\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Extractors",
+            "name" : "Extractors",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ExtractorsAfter",
+            "name" : "ExtractorsAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ExtractorsComp",
+            "name" : "ExtractorsComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Extractors",
+              "computationAlternatives" : [ {
+                "operation" : "Time(HoursFromTime(Rows/Clock For Key),MinutesFromTime(Rows/Clock For Key),SecondsFromTime(Rows/Clock For Key))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ExtractorsAfterComp",
+            "name" : "ExtractorsAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ExtractorsAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(Extractors)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RULE_Extractors",
+            "name" : "RULE_Extractors",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "RULE_Extractors",
+              "errorCondition" : "FieldFilled(Key) And Time(HoursFromTime(Rows/Clock For Key),MinutesFromTime(Rows/Clock For Key),SecondsFromTime(Rows/Clock For Key)) == \"03:04:05\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Nested",
+            "name" : "Nested",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NestedAfter",
+            "name" : "NestedAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NestedComp",
+            "name" : "NestedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Nested",
+              "computationAlternatives" : [ {
+                "operation" : "Time(HoursFromTime(Time(Rows/Hour For Key,Rows/Minute For Key,Rows/Second For Key)),Rows/Minute For Key,Rows/Second For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NestedAfterComp",
+            "name" : "NestedAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NestedAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(Nested)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RULE_Nested",
+            "name" : "RULE_Nested",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "RULE_Nested",
+              "errorCondition" : "FieldFilled(Key) And Time(HoursFromTime(Time(Rows/Hour For Key,Rows/Minute For Key,Rows/Second For Key)),Rows/Minute For Key,Rows/Second For Key) == \"03:04:05\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Fallback",
+            "name" : "Fallback",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FallbackAfter",
+            "name" : "FallbackAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FallbackComp",
+            "name" : "FallbackComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Fallback",
+              "computationAlternatives" : [ {
+                "operation" : "Min(Time(Rows/Hour For Key,Rows/Minute For Key,Rows/Second For Key),\"09:00:00\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FallbackAfterComp",
+            "name" : "FallbackAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FallbackAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(Fallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RULE_Fallback",
+            "name" : "RULE_Fallback",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "RULE_Fallback",
+              "errorCondition" : "FieldFilled(Key) And Min(Time(Rows/Hour For Key,Rows/Minute For Key,Rows/Second For Key),\"09:00:00\") == \"03:04:05\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Stamp",
+            "name" : "Stamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/StampAfter",
+            "name" : "StampAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/StampComp",
+            "name" : "StampComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Stamp",
+              "computationAlternatives" : [ {
+                "operation" : "DateTime(\"01.02.2024\",Time(Rows/Hour For Key,Rows/Minute For Key,Rows/Second For Key))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/StampAfterComp",
+            "name" : "StampAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../StampAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(Stamp)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RULE_Stamp",
+            "name" : "RULE_Stamp",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "RULE_Stamp",
+              "errorCondition" : "FieldFilled(Key) And DateTime(\"01.02.2024\",Time(Rows/Hour For Key,Rows/Minute For Key,Rows/Second For Key)) == \"01.02.2024T03:04:05\"",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Extract",
+            "name" : "Extract",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ExtractAfter",
+            "name" : "ExtractAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ExtractComp",
+            "name" : "ExtractComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Extract",
+              "computationAlternatives" : [ {
+                "operation" : "HoursFromTime(Time(Rows/Hour For Key,Rows/Minute For Key,Rows/Second For Key))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ExtractAfterComp",
+            "name" : "ExtractAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ExtractAfter",
+              "computationAlternatives" : [ {
+                "operation" : "1",
+                "precondition" : "FieldNotFilled(Extract)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/RULE_Extract",
+            "name" : "RULE_Extract",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "RULE_Extract",
+              "errorCondition" : "FieldFilled(Key) And HoursFromTime(Time(Rows/Hour For Key,Rows/Minute For Key,Rows/Second For Key)) == 3",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

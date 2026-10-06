@@ -71,16 +71,17 @@ termination_by sizeOf atom
 private def scalarTemporalComponentDependency (storedOnly : Bool)
     (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
     (indexed : CheckedSemanticIndexSource model → List α)
-    (component : Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model)) : List α :=
+    (component : ScalarTimeComponent model) : List α :=
   match component with
-  | .inl source => if storedOnly then [] else source.fieldDependencies.flatMap field
+  | .inl (.inl source) => if storedOnly then [] else source.fieldDependencies.flatMap field
+  | .inl (.inr source) => indexed source.selection
   | .inr source => scalarTemporalNumericDependencies storedOnly field entity indexed source
 termination_by sizeOf component
 
 private def scalarTemporalComponentDependencies (storedOnly : Bool)
     (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
     (indexed : CheckedSemanticIndexSource model → List α)
-    (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model))) : List α :=
+    (components : TimeComponentPrefix (ScalarTimeComponent model)) : List α :=
   match components with
   | .empty => []
   | .hour hour => scalarTemporalComponentDependency storedOnly field entity indexed hour

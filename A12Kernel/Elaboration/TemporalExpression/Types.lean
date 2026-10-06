@@ -36,7 +36,7 @@ inductive SurfaceScalarTemporalExpression where
       (Sum (Sum SurfaceConstructedDateSource SurfaceSemanticIndex) (DateNumericPart × SurfaceScalarTemporalExpression)))
   | calendarShift (unit : DateShiftUnit) (source : SurfaceScalarTemporalExpression)
       (amount : AuthoredNumericExpr (Sum SurfaceNumericAtom (TemporalNumericPart × SurfaceScalarTemporalExpression)))
-  | timeConstruction (components : TimeComponentPrefix (Sum SurfaceTimeComponent (TimeNumericPart × SurfaceScalarTemporalExpression)))
+  | timeConstruction (components : TimeComponentPrefix (Sum (Sum SurfaceTimeComponent SurfaceSemanticIndex) (TimeNumericPart × SurfaceScalarTemporalExpression)))
   | dateFromDateTime (source : SurfaceScalarTemporalExpression)
   | timeFromDateTime (source : SurfaceScalarTemporalExpression)
   | subdayShift (unit : DateTimeSubdayUnit) (source : SurfaceScalarTemporalExpression)
@@ -44,6 +44,9 @@ inductive SurfaceScalarTemporalExpression where
 
 abbrev SurfaceScalarDateComponent :=
   Sum (Sum SurfaceConstructedDateSource SurfaceSemanticIndex) (DateNumericPart × SurfaceScalarTemporalExpression)
+
+abbrev SurfaceScalarTimeComponent :=
+  Sum (Sum SurfaceTimeComponent SurfaceSemanticIndex) (TimeNumericPart × SurfaceScalarTemporalExpression)
 
 /-- `datumAngabe2` adds partial-Date interpretation to the ordinary `datumAngabe` source slot
 (GrammarOnly_ConditionParser.g4, rules at lines 479–492; spec/05 §§3,6). -/
@@ -144,6 +147,13 @@ structure CheckedIndexedDateComponent (model : FlatModel) where
   source : CheckedConstructedDateSource model
   sameTarget : source.fieldId? = some selection.targetDeclaration.id
 
+/-- Indexed Time components keep the same position-specific field certificate as direct reads
+and identify the selected declaration (spec/05 §3 and spec/08 §4). -/
+structure CheckedIndexedTimeComponent (model : FlatModel) where
+  selection : CheckedSemanticIndexSource model
+  source : CheckedTimeComponent model
+  sameTarget : source.fieldDependencies = [selection.targetDeclaration.id]
+
 mutual
 inductive ScalarTemporalAtom (model : FlatModel) where
   | field (source : FlatTemporalField)
@@ -157,7 +167,7 @@ inductive ScalarTemporalAtom (model : FlatModel) where
   | dateTimeLiteral (profile : ModelZone.ConcreteProfile) (value : LocalDateTime)
   | dateConstruction (components : CheckedConstructedDateComponents model
       (Sum (Sum (CheckedConstructedDateSource model) (CheckedIndexedDateComponent model)) (ScalarTemporalNumericAtom model)))
-  | timeConstruction (components : TimeComponentPrefix (Sum (CheckedTimeComponent model) (ScalarTemporalNumericAtom model)))
+  | timeConstruction (components : TimeComponentPrefix (Sum (Sum (CheckedTimeComponent model) (CheckedIndexedTimeComponent model)) (ScalarTemporalNumericAtom model)))
   | valueAsDate (source : CheckedZonedValueAsDateSource model)
   | indexedValueAsDate (source : CheckedIndexedValueAsDateSource model)
   | rangeBound (profile : ModelZone.ConcreteProfile) (source : CheckedDateRangeBoundOperand model)
@@ -178,6 +188,9 @@ inductive ScalarTemporalNumericAtom (model : FlatModel) where
   | projection (part : TemporalNumericPart) (profile : ModelZone.ConcreteProfile)
       (source : TemporalExpressionOf (ScalarTemporalAtom model) (ScalarTemporalTransform model))
 end
+
+abbrev ScalarTimeComponent (model : FlatModel) :=
+  Sum (Sum (CheckedTimeComponent model) (CheckedIndexedTimeComponent model)) (ScalarTemporalNumericAtom model)
 
 abbrev ScalarTemporalExpression (model : FlatModel) :=
   TemporalExpressionOf (ScalarTemporalAtom model) (ScalarTemporalTransform model)
