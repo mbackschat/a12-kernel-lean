@@ -166,12 +166,18 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
           | "Valid" => some CustomFieldValidityOp.valid
           | "Invalid" => some .invalid
           | _ => none
-        match operation, field.fieldEntity? with
-        | some operation, some path => [do
-            let declaration ← elaborated id (model.resolveFieldDeclarationUnchecked rowGroup path)
-            elaborated id (CheckedValidationCondition.fromCustomFieldValidity
-              model rowGroup world declaration.id name operation)]
-        | _, _ => []
+        match operation, field with
+        | some operation, .entity { path, index := some key, category := none } => [do
+            let source ← lowerIndexedSource model rowGroup path key
+            elaborated id (CheckedValidationCondition.fromIndexedCustomFieldValidity
+              model rowGroup world source name operation)]
+        | _, _ =>
+          match operation, field.fieldEntity? with
+          | some operation, some path => [do
+              let declaration ← elaborated id (model.resolveFieldDeclarationUnchecked rowGroup path)
+              elaborated id (CheckedValidationCondition.fromCustomFieldValidity
+                model rowGroup world declaration.id name operation)]
+          | _, _ => []
     | _ => []
   let uniqueness := match leaf with
     | .call "FieldValuesNotUnique" arguments none none =>

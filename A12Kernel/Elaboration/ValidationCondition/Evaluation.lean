@@ -39,7 +39,7 @@ def evalSelected (context : ValidationEvaluationContext)
       | some states =>
           (operator.evalPresence states).asConservativeVerdict
       | none => .unknown
-  | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ => .unknown
+  | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ | .indexedCustomFieldValidity _ => .unknown
   | .repetitionNotUnique _ => .unknown
   | .guardedRootCurrentRepetition guard _ comparison =>
       Verdict.conj
@@ -77,7 +77,7 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .repetitionNotUnique _ => true
   | .stringExpression comparison => !comparison.hasIndexed
   | .constructedDateValidity _ source => source.directComponents?.isSome
-  | .customCondition _ | .customFieldValidity _ | .stringPattern _ => true
+  | .customCondition _ | .customFieldValidity _ | .indexedCustomFieldValidity _ | .stringPattern _ => true
   | .guardedRootCurrentRepetition _ _ _ => false
   | .guardedRepeatableCurrentRepetition _ _ _ => false
   | _ => false
@@ -252,6 +252,13 @@ def evalAddressedPartial?
           | none => .unknown
       else
         pure .unknown)
+  | .indexedCustomFieldValidity leaf =>
+      some do
+        let document ← match context.input with
+          | .checked document | .partialView document _ => pure document
+          | .legacy _ _ => throw (.checkedDocumentRequired leaf.source.selection.group.path)
+        let observation ← leaf.source.selection.observePartialDocument document scope context.outer context.readPartialCell
+        pure (observation.map leaf.directLeaf.evalObservation |>.getD .unknown)
   -- An **uncovered** cell is UNKNOWN and never reaches the validator, which is the same answer an
   -- unreadable covered cell gets and for the same reason: the predicate only ever speaks about a
   -- value this theory could read. The covered branch shares the family's own `evalCell`, so it
@@ -331,6 +338,11 @@ def evalFirstFilledComparisonAddressedResult (context : AddressedValidationEvalu
 def evalAddressed (context : AddressedValidationEvaluationContext model) :
     ValidationConditionLeaf model → Except CheckedAddressingError Verdict
   | .customCondition name => (context.scalar.customResult name.value).mapError .customCondition
+  | .indexedCustomFieldValidity leaf => do
+      let document ← match context.input with
+        | .checked document => pure document
+        | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired leaf.source.selection.group.path)
+      pure (leaf.directLeaf.evalObservation (← leaf.source.selection.observeDocument document context.outer .validation))
   | .stringPattern leaf => do
       let source := leaf.condition.field.id
       if !context.directRelevant source then return .unknown

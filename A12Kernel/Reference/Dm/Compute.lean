@@ -110,6 +110,10 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
       (.predicate ∘ .dateValidity .valid) <$> lowerScalarDateComponents model group arguments
   | .call "Invalid" [.mk (.call "Date" arguments none none) none none] none none =>
       (.predicate ∘ .dateValidity .invalid) <$> lowerScalarDateComponents model group arguments
+  | .call "Valid" [.mk (.entity { path, index := some key, category := none }) none none, .mk (.string name) none none] none none => do
+      pure (.predicate (.indexedTypeValidity .valid (← lowerIndexedSource model group path key) name))
+  | .call "Invalid" [.mk (.entity { path, index := some key, category := none }) none none, .mk (.string name) none none] none none => do
+      pure (.predicate (.indexedTypeValidity .invalid (← lowerIndexedSource model group path key) name))
   | .call "Valid" [.mk field none none, .mk (.string name) none none] none none => do
       let some path := field.fieldEntity? | refuse "ValidType" "field operand"
       pure (.predicate (.typeValidity .valid path name))

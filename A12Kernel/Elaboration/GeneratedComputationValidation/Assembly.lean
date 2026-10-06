@@ -584,6 +584,10 @@ private def generatedGuardCondition (model : FlatModel) (world? : Option World) 
       pure (.leaf (.customFieldValidity {
         operand, operation
         validity := { name, validator? := world.resolveCustomFieldValidator? name } }))
+  | .leaf (.predicate (.indexedTypeValidity operation source name)) => do
+      let some world := world? | throw .typeValidityRequiresWorld
+      pure (.leaf (.indexedCustomFieldValidity {
+        source, operation, validity := { name, validator? := world.resolveCustomFieldValidator? name } }))
   | .leaf (.predicate (.temporal source)) => pure (.leaf (.scalarTemporal source))
   | .leaf (.predicate (.keyedGroupPresence operator source _)) =>
       if source.isStarredGroup then

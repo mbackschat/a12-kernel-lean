@@ -1,0 +1,213 @@
+{
+  "header" : {
+    "id" : "IndexedValidity_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "IndexedValidity_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/Id",
+                "name" : "Id",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Text",
+                "name" : "Text",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "maxLength" : 1
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "Id"
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Key",
+            "name" : "Key",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ValidOut",
+            "name" : "ValidOut",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/ValidAfter",
+            "name" : "ValidAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/VALID",
+            "name" : "VALID",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "VALID",
+              "errorCondition" : "FieldFilled(Key) And Valid(Rows/Text For Key,\"AbsentType\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ValidOutComp",
+            "name" : "ValidOutComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ValidOut",
+              "commonPrecondition" : "Valid(Rows/Text For Key,\"AbsentType\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/ValidAfterComp",
+            "name" : "ValidAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../ValidAfter",
+              "computationAlternatives" : [ {
+                "operation" : "[ValidOut] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/InvalidOut",
+            "name" : "InvalidOut",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/InvalidAfter",
+            "name" : "InvalidAfter",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/INVALID",
+            "name" : "INVALID",
+            "Rule" : {
+              "errorEntityRelPath" : "../Key",
+              "errorCode" : "INVALID",
+              "errorCondition" : "FieldFilled(Key) And Invalid(Rows/Text For Key,\"AbsentType\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/InvalidOutComp",
+            "name" : "InvalidOutComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../InvalidOut",
+              "commonPrecondition" : "Invalid(Rows/Text For Key,\"AbsentType\")",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/InvalidAfterComp",
+            "name" : "InvalidAfterComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../InvalidAfter",
+              "computationAlternatives" : [ {
+                "operation" : "[InvalidOut] + 1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -22,6 +22,7 @@ import A12Kernel.Reference.Dm.ComputationPredicateGuardLocks
 import A12Kernel.Reference.Dm.ComputationOverlapLocks
 import A12Kernel.Reference.Dm.UniquenessGuardLocks
 import A12Kernel.Reference.Dm.TypeValidityGuardLocks
+import A12Kernel.Reference.Dm.IndexedTypeValidityLocks
 import A12Kernel.Reference.Dm.GroupGuardLocks
 import A12Kernel.Reference.Dm.SemanticIndexLocks
 import A12Kernel.Reference.Dm.KeyedExtentLocks

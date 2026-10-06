@@ -1,0 +1,184 @@
+[
+  {
+    "id": "Valid-direct",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Valid(Key, \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Valid-indexed",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Valid(Rows/Text For Key, \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Valid-literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Valid(Rows/Text For \"B\", \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Valid-number",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Valid(ValidOut, \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Valid-group",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Valid(Rows For Key, \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Valid-star",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Valid(Rows*/Text, \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Valid-badkey",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Valid(Rows/Text For 1, \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Invalid-direct",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Invalid(Key, \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Invalid-indexed",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Invalid(Rows/Text For Key, \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Invalid-literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Invalid(Rows/Text For \"B\", \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Invalid-number",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Invalid(ValidOut, \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Invalid-group",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Invalid(Rows For Key, \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Invalid-star",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Invalid(Rows*/Text, \"AbsentType\")"
+    ]
+  },
+  {
+    "id": "Invalid-badkey",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Key",
+      "--code",
+      "PROBE",
+      "--condition",
+      "FieldFilled(Key) And Invalid(Rows/Text For 1, \"AbsentType\")"
+    ]
+  }
+]

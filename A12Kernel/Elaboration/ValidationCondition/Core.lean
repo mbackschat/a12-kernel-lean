@@ -268,6 +268,7 @@ inductive ValidationConditionLeaf (model : FlatModel) where
   /-- An explicit `Valid`/`Invalid` predicate over a registered custom type. The operand is a single
   nonrepeatable field, so this leaf reads like a flat one and carries no iteration of its own. -/
   | customFieldValidity (leaf : CheckedCustomFieldValidityLeaf model)
+  | indexedCustomFieldValidity (leaf : CheckedIndexedCustomFieldValidityLeaf model)
   /-- One of the seven field-fill quantifiers over a field-fill list. The leaf is
   not a projection of `NumberOfFilledFields`: a formally invalid cell leaves the count unavailable
   while `AtLeastOneFieldFilled` still fires on a filled sibling. -/
@@ -335,7 +336,7 @@ def ValidationConditionLeaf.requiresClassificationPass : ValidationConditionLeaf
   | .iteratedDateRange (.pluralOverlap source) => source.hasHaving
   | .iteratedDateRange (.yearlessPluralOverlap source) => source.operands.any (·.hasFilter)
   | .iteratedDateRange _ => true
-  | .customFieldValidity _ => false
+  | .customFieldValidity _ | .indexedCustomFieldValidity _ => false
   | .stringPattern _ => true
   | .fieldFill operator source =>
       match operator with
@@ -568,7 +569,7 @@ def canFireOnEmpty : ValidationConditionLeaf model → Bool
   | .iteratedDateRange _ => false
   -- The value-specified gate answers UNKNOWN for an empty operand before any registry contact, so
   -- neither polarity of the explicit predicate can fire on one.
-  | .customFieldValidity _ => false
+  | .customFieldValidity _ | .indexedCustomFieldValidity _ => false
   -- An empty operand is never matched, so neither operator fires on an empty instance.
   | .stringPattern _ => false
   | .fieldFill operator _ => match operator with
@@ -606,6 +607,7 @@ def referencesField : ValidationConditionLeaf model → FieldId → Bool
       condition.operandDeclarations.any fun declaration =>
         declaration.id == field
   | .customFieldValidity leaf, field => leaf.operand.source == field
+  | .indexedCustomFieldValidity leaf, field => leaf.source.selection.referencesField field
   | .fieldFill _ source, field => source.referencesField field
   | .stringPattern leaf, field => leaf.condition.referencesField field
 
@@ -627,7 +629,7 @@ def referencesErrorField : ValidationConditionLeaf model → FieldId → Bool
   | leaf@(.repetitionNotUnique _), field | leaf@(.guardedRootCurrentRepetition _ _ _), field
   | leaf@(.guardedRepeatableCurrentRepetition _ _ _), field
   | leaf@(.constructedDateValidity _ _), field
-  | leaf@(.customFieldValidity _), field
+  | leaf@(.customFieldValidity _), field | leaf@(.indexedCustomFieldValidity _), field
   | leaf@(.stringPattern _), field | leaf@(.scalarTemporal _), field | leaf@(.stringExpression _), field =>
       leaf.referencesField field
 
@@ -648,11 +650,11 @@ def hasHaving : ValidationConditionLeaf model → Bool
   | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ | .repeatableFieldPresence _ _ | .repetitionNotUnique _
   | .guardedRootCurrentRepetition _ _ _
   | .guardedRepeatableCurrentRepetition _ _ _
-  | .customFieldValidity _ | .stringPattern _ => false
+  | .customFieldValidity _ | .indexedCustomFieldValidity _ | .stringPattern _ => false
 
 /-- Whether this leaf retains a repeatable numeric source and therefore cannot use the scalar checked evaluator. -/
 def requiresAddressedValidation : ValidationConditionLeaf model → Bool
-  | .customCondition _ => true
+  | .customCondition _ | .indexedCustomFieldValidity _ => true
   | .stringPattern leaf => !(model.fieldRepeatableScope leaf.condition.field.id).isEmpty
   | .constructedDateValidity _ _ | .stringExpression _ => true
   | .scalarTemporal comparison => comparison.left.requiresAddressed || comparison.right.requiresAddressed ||
@@ -730,6 +732,7 @@ def wellFormedBool (rowGroup : GroupPath) :
   -- because none is measured — whether the Kernel requires the operand inside the rule's group is
   -- untested for this predicate.
   | .customFieldValidity leaf => leaf.operand.declaration.repeatableScope.isEmpty
+  | .indexedCustomFieldValidity leaf => leaf.source.bindingScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
   -- The rule's row must bind every level the operand leaves unstarred above its own depth.
   | .fieldFill _ source =>
       source.bindingScope.all (model.repeatableScopeForGroupPath rowGroup).contains

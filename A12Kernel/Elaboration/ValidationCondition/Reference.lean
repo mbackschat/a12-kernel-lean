@@ -429,6 +429,7 @@ def ValidationConditionLeaf.referencePointers (environment : Env) :
       match source.directComponents? with
       | some direct => sievedFieldPointers model (fun declaration => direct.fields.contains declaration.id) environment
       | none => throw .unclassifiedOperand
+  | .indexedCustomFieldValidity _ => throw .unclassifiedOperand
   | .customCondition _ => pure []
   | .customFieldValidity leaf =>
       (concreteFieldPointer leaf.operand.declaration environment).map ([·])

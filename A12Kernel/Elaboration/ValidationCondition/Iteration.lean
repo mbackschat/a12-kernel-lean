@@ -284,6 +284,8 @@ private def ValidationConditionLeaf.iterationGuardAt
     ValidationConditionLeaf model → IterationGuardStatus
   | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
   | .customCondition _ | .customFieldValidity _ => .noReference
+  | .indexedCustomFieldValidity leaf =>
+      if leaf.source.bindingScope.contains level then .guarded else .noReference
   | .constructedDateValidity operation source =>
       if source.scalarBindingScopes.any (·.contains level) then
         match operation with
@@ -442,7 +444,7 @@ def supportsOrdinaryIteration
     | .iteratedDateRange _ => true
     | .orderedNumeric .sameGroupAddressed _ => true
     | .repetitionNotUnique _ => true
-    | .customCondition _ | .constructedDateValidity _ _ | .customFieldValidity _ => true
+    | .customCondition _ | .constructedDateValidity _ _ | .customFieldValidity _ | .indexedCustomFieldValidity _ => true
     | .stringPattern _ => true
     | .stringExpression _ | .scalarTemporal _ | .firstFilledComparison _ | .tokenComparison _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => true
     | _ => false

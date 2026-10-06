@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.Flat.Condition.SurfaceSupport
 import A12Kernel.Elaboration.Flat.Context
 import A12Kernel.Elaboration.Flat.Model
 import A12Kernel.Semantics.CustomFieldValidity
+import A12Kernel.Elaboration.SemanticIndex
 
 /-! # A12Kernel.Elaboration.CustomFieldValidity — the operand slot of the explicit validity predicates
 
@@ -95,6 +96,51 @@ structure CheckedCustomFieldValidityLeaf (model : FlatModel) where
   validity : CheckedCustomFieldValidity
   operation : CustomFieldValidityOp
 
+/-- A selected value retains the original operand admission; selection cannot change its target
+(spec/06 named-type validity and spec/08 §4). -/
+structure CheckedIndexedCustomFieldValidityOperand (model : FlatModel) where
+  selection : CheckedSemanticIndexSource model
+  operand : CheckedCustomFieldValidityOperand model
+  sameTarget : selection.targetDeclaration.id = operand.source
+
+inductive IndexedCustomFieldValidityElabError where
+  | selection (error : SemanticIndexElabError)
+  | operand (error : CustomFieldValidityOperandElabError)
+  | name (error : CustomFieldValidityElabError)
+  | incoherent
+  deriving Repr, DecidableEq
+
+def elaborateIndexedCustomFieldValidityOperand (model : FlatModel) (rowGroup : GroupPath)
+    (surface : SurfaceSemanticIndex) :
+    Except IndexedCustomFieldValidityElabError (CheckedIndexedCustomFieldValidityOperand model) := do
+  let selection ← (elaborateSemanticIndexSource model rowGroup surface).mapError .selection
+  let operand ← (elaborateCustomFieldValidityOperand model selection.targetDeclaration.id).mapError .operand
+  if sameTarget : selection.targetDeclaration.id = operand.source then
+    pure { selection, operand, sameTarget }
+  else throw .incoherent
+
+def CheckedIndexedCustomFieldValidityOperand.bindingScope
+    (source : CheckedIndexedCustomFieldValidityOperand model) : List RepeatableLevel :=
+  match source.selection.key with
+  | .literal .. => []
+  | .field declaration => declaration.repeatableScope
+
+structure CheckedIndexedCustomFieldValidityLeaf (model : FlatModel) where
+  source : CheckedIndexedCustomFieldValidityOperand model
+  validity : CheckedCustomFieldValidity
+  operation : CustomFieldValidityOp
+
+def CheckedIndexedCustomFieldValidityLeaf.directLeaf
+    (leaf : CheckedIndexedCustomFieldValidityLeaf model) : CheckedCustomFieldValidityLeaf model :=
+  { operand := leaf.source.operand, validity := leaf.validity, operation := leaf.operation }
+
+def elaborateIndexedCustomFieldValidityLeaf (model : FlatModel) (rowGroup : GroupPath)
+    (world : World) (source : SurfaceSemanticIndex) (name : String) (operation : CustomFieldValidityOp) :
+    Except IndexedCustomFieldValidityElabError (CheckedIndexedCustomFieldValidityLeaf model) := do
+  let source ← elaborateIndexedCustomFieldValidityOperand model rowGroup source
+  let validity ← (elaborateCustomFieldValidity world name).mapError .name
+  pure { source, validity, operation }
+
 def elaborateCustomFieldValidityLeaf (model : FlatModel) (world : World)
     (source : FieldId) (name : String) (operation : CustomFieldValidityOp) :
     Except CustomFieldValidityLeafElabError
@@ -106,7 +152,7 @@ def elaborateCustomFieldValidityLeaf (model : FlatModel) (world : World)
 
 namespace CheckedCustomFieldValidityLeaf
 
-/-- Evaluate the predicate against one already-addressed checked cell.
+/-- Evaluate the predicate against one checked observation.
 
     The operand is read through the **checked** observation, so a formally invalid cell reaches the predicate as unavailable and never reaches the validator: a validator answering about the stored text of a cell the rest of the theory cannot read would contradict every other consumer of that cell.
 
@@ -114,13 +160,16 @@ namespace CheckedCustomFieldValidityLeaf
 
     Enumeration cells retain their stored token. RuntimeController’s predefined-type predicates read the XML value, so display labels must not replace that token (source checkpoint: named-type computation guards, 2026-10-04).
 
-    Both routes into the predicate — the scalar context read and the addressed partial one — end here, so a covered cell gets one answer by construction rather than by two arms happening to agree. -/
-def evalCell (leaf : CheckedCustomFieldValidityLeaf model) (phase : Phase)
-    (cell : CheckedCell) : Verdict :=
-  let observation := observeCell phase cell
+    Scalar, selected and addressed partial reads share this projection, so a covered cell gets one answer by construction rather than by separate arms happening to agree. -/
+def evalObservation (leaf : CheckedCustomFieldValidityLeaf model)
+    (observation : CellObservation) : Verdict :=
   leaf.validity.eval leaf.operation (match observation with
     | .value (.enum token) => .value token
     | other => other.asText)
+
+def evalCell (leaf : CheckedCustomFieldValidityLeaf model) (phase : Phase)
+    (cell : CheckedCell) : Verdict :=
+  leaf.evalObservation (observeCell phase cell)
 
 /-- Evaluate the predicate against one flat context, reading its own operand. -/
 def evalAt (leaf : CheckedCustomFieldValidityLeaf model)

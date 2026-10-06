@@ -25,6 +25,7 @@ inductive SurfaceComputationPredicate where
   | pattern (source : SurfaceStringPatternCondition)
   | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceConstructedDateComponents SurfaceScalarDateComponent)
   | typeValidity (operation : CustomFieldValidityOp) (source : SurfaceFieldPath) (name : String)
+  | indexedTypeValidity (operation : CustomFieldValidityOp) (source : SurfaceSemanticIndex) (name : String)
   | stringExpression (operator : EqualityOp) (left right : StringExpr SurfaceFieldPath String)
   | selectedStringExpression (operator : EqualityOp) (left right : SurfaceSelectedStringExpression)
   | temporal (operator : TemporalComparisonOp) (left right : SurfaceScalarTemporalExpression)
@@ -44,6 +45,7 @@ inductive ComputationPredicateElabError where
   | pattern (error : ComputationStringPatternElabError)
   | typeOperand (error : CustomFieldValidityOperandElabError)
   | typeName (error : CustomFieldValidityElabError)
+  | indexedTypeOperand (error : IndexedCustomFieldValidityElabError)
   | stringExpression (error : StringComputationElabError)
   | temporal (error : ScalarTemporalExpressionError)
   | comparison (error : ScalarFieldComparisonElabError)
@@ -85,6 +87,8 @@ inductive CheckedComputationPredicate (model : FlatModel) where
   | dateValidity (operation : ConstructedDateValidityOp) (source : CheckedConstructedDateComponents model (ScalarDateComponent model))
   | typeValidity (operation : CustomFieldValidityOp)
       (source : CheckedCustomFieldValidityOperand model) (name : String)
+  | indexedTypeValidity (operation : CustomFieldValidityOp)
+      (source : CheckedIndexedCustomFieldValidityOperand model) (name : String)
   | stringExpression (source : CheckedStringExpressionComparison model)
   | temporal (source : CheckedScalarTemporalComparison model)
   | fieldComparison (source : CheckedScalarFieldComparison model)
@@ -103,6 +107,7 @@ def referencesField (predicate : CheckedComputationPredicate model) (field : Fie
   | .pattern source => source.source.referencesField field
   | .dateValidity _ source => source.scalarFieldIds.contains field
   | .typeValidity _ source _ => source.source == field
+  | .indexedTypeValidity _ source _ => source.selection.referencesField field
   | .stringExpression source => source.referencesField field
   | .temporal source => source.referencesField field
   | .fieldComparison source => source.referencesField field
@@ -147,6 +152,7 @@ def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List R
   | .pattern source => source.source.declarations.all (·.repeatableScope.isPrefixOf scope)
   | .dateValidity _ source => source.scalarBindingScopes.all (·.isPrefixOf scope)
   | .typeValidity _ source _ => source.declaration.repeatableScope.isPrefixOf scope
+  | .indexedTypeValidity _ source _ => source.bindingScope.isPrefixOf scope
   | .stringExpression source => source.boundDeclarations.all (·.repeatableScope.isPrefixOf scope)
   | .temporal source => (source.left.bindingScopes ++ source.right.bindingScopes).all (·.isPrefixOf scope)
   | .fieldComparison source => source.rowBoundBool scope
@@ -355,6 +361,23 @@ private def evalValueList (operator : ComputationValueListOperator)
       (fun _ => pure (.ok (source.firstValue :: source.restValues)))
       (fun test => anyResult <$> scanOperands (scanToken context filterRead (anyStep test)) source.fields.operands ())
 
+private def evalTypeValidity (operation : CustomFieldValidityOp) (name : String)
+    (observation : CellObservation) (stored : Option String) (world : Option World) :
+    Except ComputationPredicateError ComputationConditionResult := do
+  match observation with
+  | .empty => pure .notTrue
+  | .unknown cause | .poison cause => pure (.poison cause)
+  | .value _ =>
+      let some stored := stored | throw .contextRequired
+      if stored.isEmpty then return .notTrue
+      let some world := world | throw .contextRequired
+      let checked : CheckedCustomFieldValidity := { name, validator? := world.resolveCustomFieldValidator? name }
+      match checked.evalComputation operation (.value stored) with
+      | .holds => pure .holds
+      | .notTrue => pure .notTrue
+      | .poison cause => pure (.poison cause)
+      | .validatorUnavailable => throw .valueFailure
+
 /-- One phase selector serves typed Number and token streams. A filtered operand is scanned with
 its consumer continuation, so a deciding subject avoids the suffix beyond its prefetched successor. -/
 def evalChecked (predicate : CheckedComputationPredicate model)
@@ -389,21 +412,20 @@ def evalChecked (predicate : CheckedComputationPredicate model)
         | .error cause => .poison cause
         | .ok (.fired _) => .holds
         | .ok _ => .notTrue)
-  | .typeValidity operation source name => do
-      let observation := observeCell .computation (context.read source.source)
-      match observation with
+  | .typeValidity operation source name =>
+      evalTypeValidity operation name (observeCell .computation (context.read source.source))
+        (context.storedText source.source) context.world
+  | .indexedTypeValidity operation source name => do
+      let some addressed := context.addressed | throw .contextRequired
+      let selected ← source.selection.selectEnvironmentWith .computation context.semanticIndexColumnReader
+        context.row context.read context.storedText |>.mapError .indexSelection
+      match selected with
       | .empty => pure .notTrue
       | .unknown cause | .poison cause => pure (.poison cause)
-      | .value _ =>
-          let some stored := context.storedText source.source | throw .contextRequired
-          if stored.isEmpty then return .notTrue
-          let some world := context.world | throw .contextRequired
-          let checked : CheckedCustomFieldValidity := { name, validator? := world.resolveCustomFieldValidator? name }
-          match checked.evalComputation operation (.value stored) with
-          | .holds => pure .holds
-          | .notTrue => pure .notTrue
-          | .poison cause => pure (.poison cause)
-          | .validatorUnavailable => throw .valueFailure
+      | .value row =>
+          evalTypeValidity operation name
+            (observeCell .computation (addressed.read row source.operand.source))
+            (addressed.storedText row source.operand.source) context.world
   | .stringExpression source => (source.evalComputation { read := context.read } context.numberText (some context)).mapError .stringExpression
   | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError (fun
       | .dateTimeLabelUnresolved | .componentNumberInvalid => .valueFailure
@@ -487,6 +509,10 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
       let source ← (elaborateCustomFieldValidityOperand model declaration.id).mapError .typeOperand
       if name.isEmpty then throw (.typeName .emptyTypeName)
       pure (.typeValidity operation source name)
+  | .indexedTypeValidity operation authored name => do
+      let source ← (elaborateIndexedCustomFieldValidityOperand model declaringGroup authored).mapError .indexedTypeOperand
+      if name.isEmpty then throw (.typeName .emptyTypeName)
+      pure (.indexedTypeValidity operation source name)
   | .uniqueness source =>
       match elaborateNumberValuesNotUniqueSource model declaringGroup source targetGroup (some targetGroup) with
       | .ok source => pure (.uniqueness (.number source))

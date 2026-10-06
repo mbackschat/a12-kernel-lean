@@ -553,7 +553,7 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-HANDBACKS-2026-09-24-THROUGH-2026-09-24b.md` at `3831425df05ba9afecdf5805e80be4fad164ec6c`. The anchors below keep every existing `SOURCES.md#inbound-…` citation resolving.
 
 <a id="inbound-2026-09-24b-keyed-partial-read"></a>
-- Reviewed 2026-09-24b keyed partial-read handback — partial validation judges a keyed read at the coordinate its key resolves to
+- 2026-09-24b keyed partial-read handback: relevance at the selected coordinate
 <a id="inbound-2026-09-24b-lexer-and-blank-text"></a>
 - Reviewed 2026-09-24b lexer and blank-text handback — whitespace is the lexer's five characters, the suppression list is parsed as preamble text, and member blankness follows `isWhitespace`
 <a id="inbound-2026-09-24b-category-read-poison"></a>
@@ -1784,3 +1784,6 @@ Edit the source shard when its provenance or drill route changes; change this hu
 
 <a id="src-indexed-time-components"></a>
 - [Indexed Time components](sources/temporal-runtime-fold-probes.md#src-indexed-time-components)
+
+<a id="src-indexed-type-validity"></a>
+- [Indexed named-type validity](sources/computation-scheduling-probes.md#src-indexed-type-validity)

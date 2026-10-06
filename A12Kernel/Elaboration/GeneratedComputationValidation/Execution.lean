@@ -158,7 +158,7 @@ def executeTargetResult
     (world : World) (input : CheckedDocument model) :
     Except GeneratedNumericComputationEvaluationError
       GeneratedNumericComputationTargetResult := do
-  let evaluation ← admission.evaluate (input.scalarComputationContext world)
+  let evaluation ← admission.evaluate (input.indexedScalarComputationContext world)
   let targetAddress : CellAddr := {
     field := computation.targetField
     path := []

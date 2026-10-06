@@ -322,6 +322,8 @@ def ordinaryIterationScope :
     ValidationCondition model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
   | .leaf (.keyedGroupPresence _ _) | .leaf (.indexedFieldPresence _ _) => pure none
+  | .leaf (.indexedCustomFieldValidity leaf) =>
+      pure (if leaf.source.bindingScope.isEmpty then none else some leaf.source.bindingScope)
   | .leaf (.repeatableFieldPresence _ declaration) =>
       pure (some declaration.repeatableScope)
   | .leaf (.constructedDateValidity _ source) =>

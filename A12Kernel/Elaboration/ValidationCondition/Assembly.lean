@@ -141,6 +141,16 @@ def fromCustomFieldValidity (model : FlatModel) (rowGroup : GroupPath)
           checkCore model rowGroup (ValidationCondition.customFieldValidity leaf)
             (by rw [hModel]; rfl)
 
+def fromIndexedCustomFieldValidity (model : FlatModel) (rowGroup : GroupPath)
+    (world : World) (source : SurfaceSemanticIndex) (name : String) (operation : CustomFieldValidityOp) :
+    Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
+  match hModel : model.validate with
+  | .error error => .error (.invalidModel error)
+  | .ok () =>
+      match elaborateIndexedCustomFieldValidityLeaf model rowGroup world source name operation with
+      | .error _ => .error .incoherentCore
+      | .ok leaf => checkCore model rowGroup (.leaf (.indexedCustomFieldValidity leaf)) (by rw [hModel]; rfl)
+
 /-- Assemble one `PatternMatched`/`PatternViolated` leaf at a rule group, keeping the compiler that
     admitted its pattern beside the checked condition. -/
 def fromStringPattern (model : FlatModel) (rowGroup : GroupPath)

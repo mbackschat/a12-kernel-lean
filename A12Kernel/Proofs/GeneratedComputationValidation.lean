@@ -144,7 +144,7 @@ theorem admittedGeneratedNumericOperationTable_executeTargetResult_exact
     (admission : AdmittedGeneratedNumericOperationTable model computation)
     (world : World) (input : CheckedDocument model)
     (evaluation : GeneratedNumericComputationEvaluation)
-    (executed : admission.evaluate (input.scalarComputationContext world) =
+    (executed : admission.evaluate (input.indexedScalarComputationContext world) =
       .ok evaluation) :
     admission.executeTargetResult world input = .ok {
       targetAddress := { field := computation.targetField, path := [] }

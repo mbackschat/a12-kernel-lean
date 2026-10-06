@@ -1,0 +1,2089 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "IndexedValidity_DM.json",
+    "locale" : "en_US",
+    "clock" : "2024-01-01T00:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "known",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "INVALID",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "InvalidOutComp",
+              "field" : "Form/InvalidOut",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALID",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidOutComp",
+              "field" : "Form/ValidOut",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/InvalidOut",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/InvalidOut"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/ValidOut",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/ValidOut"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : null,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : null,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "INVALID",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "InvalidOutComp",
+              "field" : "Form/InvalidOut",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALID",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidOutComp",
+              "field" : "Form/ValidOut",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/InvalidOut",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/InvalidOut"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/ValidOut",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/ValidOut"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : null,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : null,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : 1,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : 1,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : ""
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : 1,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : 1,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : ""
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "missing",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : 1,
+                "InvalidOut" : null,
+                "Key" : "Z",
+                "ValidAfter" : 1,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : 1,
+                "InvalidOut" : null,
+                "Key" : "Z",
+                "ValidAfter" : 1,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "duplicate",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows[2]/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Id"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows[2]/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Id"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : null,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : null,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "B",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Id"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Rows[2]/Id",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Id"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Id"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Rows[2]/Id",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Id"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : null,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : null,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "B",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringZuLang",
+              "field" : "Form/Rows[2]/Text",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringZuLang",
+                "field" : "Form/Rows[2]/Text",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Text"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : null,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : null,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "long"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringZuLang",
+              "field" : "Form/Rows[2]/Text",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows[2]/Text"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "stringZuLang",
+                "field" : "Form/Rows[2]/Text",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows[2]/Text"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : null,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : null,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "long"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "unselected-malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "INVALID",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "InvalidOutComp",
+              "field" : "Form/InvalidOut",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALID",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidOutComp",
+              "field" : "Form/ValidOut",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringZuLang",
+              "field" : "Form/Rows/Text",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Text"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/InvalidOut",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/InvalidOut"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/ValidOut",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/ValidOut"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "stringZuLang",
+                "field" : "Form/Rows/Text",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Text"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : null,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : null,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "long"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "INVALID",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "InvalidOutComp",
+              "field" : "Form/InvalidOut",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALID",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidOutComp",
+              "field" : "Form/ValidOut",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringZuLang",
+              "field" : "Form/Rows/Text",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Text"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/InvalidOut",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/InvalidOut"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "berechnungsWertFehler",
+                "field" : "Form/ValidOut",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/ValidOut"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "stringZuLang",
+                "field" : "Form/Rows/Text",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Text"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : null,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : null,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "long"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "omitted",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : 1,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : 1,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : 1,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : 1,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty-key",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : 1,
+                "InvalidOut" : null,
+                "Key" : "",
+                "ValidAfter" : 1,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : 1,
+                "InvalidOut" : null,
+                "Key" : "",
+                "ValidAfter" : 1,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "A",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty-index",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "INVALID",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "InvalidOutComp",
+              "field" : "Form/InvalidOut",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALID",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidOutComp",
+              "field" : "Form/ValidOut",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Form/Rows/Id",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Id"
+              ],
+              "fillToFix" : [
+                "Form/Rows/Id"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "mandatoryField",
+                "field" : "Form/Rows/Id",
+                "severity" : "ERROR",
+                "type" : "OMISSION_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Id"
+                ],
+                "fillToFix" : [
+                  "Form/Rows/Id"
+                ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : null,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : null,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "INVALID",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "InvalidAfterComp",
+              "field" : "Form/InvalidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/InvalidAfter",
+                "Form/InvalidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "InvalidOutComp",
+              "field" : "Form/InvalidOut",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "VALID",
+              "field" : "Form/Key",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidAfterComp",
+              "field" : "Form/ValidAfter",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/ValidAfter",
+                "Form/ValidOut"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ValidOutComp",
+              "field" : "Form/ValidOut",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [ ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "mandatoryField",
+              "field" : "Form/Rows/Id",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Rows/Id"
+              ],
+              "fillToFix" : [
+                "Form/Rows/Id"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/InvalidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/InvalidOut",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidAfter",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/ValidOut",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "mandatoryField",
+                "field" : "Form/Rows/Id",
+                "severity" : "ERROR",
+                "type" : "OMISSION_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Rows/Id"
+                ],
+                "fillToFix" : [
+                  "Form/Rows/Id"
+                ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [ ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "InvalidAfter" : null,
+                "InvalidOut" : null,
+                "Key" : "B",
+                "ValidAfter" : null,
+                "ValidOut" : null,
+                "Rows" : [
+                  {
+                    "Id" : "",
+                    "Text" : "y"
+                  },
+                  {
+                    "Id" : "B",
+                    "Text" : "x"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
