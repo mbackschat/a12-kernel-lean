@@ -326,4 +326,52 @@ example : runModel utcInstants "DifferenceInSeconds(Now, Rows/Tag) == 0" false
       "1970-01-01T00:00:00" "1970-01-01T00:00:03" "1970-01-01T00:00:04"
       (clock := { epochMillis := 1999 }) (ruleExpected := "14") = some (.fired .omission, ["value 14"]) := by native_decide
 
+example : ["[Rows/Tag] < Today", "Today > [Rows/Tag]", "[Rows/Tag] < \"02.01.1970\"",
+    "\"02.01.1970\" > [Rows/Tag]"].all (fun filter =>
+      runModel dates filter false "unused" "1970-01-01" "1970-01-03"
+        (clock := { epochMillis := 86400000 }) (zoneRules := ModelZone.concreteRules) == some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : ["[Rows/Tag] < Now", "Now > [Rows/Tag]"].all (fun filter =>
+    runModel utcInstants filter false "unused" "1970-01-01T00:00:01" "1970-01-01T00:00:03"
+      (clock := { epochMillis := 1001 }) == some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : ["BaseYear", "StartOfDateRange(BaseYear)", "EndOfDateRange(BaseYear)"].all (fun source =>
+    runModel { dates with baseYear := some 1970 } s!"[Rows/Tag] < {source}" false
+      "unused" "1969-01-01" "1971-01-01" (zoneRules := ModelZone.concreteRules) == some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : runModel { model with baseYear := some 2024 } "[Rows/N] < BaseYear" false
+    "unused" "a" "b" (ruleExpected := "14") = some (.fired .omission, ["value 14"]) := by native_decide
+
+example : [("<", "9"), ("<=", "9"), (">", "5"), (">=", "5"), ("==", "0"), ("!=", "14")].all
+    (fun (op, amount) => runModel dates s!"[Rows/Tag] {op} Today" false
+      "unused" "1970-01-01" "1970-01-03" (clock := { epochMillis := 86400000 })
+      (ruleExpected := amount) (zoneRules := ModelZone.concreteRules) == some (.fired .omission, [s!"value {amount}"])) = true := by native_decide
+
+example : runModel { dates with baseYear := some 1970 } "[Rows/Tag] < \"02.01.\"" false
+    "unused" "1970-01-01" "1970-01-03" = some (.fired .omission, ["value 9"]) ∧
+    refused dates "[Rows/Tag] < \"02.01.\"" ∧
+    refused { dates with baseYear := some 2024 } "[Rows/Tag] < \"29.02.\"" ∧
+    refused utcInstants "[Rows/Tag] == Today" ∧
+    refused dates "[Rows/Tag] == Now" ∧
+    refused dates "Today == Today" ∧
+    refused dates "[$Expected] < Today" ∧
+    admitted dates "[Rows/N] > 0 And [$Expected] < Today" := by native_decide
+
+example : runModel { dates with timeZoneId := "Europe/Berlin" } "[Rows/Tag] == Today" false
+    "unused" "1970-01-01" "1969-12-31" (clock := { epochMillis := -1 })
+    (zoneRules := ModelZone.concreteRules) = some (.fired .omission, ["value 9"]) ∧
+    runModel dates "[Rows/Tag] == Today" false "unused" "1970-01-01" "1969-12-31"
+      (clock := { epochMillis := -1 }) (ruleExpected := "5") (zoneRules := ModelZone.concreteRules) =
+        some (.fired .omission, ["value 5"]) ∧
+    runModel dates "[Rows/Tag] < Today" false "unused" "1970-01-01" "1970-01-03"
+      (clock := { epochMillis := 86400000 }) = some (.notFired, []) := by native_decide
+
+example : runModel dates "[Rows/N] > 0 And [$Expected] < Today" true
+    "1971-01-01" "unused" "unused" "Date(\"01\", \"01\", \"1970\")"
+    (clock := { epochMillis := 86400000 }) (zoneRules := ModelZone.concreteRules) =
+      some (.notFired, ["value 1970-01-01", "value 14"]) ∧
+    referencesFor "[/Form/Rows/N] > 0 And [$/Form/Rows/Tag] < Today"
+      { dates with fields := dates.fields ++ [{
+        id := 6, name := "Token", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } }] } "Token" = some (false, true) := by native_decide
+
 end A12Kernel.Dm.HavingCalendarLocks

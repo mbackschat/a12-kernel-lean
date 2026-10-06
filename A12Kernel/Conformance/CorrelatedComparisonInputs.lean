@@ -482,4 +482,34 @@ example : [NumericAggregateOp.sum, .minimum, .maximum].all (fun op =>
     (HavingNumericAtom.aggregate .distinctCount (aggregateRef .inner)
       [{ origin := .outer, field := { id := 2, info := { scale := 2, signed := true } } }]).summary = .field 0 := by native_decide
 
+private def clockSourcePair : FlatComparison := .temporal .before .nowValue (.fieldValue (subdayRef .outer).field)
+
+example : clockSourcePair.evalSimpleValidationReads (fun _ => .error "unexpected") (fun _ => .error "field") =
+    Except.error (α := Verdict) "field" ∧
+    clockSourcePair.evalSimpleComputationReads (fun _ => .error "unexpected") (fun _ => .error "field") =
+      Except.ok (ε := String) (.poison .malformed) ∧
+    clockSourcePair.evalSimpleComputationReads (fun _ => .error "unexpected") (fun _ => .error "field")
+      (some { now := { epochMillis := 0 } }) = Except.error (α := ComputationConditionResult) "field" := by native_decide
+
+private def injectedCalendar : World := {
+  now := { epochMillis := 0 }, modelZoneRules := {
+    today? := fun _ _ => some { epochMillis := 1234 }
+    resolveLocal? := fun _ _ _ _ _ _ _ => some { epochMillis := 1234 } } }
+
+example : [FlatTemporalOperand.todayValue "UTC", .baseYearValue "UTC" 1970,
+    .baseYearRangeValue "UTC" 1970 .start, .baseYearRangeValue "UTC" 1970 .finish].all (fun source =>
+      let comparison := FlatComparison.temporal .equal source (.literalValue { epochMillis := 1234 })
+      comparison.evalSimpleValidationReads (fun _ => Except.error "unexpected") (fun _ => Except.error "unexpected")
+        (some injectedCalendar) == .ok (.fired .value) &&
+      comparison.evalSimpleComputationReads (fun _ => Except.error "unexpected") (fun _ => Except.error "unexpected")
+        (some injectedCalendar) == .ok .holds &&
+      comparison.evalSimpleValidationReads (fun _ => Except.error "unexpected") (fun _ => Except.error "unexpected") ==
+        .ok .unknown &&
+      comparison.evalSimpleComputationReads (fun _ => Except.error "unexpected") (fun _ => Except.error "unexpected") ==
+        .ok (.poison .malformed)) = true := by native_decide
+
+example : ComputationCondition.evalSimpleComparison
+    (.temporal .equal (.todayValue "UTC") (.literalValue { epochMillis := 1234 }))
+    { read := fun _ => invalid, world := some injectedCalendar } = .holds := by native_decide
+
 end A12Kernel.Conformance.CorrelatedComparisonInputs

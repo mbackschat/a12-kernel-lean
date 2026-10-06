@@ -331,7 +331,7 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
       | simpleComparison left right comparison =>
           cases result : comparison.evalSimpleValidationReads
               (fun field => Except.ok (ε := Empty) (context.read (frame.envAt left) field))
-              (fun field => Except.ok (ε := Empty) (context.read (frame.envAt right) field)) with
+              (fun field => Except.ok (ε := Empty) (context.read (frame.envAt right) field)) context.world with
           | error impossible => exact nomatch impossible
           | ok verdict =>
               cases verdict <;>

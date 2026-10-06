@@ -218,7 +218,7 @@ def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
   | .simpleComparison left right comparison =>
       match comparison.evalSimpleValidationReads
           (fun field => Except.ok (ε := Empty) (context.read (frame.envAt left) field))
-          (fun field => Except.ok (ε := Empty) (context.read (frame.envAt right) field)) with
+          (fun field => Except.ok (ε := Empty) (context.read (frame.envAt right) field)) context.world with
       | .ok verdict => CorrelatedHavingLeaf.verdictTruth verdict
       | .error impossible => nomatch impossible
   | .compareStringLiteral op reference expected =>
@@ -251,7 +251,7 @@ def CorrelatedHavingLeaf.evalTruthInResolving
           NumericComparisonOf (Except Unit NumericArithmeticOutcome)).evalWith id))
   | .simpleComparison left right comparison => do
       pure (CorrelatedHavingLeaf.verdictTruth (← comparison.evalSimpleValidationReads
-        (context.read (frame.envAt left)) (context.read (frame.envAt right))))
+        (context.read (frame.envAt left)) (context.read (frame.envAt right)) context.world))
   | .compareStringLiteral op reference expected => do
       pure (CorrelatedHavingLeaf.verdictTruth
         (reference.compareResolved (← reference.resolveInAtResolving .validation context frame)
@@ -284,7 +284,7 @@ def CorrelatedHavingLeaf.evalComputationInResolving
       comparison.evalComputationWith (HavingNumericAtom.readComputationResolving context frame)
   | .simpleComparison left right comparison =>
       comparison.evalSimpleComputationReads
-        (context.read (frame.envAt left)) (context.read (frame.envAt right))
+        (context.read (frame.envAt left)) (context.read (frame.envAt right)) context.world
   | .compareStringLiteral op reference expected => do
       match ← reference.resolveInAtResolving .computation context frame with
       | .unknown cause => pure (.poison cause)
@@ -454,7 +454,7 @@ def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
   | .simpleComparison left right comparison =>
       ∃ polarity, comparison.evalSimpleValidationReads
         (fun field => Except.ok (ε := Empty) (context.read (frame.envAt left) field))
-        (fun field => Except.ok (ε := Empty) (context.read (frame.envAt right) field)) =
+        (fun field => Except.ok (ε := Empty) (context.read (frame.envAt right) field)) context.world =
           .ok (.fired polarity)
   | .compareStringLiteral op reference expected =>
       ∃ messagePolarity,

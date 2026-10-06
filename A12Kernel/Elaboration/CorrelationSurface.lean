@@ -58,6 +58,8 @@ inductive SurfaceHavingNumericAtom where
 inductive SurfaceCorrelatedHaving where
   | compareBoolean (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : Bool)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceHavingStringRef)
+  | compareTemporal (op : SurfaceComparisonOp) (position : SurfacePointInTimePosition)
+      (reference : SurfaceHavingStringRef) (source : SurfaceDateDifferenceOperand Empty)
   | tolerance (range : NumericToleranceRange)
       (left right : AuthoredNumericExpr SurfaceHavingNumericAtom)
   | numeric (op : SurfaceComparisonOp)

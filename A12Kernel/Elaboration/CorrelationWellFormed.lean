@@ -112,6 +112,16 @@ private def FlatModel.admitsComparisonInputsIn (model : FlatModel)
       field.matchesDecl declaration && declaration.fieldValueReadRefusal?.isNone &&
         repeatableScopeAvailable declaration.repeatableScope scope
 
+private def temporalConstantAdmitted (model : FlatModel) (op : TemporalComparisonOp)
+    (field : FlatTemporalField) : FlatTemporalOperand → Bool
+  | .todayValue zone => zone == model.timeZoneId && op.admitsToday model.hasBaseYear field.components
+  | .nowValue => op.admitsNow model.hasBaseYear field.components
+  | .baseYearValue zone year => zone == model.timeZoneId && model.baseYear == some year && op.admitsBaseYear field.components
+  | .baseYearRangeValue zone year _ => zone == model.timeZoneId && model.baseYear == some year &&
+      op.admitsFormats true field.components TemporalComponents.fullDate
+  | .literalValue _ => op.admitsFormats model.hasBaseYear field.components TemporalComponents.fullDate
+  | .fieldValue _ => false
+
 /-- Each side is checked in its own environment; comparability and Boolean/Confirm restrictions retain their ordinary rules. -/
 def FlatModel.admitsHavingSimpleComparison (model : FlatModel)
     (leftScope rightScope : List RepeatableLevel) : FlatComparison → Bool
@@ -135,6 +145,9 @@ def FlatModel.admitsHavingSimpleComparison (model : FlatModel)
       left.components.hasDate && right.components.hasDate &&
         op.admitsFormats model.hasBaseYear left.components right.components &&
         model.admitsComparisonInputsIn comparison leftScope rightScope
+  | comparison@(.temporal op (.fieldValue field) constant)
+      | comparison@(.temporal op constant (.fieldValue field)) =>
+      temporalConstantAdmitted model op field constant && model.admitsComparisonInputsIn comparison leftScope rightScope
   | comparison@(.time op left right) =>
       !left.components.hasDate && !right.components.hasDate &&
         op.admitsFormats model.hasBaseYear left.components right.components &&

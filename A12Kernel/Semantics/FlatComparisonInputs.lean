@@ -19,7 +19,8 @@ def FlatComparison.foldSimpleReads {Error Result : Type}
     (comparison : FlatComparison) (phase : Phase)
     (readLeft readRight : FieldId → Except Error CheckedCell)
     (consume : {α : Type} → (α → α → Bool) → Except Error (SimpleComparisonOperand α) →
-      (Unit → Except Error (SimpleComparisonOperand α)) → Except Error Result) :
+      (Unit → Except Error (SimpleComparisonOperand α)) → Except Error Result)
+    (world : Option World := none) :
     Option (Except Error Result) :=
   let text (read : FieldId → Except Error CheckedCell) (operand : FlatTextFieldOperand) := do
     let cell ← read operand.field.id
@@ -35,6 +36,12 @@ def FlatComparison.foldSimpleReads {Error Result : Type}
       Except Error (SimpleComparisonOperand α) := do
     let cell ← read field.id
     pure (({ read := fun _ => cell } : FlatContext).resolveTemporalFieldBy field project phase)
+  let instant (read : FieldId → Except Error CheckedCell) (operand : FlatTemporalOperand) := do
+    match operand with
+    | .fieldValue field =>
+        let cell ← read field.id
+        pure (operand.resolveAt { read := fun _ => cell, world } phase)
+    | _ => pure (operand.resolveAt { read := fun _ => { rawPresent := false, parsed := none, findings := [] }, world } phase)
   let range (read : FieldId → Except Error CheckedCell) (field : FlatDateRangeField) := do
     let cell ← read field.id
     pure (({ read := fun _ => cell } : FlatContext).resolveDateRangeComparisonOperandAt phase field)
@@ -50,25 +57,24 @@ def FlatComparison.foldSimpleReads {Error Result : Type}
   | .textFields op left right => some (compare op (text readLeft left) (fun _ => text readRight right))
   | .dateRange op left right => some (consume (fun a b => op.holds (a.sameIdentity b))
       (range readLeft left) (fun _ => range readRight right))
-  | .temporal op (.fieldValue left) (.fieldValue right) => some (consume op.holdsInstant
-      (temporal readLeft left (fun value => some value.instant))
-      (fun _ => temporal readRight right (fun value => some value.instant)))
+  | .temporal op left right => some (consume op.holdsInstant
+      (instant readLeft left) (fun _ => instant readRight right))
   | .time op left right => some (consume op.holdsTime
       (temporal readLeft left TemporalValue.time?) (fun _ => temporal readRight right TemporalValue.time?))
-  | .number _ _ _ | .stringLength _ _ _ | .temporal _ _ _ => none
+  | .number _ _ _ | .stringLength _ _ _ => none
 
 /-- Validation reaches both addressed operands before projecting formal invalidity to UNKNOWN. -/
 def FlatComparison.evalSimpleValidationReads (comparison : FlatComparison)
-    (readLeft readRight : FieldId → Except Error CheckedCell) : Except Error Verdict :=
-  (comparison.foldSimpleReads .validation readLeft readRight fun holds left right => do
+    (readLeft readRight : FieldId → Except Error CheckedCell) (world : Option World := none) : Except Error Verdict :=
+  (comparison.foldSimpleReads .validation readLeft readRight (fun holds left right => do
     let left ← left
     let right ← right ()
-    pure (evalSymmetricComparison holds left right)).getD (.ok .unknown)
+    pure (evalSymmetricComparison holds left right)) world).getD (.ok .unknown)
 
 def FlatComparison.evalSimpleComputationReads (comparison : FlatComparison)
-    (readLeft readRight : FieldId → Except Error CheckedCell) :
+    (readLeft readRight : FieldId → Except Error CheckedCell) (world : Option World := none) :
     Except Error ComputationConditionResult :=
   (comparison.foldSimpleReads .computation readLeft readRight
-    evalComputationComparisonExcept).getD (.ok .notTrue)
+    evalComputationComparisonExcept world).getD (.ok .notTrue)
 
 end A12Kernel

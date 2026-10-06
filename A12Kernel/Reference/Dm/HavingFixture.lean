@@ -18,7 +18,8 @@ def runModel (model : FlatModel) (filter : String) (fresh : Bool)
     (expected first second : String) (producerOperation : String := "\"drop\"")
     (extra : List (String × Json) := []) (operationOverride : Option String := none)
     (ruleExpected : String := "9") (clock : Instant := { epochMillis := 0 })
-    (ruleCondition : Option String := none) (computationPrecondition : Option String := none) : Option (Verdict × List String) := do
+    (ruleCondition : Option String := none) (computationPrecondition : Option String := none)
+    (zoneRules : ModelZoneRules := ModelZoneRules.unavailable) : Option (Verdict × List String) := do
   let dm : DmModel := {
     flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let row := fun (tag n : String) => Json.mkObj [("Tag", Json.str tag), ("N", Json.str n)]
@@ -26,7 +27,7 @@ def runModel (model : FlatModel) (filter : String) (fresh : Bool)
     ("Error", Json.str "ready"), ("Expected", Json.str expected),
     ("Rows", Json.arr #[row first "2", row second "5", row first "7"])] ++ extra))])).toOption
   if !input.refusals.isEmpty then none
-  let world : World := { now := clock }
+  let world : World := { now := clock, modelZoneRules := zoneRules }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
   let operation := operationOverride.getD ("Sum(Rows*/N Having " ++ filter ++ ")")

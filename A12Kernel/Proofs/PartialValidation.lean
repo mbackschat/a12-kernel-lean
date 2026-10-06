@@ -80,6 +80,11 @@ private theorem selectedOr_eq_disj (left right : FlatCondition)
   | fired polarity =>
       cases polarity <;> rfl
 
+/-- Phase-aware correlated reads preserve the ordinary temporal interpretation on validation, including injected clock and zone capabilities. -/
+theorem flatTemporalOperand_resolveAt_validation (operand : FlatTemporalOperand) (context : FlatContext) :
+    operand.resolveAt context .validation = operand.resolve context := by
+  cases operand <;> rfl
+
 private theorem temporalOperand_resolve_agreesOn
     (operand : FlatTemporalOperand) (left right : FlatContext)
     (isRelevant : FlatRelevance) (worldAgreement : left.world = right.world)

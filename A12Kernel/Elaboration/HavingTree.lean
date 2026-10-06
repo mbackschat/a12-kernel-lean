@@ -29,6 +29,8 @@ structure HavingLeafResolvers where
   fields : SurfaceComparisonOp → SurfaceHavingStringRef → SurfaceHavingStringRef →
     Except CorrelationElabError (Option FlatComparison)
 
+  temporal : SurfaceComparisonOp → SurfacePointInTimePosition → SurfaceHavingStringRef →
+    SurfaceDateDifferenceOperand Empty → Except CorrelationElabError (Option FlatComparison)
   stringValue : HavingOrigin → SurfaceFieldPath → Except CorrelationElabError FlatStringField
   dateDifference : DateDifferenceUnit → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
   dayDifference : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
@@ -155,6 +157,18 @@ def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
     SurfaceCorrelatedHaving → Except CorrelationElabError CorrelatedHaving
   | .compareBoolean op reference expected => do
       pure (.leaf (.simpleComparison reference.origin .inner (← resolvers.boolean op reference expected)))
+  | .compareTemporal op position reference source => do
+      match ← resolvers.temporal op position reference source with
+      | some comparison => pure (.leaf (match position with
+          | .left => .simpleComparison .inner reference.origin comparison
+          | .right => .simpleComparison reference.origin .inner comparison))
+      | none =>
+          if source != .baseYear .direct then throw .incoherentCore
+          let field := AuthoredNumericExpr.atom (SurfaceHavingNumericAtom.field { origin := reference.origin, field := reference.field })
+          let constant := AuthoredNumericExpr.atom SurfaceHavingNumericAtom.baseYear
+          match position with
+          | .left => elaborateHavingNumeric resolvers op constant field
+          | .right => elaborateHavingNumeric resolvers op field constant
   | .compareFields op left right => do
       match ← resolvers.fields op left right with
       | some comparison => pure (.leaf (.simpleComparison left.origin right.origin comparison))

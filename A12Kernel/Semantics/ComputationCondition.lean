@@ -279,7 +279,7 @@ def evalSimpleEquality [BEq α] (op : EqualityOp)
 def evalSimpleComparison (comparison : FlatComparison)
     (context : ScalarComputationContext) : ComputationConditionResult :=
   let read := fun field => Except.ok (ε := Empty) (context.read field)
-  match comparison.foldSimpleReads .computation read read evalComputationComparisonExcept with
+  match comparison.foldSimpleReads .computation read read evalComputationComparisonExcept context.world with
   | none => .notTrue
   | some (.ok result) => result
   | some (.error impossible) => nomatch impossible

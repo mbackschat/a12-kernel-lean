@@ -520,6 +520,12 @@ def FlatTemporalOperand.resolve (context : FlatContext) : FlatTemporalOperand â†
       | some world => .value world.now true
       | none => .unknown .malformed
 
+/-- Constants use the existing world interpretation; fields retain the caller's observation phase (spec/02, spec/05). -/
+def FlatTemporalOperand.resolveAt (context : FlatContext) (phase : Phase) :
+    FlatTemporalOperand â†’ SimpleComparisonOperand Instant
+  | .fieldValue field => context.resolveTemporalFieldBy field (fun value => some value.instant) phase
+  | operand => operand.resolve context
+
 /-- Direct String equality suppresses an empty literal only after the field read has
     preserved malformed input as unknown. -/
 def SimpleComparisonOperand.evalDirectString

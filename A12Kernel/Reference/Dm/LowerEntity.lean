@@ -207,6 +207,13 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
         (← lowerNumericExpr lowerHavingNumericAtom lowerHavingNumericField right))
   | .compare op left right => do
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
+      let temporal (field other : Expr) (position : SurfacePointInTimePosition) : Option SurfaceCorrelatedHaving := do
+        let .value { path, index := none, category := none } := field | none
+        let (origin, field) ← path.havingField?
+        let source ← dateDifferenceOperandWith? (fun _ => (none : Option Empty)) other
+        pure (.compareTemporal surfaceOp position { origin, field } source)
+      if let some condition := (temporal left right .right).orElse (fun _ => temporal right left .left) then
+        return condition
       match left, right with
       | .value { path, index := none, category := none }, .constant literal
       | .constant literal, .value { path, index := none, category := none } =>
