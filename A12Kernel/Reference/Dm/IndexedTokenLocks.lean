@@ -664,7 +664,7 @@ example : evaluate false "\"ok\"" true (some "[Rows/Body/A For Key] + \"!\" == \
       { tokenTarget := true, stringExpressionTarget := true } == some (.inr "value 99A") := by native_decide
 
 example : ["RangeAsString([Rows/Body/A For Key],1,1) + \"!\"", "RangeAsString(Rows/Body/A For Key,0,1)",
-    "[Rows/Body/A For 1] + \"!\"", "FieldValueAsString(Rows/Out For Key) + \"!\""].all
+    "[Rows/Body/A For 1] + \"!\"", "FieldValueAsString([Rows/Out For Key]) + \"!\""].all
     (fun expression => (evaluate false expression true none
       { tokenTarget := true, stringExpressionTarget := true }).isNone) = true ∧
     (evaluate true "RangeAsString(Rows/Body/A For Key,1,1) + \"!\"" false).isNone = true ∧

@@ -29,19 +29,22 @@ structure ScalarComputationContext where
 
 /-- Apply fixed-target overrides to both cell read channels, discarding stale source text. Group guards and expanded fill lists
 use addressed reads, so they must share the pending/completed policy of direct operands;
-ordinary fields retain their original environment-sensitive reader. -/
+ordinary fields retain their original environment-sensitive reader. Number formal text is a separate
+channel from stored spelling because spec/04 selects it by input regime. -/
 def ScalarComputationContext.withFixedOverlay
     (context : ScalarComputationContext) (overlay : FieldId → Option CheckedCell)
-    (stored : FieldId → Option String := fun _ => none) :
+    (stored : FieldId → Option String := fun _ => none)
+    (formalNumberText : FieldId → Option String := fun _ => none) :
     ScalarComputationContext :=
   { context with
     read := fun field => (overlay field).getD (context.read field)
     storedText := fun field => if (overlay field).isSome then stored field else context.storedText field
-    numberText := fun field => if (overlay field).isSome then stored field else context.numberText field
+    numberText := fun field => if (overlay field).isSome then formalNumberText field else context.numberText field
     addressed := context.addressed.map fun addressed =>
       { addressed with
         read := fun row field => (overlay field).getD (addressed.read row field)
-        storedText := fun row field => if (overlay field).isSome then stored field else addressed.storedText row field } }
+        storedText := fun row field => if (overlay field).isSome then stored field else addressed.storedText row field
+        numberText := fun row field => if (overlay field).isSome then formalNumberText field else addressed.numberText row field } }
 
 /-- Supply the explicit evaluation world without changing the checked-cell read policy. -/
 def ScalarComputationContext.withWorld

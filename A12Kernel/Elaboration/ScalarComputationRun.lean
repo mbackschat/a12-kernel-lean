@@ -387,6 +387,7 @@ def numberContext (run : CheckedScalarComputationRun model)
           some (NumericDependencyCell.ofObservation .empty).checked
         else none)
     (fun field => (state.find? field).bind (·.placement.storedText))
+    (fun field => (state.find? field).bind (·.numberFormalReadText?))
 
 /-- Evaluate one family-tagged table through its matching consumer context and retain its typed completion. -/
 def evaluateStep (run : CheckedScalarComputationRun model)

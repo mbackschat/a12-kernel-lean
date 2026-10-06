@@ -608,6 +608,10 @@ def flatContext (checked : CheckedDocument model) : FlatContext where
 def computationFillContext (checked : CheckedDocument model) : ComputationFillContext where
   document := checked.source.toDocument
   storedText := checked.storedTextIn
+  numberText environment field := do
+    let declaration ← (model.lookupUniqueId field).toOption
+    let path ← (environment.pathForScope declaration.repeatableScope).toOption
+    (← (checked.readNumberFormalText { field, path }).toOption).parsed
   read environment field :=
     let cell := do
       let declaration ← (model.lookupUniqueId field).toOption
@@ -620,17 +624,14 @@ already carries completed target placements (calendar review-control grid, 2026-
 def computationContextAt (checked : CheckedDocument model) (environment : Env) : ScalarComputationContext where
   read := checked.computationFillContext.read environment
   storedText := checked.storedTextIn environment
-  numberText field := do
-    let declaration ← (model.lookupUniqueId field).toOption
-    let path ← (environment.pathForScope declaration.repeatableScope).toOption
-    (← (checked.readNumberFormalText { field, path }).toOption).parsed
+  numberText := checked.computationFillContext.numberText environment
   row := environment
   addressed := some checked.computationFillContext
 
 /-- The checked document's complete computation context before a caller supplies its world. -/
 def computationContext (checked : CheckedDocument model) : ScalarComputationContext :=
   { read := checked.flatContext.read, storedText := checked.flatContext.storedText,
-    numberText := fun field => ((checked.readNumberFormalText { field, path := [] }).toOption).bind (·.parsed)
+    numberText := checked.computationFillContext.numberText []
     addressed := some checked.computationFillContext }
 
 /-- Project ordinary nonrepeatable computation reads under one explicit world. Heterogeneous computation runs share this immutable source boundary before adding their typed dependency overlay. -/

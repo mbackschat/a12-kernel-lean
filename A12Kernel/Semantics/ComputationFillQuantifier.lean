@@ -35,6 +35,8 @@ structure ComputationFillContext where
   read : Env → FieldId → CheckedCell
   /-- Exact current storage paired with checked reads; temporal uniqueness compares this identity. -/
   storedText : Env → FieldId → Option String := fun _ _ => none
+  /-- Number-to-String consumes regime-selected formal text, not raw storage or a rendered rational (spec/04). -/
+  numberText : Env → FieldId → Option String := fun _ _ => none
   /-- Prepared index entries are immutable because index fields cannot be computed (spec/09).
   Target payloads are projected through the current read channel after selecting a row. -/
   indexColumn : RepeatableLevel → Env → Option ResolvedSemanticIndexColumn := fun _ _ => none

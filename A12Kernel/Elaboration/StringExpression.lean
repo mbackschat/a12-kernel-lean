@@ -82,7 +82,10 @@ private def elaborateSelectedStringCore (model : FlatModel) (declaringGroup rowG
       if !validStringRange start finish then throw (.invalidRange start finish)
       discard <| admitStringComputationValueField source.targetDeclaration
       pure (.range (.inr source) start finish)
-  | .fieldValueAsString (.inr _) => throw .incoherentCore
+  | .fieldValueAsString (.inr authored) => do
+      let source ← selected authored
+      discard <| admitNumberAsStringField source.targetDeclaration
+      pure (.fieldValueAsString (.inr source))
   | .concat left right => pure (.concat
       (← elaborateSelectedStringCore model declaringGroup rowGroup left)
       (← elaborateSelectedStringCore model declaringGroup rowGroup right))
@@ -119,7 +122,21 @@ def eval (expression : CheckedBoundStringExpression model) (phase : Phase)
         let some context := selected | throw .indexedReadUnavailable
         let observation ← (source.observeColumnWith phase context.semanticIndexColumnReader
           context.row context.read context.storedText).mapError (fun _ => .indexedReadUnavailable)
-        StringExpr.readObservedOperand source.targetDeclaration.id observation
+        match source.targetDeclaration.policy.kind with
+        | .number _ =>
+            match observation with
+            | .empty => pure .notEvaluated
+            | .unknown cause | .poison cause => pure (.unknown cause)
+            | .value (.num _) =>
+                let some addressed := context.addressed | throw .indexedReadUnavailable
+                let .value environment ← (source.selectEnvironmentWith phase context.semanticIndexColumnReader
+                  context.row context.read context.storedText).mapError (fun _ => .indexedReadUnavailable)
+                  | throw .indexedReadUnavailable
+                let some text := addressed.numberText environment source.targetDeclaration.id
+                  | throw .indexedReadUnavailable
+                pure (.value text true)
+            | .value _ => throw (.fieldKindMismatch source.targetDeclaration.id)
+        | _ => StringExpr.readObservedOperand source.targetDeclaration.id observation
     | .inl field =>
         let cell := context.read field
         let number := expression.declarations.any fun declaration =>
