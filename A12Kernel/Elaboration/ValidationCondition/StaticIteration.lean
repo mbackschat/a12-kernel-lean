@@ -264,7 +264,7 @@ private def orderedNumericAtomIterationScope :
         if scope.isEmpty then none else some scope
       mergeIterationScopeList (← run.source.operands.mapM fun operand =>
         match operand with
-        | .slot (.field _) => pure none
+        | .slot (.field _) | .slot (.selected _ _) | .selected _ _ => pure none
         | .slot (.star path _ none) => pure (checkedStarBindingScope path)
         | .slot (.star path _ (some filter)) => do
             mergeIterationScopes (checkedStarBindingScope path)

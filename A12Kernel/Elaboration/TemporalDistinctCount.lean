@@ -52,6 +52,7 @@ def CheckedTemporalUniquenessOperand.components :
     CheckedTemporalUniquenessOperand model → TemporalComponents
   | .field source | .star _ source _ => source.components
   | .group source => source.first.components
+  | .selected source _ => source.first.components
 
 /-- Find the first expanded declaration whose component set differs from the group's own, reporting
     its path and its declared format. The group's **internal** agreement obligation, which is this
@@ -123,20 +124,25 @@ end CheckedTemporalDistinctCountGroup
 inductive CheckedTemporalDistinctCountOperand (model : FlatModel) where
   | slot (operand : CheckedTemporalUniquenessOperand model)
   | group (source : CheckedTemporalDistinctCountGroup model)
+  | selected (source : CheckedSelectedTemporalEntity model)
+      (oneComponentSet : firstMismatchedTemporalFieldComponents? source.first.components source.rest = none)
 
 namespace CheckedTemporalDistinctCountOperand
 
 def components : CheckedTemporalDistinctCountOperand model → TemporalComponents
   | .slot operand => operand.components
   | .group source => source.components
+  | .selected source _ => source.first.components
 
 def format : CheckedTemporalDistinctCountOperand model → String
   | .slot operand => operand.format
   | .group source => source.format
+  | .selected source _ => source.first.format
 
 def path : CheckedTemporalDistinctCountOperand model → List String
   | .slot operand => operand.path
   | .group source => source.groupPath
+  | .selected source _ => source.path
 
 /-- Whether this slot reads `field`. `filterReads` decides which of a filter's reads count: every
     read for a dependency or pointer, only the marked ones for the rule's error-field gates. -/
@@ -147,11 +153,12 @@ def referencesField (operand : CheckedTemporalDistinctCountOperand model) (field
   | .slot (.star _ source filter) =>
       source.declaration.id == field || filter.any (filterReads · field)
   | .slot (.group source) => source.declarations.any (·.id == field)
+  | .slot (.selected source _) | .selected source _ => source.referencesField field
   | .group source => source.declarations.any (·.id == field)
 
 def hasHaving : CheckedTemporalDistinctCountOperand model → Bool
   | .slot operand => operand.hasHaving
-  | .group _ => false
+  | .group _ | .selected _ _ => false
 
 end CheckedTemporalDistinctCountOperand
 
@@ -313,17 +320,29 @@ private def certifyDistinctCountGroup (model : FlatModel)
           | none => throw .incoherentCore
     | none => throw (.slot (.groupExpansionEmpty source.groupPath))
 
+private def certifyDistinctCountSelected
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
+    Except TemporalDistinctCountElabError (CheckedTemporalDistinctCountOperand model) := do
+  let source ← certifySelectedTemporalEntity source |>.mapError .slot
+  match hComponents : firstMismatchedTemporalFieldComponents? source.first.components source.rest with
+  | some (path, found) => throw (.mixedComponentSets path found source.first.format)
+  | none => pure (.selected source hComponents)
+
 /-- Certify one slot: the scalar forms through the shared certifier, a group through this
     operator's own. -/
 private def certifyDistinctCountOperand (model : FlatModel)
     (declaringGroup bindingGroup : GroupPath) (operand : ResolvedFieldEntityOperand model) :
     Except TemporalDistinctCountElabError
       (CheckedTemporalDistinctCountOperand model) :=
-  match groupSlotSource? operand with
-  | some source => certifyDistinctCountGroup model source
-  | none =>
-      (certifyTemporalUniquenessOperand model declaringGroup operand bindingGroup).map .slot
-        |>.mapError .slot
+  match operand with
+  | .indexed source => certifyDistinctCountSelected (.inl source)
+  | .keyed source => certifyDistinctCountSelected (.inr source)
+  | _ =>
+      match groupSlotSource? operand with
+      | some source => certifyDistinctCountGroup model source
+      | none =>
+          (certifyTemporalUniquenessOperand model declaringGroup operand bindingGroup).map .slot
+            |>.mapError .slot
 
 private def certifyDistinctCountOperands (model : FlatModel)
     (declaringGroup bindingGroup : GroupPath) :
@@ -347,6 +366,10 @@ def firstPartialTemporalOperand? :
             firstPartialTemporalOperand? remaining
           else
             some (slot.path, slot.partialMode)
+      | .selected source _ =>
+          match (source.first :: source.rest).find? (·.partialMode != .full) with
+          | some field => some (field.path, field.partialMode)
+          | none => firstPartialTemporalOperand? remaining
       | .group source =>
           if source.partialMode == .full then
             firstPartialTemporalOperand? remaining
@@ -416,17 +439,16 @@ end TemporalDistinctCountElabError
 
 /-! ## The runtime fold
 
-The compared identity here is the **decoded date**, not the stored text its neighbour compares
-([`spec/07`](../../spec/07-repetition-and-iteration.md)). That is why this operator needs the
-`date` value-list atom rather than reusing the token one: two admitted spellings of one calendar day
-are one value here and two values there, and the same list can be legal for both operators.
+The compared identity is decoded at the declared component set, unlike uniqueness's stored-text
+identity ([`spec/07`](../../spec/07-repetition-and-iteration.md)). Date, yearless-date, clock and instant
+atoms preserve these distinct comparison domains. Differently spelled formats can therefore denote
+one counted value, even where uniqueness's exact-format admission gate refuses the same list.
 
-The runtime is narrower than the static certificate on purpose, and both narrowings are certificates
-rather than silent behaviour. It requires the shared component set to name **no time component**,
-because no retained row measures what this operator compares over a time-bearing value; and it
-requires every operand to be a **slot**, because a group expansion has no retained row at this
-operator. A source outside either restriction is certified statically and simply has no evaluator,
-which is the honest shape.
+`CheckedTemporalDistinctCountRun` certifies the runtime's component boundary: date precision can
+omit components, while a time-bearing set must name every component of its comparison atom.
+Operand shape imposes no additional runtime restriction; scalar, star, group and selected sources
+retain their own resolution contracts. The time-bearing and group-fold checkpoints cited below
+settle those identities; selected compositions retain the evidence status in the implementation map.
 
 **Every date precision folds, at its own precision.** A component-omitting list is counted at the
 shared set after Base Year supplementation, and a list with no year available anywhere is counted on
@@ -559,6 +581,7 @@ def CheckedTemporalDistinctCountOperand.resolveDistinctCountCore
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
   match operand with
   | .slot inner => inner.resolveValidationCore (world := world) document outer
+  | .selected source _ => throw (.checkedDocumentRequired source.path)
   | .group source =>
       document.resolveCheckedGroupEntityOperandCore outer
         source.source.boundLevelCount source.declarations
@@ -633,14 +656,21 @@ def evaluate (operation : CheckedTemporalDistinctCountRun model)
     (world : Option World := none) :
     Except CheckedAddressingError NumericOperand := do
   let sides ← operation.source.operands.mapM fun operand => do
-    let core ← operand.resolveDistinctCountCore (world := world) document outer
-    pure ({
-      cells := core.addressedCells.map
-        (fun addressed => temporalDistinctCountCell .validation operand.components model.baseYear
-          operation.arm addressed.cell)
-      hasUninstantiatedTail := core.hasUninstantiatedTail
-      hasHaving := core.hasHaving
-      hasNonRelevant := core.hasNonRelevant } : ResolvedValueListSide operation.arm.kind)
+    match operand with
+    | .selected source _ | .slot (.selected source _) =>
+        source.sideWith .validation document.source.toDocument outer document.flatContext.read
+          document.flatContext.storedText document.computationFillContext.read document.storedTextIn
+          (document.resolveSemanticIndexColumnWith document.read)
+          (fun field cell _ => pure (temporalDistinctCountCell .validation field.components model.baseYear operation.arm cell))
+    | _ =>
+        let core ← operand.resolveDistinctCountCore (world := world) document outer
+        pure ({
+          cells := core.addressedCells.map
+            (fun addressed => temporalDistinctCountCell .validation operand.components model.baseYear
+              operation.arm addressed.cell)
+          hasUninstantiatedTail := core.hasUninstantiatedTail
+          hasHaving := core.hasHaving
+          hasNonRelevant := core.hasNonRelevant } : ResolvedValueListSide operation.arm.kind)
   pure (evalDistinctCountAggregate
     (sides.foldl ResolvedValueListSide.append ResolvedValueListSide.empty))
 
@@ -651,7 +681,9 @@ private def computationSide (operation : CheckedTemporalDistinctCountRun model)
     (document : Document) (outer : Env) (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
     (operand : CheckedTemporalDistinctCountOperand model)
-    (world : Option World := none) :
+    (world : Option World := none)
+    (selectedRead : CheckedSelectedTemporalEntity model → Except StarAddressingError (ResolvedValueListSide operation.arm.kind) :=
+      fun source => .error (.unsupportedGroupOperand source.path)) :
     Except StarAddressingError (Sum (ResolvedValueListSide operation.arm.kind) NumericOperand) := do
   let project := temporalDistinctCountCell .computation operand.components model.baseYear operation.arm
   let groupSide := fun (boundCount : Nat) (declarations : List FlatFieldDecl) => do
@@ -661,6 +693,7 @@ private def computationSide (operation : CheckedTemporalDistinctCountRun model)
         project (starRead environment declaration.id))
       hasUninstantiatedTail := tail, hasHaving := false } : Sum (ResolvedValueListSide operation.arm.kind) NumericOperand)
   match operand with
+  | .selected source _ | .slot (.selected source _) => .inl <$> selectedRead source
   | .group source => groupSide source.source.boundLevelCount source.declarations
   | .slot (.group source) => groupSide source.source.boundLevelCount source.declarations
   | .slot (.field source) => pure (.inl {
@@ -682,15 +715,27 @@ private def computationSide (operation : CheckedTemporalDistinctCountRun model)
               hasHaving := true })
           | .terminated cause | .poison cause => pure (.inr (.unknown cause))
 
+/-- Project each selected declaration through its own decoded temporal components and the
+current computation overlay; the checked source keeps stored-text identity out of this fold. -/
+def selectedSideWith (operation : CheckedTemporalDistinctCountRun model)
+    (source : CheckedSelectedTemporalEntity model) (document : Document) (outer : Env)
+    (direct : FieldId → CheckedCell) (stored : FieldId → Option String)
+    (read : Env → FieldId → CheckedCell) (column : SemanticIndexColumnReader) :
+    Except CheckedAddressingError (ResolvedValueListSide operation.arm.kind) :=
+  source.sideWith .computation document outer direct stored read (fun _ _ => none) column
+    (fun field cell _ => pure (temporalDistinctCountCell .computation field.components model.baseYear operation.arm cell))
+
 /-- Fold the same typed identities as validation, with computation poison and fresh overlay reads.
     `scanResolvedValueListOperands` preserves the shared slot-unavailability and authored-order rules. -/
 def evaluateComputation (operation : CheckedTemporalDistinctCountRun model)
     (document : Document) (outer : Env) (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
-    (world : Option World := none) : Except StarAddressingError NumericOperand := do
+    (world : Option World := none)
+    (selectedRead : CheckedSelectedTemporalEntity model → Except StarAddressingError (ResolvedValueListSide operation.arm.kind) :=
+      fun source => .error (.unsupportedGroupOperand source.path)) : Except StarAddressingError NumericOperand := do
   match ← scanResolvedValueListOperands
       (state := ResolvedValueListSide operation.arm.kind) (terminal := NumericOperand)
-      (operation.computationSide (world := world) document outer directRead filterRead starRead)
+      (operation.computationSide (world := world) document outer directRead filterRead starRead (selectedRead := selectedRead))
       (fun cause => .unknown cause)
       (fun accumulated _ side => accumulated.append side)
       operation.source.operands ResolvedValueListSide.empty with

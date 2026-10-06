@@ -271,6 +271,7 @@ remain refused until temporal-carrier observations establish their projection. -
 def CheckedTemporalUniquenessOperand.referencePointers (environment : Env) :
     CheckedTemporalUniquenessOperand model →
       Except ReferenceProjectionError (List MessagePointer)
+  | .selected _ _ => .error .unclassifiedLeaf
   | .field source => (concreteFieldPointer source.declaration environment).map ([·])
   | .star path _ none => (starFieldPointer path environment).map ([·])
   | .star _ _ (some _) => .error .filteredStarOperand
@@ -279,6 +280,7 @@ def CheckedTemporalUniquenessOperand.referencePointers (environment : Env) :
 def CheckedTemporalDistinctCountOperand.referencePointers (environment : Env) :
     CheckedTemporalDistinctCountOperand model →
       Except ReferenceProjectionError (List MessagePointer)
+  | .selected _ _ => .error .unclassifiedLeaf
   | .slot source => source.referencePointers environment
   | .group source => source.source.referencePointers environment
 

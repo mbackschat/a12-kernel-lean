@@ -31,6 +31,7 @@ private structure Scenario where
   fullDateTarget : Bool := false
   temporalGuard : Bool := false
   scalarPlan : Bool := false
+  secondFormat : Option String := none
 
 private def input (low high : String) (scenario : Scenario) : Lean.Json :=
   let row (key a b : String) (children : List String) := Lean.Json.mkObj [
@@ -51,6 +52,10 @@ private def evaluate (kind : TemporalKind) (components : TemporalComponents) (fo
             temporalTargetPolicy := some { format := "yyyy-MM-dd" } }
         else field }
     else model
+  let model := match scenario.secondFormat with
+    | none => model
+    | some format => { model with fields := model.fields.map fun field =>
+        if field.id == 7 then { field with temporalTargetPolicy := some { format } } else field }
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (readDocument {
@@ -193,5 +198,136 @@ example : profiles.all (fun (kind, components, format, low, high) =>
         { temporalGuard := true } == some (.inr ("value " ++ low)) &&
       evaluate kind components format low high "1" true (some guard)
         { scalarPlan := true } == some (.inr "value 1")) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    [("Rows/Body For Key", Polarity.value), ("Rows/Children*/Value For Key", Polarity.omission), ("Rows/Children* For Key", Polarity.omission),
+      ("Rows/Body/A For Key,Rows/Body/B For Key", Polarity.value)].all fun (operands, polarity) =>
+      evaluate kind components format low high ("NumberOfDifferentValues(" ++ operands ++ ") == 2") false == some (.inl (.fired polarity)) &&
+      evaluate kind components format low high ("NumberOfDifferentValues(" ++ operands ++ ")") true
+        (some "FieldFilled(Key)") == some (.inr "value 2")) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    ["Rows/Body For Key", "Rows/Children*/Value For Key", "Rows/Children* For Key", "Rows/Body/A For Key,Rows/Body/B For Key"].all fun operands =>
+      evaluate kind components format low high ("FieldValuesNotUnique(" ++ operands ++ ")") false == some (.inl .notFired) &&
+      evaluate kind components format low high ("FieldValuesNotUnique(" ++ operands ++ ")") false
+        none { firstA := some high, children := some [low, low] } == some (.inl (.fired .value)) &&
+      evaluate kind components format low high "1" true (some ("FieldValuesNotUnique(" ++ operands ++ ")"))
+        { firstA := some high, children := some [low, low] } == some (.inr "value 1")) = true := by native_decide
+
+private def staticSource (model : FlatModel) (operands : String) : Option SurfaceFieldEntitySource := do
+  let parsed ← (parseText .english ("NumberOfDifferentValues(" ++ operands ++ ")")).toOption
+  let .call _ arguments none none := parsed.body | none
+  (lowerEntitySource model ["Form"] arguments).toOption
+
+private def selectedStaticGates : Bool := Id.run do
+  let base := model .date .fullDate "yyyy-MM-dd"
+  let differentFormat := { base with fields := base.fields.map fun field =>
+    if field.id == 7 then { field with temporalTargetPolicy := some { format := "dd.MM.yyyy" } } else field }
+  let differentComponents := { base with fields := base.fields.map fun field =>
+    if field.id == 7 then { field with
+      policy := { kind := .temporal .date { TemporalComponents.fullDate with day := false } }
+      temporalTargetPolicy := some { format := "yyyy-MM" } } else field }
+  let partialModel := { base with fields := base.fields.map fun field =>
+    if field.id == 7 then { field with temporalTargetPolicy := some { format := "yyyy-MM-dd", partialMode := .dayOptional } } else field }
+  return ["Rows/Body For Key", "Rows/Body/A For Key,Rows/Body/B For Key"].all fun operands => Id.run do
+    let some formatSource := staticSource differentFormat operands | return false
+    let some componentSource := staticSource differentComponents operands | return false
+    let some partialSource := staticSource partialModel operands | return false
+    return (match elaborateTemporalValuesNotUniqueSource differentFormat ["Form"] formatSource with
+      | .error (.mixedDeclaredFormats ["Form", "Rows", "Body", "B"] "dd.MM.yyyy" "yyyy-MM-dd") => true
+      | _ => false) &&
+      (elaborateTemporalDistinctCountSource differentFormat ["Form"] formatSource).isOk &&
+      (match elaborateTemporalDistinctCountSource differentComponents ["Form"] componentSource with
+      | .error (.mixedComponentSets ["Form", "Rows", "Body", "B"] "yyyy-MM" "yyyy-MM-dd") => true
+      | _ => false) &&
+      (match elaborateTemporalDistinctCountSource partialModel ["Form"] partialSource with
+      | .error (.partialDate ["Form", "Rows", "Body", "B"] .dayOptional) => true
+      | _ => false) &&
+      (elaborateTemporalValuesNotUniqueSource partialModel ["Form"] partialSource).isOk
+
+example : selectedStaticGates = true := by native_decide
+
+example : ["Rows/Body For Key", "Rows/Body/A For Key,Rows/Body/B For Key"].all (fun operands =>
+    let expression := "NumberOfDifferentValues(" ++ operands ++ ")"
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "01.01.2024" (expression ++ " == 1") false
+      none { secondFormat := some "dd.MM.yyyy" } == some (.inl (.fired .value)) &&
+    evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "01.01.2024" expression true
+      (some "FieldFilled(Key)") { secondFormat := some "dd.MM.yyyy" } == some (.inr "value 1")) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    ["Rows/Body For Key", "Rows/Children*/Value For Key", "Rows/Children* For Key", "Rows/Body/A For Key,Rows/Body/B For Key"].all fun operands =>
+      let count := "NumberOfDifferentValues(" ++ operands ++ ")"
+      let unique := "FieldValuesNotUnique(" ++ operands ++ ")"
+      evaluate kind components format low high count true (some "FieldFilled(Key)")
+        { key := "missing", producer := some ("Key", "\"R1\"") } == some (.inr "value 2") &&
+      evaluate kind components format low high "1" true (some unique)
+        { key := "missing", firstA := some high, children := some [low, low], producer := some ("Key", "\"R1\"") } == some (.inr "value 1") &&
+      (if (operands == "Rows/Children*/Value For Key" || operands == "Rows/Children* For Key") then true else
+        evaluate kind components format low high count true (some "FieldFilled(Key)")
+          { firstA := some "bad", producer := some ("Rows/Body/A", "MaxValue(Low,High)") } == some (.inr "value 1") &&
+        evaluate kind components format low high "1" true (some unique)
+          { firstA := some "bad", producer := some ("Rows/Body/A", "MaxValue(Low,High)") } == some (.inr "value 1"))) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    ["NumberOfDifferentValues", "FieldValuesNotUnique"].all fun operator =>
+      ["Rows For Key", "Rows/Body/A For Key", "Rows/Body/A For Key,Rows/Body/A For Key"].all fun operands =>
+        let expression := operator ++ "(" ++ operands ++ ")"
+        let condition := if operator == "NumberOfDifferentValues" then expression ++ " == 1" else expression
+        evaluate kind components format low high condition false == none &&
+        evaluate kind components format low high "1" true (some condition) == none) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    [(({ key := "missing" } : Scenario), Verdict.notFired),
+      ({ firstA := some "bad" }, .unknown), ({ secondCode := "R1" }, .unknown)].all fun (scenario, expected) =>
+      evaluate kind components format low high "NumberOfDifferentValues(Rows/Body For Key) == 2" false
+        none scenario == some (.inl expected) &&
+      evaluate kind components format low high "NumberOfDifferentValues(Rows/Body For Key)" true
+        (some "FieldFilled(Key)") scenario == some (.inr (if scenario.key == "missing" then "value 0" else "cleared")) &&
+      evaluate kind components format low high "FieldValuesNotUnique(Rows/Body For Key)" false
+        none scenario == some (.inl .notFired) &&
+      evaluate kind components format low high "1" true
+        (some "FieldValuesNotUnique(Rows/Body For Key)") scenario == some (.inr "cleared")) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    ["Rows/Children*/Value For Key", "Rows/Children* For Key"].all fun operands =>
+      let count := "NumberOfDifferentValues(" ++ operands ++ ")"
+      let unique := "FieldValuesNotUnique(" ++ operands ++ ")"
+      evaluate kind components format low high (count ++ " == 0") false none
+        { children := some [] } == some (.inl (.fired .omission)) &&
+      evaluate kind components format low high count true (some "FieldFilled(Key)")
+        { children := some [] } == some (.inr "value 0") &&
+      evaluate kind components format low high (unique ++ " Or FieldFilled(Key)") false none
+        { children := some ["bad"] } == some (.inl (.fired .value)) &&
+      evaluate kind components format low high "1" true (some (unique ++ " Or FieldFilled(Key)"))
+        { children := some [] } == some (.inr "value 1") &&
+      evaluate kind components format low high "1" true (some (unique ++ " Or FieldFilled(Key)"))
+        { children := some ["bad"] } == some (.inr "cleared")) = true := by native_decide
+
+example : [none, some 2024].all (fun baseYear =>
+    ["Rows/Body For Key", "Rows/Children*/Value For Key", "Rows/Children* For Key", "Rows/Body/A For Key,Rows/Body/B For Key"].all fun operands =>
+      let count := "NumberOfDifferentValues(" ++ operands ++ ")"
+      evaluate .date { TemporalComponents.fullDate with year := false } "MM-dd" "01-03" "03-02"
+        (count ++ " == 2") false none { baseYear } ==
+        some (.inl (.fired (if (operands == "Rows/Children*/Value For Key" || operands == "Rows/Children* For Key") then .omission else .value))) &&
+      evaluate .date { TemporalComponents.fullDate with year := false } "MM-dd" "01-03" "03-02"
+        count true (some "FieldFilled(Key)") { baseYear } == some (.inr "value 2")) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    evaluate kind components format low high "NumberOfDifferentValues(Rows/Body For Key) == 2" false
+      none { secondCode := "" } == some (.inl (.fired .value)) &&
+    evaluate kind components format low high "NumberOfDifferentValues(Rows/Body For Key)" true
+      (some "FieldFilled(Key)") { secondCode := "" } == some (.inr "cleared") &&
+    evaluate kind components format low high "FieldValuesNotUnique(Rows/Body For Key)" false
+      none { firstA := some high, secondCode := "" } == some (.inl (.fired .value)) &&
+    evaluate kind components format low high "1" true (some "FieldValuesNotUnique(Rows/Body For Key)")
+      { firstA := some high, secondCode := "" } == some (.inr "cleared")) = true := by native_decide
+
+example : profiles.all (fun (kind, components, format, low, high) =>
+    [("NumberOfDifferentValues(Rows/Body For Key) == 2", ({} : Scenario)),
+      ("FieldValuesNotUnique(Rows/Body For Key)", { firstA := some high })].all fun (guard, scenario) =>
+      evaluate kind components format low high "MinValue(Low,High)" true (some guard)
+        { scenario with temporalGuard := true } == some (.inr ("value " ++ low)) &&
+      evaluate kind components format low high "1" true (some guard)
+        { scenario with scalarPlan := true } == some (.inr "value 1")) = true := by native_decide
 
 end A12Kernel.Dm.IndexedTemporalLocks

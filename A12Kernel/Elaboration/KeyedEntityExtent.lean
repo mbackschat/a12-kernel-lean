@@ -66,15 +66,7 @@ def selectWith (source : CheckedKeyedEntityExtent model) (phase : Phase)
     (readColumn : SemanticIndexColumnReader) (outer : Env)
     (read : FieldId → CheckedCell) (stored : FieldId → Option String) :
     Except CheckedAddressingError (CellObservation Env) := do
-  let selection := source.selection
-  let column ← readColumn selection.group selection.indexDeclaration.id outer
-  let key ← selection.indexSource.observeCurrentKey phase read stored |>.mapError .semanticIndex
-  match column.lookupEnvironment phase selection.numericIndex key with
-  | .value (some environment) => pure (.value environment)
-  | .value none => throw (.checkedDocumentRequired selection.group.path)
-  | .empty => pure .empty
-  | .unknown cause => pure (.unknown cause)
-  | .poison cause => pure (.poison cause)
+  source.selection.indexSource.selectEnvironmentWith phase readColumn outer read stored
 
 /-- Physical rows and omitted declared tails stay separate for each declaration, preserving
 field-fill order when a group contains several independently repeatable descendants. -/

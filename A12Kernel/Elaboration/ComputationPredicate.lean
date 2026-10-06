@@ -252,6 +252,16 @@ private def scanTemporal (context : ScalarComputationContext)
   let direct := fun (declaration : FlatFieldDecl) => temporalIdentity declaration.id
     (context.read declaration.id) (context.storedText declaration.id)
   match source with
+  | .selected source _ => do
+      let current ← addressed context
+      let side ← (source.sideWith (kind := .token) .computation current.document context.row context.read context.storedText
+        current.read current.storedText context.semanticIndexColumnReader fun field cell stored =>
+          match observeCell .computation cell, stored with
+          | .value _, some text => pure (.present text)
+          | .value _, none => throw (.checkedDocumentRequired field.path)
+          | .empty, _ => pure .empty
+          | .unknown cause, _ | .poison cause, _ => pure (.unknown cause)).mapError .indexSelection
+      pure (scanCells (ValueListCell.duplicateComputationStep (kind := .token)) side.cells seen)
   | .field source => scanTemporalSlots direct [source.declaration] seen
   | .star path source filter =>
       let contextRead ← addressed context

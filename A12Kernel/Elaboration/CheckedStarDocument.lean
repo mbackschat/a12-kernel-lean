@@ -53,6 +53,21 @@ def CheckedSemanticIndexSource.observeColumnWith (source : CheckedSemanticIndexS
   let key ← source.observeCurrentKey phase read stored |>.mapError .semanticIndex
   pure (column.lookupObservationForIndex phase source.numericIndex key)
 
+/-- Select a concrete row through the phase-aware index column without reading its target.
+A scalar-only column cannot supply a row and is a structural failure, not an absent key. -/
+def CheckedSemanticIndexSource.selectEnvironmentWith (source : CheckedSemanticIndexSource model)
+    (phase : Phase) (readColumn : SemanticIndexColumnReader) (outer : Env)
+    (read : FieldId → CheckedCell) (stored : FieldId → Option String) :
+    Except CheckedAddressingError (CellObservation Env) := do
+  let column ← readColumn source.group source.indexDeclaration.id outer
+  let key ← source.observeCurrentKey phase read stored |>.mapError .semanticIndex
+  match column.lookupEnvironment phase source.numericIndex key with
+  | .value (some environment) => pure (.value environment)
+  | .value none => throw (.checkedDocumentRequired source.group.path)
+  | .empty => pure .empty
+  | .unknown cause => pure (.unknown cause)
+  | .poison cause => pure (.poison cause)
+
 /-- Full validation reads the selected target through the same checked preliminary column as counts.
 The index owns generated findings; the document owns the current key spelling (`spec/08` §4.2). -/
 def CheckedSemanticIndexSource.observeDocument (source : CheckedSemanticIndexSource model)

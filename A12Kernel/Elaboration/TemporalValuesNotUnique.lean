@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Elaboration.CheckedStarDocument
+import A12Kernel.Elaboration.KeyedEntityExtent
 import A12Kernel.Semantics.NumericAggregate
 
 /-! # Checked temporal `FieldValuesNotUnique`
@@ -88,6 +89,75 @@ def firstMismatchedTemporalFieldFormat? (expected : String) :
       else
         some (field.path, field.format)
 
+/-- A complete temporal declaration expansion behind one index selection. Format and component
+agreement belong to the consuming operator, whose gates differ (spec/07 entity lists). -/
+structure CheckedSelectedTemporalEntity (model : FlatModel) where
+  private mk ::
+  source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)
+  first : CheckedTemporalUniquenessField
+  rest : List CheckedTemporalUniquenessField
+  expansionOwned : (match source with
+    | .inl source => [source.targetDeclaration]
+    | .inr source => source.declarations).filterMap FlatFieldDecl.toTemporalUniquenessField? = first :: rest
+  allTemporal : (match source with
+    | .inl source => [source.targetDeclaration]
+    | .inr source => source.declarations).all (fun d => d.toTemporalUniquenessField?.isSome) = true
+
+namespace CheckedSelectedTemporalEntity
+
+def path (source : CheckedSelectedTemporalEntity model) : List String :=
+  match source.source with | .inl source => source.targetDeclaration.path | .inr source => source.entityPath
+
+def referencesField (source : CheckedSelectedTemporalEntity model) (field : FieldId) : Bool :=
+  match source.source with | .inl source => source.referencesField field | .inr source => source.referencesField field
+
+/-- Selection supplies addresses and omission; each operator projects the retained declaration's
+cell using its own identity, including stored text for uniqueness and decoded dates for counts. -/
+def sideWith {kind : ValueListKind} (source : CheckedSelectedTemporalEntity model)
+    (phase : Phase) (document : Document) (outer : Env) (direct : FieldId → CheckedCell)
+    (stored : FieldId → Option String) (read : Env → FieldId → CheckedCell)
+    (storedAt : Env → FieldId → Option String) (column : SemanticIndexColumnReader)
+    (project : CheckedTemporalUniquenessField → CheckedCell → Option String → Except CheckedAddressingError (ValueListCell kind)) :
+    Except CheckedAddressingError (ResolvedValueListSide kind) := do
+  let index := match source.source with | .inl source => source | .inr source => source.selection.indexSource
+  match ← index.selectEnvironmentWith phase column outer direct stored with
+  | .unknown cause | .poison cause => pure { cells := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }
+  | .empty =>
+      pure {
+        cells := match source.source with | .inl _ => [.empty] | .inr _ => []
+        hasUninstantiatedTail := match source.source with
+          | .inl _ => false
+          | .inr source => match source.target with | .group _ => true | _ => false
+        hasHaving := false }
+  | .value environment =>
+      let rows ← match source.source with
+        | .inl source => pure [(source.targetDeclaration, [environment], false)]
+        | .inr source => source.rows document environment |>.mapError .addressing
+      let cells ← rows.flatMapM fun (declaration, environments, _) => do
+        let some field := (source.first :: source.rest).find? (·.declaration.id == declaration.id)
+          | throw (.checkedDocumentRequired declaration.path)
+        environments.mapM fun row => project field (read row declaration.id) (storedAt row declaration.id)
+      pure { cells, hasUninstantiatedTail := rows.any (·.2.2), hasHaving := false }
+
+end CheckedSelectedTemporalEntity
+
+/-- Certify all selected declarations without importing either consumer's equality gate. -/
+def certifySelectedTemporalEntity
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
+    Except TemporalValuesNotUniqueElabError (CheckedSelectedTemporalEntity model) := do
+  let declarations := match source with | .inl source => [source.targetDeclaration] | .inr source => source.declarations
+  if hAll : declarations.all (fun d => d.toTemporalUniquenessField?.isSome) = true then
+    match hExpansion : declarations.filterMap FlatFieldDecl.toTemporalUniquenessField? with
+    | [] => throw .incoherentCore
+    | first :: rest => pure { source, first, rest, expansionOwned := hExpansion, allTemporal := hAll }
+  else
+    match declarations.find? (fun d => d.toTemporalUniquenessField?.isNone) with
+    | none => throw .incoherentCore
+    | some declaration =>
+        match certifyTemporalUniquenessField declaration with
+        | .error error => throw error
+        | .ok _ => throw .incoherentCore
+
 /-- One authored group slot certified as a nonempty, recursively complete temporal expansion with
     one declared format. The authored group reference stays intact; `first` and `rest` are its
     declaration-level certificate, not replacement authored operands. -/
@@ -136,6 +206,8 @@ inductive CheckedTemporalUniquenessOperand (model : FlatModel) where
       (source : CheckedTemporalUniquenessField)
       (filter : Option CorrelatedHaving)
   | group (source : CheckedTemporalUniquenessGroup model)
+  | selected (source : CheckedSelectedTemporalEntity model)
+      (oneDeclaredFormat : firstMismatchedTemporalFieldFormat? source.first.format source.rest = none)
 
 namespace CheckedTemporalUniquenessOperand
 
@@ -143,27 +215,30 @@ def format (operand : CheckedTemporalUniquenessOperand model) : String :=
   match operand with
   | .field source | .star _ source _ => source.format
   | .group source => source.format
+  | .selected source _ => source.first.format
 
 def partialMode (operand : CheckedTemporalUniquenessOperand model) :
     TemporalPartialMode :=
   match operand with
   | .field source | .star _ source _ => source.partialMode
   | .group source => source.partialMode
+  | .selected source _ => source.first.partialMode
 
 def path (operand : CheckedTemporalUniquenessOperand model) : List String :=
   match operand with
   | .field source | .star _ source _ => source.path
   | .group source => source.groupPath
+  | .selected source _ => source.path
 
 def groupSlot? : CheckedTemporalUniquenessOperand model →
     Option (CheckedTemporalUniquenessGroup model)
   | .group source => some source
-  | .field _ | .star _ _ _ => none
+  | .field _ | .star _ _ _ | .selected _ _ => none
 
 def hasHaving : CheckedTemporalUniquenessOperand model → Bool
   | .field _ | .star _ _ none => false
   | .star _ _ (some _) => true
-  | .group _ => false
+  | .group _ | .selected _ _ => false
 
 /-- Resolve one slot against the immutable checked document through the shared kind-neutral entity core, which owns topology, addressing, filter selection, and omitted-tail extent. -/
 def resolveValidationCore (operand : CheckedTemporalUniquenessOperand model)
@@ -171,6 +246,7 @@ def resolveValidationCore (operand : CheckedTemporalUniquenessOperand model)
     (world : Option World := none) :
     Except CheckedAddressingError ResolvedCheckedEntityOperandCore :=
   match operand with
+  | .selected source _ => throw (.checkedDocumentRequired source.path)
   | .field source =>
       document.resolveCheckedDirectEntityOperandCore source.declaration.id
   | .star path _ filter =>
@@ -246,17 +322,24 @@ private def certifyTemporalUniquenessGroup (model : FlatModel)
         | .ok _ => throw .incoherentCore
     | none => throw .incoherentCore
 
-/-- Certify one resolved slot as a temporal operand carrying a coherent declared format. Shared
-    rather than private because the temporal distinct count certifies slots identically and differs
-    only in the **list** gate it then applies — component sets there, format equality here. -/
+private def certifySelectedUniqueness
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
+    Except TemporalValuesNotUniqueElabError (CheckedTemporalUniquenessOperand model) := do
+  let source ← certifySelectedTemporalEntity source
+  match hFormat : firstMismatchedTemporalFieldFormat? source.first.format source.rest with
+  | some (path, found) => throw (.mixedDeclaredFormats path found source.first.format)
+  | none => pure (.selected source hFormat)
+
+/-- Certify uniqueness operands with exact format agreement. Distinct count reuses the scalar
+certificates, but certifies group and selected expansions against its own component-set gate. -/
 def certifyTemporalUniquenessOperand (model : FlatModel)
     (declaringGroup : GroupPath) (operand : ResolvedFieldEntityOperand model)
     (bindingGroup : GroupPath := declaringGroup) :
       Except TemporalValuesNotUniqueElabError
         (CheckedTemporalUniquenessOperand model) :=
   match operand with
-  | .indexed source => throw (.shape (.unsupportedIndexedOperand source.targetDeclaration.path))
-  | .keyed source => throw (.shape (.unsupportedIndexedOperand source.entityPath))
+  | .indexed source => certifySelectedUniqueness (.inl source)
+  | .keyed source => certifySelectedUniqueness (.inr source)
   | .field declaration _ =>
       do pure (.field (← certifyTemporalUniquenessField declaration))
   | .star source =>
@@ -329,9 +412,9 @@ def diagnostic? : TemporalValuesNotUniqueElabError → Option KernelStaticDiagno
 end TemporalValuesNotUniqueElabError
 
 /-- Project one addressed temporal cell to its compared identity. The decoded value is deliberately discarded in favour of the exact stored text; empty and formally unavailable cells keep their own states, because this operator skips both alike. -/
-private def temporalUniquenessCell (addressed : CheckedAddressedCell) :
+private def temporalUniquenessCell (cell : CheckedCell) (stored : Option String) :
     ValueListCell .token :=
-  match observeCell .validation addressed.cell, addressed.stored with
+  match observeCell .validation cell, stored with
   | .value _, some text => .present text
   -- Unreachable for a checked document: a parsed cell has a physical placement and
   -- therefore stored text. Skipping is the conservative projection if it ever were.
@@ -349,12 +432,19 @@ def evaluateCheckedDocumentValuesNotUnique
     Except CheckedAddressingError Verdict := do
   let tagged ← collectTaggedValueListCells
     (fun operand => do
-      let core ← operand.resolveValidationCore (world := world) document outer
-      pure {
-        cells := core.addressedCells.map temporalUniquenessCell
-        hasUninstantiatedTail := core.hasUninstantiatedTail
-        hasHaving := core.hasHaving
-        hasNonRelevant := core.hasNonRelevant })
+      match operand with
+      | .selected source _ =>
+          source.sideWith .validation document.source.toDocument outer document.flatContext.read
+            document.flatContext.storedText document.computationFillContext.read document.storedTextIn
+            (document.resolveSemanticIndexColumnWith document.read)
+            (fun _ cell stored => pure (temporalUniquenessCell cell stored))
+      | _ =>
+          let core ← operand.resolveValidationCore (world := world) document outer
+          pure {
+            cells := core.addressedCells.map (fun addressed => temporalUniquenessCell addressed.cell addressed.stored)
+            hasUninstantiatedTail := core.hasUninstantiatedTail
+            hasHaving := core.hasHaving
+            hasNonRelevant := core.hasNonRelevant })
     checked.operands
   pure (evalValuesNotUniqueVerdict tagged)
 

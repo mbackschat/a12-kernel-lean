@@ -39,6 +39,7 @@ def referencesField (source : CheckedValuesNotUniqueCondition model) (field : Fi
       | .star _ source filter => source.declaration.id == field ||
           filter.any (filterReads · field)
       | .group source => source.declarations.any (·.id == field)
+      | .selected source _ => source.referencesField field
 
 def bindingScopes : CheckedValuesNotUniqueCondition model → List (List RepeatableLevel)
   | .number source => source.bindingScopes

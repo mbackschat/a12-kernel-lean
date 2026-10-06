@@ -554,7 +554,11 @@ def readCheckedNumericComputationAtom
           |>.mapError .repeatableAddressing
   | .temporalDistinctCount run =>
       (run.evaluateComputation (world := context.scalar.world) context.document context.outer
-        context.scalar.read context.filterRead context.starRead).map NumericOperand.toComputationResult
+        context.scalar.read context.filterRead context.starRead
+        (selectedRead := fun source => run.selectedSideWith source context.document context.outer
+          context.scalar.read context.scalar.storedText context.starRead
+          (context.indexColumn?.getD context.scalar.semanticIndexColumnReader)
+            |>.mapError (fun _ => .unsupportedGroupOperand source.path))).map NumericOperand.toComputationResult
           |>.mapError .repeatableAddressing
   | .tokenValueCount source =>
       (source.evaluateComputation (world := context.scalar.world) context.document context.outer
