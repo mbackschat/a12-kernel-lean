@@ -180,9 +180,10 @@ def fromValuesNotUnique (rowGroup : GroupPath) (source : CheckedValuesNotUniqueC
   checkCore model rowGroup (.leaf (.valuesNotUnique source)) source.modelWellFormed
 
 /-- Compose a value-list certificate without flattening its authored operands. -/
-def fromValueList (rowGroup : GroupPath) (source : CheckedValueListCondition model) :
+def fromValueList (rowGroup : GroupPath) (source : CheckedValueListCondition model)
+    (declaringGroup : GroupPath := rowGroup) :
     Except ValidationConditionAssemblyError (CheckedValidationCondition model) :=
-  checkCore model rowGroup (.leaf (.valueList source)) source.modelWellFormed
+  checkCore model rowGroup (.leaf (.valueList source)) source.modelWellFormed declaringGroup
 
 /-- Lift one checked numeric comparison at its certified rule-instance group. -/
 def fromNumeric (comparison : CheckedNumericComparison model) :

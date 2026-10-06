@@ -204,18 +204,21 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
             match literals with
             | some literals => [do
                 let source ← elaborated id (elaborateTokenEntityStringLiteralValueListSource model rowGroup
-                  { quantifier, fields := ← fields, values := literals })
-                elaborated id (CheckedValidationCondition.fromValueList rowGroup (.literals source))]
+                  { quantifier, fields := ← fields, values := literals }
+                  (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
+                elaborated id (CheckedValidationCondition.fromValueList bindingGroup (.literals source) rowGroup)]
             | none =>
                 let values := lowerEntitySource model rowGroup values
                 [do
                   let source ← elaborated id (elaborateNumberEntityValueListSource model rowGroup
-                    { quantifier, fields := ← fields, values := ← values })
-                  elaborated id (CheckedValidationCondition.fromValueList rowGroup (.number source)),
+                    { quantifier, fields := ← fields, values := ← values }
+                    (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
+                  elaborated id (CheckedValidationCondition.fromValueList bindingGroup (.number source) rowGroup),
                  do
                   let source ← elaborated id (elaborateTokenEntityValueListSource model rowGroup
-                    { quantifier, fields := ← fields, values := ← values })
-                  elaborated id (CheckedValidationCondition.fromValueList rowGroup (.token source))]
+                    { quantifier, fields := ← fields, values := ← values }
+                    (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
+                  elaborated id (CheckedValidationCondition.fromValueList bindingGroup (.token source) rowGroup)]
     | _ => []
   let fieldFill := match leaf with
     | .call id arguments none none => match fieldFillOp? id with

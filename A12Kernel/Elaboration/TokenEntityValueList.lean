@@ -259,7 +259,7 @@ private def numberListPath? :
 def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceTokenEntityStringLiteralValueListSource) (writtenGroup : GroupPath := declaringGroup)
-    (targetGroup? : Option GroupPath := none) :
+    (targetGroup? : Option GroupPath := none) (bindingGroup? : Option GroupPath := none) :
     Except TokenEntityStringLiteralValueListElabError
       (CheckedTokenEntityStringLiteralValueListSource model) := do
   -- **A sole unstarred field is legal here**, on all three quantifiers, where the entity-list
@@ -268,7 +268,7 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
   -- The rule is the carrier's, not the shared checker's: comparing fields against *literals* is a
   -- complete question with one field, where comparing them against each other is not.
   let shape ← elaborateFieldEntityShapeIn model declaringGroup
-      (targetGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored.fields
+      ((bindingGroup?.or targetGroup?).map model.repeatableScopeForGroupPath |>.getD []) authored.fields
       .soleAllowed targetGroup? (writtenGroup := targetGroup?.getD writtenGroup)
     |>.mapError .shape
   let (firstValue, restValues) ←
@@ -284,7 +284,7 @@ def elaborateTokenEntityStringLiteralValueListSource (model : FlatModel)
   match numberListPath? shape.operands with
   | some path => throw (.slotNumberAgainstStringLiterals path)
   | none => pure ()
-  let fields ← certifyTokenEntityShape model declaringGroup shape (targetGroup?.getD writtenGroup)
+  let fields ← certifyTokenEntityShape model declaringGroup shape ((bindingGroup?.or targetGroup?).getD writtenGroup)
     |>.mapError .fields
   match hFamily : fields.valueListFamily? with
   | none => throw (.unsupportedFieldsFamily none)
@@ -421,14 +421,14 @@ private def crossListRepeat? (operands : List (ResolvedFieldEntityOperand model)
 def elaborateTokenEntityValueListSource (model : FlatModel)
     (declaringGroup : GroupPath)
     (authored : SurfaceTokenEntityValueListSource) (writtenGroup : GroupPath := declaringGroup)
-    (targetGroup? : Option GroupPath := none) :
+    (targetGroup? : Option GroupPath := none) (bindingGroup? : Option GroupPath := none) :
     Except TokenEntityValueListElabError
       (CheckedTokenEntityValueListSource model) := do
   let fieldsShape? := elaborateFieldEntityShapeIn model declaringGroup
-    (targetGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored.fields .soleAllowed targetGroup?
+    ((bindingGroup?.or targetGroup?).map model.repeatableScopeForGroupPath |>.getD []) authored.fields .soleAllowed targetGroup?
     (writtenGroup := targetGroup?.getD writtenGroup)
   let valuesShape? := elaborateFieldEntityShapeIn model declaringGroup
-    (targetGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored.values .soleAllowed targetGroup?
+    ((bindingGroup?.or targetGroup?).map model.repeatableScopeForGroupPath |>.getD []) authored.values .soleAllowed targetGroup?
     (writtenGroup := targetGroup?.getD writtenGroup)
   if let .error error := fieldsShape? then
     if error.isOperandRead then throw (.fields (.shape error))
@@ -441,7 +441,7 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
   match refusedKindListPath? fieldsShape.operands with
   | some path => throw (.fieldsKindNotStringEnumNumber path)
   | none => pure ()
-  let fields := certifyTokenEntityShape model declaringGroup fieldsShape (targetGroup?.getD writtenGroup)
+  let fields := certifyTokenEntityShape model declaringGroup fieldsShape ((bindingGroup?.or targetGroup?).getD writtenGroup)
   -- Number fields leave this token fragment but are inside the Kernel's kind set, so the Kernel
   -- reads the value side next and a String value there draws the base-type class (measured). Only
   -- a different certification refusal is raised ahead of the value side.
@@ -459,7 +459,7 @@ def elaborateTokenEntityValueListSource (model : FlatModel)
     throw (.crossListRepeat error)
   let fields ← fields.mapError .fields
   let values ← certifyTokenEntityShape model declaringGroup valuesShape
-      (targetGroup?.getD writtenGroup) |>.mapError fun
+      ((bindingGroup?.or targetGroup?).getD writtenGroup) |>.mapError fun
     | .rawStringValue path => .rawValue path
     | error => .values error
   assembleTokenEntityValueListSource authored.quantifier fields values

@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.LowerValidation
+import A12Kernel.Reference.Dm.Validate
 
 namespace A12Kernel.Dm.KeyedExtentLocks
 
@@ -587,5 +588,100 @@ example : ["FieldValuesNotUnique(Packages/Items* For Key)",
     "NotAllFieldValuesIncludedInValueList(Packages/Items*/Weight For Key In Packages/Header For Key)",
     "AtLeastOneFieldValueIncludedInValueList(Packages/Header For Key In Packages/Items*/Weight For Key)"].all
     (fun guard => computation "1" guard (bad := true) (header := "2") (fallback := true) == some "cleared") = true := by native_decide
+
+private inductive BoundListDeclaration where
+  | row
+  | ancestor
+
+private def boundListVerdicts (kind : FieldKind) (operator : String) (literal : Bool := false)
+    (reverse : Bool := false) (partialScope : Option ValidationRelevanceScope := none)
+    (outsideError : Bool := false) (unselected : Bool := false)
+    (declaration : BoundListDeclaration := .row) (composed : Bool := false) : Option (List Verdict) := do
+  let sourceModel : FlatModel := {
+    model with
+    fields := model.fields.map fun field =>
+      if field.id == 2 || field.id == 3 || field.id == 4 then
+        { field with
+          policy := { kind := kind }
+          enumeration := if kind == .enumeration then some { storedTokens := ["2", "5", "11"] } else none }
+      else field
+    repeatableGroups := model.repeatableGroups.map fun group => { group with repeatability := some 2 } }
+  let dm : DmModel := { flat := sourceModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let package := fun (code : String) (weights : List String) => Lean.Json.mkObj [
+    ("Code", .str code), ("Header", .str (if code == "P1" then "2" else "11")), ("Items", .arr (weights.map fun value =>
+      Lean.Json.mkObj [("Weight", .str value), ("Quantity", .str "2")]).toArray)]
+  let data ← (readDocument dm (Lean.Json.mkObj [("Form", Lean.Json.mkObj [
+    ("Key", .str "P1"), ("Out", .str "99"), ("Packages", .arr #[package "P1" ["2", "5"], package "P2" ["11", "2"]])])])).toOption
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler sourceModel).toOption
+  let document ← (checkDocument prepared "en_US" data.data).toOption
+  let (ruleGroup, rowPrefix) := match declaration with
+    | .row => (["Form", "Packages", "Items"], "")
+    | .ancestor => (["Form"], "Packages/Items/")
+  let selected := if unselected then rowPrefix ++ "Quantity" else "/Form/Packages/Header For \"P1\""
+  let subject := if reverse then selected else rowPrefix ++ "Weight"
+  let members := if literal then "\"2\"" else if reverse then rowPrefix ++ "Weight" else selected
+  let rule ← (checkRule dm .english {
+    group := ruleGroup, name := "BoundList", errorCode := "BOUND_LIST"
+    errorEntityRelPath := if outsideError then "/Form/Out" else "../" ++ rowPrefix ++ "Weight"
+    condition := operator ++ "(" ++ subject ++ " In " ++ members ++ ")" ++
+      (if composed then " And FieldFilled(Key)" else ""), severity := "ERROR" }).toOption
+  if let some scope := partialScope then
+    match ← (rule.evalOrdinaryRepeatablePartial document scope).toOption with
+    | .skipped => return []
+    | .evaluated rows => return rows.filterMap fun (_, result) =>
+        match result with | .skipped => none | .evaluated outcome => some outcome.verdict
+  pure ((← (rule.evalOrdinaryRepeatableFull document).toOption).map (·.2.verdict))
+
+example : [FieldKind.number { scale := 0, signed := true }, .string, .enumeration].all (fun kind =>
+    ["AtLeastOneFieldValueIncludedInValueList", "NoFieldValueIncludedInValueList", "NotAllFieldValuesIncludedInValueList"].all fun operator =>
+      [false, true].all fun reverse =>
+        let expected := if operator == "AtLeastOneFieldValueIncludedInValueList" then
+            [Verdict.fired .value, .notFired, .notFired, .fired .value]
+          else [.notFired, .fired .value, .fired .value, .notFired]
+        boundListVerdicts kind operator false reverse == some expected &&
+        boundListVerdicts kind operator false reverse (some .full) == some expected &&
+        (boundListVerdicts kind operator false reverse none true).isNone) = true := by native_decide
+
+example : [FieldKind.string, .enumeration].all (fun kind =>
+    ["AtLeastOneFieldValueIncludedInValueList", "NoFieldValueIncludedInValueList", "NotAllFieldValuesIncludedInValueList"].all fun operator =>
+      let expected := if operator == "AtLeastOneFieldValueIncludedInValueList" then
+          [Verdict.fired .value, .notFired, .notFired, .fired .value]
+        else [.notFired, .fired .value, .fired .value, .notFired]
+      boundListVerdicts kind operator true == some expected &&
+      boundListVerdicts kind operator true false (some .full) == some expected) = true := by native_decide
+
+example : [FieldKind.number { scale := 0, signed := true }, .string, .enumeration].all (fun kind =>
+    boundListVerdicts kind "AtLeastOneFieldValueIncludedInValueList" false false none false true ==
+      some [.fired .value, .notFired, .notFired, .fired .value] &&
+    [1, 2].all fun child =>
+      let scope := ValidationRelevanceScope.partialSet [
+        RelevantEntityPattern.allInstances ["Form", "Packages", "Code"],
+        RelevantEntityPattern.allInstances ["Form", "Packages", "Header"],
+        { path := ["Form", "Packages", "Items", "Weight"],
+          indices := [.concrete 1, .concrete 1, .concrete child, .concrete 1] }]
+      boundListVerdicts kind "AtLeastOneFieldValueIncludedInValueList" false false (some scope) ==
+        some [if child == 1 then .fired .value else .notFired]) = true := by native_decide
+
+private def boundAncestorMatrix (kind : FieldKind) : Bool :=
+    ["AtLeastOneFieldValueIncludedInValueList", "NoFieldValueIncludedInValueList", "NotAllFieldValuesIncludedInValueList"].all fun operator =>
+      [none, some ValidationRelevanceScope.full].all fun scope =>
+        let expected := if operator == "AtLeastOneFieldValueIncludedInValueList" then
+            [Verdict.fired .value, .notFired, .notFired, .fired .value]
+          else [.notFired, .fired .value, .fired .value, .notFired]
+        boundListVerdicts kind operator (partialScope := scope) (unselected := true)
+          (declaration := .ancestor) == some expected &&
+        boundListVerdicts kind operator (partialScope := scope) (unselected := true)
+          (declaration := .ancestor) (composed := true) == some expected &&
+        (boundListVerdicts kind operator (partialScope := scope) (outsideError := true)
+          (unselected := true) (declaration := .ancestor)).isNone &&
+        (kind == .number { scale := 0, signed := true } ||
+          boundListVerdicts kind operator (literal := true) (partialScope := scope)
+            (declaration := .ancestor) == some expected &&
+          boundListVerdicts kind operator (literal := true) (partialScope := scope)
+            (declaration := .ancestor) (composed := true) == some expected)
+
+example : boundAncestorMatrix (.number { scale := 0, signed := true }) = true := by native_decide
+example : boundAncestorMatrix .string = true := by native_decide
+example : boundAncestorMatrix .enumeration = true := by native_decide
 
 end A12Kernel.Dm.KeyedExtentLocks

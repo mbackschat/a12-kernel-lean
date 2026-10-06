@@ -35,7 +35,7 @@ abbrev SurfaceNumberEntitySource := SurfaceFieldEntitySource
 abbrev ResolvedDirectNumberEntityFields := ResolvedNumericAggregateFields
 
 /-- One direct Number declaration certified against the source model. The list's shape decided which
-reading scope binds its levels: none on a rule, its target's on a computation. -/
+reading scope binds its levels: the rule instance or the computation target. -/
 structure CheckedNumberEntityField (model : FlatModel) where
   declaration : FlatFieldDecl
   field : FlatNumberField
