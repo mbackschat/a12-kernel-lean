@@ -89,7 +89,7 @@ private theorem temporalOperand_resolve_agreesOn
   cases operand with
   | fieldValue field =>
       have readEq := agreement field.id (by
-        simpa [FlatTemporalOperand.fields, FlatField.id] using relevant)
+        simpa [FlatTemporalOperand.fields, FlatTemporalOperand.fieldValues, FlatField.id] using relevant)
       simp_all [FlatTemporalOperand.resolve,
         FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy]
   | literalValue instant => rfl

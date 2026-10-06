@@ -76,8 +76,8 @@ where
           if id == "DifferenceInDays" then return .dayDifference left right
           let some unit := calendarUnit? id | refuse "Having" "difference unit"
           return .dateDifference unit left right
-        let some left := field left | refuse "Having" "difference left"
-        let some right := field right | refuse "Having" "difference right"
+        let some left := dateDifferenceOperandWith? field left | refuse "Having" "difference left"
+        let some right := dateDifferenceOperandWith? field right | refuse "Having" "difference right"
         let some unit := subdayUnit? id | refuse "Having" "difference unit"
         pure (.dateTimeDifference unit left right)
     | .constant "BaseYear" => pure .baseYear

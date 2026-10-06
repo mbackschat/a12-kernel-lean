@@ -96,7 +96,7 @@ private theorem admitsSubdayEndpoint_not_target {model : FlatModel}
     | error _ => simp [found] at admitted
     | ok owned =>
         simp [found] at admitted
-        simpa [FlatTemporalOperand.dateTimeDifferenceReferences, FlatTemporalOperand.fields,
+        simpa [FlatTemporalOperand.dateTimeDifferenceReferences, FlatTemporalOperand.fields, FlatTemporalOperand.fieldValues,
           FlatField.id] using admitted.1.2
   all_goals simp [CheckedAddressedNumericTarget.admitsSubdayEndpoint] at admitted
 
@@ -207,7 +207,7 @@ private theorem admitsSubdayEndpoint_rowBound {model : FlatModel}
       owned.repetitionBoundBy target.targetDeclaration.repeatableScope = true := by
   cases operand
   case fieldValue source =>
-    simp only [FlatTemporalOperand.dateTimeDifferenceReferences, FlatTemporalOperand.fields,
+    simp only [FlatTemporalOperand.dateTimeDifferenceReferences, FlatTemporalOperand.fields, FlatTemporalOperand.fieldValues,
       FlatField.id] at referenced
     cases (by simpa using referenced : source.id = field)
     exact admitsSourceField_rowBound admitted

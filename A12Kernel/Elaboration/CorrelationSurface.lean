@@ -43,7 +43,7 @@ inductive SurfaceHavingNumericAtom where
   | aggregate (op : NumericAggregateOp) (first : SurfaceHavingNumberRef) (rest : List SurfaceHavingNumberRef)
   | dateDifference (unit : DateDifferenceUnit) (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
   | dayDifference (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
-  | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : SurfaceHavingTemporalRef)
+  | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
   | baseYear
   | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
   | fieldValueAsNumber (reference : SurfaceHavingStringRef)

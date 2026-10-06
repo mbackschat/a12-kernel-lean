@@ -34,7 +34,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
         | .dateDifference _ left right | .dayDifference left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
-            (field left.origin left.field).orElse fun _ => field right.origin right.field
+            (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .baseYear | .baseYearDatePart _ _ => none
         | .fieldValueAsNumber reference => field reference.origin reference.field
         | .field reference => field reference.origin reference.field
@@ -438,7 +438,7 @@ def CorrelatedHaving.outerIterationScopes
         | .aggregate _ first rest => (first :: rest).map (outerHavingNumberIterationScope model)
         | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map fun reference =>
             outerHavingFieldIterationScope model reference.origin reference.field.id
-        | .dateTimeDifference _ left right => [left, right].map fun reference =>
+        | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map fun reference =>
             outerHavingFieldIterationScope model reference.origin reference.field.id
         | .baseYear _ | .baseYearDatePart _ _ _ => [none]
         | .fieldValueAsNumber origin source => [outerHavingFieldIterationScope model origin source.fieldId]
@@ -494,7 +494,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
         | .dateDifference _ left right | .dayDifference left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
-            (field left.origin left.field).orElse fun _ => field right.origin right.field
+            (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .baseYear | .baseYearDatePart _ _ => none
         | .fieldValueAsNumber reference => field reference.origin reference.field
         | .field reference => field reference.origin reference.field
@@ -586,10 +586,16 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       let some profile := ModelZone.ConcreteProfile.ofId? model.timeZoneId | throw .numericExpressionUnsupported
       pure (.dayDifference profile first second)
     dateTimeDifference := fun unit left right => do
-      let resolve := resolveTemporal (unit.admittedBy)
+      let resolve : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef →
+          Except CorrelationElabError (FlatTemporalOperand HavingTemporalRef)
+        | .field reference => .fieldValue <$> resolveTemporal unit.admittedBy reference
+        | .now => pure .nowValue
+        | _ => throw .numericExpressionUnsupported
       let first ← resolve left
       let second ← resolve right
-      if !unit.compatible first.field.components second.field.components then throw .numericExpressionUnsupported
+      let some firstComponents := first.dateTimeDifferenceComponentsWith? (·.field.components) | throw .numericExpressionUnsupported
+      let some secondComponents := second.dateTimeDifferenceComponentsWith? (·.field.components) | throw .numericExpressionUnsupported
+      if !unit.compatible firstComponents secondComponents then throw .numericExpressionUnsupported
       pure (.dateTimeDifference unit first second)
     dateRangeBoundPart := fun origin reference part => do
       let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels { origin, field := reference }

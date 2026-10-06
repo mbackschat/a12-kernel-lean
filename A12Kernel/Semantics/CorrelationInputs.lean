@@ -107,7 +107,7 @@ inductive HavingNumericAtom where
   | aggregate (op : NumericAggregateOp) (first : HavingNumberRef) (rest : List HavingNumberRef)
   | dateDifference (unit : DateDifferenceUnit) (left right : ResolvedDateDifferenceOperand HavingTemporalRef)
   | dayDifference (profile : ModelZone.ConcreteProfile) (left right : ResolvedDateDifferenceOperand HavingTemporalRef)
-  | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : HavingTemporalRef)
+  | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : FlatTemporalOperand HavingTemporalRef)
   | baseYear (year : Int)
   | baseYearDatePart (year : Int) (source : BaseYearDateSource) (part : DateNumericPart)
   | fieldValueAsNumber (origin : HavingOrigin) (source : ResolvedFieldValueAsNumberSource)
@@ -122,7 +122,7 @@ inductive HavingNumericAtom where
 def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
   | .aggregate _ first rest => (first :: rest).map (·.origin)
   | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (·.origin)
-  | .dateTimeDifference _ left right => [left.origin, right.origin]
+  | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (·.origin)
   | .baseYear _ | .baseYearDatePart _ _ _ => []
   | .field reference => [reference.origin]
   | .dateRangeBoundPart origin _ _ _ | .fieldValueAsNumber origin _ | .stringLength origin _
@@ -133,7 +133,7 @@ def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
 def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin × FieldId)
   | .aggregate _ first rest => (first :: rest).map (fun reference => (reference.origin, reference.field.id))
   | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (fun reference => (reference.origin, reference.field.id))
-  | .dateTimeDifference _ left right => [(left.origin, left.field.id), (right.origin, right.field.id)]
+  | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (fun reference => (reference.origin, reference.field.id))
   | .baseYear _ | .baseYearDatePart _ _ _ | .repetition _ => []
   | .dateRangeBoundPart origin source _ _ => [(origin, source.id)]
   | .fieldValueAsNumber origin source => [(origin, source.fieldId)]
@@ -321,12 +321,12 @@ private def readHavingAggregate (phase : Phase)
 
 private def readHavingSubdayDifference (phase : Phase)
     (read : Env → FieldId → Except Error CheckedCell) (frame : CorrelationFrame)
-    (unit : DateTimeSubdayUnit) (left right : HavingTemporalRef) : Except Error NumericOperand := do
-  let first ← read (frame.envAt left.origin) left.field.id
-  let second ← read (frame.envAt right.origin) right.field.id
-  pure (DateTimeDifferenceOperand.evaluate unit
-    (DateTimeDifferenceOperand.ofObservation (observeCell phase first))
-    (DateTimeDifferenceOperand.ofObservation (observeCell phase second)))
+    (world : Option World) (unavailable : Error)
+    (unit : DateTimeSubdayUnit) (left right : FlatTemporalOperand HavingTemporalRef) : Except Error NumericOperand := do
+  let observe (reference : HavingTemporalRef) := observeCell phase <$> read (frame.envAt reference.origin) reference.field.id
+  let first ← left.readDateTimeDifferenceOperand observe world unavailable unavailable
+  let second ← right.readDateTimeDifferenceOperand observe world unavailable unavailable
+  pure (DateTimeDifferenceOperand.evaluate unit first second)
 
 private def readHavingCalendarDifference (phase : Phase)
     (read : Env → FieldId → Except Error CheckedCell) (frame : CorrelationFrame)
@@ -370,9 +370,8 @@ def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : Cor
       | .ok operand => havingArithmetic operand
       | .error impossible => nomatch impossible
   | .dateTimeDifference unit left right =>
-      havingArithmetic (DateTimeDifferenceOperand.evaluate unit
-        (DateTimeDifferenceOperand.ofObservation (observeCell .validation (context.read (frame.envAt left.origin) left.field.id)))
-        (DateTimeDifferenceOperand.ofObservation (observeCell .validation (context.read (frame.envAt right.origin) right.field.id))))
+      (readHavingSubdayDifference .validation (fun env field => .ok (context.read env field)) frame
+        context.world () unit left right).bind havingArithmetic
   | .dateRangeBoundPart origin source bound part =>
       havingArithmetic ((observeCell .validation (context.read (frame.envAt origin) source.id)).asDateRangeBoundNumericOperand bound part)
   | .baseYear year => .ok (.value year .fixed)
@@ -404,7 +403,7 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
   | .aggregate op first rest => do
       pure (havingArithmetic (← readHavingAggregate .validation context.read frame op first rest))
   | .dateTimeDifference unit left right => do
-      pure (havingArithmetic (← readHavingSubdayDifference .validation context.read frame unit left right))
+      pure (havingArithmetic (← readHavingSubdayDifference .validation context.read frame context.world context.unsupportedDateCalendar unit left right))
   | .dateRangeBoundPart origin source bound part => do
       let cell ← context.read (frame.envAt origin) source.id
       pure (havingArithmetic ((observeCell .validation cell).asDateRangeBoundNumericOperand bound part))
@@ -440,7 +439,7 @@ def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationCo
   | .aggregate op first rest => do
       pure ((← readHavingAggregate .computation context.read frame op first rest).toComputationResult)
   | .dateTimeDifference unit left right => do
-      pure ((← readHavingSubdayDifference .computation context.read frame unit left right).toComputationResult)
+      pure ((← readHavingSubdayDifference .computation context.read frame context.world context.unsupportedDateCalendar unit left right).toComputationResult)
   | .dateRangeBoundPart origin source bound part => do
       let cell ← context.read (frame.envAt origin) source.id
       pure (((observeCell .computation cell).asDateRangeBoundNumericOperand bound part).toComputationResult)

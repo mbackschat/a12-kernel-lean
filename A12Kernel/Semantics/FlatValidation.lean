@@ -4,6 +4,8 @@ import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.ScalarEquality
 import A12Kernel.Semantics.String
 import A12Kernel.Semantics.DateTimeComparison
+import A12Kernel.Semantics.DateTimeDifference
+import A12Kernel.Semantics.TemporalFormat
 import A12Kernel.Semantics.DateRangeComparison
 import A12Kernel.Semantics.TimeComparison
 import A12Kernel.Semantics.BaseYearDateSource
@@ -95,8 +97,8 @@ def StringLengthComparisonOp.toNumeric : StringLengthComparisonOp → NumericCom
     rational literal and therefore cannot enforce authored-scale compatibility; the
     checked numeric-expression route retains that metadata. Confirm admits only the
     legal `True` literal, made implicit in its constructor. -/
-inductive FlatTemporalOperand where
-  | fieldValue (field : FlatTemporalField)
+inductive FlatTemporalOperand (Field : Type := FlatTemporalField) where
+  | fieldValue (field : Field)
   | literalValue (instant : Instant)
   | todayValue (zoneId : String)
   | baseYearValue (zoneId : String) (year : Int)
@@ -107,13 +109,29 @@ inductive FlatTemporalOperand where
 
 namespace FlatTemporalOperand
 
-def fields : FlatTemporalOperand → List FlatField
-  | .fieldValue field => [.temporal field]
-  | .literalValue _ => []
-  | .todayValue _ => []
-  | .baseYearValue _ _ => []
-  | .baseYearRangeValue _ _ _ => []
-  | .nowValue => []
+def fieldValues : FlatTemporalOperand Field → List Field
+  | .fieldValue field => [field]
+  | _ => []
+
+def fields (operand : FlatTemporalOperand) : List FlatField :=
+  operand.fieldValues.map FlatField.temporal
+
+/-- Subday admission uses the same field-format identity and full clock components on ordinary and correlated routes (spec/05 §2). -/
+def dateTimeDifferenceComponentsWith? (components : Field → TemporalComponents) :
+    FlatTemporalOperand Field → Option TemporalComponents
+  | .fieldValue source => some (components source)
+  | .nowValue => some TemporalComponents.now
+  | _ => none
+
+/-- Field reads retain the caller's phase and effects; `Now` reads the exact supplied instant (spec/05 §2), while absent clocks and unsupported source shapes retain separate failure channels. -/
+def readDateTimeDifferenceOperand (read : Field → Except Error CellObservation)
+    (world : Option World) (missingWorld unsupported : Error) :
+    FlatTemporalOperand Field → Except Error DateTimeDifferenceOperand
+  | .fieldValue source => DateTimeDifferenceOperand.ofObservation <$> read source
+  | .nowValue => match world with
+      | some world => pure (.value world.now)
+      | none => throw missingWorld
+  | _ => throw unsupported
 
 end FlatTemporalOperand
 

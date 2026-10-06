@@ -732,7 +732,7 @@ example : temporalRun "DifferenceInHours(Rows/Tag, $Expected) == 1" .dateTime .d
 private def subdayModel := temporalModel .dateTime .dateTime "yyyy-MM-dd'T'HH:mm:ss" "yyyy-MM-dd'T'HH:mm:ss"
 
 example : ["DifferenceInHours([Rows/Tag], $Expected)", "DifferenceInHours(Rows*/Tag, $Expected)",
-    "DifferenceInHours(Rows/Tag, Now)", "DifferenceInHours(Rows/Tag, BaseYear)",
+    "DifferenceInHours(Rows/Tag, Today)", "DifferenceInHours(Rows/Tag, BaseYear)",
     "DifferenceInHours($Expected, $Expected)"].all (fun expression =>
       (runModel subdayModel (expression ++ " == 1") false
         "2024-04-12T12:30:01" "2024-04-12T11:00:00" "2024-04-12T12:00:00").isNone) = true := by native_decide

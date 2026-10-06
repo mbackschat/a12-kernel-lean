@@ -14,14 +14,10 @@ def FlatContext.resolveNumericArithmetic (context : FlatContext)
 
 /-- Resolve the checked sub-day field/`Now` operand domain. An absent evaluation world or a forged broader temporal operand stays formally unavailable instead of acquiring a numeric default. -/
 def FlatContext.resolveDateTimeDifferenceOperand
-    (context : FlatContext) : FlatTemporalOperand → DateTimeDifferenceOperand
-  | .fieldValue source =>
-      .ofObservation (context.observeValidationAt source.id)
-  | .nowValue =>
-      match context.world with
-      | some world => .value world.now
-      | none => .unavailable .malformed
-  | _ => .unavailable .malformed
+    (context : FlatContext) (operand : FlatTemporalOperand) : DateTimeDifferenceOperand :=
+  (operand.readDateTimeDifferenceOperand
+    (fun source => pure (context.observeValidationAt source.id)) context.world () ()).toOption.getD
+      (.unavailable .malformed)
 
 def ValidationEvaluationContext.resolveNumericValidationAtom
     (context : ValidationEvaluationContext) :

@@ -32,7 +32,7 @@ structure HavingLeafResolvers where
   stringValue : HavingOrigin → SurfaceFieldPath → Except CorrelationElabError FlatStringField
   dateDifference : DateDifferenceUnit → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
   dayDifference : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
-  dateTimeDifference : DateTimeSubdayUnit → SurfaceHavingTemporalRef → SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
+  dateTimeDifference : DateTimeSubdayUnit → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError HavingNumericAtom
   dateRangeBoundPart : HavingOrigin → SurfaceFieldPath → DateNumericPart → Except CorrelationElabError FlatDateRangeField
   temporalPart : HavingOrigin → SurfaceFieldPath → TemporalNumericPart → Except CorrelationElabError FlatTemporalField
   number : HavingOrigin → SurfaceFieldPath →

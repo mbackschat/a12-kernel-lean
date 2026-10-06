@@ -144,10 +144,8 @@ end ResolvedDateDifferenceOperand
 namespace FlatTemporalOperand
 
 /-- The static component identity of an admitted sub-day operand. Other temporal comparison operands remain outside the checked difference route. -/
-def dateTimeDifferenceComponents? : FlatTemporalOperand → Option TemporalComponents
-  | .fieldValue source => some source.components
-  | .nowValue => some TemporalComponents.now
-  | _ => none
+def dateTimeDifferenceComponents? : FlatTemporalOperand → Option TemporalComponents :=
+  dateTimeDifferenceComponentsWith? (·.components)
 
 /-- Whether an admitted sub-day operand reads one exact document field. -/
 def dateTimeDifferenceReferences

@@ -405,7 +405,7 @@ example : (rangeNumericLeaf .inner .month).wellFormedForEnvironments rangeNumeri
 
 private def subdayRef (origin : HavingOrigin) : HavingTemporalRef := {
   origin, field := { id := 1, kind := .dateTime, components := TemporalComponents.ofFormat "yyyy-MM-dd'T'HH:mm:ss" } }
-private def subdayAtom : HavingNumericAtom := .dateTimeDifference .hours (subdayRef .inner) (subdayRef .outer)
+private def subdayAtom : HavingNumericAtom := .dateTimeDifference .hours (.fieldValue (subdayRef .inner)) (.fieldValue (subdayRef .outer))
 private def subdayCondition : CorrelatedHaving := .leaf (.numeric {
   op := .ordinary .equal, left := .atom subdayAtom, right := .literal { value := 0, authoredScale := 0 } })
 

@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.DateTimeDifference
+import A12Kernel.Semantics.FlatValidation
 
 /-! # A12Kernel.Proofs.DateTimeDifference — resolved instant-difference laws
 
@@ -88,5 +89,11 @@ theorem dateTimeDifferenceOperand_values_delegate
     DateTimeDifferenceOperand.evaluate unit (.value first) (.value second) =
       .value (first.difference unit second) .fixed := by
   rfl
+
+/-- A clock operand retains millisecond identity and performs no document read, on ordinary and correlated consumers alike (spec/05 §2). -/
+theorem flatTemporalOperand_now_readsExactWorld {Field Error : Type}
+    (read : Field → Except Error CellObservation) (world : World) (missing unsupported : Error) :
+    FlatTemporalOperand.readDateTimeDifferenceOperand read (some world) missing unsupported .nowValue =
+      .ok (.value world.now) := rfl
 
 end A12Kernel

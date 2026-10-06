@@ -114,4 +114,56 @@ example : clockAtoms.all (fun atom =>
     atom.readComputation { (pair invalid (dateCell .storedGregorian)) with
       world := some { now := { epochMillis := 0 } } } frame == .ok (.poison .malformed)) = true := by native_decide
 
+private def subdayClock (unit : DateTimeSubdayUnit) (origin : HavingOrigin := .inner)
+    (reverse : Bool := false) : HavingNumericAtom :=
+  let field := FlatTemporalOperand.fieldValue {
+    origin, field := { id := 1, kind := .dateTime, components := TemporalComponents.now } : HavingTemporalRef }
+  if reverse then .dateTimeDifference unit .nowValue field else .dateTimeDifference unit field .nowValue
+
+private def instantCell : CheckedCell := {
+  rawPresent := true, findings := [], parsed := some (.temporal (.dateTime
+    { epochMillis := 1000 } { year := 1970, month := 1, day := 1 } { hour := 0, minute := 0, second := 1, valid := by decide } .storedGregorian)) }
+
+example : [DateTimeSubdayUnit.hours, .minutes, .seconds].all (fun unit =>
+    let atom := subdayClock unit
+    let noClock := pair instantCell instantCell
+    let clock := { noClock with world := some { now := { epochMillis := 1000 } } }
+    atom.readValidation noClock frame == .error () &&
+    atom.readComputation noClock frame == .error () &&
+    atom.readValidationResolving (resolving noClock) frame == .error "calendar" &&
+    atom.readComputationResolving (resolving noClock) frame == .error "calendar" &&
+    atom.readComputation clock frame == .ok (.value 0) &&
+    atom.readValidationResolving (resolving clock) frame == .ok (.ok (.value 0 .fixed)) &&
+    atom.origins == [.inner] && CorrelatedHaving.fieldIds (condition atom) == [1] &&
+    CorrelatedHaving.markedFieldIds (condition atom) == [] &&
+    CorrelatedHaving.evalComputationIn (.or holds (condition atom)) noClock frame == .ok .holds &&
+    CorrelatedHaving.evalComputationIn (.and fails (condition atom)) noClock frame == .ok .notTrue &&
+    CorrelatedHaving.evalComputationIn (.and holds (condition atom)) noClock frame == .error () &&
+    [emptyCell, invalid].all (fun cell => atom.readComputation (pair cell instantCell) frame == .error ()) &&
+    atom.readComputation { clock with read := fun _ _ => emptyCell } frame == .ok (.value 0) &&
+    atom.readComputation { clock with read := fun _ _ => invalid } frame == .ok (.poison .malformed)) = true := by native_decide
+
+example : [DateTimeSubdayUnit.hours, .minutes, .seconds].all (fun unit =>
+    [false, true].all (fun reverse =>
+      let atom := subdayClock unit .outer reverse
+      atom.origins == [.outer] && atom.fieldOrigins == [(.outer, 1)] &&
+      CorrelatedHaving.markedFieldIds (condition atom) == [1] &&
+      atom.readComputationResolving {
+        world := some { now := { epochMillis := 1000 } },
+        read := fun env id => if env == frame.outerEnv && id == 1 then .ok instantCell else .error "wrong origin"
+        bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar" } frame == .ok (.value 0))) = true := by native_decide
+
+example :
+    let noClock : ResolvingCorrelationContext String := {
+      read := fun _ _ => .error "field", bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar" }
+    (subdayClock .seconds).readComputationResolving noClock frame = .error "field" ∧
+    (subdayClock .seconds .inner true).readComputationResolving noClock frame = .error "calendar" ∧
+    (subdayClock .seconds).readValidationResolving noClock frame = .error "field" ∧
+    (subdayClock .seconds .inner true).readValidationResolving noClock frame = .error "calendar" := by native_decide
+
+example : [false, true].all (fun reverse =>
+    (subdayClock .seconds .inner reverse).readComputation {
+      (pair instantCell instantCell) with world := some { now := { epochMillis := 999 } }
+    } frame == .ok (.value 0)) = true := by native_decide
+
 end A12Kernel.Conformance.HavingCalendarDifference

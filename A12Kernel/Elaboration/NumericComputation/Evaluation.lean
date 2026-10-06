@@ -157,15 +157,10 @@ def readCalendarDayDifferenceOperand (context : ScalarComputationContext)
 
 /-- Resolve one checked sub-day operand through computation-phase field reads or the explicit evaluation world. Unsupported temporal comparison shapes fail structurally rather than becoming field poison. -/
 def readDateTimeDifferenceOperand (context : ScalarComputationContext) :
-    FlatTemporalOperand →
-      Except NumericComputationFault DateTimeDifferenceOperand
-  | .fieldValue source =>
-      pure (.ofObservation (observeCell .computation (context.read source.id)))
-  | .nowValue =>
-      match context.world with
-      | some world => pure (.value world.now)
-      | none => throw .worldRequired
-  | _ => throw .unsupportedDateTimeDifferenceOperand
+    FlatTemporalOperand → Except NumericComputationFault DateTimeDifferenceOperand :=
+  FlatTemporalOperand.readDateTimeDifferenceOperand
+    (fun source => pure (observeCell .computation (context.read source.id)))
+    context.world .worldRequired .unsupportedDateTimeDifferenceOperand
 
 /-- Observe one fixed group's descendant cells in the computation arm.
 

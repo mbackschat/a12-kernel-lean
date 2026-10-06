@@ -295,4 +295,35 @@ example : [(model, "keep", "drop"), (dates, "1970-01-01", "1971-01-01")].all
         (ruleCondition := some ("FieldFilled(Error) And " ++ guard)) (computationPrecondition := some guard)
         (clock := { epochMillis := 86400000 }) == some (.notFired, [])) = true := by native_decide
 
+private def utcInstants : FlatModel := { dateTimes with timeZoneId := "UTC" }
+
+example : [("DifferenceInHours", "2"), ("DifferenceInMinutes", "120"), ("DifferenceInSeconds", "7201")].all
+    (fun (op, expected) =>
+      runModel utcInstants s!"{op}(Rows/Tag, Now) == {expected}" false
+        "unused" "1970-01-01T00:00:00" "1970-01-01T03:00:00"
+        (clock := { epochMillis := 7201999 }) == some (.fired .omission, ["value 9"]) &&
+      runModel utcInstants s!"{op}(Now, Rows/Tag) == -{expected}" false
+        "unused" "1970-01-01T00:00:00" "1970-01-01T03:00:00"
+        (clock := { epochMillis := 7201999 }) == some (.fired .omission, ["value 9"])
+    ) = true := by native_decide
+
+example : ["DifferenceInHours", "DifferenceInMinutes", "DifferenceInSeconds"].all (fun op =>
+    admitted utcInstants s!"{op}(Rows/Tag, Now) > 0" &&
+    refused utcInstants s!"{op}(Now, Now) == 0" &&
+    refused utcInstants s!"{op}($Expected, Now) == 0" &&
+    admitted utcInstants s!"[Rows/N] > 0 And {op}($Expected, Now) == 0" &&
+    refused utcInstants s!"{op}(Rows/Tag, Today) > 0" &&
+    refused utcInstants s!"{op}(Rows/Tag, BaseYear) > 0" &&
+    refused dates s!"{op}(Rows/Tag, Now) > 0") = true := by native_decide
+
+example : runModel utcInstants "DifferenceInSeconds(Now, Rows/Tag) == 0" false
+    "unused" "1970-01-01T00:00:01" "1970-01-01T00:00:03"
+    (clock := { epochMillis := 999 }) = some (.fired .omission, ["value 9"]) ∧
+    runModel utcInstants "DifferenceInSeconds(Now, Rows/Tag) == 0" false
+      "unused" "1970-01-01T00:00:01" "1970-01-01T00:00:03"
+      (clock := { epochMillis := 3000 }) = some (.notFired, ["value 5"]) ∧
+    runModel utcInstants "[Rows/N] > 0 And DifferenceInSeconds($Expected, Now) == 1" false
+      "1970-01-01T00:00:00" "1970-01-01T00:00:03" "1970-01-01T00:00:04"
+      (clock := { epochMillis := 1999 }) (ruleExpected := "14") = some (.fired .omission, ["value 14"]) := by native_decide
+
 end A12Kernel.Dm.HavingCalendarLocks

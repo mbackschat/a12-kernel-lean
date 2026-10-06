@@ -433,6 +433,7 @@ run_cmd do
 #print axioms A12Kernel.baseYearRangeStartOperand_eq_baseYearOperand
 #print axioms A12Kernel.baseYearRangeFinishOperand_resolves_exact
 #print axioms A12Kernel.baseYearRangeOperand_unsupported
+#print axioms A12Kernel.flatTemporalOperand_now_readsExactWorld
 #print axioms A12Kernel.dateTimeSubdayUnit_unitSeconds_pos
 #print axioms A12Kernel.dateTimeDifferenceOperand_unavailable_left
 #print axioms A12Kernel.dateTimeDifferenceOperand_empty_left
