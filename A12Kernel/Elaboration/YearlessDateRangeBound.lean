@@ -18,23 +18,6 @@ bound-versus-bound comparison, and every configured profile keep their existing 
 
 namespace A12Kernel
 
-namespace YearlessDateRangeBoundValue
-
-/-- Complete one retained endpoint label into a comparable yearless date by its authored
-position. A month-only label completes to the first day at a start and to the greatest day that
-month can ever have at a finish, which is the same asymmetric rule `YearlessInterval` already
-uses for a whole range; a day-bearing label keeps its authored day at either position. -/
-def completed (bound : DateRangeBound) :
-    YearlessDateRangeBoundValue → MonthDayValue
-  | .month value =>
-      let interval := YearlessInterval.ofMonthPair value value
-      match bound with
-      | .start => interval.start
-      | .finish => interval.finish
-  | .monthDay value => value
-
-end YearlessDateRangeBoundValue
-
 /-- Select one endpoint's retained labels from a yearless checked cell value. An exact value
 belongs to the completed route and has no yearless projection here. -/
 def DateRangeCellValue.selectYearlessBound (bound : DateRangeBound) :

@@ -261,8 +261,8 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
             let declaration ← (model.lookupUniqueId field.id).mapError (fun _ => .incoherentHavingField field.id)
             pure [← havingFieldPointerFor source environment declaration origin]
         | .temporalExpressionPart _ expression => expression.references.mapM fun reference => do
-            let declaration ← (model.lookupUniqueId reference.field.id).mapError (fun _ => .incoherentHavingField reference.field.id)
-            if declaration.toTemporalField? != some reference.field then throw (.incoherentHavingField reference.field.id)
+            let declaration ← (model.lookupUniqueId reference.fieldId).mapError (fun _ => .incoherentHavingField reference.fieldId)
+            if !reference.matchesModel model then throw (.incoherentHavingField reference.fieldId)
             havingFieldPointerFor source environment declaration reference.origin
         | .temporalPart origin field _ => do
             let declaration ← match model.lookupUniqueId field.id with
@@ -274,8 +274,8 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
         | .repetition _ => pure []
       pure pointers.flatten
   | .leaf (.temporalExpression comparison) => comparison.references.mapM fun reference => do
-      let declaration ← (model.lookupUniqueId reference.field.id).mapError (fun _ => .incoherentHavingField reference.field.id)
-      if declaration.toTemporalField? != some reference.field then throw (.incoherentHavingField reference.field.id)
+      let declaration ← (model.lookupUniqueId reference.fieldId).mapError (fun _ => .incoherentHavingField reference.fieldId)
+      if !reference.matchesModel model then throw (.incoherentHavingField reference.fieldId)
       havingFieldPointerFor source environment declaration reference.origin
   | .leaf (.simpleComparison left right comparison) => do
       let pointers ← [(left, comparison.inputFields.1), (right, comparison.inputFields.2)].mapM fun (origin, fields) =>

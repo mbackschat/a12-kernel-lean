@@ -86,7 +86,10 @@ private def havingEntityListMembers (arguments : List Argument) : Lowering Surfa
 private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
   | .call id arguments none none => do
       if let [.mk source none none] := arguments then
-        if source.havingTemporalConstructor then
+        let directRangeBound := match source with
+          | .call name _ _ _ => name == "StartOfDateRange" || name == "EndOfDateRange"
+          | _ => false
+        if source.havingTemporalConstructor && !directRangeBound then
           if let some part := ((datePart? id).map TemporalNumericPart.date).orElse (fun _ => (timePart? id).map TemporalNumericPart.time) then
             return .temporalExpressionPart part (← lowerHavingTemporalExpression true source)
       if let some op := aggregateOp? id then do

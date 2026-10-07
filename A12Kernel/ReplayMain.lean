@@ -4,6 +4,7 @@ import A12Kernel.Reference.Dm.HavingFieldFillLocks
 import A12Kernel.Reference.Dm.HavingMembershipExtentLocks
 import A12Kernel.Reference.Dm.HavingAggregateExtentLocks
 import A12Kernel.Reference.Dm.HavingTemporalExpressionLocks
+import A12Kernel.Reference.Dm.HavingRangeEndpointLocks
 import A12Kernel.Reference.Dm.HavingPatternLocks
 import A12Kernel.Reference.Dm.CustomConditionLocks
 import A12Kernel.Reference.Dm.ScalarMembershipLocks

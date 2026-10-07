@@ -482,10 +482,10 @@ def CorrelatedHaving.outerIterationScopes
         | .field reference => [outerHavingNumberIterationScope model reference]
         | .stringLength origin field | .stringRange origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
         | .dateRangeBoundPart origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
-        | .temporalExpressionPart _ source => source.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field.id
+        | .temporalExpressionPart _ source => source.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.fieldId
         | .temporalPart origin field _ => [outerHavingFieldIterationScope model origin field.id]
         | .repetition reference => [outerHavingRepetitionIterationScope model reference]
-  | .leaf (.temporalExpression comparison) => comparison.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field.id
+  | .leaf (.temporalExpression comparison) => comparison.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.fieldId
   | .leaf (.simpleComparison left right comparison) =>
       comparison.inputFields.1.map (fun field => outerHavingFieldIterationScope model left field.id) ++
         comparison.inputFields.2.map (fun field => outerHavingFieldIterationScope model right field.id)
@@ -604,6 +604,12 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     let some source := declaration.toTemporalField? | throw .numericExpressionUnsupported
     if !admitted source.components then throw .numericExpressionUnsupported
     pure { origin := reference.origin, field := source }
+  let resolveRange (reference : SurfaceHavingTemporalRef) :
+      Except CorrelationElabError (FlatDateRangeField × TemporalComponents) := do
+    let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels { origin := reference.origin, field := reference.field }
+    let field : FlatDateRangeField := { id := declaration.id }
+    let some (_, _, format) := model.dateRangeSourceProfile field | throw .numericExpressionUnsupported
+    pure (field, format.components)
   let resolveCalendar (admitted : TemporalComponents → Bool) :
       SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError (ResolvedDateDifferenceOperand HavingTemporalRef)
     | .literal source => if source.valid then pure (.literal source model.baseYearOrDefault) else throw .numericExpressionUnsupported
@@ -670,14 +676,14 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       if !part.admittedBy source model.hasBaseYear then throw .numericExpressionUnsupported
       pure source
     temporalExpressionPart := fun part source => do
-      let source ← HavingTemporalExpression.elaborate model (resolveTemporal (fun _ => true)) source
+      let source ← HavingTemporalExpression.elaborate model (resolveTemporal (fun _ => true)) resolveRange source
       if source.grouped then throw .numericExpressionUnsupported
       let some components := source.components? | throw .numericExpressionUnsupported
       if !part.admitsComponents components model.hasBaseYear then throw .numericExpressionUnsupported
       pure (.temporalExpressionPart part source)
     temporalExpression := fun operator left right => do
-      let left ← HavingTemporalExpression.elaborate model (resolveTemporal (fun _ => true)) left
-      let right ← HavingTemporalExpression.elaborate model (resolveTemporal (fun _ => true)) right
+      let left ← HavingTemporalExpression.elaborate model (resolveTemporal (fun _ => true)) resolveRange left
+      let right ← HavingTemporalExpression.elaborate model (resolveTemporal (fun _ => true)) resolveRange right
       if !HavingTemporalExpression.comparisonAdmitted operator.toTemporal left right then throw .numericExpressionUnsupported
       pure { operator := operator.toTemporal, left, right }
     temporal := model.resolveHavingTemporalConstant declaringGroup outerLevels

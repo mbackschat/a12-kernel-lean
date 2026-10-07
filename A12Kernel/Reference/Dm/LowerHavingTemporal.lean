@@ -13,7 +13,9 @@ def Path.havingField? (path : Path) : Option (HavingOrigin × SurfaceFieldPath) 
 comparisons retain their existing admission and diagnostics (spec/04 and spec/05). -/
 def Expr.havingTemporalConstructor : Expr → Bool
   | .braces source => source.havingTemporalConstructor
-  | .call name _ _ _ => ["DateTime", "DateFromDateTime", "TimeFromDateTime"].contains name
+  | .call "StartOfDateRange" [.mk (.constant "BaseYear") none none] none none
+  | .call "EndOfDateRange" [.mk (.constant "BaseYear") none none] none none => false
+  | .call name _ _ _ => ["DateTime", "DateFromDateTime", "TimeFromDateTime", "StartOfDateRange", "EndOfDateRange"].contains name
   | _ => false
 
 /-- Source slots use unbracketed entities and reject grouping, like ordinary temporal lowering
@@ -40,6 +42,13 @@ def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowering Surfac
   | .constant "Today" => pure .today
   | .call "StartOfDateRange" [.mk (.constant "BaseYear") none none] none none => pure (.baseYearBound .start)
   | .call "EndOfDateRange" [.mk (.constant "BaseYear") none none] none none => pure (.baseYearBound .finish)
+  | .call name [.mk (.entity { path, index := none, category := none }) none none] none none => do
+      let bound ← match name with
+        | "StartOfDateRange" => pure DateRangeBound.start
+        | "EndOfDateRange" => pure DateRangeBound.finish
+        | _ => refuse "Having" "temporal operator"
+      let some (origin, field) := path.havingField? | refuse "Having" "range endpoint entity"
+      pure (.rangeBound { origin, field } bound)
   | .string text =>
       match dateTimeConstant? text, timeConstant? text, authoredDateLiteral? text with
       | some value, _, _ => pure (.dateTimeLiteral value)

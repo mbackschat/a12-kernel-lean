@@ -367,7 +367,7 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
             (model.lookupUniqueId field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
         | .temporalExpressionPart _ source => source.references.any fun ref => ref.origin == .inner &&
-            (model.lookupUniqueId ref.field.id).toOption.any fun declaration =>
+            (model.lookupUniqueId ref.fieldId).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
         | .temporalPart origin field _ => origin == .inner &&
             (model.lookupUniqueId field.id).toOption.any fun declaration =>
@@ -375,7 +375,7 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
         | .repetition reference => reference.origin == .inner &&
             (reference.scope? model).any (·.any reopenedLevels.contains)
   | .temporalExpression comparison => comparison.references.any fun ref => ref.origin == .inner &&
-      (model.lookupUniqueId ref.field.id).toOption.any fun declaration =>
+      (model.lookupUniqueId ref.fieldId).toOption.any fun declaration =>
         declaration.repeatableScope.any reopenedLevels.contains
   | .simpleComparison left right comparison =>
       ([(left, comparison.inputFields.1), (right, comparison.inputFields.2)]).any fun (origin, fields) =>

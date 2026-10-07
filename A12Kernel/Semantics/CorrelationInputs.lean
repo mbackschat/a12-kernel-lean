@@ -37,7 +37,7 @@ def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
 
 /-- Preserve each read's own origin inside a multi-source numeric atom (spec/07 §3). -/
 def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin × FieldId)
-  | .temporalExpressionPart _ source => source.references.map (fun ref => (ref.origin, ref.field.id))
+  | .temporalExpressionPart _ source => source.references.map (fun ref => (ref.origin, ref.fieldId))
   | .aggregate _ slots => (slots.flatMap (·.references)).map (fun reference => (reference.origin, reference.field.id))
   | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (fun reference => (reference.origin, reference.field.id))
   | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (fun reference => (reference.origin, reference.field.id))

@@ -173,4 +173,24 @@ def ScalarTemporalConstructorOp.apply (operation : ScalarTemporalConstructorOp)
       | _ => throw .calendarUnavailable
   | _, _ => throw .calendarUnavailable
 
+/-- Endpoint selection preserves the declaration's exact/yearless runtime carrier, including
+position-dependent fragment completion (spec/05 §8 and KF201). -/
+def projectScalarRangeBoundObservation (profile : ModelZone.ConcreteProfile)
+    (yearless : Bool) (bound : DateRangeBound) : CellObservation →
+    Except ScalarTemporalPrimitiveFault (SimpleComparisonOperand ScalarTemporalValue)
+  | .empty => .ok .notEvaluated
+  | .unknown cause | .poison cause => .ok (.unknown cause)
+  | .value (.dateRange range) => do
+      match range.selectBoundObservation bound with
+      | .exact value =>
+          if yearless then throw .calendarUnavailable
+          pure (.value (.date value) true)
+      | .yearless label =>
+          if !yearless then throw .calendarUnavailable
+          let key := label.completed bound
+          let some value := profile.resolveCompletedDateParts? {
+            year := 2000, month := key.month, day := key.day } | throw .calendarUnavailable
+          pure (.value (.yearless value key) true)
+  | .value _ => .error .calendarUnavailable
+
 end A12Kernel

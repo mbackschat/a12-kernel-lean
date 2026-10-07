@@ -103,7 +103,7 @@ def presence (polarity : HavingPresencePolarity)
 def fieldIds : CorrelatedHaving → List FieldId
   | .leaf (.numeric comparison) =>
       ((comparison.left.atoms ++ comparison.right.atoms).flatMap (·.fieldOrigins) |>.map (·.2)).eraseDups
-  | .leaf (.temporalExpression comparison) => comparison.references.map (·.field.id) |>.eraseDups
+  | .leaf (.temporalExpression comparison) => comparison.references.map (·.fieldId) |>.eraseDups
   | .leaf (.simpleComparison _ _ comparison) => comparison.fields.map (·.id) |>.eraseDups
   | .leaf (.compareStringLiteral _ reference _) => [reference.field.id]
   | .leaf (.literalMembership _ _ source) => [source.field.id]
@@ -128,7 +128,7 @@ def markedFieldIds : CorrelatedHaving → List FieldId
       ((comparison.left.atoms ++ comparison.right.atoms).flatMap (·.fieldOrigins)
         |>.filter (·.1 == .outer) |>.map (·.2)).eraseDups
   | .leaf (.temporalExpression comparison) =>
-      (comparison.references.filter (·.origin == .outer)).map (·.field.id) |>.eraseDups
+      (comparison.references.filter (·.origin == .outer)).map (·.fieldId) |>.eraseDups
   | .leaf (.simpleComparison left right comparison) =>
       ((if left == .outer then comparison.inputFields.1 else []) ++
         (if right == .outer then comparison.inputFields.2 else [])).map (·.id) |>.eraseDups

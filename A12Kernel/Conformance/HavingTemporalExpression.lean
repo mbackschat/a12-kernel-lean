@@ -29,7 +29,8 @@ private def joined := source (.apply .dateTime date.core
 private def base : ResolvingCorrelationContext CorrelationRuntimeFault :=
   ({ read := fun env _ => stamp (if env == frame.innerEnv then 0 else 3600000) } : CorrelationContext).asResolving
 
-example : joined.references = [ref, ref 1 .outer] ∧
+example : joined.references = [{ origin := .inner, source := .inl ref.field },
+      { origin := .outer, source := .inl (ref 1 .outer).field }] ∧
     joined.evaluate .validation base frame = .ok (.value (.instant { epochMillis := 3600000 }) true) ∧
     joined.evaluate .computation base frame = .ok (.value (.instant { epochMillis := 3600000 }) true) ∧
     (HavingNumericAtom.temporalExpressionPart (.time .hour) joined).fieldOrigins = [(.inner, 1), (.outer, 1)] := by native_decide
@@ -96,5 +97,56 @@ example : completed.wellFormed yearlessModel [10] [] = true ∧
     (HavingNumericAtom.temporalExpressionPart (.date .year) completed).readComputationResolving
       { base with read := fun _ _ => pure storedDate } frame = .ok (.value 2024) ∧
     yearless.components? = some { TemporalComponents.fullDate with year := false } := by native_decide
+
+private def rangeSource (origin : HavingOrigin := .inner) (bound : DateRangeBound := .start)
+    (components : TemporalComponents := TemporalComponents.fullDate) :=
+  source (.atom (.rangeBound origin { id := 1 } components bound))
+private def rangeCell (origin : HavingOrigin) : CheckedCell := {
+  rawPresent := true, findings := [], parsed := some (.dateRange (.exact {
+    start := {
+      instant := { epochMillis := if origin == .inner then 0 else 3600000 }
+      parts := { year := 1970, month := 1, day := 1 }, basis := .legacyHybrid }
+    finish := {
+      instant := { epochMillis := if origin == .inner then 86400000 else 90000000 }
+      parts := { year := 1970, month := 1, day := 2 }, basis := .legacyHybrid } })) }
+private def rangeContext : ResolvingCorrelationContext CorrelationRuntimeFault := { base with
+  read := fun env _ => pure (rangeCell (if env == frame.innerEnv then .inner else .outer)) }
+private def rangeJoined := source (.apply .dateTime (rangeSource).core [.apply .timeFromDateTime (.atom .now) []])
+
+example : [Phase.validation, .computation].all (fun phase =>
+    [HavingOrigin.inner, .outer].all fun origin => [DateRangeBound.start, .finish].all fun bound =>
+      let millis := (if origin == .inner then 0 else 3600000) + (if bound == .start then 0 else 86400000)
+      (rangeSource origin bound).evaluate phase rangeContext frame == .ok (.value (.date {
+        instant := { epochMillis := millis }, parts := { year := 1970, month := 1, day := if bound == .start then 1 else 2 }
+        basis := .legacyHybrid }) true)) = true ∧
+    ((rangeSource .outer).references.map fun reference => (reference.origin, reference.fieldId)) = [(.outer, 1)] := by native_decide
+
+example : rangeJoined.evaluate .validation { base with read := fun _ _ => pure invalid } frame = .error .worldUnavailable ∧
+    rangeJoined.evaluate .computation { base with read := fun _ _ => pure invalid } frame = .ok (.unknown .malformed) ∧
+    rangeJoined.evaluate .computation { base with read := fun _ _ => pure empty } frame = .error .worldUnavailable ∧
+    (rangeSource).evaluate .validation { base with read := fun _ _ => pure required } frame = .ok (.unknown .required) ∧
+    (rangeSource).evaluate .computation { base with read := fun _ _ => pure required } frame = .ok .notEvaluated ∧
+    (rangeSource).evaluate .validation base frame = .error .calendarUnavailable := by native_decide
+
+private def rangeModel : FlatModel := { model with fields := model.fields.map fun field => { field with
+  policy := { kind := .dateRange }, temporalTargetPolicy := none
+  dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } } }
+example : (rangeSource).wellFormed rangeModel [10] [] = true ∧
+    (rangeSource .outer).wellFormed rangeModel [] [10] = true ∧
+    (rangeSource).wellFormed rangeModel [] [10] = false ∧
+    (rangeSource .outer).wellFormed rangeModel [10] [] = false ∧
+    (rangeSource .inner .start TemporalComponents.time).wellFormed rangeModel [10] [] = false ∧
+    (rangeSource).wellFormed model [10] [] = false ∧
+    ({ rangeSource with baseYear := some 2024 }).wellFormed rangeModel [10] [] = false := by native_decide
+
+private def fragment : CheckedCell := {
+  rawPresent := true, findings := [],
+  parsed := some (.dateRange (.yearlessMonth 2 2)) }
+private def monthComponents : TemporalComponents := { year := false, month := true, day := false, hour := false, minute := false, second := false }
+example : (rangeSource).evaluate .validation { base with read := fun _ _ => pure fragment } frame = .error .calendarUnavailable ∧
+    (rangeSource .inner .finish monthComponents).evaluate .computation rangeContext frame = .error .calendarUnavailable ∧
+    (rangeSource .inner .finish monthComponents).components? = some monthComponents ∧
+    (({ rangeSource .inner .finish monthComponents with baseYear := some 2024 }).components?) =
+      some { monthComponents with year := true } := by native_decide
 
 end A12Kernel.Conformance.HavingTemporalExpression

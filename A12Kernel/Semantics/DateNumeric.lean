@@ -1,6 +1,7 @@
 import A12Kernel.Semantics.TemporalFormat
 import A12Kernel.Semantics.DateConstructionNumeric
 import A12Kernel.Semantics.DateTime
+import A12Kernel.Semantics.DateRangeOverlap
 import A12Kernel.Semantics.Observation
 
 /-! # Typed Date, DateTime and DateRange numeric-component projection
@@ -59,6 +60,23 @@ the literal zero a partially known Date uses; the static component gate keeps it
 def YearlessDateRangeBoundValue.parts : YearlessDateRangeBoundValue → DateParts
   | .month value => { year := 0, month := value, day := 0 }
   | .monthDay value => { year := 0, month := value.month, day := value.day }
+
+namespace YearlessDateRangeBoundValue
+
+/-- Complete one retained endpoint label into a comparable yearless date by its authored
+position. A month-only label completes to the first day at a start and to the greatest day that
+month can ever have at a finish, which is the same asymmetric rule `YearlessInterval` already
+uses for a whole range; a day-bearing label keeps its authored day at either position. -/
+def completed (bound : DateRangeBound) :
+    YearlessDateRangeBoundValue → MonthDayValue
+  | .month value =>
+      let interval := YearlessInterval.ofMonthPair value value
+      match bound with
+      | .start => interval.start
+      | .finish => interval.finish
+  | .monthDay value => value
+
+end YearlessDateRangeBoundValue
 
 /-- One endpoint selected from whichever runtime carrier its declaration produced. -/
 inductive DateRangeBoundObservation where

@@ -75,28 +75,11 @@ def readScalarTimeLeaf (phase : Phase) (context : ScalarComputationContext)
 def readScalarRangeBound (phase : Phase) (profile : ModelZone.ConcreteProfile)
     (source : CheckedDateRangeBoundOperand model) (readCell : FieldId → CheckedCell) :
     Except ScalarTemporalEvaluationFault (SimpleComparisonOperand ScalarTemporalValue) := do
-  match source with
-  | .exact bound => do
-      let range ← (CheckedDateRangeSource.observeRange bound.source.id phase
-        (readCell bound.source.id)).mapError (fun _ => .calendarUnavailable)
-      let selected ← (CheckedDateRangeSource.selectBound bound.source.id bound.bound range)
-        |>.mapError (fun _ => .calendarUnavailable)
-      pure (liftScalarTemporal (fun value => .date value) selected.asValidationSimpleOperand)
-  | .yearless bound => do
-      let range ← (CheckedDateRangeSource.observeRange bound.source.id phase
-        (readCell bound.source.id)).mapError (fun _ => .calendarUnavailable)
-      let selected ← (CheckedYearlessDateRangeBound.projectYearless bound.source.id bound.bound range)
-        |>.mapError (fun _ => .calendarUnavailable)
-      match selected with
-      | .empty => pure .notEvaluated
-      | .unknown cause | .poison cause => pure (.unknown cause)
-      | .value label =>
-          let key := label.completed bound.bound
-          -- The yearless comparison key stays independent of the runtime completion year.
-          -- KF201 and the range-expression grid retain February 29 at a month-only end.
-          let some value := profile.resolveCompletedDateParts? {
-            year := 2000, month := key.month, day := key.day } | throw .calendarUnavailable
-          pure (.value (.yearless value key) true)
+  let (field, bound, yearless) := match source with
+    | .exact source => (source.source.id, source.bound, false)
+    | .yearless source => (source.source.id, source.bound, true)
+  (projectScalarRangeBoundObservation profile yearless bound (observeCell phase (readCell field))).mapError
+    ScalarTemporalPrimitiveFault.toEvaluation
 
 def readPartialScalarTemporalAmount (partialRead : TemporalPartialReadContext model) (row : Env)
     (amount : CheckedTemporalShiftAmount model) : Except ScalarTemporalEvaluationFault

@@ -45,6 +45,7 @@ structure SurfaceHavingTemporalRef where
 /-- Constructor operands retain an origin at every field, including mixed captured/candidate reads. -/
 inductive SurfaceHavingTemporalExpression where
   | field (reference : SurfaceHavingTemporalRef)
+  | rangeBound (reference : SurfaceHavingTemporalRef) (bound : DateRangeBound)
   | dateLiteral (source : AuthoredDateLiteral)
   | timeLiteral (value : TimeOfDay)
   | dateTimeLiteral (value : LocalDateTime)
@@ -58,7 +59,7 @@ inductive SurfaceHavingTemporalExpression where
   deriving Repr, DecidableEq
 
 def SurfaceHavingTemporalExpression.fields : SurfaceHavingTemporalExpression → List SurfaceHavingTemporalRef
-  | .field reference => [reference]
+  | .field reference | .rangeBound reference _ => [reference]
   | .grouped source | .dateFromDateTime source | .timeFromDateTime source => source.fields
   | .dateTime date time => date.fields ++ time.fields
   | _ => []
