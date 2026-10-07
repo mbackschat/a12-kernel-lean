@@ -1638,13 +1638,15 @@ Three shards carry these: locally measured probes split between [`group-and-iter
 - [Temporal construction and calendar profiles](sources/temporal-and-message-probes.md#src-temporal-construction-route)
 <a id="src-message-construction-route"></a>
 - [Message/reference rules](sources/message-and-pointer-probes.md#src-message-construction-route)
+<a id="src-selected-message-reference-resolution"></a>
+- [Selected message references](sources/message-and-pointer-probes.md#src-selected-message-reference-resolution)
 
 ### Inbound provenance checkpoints
 
 
 ## Question-to-locus index
 
-The clause map gets a reader into the right subsystem; this table gets a working agent to the decisive mechanism. Search the question or symbol before starting a new audit. “Decides” names the claim class that the locus can actually establish; cross-layer behavior still follows the composition rule above.
+Use the clause map for subsystems and this table for mechanisms. Search questions or symbols before auditing. “Decides” gives claim scope; the composition rule above governs cross-layer behavior.
 
 | Semantic question | Decisive Kernel locus | Decides / caveat |
 |---|---|---|
