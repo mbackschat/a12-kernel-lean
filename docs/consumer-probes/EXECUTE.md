@@ -256,3 +256,20 @@ Bounded Execute transport works across exact-address application, the admitted g
 - `wrong-accounts`: rejects global key-only selection, replacing the enclosing binding, duplicate-as-absence, stale keys, target-owned lexical lookup and arbitrary parent choice. Cross-parent poison remains undecidable from the supplied clause, so the finite task fails.
 - `questions-and-guesses`: one explicit unresolved question: whether column-strict computation invalidity is local to the bound parent or shared across all instances of the declaration. No semantic guess; conservative broader cache invalidation was proposed pending clarification.
 - `exclusions`: the frozen task exclusions apply; no executable consumer, Rust/SMT integration, public shipment or broader qualification.
+
+<a id="run-parent-scoped-selection-readback-02"></a>
+### Parent-scoped selection — `parent-scoped-selection-readback-02`
+
+- `task`: [Parent-scoped selection](#task-parent-scoped-selection-readback)
+- `status`: green
+- `started-at`: 2026-10-07T02:18:51+00:00
+- `finished-at`: 2026-10-07T02:20:11+00:00
+- `duration-seconds`: 80
+- `semantic-basis`: `b01407fa067f024e5b1b8e17ed3b08c13caf86c0`
+- `oracle`: HIGH reconciled all six answers against [nested reader locks](../../A12Kernel/Reference/Dm/NestedSemanticIndexLocks.lean), [parent-column resolution](../../A12Kernel/Elaboration/CheckedIndexColumn.lean) and the lexical clauses. The key-producer inference agrees with `CheckedSemanticIndexSource.referencesField` and the reverse-authored producer matrix. The bounded task passes.
+- `consumer-access`: fresh MEDIUM context, one scratch packet read containing only the frozen task and verbatim corrected canonical clauses. No repository, Lean, Kernel, sibling-source, linked-source or external access; no code, dependencies or delegation.
+- `cost`: 80 seconds, zero implementation/test lines, dependencies or runners. HIGH used existing definitions, acceptance cases and evidence for reconciliation; no build or replay. Token usage unavailable.
+- `result`: Q1 2/7; Q2 clear/7; Q3 2/0 in both independent variants; Q4 3/11; Q5 absolute operands preserve 2/7, while unchanged parent-local relative operands fail with fallback disabled; Q6 refuses the unbound parent. Selection/cache identity retains the resolved index, enclosing parent, current key and phase; invalidation covers parent-column membership/validity, payload and producer changes.
+- `wrong-accounts`: all six frozen countermodels are distinguished. In particular, duplicate poison stays within the parent column and no-match remains numeric zero rather than poison.
+- `questions-and-guesses`: Q4 explicitly identifies a key-read dependency as an inference from the supplied required-producer rule; HIGH confirms it as an operation read under that rule. Q5 notes that unspecified alternative relative spellings cannot be judged; the task's unchanged parent-local forms are resolved. Neither qualification leaves a missing outcome within the frozen fixture; no unsupported semantic guess was accepted.
+- `exclusions`: artifact-only transport for the frozen Number/String-index task; no executable consumer, Rust/SMT integration, public shipment, broader topology or universal Kernel correspondence.
