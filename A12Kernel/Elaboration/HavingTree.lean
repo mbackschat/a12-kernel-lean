@@ -47,6 +47,7 @@ structure HavingLeafResolvers where
   literalMembership : SurfaceHavingStringRef → Sum (List Int) (List String) →
     Except CorrelationElabError FlatLiteralMembership
   literalList : SurfaceHavingDirectFieldSource → List String → Except CorrelationElabError HavingFieldValueList
+  dateValidity : SurfaceHavingDateComponents → Except CorrelationElabError HavingDateComponents
   uniqueness : SurfaceHavingDirectFieldSource → Except CorrelationElabError HavingUniqueness
   fieldMembership : ComputationValueListOperator → SurfaceHavingDirectFieldSource → SurfaceHavingDirectFieldSource →
     Except CorrelationElabError HavingFieldValueList
@@ -196,6 +197,7 @@ def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
       pure (.leaf (.literalMembership reference.origin operator (← resolvers.literalMembership reference values)))
   | .literalList quantifier subjects values => do
       pure (.leaf (.fieldMembership (.quantified quantifier) (← resolvers.literalList subjects values)))
+  | .dateValidity operation source => (.leaf ∘ CorrelatedHavingLeaf.dateValidity operation) <$> resolvers.dateValidity source
   | .uniqueness source => (.leaf ∘ CorrelatedHavingLeaf.uniqueness) <$> resolvers.uniqueness source
   | .fieldMembership operator subjects members => do
       pure (.leaf (.fieldMembership operator (← resolvers.fieldMembership operator subjects members)))

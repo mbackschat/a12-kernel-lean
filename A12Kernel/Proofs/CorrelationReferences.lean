@@ -25,6 +25,11 @@ theorem correlatedHaving_referencesMarkedField_referencesField
     | compareStringLiteral op reference expected =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
       split at marked <;> simp_all
+    | dateValidity operation source =>
+      simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds,
+        List.mem_eraseDups, List.mem_map, List.mem_filter] at marked ⊢
+      obtain ⟨ref, ⟨member, _⟩, projected⟩ := marked
+      exact ⟨ref, member, projected⟩
     | uniqueness source =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds,
         List.mem_eraseDups, List.mem_map, List.mem_filter] at marked ⊢

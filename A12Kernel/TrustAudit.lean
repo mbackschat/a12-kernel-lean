@@ -2455,6 +2455,7 @@ run_cmd do
 #print axioms A12Kernel.checkedPartialPreliminary_silent_is_relevant
 #print axioms A12Kernel.checkedPartialPreliminary_groupPresence_relevance
 #print axioms A12Kernel.checkedConstructedDateComponents_profile
+#print axioms A12Kernel.resolvedConstructedDateComponentsWith_day_unavailable
 #print axioms A12Kernel.checkedConstructedDateComponentsWith_day_unavailable
 #print axioms A12Kernel.checkedConstructedDateComponents_day_unavailable
 #print axioms A12Kernel.checkedConstructedDateBaseYear_read

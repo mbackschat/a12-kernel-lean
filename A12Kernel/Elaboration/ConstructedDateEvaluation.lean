@@ -28,12 +28,17 @@ inductive ConstructedDateEvaluationFault where
   | profileDateUnsupported (zoneId : String) (parts : DateParts)
   deriving Repr, DecidableEq
 
-/-- A checked component before cause-free construction classification. -/
-inductive CheckedConstructedDateComponent where
-  | value (amount : Int)
-  | empty
-  | unavailable (cause : FormalCause)
-  deriving Repr, DecidableEq
+def ConstructedDateComponentFault.toEvaluationFault : ConstructedDateComponentFault → ConstructedDateEvaluationFault
+  | .payloadKind field => .payloadKind field
+  | .stringNotConvertible field value => .stringNotConvertible field value
+  | .dateYearStoredMissing field => .dateYearStoredMissing field
+  | .dateYearNotConvertible field value => .dateYearNotConvertible field value
+  | .nonIntegralPayload field value => .nonIntegralPayload field value
+  | .todayWorldRequired => .todayWorldRequired
+  | .todayUnavailable zone => .todayUnavailable zone
+  | .nowWorldRequired => .nowWorldRequired
+  | .nowUnavailable zone => .nowUnavailable zone
+  | .profileDateUnsupported zone parts => .profileDateUnsupported zone parts
 
 namespace CheckedConstructedDateNumberField
 
@@ -41,15 +46,7 @@ namespace CheckedConstructedDateNumberField
 def classify (checked : CheckedConstructedDateNumberField model)
     (observation : CellObservation Value) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
-  match observation with
-  | .empty => pure .empty
-  | .unknown cause | .poison cause => pure (.unavailable cause)
-  | .value (.num value) =>
-      if value.den = 1 then
-        pure (.value value.num)
-      else
-        throw (.nonIntegralPayload checked.source.id value)
-  | .value _ => throw (.payloadKind checked.source.id)
+  (classifyConstructedDateNumber checked.source observation).mapError ConstructedDateComponentFault.toEvaluationFault
 
 /-- Read one certified scalar component through the immutable checked document. -/
 def read (checked : CheckedConstructedDateNumberField model)
@@ -69,14 +66,7 @@ namespace CheckedConstructedDateStringField
 def classify (checked : CheckedConstructedDateStringField model)
     (observation : CellObservation Value) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
-  match observation with
-  | .empty => pure .empty
-  | .unknown cause | .poison cause => pure (.unavailable cause)
-  | .value (.str value) =>
-      match parseTemporalComponentInt32? value with
-      | some amount => pure (.value amount)
-      | none => throw (.stringNotConvertible checked.source.id value)
-  | .value _ => throw (.payloadKind checked.source.id)
+  (classifyConstructedDateString checked.source observation).mapError ConstructedDateComponentFault.toEvaluationFault
 
 /-- Read one certified scalar String component through the immutable checked document. -/
 def read (checked : CheckedConstructedDateStringField model)
@@ -96,21 +86,7 @@ namespace CheckedConstructedDateYearField
 def classify (checked : CheckedConstructedDateYearField model)
     (observation : CellObservation Value) (stored : Option String) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
-  match observation with
-  | .empty => pure .empty
-  | .unknown cause | .poison cause => pure (.unavailable cause)
-  | .value (.temporal value) =>
-      -- The formal check's own format-family test, not the declared kind (LF203).
-      if !checked.source.holdsValue value then
-        throw (.payloadKind checked.source.id)
-      else
-        match stored with
-        | none => throw (.dateYearStoredMissing checked.source.id)
-        | some text =>
-            match parseAsciiNatural? text with
-            | some amount => pure (.value amount)
-            | none => throw (.dateYearNotConvertible checked.source.id text)
-  | .value _ => throw (.payloadKind checked.source.id)
+  (classifyConstructedDateYear checked.source observation stored).mapError ConstructedDateComponentFault.toEvaluationFault
 
 /-- Read one certified `yyyy` Date component from the immutable checked cell and its retained exact stored text. -/
 def read (checked : CheckedConstructedDateYearField model)
@@ -134,22 +110,8 @@ temporal read tests it ([`FlatTemporalField.holdsValue`](../Semantics/FlatValida
 def classify (checked : CheckedConstructedDateExtractorField model)
     (observation : CellObservation Value) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
-  match observation with
-  | .empty => pure .empty
-  | .unknown cause | .poison cause => pure (.unavailable cause)
-  | .value (.temporal value) =>
-      if !checked.source.holdsValue value then
-        throw (.payloadKind checked.source.id)
-      else
-        match value.dateParts? with
-        | none => throw (.payloadKind checked.source.id)
-        | some parts =>
-            let amount := checked.part.extract parts
-            if amount.den = 1 then
-              pure (.value amount.num)
-            else
-              throw (.nonIntegralPayload checked.source.id amount)
-  | .value _ => throw (.payloadKind checked.source.id)
+  (classifyConstructedDateExtractor checked.source checked.part observation
+    (model.constructedDateExtractorPartialFormat checked.source.id)).mapError ConstructedDateComponentFault.toEvaluationFault
 
 /-- Read one certified scalar Date component through the immutable checked document. -/
 def read (checked : CheckedConstructedDateExtractorField model)
@@ -194,20 +156,8 @@ def project
 def read (checked : CheckedConstructedDatePointInTimeExtractor model)
     (world : Option World) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
-  match world with
-  | none =>
-      match checked.point with
-      | .today => throw .todayWorldRequired
-      | .now => throw .nowWorldRequired
-  | some world =>
-      match checked.point with
-      | .today =>
-          match world.today? model.timeZoneId with
-          | none => throw (.todayUnavailable model.timeZoneId)
-          | some instant =>
-              checked.project instant (.todayUnavailable model.timeZoneId)
-      | .now =>
-          checked.project world.now (.nowUnavailable model.timeZoneId)
+  (readConstructedDateClock checked.point checked.part model.timeZoneId checked.profile world).mapError
+    ConstructedDateComponentFault.toEvaluationFault
 
 end CheckedConstructedDatePointInTimeExtractor
 
@@ -249,25 +199,8 @@ namespace CheckedConstructedDateYear
 /-- Read one checked year form with the caller's explicit optional world. Split-year evaluation preserves Century-before-Short-Year formal precedence, while any ordinary empty component keeps the construction incomplete. -/
 def readWith [Monad m] (checked : CheckedConstructedDateYear model Source)
     (readSource : Source → m CheckedConstructedDateComponent)
-    (phase : Phase := .computation) :
-    m CheckedConstructedDateComponent :=
-  match checked with
-  | .complete source => readSource source
-  | .baseYear year => pure (.value year)
-  | .centuryAndShortYear century shortYear => do
-      match ← readSource century with
-      | .unavailable cause =>
-          if phase == .validation then discard (readSource shortYear)
-          pure (.unavailable cause)
-      | centuryPart =>
-          match ← readSource shortYear with
-          | .unavailable cause => pure (.unavailable cause)
-          | shortYearPart =>
-              match centuryPart, shortYearPart with
-              | .value century, .value shortYear =>
-                  -- The four-part constructor rejects a present zero Century (spec/05 §3).
-                  pure (.value (if century == 0 then 0 else century * 100 + shortYear))
-              | _, _ => pure .empty
+    (phase : Phase := .computation) : m CheckedConstructedDateComponent :=
+  checked.resolved.readWith readSource phase
 
 def read (checked : CheckedConstructedDateYear model)
     (phase : Phase) (input : CheckedDocument model) (world : Option World) :
@@ -276,107 +209,6 @@ def read (checked : CheckedConstructedDateYear model)
 
 end CheckedConstructedDateYear
 
-/-- A cause-preserving checked observation around the existing four-way construction result. -/
-inductive ConstructedDateObservation where
-  | resolved (result : DateConstructionResult)
-  | unavailable (cause : FormalCause)
-  deriving Repr, DecidableEq
-
-/-- A checked constructed-Date value after its selected profile has resolved a real
-    local label exactly once. Fresh construction and every calendar shift share this
-    result boundary so exact instant identity cannot be lost between consumers. -/
-inductive ConstructedDateValue where
-  | noValue (notGiven : Bool)
-  | value (instant : Instant) (parts : DateParts) (notGiven : Bool)
-  | unavailable (cause : FormalCause)
-  deriving Repr, DecidableEq
-
-namespace ConstructedDateValue
-
-/-- Project a fresh or shifted Date value into the shared exact-instant comparison
-    domain without reconstructing its selected instant from calendar parts. -/
-def comparisonOperand :
-    ConstructedDateValue → SimpleComparisonOperand Instant
-  | .noValue _ => .notEvaluated
-  | .value instant _ notGiven => .value instant (!notGiven)
-  | .unavailable cause => .unknown cause
-
-end ConstructedDateValue
-
-/-- The two projections of a constructed Date retain different failure polarities. -/
-inductive ConstructedDateValidityOp where
-  | valid
-  | invalid
-  deriving Repr, DecidableEq
-
-namespace ConstructedDateObservation
-
-/-- Resolve three cause-free checked components. `none` means empty; formal unavailability is intercepted before this seam, so this constructor cannot produce `.resolved .unknown`. -/
-def ofAvailableComponents (day month year : Option Int) :
-    ConstructedDateObservation :=
-  let availability : Option Int → DateComponentAvailability
-    | some _ => .present
-    | none => .empty
-  let reality := match day, month, year with
-    | some day, some month, some year =>
-        let parts : DateParts := {
-          year
-          month := Int.toNat month
-          day := Int.toNat day }
-        if DateParts.LegacyHybrid.isReal parts then
-          .real parts
-        else
-          .unreal
-    | _, _, _ => .unreal
-  .resolved (classifyDateConstruction3
-    (availability day) (availability month) (availability year) reality)
-
-/-- Project checked `Valid(Date(...))` without discarding a reached formal cause. -/
-def validVerdict : ConstructedDateObservation → Except FormalCause Verdict
-  | .resolved result => .ok result.validVerdict
-  | .unavailable cause => .error cause
-
-/-- Project checked `Invalid(Date(...))` without discarding a reached formal cause. -/
-def invalidVerdict : ConstructedDateObservation → Except FormalCause Verdict
-  | .resolved result => .ok result.invalidVerdict
-  | .unavailable cause => .error cause
-
-/-- Select the existing validity projection without changing its exact formal-cause channel. -/
-def validityVerdict (operation : ConstructedDateValidityOp) :
-    ConstructedDateObservation → Except FormalCause Verdict :=
-  match operation with
-  | .valid => validVerdict
-  | .invalid => invalidVerdict
-
-/-- Preserve cause-free UNKNOWN when projecting an observation. The direct component evaluator
-excludes that branch; recursive validity may produce it for a non-relevant component (spec/05 §3). -/
-def numericPart (observation : ConstructedDateObservation)
-    (part : DateNumericPart) :
-    Except FormalCause ConstructedDateNumericResult :=
-  match observation with
-  | .resolved result => .ok (result.numericPart part)
-  | .unavailable cause => .error cause
-
-/-- Shift a resolved observation by default-cutover calendar days without losing a formal cause. -/
-def addLegacyDays? : ConstructedDateObservation → Int →
-    Option ConstructedDateObservation
-  | .resolved result, offset => (result.addLegacyDays? offset).map .resolved
-  | .unavailable cause, _ => some (.unavailable cause)
-
-/-- Shift a resolved observation by default-cutover calendar months without losing a formal cause. -/
-def addLegacyMonths? : ConstructedDateObservation → Int →
-    Option ConstructedDateObservation
-  | .resolved result, offset => (result.addLegacyMonths? offset).map .resolved
-  | .unavailable cause, _ => some (.unavailable cause)
-
-/-- Shift a resolved observation by default-cutover calendar years without losing a formal cause. -/
-def addLegacyYears? : ConstructedDateObservation → Int →
-    Option ConstructedDateObservation
-  | .resolved result, offset => (result.addLegacyYears? offset).map .resolved
-  | .unavailable cause, _ => some (.unavailable cause)
-
-end ConstructedDateObservation
-
 namespace CheckedConstructedDateComponents
 
 /-- Resolve one real constructed Date exactly as its fresh model-zone parse does.
@@ -384,10 +216,7 @@ namespace CheckedConstructedDateComponents
     parts and resolving it again at a later boundary. -/
 def resolveFreshInstant (checked : CheckedConstructedDateComponents model Source)
     (parts : DateParts) : Except ConstructedDateEvaluationFault (Option Instant) :=
-  -- DateUtil.createDate uses a strict host calendar, whose instant must fit signed 64-bit millis.
-  pure ((checked.profile.resolveCalendarLabel? {
-    parts, time := { hour := 0, minute := 0, second := 0, valid := by decide } }).filter fun instant =>
-      decide (-9223372036854775808 ≤ instant.epochMillis ∧ instant.epochMillis ≤ 9223372036854775807))
+  pure (checked.resolved.resolveFreshInstant parts)
 
 /-- Decide whether one already hybrid-real Date also exists at local midnight in the
     selected profile. The calendar label remains independent of the stored-Date floor,
@@ -409,35 +238,13 @@ def applyProfileReality (checked : CheckedConstructedDateComponents model Source
         pure (.resolved .unreal)
   | observation => pure observation
 
-private def availableAmount? : CheckedConstructedDateComponent → Option Int
-  | .value amount => some amount
-  | .empty | .unavailable _ => none
-
 /-- Read Day, Month, and Year in generated argument order before applying a profile
     consumer. Computation stops on formal poison; validation evaluates later arguments, whose
     conversion may still throw, before retaining the first formal cause (spec/05 §3). -/
 def evaluateComponentsWith [Monad m] (checked : CheckedConstructedDateComponents model Source)
     (readSource : Source → m CheckedConstructedDateComponent)
-    (phase : Phase := .computation) :
-    m ConstructedDateObservation := do
-  match ← readSource checked.day with
-  | .unavailable cause =>
-      if phase == .validation then
-        discard (readSource checked.month)
-        discard (checked.year.readWith readSource phase)
-      pure (.unavailable cause)
-  | day =>
-      match ← readSource checked.month with
-      | .unavailable cause =>
-          if phase == .validation then discard (checked.year.readWith readSource phase)
-          pure (.unavailable cause)
-      | month =>
-          match ← checked.year.readWith readSource phase with
-          | .unavailable cause => pure (.unavailable cause)
-          | year =>
-              pure (ConstructedDateObservation.ofAvailableComponents
-                (availableAmount? day) (availableAmount? month)
-                (availableAmount? year))
+    (phase : Phase := .computation) : m ConstructedDateObservation :=
+  checked.resolved.evaluateComponentsWith readSource phase
 
 def evaluateComponents (checked : CheckedConstructedDateComponents model)
     (phase : Phase) (input : CheckedDocument model) (world : Option World) :

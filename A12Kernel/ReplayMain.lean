@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.HavingDateValidityLocks
 import A12Kernel.Reference.Dm.HavingUniquenessLocks
 import A12Kernel.Reference.Dm.HavingPatternLocks
 import A12Kernel.Reference.Dm.CustomConditionLocks

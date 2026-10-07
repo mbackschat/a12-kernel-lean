@@ -3,6 +3,7 @@ import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.DateNumeric
 import A12Kernel.Semantics.ModelZone
 import A12Kernel.Semantics.String
+import A12Kernel.Semantics.ConstructedDateInputs
 
 /-! # Checked direct constructed Dates
 
@@ -174,6 +175,13 @@ structure CheckedConstructedDateYearField (model : FlatModel) where
   admitted :
     model.admitsConstructedDateYearField position source policy scope = true
 
+/-- Partial extraction uses the declaration's spelling to recover only retained components;
+full precision already carries decoded calendar parts. -/
+def FlatModel.constructedDateExtractorPartialFormat (model : FlatModel) (field : FieldId) : Option FullDateTargetFormat := do
+  let declaration ← (model.lookupUniqueId field).toOption
+  let policy ← declaration.toTemporalTargetPolicy?
+  if policy.partialMode == .full then none else FullDateTargetFormat.ofSource? policy.format
+
 /-- Exact direct field gate for one matching Date-component extractor.
 
     The declared **kind** is not read: `part.admittedBy` already requires the declared format to
@@ -191,7 +199,10 @@ def FlatModel.admitsConstructedDateExtractorField (model : FlatModel)
       declaration.repetitionBoundBy scope &&
         declaration.toTemporalField? == some source &&
         position.extractor? == some part &&
-        part.admittedBy model.hasBaseYear source.components
+        part.admittedBy model.hasBaseYear source.components &&
+        (declaration.temporalTargetPolicy.isNone || declaration.toTemporalTargetPolicy?.any (fun policy =>
+          part.admittedPartialMode policy.partialMode &&
+            (policy.partialMode == .full || (model.constructedDateExtractorPartialFormat source.id).isSome)))
 
 /-- One ordinary Date or DateTime field carrying the matching component-extractor certificate. -/
 structure CheckedConstructedDateExtractorField (model : FlatModel) where
@@ -210,12 +221,6 @@ structure CheckedConstructedDateBaseYearExtractor (model : FlatModel) where
   year : Int
   configured : model.baseYear = some year
   matchesPosition : position.extractor? = some part
-
-/-- The two dynamic point-in-time values admitted beneath Date-component extraction. -/
-inductive ConstructedDatePointInTime where
-  | today
-  | now
-  deriving Repr, DecidableEq
 
 /-- One matching Date component extracted from a dynamic point in time. The selected
    profile decodes the world-supplied instant without ambient state. -/
@@ -257,6 +262,23 @@ structure CheckedConstructedDateComponents (model : FlatModel)
   profile : ModelZone.ConcreteProfile
   profileSelected :
     ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
+
+def CheckedConstructedDateSource.resolved : CheckedConstructedDateSource model → ResolvedConstructedDateSource
+  | .numberField checked => .numberField checked.source
+  | .stringField checked => .stringField checked.source
+  | .dateYearField checked => .dateYearField checked.source
+  | .constant value => .constant value
+  | .extractor checked => .extractor checked.source checked.part (model.constructedDateExtractorPartialFormat checked.source.id)
+  | .baseYearExtractor checked => .baseYearExtractor checked.year checked.source checked.part
+  | .pointInTimeExtractor checked => .pointInTimeExtractor checked.point checked.part model.timeZoneId checked.profile
+
+def CheckedConstructedDateYear.resolved : CheckedConstructedDateYear model Source → ResolvedConstructedDateYear Source
+  | .complete source => .complete source
+  | .baseYear year => .baseYear year
+  | .centuryAndShortYear century shortYear => .centuryAndShortYear century shortYear
+
+def CheckedConstructedDateComponents.resolved (checked : CheckedConstructedDateComponents model Source) : ResolvedConstructedDateComponents Source :=
+  { day := checked.day, month := checked.month, year := checked.year.resolved, profile := checked.profile }
 
 /-- The field a checked component reads; constants, Base Year and the execution clock read none. -/
 def CheckedConstructedDateSource.fieldId? : CheckedConstructedDateSource model → Option FieldId
@@ -317,6 +339,7 @@ inductive ConstructedDateComponentsElabError where
       (position : ConstructedDateComponentPosition) (part : DateNumericPart)
   | extractorSourceKind
       (position : ConstructedDateComponentPosition) (field : FieldId)
+  | extractorPartialPrecision (position : ConstructedDateComponentPosition) (part : DateNumericPart) (field : FieldId)
   | extractorDeclarationNotAdmitted
       (position : ConstructedDateComponentPosition)
       (part : DateNumericPart) (field : FieldId)
@@ -391,6 +414,8 @@ def elaborateConstructedDateExtractorField
   let source ← match declaration.toTemporalField? with
     | some source => pure source
     | none => throw (.extractorSourceKind position field)
+  if declaration.toTemporalTargetPolicy?.any (fun policy => !part.admittedPartialMode policy.partialMode) then
+    throw (.extractorPartialPrecision position part field)
   if admitted :
       model.admitsConstructedDateExtractorField position part source scope = true then
     pure { scope, position, part, source, admitted }

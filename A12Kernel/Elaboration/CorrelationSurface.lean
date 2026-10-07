@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.ConstructedDateComponents
 import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.NumericSource
 import A12Kernel.Elaboration.FieldEntityAdmission
@@ -72,6 +73,27 @@ def SurfaceHavingTemporalOperand.fields : SurfaceHavingTemporalOperand → List 
   | .grouped source => source.fields
   | _ => []
 
+inductive SurfaceHavingDateComponent where
+  | field (reference : SurfaceHavingPresenceRef)
+  | constant (source : String)
+  | extractor (part : DateNumericPart) (reference : SurfaceHavingPresenceRef)
+  | baseYearExtractor (source : BaseYearDateSource) (part : DateNumericPart)
+  | clockExtractor (point : ConstructedDatePointInTime) (part : DateNumericPart)
+  deriving Repr, DecidableEq
+
+abbrev SurfaceHavingDateComponents := SurfaceConstructedDateComponents SurfaceHavingDateComponent
+
+def SurfaceHavingDateComponents.sources (source : SurfaceHavingDateComponents) : List SurfaceHavingDateComponent :=
+  [source.day, source.month] ++ match source.year with
+    | .complete year => [year]
+    | .baseYear => []
+    | .centuryAndShortYear century shortYear => [century, shortYear]
+
+def SurfaceHavingDateComponents.references (source : SurfaceHavingDateComponents) : List SurfaceHavingPresenceRef :=
+  source.sources.filterMap fun
+    | .field reference | .extractor _ reference => some reference
+    | _ => none
+
 inductive SurfaceCorrelatedHaving where
   | compareBoolean (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : Bool)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceHavingStringRef)
@@ -87,6 +109,7 @@ inductive SurfaceCorrelatedHaving where
       (expected : String)
   | literalList (quantifier : ValueListQuantifier) (subjects : SurfaceHavingDirectFieldSource)
       (values : List String)
+  | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceHavingDateComponents)
   | uniqueness (source : SurfaceHavingDirectFieldSource)
   | fieldMembership (operator : ComputationValueListOperator)
       (subjects members : SurfaceHavingDirectFieldSource)
@@ -132,6 +155,7 @@ structure SurfaceSingleCorrelatedRule where
   deriving Repr, DecidableEq
 
 inductive CorrelationElabError where
+  | dateComponents (error : ConstructedDateComponentsElabError)
   | uniquenessKind (path : List String)
   | uniquenessFormat (path : List String)
   | membershipKind (path : List String)
@@ -239,6 +263,9 @@ and [field-reference checkpoint](../../docs/sources/having-filter-probes.md#src-
 The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
+  | .dateComponents (.extractorPartialPrecision _ _ _) => some .invalidDateType
+  | .dateComponents .onlyConstantsUsed => some .onlyConstantsUsed
+  | .dateComponents _ => none
   | .uniquenessKind _ | .uniquenessFormat _ => some .onlyStringEnumNumberDateAllowed
   | .membershipKind _ => some .onlyStringEnumNumberAllowed
   | .membershipBaseType _ => some .varyingTypesNotAllowed

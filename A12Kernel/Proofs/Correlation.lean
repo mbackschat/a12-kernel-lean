@@ -344,6 +344,11 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
                   CorrelatedHavingLeaf.verdictTruth, result]
       | compareStringLiteral op reference expected =>
           exact verdictTruth_eq_tru_iff_fired _
+      | dateValidity operation source =>
+          cases result : source.evalValidationRead operation context.asResolving frame <;>
+            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn, result,
+              verdictTruth_eq_tru_iff_fired]
       | uniqueness source =>
           cases result : source.evalValidationRead context.asResolving frame <;>
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,

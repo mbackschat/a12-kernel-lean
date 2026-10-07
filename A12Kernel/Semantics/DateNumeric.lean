@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.TemporalFormat
 import A12Kernel.Semantics.DateConstructionNumeric
 import A12Kernel.Semantics.DateTime
 import A12Kernel.Semantics.Observation
@@ -20,6 +21,14 @@ def admittedBy (part : DateNumericPart) (hasBaseYear : Bool)
   | .day => components.day
   | .month | .quarter => components.month
   | .year => components.year || hasBaseYear
+
+/-- A declared omission depth permits extracting only components guaranteed to be present,
+independently of Base Year (spec/05, temporal extractor operand gate). -/
+def admittedPartialMode (part : DateNumericPart) : TemporalPartialMode → Bool
+  | .full => true
+  | .dayOptional => part != .day
+  | .monthOptional => part == .year
+  | .yearOptional => false
 
 /-- Apply the shared validation-phase empty/unavailable projection before selecting a date component. The caller supplies the already-admitted value's calendar parts. -/
 def fromObservation (part : DateNumericPart) (partsOf : α → DateParts) :

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.HavingDateValidity
 import A12Kernel.Elaboration.HavingTree
 import A12Kernel.Elaboration.HavingGroupPresence
 import A12Kernel.Elaboration.HavingFieldValueList
@@ -49,6 +50,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
   | .literalMembership _ reference _ => field reference.origin reference.field
   | .fieldMembership _ subjects members =>
       (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field
+  | .dateValidity _ source => source.references.findSome? fun ref => field ref.origin ref.field
   | .uniqueness source | .literalList _ source _ | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => field reference.origin reference.field
   | .groupPresence _ origin reference => group origin reference
@@ -158,7 +160,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .and left right | .or left right =>
       left.readsGroupNumber model declaringGroup group ||
         right.readsGroupNumber model declaringGroup group
-  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .uniqueness _ | .literalList _ _ _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
+  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .dateValidity _ _ | .uniqueness _ | .literalList _ _ _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
 
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
     body in authored order, so each leaf's reads and comparison class answer as it closes; the
@@ -195,6 +197,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       throw .stringLeafOutsideStarRoute
     literalMembership := fun _ _ => throw .stringLeafOutsideStarRoute
     literalList := fun _ _ => throw .stringLeafOutsideStarRoute
+    dateValidity := fun _ => throw .stringLeafOutsideStarRoute
     uniqueness := fun _ => throw .stringLeafOutsideStarRoute
     fieldMembership := fun _ _ _ => throw .stringLeafOutsideStarRoute
     fieldFill := fun _ => throw .stringLeafOutsideStarRoute
@@ -224,6 +227,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     string := fun _ _ _ => throw .stringLeafOutsideStarRoute
     literalMembership := fun _ _ => throw .stringLeafOutsideStarRoute
     literalList := fun _ _ => throw .stringLeafOutsideStarRoute
+    dateValidity := fun _ => throw .stringLeafOutsideStarRoute
     uniqueness := fun _ => throw .stringLeafOutsideStarRoute
     fieldMembership := fun _ _ _ => throw .stringLeafOutsideStarRoute
     fieldFill := fun _ => throw .stringLeafOutsideStarRoute
@@ -544,6 +548,8 @@ def CorrelatedHaving.outerIterationScopes
       [outerHavingFieldIterationScope model reference.origin reference.field.id]
   | .leaf (.literalMembership origin _ source) =>
       [outerHavingFieldIterationScope model origin source.field.id]
+  | .leaf (.dateValidity _ source) =>
+      source.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
   | .leaf (.uniqueness source) =>
       source.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
   | .leaf (.fieldMembership _ source) =>
@@ -606,6 +612,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
   | .literalMembership _ reference _ => field reference.origin reference.field
   | .fieldMembership _ subjects members =>
       (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field
+  | .dateValidity _ source => source.references.findSome? fun ref => field ref.origin ref.field
   | .uniqueness source | .literalList _ source _ | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => field reference.origin reference.field
   | .groupPresence _ origin reference => group origin reference
@@ -725,6 +732,8 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
         model.resolveHavingEntityRead declaringGroup outerLevels {
           origin := ref.origin, field := ref.field, projectionRef := match ref.form with
             | .stored => .stored | .projected category => .category category })
+    dateValidity := elaborateHavingDateComponents model (fun ref =>
+      model.resolveHavingEntityRead declaringGroup outerLevels { origin := ref.origin, field := ref.field })
     uniqueness := elaborateHavingUniqueness model declaringGroup candidateLevels outerLevels
     fieldMembership := fun operator subjects members =>
       let read (valueRead : Bool) (ref : SurfaceHavingDirectFieldOperand) :=
