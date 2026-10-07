@@ -202,6 +202,12 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
           let some literal := decodeNumber? text | refuse "Having" "integer member"
           if literal.authoredScale == 0 then pure literal.value.num else refuse "Having" "integer member"
         return .literalMembership operator reference (.inl integers)
+      if id == "Valid" || id == "Invalid" then
+        match arguments with
+        | [.mk (.entity { path, index := none, category := none }) none none, .mk (.string name) none none] =>
+            let some (origin, field) := path.havingField? | refuse "Having" "type-validity path"
+            return .typeValidity (if id == "Valid" then .valid else .invalid) { origin, field } name
+        | _ => refuse "Having" "type-validity shape"
       if id == "GroupFilled" || id == "GroupNotFilled" then
         let [argument] := arguments | refuse "Having" "group-presence arity"
         let (origin, reference) ← lowerHavingGroupReference argument

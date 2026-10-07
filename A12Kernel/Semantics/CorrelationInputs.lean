@@ -239,6 +239,8 @@ inductive CorrelatedNumberOperand where
 inductive CorrelationRuntimeFault where
   | calendarUnavailable
   | valueFailure
+  | worldUnavailable
+  | typeValidityValueFailure
   | groupUnavailable (path : GroupPath)
   deriving Repr, DecidableEq
 
@@ -261,6 +263,8 @@ structure ResolvingCorrelationContext (Error : Type) where
   bindingError : EnvBindingError → Error
   unsupportedDateCalendar : Error
   temporalValueFailure : Error
+  worldUnavailable : Error
+  typeValidityValueFailure : Error
   groupUnavailable : GroupPath → Error
   world : Option World := none
   groups : Option (CorrelationGroupReads Error) := none
@@ -546,6 +550,7 @@ def HavingNumericAtom.readComputation (context : CorrelationContext)
       read := fun env field => .ok (context.read env field)
       world := context.world
       bindingError := fun _ => (), unsupportedDateCalendar := (), temporalValueFailure := ()
+      worldUnavailable := (), typeValidityValueFailure := ()
       groupUnavailable := fun _ => () } frame
 
 end A12Kernel

@@ -84,6 +84,8 @@ inductive KernelStaticDiagnostic where
   | noGroupsAllowed
   /-- A value-validation predicate's operand declaration is outside the String/Enumeration/extensible-Enumeration set its text names. The measured members are Number, Boolean, Confirm, and a **Custom**-typed declaration — the last being the operand a reader most expects to be admitted, since the predicate names a custom type. -/
   | noStringOrEnumOrExtEnum
+  /-- A named-type validity predicate requires a nonempty decoded type name (spec/06 A.3). -/
+  | noEmpty
   /-- Two temporal operands of one extremum expose different date/time **component sets**, the message naming both declared formats. The gate reads the component set and not the format spelling, so two identical sets under different spellings cross it freely; a declared Base Year supplies a missing year to one side before the comparison. -/
   | dateFormatsNotCompatible
   /-- An operand list whose **first** member is temporal carries a later member that is not. The Kernel's own text states the rule positionally, requiring every parameter to be a date once the first one is, so this is the mirror of `notSortable` rather than a second spelling of it: the same two operands in the other order draw that code instead. Measured on the extrema and on the distinct count, which share the mechanism. -/
@@ -474,6 +476,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .noWildcardsAllowed => "MVK_NO_WILDCARDS_ALLOWED"
   | .noGroupsAllowed => "MVK_NO_GROUPS_ALLOWED"
   | .noStringOrEnumOrExtEnum => "MVK_NO_STRING_OR_ENUM_OR_EXT_ENUM"
+  | .noEmpty => "MVK_NO_EMPTY"
   | .dateFormatsNotCompatible => "MVK_DATEFORMATS_NOT_COMPATIBLE"
   | .dateAndNonDate => "MVK_DATE_AND_NONDATE"
   | .invalidEntity => "MVK_INVALID_ENTITY"
@@ -675,7 +678,7 @@ def all : List KernelStaticDiagnostic :=
     .differentGroups, .noWildcard, .wildcardOnlyAtLowestLevelAllowed,
     .wildcardAtLowestLevelRequired, .repeatableLevelRequired,
     .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,
-    .noGroupsAllowed, .noStringOrEnumOrExtEnum, .dateFormatsNotCompatible,
+    .noGroupsAllowed, .noStringOrEnumOrExtEnum, .noEmpty, .dateFormatsNotCompatible,
     .dateAndNonDate,
     .invalidEntity, .rootGroupReferenced, .rootGroupWithOtherParameters,
     .groupIsEmpty, .rootGroupIsEmpty,

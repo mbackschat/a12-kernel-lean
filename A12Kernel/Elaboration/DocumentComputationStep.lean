@@ -150,6 +150,7 @@ back in. `targetNotReadable` fails closed where the checked target does not cert
 its family, and the two read faults carry the classifier's own context error. -/
 inductive DocumentComputationStepFault where
   | temporalExpressionUnavailable
+  | temporalExpressionAddressing (cause : CheckedAddressingError)
   | temporalExpressionTarget (cause : DateTimeTargetEvaluationFault)
   | guardBinding (error : CheckedComputationConditionError)
   | dateTimeDayShift (cause : DateTimeDayShiftComputationFault)
@@ -177,13 +178,13 @@ inductive DocumentComputationStepFault where
   deriving Repr, DecidableEq
 
 private def DocumentComputationStepFault.isFilterValueFailure : DocumentComputationStepFault → Bool
-  | .firstFilledSource .temporalValueFailure
-  | .enumerationFirstFilled .temporalValueFailure
-  | .stringFirstFilled (.source .temporalValueFailure)
-  | .firstFilledSite (.source .temporalValueFailure)
-  | .dateTimeFirstFilled (.site (.source .temporalValueFailure))
-  | .fullDateFirstFilled (.site (.source .temporalValueFailure))
-  | .dateRangeFirstFilled (.site (.source .temporalValueFailure)) => true
+  | .firstFilledSource error
+  | .enumerationFirstFilled error => error.isFilterValueFailure
+  | .stringFirstFilled (.source error)
+  | .firstFilledSite (.source error)
+  | .dateTimeFirstFilled (.site (.source error))
+  | .fullDateFirstFilled (.site (.source error))
+  | .dateRangeFirstFilled (.site (.source error)) => error.isFilterValueFailure
   | .guardBinding error => error.isValueFailure
   | _ => false
 
@@ -347,7 +348,10 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
           let result ← match expression.evalResult .computation
               { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
             | .ok result => pure result
-            | .error .calendarUnavailable | .error .indexedOperandNotSupported | .error (.addressing _) => throw .temporalExpressionUnavailable
+            | .error (.addressing error) =>
+                if error.isFilterValueFailure then return (.valueError .time, DocumentComputationReadBack.poison)
+                else throw (.temporalExpressionAddressing error)
+            | .error .calendarUnavailable | .error .indexedOperandNotSupported => throw .temporalExpressionUnavailable
             | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return (.valueError .time, DocumentComputationReadBack.poison)
           let outcome := target.evaluate (match result with
             | .value (.time value) _ => .value value
@@ -369,7 +373,10 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
           let result ← match expression.evalResult .computation
               { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
             | .ok result => pure result
-            | .error .calendarUnavailable | .error .indexedOperandNotSupported | .error (.addressing _) => throw .temporalExpressionUnavailable
+            | .error (.addressing error) =>
+                if error.isFilterValueFailure then return (.valueError .dateTime, DocumentComputationReadBack.poison)
+                else throw (.temporalExpressionAddressing error)
+            | .error .calendarUnavailable | .error .indexedOperandNotSupported => throw .temporalExpressionUnavailable
             | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return (.valueError .dateTime, DocumentComputationReadBack.poison)
           let outcome ← (target.evaluate (match result with
             | .value (.instant value) _ => .value value
@@ -391,7 +398,10 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
           let result ← match expression.evalResult .computation
               { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
             | .ok result => pure result
-            | .error .calendarUnavailable | .error .indexedOperandNotSupported | .error (.addressing _) => throw .temporalExpressionUnavailable
+            | .error (.addressing error) =>
+                if error.isFilterValueFailure then return (.valueError .fullDate, DocumentComputationReadBack.poison)
+                else throw (.temporalExpressionAddressing error)
+            | .error .calendarUnavailable | .error .indexedOperandNotSupported => throw .temporalExpressionUnavailable
             | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return (.valueError .fullDate, DocumentComputationReadBack.poison)
           let outcome := match result with
             | .value (.date value) _ | .value (.yearless value _) _ => target.evaluateParts value.parts

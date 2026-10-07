@@ -99,6 +99,8 @@ private def scanStar (project : Value → Option α) (overlaps : α → α → B
           world := context.world
           unsupportedDateCalendar := .addressing .unsupportedDateCalendar
           temporalValueFailure := .addressing .temporalValueFailure
+          worldUnavailable := .addressing .worldUnavailable
+          typeValidityValueFailure := .addressing .typeValidityValueFailure
           groupUnavailable := ComputationOverlapError.addressing ∘ StarAddressingError.unsupportedGroupOperand
           bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationOverlapError).withComputationGroups contextRead.document)
         context.row (fun state row => state.step overlaps <$> observation project field (read row))

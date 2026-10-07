@@ -193,12 +193,12 @@ private def readBack {Outcome : Type} (outcomes : List (CellAddr × Outcome))
     pure (address, wrap outcome, ← (cell address.field outcome).mapError .readBack)
 
 private def isFilterValueFailure : RowComputationStepFault → Bool
-  | .stringFirstFilled (.source .temporalValueFailure)
-  | .enumerationFirstFilled (.source .temporalValueFailure)
-  | .firstFilledSite (.source .temporalValueFailure)
-  | .dateTimeFirstFilled (.site (.source .temporalValueFailure))
-  | .fullDateFirstFilled (.site (.source .temporalValueFailure))
-  | .dateRangeFirstFilled (.site (.source .temporalValueFailure)) => true
+  | .stringFirstFilled (.source error)
+  | .enumerationFirstFilled (.source error)
+  | .firstFilledSite (.source error)
+  | .dateTimeFirstFilled (.site (.source error))
+  | .fullDateFirstFilled (.site (.source error))
+  | .dateRangeFirstFilled (.site (.source error)) => error.isFilterValueFailure
   | _ => false
 
 /-- A reached filter exception belongs to this target instance, like a failed computation guard

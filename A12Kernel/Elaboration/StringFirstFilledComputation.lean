@@ -196,6 +196,8 @@ def evaluateAt (operation : CheckedStringFirstFilledComputation model)
     (fun
       | .calendarUnavailable => .unsupportedDateCalendar
       | .valueFailure => .temporalValueFailure
+      | .worldUnavailable => .worldUnavailable
+      | .typeValidityValueFailure => .typeValidityValueFailure
       | .groupUnavailable path => .unsupportedGroupOperand path)
       (·.computationSelection (world := world) input.source.toDocument environment (input.computationCellAt read)
         (selectedRead := fun source => source.sideWith .computation input.source.toDocument environment

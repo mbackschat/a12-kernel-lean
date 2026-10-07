@@ -3,6 +3,7 @@ import A12Kernel.Elaboration.FieldEntityAdmission
 import A12Kernel.Elaboration.Flat.Condition.Surface
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.SingleGroup
+import A12Kernel.Elaboration.CustomFieldValidity
 import A12Kernel.Semantics.Correlation
 
 /-! Authored correlated-filter forms and their static diagnostic vocabulary. -/
@@ -95,6 +96,7 @@ inductive SurfaceCorrelatedHaving where
       rule's own condition. -/
   | presence (polarity : HavingPresencePolarity)
       (reference : SurfaceHavingPresenceRef)
+  | typeValidity (operation : CustomFieldValidityOp) (reference : SurfaceHavingPresenceRef) (name : String)
   | groupPresence (operator : GroupPresenceOperator) (origin : HavingOrigin)
       (reference : SurfaceGroupReference)
   | groupFill (operator : GroupFillQuantifier)
@@ -133,6 +135,8 @@ inductive CorrelationElabError where
   | fieldFill (error : FieldEntityShapeElabError)
   | groupFill (error : FieldEntityShapeElabError)
   | groupPresence (error : FixedGroupReferenceError)
+  | typeValidityOperand (error : CustomFieldValidityOperandElabError)
+  | typeValidityName (error : CustomFieldValidityElabError)
   | text (error : ElabError)
   | resolve (error : ResolveError)
   | invalidGroupReference (reference : SurfaceGroupPath)
@@ -234,6 +238,8 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .membershipStringLiteralKind _ => some .invalidTypesForComparison
   | .fieldFill error | .groupFill error => error.diagnostic?
   | .groupPresence error => error.diagnostic?
+  | .typeValidityOperand error => error.diagnostic?
+  | .typeValidityName .emptyTypeName => some .noEmpty
   | .dateRangeComponentsMismatch _ _ => some .invalidCompareToDateRange
   | .text (.enumerationOperand _ (.invalidLiteral _)) =>
       some .invalidStringConstantForEnumComparison

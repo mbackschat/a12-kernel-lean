@@ -216,6 +216,8 @@ private def scanNumber (context : ScalarComputationContext)
         resolved.environments state).mapError (fun
           | .calendarUnavailable => .temporalUnavailable
           | .valueFailure => .valueFailure
+          | .worldUnavailable => .contextRequired
+          | .typeValidityValueFailure => .valueFailure
           | .groupUnavailable path => .addressing (.unsupportedGroupOperand path))
 
 private def scanToken (context : ScalarComputationContext)
@@ -243,6 +245,8 @@ private def scanToken (context : ScalarComputationContext)
             (source.valueListCellAt .computation addressed.read environment)) resolved.environments state).mapError (fun
               | .calendarUnavailable => .temporalUnavailable
               | .valueFailure => .valueFailure
+              | .worldUnavailable => .contextRequired
+              | .typeValidityValueFailure => .valueFailure
               | .groupUnavailable path => .addressing (.unsupportedGroupOperand path))
 
 private def scanOperands
@@ -307,6 +311,8 @@ private def scanTemporal (context : ScalarComputationContext)
               world := context.world
               unsupportedDateCalendar := .temporalUnavailable
               temporalValueFailure := .valueFailure
+              worldUnavailable := .contextRequired
+              typeValidityValueFailure := .valueFailure
               groupUnavailable := ComputationPredicateError.addressing ∘ StarAddressingError.unsupportedGroupOperand
               bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationPredicateError).withComputationGroups contextRead.document)
             context.row (fun seen row => ValueListCell.duplicateComputationStep (kind := .token) seen <$> read row)
@@ -455,7 +461,9 @@ def evalChecked (predicate : CheckedComputationPredicate model)
   | .stringExpression source => (source.evalComputation { read := context.read } context.numberText (some context)).mapError .stringExpression
   | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError (fun
       | .dateTimeLabelUnresolved | .componentNumberInvalid => .valueFailure
-      | .calendarUnavailable | .indexedOperandNotSupported | .addressing _ => .temporalUnavailable)
+      | .addressing .worldUnavailable => .contextRequired
+      | .addressing error => if error.isFilterValueFailure then .valueFailure else .temporalUnavailable
+      | .calendarUnavailable | .indexedOperandNotSupported => .temporalUnavailable)
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
   | .fieldFill operator source =>
       source.evalCheckedWith operator context filterRead .fieldFill

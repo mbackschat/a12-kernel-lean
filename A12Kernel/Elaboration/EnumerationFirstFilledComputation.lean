@@ -461,6 +461,8 @@ private def scanEnumerationFirstFilledOperand
             starRead outer resolved state).mapError (fun
               | .calendarUnavailable => .unsupportedDateCalendar
               | .valueFailure => .temporalValueFailure
+              | .worldUnavailable => .worldUnavailable
+              | .typeValidityValueFailure => .typeValidityValueFailure
               | .groupUnavailable path => .unsupportedGroupOperand path)
 
 private def scanEnumerationFirstFilledOperands

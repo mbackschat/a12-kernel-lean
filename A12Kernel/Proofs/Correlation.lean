@@ -351,6 +351,11 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
           exact verdictTruth_eq_tru_iff_fired _
       | presence polarity reference =>
           exact verdictTruth_eq_tru_iff_fired _
+      | typeValidity operation reference name =>
+          cases result : evalHavingTypeValidityValidation operation reference name context.asResolving frame <;>
+            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn, result,
+              verdictTruth_eq_tru_iff_fired]
       | groupPresence operator origin source =>
           cases result : evalHavingGroupPresenceValidation operator origin source context.asResolving frame <;>
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
@@ -821,6 +826,9 @@ theorem correlatedHaving_referencesMarkedField_referencesField
       obtain ⟨ref, ⟨member, _⟩, projected⟩ := marked
       exact ⟨ref, member, projected⟩
     | presence polarity reference =>
+      simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
+      split at marked <;> simp_all
+    | typeValidity operation reference name =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
       split at marked <;> simp_all
     | groupPresence operator origin source =>

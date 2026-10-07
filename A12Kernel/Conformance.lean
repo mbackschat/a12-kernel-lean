@@ -421,5 +421,6 @@ import A12Kernel.Conformance.ValuesNotUniqueCondition
 import A12Kernel.Conformance.FieldValueAsNumberSource
 import A12Kernel.Conformance.YearlessDateRangeBound
 import A12Kernel.Conformance.YearlessDateRangeOverlap
+import A12Kernel.Conformance.HavingTypeValidity
 
 /-! Executable semantic locks built with the default library target. -/

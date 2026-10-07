@@ -7,6 +7,9 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 <a id="gap-sg7"></a>
 ### SG7 — String, pattern, and custom-field completion
 
+- `api-audit`: Ordinary computation `Valid`/`Invalid` feeds raw `ScalarComputationContext.storedText` into `ComputationPredicate.evalTypeValidity`, unlike the normalized checked value consumed by the Having leaf. With legal line breaks, a validator accepting LF text rejects equivalent CRLF input through a direct row guard; the LF control and Having CRLF control select. Kernel ingestion (`FormalChecker.checkAndConvertFieldValue` through `CheckCommand` and `ValidationCache.getWertXML`) normalizes before this read. Indexed guards share the helper; reproduce that second carrier, then consume the checked stored value without a second normalization pass.
+
+
 - `state`: open
 - `missing`: general String ingestion, every String function, pattern admission and execution, Unicode and line-break policy, repeatable lists and requiredness, custom-field output, and String targets must share one checked observation without bypassing normalization or resampling validators.
 - `baseline`: [§7](../IMPLEMENTATION-MAP.md#7--strings-and-patterns), [§8](../IMPLEMENTATION-MAP.md#8--enumerations-and-value-lists), and [String/Enumeration distinct count](../IMPLEMENTATION-MAP.md#stringenumeration-distinct-count) own the implemented surface.

@@ -9,6 +9,8 @@ def CorrelationContext.asResolving (context : CorrelationContext) :
   bindingError := fun _ => .calendarUnavailable
   unsupportedDateCalendar := .calendarUnavailable
   temporalValueFailure := .valueFailure
+  worldUnavailable := .worldUnavailable
+  typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   groups := context.groups }
 

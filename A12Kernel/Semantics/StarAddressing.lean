@@ -50,6 +50,8 @@ structure StarPath where
 
 inductive StarAddressingError where
   | temporalValueFailure
+  | worldUnavailable
+  | typeValidityValueFailure
   /-- Reached filter arithmetic can exceed the implemented calendar profile; this is a support fault, not a cell finding. -/
   | unsupportedDateCalendar
   | invalidStarPosition (firstStar axisCount : Nat)
@@ -64,6 +66,10 @@ inductive StarAddressingError where
   /-- A group-scope operand has no addressing plan in this theory yet. It exists so that such an operand can never be *answered* — an empty stream would read as "the group contributed no values", which is a wrong result rather than a missing one. This is a representation boundary and not a Kernel refusal. -/
   | unsupportedGroupOperand (group : List String)
   deriving Repr, DecidableEq
+
+def StarAddressingError.isFilterValueFailure : StarAddressingError → Bool
+  | .temporalValueFailure | .typeValidityValueFailure => true
+  | _ => false
 
 namespace StarPath
 

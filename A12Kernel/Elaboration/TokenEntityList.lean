@@ -853,6 +853,8 @@ def resolvedComputationSide
               resolved.environments []).mapError (fun
                 | .calendarUnavailable => .unsupportedDateCalendar
                 | .valueFailure => .temporalValueFailure
+                | .worldUnavailable => .worldUnavailable
+                | .typeValidityValueFailure => .typeValidityValueFailure
                 | .groupUnavailable path => .unsupportedGroupOperand path) with
           | .exhausted reversed =>
               pure (.inl {

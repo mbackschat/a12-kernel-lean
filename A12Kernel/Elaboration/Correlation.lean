@@ -50,7 +50,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
   | .fieldMembership _ subjects members =>
       (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field
   | .literalList _ source _ | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
-  | .presence _ reference => field reference.origin reference.field
+  | .presence _ reference | .typeValidity _ reference _ => field reference.origin reference.field
   | .groupPresence _ origin reference => group origin reference
   | .groupFill _ first rest => (first :: rest).findSome? fun (origin, reference) => group origin reference
   | .and left right | .or left right =>
@@ -158,7 +158,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .and left right | .or left right =>
       left.readsGroupNumber model declaringGroup group ||
         right.readsGroupNumber model declaringGroup group
-  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .literalList _ _ _ | .presence _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
+  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .literalList _ _ _ | .presence _ _ | .typeValidity _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
 
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
     body in authored order, so each leaf's reads and comparison class answer as it closes; the
@@ -197,6 +197,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     literalList := fun _ _ => throw .stringLeafOutsideStarRoute
     fieldMembership := fun _ _ _ => throw .stringLeafOutsideStarRoute
     fieldFill := fun _ => throw .stringLeafOutsideStarRoute
+    typeValidity := fun _ _ _ => throw .stringLeafOutsideStarRoute
     groupPresence := fun _ _ => throw .stringLeafOutsideStarRoute
     groupFill := fun _ _ _ => throw .stringLeafOutsideStarRoute
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
@@ -223,6 +224,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     literalList := fun _ _ => throw .stringLeafOutsideStarRoute
     fieldMembership := fun _ _ _ => throw .stringLeafOutsideStarRoute
     fieldFill := fun _ => throw .stringLeafOutsideStarRoute
+    typeValidity := fun _ _ _ => throw .stringLeafOutsideStarRoute
     groupPresence := fun _ _ => throw .stringLeafOutsideStarRoute
     groupFill := fun _ _ _ => throw .stringLeafOutsideStarRoute
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored).mapError fun
@@ -278,6 +280,16 @@ private def FlatModel.resolveHavingEntityRead (model : FlatModel)
   if valueRead then
     if let some refusal := declaration.projectedReadRefusal? reference.projectionRef then throw (.resolve refusal)
   pure declaration
+
+private def FlatModel.resolveHavingTypeValidity (model : FlatModel)
+    (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
+    (origin : HavingOrigin) (reference : SurfaceFieldPath) (name : String) :
+    Except CorrelationElabError HavingPresenceRef := do
+  let declaration ← model.resolveHavingEntityRead declaringGroup outerLevels
+    { origin, field := reference } (valueRead := true)
+  let _ ← (elaborateCustomFieldValidityOperand model declaration.id).mapError .typeValidityOperand
+  if name.isEmpty then throw (.typeValidityName .emptyTypeName)
+  pure { origin, field := declaration.id }
 
 private def FlatModel.resolveHavingLiteralMembership (model : FlatModel)
     (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
@@ -521,7 +533,7 @@ def CorrelatedHaving.outerIterationScopes
       source.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
   | .leaf (.fieldFill _ references) =>
       references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
-  | .leaf (.presence _ reference) =>
+  | .leaf (.presence _ reference) | .leaf (.typeValidity _ reference _) =>
       [outerHavingFieldIterationScope model reference.origin reference.field]
   | .leaf (.groupPresence _ origin source) =>
       [if origin == .outer && !source.content.scope.isEmpty then some source.content.scope else none]
@@ -578,7 +590,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
   | .fieldMembership _ subjects members =>
       (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field
   | .literalList _ source _ | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
-  | .presence _ reference => field reference.origin reference.field
+  | .presence _ reference | .typeValidity _ reference _ => field reference.origin reference.field
   | .groupPresence _ origin reference => group origin reference
   | .groupFill _ first rest => (first :: rest).findSome? fun (origin, reference) => group origin reference
   | .and left right | .or left right =>
@@ -707,6 +719,7 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       checked.operands.mapM fun operand => do
         if operand.form != .stored then throw .incoherentCore
         pure { origin := operand.origin, field := operand.declaration.id }
+    typeValidity := model.resolveHavingTypeValidity declaringGroup outerLevels
     groupPresence := model.resolveHavingGroupPresence declaringGroup outerLevels
     groupFill := model.resolveHavingGroupFill declaringGroup outerLevels
     presence := model.resolveHavingPresenceInEnvironment declaringGroup outerLevels } authored

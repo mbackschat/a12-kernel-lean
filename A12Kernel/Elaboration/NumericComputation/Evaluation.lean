@@ -34,6 +34,8 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
             read := fun row field => pure ((filterRead?.getD addressed.read) row field)
             unsupportedDateCalendar := .addressing .unsupportedDateCalendar
             temporalValueFailure := .addressing .temporalValueFailure
+            worldUnavailable := .addressing .worldUnavailable
+            typeValidityValueFailure := .addressing .typeValidityValueFailure
             groupUnavailable := ComputationFillError.addressing ∘ StarAddressingError.unsupportedGroupOperand
             bindingError := fun error => ComputationFillError.addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationFillError).withComputationGroups addressed.document)
           context.row (fun count row => pure (match observeCell .computation

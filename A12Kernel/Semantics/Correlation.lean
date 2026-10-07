@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.HavingFieldValueList
 import A12Kernel.Semantics.HavingGroupPresence
+import A12Kernel.Semantics.HavingTypeValidity
 import A12Kernel.Semantics.CorrelationInputs
 import A12Kernel.Semantics.FlatLiteralMembership
 import A12Kernel.Semantics.ValidationFillQuantifier
@@ -37,6 +38,7 @@ inductive CorrelatedHavingLeaf where
       filter, the negative one without the iteration-negativity refusal that governs a rule's own
       condition. -/
   | presence (polarity : HavingPresencePolarity) (reference : HavingPresenceRef)
+  | typeValidity (operation : CustomFieldValidityOp) (reference : HavingPresenceRef) (name : String)
   | groupPresence (operator : GroupPresenceOperator) (origin : HavingOrigin)
       (source : ComputationGroupOperand)
   | groupFill (operator : GroupFillQuantifier) (first : HavingGroupOperand)
@@ -99,7 +101,7 @@ def fieldIds : CorrelatedHaving → List FieldId
   | .leaf (.literalMembership _ _ source) => [source.field.id]
   | .leaf (.fieldMembership _ source) => source.references.map (·.field) |>.eraseDups
   | .leaf (.fieldFill _ references) => references.map (·.field) |>.eraseDups
-  | .leaf (.presence _ reference) => [reference.field]
+  | .leaf (.presence _ reference) | .leaf (.typeValidity _ reference _) => [reference.field]
   | .leaf (.groupPresence _ _ source) => source.members.eraseDups
   | .leaf (.groupFill _ first rest) => ((first :: rest).flatMap (·.fieldIds)).eraseDups
   | .and left right | .or left right =>
@@ -126,7 +128,7 @@ def markedFieldIds : CorrelatedHaving → List FieldId
       (source.references.filter (·.origin == .outer)).map (·.field) |>.eraseDups
   | .leaf (.fieldFill _ references) =>
       (references.filter (·.origin == .outer)).map (·.field) |>.eraseDups
-  | .leaf (.presence _ reference) =>
+  | .leaf (.presence _ reference) | .leaf (.typeValidity _ reference _) =>
       if reference.origin == .outer then [reference.field] else []
   | .leaf (.groupPresence _ origin source) =>
       if origin == .outer then source.members.eraseDups else []
@@ -189,7 +191,7 @@ private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
   | .literalMembership origin _ _ => origin.isInner
   | .fieldMembership _ source => source.references.any (·.origin.isInner)
   | .fieldFill _ references => references.any (·.origin.isInner)
-  | .presence _ reference => reference.origin.isInner
+  | .presence _ reference | .typeValidity _ reference _ => reference.origin.isInner
   | .groupPresence _ origin _ => origin.isInner
   | .groupFill _ first rest => (first :: rest).any (·.origin.isInner)
 
@@ -203,7 +205,7 @@ private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
   | .literalMembership origin _ _ => origin.isOuter
   | .fieldMembership _ source => source.references.any (·.origin.isOuter)
   | .fieldFill _ references => references.any (·.origin.isOuter)
-  | .presence _ reference => reference.origin.isOuter
+  | .presence _ reference | .typeValidity _ reference _ => reference.origin.isOuter
   | .groupPresence _ origin _ => origin.isOuter
   | .groupFill _ first rest => (first :: rest).any (·.origin.isOuter)
 
@@ -279,6 +281,10 @@ def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
   | .presence polarity reference =>
       CorrelatedHavingLeaf.verdictTruth
         (polarity.evalObservation (reference.observeInAt .validation context frame))
+  | .typeValidity operation reference name =>
+      match evalHavingTypeValidityValidation operation reference name context.asResolving frame with
+      | .ok verdict => CorrelatedHavingLeaf.verdictTruth verdict
+      | .error _ => .unknown
   | .groupPresence operator origin source =>
       match evalHavingGroupPresenceValidation operator origin source context.asResolving frame with
       | .ok verdict => CorrelatedHavingLeaf.verdictTruth verdict
@@ -322,6 +328,8 @@ def CorrelatedHavingLeaf.evalTruthInResolving
       pure (CorrelatedHavingLeaf.verdictTruth
         (polarity.evalObservation
           (← reference.observeInAtResolving .validation context frame)))
+  | .typeValidity operation reference name =>
+      CorrelatedHavingLeaf.verdictTruth <$> evalHavingTypeValidityValidation operation reference name context frame
   | .groupPresence operator origin source =>
       CorrelatedHavingLeaf.verdictTruth <$> evalHavingGroupPresenceValidation operator origin source context frame
   | .groupFill operator first rest =>
@@ -370,6 +378,8 @@ def CorrelatedHavingLeaf.evalComputationInResolving
           pure (match polarity.evalObservation observation with
             | .fired _ => .holds
             | _ => .notTrue)
+  | .typeValidity operation reference name =>
+      evalHavingTypeValidityComputation operation reference name context frame
   | .groupPresence operator origin source =>
       evalHavingGroupPresenceComputation operator origin source context frame
   | .groupFill operator first rest =>
@@ -534,6 +544,9 @@ def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
       ∃ messagePolarity,
         polarity.evalObservation (reference.observeInAt .validation context frame)
           = .fired messagePolarity
+  | .typeValidity operation reference name =>
+      ∃ messagePolarity, evalHavingTypeValidityValidation operation reference name context.asResolving frame =
+        .ok (.fired messagePolarity)
   | .groupPresence operator origin source =>
       ∃ messagePolarity, evalHavingGroupPresenceValidation operator origin source context.asResolving frame =
         .ok (.fired messagePolarity)

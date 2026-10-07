@@ -114,6 +114,8 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
     world := context.world
     unsupportedDateCalendar := .calendarUnavailable
     temporalValueFailure := .dateTimeLabelUnresolved
+    worldUnavailable := .addressing .worldUnavailable
+    typeValidityValueFailure := .addressing .typeValidityValueFailure
     groupUnavailable := ScalarTemporalEvaluationFault.addressing ∘ CheckedAddressingError.checkedDocumentRequired
     groups := some {
       validation row reference := (groups.validation row reference).mapError .addressing

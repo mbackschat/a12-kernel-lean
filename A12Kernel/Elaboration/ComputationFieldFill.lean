@@ -100,6 +100,8 @@ private def scanStar (kind : ScanKind) (context : ScalarComputationContext)
           world := context.world
           unsupportedDateCalendar := .addressing .unsupportedDateCalendar
           temporalValueFailure := .addressing .temporalValueFailure
+          worldUnavailable := .addressing .worldUnavailable
+          typeValidityValueFailure := .addressing .typeValidityValueFailure
           groupUnavailable := ComputationFillError.addressing ∘ StarAddressingError.unsupportedGroupOperand
           bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationFillError).withComputationGroups addressed.document)
         context.row (fun seen row => pure (step kind seen (observe (read addressed.read row field))))

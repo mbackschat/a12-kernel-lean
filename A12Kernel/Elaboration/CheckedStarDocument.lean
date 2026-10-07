@@ -15,6 +15,8 @@ namespace A12Kernel
 
 inductive CheckedAddressingError where
   | temporalValueFailure
+  | worldUnavailable
+  | typeValidityValueFailure
   | customCondition (cause : CustomConditionLookupError)
   | unsupportedIndexedFillQuantifier
   | semanticIndex (cause : SemanticIndexContextError)
@@ -38,6 +40,11 @@ inductive CheckedAddressingError where
   silently dropped it would be two accounts of one certificate. -/
   | operandPayload (address : CellAddr)
   deriving Repr, DecidableEq
+
+def CheckedAddressingError.isFilterValueFailure : CheckedAddressingError → Bool
+  | .temporalValueFailure | .typeValidityValueFailure => true
+  | .addressing error => error.isFilterValueFailure
+  | _ => false
 
 /-- A model-independent computation context asks its checked document to resolve a column;
 the document retains index preparation and exact selected addresses. -/
@@ -352,6 +359,8 @@ def resolvingCorrelationContextWithRead (checked : CheckedDocument model)
     checked.checkedCellWithRead read environment field
   unsupportedDateCalendar := .temporalUnavailable
   temporalValueFailure := .temporalValueFailure
+  worldUnavailable := .worldUnavailable
+  typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .checkedDocumentRequired
   groups := some (checked.correlationGroupsWithRead read)
   world := world
@@ -365,6 +374,8 @@ def resolvingCorrelationContext (checked : CheckedDocument model)
       (checked.fullValidationAddressedCell environment field).map (·.cell)
     unsupportedDateCalendar := .temporalUnavailable
     temporalValueFailure := .temporalValueFailure
+    worldUnavailable := .worldUnavailable
+    typeValidityValueFailure := .typeValidityValueFailure
     groupUnavailable := .checkedDocumentRequired
     groups := some (checked.correlationGroupsWithRead checked.read)
     world := world

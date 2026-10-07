@@ -19,6 +19,8 @@ private def nestedItems : RepeatableLevel := 20
 private inductive ResolvingProbeError where
   | unsupportedDateCalendar
   | temporalValueFailure
+  | worldUnavailable
+  | typeValidityValueFailure
   | groupUnavailable (path : GroupPath)
   | read (field : FieldId)
   | binding (cause : EnvBindingError)
@@ -33,6 +35,8 @@ private def resolvingContext :
     if field == marker.id then .error (.read field) else .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  worldUnavailable := .worldUnavailable
+  typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
 
@@ -79,6 +83,8 @@ private def orderedResolvingContext :
       .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  worldUnavailable := .worldUnavailable
+  typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
 
@@ -180,6 +186,8 @@ private def absentAtSecondContext :
       .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  worldUnavailable := .worldUnavailable
+  typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
 
@@ -209,6 +217,8 @@ private def allPresentContext :
   read _ _ := .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  worldUnavailable := .worldUnavailable
+  typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
 
@@ -238,6 +248,8 @@ private def markerPoisonedContext :
     if field == marker.id then .ok poisonedResolvingCell else .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  worldUnavailable := .worldUnavailable
+  typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
 
@@ -289,6 +301,8 @@ private def poisonedAndEmptyContext :
     else .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  worldUnavailable := .worldUnavailable
+  typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
 
@@ -343,6 +357,8 @@ private def outerOnlyContext :
       .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  worldUnavailable := .worldUnavailable
+  typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
 
@@ -380,6 +396,8 @@ private def textOnOuterContext :
       .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  worldUnavailable := .worldUnavailable
+  typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
 
@@ -414,6 +432,8 @@ private def stringContext (cell : CheckedCell) :
   read _ field := if field == marker.id then .ok cell else .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  worldUnavailable := .worldUnavailable
+  typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
 

@@ -338,10 +338,10 @@ private def correlationElaborationResult : CorrelationElabError →
         (Json.mkObj [("path", toJson path), ("expected", toJson "number")]))
   -- The public filter vocabulary carries `compareNumbers`, `compareRepetitions`, and `and` only
   -- (`CorrelatedHavingFormTag.all`), so no request can build a String leaf, a Number-literal leaf, a
-  -- field/group presence leaf, group list, DateRange pair, or a disjunction, and none of these arms is reachable on this route. Reaching one means the checked
+  -- field/group presence leaf, named-type predicate, group list, DateRange pair, or a disjunction, and none of these arms is reachable on this route. Reaching one means the checked
   -- core and the wire vocabulary disagree, which is what `incoherentCore` reports; the public
   -- diagnostic vocabulary is deliberately left unchanged rather than widened for unreachable arms.
-  | .membershipKind _ | .membershipBaseType _ | .membershipStringLiteralKind _ | .fieldFill _ | .groupFill _ | .groupPresence _ | .text _ | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
+  | .membershipKind _ | .membershipBaseType _ | .membershipStringLiteralKind _ | .fieldFill _ | .groupFill _ | .groupPresence _ | .typeValidityOperand _ | .typeValidityName _ | .text _ | .fieldNotStringValue _ _ | .stringLeafOutsideStarRoute
   | .disjunctionOutsideStarRoute | .literalScaleMismatch _ _ _
   | .constantNumericComparison | .numericExpressionUnsupported
   | .numericOperandFieldNotNumber _ _ | .dateRangeComponentsMismatch _ _ => throw .incoherentCore

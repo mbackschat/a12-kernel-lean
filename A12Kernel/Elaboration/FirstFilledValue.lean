@@ -225,6 +225,8 @@ def evaluateComputationFirstFilled
     (fun
       | .calendarUnavailable => .unsupportedDateCalendar
       | .valueFailure => .temporalValueFailure
+      | .worldUnavailable => .worldUnavailable
+      | .typeValidityValueFailure => .typeValidityValueFailure
       | .groupUnavailable path => .unsupportedGroupOperand path)
       (·.computationSelection document outer { read := directRead, world } filterRead starRead selectedRead)
       checked.operands {} with
