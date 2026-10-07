@@ -149,13 +149,26 @@ private def scanFieldRows (input : CheckedDocument model)
       | none => scanFieldRows input read rest
 
 def resolveOperandAt (input : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env) :
-    FirstFilledFieldOperand model →
-      Except CheckedAddressingError (Except FormalCause (Option CheckedAddressedCell))
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env)
+    (operand : FirstFilledFieldOperand model) (world : Option World := none) :
+      Except CheckedAddressingError (Except FormalCause (Option CheckedAddressedCell)) :=
+  match operand with
   | .field declaration => Except.ok <$> scanCells input read declaration.id [outer]
   | .star source => do
-      let resolved ← (source.path.resolveInCapacity input.source.toDocument outer).mapError .addressing
-      Except.ok <$> scanCells input read source.declaration.id resolved.environments
+      let resolved ← (source.source.path.resolveInCapacity input.source.toDocument outer).mapError .addressing
+      match source.filter with
+      | none => Except.ok <$> scanCells input read source.source.declaration.id resolved.environments
+      | some having => do
+          let result ← having.condition.scanComputationResolving
+            (input.resolvingCorrelationContextWithRead read world) outer
+            (fun (_ : Unit) environment => do
+              match ← scanCells input read source.source.declaration.id [environment] with
+              | none => pure (.inl ())
+              | some cell => pure (.inr cell)) resolved.environments ()
+          pure (match result with
+            | .exhausted _ => .ok none
+            | .terminated cell => .ok (some cell)
+            | .poison cause => .error cause)
   | .group source => do
       let rows ← (model.groupOperandRows input.source.toDocument outer
         source.source.boundLevelCount source.declarations (·.repeatableScope)).mapError .addressing
@@ -177,20 +190,21 @@ def resolveOperandAt (input : CheckedDocument model)
           (rows.flatMap fun (declaration, environments, _) => environments.map (declaration, ·))
 
 private def selectedOperands (input : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env) (world : Option World) :
     List (FirstFilledFieldOperand model) →
       Except CheckedAddressingError (Except FormalCause ResolvedFirstFilledSource)
   | [] => pure (.ok { cells := [], hasOpenTail := false })
   | operand :: rest => do
-      match ← resolveOperandAt input read outer operand with
+      match ← resolveOperandAt input read outer operand world with
       | .error cause => pure (.error cause)
       | .ok (some cell) => pure (.ok { cells := [cell], hasOpenTail := false })
-      | .ok none => selectedOperands input read outer rest
+      | .ok none => selectedOperands input read outer world rest
 
 /-- Keep structural addressing faults separate from semantic selection poison. Legacy sources
 retain their read boundary; selected operands resolve only while the first-filled result is open. -/
 def resolveAt (source : FirstFilledFieldSource model) (input : CheckedDocument model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env)
+    (world : Option World := none) :
     Except CheckedStarDocumentError (Except FormalCause ResolvedFirstFilledSource) :=
   match source with
   | .star path => do
@@ -200,16 +214,16 @@ def resolveAt (source : FirstFilledFieldSource model) (input : CheckedDocument m
       let cells ← fields.mapM fun declaration =>
         input.addressedCellWithRead read environment declaration.id
       pure (.ok { cells, hasOpenTail := false })
-  | .selected operands => selectedOperands input read environment operands
+  | .selected operands => selectedOperands input read environment world operands
 
 /-- Once one reached operand returns a cell, later operands cannot change the result or raise a
 structural fault. The carrier subsequently distinguishes the cell's value from formal poison. -/
 theorem resolveAt_selected_firstDecides
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (outer : Env) (operand : FirstFilledFieldOperand model) (rest : List (FirstFilledFieldOperand model))
+    (outer : Env) (operand : FirstFilledFieldOperand model) (rest : List (FirstFilledFieldOperand model)) (world : Option World := none)
     (cell : CheckedAddressedCell)
-    (decides : resolveOperandAt input read outer operand = .ok (.ok (some cell))) :
-    (FirstFilledFieldSource.selected (operand :: rest)).resolveAt input read outer =
+    (decides : resolveOperandAt input read outer operand world = .ok (.ok (some cell))) :
+    (FirstFilledFieldSource.selected (operand :: rest)).resolveAt input read outer world =
       .ok (.ok { cells := [cell], hasOpenTail := false }) := by
   simp [resolveAt, selectedOperands, decides]
   rfl
@@ -217,10 +231,10 @@ theorem resolveAt_selected_firstDecides
 /-- Selection poison is terminal before the next authored operand, including a usable fallback. -/
 theorem resolveAt_selected_poisonStops
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (outer : Env) (operand : FirstFilledFieldOperand model) (rest : List (FirstFilledFieldOperand model))
+    (outer : Env) (operand : FirstFilledFieldOperand model) (rest : List (FirstFilledFieldOperand model)) (world : Option World := none)
     (cause : FormalCause)
-    (poison : resolveOperandAt input read outer operand = .ok (.error cause)) :
-    (FirstFilledFieldSource.selected (operand :: rest)).resolveAt input read outer = .ok (.error cause) := by
+    (poison : resolveOperandAt input read outer operand world = .ok (.error cause)) :
+    (FirstFilledFieldSource.selected (operand :: rest)).resolveAt input read outer world = .ok (.error cause) := by
   simp [resolveAt, selectedOperands, poison]
   rfl
 

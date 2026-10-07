@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.CheckedStarShape
 import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Elaboration.FilledFieldGroupCount
+import A12Kernel.Elaboration.FilledFieldStarCount
 
 /-! # Carrier-owned `FirstFilledValue` sources
 
@@ -40,7 +41,7 @@ inductive FirstFilledFieldOperand (model : FlatModel) where
   | field (declaration : FlatFieldDecl)
   | indexed (source : CheckedSemanticIndexSource model)
   | keyed (source : CheckedKeyedEntityExtent model)
-  | star (source : CheckedStarFieldPath model)
+  | star (source : CheckedFilledFieldStarSource model)
   | group (source : CheckedFilledFieldCountGroupSource model)
 
 namespace FirstFilledFieldOperand
@@ -49,7 +50,7 @@ def declarations : FirstFilledFieldOperand model → List FlatFieldDecl
   | .field declaration => [declaration]
   | .indexed source => [source.targetDeclaration]
   | .keyed source => source.declarations
-  | .star source => [source.declaration]
+  | .star source => [source.source.declaration]
   | .group source => source.declarations
 
 def referencesField (operand : FirstFilledFieldOperand model) (field : FieldId) : Bool :=
@@ -57,7 +58,8 @@ def referencesField (operand : FirstFilledFieldOperand model) (field : FieldId) 
   | .field declaration => declaration.id == field
   | .indexed source => source.referencesField field
   | .keyed source => source.referencesField field
-  | .star source => source.declaration.id == field
+  | .star source => source.source.declaration.id == field ||
+      source.filter.any (fun having => having.condition.referencesField field)
   | .group source => source.declarations.any (·.id == field)
 
 end FirstFilledFieldOperand
@@ -92,6 +94,7 @@ end FirstFilledFieldSource
 inductive FirstFilledListElabError where
   | shape (cause : FieldEntityShapeElabError)
   | group (cause : FilledFieldCountGroupElabError)
+  | having (cause : CorrelationElabError)
   | unsupportedOperand
   deriving Repr, DecidableEq
 
@@ -100,7 +103,7 @@ structure CheckedFirstFilledFieldList (model : FlatModel) (declaringGroup : Grou
   declaringGroupValid : GroupPath.isValid declaringGroup = true
 
 /-- Resolve against the computed target's binding scope. Spec/07 §5 and spec/08 §4 use the
-extent's declaration order; filtered operands keep their separate gate. -/
+extent's declaration order; Having captures the target binding independently of lexical origin. -/
 def elaborateFirstFilledFieldList (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (authored : SurfaceFieldEntitySource) :
     Except FirstFilledListElabError (CheckedFirstFilledFieldList model declaringGroup) := do
@@ -114,7 +117,10 @@ def elaborateFirstFilledFieldList (model : FlatModel) (declaringGroup writtenGro
     | .field declaration .stored => pure (FirstFilledFieldOperand.field declaration)
     | .indexed source => pure (.indexed source)
     | .keyed source => pure (.keyed source)
-    | .star source => pure (.star source)
+    | .star source => pure (.star (.plain declaringGroup source))
+    | .starHaving source having =>
+        (FirstFilledFieldOperand.star <$> CheckedFilledFieldStarSource.withHaving model
+          declaringGroup writtenGroup source having writtenGroup).mapError .having
     | .group reference => group (.fixed reference)
     | .starredGroup source => group (.starred source)
     | .starredGroupPresence source => group (.starredPresence source)

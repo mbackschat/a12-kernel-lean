@@ -216,64 +216,64 @@ def ofStringFirstFilled? (operation : CheckedStringFirstFilledComputation model)
     readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .string
       fun _ => DocumentComputationReadBack.string
 
-/-- A per-row DateFragment `FirstFilledValue` over a sibling star. -/
+/-- A per-row DateFragment `FirstFilledValue` over its checked source. -/
 def ofDateFragmentFirstFilled? (operation : CheckedDateFragmentFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .dateFragment operation.referencesField fun _ _ _ document => do
-    let outcomes ← (operation.execute document).mapError .firstFilledSite
+  checked? operation.targetField .dateFragment operation.referencesField fun _ world _ document => do
+    let outcomes ← (operation.execute document (some world)).mapError .firstFilledSite
     readBack (outcomes.map fun entry => (entry.targetField, entry.result.asExactStringTargetOutcome))
       .dateFragment (DocumentComputationReadBack.dateFragment model)
 
-/-- A per-row Custom `FirstFilledValue` over a sibling star, read back as a String completion is. -/
+/-- A per-row Custom `FirstFilledValue` over its checked source, read back as a String completion is. -/
 def ofCustomFirstFilled? (operation : CheckedCustomFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .string operation.referencesField fun _ _ _ document => do
-    let outcomes ← (operation.execute document).mapError .firstFilledSite
+  checked? operation.targetField .string operation.referencesField fun _ world _ document => do
+    let outcomes ← (operation.execute document (some world)).mapError .firstFilledSite
     readBack (outcomes.map fun entry => (entry.targetField, entry.result.asExactStringTargetOutcome))
       .string fun _ => DocumentComputationReadBack.string
 
-/-- A per-row Boolean `FirstFilledValue` over a sibling star. -/
+/-- A per-row Boolean `FirstFilledValue` over its checked source. -/
 def ofBooleanFirstFilled? (operation : CheckedBooleanFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .boolean operation.referencesField fun _ _ _ document => do
-    let outcomes ← (operation.execute document).mapError .firstFilledSite
+  checked? operation.targetField .boolean operation.referencesField fun _ world _ document => do
+    let outcomes ← (operation.execute document (some world)).mapError .firstFilledSite
     readBack (outcomes.map fun entry => (entry.targetField, entry.result)) .boolean
       fun _ result => pure (DocumentComputationReadBack.boolean result)
 
-/-- A per-row Time `FirstFilledValue` over a sibling star. -/
+/-- A per-row Time `FirstFilledValue` over its checked source. -/
 def ofTimeFirstFilled? (operation : CheckedTimeFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
   checked? operation.targetField .time operation.referencesField
-    fun _ _ _ document => do
-      let outcomes ← (operation.execute document).mapError .firstFilledSite
+    fun _ world _ document => do
+      let outcomes ← (operation.execute document (some world)).mapError .firstFilledSite
       readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .time
         (DocumentComputationReadBack.time model)
 
-/-- A per-row DateTime `FirstFilledValue` over a sibling star. -/
+/-- A per-row DateTime `FirstFilledValue` over its checked source. -/
 def ofDateTimeFirstFilled? (operation : CheckedDateTimeFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
   checked? operation.targetField .dateTime operation.referencesField
-    fun _ _ _ document => do
-      let outcomes ← (operation.execute document).mapError .dateTimeFirstFilled
+    fun _ world _ document => do
+      let outcomes ← (operation.execute document (some world)).mapError .dateTimeFirstFilled
       readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .dateTime
         (DocumentComputationReadBack.dateTime model)
 
-/-- A per-row full-Date `FirstFilledValue` over a sibling star. -/
+/-- A per-row full-Date `FirstFilledValue` over its checked source. -/
 def ofFullDateFirstFilled? (operation : CheckedFullDateFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
   checked? operation.targetField .fullDate operation.referencesField
-    fun _ _ _ document => do
-      let outcomes ← (operation.execute document).mapError .fullDateFirstFilled
+    fun _ world _ document => do
+      let outcomes ← (operation.execute document (some world)).mapError .fullDateFirstFilled
       readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .fullDate
         (DocumentComputationReadBack.fullDate model)
 
-/-- A per-row DateRange `FirstFilledValue` over a sibling star, read back through the target's own
+/-- A per-row DateRange `FirstFilledValue` over its checked source, read back through the target's own
 declared range policy. -/
 def ofDateRangeFirstFilled? (operation : CheckedDateRangeFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
   checked? operation.targetField .dateRange operation.referencesField
-    fun _ _ _ document => do
-      let outcomes ← (operation.execute document).mapError .dateRangeFirstFilled
+    fun _ world _ document => do
+      let outcomes ← (operation.execute document (some world)).mapError .dateRangeFirstFilled
       readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .dateRange fun target outcome => do
         let policy ← ((model.lookupUniqueId target).toOption.bind
           FlatFieldDecl.toDateRangeDeclarationPolicy?).getDM (throw .targetNotReadable)

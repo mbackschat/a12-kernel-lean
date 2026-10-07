@@ -552,8 +552,8 @@ private def ofBooleanFirstFilledAtRoot (operation : CheckedBooleanFirstFilledCom
   family := .boolean
   operationReferencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
-  run _ _ document := do
-    let entry ← (operation.evaluateAt document document.read
+  run world _ document := do
+    let entry ← (operation.evaluateAt (world := some world) document document.read
       { field := operation.targetField, path := [] } []).mapError .firstFilledSite
     pure (.boolean entry.result, DocumentComputationReadBack.boolean entry.result)
 
@@ -564,8 +564,8 @@ private def ofTimeFirstFilledAtRoot (operation : CheckedTimeFirstFilledComputati
   family := .time
   operationReferencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
-  run _ _ document := do
-    let entry ← (operation.evaluateAt document document.read
+  run world _ document := do
+    let entry ← (operation.evaluateAt (world := some world) document document.read
       { field := operation.targetField, path := [] } []).mapError .firstFilledSite
     let cell ← DocumentComputationReadBack.time model operation.targetField entry.outcome
     pure (.time entry.outcome, cell)
@@ -577,8 +577,8 @@ private def ofDateTimeFirstFilledAtRoot (operation : CheckedDateTimeFirstFilledC
   family := .dateTime
   operationReferencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
-  run _ _ document := do
-    let entry ← (operation.evaluateAt document document.read
+  run world _ document := do
+    let entry ← (operation.evaluateAt (world := some world) document document.read
       { field := operation.targetField, path := [] } []).mapError .dateTimeFirstFilled
     let cell ← DocumentComputationReadBack.dateTime model operation.targetField entry.outcome
     pure (.dateTime entry.outcome, cell)
@@ -590,8 +590,8 @@ private def ofFullDateFirstFilledAtRoot (operation : CheckedFullDateFirstFilledC
   family := .fullDate
   operationReferencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
-  run _ _ document := do
-    let entry ← (operation.evaluateAt document document.read
+  run world _ document := do
+    let entry ← (operation.evaluateAt (world := some world) document document.read
       { field := operation.targetField, path := [] } []).mapError .fullDateFirstFilled
     let cell ← DocumentComputationReadBack.fullDate model operation.targetField entry.outcome
     pure (.fullDate entry.outcome, cell)
@@ -603,8 +603,8 @@ private def ofDateFragmentFirstFilledAtRoot (operation : CheckedDateFragmentFirs
   family := .dateFragment
   operationReferencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
-  run _ _ document := do
-    let entry ← (operation.evaluateAt document document.read
+  run world _ document := do
+    let entry ← (operation.evaluateAt (world := some world) document document.read
       { field := operation.targetField, path := [] } []).mapError .firstFilledSite
     let outcome := entry.result.asExactStringTargetOutcome
     let cell ← DocumentComputationReadBack.dateFragment model operation.targetField outcome
@@ -618,8 +618,8 @@ private def ofDateRangeFirstFilledAtRoot (operation : CheckedDateRangeFirstFille
   family := .dateRange
   operationReferencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
-  run _ _ document := do
-    let entry ← (operation.evaluateAt document document.read
+  run world _ document := do
+    let entry ← (operation.evaluateAt (world := some world) document document.read
       { field := operation.targetField, path := [] } []).mapError .dateRangeFirstFilled
     let policy ← operation.target.toDateRangeDeclarationPolicy?.getDM (throw .targetNotReadable)
     let cell ← DocumentComputationReadBack.dateRange model policy entry.outcome
@@ -675,8 +675,8 @@ private def ofCustomFirstFilledAtRoot (operation : CheckedCustomFirstFilledCompu
   family := .string
   operationReferencesField := operation.referencesField
   excludesTarget := operation.excludesTarget
-  run _ _ document := do
-    let entry ← (operation.evaluateAt document document.read
+  run world _ document := do
+    let entry ← (operation.evaluateAt (world := some world) document document.read
       { field := operation.targetField, path := [] } []).mapError .firstFilledSite
     let outcome := entry.result.asExactStringTargetOutcome
     let cell ← DocumentComputationReadBack.string outcome

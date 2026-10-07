@@ -95,9 +95,9 @@ theorem excludesTarget (operation : CheckedFullDateFirstFilledComputation model)
 /-- Scan the source at one target instance's environment, then render the selected Date. -/
 def evaluateAt (operation : CheckedFullDateFirstFilledComputation model)
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (target : CellAddr) (environment : Env) :
+    (target : CellAddr) (environment : Env) (world : Option World := none) :
     Except FullDateFirstFilledComputationFault FullDateFirstFilledComputationOutcome := do
-  let resolved ← (operation.shape.site.source.resolveAt input read environment).mapError
+  let resolved ← (operation.shape.site.source.resolveAt input read environment world).mapError
     (.site ∘ .source)
   let outcome ← (operation.targetPolicy.evaluate (evaluateFirstFilledSource resolved .poison (fun resolved => evalFullDateFirstFilledCells resolved.cells))).mapError
     .target
@@ -106,35 +106,36 @@ def evaluateAt (operation : CheckedFullDateFirstFilledComputation model)
 /-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
 scope with a clear at each over-limit row. -/
 def executeWithRead (operation : CheckedFullDateFirstFilledComputation model)
-    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (world : Option World := none) :
     Except FullDateFirstFilledComputationFault (List FullDateFirstFilledComputationOutcome) :=
   operation.shape.site.instances input (.site ∘ .targetRows) (.site ∘ .targetEnvironment)
     (fun target _ => pure { targetField := target, outcome := .noValue })
-    (operation.evaluateAt input read)
+    (operation.evaluateAt (world := world) input read)
 
 def execute (operation : CheckedFullDateFirstFilledComputation model)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model) (world : Option World := none) :
     Except FullDateFirstFilledComputationFault (List FullDateFirstFilledComputationOutcome) :=
-  operation.executeWithRead input input.read
+  operation.executeWithRead input input.read world
 
 /-- Classify caller-view outcomes against immutable source target state through the shared FullDate
 result owner. -/
 def executeResultWithRead (operation : CheckedFullDateFirstFilledComputation model)
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (residualMessages : List ResidualMessage) :
+    (residualMessages : List ResidualMessage) (world : Option World := none) :
     Except FullDateFirstFilledComputationFault
       (FullDateFirstFilledComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.executeWithRead input read
+  let outcomes ← operation.executeWithRead input read world
   pure { operation
          fullDate := FullDateComputationRunView.fromOutcomesAt input.sourceFullDateTargetStateAt
            residualMessages
            (outcomes.map fun entry => (entry.targetField, entry.outcome)) }
 
 def executeResult (operation : CheckedFullDateFirstFilledComputation model)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) (world : Option World := none) :
     Except FullDateFirstFilledComputationFault
       (FullDateFirstFilledComputationRunView model ResidualMessage) :=
-  operation.executeResultWithRead input input.read residualMessages
+  operation.executeResultWithRead input input.read residualMessages world
 
 end CheckedFullDateFirstFilledComputation
 
@@ -163,10 +164,10 @@ def formalInputPlan (operation : CheckedFullDateFirstFilledComputation model) :
 /-- Prepare the selected sources once, retain every eager finding, and run lazily through the
 prepared read. -/
 def executeResultWithFormalInputs (operation : CheckedFullDateFirstFilledComputation model)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model) (world : Option World := none) :
     Except FullDateFirstFilledCheckedResultFault
       (FullDateFirstFilledComputationRunView model ComputationFormalInputFinding) :=
-  runWithFormalInputs operation.formalInputPlan input (operation.executeResultWithRead input)
+  runWithFormalInputs operation.formalInputPlan input (operation.executeResultWithRead (world := world) input)
 
 end CheckedFullDateFirstFilledComputation
 

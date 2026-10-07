@@ -51,6 +51,10 @@ private def model (profile : Profile) : FlatModel :=
       field 14 "Alpha" ["Form", "Rows", "Body", "Slots"] [10,30],
       field 15 "Zeta" ["Form", "Rows", "Mixed"] [10],
       { id := 16, name := "Alpha", groupPath := ["Form", "Rows", "Mixed"], repeatableScope := [10],
+        policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 17, name := "Allow", groupPath := ["Form", "Rows"], repeatableScope := [10],
+        policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 18, name := "Allow", groupPath := ["Form", "Rows", "Children"], repeatableScope := [10,20],
         policy := { kind := .number { scale := 0, signed := true } } }]
     repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 2, indexField := some 4 },
       { level := 20, path := ["Form", "Rows", "Children"], repeatability := some 3 },
@@ -70,7 +74,10 @@ private structure Scenario where
   fallback : Option String := none
   outSeed : Option String := none
   children : Option (List String) := none
+  allows : List String := ["1", "1"]
+  childAllows : Option (List String) := none
   localValue : Option String := none
+  secondLocalValue : Option String := none
   localEmpty : Bool := false
   omitted : Bool := false
   bodyZeta : Option String := none
@@ -89,9 +96,12 @@ private def input (profile : Profile) (scenario : Scenario) : Lean.Json :=
       Lean.Json.mkObj [("Zeta", .str pair.1), ("Alpha", .str pair.2)]).toArray)]
   let row (id value localText : String) (selected : Bool) := Lean.Json.mkObj
     ([("Id", .str id), ("Out", .str (scenario.outSeed.getD (seed profile))),
-      ("Local", .str (if scenario.localEmpty then "" else scenario.localValue.getD localText)),
-      ("Children", .arr ((scenario.children.getD [value]).map (fun child =>
-        Lean.Json.mkObj [("Value", .str child)])).toArray)] ++
+      ("Local", .str (if scenario.localEmpty then "" else if selected then scenario.localValue.getD localText else
+        scenario.secondLocalValue.getD (scenario.localValue.getD localText))),
+      ("Allow", .str ((scenario.allows[if selected then 0 else 1]?).getD "1")),
+      ("Children", .arr ((scenario.children.getD [value]).zipIdx.map (fun (child, index) =>
+        Lean.Json.mkObj [("Value", .str child),
+          ("Allow", .str (((scenario.childAllows.getD ["1"])[index]?).getD "1"))])).toArray)] ++
       (if scenario.bodyOmitted then [] else [("Body", body value selected)]) ++
       if selected && scenario.omitted then [] else [("Value", .str value)])
   Lean.Json.mkObj [("Form", Lean.Json.mkObj [
@@ -113,8 +123,9 @@ private def definition (operation : String) (repeated : Bool := false) (rowDecla
   commonPrecondition := none, alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }
 
 private def run (profile : Profile) (operation : String) (scenario : Scenario := {})
-    (repeated : Bool := false) (produceKey : Bool := false) (rowDeclared : Bool := false) : Option (List ComputedOutcome) := do
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler (model profile)).toOption
+    (repeated : Bool := false) (produceKey : Bool := false) (rowDeclared : Bool := false)
+    (evaluationWorld : World := world) (produceAllow : Bool := false) : Option (List ComputedOutcome) := do
+  let prepared ← (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler (model profile)).toOption
   let document ← checked profile scenario
   let step ← (lowerComputation (model profile) .english (definition operation repeated rowDeclared)).toOption
   let producers ← if produceKey then do
@@ -122,8 +133,13 @@ private def run (profile : Profile) (operation : String) (scenario : Scenario :=
       { definition "\"b\"" with name := "KeyProducer", targetRelPath := "../Key" }).toOption
     pure [producer.2]
     else pure []
-  let outcomes ← (runComputations world prepared document (step.2 :: producers)).toOption
-  pure (outcomes.filter fun outcome => !outcome.pointer.endsWith "/Key")
+  let allowProducers ← if produceAllow then do
+    let producer ← (lowerComputation (model profile) .english
+      { definition "1" true with name := "AllowProducer", targetRelPath := "../Rows/Allow" }).toOption
+    pure [producer.2]
+    else pure []
+  let outcomes ← (runComputations evaluationWorld prepared document (step.2 :: (producers ++ allowProducers))).toOption
+  pure (outcomes.filter fun outcome => !outcome.pointer.endsWith "/Key" && !outcome.pointer.endsWith "/Allow")
 
 private def expected (profile : Profile) (value : String) (repeated : Bool := false)
     (stored : Option String := none) : List ComputedOutcome :=
@@ -456,5 +472,104 @@ example : profiles.all (fun profile => [false,true].all (fun repeated =>
     !admitted profile (mixedOperation "Rows*/Mixed") repeated &&
     !admitted profile "FirstFilledValue(Rows/Value For Key,Rows*/Out)" true) &&
     selfGroupRefused profile (mixedOperation "Rows*/Body")) = true := by native_decide
+
+private def filteredLocal : String := "Rows*/Local Having [Rows/Allow] > 0"
+
+private def filteredOperation (suffix : String := "") : String :=
+  "FirstFilledValue(" ++ filteredLocal ++ (if suffix.isEmpty then ")" else "," ++ suffix ++ ")")
+
+example : profiles.all (fun profile => [false,true].all fun repeated =>
+    ["", "Fallback", "Rows*/Body", "Rows/Value For Key"].all (fun suffix =>
+      run profile (filteredOperation suffix) {} repeated == some (expected profile (first profile) repeated)) &&
+    run profile ("FirstFilledValue(Rows/Value For Key," ++ filteredLocal ++ ")") { key := "b" } repeated ==
+      some (expected profile (second profile) repeated) &&
+    run profile (filteredOperation "Rows/Value For Key") { key := "b" } repeated ==
+      some (expected profile (first profile) repeated) &&
+    run profile (filteredOperation "Fallback") { allows := ["0", "0"] } repeated ==
+      some (expected profile (fallback profile) repeated) &&
+    run profile (filteredOperation) { allows := ["0", "0"] } repeated == some (cleared repeated) &&
+    run profile (filteredOperation "Rows/Value For Key") { allows := ["0", "0"], key := "b" } repeated ==
+      some (expected profile (second profile) repeated) &&
+    run profile (filteredOperation "Rows/Value For Key") { allows := ["0", "0"], key := "missing" } repeated ==
+      some (cleared repeated) &&
+    run profile (filteredOperation) { localValue := some "", secondLocalValue := some (second profile) } repeated ==
+      some (expected profile (second profile) repeated)) = true := by native_decide
+
+example : profiles.all (fun profile => [false,true].all fun repeated =>
+    run profile (filteredOperation "Fallback") { allows := ["1", "bad"] } repeated == some (cleared repeated) &&
+    run profile ("FirstFilledValue(Rows/Value For Key," ++ filteredLocal ++ ")") { allows := ["1", "bad"] } repeated ==
+      some (expected profile (first profile) repeated) &&
+    run profile ("FirstFilledValue(Rows*/Body," ++ filteredLocal ++ ")") { allows := ["1", "bad"] } repeated ==
+      some (expected profile (first profile) repeated) &&
+    run profile ("FirstFilledValue(Direct," ++ filteredLocal ++ ")") { allows := ["1", "bad"] } repeated ==
+      some (expected profile (first profile) repeated) &&
+    run profile (filteredOperation) { localValue := some "bad", secondLocalValue := some (second profile), allows := ["0", "1"] } repeated ==
+      some (expected profile (second profile) repeated) &&
+    run profile (filteredOperation) { localValue := some "bad" } repeated == some (cleared repeated) &&
+    run profile (filteredOperation) { secondLocalValue := some "bad" } repeated ==
+      some (expected profile (first profile) repeated)) = true := by native_decide
+
+private def childFilteredOperation : String :=
+  "FirstFilledValue(Rows/Children*/Value Having [Rows/Children/Allow] > 0)"
+
+example : profiles.all (fun profile =>
+    run profile childFilteredOperation
+      { children := some [first profile, second profile, "bad"], childAllows := some ["1", "1", "bad"] } true ==
+      some (expected profile (first profile) true) &&
+    run profile childFilteredOperation
+      { children := some [first profile, second profile, first profile], childAllows := some ["1", "bad", "1"] } true ==
+      some (cleared true) &&
+    run profile childFilteredOperation { children := some ["", second profile, first profile] } true ==
+      some (expected profile (second profile) true) &&
+    run profile childFilteredOperation
+      { children := some ["", "", "", first profile], childAllows := some ["1", "1", "1", "1"] } true ==
+      some (cleared true) &&
+    run profile childFilteredOperation
+      { children := some [first profile, second profile, first profile, "bad"], childAllows := some ["1", "1", "1", "bad"] }
+      true == some (expected profile (first profile) true)) = true := by native_decide
+
+example : profiles.all (fun profile =>
+    let firstTarget := (expected profile (second profile) true).filter (·.pointer == "Form/Rows/Out")
+    let secondTarget := (expected profile (first profile) true).filter (·.pointer == "Form/Rows[2]/Out")
+    run profile "FirstFilledValue(Rows*/Local Having [Rows/Allow] > [$Rows/Allow],Fallback)"
+      { allows := ["1", "2"], fallback := some (first profile) } true ==
+      some (firstTarget ++ secondTarget)) = true := by native_decide
+
+private def clockFilteredOperation : String :=
+  "FirstFilledValue(Rows*/Local Having [Rows/Allow] > 0 And DifferenceInDays(Today, \"01.01.1970\") == 0)"
+
+example : profiles.all (fun profile => [false,true].all fun repeated =>
+    run profile clockFilteredOperation {} repeated == some (expected profile (first profile) repeated) &&
+    run profile clockFilteredOperation {} repeated false false { world with now := { epochMillis := 86400000 } } ==
+      some (cleared repeated) &&
+    run profile (filteredOperation) { allows := ["0", "0"] } repeated false false world true ==
+      some (expected profile (first profile) repeated)) = true := by native_decide
+
+example : exactFailure (filteredOperation) 17 [2] {} = true ∧
+    resolutionTag (resolveWithFailure ("FirstFilledValue(Rows/Value For Key," ++ filteredLocal ++ ")")
+      17 {} (some [2])) = "value" ∧
+    resolutionTag (resolveWithFailure (filteredOperation) 6 {} (some [2])) = "value" ∧
+    exactFailure (filteredOperation) 6 [1] {} = true ∧
+    resolutionTag (resolveWithFailure (filteredOperation) 6 { allows := ["0", "1"] } (some [1])) = "value" := by native_decide
+
+example : dependencies (filteredOperation "Fallback") = some [2,6,17] ∧
+    dependencies ("FirstFilledValue(Rows/Value For Key," ++ filteredLocal ++ ")") = some [3,4,5,6,17] ∧
+    dependencies clockFilteredOperation = some [6,17] := by native_decide
+
+example : profiles.all (fun profile =>
+    !admitted profile "FirstFilledValue(Rows*/Local Having FieldFilled(Out),Fallback)" &&
+    !admitted profile "FirstFilledValue(Rows*/Local Having FieldFilled(Rows/Out),Fallback)" true &&
+    !admitted profile "FirstFilledValue(Rows/Value For Key Having [Rows/Allow] > 0,Fallback)") = true := by native_decide
+
+example : profiles.all (fun profile =>
+    run profile "FirstFilledValue(Rows*/Body,Fallback)" {} == some (expected profile (first profile)) &&
+    run profile "FirstFilledValue(Rows*/Local,Fallback)" {} == some (expected profile (first profile))) = true := by native_decide
+
+example : profiles.all (fun profile =>
+    let parentValues := (expected profile (first profile) true).filter (·.pointer == "Form/Rows/Out") ++
+      (expected profile (second profile) true).filter (·.pointer == "Form/Rows[2]/Out")
+    run profile "FirstFilledValue(Children*/Value Having [Children/Allow] > 0)" {}
+      true false true == some parentValues &&
+    !admitted profile "FirstFilledValue(Rows*/Local Having [Rows/Allow] > [$Rows/Allow],Fallback)" false) = true := by native_decide
 
 end A12Kernel.Dm.SelectedFirstFilledLocks

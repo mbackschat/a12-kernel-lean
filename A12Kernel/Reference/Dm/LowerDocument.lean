@@ -41,7 +41,7 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
   | some .dateRange =>
       match source with
       | .list list =>
-          if (list.first :: list.rest).any (fun | .indexed _ | .keyed _ => true | _ => false) then
+          if (list.first :: list.rest).any (fun | .field .. => false | _ => true) then
             let operation ← check (checkDateRangeFirstFilledSourceComputation model group target.id source)
             return ← fixedStep (CheckedDocumentComputationStep.ofDateRangeFirstFilled? operation)
           let operation ←

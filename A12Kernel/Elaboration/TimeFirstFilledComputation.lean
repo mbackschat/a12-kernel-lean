@@ -88,41 +88,42 @@ theorem excludesTarget (operation : CheckedTimeFirstFilledComputation model) :
 /-- Scan the source at one target instance's environment, then render the selected clock. -/
 def evaluateAt (operation : CheckedTimeFirstFilledComputation model)
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (target : CellAddr) (environment : Env) :
+    (target : CellAddr) (environment : Env) (world : Option World := none) :
     Except FirstFilledSiteFault TimeFirstFilledComputationOutcome := do
-  let resolved ← (operation.shape.site.source.resolveAt input read environment).mapError .source
+  let resolved ← (operation.shape.site.source.resolveAt input read environment world).mapError .source
   pure { targetField := target
          outcome := operation.targetPolicy.evaluate (evaluateFirstFilledSource resolved .poison (fun resolved => evalTimeFirstFilledCells resolved.cells)) }
 
 /-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
 scope with a clear at each over-limit row. -/
 def executeWithRead (operation : CheckedTimeFirstFilledComputation model)
-    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (world : Option World := none) :
     Except FirstFilledSiteFault (List TimeFirstFilledComputationOutcome) :=
   operation.shape.site.instances input .targetRows .targetEnvironment
     (fun target _ => pure { targetField := target, outcome := .noValue })
-    (operation.evaluateAt input read)
+    (operation.evaluateAt (world := world) input read)
 
 def execute (operation : CheckedTimeFirstFilledComputation model)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model) (world : Option World := none) :
     Except FirstFilledSiteFault (List TimeFirstFilledComputationOutcome) :=
-  operation.executeWithRead input input.read
+  operation.executeWithRead input input.read world
 
 /-- Classify caller-view outcomes against immutable source target state through the shared Time
 result owner. -/
 def executeResultWithRead (operation : CheckedTimeFirstFilledComputation model)
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
-    (residualMessages : List ResidualMessage) :
+    (residualMessages : List ResidualMessage) (world : Option World := none) :
     Except FirstFilledSiteFault (TimeFirstFilledComputationRunView model ResidualMessage) := do
-  let outcomes ← operation.executeWithRead input read
+  let outcomes ← operation.executeWithRead input read world
   pure { operation
          time := TimeComputationRunView.fromOutcomesAt input.sourceTimeTargetStateAt residualMessages
            (outcomes.map fun entry => (entry.targetField, entry.outcome)) }
 
 def executeResult (operation : CheckedTimeFirstFilledComputation model)
-    (input : CheckedDocument model) (residualMessages : List ResidualMessage) :
+    (input : CheckedDocument model) (residualMessages : List ResidualMessage) (world : Option World := none) :
     Except FirstFilledSiteFault (TimeFirstFilledComputationRunView model ResidualMessage) :=
-  operation.executeResultWithRead input input.read residualMessages
+  operation.executeResultWithRead input input.read residualMessages world
 
 end CheckedTimeFirstFilledComputation
 
@@ -151,10 +152,10 @@ def formalInputPlan (operation : CheckedTimeFirstFilledComputation model) :
 /-- Prepare the selected sources once, retain every eager finding, and run lazily through the
 prepared read. -/
 def executeResultWithFormalInputs (operation : CheckedTimeFirstFilledComputation model)
-    (input : CheckedDocument model) :
+    (input : CheckedDocument model) (world : Option World := none) :
     Except TimeFirstFilledCheckedResultFault
       (TimeFirstFilledComputationRunView model ComputationFormalInputFinding) :=
-  runWithFormalInputs operation.formalInputPlan input (operation.executeResultWithRead input)
+  runWithFormalInputs operation.formalInputPlan input (operation.executeResultWithRead (world := world) input)
 
 end CheckedTimeFirstFilledComputation
 
