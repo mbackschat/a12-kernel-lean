@@ -17,15 +17,7 @@ private def readPartialStringSource (document : CheckedDocument model)
     pure ((← read row field).map fun cell => CellObservation.value (row, cell))
   match source with
   | .inl field => if isRelevant field then readAt (scope.withGlobals model) outer field else pure none
-  | .inr selected =>
-      let view ← document.applyPartialGeneratedPreliminaryForScope scope |>.mapError .indexPreliminary
-      match ← selected.selectPartial view outer read with
-      | none => pure none
-      | some .empty => pure (if view.relevance.coversValueListExtent model selected.targetDeclaration.path
-          selected.indexDeclaration.repeatableScope.dropLast [selected.group.level] outer then some .empty else none)
-      | some (.unknown cause) => pure (some (.unknown cause))
-      | some (.poison cause) => pure (some (.poison cause))
-      | some (.value row) => readAt view.relevance row selected.targetDeclaration.id
+  | .inr selected => selected.readPartialDocumentCell document scope outer read
 
 /-- The validation fold reaches later range faults even after an unavailable read (spec/10 §12).
 The temporary empty operand is private to the fold; unavailable results never escape as omission. -/

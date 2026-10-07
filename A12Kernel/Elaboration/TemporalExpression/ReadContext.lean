@@ -12,10 +12,15 @@ structure TemporalPartialReadContext (model : FlatModel) where
 
 namespace TemporalPartialReadContext
 
+/-- Public read contexts accept caller scope; global fields stay relevant before every consumer's
+cell or extent gate, just as in the common partial preliminary (spec/10 §5). -/
+def effectiveScope (context : TemporalPartialReadContext model) : ValidationRelevanceScope :=
+  context.scope.withGlobals model
+
 def readCell (context : TemporalPartialReadContext model) (row : Env) (field : FieldId) :
     Except ScalarTemporalEvaluationFault (Option CheckedCell) := do
   discard <| context.document.cellAddress row field |>.mapError .addressing
-  if !context.scope.coversField model field row then return none
+  if !context.effectiveScope.coversField model field row then return none
   context.read row field |>.mapError .addressing
 
 def storedText (context : TemporalPartialReadContext model) (row : Env) (field : FieldId)
@@ -28,18 +33,13 @@ an absent selection is empty only under the selector's wildcard target-extent ju
 def selectedCell (context : TemporalPartialReadContext model)
     (source : CheckedSemanticIndexSource model) (outer : Env) :
     Except ScalarTemporalEvaluationFault (Option (CellObservation (CheckedCell × Option String))) := do
-  let view ← context.document.applyPartialGeneratedPreliminaryForScope context.scope
-    |>.mapError (ScalarTemporalEvaluationFault.addressing ∘ CheckedAddressingError.indexPreliminary)
-  match ← source.selectPartial view outer context.read |>.mapError .addressing with
+  match ← source.readPartialDocumentCell context.document context.scope outer context.read |>.mapError .addressing with
   | none => pure none
-  | some .empty => pure (if context.scope.coversValueListExtent model source.targetDeclaration.path
-      source.indexDeclaration.repeatableScope.dropLast [source.group.level] outer then some .empty else none)
+  | some .empty => pure (some .empty)
   | some (.unknown cause) => pure (some (.unknown cause))
   | some (.poison cause) => pure (some (.poison cause))
-  | some (.value row) =>
-      match ← context.readCell row source.targetDeclaration.id with
-      | none => pure none
-      | some cell => pure (some (.value (cell, ← context.storedText row source.targetDeclaration.id cell)))
+  | some (.value (row, cell)) =>
+      pure (some (.value (cell, ← context.storedText row source.targetDeclaration.id cell)))
 
 end TemporalPartialReadContext
 end A12Kernel

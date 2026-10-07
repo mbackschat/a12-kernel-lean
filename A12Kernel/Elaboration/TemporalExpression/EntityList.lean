@@ -143,7 +143,7 @@ private def readPartialOperand (partialRead : TemporalPartialReadContext model) 
     ResolvedFieldEntityOperand model → Except ScalarTemporalEvaluationFault
       (ResolvedTemporalAggregateSide ScalarTemporalValue) := fun operand => do
   let document := partialRead.document
-  let scope := partialRead.scope
+  let scope := partialRead.effectiveScope
   let ordinary := fun (declarations : List FlatFieldDecl) (bound : Nat) => do
     if !declarations.all (fun declaration => scope.coversAggregateExtent model declaration.path
         (declaration.repeatableScope.take bound) (declaration.repeatableScope.drop bound) outer) then

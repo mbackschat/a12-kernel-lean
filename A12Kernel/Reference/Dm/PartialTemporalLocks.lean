@@ -345,4 +345,36 @@ example : ["MinValue", "MaxValue"].all (fun operator =>
     mixedPrecision operator (coverage [fieldRelevant "Key", rowField "Id", fieldRelevant "Low"]) ==
       some (.fired .value, .unknown)) = true := by native_decide
 
+private def globalSelected (text : String) (scenario : Scenario := {})
+    (globalField : Bool := true) : Option Verdict := do
+  let fixture : FlatModel := { model with fields := model.fields.map fun field =>
+    { field with isGlobal := globalField && [2,6,8,9].contains field.id } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler fixture).toOption
+  let raw ← (readDocument { flat := fixture, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (input scenario)).toOption
+  let document ← (checkDocument prepared "en_US" raw.data).toOption
+  let parsed ← (parseText .english text).toOption
+  let condition ← (lowerCondition fixture ["Form"] false parsed.body (world := world)).toOption
+  let .leaf leaf := condition.core | none
+  let scope := coverage [fieldRelevant "Key", fieldRelevant "Low", rowField "Id"]
+  let context : AddressedValidationEvaluationContext fixture := {
+    scalar := { fields := document.flatContext.withWorld world, groups := GroupPresenceContext.unavailable },
+    outer := [], input := .checked document }
+  (← leaf.evalAddressedPartial? context scope (fun field => scope.coversField fixture field [])
+    (fun _ _ => .error (.checkedDocumentRequired [])) none).toOption
+
+example : globalSelected "[Rows/D For Key] == \"01.02.2024\"" = some (.fired .value) ∧
+    globalSelected "[Rows/D For Key] == \"01.02.2024\"" {} false = some .unknown := by native_decide
+
+example : ["Time(Rows/N For Key) == \"03:00:00\"", "Valid(Date(Rows/S For Key,\"2\",\"2024\"))",
+    "AddDays(Rows/D For Key,[Amount]) == \"02.02.2024\""].all (fun text =>
+      globalSelected text == some (.fired .value) && globalSelected text {} false == some .unknown) = true := by native_decide
+
+example : globalSelected "Invalid(Date(Rows/S For Key,\"2\",\"2024\"))" { key := "Z" } =
+    some (.fired .omission) := by native_decide
+
+example : ["MinValue", "MaxValue"].all (fun operator =>
+    globalSelected (operator ++ "(Rows/D For Key,Low) == \"01.03.2024\"") { key := "Z" } ==
+      some (.fired .omission)) = true := by native_decide
+
 end A12Kernel.Dm.PartialTemporalLocks

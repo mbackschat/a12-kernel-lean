@@ -44,10 +44,10 @@ def CheckedSemanticIndexSource.selectPartial (source : CheckedSemanticIndexSourc
 
 /-- A selected field is relevant at its resolved coordinate; missing selection uses the separate
 wildcard-extent judgment and never fabricates a physical row (spec/10 §5). -/
-def CheckedSemanticIndexSource.observePartialDocument (source : CheckedSemanticIndexSource model)
+def CheckedSemanticIndexSource.readPartialDocumentCell (source : CheckedSemanticIndexSource model)
     (document : CheckedDocument model) (scope : ValidationRelevanceScope) (outer : Env)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
-    Except CheckedAddressingError (Option CellObservation) := do
+    Except CheckedAddressingError (Option (CellObservation (Env × CheckedCell))) := do
   let view ← document.applyPartialGeneratedPreliminaryForScope scope |>.mapError .indexPreliminary
   match ← source.selectPartial view outer read with
   | none => pure none
@@ -60,7 +60,20 @@ def CheckedSemanticIndexSource.observePartialDocument (source : CheckedSemanticI
   | some (.poison cause) => pure (some (.poison cause))
   | some (.value environment) =>
       if !view.relevance.coversField model source.targetDeclaration.id environment then return none
-      pure ((← read environment source.targetDeclaration.id).map (observeCell .validation))
+      discard <| document.cellAddress environment source.targetDeclaration.id
+      pure ((← read environment source.targetDeclaration.id).map fun cell => .value (environment, cell))
+
+/-- Classify the shared selected-cell read only after relevance and address selection are settled. -/
+def CheckedSemanticIndexSource.observePartialDocument (source : CheckedSemanticIndexSource model)
+    (document : CheckedDocument model) (scope : ValidationRelevanceScope) (outer : Env)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    Except CheckedAddressingError (Option CellObservation) := do
+  match ← source.readPartialDocumentCell document scope outer read with
+  | none => pure none
+  | some .empty => pure (some .empty)
+  | some (.unknown cause) => pure (some (.unknown cause))
+  | some (.poison cause) => pure (some (.poison cause))
+  | some (.value (_, cell)) => pure (some (observeCell .validation cell))
 
 /-- The available concrete extent and its completeness are independent: partial list quantifiers
 can use a witness even when no identifier covers every reopened row (spec/10 §5). -/
