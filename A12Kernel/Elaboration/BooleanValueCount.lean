@@ -52,7 +52,8 @@ structure CheckedBooleanValueCountStarSource (model : FlatModel)
     (expected : Bool) where
   source : CheckedStarFieldPath model
   declaringGroup : GroupPath
-  filter : Option (CheckedStarHaving model source declaringGroup)
+  bindingGroup : GroupPath := declaringGroup
+  filter : Option (CheckedStarHaving model source bindingGroup)
   kindAllowed :
     booleanValueCountKindAllowed expected source.declaration.policy.kind = true
 
@@ -224,7 +225,7 @@ private def certifyBooleanValueCountGroup (model : FlatModel)
         throw .incoherentCore
 
 private def certifyBooleanValueCountOperand (model : FlatModel)
-    (declaringGroup : GroupPath) (expected : Bool) :
+    (declaringGroup bindingGroup : GroupPath) (expected : Bool) :
     ResolvedFieldEntityOperand model →
       Except BooleanValueCountElabError
         (CheckedBooleanValueCountOperand model expected)
@@ -248,6 +249,7 @@ private def certifyBooleanValueCountOperand (model : FlatModel)
         pure (.star {
           source
           declaringGroup
+          bindingGroup
           filter := none
           kindAllowed := hKind })
       else
@@ -258,11 +260,12 @@ private def certifyBooleanValueCountOperand (model : FlatModel)
           booleanValueCountKindAllowed expected source.declaration.policy.kind =
             true then do
         let filter ←
-          elaborateStarHavingCore model declaringGroup source having
+          elaborateStarHavingCore model declaringGroup source having bindingGroup
             |>.mapError .having
         pure (.star {
           source
           declaringGroup
+          bindingGroup
           filter := some filter
           kindAllowed := hKind })
       else
@@ -276,14 +279,14 @@ private def certifyBooleanValueCountOperand (model : FlatModel)
       certifyBooleanValueCountGroup model expected (.starredPresence source)
 
 private def certifyBooleanValueCountOperands (model : FlatModel)
-    (declaringGroup : GroupPath) (expected : Bool) :
+    (declaringGroup bindingGroup : GroupPath) (expected : Bool) :
     List (ResolvedFieldEntityOperand model) →
       Except BooleanValueCountElabError
         (List (CheckedBooleanValueCountOperand model expected))
   | [] => pure []
   | operand :: remaining => do
-      pure ((← certifyBooleanValueCountOperand model declaringGroup expected operand) ::
-        (← certifyBooleanValueCountOperands model declaringGroup expected remaining))
+      pure ((← certifyBooleanValueCountOperand model declaringGroup bindingGroup expected operand) ::
+        (← certifyBooleanValueCountOperands model declaringGroup bindingGroup expected remaining))
 
 /-- A model-owned Boolean/Confirm `NumberOfValueInFields` source retaining direct/star/group order and optional per-star filters. -/
 structure CheckedBooleanValueCountSource (model : FlatModel) where
@@ -394,9 +397,9 @@ def elaborateBooleanValueCountSource (model : FlatModel)
       (writtenGroup := writtenGroup)
     |>.mapError .shape
   let first ←
-    certifyBooleanValueCountOperand model declaringGroup expected shape.first
+    certifyBooleanValueCountOperand model declaringGroup (bindingGroup?.getD declaringGroup) expected shape.first
   let rest ←
-    certifyBooleanValueCountOperands model declaringGroup expected shape.rest
+    certifyBooleanValueCountOperands model declaringGroup (bindingGroup?.getD declaringGroup) expected shape.rest
   if hMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true then
     match hDuplicate :
         firstDuplicateDirectBooleanValueCountField? (first :: rest) with
@@ -740,7 +743,7 @@ def resolvedCheckedValidationSide
   let core ← match checked with
     | .selected source => return ← source.sideIn .validation document outer
     | .field source =>
-        document.resolveCheckedDirectEntityOperandCore source.declaration.id
+        document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
     | .star source =>
         source.source.resolveCheckedValidationEntityOperandCore (world := world) document outer
           (source.filter.map (·.condition))

@@ -88,6 +88,8 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 <a id="gap-sg13"></a>
 ### SG13 — group-list and group-count completion
 
+- `api-audit`: The token partial-list reader in [TokenEntityList](../../A12Kernel/Elaboration/TokenEntityList.lean) uses the root environment for direct-operand relevance and cell reads, unlike its Number counterpart. Both subject and member paths in [TokenEntityValueList](../../A12Kernel/Elaboration/TokenEntityValueList.lean) call it. Reproduce a bound-row partial membership with disjoint row relevance before changing this separate route; filtered partial rules remain skipped.
+
 - `state`: open
 - `missing`: every group-list predicate and filled-group count must reuse the resolved group product or structural terminal-row count while preserving partial relevance, wildcard expansion, filter order, computation poison, and decisiveness.
 - `baseline`: [resolved validation group presence](../IMPLEMENTATION-MAP.md#resolved-validation-group-presence), [checked group-star terminals](../IMPLEMENTATION-MAP.md#checked-group-star-terminals), and the SG5 group capability records own the implemented subsets.
@@ -135,7 +137,6 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 ### SG17 — `Having`-filter leaf and connective completion
 
 - `raw-filter-effects`: Raw-document validation adapters in [FirstFilledValue](../../A12Kernel/Elaboration/FirstFilledValue.lean), [TokenFirstFilledValue](../../A12Kernel/Elaboration/TokenFirstFilledValue.lean) and [Correlation](../../A12Kernel/Elaboration/Correlation.lean) still call the pure selector, which cannot propagate an unresolved DateTime label as VALUE. Inventory their current consumers and migrate the failure-capable routes to the existing addressed mechanism, or explicitly refuse unsupported effects. Do not infer conformance from their UNKNOWN projection or apply pure commutativity laws to effectful validation. The checked addressed reader route has the failure channel; raw-adapter runtime reachability remains to be established.
-- `boolean-filter-binding`: [Boolean value-count star certificates](../../A12Kernel/Elaboration/BooleanValueCount.lean) type the filter against `declaringGroup`; the list reader now independently accepts a supplied parent binding. A distinct declaration/error or computation-target group cannot simply be forwarded into that certificate. Reproduce a filtered case with different groups and settle its oracle before changing the certificate; the selected/direct parent-binding fix leaves this existing boundary unchanged.
 
 - `state`: open
 - `missing`: the filter's condition is the ordinary condition production, so its admitted leaf and connective domain is wider than any one consumer needs; each admitted form must reach the shared filter tree and its two arms without a filter-local second account of empty, unavailable, or connective behavior.
