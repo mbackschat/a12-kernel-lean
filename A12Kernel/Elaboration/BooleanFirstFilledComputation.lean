@@ -25,7 +25,7 @@ structure CheckedBooleanFirstFilledComputation (model : FlatModel) where
   site : CheckedFirstFilledSite model
   targetBoolean : site.target.policy.kind = .boolean
   sourceBoolean : site.source.declarations.all (·.policy.kind == .boolean) = true
-  excludesTarget : site.referencesField site.targetField = false
+  excludesTarget : site.referencesWith site.targetField (·.forbidsTarget site.targetField) = false
 
 /-- Check Boolean payload agreement after the shared target-bound source admission, retaining
 selection dependencies separately from the Boolean declarations (`spec/08` §4). -/
@@ -42,7 +42,7 @@ def checkBooleanFirstFilledComputation
   let site ← (checkFirstFilledSite model declaringGroup targetField authored).mapError .site
   if hTargetKind : site.target.policy.kind = .boolean then
     if hSourceKind : site.source.declarations.all (·.policy.kind == .boolean) = true then
-      if hExcludes : site.referencesField site.targetField = false then
+      if hExcludes : site.referencesWith site.targetField (·.forbidsTarget site.targetField) = false then
         pure { site, targetBoolean := hTargetKind, sourceBoolean := hSourceKind
                excludesTarget := hExcludes }
       else throw (.targetSelfReference site.target.path)
@@ -120,8 +120,12 @@ def targetField (operation : CheckedBooleanFirstFilledComputation model) : Field
 def target (operation : CheckedBooleanFirstFilledComputation model) : FlatFieldDecl :=
   operation.site.target
 
+def referencesWith (operation : CheckedBooleanFirstFilledComputation model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  operation.site.referencesWith field filterReads
+
 def referencesField (operation : CheckedBooleanFirstFilledComputation model) : FieldId → Bool :=
-  operation.site.referencesField
+  fun field => operation.referencesWith field (·.referencesField field)
 
 /-- Scan the source at one target instance's environment. Structural addressing failure stays outside
 the semantic no-value/poison result. -/

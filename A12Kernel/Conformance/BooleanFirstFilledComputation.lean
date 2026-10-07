@@ -73,6 +73,59 @@ private def checkedAt? (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :=
   (checkBooleanFirstFilledComputation model declaringGroup targetField (.star authored)).toOption
 
+private def dependencyModel : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == target.id then { field with groupPath := ["Review", "Target"] } else field }
+
+private def candidateFilled : SurfaceCorrelatedHaving :=
+  .presence .filled {
+    origin := .inner
+    field := { base := .absolute, groups := ["Review", "Rows"], field := "Approved" } }
+
+private def containingGroup : SurfaceGroupReference :=
+  .path { base := .absolute, groups := ["Review", "Target"] }
+
+private def filtered (guard : SurfaceCorrelatedHaving) (directTarget : Bool := false) : SurfaceFirstFilledSource :=
+  .list {
+    first := .starHaving (star "Approved") (.and candidateFilled guard)
+    rest := if directTarget then [.field { base := .absolute, groups := ["Review", "Target"], field := "FirstApproved" }] else [] }
+
+private def positiveGroup : SurfaceCorrelatedHaving := .groupPresence .filled .inner containingGroup
+private def negativeGroup : SurfaceCorrelatedHaving := .groupPresence .notFilled .inner containingGroup
+private def ordinaryGroup : SurfaceCorrelatedHaving := .groupFill .atLeastOneGroupFilled (.inner, containingGroup) []
+private def directTarget : SurfaceCorrelatedHaving := .presence .filled {
+  origin := .inner
+  field := { base := .absolute, groups := ["Review", "Target"], field := "FirstApproved" } }
+
+example : [positiveGroup, negativeGroup, ordinaryGroup, directTarget].all (fun guard =>
+    (checkFirstFilledSite dependencyModel ["Review"] target.id (filtered guard)).isOk) = true := by native_decide
+
+example : (checkBooleanFirstFilledComputation dependencyModel ["Review"] target.id (filtered positiveGroup)).isOk = true ∧
+    [filtered negativeGroup, filtered ordinaryGroup, filtered directTarget, filtered positiveGroup true].all
+      (fun authored => match checkBooleanFirstFilledComputation dependencyModel ["Review"] target.id authored with
+        | .error (.targetSelfReference path) => path == ["Review", "Target", "FirstApproved"]
+        | _ => false) = true := by native_decide
+
+private def dependencyQueries? (guard : SurfaceCorrelatedHaving) (direct : Bool := false) :
+    Option (Bool × Bool × Bool × Bool × Bool) := do
+  let site ← (checkFirstFilledSite dependencyModel ["Review"] target.id (filtered guard direct)).toOption
+  pure (site.referencesField target.id,
+    site.referencesWith target.id (·.forbidsTarget target.id),
+    site.referencesWith target.id (fun having => having.requiresProducer target.id target.id (fun _ => true)),
+    site.referencesWith target.id (fun _ => false), site.referencesWith source.id (fun _ => false))
+
+example : dependencyQueries? positiveGroup = some (true, false, false, false, true) ∧
+    [negativeGroup, ordinaryGroup, directTarget].map dependencyQueries? =
+      List.replicate 3 (some (true, true, true, false, true)) ∧
+    dependencyQueries? positiveGroup true = some (true, true, true, true, true) := by native_decide
+
+example : (do
+    let operation ← (checkBooleanFirstFilledComputation dependencyModel ["Review"] target.id (filtered positiveGroup)).toOption
+    pure (operation.referencesField target.id,
+      operation.referencesWith target.id (·.forbidsTarget target.id),
+      operation.referencesWith target.id (fun having => having.requiresProducer target.id target.id (fun _ => false)),
+      operation.referencesWith source.id (fun having => having.requiresProducer target.id source.id (fun _ => true)))) =
+      some (true, false, false, true) := by native_decide
+
 private def prepared :
     PreparedFlatStringContext model builtinStringPatternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }

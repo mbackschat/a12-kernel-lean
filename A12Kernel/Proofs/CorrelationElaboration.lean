@@ -117,7 +117,8 @@ theorem correlatedHaving_wellFormed_equalityScalesAgree
             NumericComparisonOf.havingAdmitted, NumericComparisonOf.admittedWith,
             Bool.and_eq_true] at wellFormed
           exact wellFormed.2.2
-      | simpleComparison | compareStringLiteral | literalMembership | fieldMembership | fieldFill | presence =>
+      | simpleComparison | compareStringLiteral | literalMembership | fieldMembership | fieldFill | presence
+          | groupPresence | groupFill =>
           -- Vacuous: the legacy one-group predicate refuses these leaves outright, so each
           -- branch's hypothesis is `false = true`. The scale law itself admits them.
           simp [CorrelatedHaving.wellFormedForSingleGroup, ConditionTree.allLeaves,

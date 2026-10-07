@@ -619,8 +619,12 @@ def boundFieldIds (expression : CheckedScalarTemporalExpression model) : List Fi
 
 def requiresAddressed (expression : CheckedScalarTemporalExpression model) : Bool := expression.core.requiresAddressed
 
+def referencesWith (expression : CheckedScalarTemporalExpression model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  expression.core.referencesWith field filterReads
+
 def referencesField (expression : CheckedScalarTemporalExpression model) (field : FieldId) : Bool :=
-  expression.core.referencesField field
+  expression.referencesWith field (·.referencesField field)
 
 /-- Model-zone literal resolution belongs to execution, retaining value failure separately from
 missingness and operand poison (the DateTime constant zone-split checkpoint, spec/09). -/
@@ -644,8 +648,12 @@ def bindingScopes (comparison : CheckedScalarTemporalComparison model) : List (L
 def declarations (comparison : CheckedScalarTemporalComparison model) : List FlatFieldDecl :=
   comparison.fieldIds.filterMap fun field => (model.lookupUniqueId field).toOption
 
+def referencesWith (comparison : CheckedScalarTemporalComparison model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  comparison.left.referencesWith field filterReads || comparison.right.referencesWith field filterReads
+
 def referencesField (comparison : CheckedScalarTemporalComparison model) (field : FieldId) : Bool :=
-  comparison.fieldIds.contains field
+  comparison.referencesWith field (·.referencesField field)
 
 /-- Mixed Date/DateTime ordering uses the Date's retained instant; same-family comparison
 keeps its existing identity domain (KF386 and the comparison-guard grid, 2026-10-04). -/

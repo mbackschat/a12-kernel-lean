@@ -29,11 +29,13 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
         let resolved ← (source.source.path.resolveInCapacity addressed.document context.row).mapError
           (NumericComputationFault.guardBinding ∘ ComputationConditionError.fieldFill ∘ ComputationFillError.addressing)
         let result ← (filter.condition.scanComputationResolving
-          { world := context.world
+          (({
+            world := context.world
             read := fun row field => pure ((filterRead?.getD addressed.read) row field)
             unsupportedDateCalendar := .addressing .unsupportedDateCalendar
             temporalValueFailure := .addressing .temporalValueFailure
-            bindingError := fun error => ComputationFillError.addressing error.toStarAddressingError }
+            groupUnavailable := ComputationFillError.addressing ∘ StarAddressingError.unsupportedGroupOperand
+            bindingError := fun error => ComputationFillError.addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationFillError).withComputationGroups addressed.document)
           context.row (fun count row => pure (match observeCell .computation
               (addressed.read row source.source.declaration.id) with
             | .value _ => Sum.inl (count + 1)

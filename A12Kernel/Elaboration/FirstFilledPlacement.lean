@@ -250,8 +250,12 @@ inductive FirstFilledSiteFault where
 
 namespace CheckedFirstFilledSite
 
+def referencesWith (site : CheckedFirstFilledSite model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  site.source.referencesWith field filterReads
+
 def referencesField (site : CheckedFirstFilledSite model) (field : FieldId) : Bool :=
-  site.source.referencesField field
+  site.referencesWith field (·.referencesField field)
 
 /-- Run `produce` at every target instance through the shared instance runner, each at its exact
 target address. -/

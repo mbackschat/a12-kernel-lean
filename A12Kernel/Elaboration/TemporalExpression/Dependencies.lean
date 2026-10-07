@@ -128,8 +128,14 @@ def requiresAddressed (expression : ScalarTemporalExpression model) : Bool :=
   (scalarTemporalDependencies false (fun _ => []) (fun source =>
     [source.shape.operands.any fun | .field .. => false | _ => true]) (fun _ => [true]) expression).any id
 
+def referencesWith (expression : ScalarTemporalExpression model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  (expression.dependenciesWith (fun source => [source == field])
+    (fun source => [source.referencesWith field filterReads])
+    (fun source => [source.referencesField field])).any id
+
 def referencesField (expression : ScalarTemporalExpression model) (field : FieldId) : Bool :=
-  expression.fieldIds.contains field
+  expression.referencesWith field (·.referencesField field)
 
 end ScalarTemporalExpression
 

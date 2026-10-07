@@ -306,11 +306,11 @@ theorem checkedNumericComputationOperation_declaringGroup_valid
     GroupPath.isValid checked.declaringGroup = true :=
   checked.declaringGroupValid
 
-/-- A checked operation contains no direct reference to its own target at any depth of the shared authored tree. -/
-theorem checkedNumericComputationOperation_noTargetReference
+/-- A checked operation contains no forbidden target reference at any depth of the shared authored tree; positive conditional group membership remains in its complete inventory (spec/09 §5). -/
+theorem checkedNumericComputationOperation_noForbiddenTargetReference
     (checked : CheckedNumericComputationOperation model) :
     checked.core.expression.anyAtom
-      (CheckedNumericComputationAtom.references model
+      (CheckedNumericComputationAtom.forbidsTarget model
         checked.core.target.id) = false := by
   have admitted := checked.wellFormed
   simp only [NumericComputationOperation.WellFormed,

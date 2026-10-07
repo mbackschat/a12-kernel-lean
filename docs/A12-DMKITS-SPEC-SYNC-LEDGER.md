@@ -35,6 +35,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-07-05"></a>
+### SPEC-2026-10-07-05 — capture does not exempt strict group-list overlap
+
+- `status`: pending
+- `canonical`: [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
+- `delta`: Unindexed group-list filters reject strict ancestor overlap across candidate/captured origins; direct duplicates still distinguish those origins.
+- `basis`: Kernel 30.8.1 at `cb66e51fa7ab90b650698f861bf670754e2e1e66`: `CheckKontextListenBedingungImpl.check` uses `CheckEntityListenUtils.getRefList` and `checkParamsReferencedOnlyOnce`; indirect ancestry ignores `isOuter`, while `EntityRef.equals` includes it. These classes live under `kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/` in the [kernel checkout](../../a12-kernel/).
+- `evidence`: Source-backed, runtime calibration pending. [Reader and reconstructed-certificate guards](../A12Kernel/Reference/Dm/HavingGroupLocks.lean) distinguish group/field and group/group ancestry, reversed capture, same-origin duplicates and opposite-origin identical paths.
+- `acceptance`: Reconcile the distinct duplicate relations without generalizing to indexed/category-qualified operands. Introducing revision is the first commit containing this entry ID; no peer disposition yet.
+
 <a id="spec-2026-10-07-04"></a>
 ### SPEC-2026-10-07-04 — reached temporal literal failures escape filter selection
 

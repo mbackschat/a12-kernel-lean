@@ -19,6 +19,7 @@ private def nestedItems : RepeatableLevel := 20
 private inductive ResolvingProbeError where
   | unsupportedDateCalendar
   | temporalValueFailure
+  | groupUnavailable (path : GroupPath)
   | read (field : FieldId)
   | binding (cause : EnvBindingError)
   deriving Repr, DecidableEq
@@ -32,6 +33,7 @@ private def resolvingContext :
     if field == marker.id then .error (.read field) else .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  groupUnavailable := .groupUnavailable
   bindingError := .binding
 
 private def resolvingFrame : CorrelationFrame :=
@@ -77,6 +79,7 @@ private def orderedResolvingContext :
       .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  groupUnavailable := .groupUnavailable
   bindingError := .binding
 
 private def trueResolvingHaving : CorrelatedHaving :=
@@ -177,6 +180,7 @@ private def absentAtSecondContext :
       .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  groupUnavailable := .groupUnavailable
   bindingError := .binding
 
 private def markerFilledHaving : CorrelatedHaving :=
@@ -205,6 +209,7 @@ private def allPresentContext :
   read _ _ := .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  groupUnavailable := .groupUnavailable
   bindingError := .binding
 
 /-- With every operand present, candidate 2 is kept and the identical target failure surfaces. -/
@@ -233,6 +238,7 @@ private def markerPoisonedContext :
     if field == marker.id then .ok poisonedResolvingCell else .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  groupUnavailable := .groupUnavailable
   bindingError := .binding
 
 private def poisonedThenFilled : CorrelatedHaving :=
@@ -283,6 +289,7 @@ private def poisonedAndEmptyContext :
     else .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  groupUnavailable := .groupUnavailable
   bindingError := .binding
 
 private def falseThenPoisoned : CorrelatedHaving :=
@@ -336,6 +343,7 @@ private def outerOnlyContext :
       .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  groupUnavailable := .groupUnavailable
   bindingError := .binding
 
 private def presenceAt (origin : HavingOrigin) : CorrelatedHaving :=
@@ -372,6 +380,7 @@ private def textOnOuterContext :
       .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  groupUnavailable := .groupUnavailable
   bindingError := .binding
 
 example :
@@ -405,6 +414,7 @@ private def stringContext (cell : CheckedCell) :
   read _ field := if field == marker.id then .ok cell else .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
+  groupUnavailable := .groupUnavailable
   bindingError := .binding
 
 example :

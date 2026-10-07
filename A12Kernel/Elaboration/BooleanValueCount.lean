@@ -698,13 +698,16 @@ def resolvedComputationSide
           pure (.inl (resolved.toResolvedSide
             (starCellAt source .computation starRead)))
       | some having =>
-          let filterContext : CorrelationContext := { read := filterRead, world }
+          let filterContext := ({ read := filterRead, world } : CorrelationContext).withComputationGroups document
           let consume := fun cells environment =>
             match starCellAt source .computation starRead environment with
             | .unknown cause => .inr cause
             | cell => .inl (cell :: cells)
           match ← (having.condition.scanComputation filterContext outer consume
-              resolved.environments []).mapError (fun | .calendarUnavailable => .unsupportedDateCalendar | .valueFailure => .temporalValueFailure) with
+              resolved.environments []).mapError (fun
+                | .calendarUnavailable => .unsupportedDateCalendar
+                | .valueFailure => .temporalValueFailure
+                | .groupUnavailable path => .unsupportedGroupOperand path) with
           | .exhausted reversed =>
               pure (.inl {
                 cells := reversed.reverse

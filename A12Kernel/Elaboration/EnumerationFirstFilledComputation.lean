@@ -107,7 +107,7 @@ def projections : CheckedEnumerationFirstFilledOperand model scope →
   | .star source => [source.operand]
   | .selected _ projections _ => projections
 
-/-- Complete scheduling dependencies include index/key reads, even when the value scan stops early. Selected slots inventory the model declarations; a filtered star keeps its source before filter-only fields. -/
+/-- Complete operand inventories include index/key reads, even when the value scan stops early. Selected slots inventory the model declarations; a filtered star keeps its source before filter-only fields. -/
 def fieldDependencies : CheckedEnumerationFirstFilledOperand model scope →
     List FieldId
   | .field _ source _ _ => [source.field.id]
@@ -116,9 +116,17 @@ def fieldDependencies : CheckedEnumerationFirstFilledOperand model scope →
       source.source.declaration.id ::
         (source.filter.map (fun having => having.condition.fieldIds)).getD []
 
+def referencesWith (operand : CheckedEnumerationFirstFilledOperand model scope)
+    (field : FieldId) (filterReads : CorrelatedHaving → Bool) : Bool :=
+  match operand with
+  | .field _ source _ _ => source.field.id == field
+  | .selected .. => operand.fieldDependencies.contains field
+  | .star source => source.source.declaration.id == field ||
+      source.filter.any (fun having => filterReads having.condition)
+
 def referencesField (operand : CheckedEnumerationFirstFilledOperand model scope)
     (field : FieldId) : Bool :=
-  operand.fieldDependencies.contains field
+  operand.referencesWith field (·.referencesField field)
 
 private def isStoredDirect : CheckedEnumerationFirstFilledOperand model scope → Bool
   | .field _ source _ _ =>
@@ -184,9 +192,13 @@ def fieldDependencies (source : CheckedEnumerationFirstFilledSource model scope)
     List FieldId :=
   (source.operands.flatMap (fun operand => operand.fieldDependencies)).eraseDups
 
+def referencesWith (source : CheckedEnumerationFirstFilledSource model scope)
+    (field : FieldId) (filterReads : CorrelatedHaving → Bool) : Bool :=
+  source.operands.any (·.referencesWith field filterReads)
+
 def referencesField (source : CheckedEnumerationFirstFilledSource model scope)
     (field : FieldId) : Bool :=
-  source.fieldDependencies.contains field
+  source.referencesWith field (·.referencesField field)
 
 def allowedFor (source : CheckedEnumerationFirstFilledSource model scope)
     (target : CheckedEnumerationProjection) : Bool :=
@@ -362,7 +374,7 @@ structure CheckedEnumerationFirstFilledComputationOperation
   target : CheckedEnumerationComputationTarget model
   source : CheckedEnumerationFirstFilledSource model []
   sourceAllowed : source.allowedFor target.projection = true
-  targetNotReferenced : source.referencesField target.field = false
+  targetNotReferenced : source.referencesWith target.field (·.forbidsTarget target.field) = false
 
 /-- Check shape and exact Enumeration/category compatibility before runtime. -/
 def elaborateEnumerationFirstFilledComputation
@@ -376,7 +388,7 @@ def elaborateEnumerationFirstFilledComputation
   -- ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)).
   let source ← elaborateEnumerationFirstFilledSource model declaringGroup [] authored
     target.path.dropLast
-  if hReference : source.referencesField target.field = true then
+  if hReference : source.referencesWith target.field (·.forbidsTarget target.field) = true then
     match source.measuredTargetReadMode? target.field target.projection with
     | some .plain => throw (.targetSelfReferenceAtPlainRead target.field)
     | some .projected => throw (.targetSelfReferenceAtProjectedRead target.field)
@@ -387,7 +399,7 @@ def elaborateEnumerationFirstFilledComputation
       source
       sourceAllowed := hAllowed
       targetNotReferenced := by
-        cases hValue : source.referencesField target.field with
+        cases hValue : source.referencesWith target.field (·.forbidsTarget target.field) with
         | false => rfl
         | true => exact False.elim (hReference hValue)
     }
@@ -409,7 +421,7 @@ private def scanEnumerationFirstFilledStar
   | .inr result => .inr result.asToken
 
 /-- Consume a filtered star through the computation iterator's one-kept-candidate lookahead. Filter poison is terminal; target classification remains stop-at-first. -/
-private def scanFilteredEnumerationFirstFilledStar
+private def scanFilteredEnumerationFirstFilledStar (document : Document)
     (source : CheckedStarEnumerationSource model)
     (having : CheckedStarHaving model source.source source.declaringGroup)
     (filterRead : Env → FieldId → CheckedCell)
@@ -418,7 +430,7 @@ private def scanFilteredEnumerationFirstFilledStar
     (world : Option World := none) :
     Except CorrelationRuntimeFault (FirstFilledScanState ⊕ FirstFilledTokenResult) := do
   match ← scanFilteredComputationFirstFilled having.condition
-      { read := filterRead, world } outer
+      (({ read := filterRead, world } : CorrelationContext).withComputationGroups document) outer
       (source.valueListCellAt .computation starRead)
       resolved.environments resolved.domain.hasOpenTail state with
   | .inl next => pure (.inl next)
@@ -445,8 +457,11 @@ private def scanEnumerationFirstFilledOperand
             (state.enterSelection resolved.environments.isEmpty
               resolved.domain.hasOpenTail false))
       | some having =>
-          (scanFilteredEnumerationFirstFilledStar (world := direct.world) source having filterRead
-            starRead outer resolved state).mapError (fun | .calendarUnavailable => .unsupportedDateCalendar | .valueFailure => .temporalValueFailure)
+          (scanFilteredEnumerationFirstFilledStar document (world := direct.world) source having filterRead
+            starRead outer resolved state).mapError (fun
+              | .calendarUnavailable => .unsupportedDateCalendar
+              | .valueFailure => .temporalValueFailure
+              | .groupUnavailable path => .unsupportedGroupOperand path)
 
 private def scanEnumerationFirstFilledOperands
     (document : Document) (outer : Env) (direct : FlatContext)
@@ -566,6 +581,13 @@ def evaluateCheckedDocument
 end CheckedEnumerationFirstFilledSource
 
 namespace CheckedEnumerationFirstFilledComputationOperation
+
+def referencesWith (operation : CheckedEnumerationFirstFilledComputationOperation model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  operation.source.referencesWith field filterReads
+
+def referencesField (operation : CheckedEnumerationFirstFilledComputationOperation model) (field : FieldId) : Bool :=
+  operation.referencesWith field (·.referencesField field)
 
 /-- Project the shared first-filled computation result into the common Enumeration target result. -/
 def evaluate (operation : CheckedEnumerationFirstFilledComputationOperation model)

@@ -6,7 +6,7 @@
 
 The identifier counts come from maximal-identifier extraction intersected with the Kernel vocabulary. `./scripts/report-conformance-coverage.sh --verify` re-derives them by multi-pattern fixed-string whole-word matching and aborts on disagreement. Run it after changing a counting mechanism; it also checks capability record boundaries and gap-shard ownership.
 
-Working-tree counts generated on 2026-10-07; HEAD was `e50e106e`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
+Working-tree counts generated on 2026-10-07; HEAD was `6ea12b97`. The vocabulary scans include untracked files under their named roots; the estate inventory uses tracked paths. This is not a measurement of the exact committed revision's bytes.
 
 ## Headline
 
@@ -139,8 +139,8 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 
 | | records | share |
 |---|---|---|
-| Capability records in [`implementation/`](implementation/) | 235 | 100% |
-| Citing a Kernel checkpoint or calibration | 133 | 56% |
+| Capability records in [`implementation/`](implementation/) | 236 | 100% |
+| Citing a Kernel checkpoint or calibration | 134 | 56% |
 | Carrying an explicit evidence-pending note | 89 | 37% |
 
 ## Axis 3 — open obligation load
@@ -148,9 +148,9 @@ Rendering, arithmetic ordering, computation scheduling, poison timing, and calen
 | | count |
 |---|---|
 | Open gap records in [`gaps/`](gaps/), indexed by [`SEMANTICS-GAPS.md`](SEMANTICS-GAPS.md) | 24 |
-| `remaining` rows across those gaps | 319 |
+| `remaining` rows across those gaps | 320 |
 | Gaps whose route is **blocked** | 0 |
-| Ledger entries `pending` with a12-dmkits | 10 |
+| Ledger entries `pending` with a12-dmkits | 11 |
 | Ledger entries `handed-off` | 0 |
 
 A blocked route stops the work that depends on it. Other ready obligations can continue. Remaining-work entries differ in size and may overlap; their count is not a completion percentage.
@@ -161,8 +161,8 @@ A blocked route stops the work that depends on it. Other ready obligations can c
 
 | estate | tracked nonblank Lean lines | against theory |
 |---|---|---|
-| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 249831 | 100% |
-| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 26624 | 10% — ceiling 100% |
+| Theory (`Semantics/`, `Elaboration/`, `Proofs/`, `Conformance/`, core types) | 250611 | 100% |
+| Support (`Evidence/`, `Reference/`, `Process/`, `Trust/`, drivers) | 26908 | 10% — ceiling 100% |
 | Evidence alone | 1517 | 0% — ceiling 33% |
 
 Tracked Lean files in neither estate: 0. A nonzero value means the ratio above measures a subset and the inventory needs review.
@@ -269,4 +269,5 @@ Datetime is HEAD's commit time in ISO 8601 format, including its UTC offset; it 
 | 2026-10-05T10:43:03+02:00 | `7fc1aee6` | 489 | 472 | 6 | 131 | 24 |
 | 2026-10-06T00:05:27+02:00 | `9cebb1f3` | 489 | 472 | 6 | 132 | 24 |
 | 2026-10-06T20:45:10+02:00 | `078577ba` | 489 | 472 | 6 | 133 | 24 |
+| 2026-10-07T08:48:03+02:00 | `6ea12b97` | 489 | 472 | 6 | 134 | 24 |
 <!-- velocity-history:end -->

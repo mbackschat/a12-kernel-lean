@@ -95,6 +95,10 @@ inductive SurfaceCorrelatedHaving where
       rule's own condition. -/
   | presence (polarity : HavingPresencePolarity)
       (reference : SurfaceHavingPresenceRef)
+  | groupPresence (operator : GroupPresenceOperator) (origin : HavingOrigin)
+      (reference : SurfaceGroupReference)
+  | groupFill (operator : GroupFillQuantifier)
+      (first : HavingOrigin × SurfaceGroupReference) (rest : List (HavingOrigin × SurfaceGroupReference))
   | and (left right : SurfaceCorrelatedHaving)
   /-- Disjunction inside a filter. The filter's condition is the ordinary condition production, so
       this is a strong-Kleene `Or` and a true disjunct dominates an unavailable one, keeping its
@@ -127,6 +131,8 @@ inductive CorrelationElabError where
   | membershipBaseType (path : List String)
   | membershipStringLiteralKind (path : List String)
   | fieldFill (error : FieldEntityShapeElabError)
+  | groupFill (error : FieldEntityShapeElabError)
+  | groupPresence (error : FixedGroupReferenceError)
   | text (error : ElabError)
   | resolve (error : ResolveError)
   | invalidGroupReference (reference : SurfaceGroupPath)
@@ -226,7 +232,8 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .membershipKind _ => some .onlyStringEnumNumberAllowed
   | .membershipBaseType _ => some .varyingTypesNotAllowed
   | .membershipStringLiteralKind _ => some .invalidTypesForComparison
-  | .fieldFill error => error.diagnostic?
+  | .fieldFill error | .groupFill error => error.diagnostic?
+  | .groupPresence error => error.diagnostic?
   | .dateRangeComponentsMismatch _ _ => some .invalidCompareToDateRange
   | .text (.enumerationOperand _ (.invalidLiteral _)) =>
       some .invalidStringConstantForEnumComparison

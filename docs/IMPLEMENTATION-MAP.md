@@ -301,6 +301,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-having-temporal-constants"></a>
 - [Temporal constants in Having comparisons](implementation/repetition-and-paths.md#cap-having-temporal-constants)
 
+<a id="cap-having-group-predicates"></a>
+- [Group predicates in correlated filters](implementation/repetition-and-paths.md#cap-having-group-predicates)
+
 <a id="cap-having-subday-differences"></a>
 - [Direct sub-day differences inside Having](implementation/repetition-and-paths.md#cap-having-subday-differences)
 

@@ -196,7 +196,7 @@ private theorem checkedDocument_actualRowEnvironment_properties
     environments.Nodup ∧
       ∀ environment ∈ environments,
         environment.map Prod.fst = scope := by
-  unfold CheckedDocument.actualRowEnvironments at resolved
+  unfold CheckedDocument.actualRowEnvironments FlatModel.actualRowEnvironments at resolved
   cases reversed : scope.reverse with
   | nil =>
       simp [reversed] at resolved

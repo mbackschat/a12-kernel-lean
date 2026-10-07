@@ -203,7 +203,7 @@ private def CheckedNumberEntityOperand.computationSelection
         (source.checkedValueListCellAt .computation starRead))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
-      pure (.filtered source.having { read := filterRead, world := direct.world } resolved.environments
+      pure (.filtered source.having (({ read := filterRead, world := direct.world } : CorrelationContext).withComputationGroups document) resolved.environments
         resolved.domain.hasOpenTail (source.source.checkedValueListCellAt .computation starRead))
   -- The group's cells in the shared walk's declaration-major index order: every row of one
   -- declaration before the next, measured over a repeatable descendant
@@ -222,7 +222,10 @@ def evaluateComputationFirstFilled
     (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath)) :
     Except StarAddressingError FirstFilledNumberResult := do
   match ← scanComputationFirstFilledSelections outer
-    (fun | .calendarUnavailable => .unsupportedDateCalendar | .valueFailure => .temporalValueFailure)
+    (fun
+      | .calendarUnavailable => .unsupportedDateCalendar
+      | .valueFailure => .temporalValueFailure
+      | .groupUnavailable path => .unsupportedGroupOperand path)
       (·.computationSelection document outer { read := directRead, world } filterRead starRead selectedRead)
       checked.operands {} with
   | .inl state => pure state.finish

@@ -7,6 +7,7 @@ import A12Kernel.Semantics.DateDifferenceSource
 import A12Kernel.Semantics.DateTimeDifference
 import A12Kernel.Semantics.NumericAggregate
 import A12Kernel.Semantics.LegacyCalendarExpression
+import A12Kernel.Semantics.ComputationCondition
 
 /-! Correlated operand identities, binding frames and phase-specific checked reads. -/
 
@@ -76,6 +77,13 @@ def HavingOrigin.availableLevels (origin : HavingOrigin)
 structure HavingPresenceRef where
   origin : HavingOrigin
   field : FieldId
+  deriving Repr, DecidableEq
+
+/-- Group filters retain ordinary group identity, content and dependency classification alongside
+their candidate/captured origin (spec/07 §3 and the containing-group checkpoint). -/
+inductive HavingGroupOperand where
+  | field (reference : HavingPresenceRef)
+  | group (origin : HavingOrigin) (source : ComputationGroupOperand)
   deriving Repr, DecidableEq
 
 /-- Which presence predicate a filter leaf carries. `FieldNotFilled` is a genuine predicate here
@@ -231,12 +239,21 @@ inductive CorrelatedNumberOperand where
 inductive CorrelationRuntimeFault where
   | calendarUnavailable
   | valueFailure
+  | groupUnavailable (path : GroupPath)
   deriving Repr, DecidableEq
+
+/-- Both phases reuse their ordinary group inputs. Callers retain physical row content and the
+current read view; a missing reader is not an empty group (spec/07 §5). -/
+structure CorrelationGroupReads (Error : Type) where
+  validation : Env → ResolvedGroupReference → Except Error GroupPresenceState
+  computation : Env → ComputationGroupOperand →
+    Except Error (List CellObservation × Bool)
 
 /-- Topology adapters supply environments; the shared evaluator reads their checked fields and the caller-owned evaluation clock. Retaining one World prevents candidate and captured reads from sampling different dates (spec/05 §7, clock-source semantics). -/
 structure CorrelationContext where
   read : Env → FieldId → CheckedCell
   world : Option World := none
+  groups : Option (CorrelationGroupReads CorrelationRuntimeFault) := none
 
 /-- The addressed counterpart of `CorrelationContext`. It preserves caller-owned field-read failures and maps repetition-binding and calendar-support failures into that same explicit error channel. -/
 structure ResolvingCorrelationContext (Error : Type) where
@@ -244,7 +261,9 @@ structure ResolvingCorrelationContext (Error : Type) where
   bindingError : EnvBindingError → Error
   unsupportedDateCalendar : Error
   temporalValueFailure : Error
+  groupUnavailable : GroupPath → Error
   world : Option World := none
+  groups : Option (CorrelationGroupReads Error) := none
 
 /-- Resolve one numeric filter reference through the selected environment and caller-selected phase. Empty-to-zero is local to numeric comparison; formal invalidity retains its cause for the consuming phase projection. -/
 def HavingNumberRef.resolveInAt (reference : HavingNumberRef) (phase : Phase)
@@ -526,6 +545,7 @@ def HavingNumericAtom.readComputation (context : CorrelationContext)
   | atom => atom.readComputationResolving {
       read := fun env field => .ok (context.read env field)
       world := context.world
-      bindingError := fun _ => (), unsupportedDateCalendar := (), temporalValueFailure := () } frame
+      bindingError := fun _ => (), unsupportedDateCalendar := (), temporalValueFailure := ()
+      groupUnavailable := fun _ => () } frame
 
 end A12Kernel

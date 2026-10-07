@@ -483,7 +483,7 @@ private def clockContext (clock : Option Instant) : CorrelationContext := {
 private def clockResolving (clock : Option Instant) : ResolvingCorrelationContext String := {
   read := fun _ _ => .error "field read"
   bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar"
-  temporalValueFailure := "value failure"
+  temporalValueFailure := "value failure", groupUnavailable := fun _ => "group unavailable"
   world := clock.map fun now => { now } }
 private def calendarRefusal (result : Except String α) : Bool :=
   match result with | .error reason => reason == "calendar" | .ok _ => false

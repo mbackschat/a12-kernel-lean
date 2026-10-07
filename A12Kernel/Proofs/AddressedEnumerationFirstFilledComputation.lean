@@ -19,10 +19,10 @@ theorem checkedAddressedEnumerationFirstFilled_sources_allowed
   simpa [CheckedEnumerationFirstFilledSource.allowedFor] using
     operation.sourceAllowed
 
-/-- No direct or starred source slot reads the computed target. -/
-theorem checkedAddressedEnumerationFirstFilled_excludes_target_reference
+/-- Direct, selected and starred sources exclude forbidden target references while retaining positive conditional group membership (spec/09 §5). -/
+theorem checkedAddressedEnumerationFirstFilled_excludes_forbidden_target_reference
     (operation : CheckedAddressedEnumerationFirstFilledComputation model) :
-    operation.source.referencesField operation.target.field = false :=
+    operation.source.referencesWith operation.target.field (·.forbidsTarget operation.target.field) = false :=
   operation.targetNotReferenced
 
 /-- Successful execution projects the exact row outcomes without changing their String result classification. -/

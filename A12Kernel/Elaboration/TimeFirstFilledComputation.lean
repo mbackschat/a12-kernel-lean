@@ -78,11 +78,15 @@ def targetField (operation : CheckedTimeFirstFilledComputation model) : FieldId 
 def target (operation : CheckedTimeFirstFilledComputation model) : FlatFieldDecl :=
   operation.shape.site.target
 
+def referencesWith (operation : CheckedTimeFirstFilledComputation model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  operation.shape.referencesWith field filterReads
+
 def referencesField (operation : CheckedTimeFirstFilledComputation model) : FieldId → Bool :=
-  operation.shape.site.referencesField
+  fun field => operation.referencesWith field (·.referencesField field)
 
 theorem excludesTarget (operation : CheckedTimeFirstFilledComputation model) :
-    operation.referencesField operation.targetField = false :=
+    operation.referencesWith operation.targetField (·.forbidsTarget operation.targetField) = false :=
   operation.shape.excludesTarget
 
 /-- Scan the source at one target instance's environment, then render the selected clock. -/

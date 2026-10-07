@@ -111,6 +111,34 @@ theorem computationConditionOf_requires_own (condition : ComputationConditionOf 
     condition.requiresProducer target target producerProtected = condition.forbidsTarget target :=
   computationConditionOf_requires_own condition _ _ target producerProtected
 
+/-- Filter groups retain the ordinary condition's target-ban and self-dependency invariant. -/
+@[simp] theorem correlatedHaving_requires_own (condition : CorrelatedHaving)
+    (target : FieldId) (protectedGroup : ResolvedGroupReference → Bool) :
+    condition.requiresProducer target target protectedGroup = condition.forbidsTarget target := by
+  induction condition with
+  | leaf leaf =>
+      cases leaf with
+      | groupPresence operator origin source =>
+          exact computationConditionOf_requires_own
+            (.leaf (.groupPresence operator source) : ComputationConditionOf Empty Empty)
+            (fun atom => nomatch atom) (fun predicate => nomatch predicate)
+            target protectedGroup
+      | groupFill operator first rest =>
+          exact computationConditionOf_requires_own (havingGroupFillDependencies operator first rest)
+            (fun atom => nomatch atom) (fun predicate => nomatch predicate) target protectedGroup
+      | _ => rfl
+  | and left right leftIH rightIH | or left right leftIH rightIH =>
+      simp only [CorrelatedHaving.requiresProducer, CorrelatedHaving.forbidsTarget, leftIH, rightIH]
+
+/-- The atom walk changes only its filter callback, so filter self-dependency equality lifts to every numeric carrier. -/
+@[simp] theorem checkedNumericComputationAtom_requires_own (atom : CheckedNumericComputationAtom model)
+    (target : FieldId) (protectedGroup : ResolvedGroupReference → Bool) :
+    atom.requiresProducer model target target protectedGroup = atom.forbidsTarget model target := by
+  unfold CheckedNumericComputationAtom.requiresProducer CheckedNumericComputationAtom.forbidsTarget
+  apply congrArg (fun filterReads => atom.referencesWith model target filterReads)
+  funext condition
+  exact correlatedHaving_requires_own condition target protectedGroup
+
 /-- Reordering computations cannot change a producer's syntactic group profile. -/
 theorem computationProducerProtection_perm (model : FlatModel) (targetOf : Step → FieldId)
     (conditionsOf : Step → List (Option (ComputationConditionOf Atom Predicate))) {left right : List Step}
@@ -129,9 +157,13 @@ theorem computationProducerProtection_perm (model : FlatModel) (targetOf : Step 
 theorem checkedComputationPredicate_requires_own (predicate : CheckedComputationPredicate model)
     (target : FieldId) (protectedGroup : ResolvedGroupReference → Bool) :
     predicate.requiresProducer target target protectedGroup = predicate.forbidsTarget target := by
+  have filterOwn : (fun having : CorrelatedHaving => having.requiresProducer target target protectedGroup) =
+      (fun having => having.forbidsTarget target) := by
+    funext having
+    exact correlatedHaving_requires_own having target protectedGroup
   cases predicate <;>
     simp only [CheckedComputationPredicate.requiresProducer, CheckedComputationPredicate.forbidsTarget,
-      computationCondition_requires_own]
+      computationCondition_requires_own, filterOwn]
 
 theorem checkedComputationCondition_requires_own (condition : CheckedComputationCondition model)
     (target : FieldId) (protectedGroup : ResolvedGroupReference → Bool) :
@@ -141,9 +173,16 @@ theorem checkedComputationCondition_requires_own (condition : CheckedComputation
       cases leaf with
       | predicate predicate => exact checkedComputationPredicate_requires_own predicate target protectedGroup
       | groupPresence operator source =>
-          exact computationConditionOf_requires_own (.leaf (.groupPresence operator source))
-            (fun (atom : CheckedNumericComputationAtom model) field => atom.references model field)
-            (CheckedComputationPredicate.forbidsTarget (model := model)) target protectedGroup
+          simpa only [CheckedComputationCondition.requiresProducer, CheckedComputationCondition.forbidsTarget,
+            ComputationConditionOf.requiresProducerWith, ComputationConditionOf.forbidsTargetWith,
+            ComputationConditionOf.referencesFieldWith, ConditionTree.anyLeaf] using
+              computationConditionOf_requires_own (.leaf (.groupPresence operator source))
+                (fun (atom : CheckedNumericComputationAtom model) field => atom.forbidsTarget model field)
+                (CheckedComputationPredicate.forbidsTarget (model := model)) target protectedGroup
+      | numeric comparison =>
+          simp [CheckedComputationCondition.requiresProducer, CheckedComputationCondition.forbidsTarget,
+            ComputationConditionOf.requiresProducerWith, ComputationConditionOf.forbidsTargetWith,
+            ComputationConditionOf.referencesFieldWith, ConditionTree.anyLeaf]
       | _ => rfl
   | and left right ihLeft ihRight | or left right ihLeft ihRight =>
       simp only [CheckedComputationCondition.requiresProducer, CheckedComputationCondition.forbidsTarget] at ihLeft ihRight ⊢

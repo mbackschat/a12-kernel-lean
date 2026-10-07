@@ -26,7 +26,7 @@ private def pair (first second : CheckedCell) : CorrelationContext := {
 private def resolving (context : CorrelationContext) : ResolvingCorrelationContext String := {
   world := context.world
   read := fun env id => .ok (context.read env id)
-  bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure" }
+  bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure", groupUnavailable := fun _ => "group unavailable" }
 
 example : atoms.all (fun atom =>
     atom.readComputation (pair (dateCell .legacyHybrid) (dateCell .storedGregorian)) frame == .error () &&
@@ -38,7 +38,7 @@ example : atoms.all (fun atom =>
 
 example : atoms.all (fun atom => atom.readComputationResolving {
     read := fun _ id => if id == 1 then .ok invalid else .error "captured read"
-    bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure" } frame == .error "captured read") = true := by native_decide
+    bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure", groupUnavailable := fun _ => "group unavailable" } frame == .error "captured read") = true := by native_decide
 
 private def condition (atom : HavingNumericAtom) : CorrelatedHaving := .leaf (.numeric {
   op := .ordinary .equal, left := .atom atom, right := .literal { value := 0, authoredScale := 0 } })
@@ -78,7 +78,7 @@ example : staticAtoms.all (fun atom => atom.origins == [.outer] &&
     CorrelatedHaving.markedFieldIds (condition atom) == [2] &&
     atom.readComputationResolving {
       read := fun env id => if env == frame.outerEnv && id == 2 then .ok (dateCell .storedGregorian) else .error "unexpected read"
-      bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure" } frame == .ok (.value 0) &&
+      bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure", groupUnavailable := fun _ => "group unavailable" } frame == .ok (.value 0) &&
     atom.readComputation (pair emptyCell invalid) frame == .ok (.poison .malformed) &&
     atom.readComputation (pair invalid emptyCell) frame == .ok (.value 0)) = true := by native_decide
 
@@ -86,7 +86,7 @@ example : staticAtoms.all (fun atom => atom.origins == [.outer] &&
 example : (HavingNumericAtom.dayDifference .utc (.baseYear 2024 .direct)
     (.literal { year := none, month := 3, day := 1 } 2024)).readComputationResolving {
       read := fun _ _ => .error "unexpected read", bindingError := fun _ => "binding"
-      unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure" } frame = .ok (.value 60) := by native_decide
+      unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure", groupUnavailable := fun _ => "group unavailable" } frame = .ok (.value 60) := by native_decide
 
 private def clockAtoms : List HavingNumericAtom :=
   [.dateDifference .months (.field (reference .inner 1)) (.today .utc),
@@ -151,11 +151,11 @@ example : [DateTimeSubdayUnit.hours, .minutes, .seconds].all (fun unit =>
       atom.readComputationResolving {
         world := some { now := { epochMillis := 1000 } },
         read := fun env id => if env == frame.outerEnv && id == 1 then .ok instantCell else .error "wrong origin"
-        bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure" } frame == .ok (.value 0))) = true := by native_decide
+        bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure", groupUnavailable := fun _ => "group unavailable" } frame == .ok (.value 0))) = true := by native_decide
 
 example :
     let noClock : ResolvingCorrelationContext String := {
-      read := fun _ _ => .error "field", bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure" }
+      read := fun _ _ => .error "field", bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure", groupUnavailable := fun _ => "group unavailable" }
     (subdayClock .seconds).readComputationResolving noClock frame = .error "field" ∧
     (subdayClock .seconds .inner true).readComputationResolving noClock frame = .error "calendar" ∧
     (subdayClock .seconds).readValidationResolving noClock frame = .error "field" ∧

@@ -105,23 +105,27 @@ inductive CheckedComputationPredicate (model : FlatModel) where
 
 namespace CheckedComputationPredicate
 
-def referencesField (predicate : CheckedComputationPredicate model) (field : FieldId) : Bool :=
+def referencesWith (predicate : CheckedComputationPredicate model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
   match predicate with
   | .pattern source => source.source.referencesField field
   | .indexedPattern source => source.selection.referencesField field
-  | .dateValidity _ source => source.scalarFieldIds.contains field
+  | .dateValidity _ source => source.scalarCore.referencesWith field filterReads
   | .typeValidity _ source _ => source.source == field
   | .indexedTypeValidity _ source _ => source.selection.referencesField field
   | .stringExpression source => source.referencesField field
-  | .temporal source => source.referencesField field
+  | .temporal source => source.referencesWith field filterReads
   | .fieldComparison source => source.referencesField field
-  | .valueList source | .scalarValueList _ source => source.referencesField field
+  | .valueList source | .scalarValueList _ source => source.referencesField field (fun having _ => filterReads having)
   | .scalarNumberLiterals _ source _ => source.field.id == field
   | .keyedGroupPresence _ source _ => source.referencesField field
   | .indexedFieldPresence _ source => source.referencesField field
-  | .fieldFill _ source => source.referencesField field
-  | .uniqueness source => source.referencesField field
-  | .overlap source => source.referencesField field
+  | .fieldFill _ source => source.referencesField field (fun having _ => filterReads having)
+  | .uniqueness source => source.referencesField field (fun having _ => filterReads having)
+  | .overlap source => source.referencesField field (fun having _ => filterReads having)
+
+def referencesField (predicate : CheckedComputationPredicate model) (field : FieldId) : Bool :=
+  predicate.referencesWith field (·.referencesField field)
 
 private def keyedGroupDependencyCondition (operator : GroupPresenceOperator)
     (source : CheckedKeyedEntityExtent model) (kind : ComputationGroupDependencyKind) : ComputationCondition :=
@@ -135,7 +139,7 @@ def forbidsTarget (predicate : CheckedComputationPredicate model) (target : Fiel
   | .keyedGroupPresence operator source kind =>
       source.selection.indexSource.referencesField target ||
         (keyedGroupDependencyCondition operator source kind).forbidsTarget target
-  | predicate => predicate.referencesField target
+  | predicate => predicate.referencesWith target (·.forbidsTarget target)
 
 def requiresProducer (predicate : CheckedComputationPredicate model) (consumer producer : FieldId)
     (protectedGroup : ResolvedGroupReference → Bool) : Bool :=
@@ -143,7 +147,7 @@ def requiresProducer (predicate : CheckedComputationPredicate model) (consumer p
   | .keyedGroupPresence operator source kind =>
       source.selection.indexSource.referencesField producer ||
         (keyedGroupDependencyCondition operator source kind).requiresProducer consumer producer protectedGroup
-  | predicate => predicate.referencesField producer
+  | predicate => predicate.referencesWith producer (fun having => having.requiresProducer consumer producer protectedGroup)
 
 /-- Conditional protection follows authored group identity even for keyed reads; the kernel's
 CalculationOperandsCollector and ConditionalCalculationGroupVisitor classify that same path. -/
@@ -206,10 +210,13 @@ private def scanNumber (context : ScalarComputationContext)
   | .starHaving source =>
       let addressed ← addressed context
       let resolved ← (source.source.source.path.resolveInCapacity addressed.document context.row).mapError .addressing
-      (source.having.scanComputation { read := filterRead, world := context.world } context.row
+      (source.having.scanComputation (({ read := filterRead, world := context.world } : CorrelationContext).withComputationGroups addressed.document) context.row
         (fun state environment => consume state
           (source.source.checkedValueListCellAt .computation addressed.read environment))
-        resolved.environments state).mapError (fun | .calendarUnavailable => .temporalUnavailable | .valueFailure => .valueFailure)
+        resolved.environments state).mapError (fun
+          | .calendarUnavailable => .temporalUnavailable
+          | .valueFailure => .valueFailure
+          | .groupUnavailable path => .addressing (.unsupportedGroupOperand path))
 
 private def scanToken (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
@@ -231,9 +238,12 @@ private def scanToken (context : ScalarComputationContext)
       match source.filter with
       | none => pure (scanCells consume
           (resolved.toResolvedSide (source.valueListCellAt .computation addressed.read)).cells state)
-      | some having => (having.condition.scanComputation { read := filterRead, world := context.world } context.row
+      | some having => (having.condition.scanComputation (({ read := filterRead, world := context.world } : CorrelationContext).withComputationGroups addressed.document) context.row
           (fun state environment => consume state
-            (source.valueListCellAt .computation addressed.read environment)) resolved.environments state).mapError (fun | .calendarUnavailable => .temporalUnavailable | .valueFailure => .valueFailure)
+            (source.valueListCellAt .computation addressed.read environment)) resolved.environments state).mapError (fun
+              | .calendarUnavailable => .temporalUnavailable
+              | .valueFailure => .valueFailure
+              | .groupUnavailable path => .addressing (.unsupportedGroupOperand path))
 
 private def scanOperands
     (scan : operand → State → Except error (ComputationHavingScanResult State Result)) :
@@ -292,11 +302,13 @@ private def scanTemporal (context : ScalarComputationContext)
       | none => scanTemporalSlots read resolved.environments seen
       | some having =>
           having.scanComputationResolving
-            { read := fun row field => pure (filterRead row field)
+            (({
+              read := fun row field => pure (filterRead row field)
               world := context.world
               unsupportedDateCalendar := .temporalUnavailable
               temporalValueFailure := .valueFailure
-              bindingError := fun error => .addressing error.toStarAddressingError }
+              groupUnavailable := ComputationPredicateError.addressing ∘ StarAddressingError.unsupportedGroupOperand
+              bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationPredicateError).withComputationGroups contextRead.document)
             context.row (fun seen row => ValueListCell.duplicateComputationStep (kind := .token) seen <$> read row)
             resolved.environments seen
   | .group source =>

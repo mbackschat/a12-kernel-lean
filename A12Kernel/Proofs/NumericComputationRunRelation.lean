@@ -18,33 +18,43 @@ theorem numericComputationRunStep_target_mem
         run world input state table completion evaluated]
       exact List.mem_map.mpr ⟨table, member, rfl⟩
 
-/-- Checked Numeric expressions cannot read their own target. -/
+/-- Checked Numeric expressions exclude their own target from the static ban; a conditional positive group read may still contain it (spec/09 §5). -/
 private theorem checkedNumericComputationOperation_excludes_target
     (operation : CheckedNumericTargetComputationOperation model) :
-    operation.referencesField operation.operation.core.target.id = false := by
+    operation.forbidsTarget operation.operation.core.target.id = false := by
   have wellFormed := operation.operation.wellFormed
   unfold NumericComputationOperation.WellFormed
     NumericComputationOperation.wellFormedBool at wellFormed
   simp only [Bool.and_eq_true] at wellFormed
   have referenceNegated := wellFormed.1.1.1.2
   change operation.operation.core.expression.anyAtom
-    (CheckedNumericComputationAtom.references model
+    (CheckedNumericComputationAtom.forbidsTarget model
       operation.operation.core.target.id) = false
   cases referenced : operation.operation.core.expression.anyAtom
-      (CheckedNumericComputationAtom.references model
+      (CheckedNumericComputationAtom.forbidsTarget model
         operation.operation.core.target.id) with
   | false => rfl
   | true => simp [referenced] at referenceNegated
+
+private theorem checkedNumericComputationOperation_requires_own
+    (operation : CheckedNumericTargetComputationOperation model)
+    (target : FieldId) (protectedGroup : ResolvedGroupReference → Bool) :
+    operation.requiresProducer target target protectedGroup = operation.forbidsTarget target := by
+  simp only [CheckedNumericTargetComputationOperation.requiresProducer,
+    CheckedNumericTargetComputationOperation.forbidsTarget]
+  apply congrArg (fun predicate => operation.operation.core.expression.anyAtom predicate)
+  funext atom
+  exact checkedNumericComputationAtom_requires_own atom target protectedGroup
 
 private theorem checkedNumericComputationAlternative_excludes_target
     (alternative :
       CheckedNumericComputationAlternative model target policy) :
     (alternative.toSelectable.precondition.any (·.forbidsTarget target) ||
-        alternative.toSelectable.operation.referencesField target) = false := by
+        alternative.toSelectable.operation.forbidsTarget target) = false := by
   have operationExcludes :
-      alternative.operation.referencesField target = false := by
+      alternative.operation.forbidsTarget target = false := by
     let references := fun field =>
-      alternative.operation.referencesField field
+      alternative.operation.forbidsTarget field
     calc
       references target =
           references alternative.operation.operation.core.target.id :=
@@ -71,6 +81,7 @@ theorem checkedNumericComputationTable_excludes_target
         guard.forbidsTarget table.targetField :=
     checkedComputationCondition_requires_own guard _ _
   simp [CheckedNumericComputationTable.requiresProducer, requiresOwn,
+    checkedNumericComputationOperation_requires_own,
     CheckedNumericComputationTable.selectableAlternatives,
     CheckedNumericComputationTable.checkedAlternatives,
     checkedNumericComputationAlternative_excludes_target]

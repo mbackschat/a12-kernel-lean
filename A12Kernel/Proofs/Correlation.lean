@@ -307,8 +307,11 @@ theorem inner_number_reference_local (rows : SingleGroupValidationContext)
         { innerRow, outerRow := outer₂ } := by
   rfl
 
-/-- The shared environment-indexed evaluator agrees with its independently stated
-    structural predicate. -/
+private theorem verdictTruth_eq_tru_iff_fired (verdict : Verdict) :
+    CorrelatedHavingLeaf.verdictTruth verdict = .tru ↔ ∃ polarity, verdict = .fired polarity := by
+  cases verdict <;> simp [CorrelatedHavingLeaf.verdictTruth]
+
+/-- The shared environment-indexed evaluator agrees with its independently stated structural predicate. -/
 theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
     (context : CorrelationContext) (frame : CorrelationFrame) :
     condition.evalTruthIn context frame = .tru ↔
@@ -339,35 +342,25 @@ theorem correlatedHaving_truthIn_iff_holdsIn (condition : CorrelatedHaving)
                   CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
                   CorrelatedHavingLeaf.verdictTruth, result]
       | compareStringLiteral op reference expected =>
-          -- Both text domains use the same verdict-to-truth projection in evalTruthIn and HoldsIn.
-          cases verdict :
-              reference.compareResolved (reference.resolveInAt .validation context frame) op expected <;>
-            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
-              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
-              CorrelatedHavingLeaf.verdictTruth, verdict]
+          exact verdictTruth_eq_tru_iff_fired _
       | fieldMembership operator source =>
-          cases verdict : source.evalValidation operator (fun origin => context.read (frame.envAt origin)) <;>
-            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
-              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
-              CorrelatedHavingLeaf.verdictTruth, verdict]
+          exact verdictTruth_eq_tru_iff_fired _
       | literalMembership origin operator source =>
-          cases verdict : source.evalValidation operator (context.read (frame.envAt origin) source.field.id) <;>
-            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
-              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
-              CorrelatedHavingLeaf.verdictTruth, verdict]
+          exact verdictTruth_eq_tru_iff_fired _
       | fieldFill operator references =>
-          cases verdict : evalHavingFieldFillValidation operator references context frame <;>
-            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
-              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
-              CorrelatedHavingLeaf.verdictTruth, verdict]
+          exact verdictTruth_eq_tru_iff_fired _
       | presence polarity reference =>
-          -- Same shape: presence truth is the same verdict projection over the shared observation
-          -- consumers, so the verdict alone decides the bridge.
-          cases verdict :
-              polarity.evalObservation (reference.observeInAt .validation context frame) <;>
+          exact verdictTruth_eq_tru_iff_fired _
+      | groupPresence operator origin source =>
+          cases result : evalHavingGroupPresenceValidation operator origin source context.asResolving frame <;>
             simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
-              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn,
-              CorrelatedHavingLeaf.verdictTruth, verdict]
+              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn, result,
+              verdictTruth_eq_tru_iff_fired]
+      | groupFill operator first rest =>
+          cases result : evalHavingGroupFillValidation operator first rest context.asResolving frame <;>
+            simp [CorrelatedHaving.evalTruthIn, CorrelatedHaving.HoldsIn,
+              CorrelatedHavingLeaf.evalTruthIn, CorrelatedHavingLeaf.HoldsIn, result,
+              verdictTruth_eq_tru_iff_fired]
   | and left right leftInduction rightInduction =>
       change K.and (CorrelatedHaving.evalTruthIn left context frame)
           (CorrelatedHaving.evalTruthIn right context frame) = .tru ↔
@@ -830,6 +823,13 @@ theorem correlatedHaving_referencesMarkedField_referencesField
     | presence polarity reference =>
       simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds] at marked ⊢
       split at marked <;> simp_all
+    | groupPresence operator origin source =>
+      cases origin <;> simp_all [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds]
+    | groupFill operator first rest =>
+      simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds,
+        List.mem_eraseDups, List.mem_flatMap, List.mem_filter] at marked ⊢
+      obtain ⟨operand, ⟨member, _⟩, projected⟩ := marked
+      exact ⟨operand, member, projected⟩
   | and left right ihLeft ihRight | or left right ihLeft ihRight =>
     simp only [CorrelatedHaving.markedFieldIds, CorrelatedHaving.fieldIds,
       List.mem_eraseDups, List.mem_append] at marked ⊢

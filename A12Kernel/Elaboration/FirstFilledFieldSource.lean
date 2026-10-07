@@ -53,14 +53,18 @@ def declarations : FirstFilledFieldOperand model → List FlatFieldDecl
   | .star source => [source.source.declaration]
   | .group source => source.declarations
 
-def referencesField (operand : FirstFilledFieldOperand model) (field : FieldId) : Bool :=
+def referencesWith (operand : FirstFilledFieldOperand model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
   match operand with
   | .field declaration => declaration.id == field
   | .indexed source => source.referencesField field
   | .keyed source => source.referencesField field
   | .star source => source.source.declaration.id == field ||
-      source.filter.any (fun having => having.condition.referencesField field)
+      source.filter.any (fun having => filterReads having.condition)
   | .group source => source.declarations.any (·.id == field)
+
+def referencesField (operand : FirstFilledFieldOperand model) (field : FieldId) : Bool :=
+  operand.referencesWith field (·.referencesField field)
 
 end FirstFilledFieldOperand
 
@@ -78,10 +82,14 @@ def declarations : FirstFilledFieldSource model → List FlatFieldDecl
   | .list fields => fields
   | .selected operands => operands.flatMap (·.declarations)
 
-def referencesField (source : FirstFilledFieldSource model) (field : FieldId) : Bool :=
+def referencesWith (source : FirstFilledFieldSource model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
   match source with
-  | .selected operands => operands.any (·.referencesField field)
+  | .selected operands => operands.any (·.referencesWith field filterReads)
   | source => source.declarations.any (·.id == field)
+
+def referencesField (source : FirstFilledFieldSource model) (field : FieldId) : Bool :=
+  source.referencesWith field (·.referencesField field)
 
 /-- Selected lists have already passed the shared authored arity and binding gates. -/
 def admittedShape : FirstFilledFieldSource model → Bool

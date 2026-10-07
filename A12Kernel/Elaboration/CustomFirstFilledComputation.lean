@@ -30,7 +30,7 @@ structure CheckedCustomFirstFilledComputation (model : FlatModel) where
   customType : CustomFieldTypeDeclaration
   targetCustom : site.target.customType = some customType
   sourceCustom : site.source.declarations.all (·.customType == some customType) = true
-  excludesTarget : site.referencesField site.targetField = false
+  excludesTarget : site.referencesWith site.targetField (·.forbidsTarget site.targetField) = false
 
 /-- Check exact Custom declaration agreement after shared source admission. The validated model
 already guarantees that each Custom declaration is an evaluated String field. -/
@@ -48,7 +48,7 @@ def checkCustomFirstFilledComputation
   | none => throw (.targetNotCustom site.target.path)
   | some customType =>
     if hSource : site.source.declarations.all (·.customType == some customType) = true then
-      if hExcludes : site.referencesField site.targetField = false then
+      if hExcludes : site.referencesWith site.targetField (·.forbidsTarget site.targetField) = false then
         pure { site, customType, targetCustom := hTarget, sourceCustom := hSource
                excludesTarget := hExcludes }
       else throw (.targetSelfReference site.target.path)
@@ -81,8 +81,12 @@ def targetField (operation : CheckedCustomFirstFilledComputation model) : FieldI
 def target (operation : CheckedCustomFirstFilledComputation model) : FlatFieldDecl :=
   operation.site.target
 
+def referencesWith (operation : CheckedCustomFirstFilledComputation model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  operation.site.referencesWith field filterReads
+
 def referencesField (operation : CheckedCustomFirstFilledComputation model) : FieldId → Bool :=
-  operation.site.referencesField
+  fun field => operation.referencesWith field (·.referencesField field)
 
 /-- Scan the source at one target instance's environment without resampling its registered
 validator. -/

@@ -55,6 +55,12 @@ def referencesField : CheckedRowComputationOperation model → FieldId → Bool
   | .dateRangeConstruction operation, field => operation.referencesField field
   | .temporalExpression operation, field => operation.expression.referencesField field
 
+def referencesWith (operation : CheckedRowComputationOperation model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  match operation with
+  | .temporalExpression operation => operation.expression.referencesWith field filterReads
+  | operation => operation.referencesField field
+
 end CheckedRowComputationOperation
 
 inductive RowComputationTableError where
@@ -180,8 +186,12 @@ namespace CheckedRowComputationTable
 def alternatives (table : CheckedRowComputationTable model) :=
   (table.first :: table.remaining).map (·.toResolved)
 
+def operationReferencesWith (table : CheckedRowComputationTable model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  table.alternatives.any (·.operation.referencesWith field filterReads)
+
 def operationReferencesField (table : CheckedRowComputationTable model) (field : FieldId) : Bool :=
-  table.alternatives.any (·.operation.referencesField field)
+  table.operationReferencesWith field (·.referencesField field)
 
 def protectionConditions (table : CheckedRowComputationTable model) : List (Option (CheckedComputationCondition model)) :=
   table.alternatives.map (·.precondition)

@@ -1,4 +1,5 @@
 import A12Kernel.Conformance.HavingCalendarDifference
+import A12Kernel.Conformance.HavingGroupPresence
 import A12Kernel.Conformance.CorrelationResolving
 import A12Kernel.Conformance.CorrelatedComparisonInputs
 import A12Kernel.Conformance.CalendarExpressions

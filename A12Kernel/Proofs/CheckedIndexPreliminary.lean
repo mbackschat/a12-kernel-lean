@@ -166,7 +166,7 @@ theorem checkedPartialPreliminary_groupPresence_relevance
   | ok input =>
       simp only [Except.map]
       unfold CheckedPartialPreliminary.groupPresenceInput at result
-      unfold CheckedDocument.groupPresenceInputFromSlice at result
+      unfold CheckedDocument.groupPresenceInputFromSlice FlatModel.groupPresenceInputFromSlice at result
       split at result
       · contradiction
       · split at result

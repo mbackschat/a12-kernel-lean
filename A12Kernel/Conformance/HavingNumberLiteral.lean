@@ -231,6 +231,7 @@ private def resolvingContext (left : RawCell) : ResolvingCorrelationContext Stri
   bindingError _ := "binding"
   unsupportedDateCalendar := "calendar"
   temporalValueFailure := "value failure"
+  groupUnavailable := fun _ => "group unavailable"
 
 example : (match failureComparison.evalTruthInResolving
     (resolvingContext (.rejected .malformed)) (frame 1) with

@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.HavingFieldValueList
+import A12Kernel.Semantics.HavingGroupPresence
 import A12Kernel.Semantics.CorrelationInputs
 import A12Kernel.Semantics.FlatLiteralMembership
 import A12Kernel.Semantics.ValidationFillQuantifier
@@ -36,6 +37,10 @@ inductive CorrelatedHavingLeaf where
       filter, the negative one without the iteration-negativity refusal that governs a rule's own
       condition. -/
   | presence (polarity : HavingPresencePolarity) (reference : HavingPresenceRef)
+  | groupPresence (operator : GroupPresenceOperator) (origin : HavingOrigin)
+      (source : ComputationGroupOperand)
+  | groupFill (operator : GroupFillQuantifier) (first : HavingGroupOperand)
+      (rest : List HavingGroupOperand)
   deriving Repr, DecidableEq
 
 /-- Compatibility constructors use the same numeric root as arithmetic and repetition literals. -/
@@ -95,6 +100,8 @@ def fieldIds : CorrelatedHaving → List FieldId
   | .leaf (.fieldMembership _ source) => source.references.map (·.field) |>.eraseDups
   | .leaf (.fieldFill _ references) => references.map (·.field) |>.eraseDups
   | .leaf (.presence _ reference) => [reference.field]
+  | .leaf (.groupPresence _ _ source) => source.members.eraseDups
+  | .leaf (.groupFill _ first rest) => ((first :: rest).flatMap (·.fieldIds)).eraseDups
   | .and left right | .or left right =>
       (fieldIds left ++ fieldIds right).eraseDups
 
@@ -121,11 +128,46 @@ def markedFieldIds : CorrelatedHaving → List FieldId
       (references.filter (·.origin == .outer)).map (·.field) |>.eraseDups
   | .leaf (.presence _ reference) =>
       if reference.origin == .outer then [reference.field] else []
+  | .leaf (.groupPresence _ origin source) =>
+      if origin == .outer then source.members.eraseDups else []
+  | .leaf (.groupFill _ first rest) =>
+      ((first :: rest).filter (·.origin == .outer) |>.flatMap (·.fieldIds)).eraseDups
   | .and left right | .or left right =>
       (markedFieldIds left ++ markedFieldIds right).eraseDups
 
 def referencesMarkedField (condition : CorrelatedHaving) (field : FieldId) : Bool :=
   condition.markedFieldIds.contains field
+
+/-- Target legality uses the ordinary computation group's positive conditional-presence exemption while `referencesField` retains complete membership (spec/09 §5). -/
+def forbidsTarget (condition : CorrelatedHaving) (target : FieldId) : Bool :=
+  match condition with
+  | .leaf (.groupPresence operator _ source) =>
+      ComputationConditionOf.forbidsTargetWith
+        (.leaf (.groupPresence operator source) : ComputationConditionOf Empty Empty)
+        (fun atom => nomatch atom) (fun predicate => nomatch predicate) target
+  | .leaf (.groupFill operator first rest) =>
+      (havingGroupFillDependencies operator first rest).forbidsTargetWith
+        (fun atom => nomatch atom) (fun predicate => nomatch predicate) target
+  | .and left right | .or left right => forbidsTarget left target || forbidsTarget right target
+  | leaf => leaf.referencesField target
+
+/-- Conditional group dependencies follow the ordinary producer-protection algebra; direct field reads and ordinary-list groups preserve their unconditional dependency (spec/09 §5). -/
+def requiresProducer (condition : CorrelatedHaving) (consumer producer : FieldId)
+    (producerProtected : ResolvedGroupReference → Bool) : Bool :=
+  match condition with
+  | .leaf (.groupPresence operator _ source) =>
+      ComputationConditionOf.requiresProducerWith
+        (.leaf (.groupPresence operator source) : ComputationConditionOf Empty Empty)
+        (fun atom => nomatch atom) (fun predicate => nomatch predicate)
+        consumer producer producerProtected
+  | .leaf (.groupFill operator first rest) =>
+      (havingGroupFillDependencies operator first rest).requiresProducerWith
+        (fun atom => nomatch atom) (fun predicate => nomatch predicate)
+        consumer producer producerProtected
+  | .and left right | .or left right =>
+      requiresProducer left consumer producer producerProtected ||
+        requiresProducer right consumer producer producerProtected
+  | leaf => leaf.referencesField producer
 
 end CorrelatedHaving
 
@@ -148,6 +190,8 @@ private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
   | .fieldMembership _ source => source.references.any (·.origin.isInner)
   | .fieldFill _ references => references.any (·.origin.isInner)
   | .presence _ reference => reference.origin.isInner
+  | .groupPresence _ origin _ => origin.isInner
+  | .groupFill _ first rest => (first :: rest).any (·.origin.isInner)
 
 private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
@@ -160,6 +204,8 @@ private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
   | .fieldMembership _ source => source.references.any (·.origin.isOuter)
   | .fieldFill _ references => references.any (·.origin.isOuter)
   | .presence _ reference => reference.origin.isOuter
+  | .groupPresence _ origin _ => origin.isOuter
+  | .groupFill _ first rest => (first :: rest).any (·.origin.isOuter)
 
 def CorrelatedHaving.usesInner (condition : CorrelatedHaving) : Bool :=
   condition.anyLeaf CorrelatedHavingLeaf.usesInner
@@ -233,6 +279,14 @@ def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
   | .presence polarity reference =>
       CorrelatedHavingLeaf.verdictTruth
         (polarity.evalObservation (reference.observeInAt .validation context frame))
+  | .groupPresence operator origin source =>
+      match evalHavingGroupPresenceValidation operator origin source context.asResolving frame with
+      | .ok verdict => CorrelatedHavingLeaf.verdictTruth verdict
+      | .error _ => .unknown
+  | .groupFill operator first rest =>
+      match evalHavingGroupFillValidation operator first rest context.asResolving frame with
+      | .ok verdict => CorrelatedHavingLeaf.verdictTruth verdict
+      | .error _ => .unknown
 
 /-- Truth of a correlated filter. Numeric empty operands use the comparison-local zero substitution; invalid operands are unknown; only the later selector decides that unknown is not kept. Connectives use the shared strong-Kleene tree evaluator. -/
 def CorrelatedHaving.evalTruthIn (condition : CorrelatedHaving)
@@ -268,6 +322,10 @@ def CorrelatedHavingLeaf.evalTruthInResolving
       pure (CorrelatedHavingLeaf.verdictTruth
         (polarity.evalObservation
           (← reference.observeInAtResolving .validation context frame)))
+  | .groupPresence operator origin source =>
+      CorrelatedHavingLeaf.verdictTruth <$> evalHavingGroupPresenceValidation operator origin source context frame
+  | .groupFill operator first rest =>
+      CorrelatedHavingLeaf.verdictTruth <$> evalHavingGroupFillValidation operator first rest context frame
 
 /-- Generated filters test each leaf for known truth and short-circuit their Boolean tree
 (`CodeGenFilterCondition`, `CompositeCondition.getBooleanCode`, spec/07 §3). -/
@@ -312,17 +370,17 @@ def CorrelatedHavingLeaf.evalComputationInResolving
           pure (match polarity.evalObservation observation with
             | .fired _ => .holds
             | _ => .notTrue)
+  | .groupPresence operator origin source =>
+      evalHavingGroupPresenceComputation operator origin source context frame
+  | .groupFill operator first rest =>
+      evalHavingGroupFillComputation operator first rest context frame
 
 /-- A pure cell reader does not eliminate calendar support failures. -/
 def CorrelatedHavingLeaf.evalComputationIn (context : CorrelationContext)
     (frame : CorrelationFrame) : CorrelatedHavingLeaf → Except CorrelationRuntimeFault ComputationConditionResult
   | .numeric comparison => (comparison.evalComputationWith (HavingNumericAtom.readComputation context frame)).mapError
       (fun _ => .calendarUnavailable)
-  | leaf => leaf.evalComputationInResolving {
-      read := fun env field => .ok (context.read env field)
-      world := context.world
-      bindingError := fun _ => .calendarUnavailable, unsupportedDateCalendar := .calendarUnavailable
-      temporalValueFailure := .valueFailure } frame
+  | leaf => leaf.evalComputationInResolving context.asResolving frame
 
 /-- The shared effectful tree preserves support faults and computation short-circuiting. -/
 def CorrelatedHaving.evalComputationIn (condition : CorrelatedHaving)
@@ -476,6 +534,12 @@ def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
       ∃ messagePolarity,
         polarity.evalObservation (reference.observeInAt .validation context frame)
           = .fired messagePolarity
+  | .groupPresence operator origin source =>
+      ∃ messagePolarity, evalHavingGroupPresenceValidation operator origin source context.asResolving frame =
+        .ok (.fired messagePolarity)
+  | .groupFill operator first rest =>
+      ∃ messagePolarity, evalHavingGroupFillValidation operator first rest context.asResolving frame =
+        .ok (.fired messagePolarity)
 
 /-- Declarative truth predicate for the correlated filter. Atomic comparisons are stated over resolved values/rows independently of the executable `Bool`; connective structure mirrors the shared tree. -/
 def CorrelatedHaving.HoldsIn (condition : CorrelatedHaving)

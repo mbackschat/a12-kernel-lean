@@ -215,16 +215,7 @@ shape permits conditional dependencies, since target checking precedes this expa
 def ofGroupListWith (operator : GroupFillQuantifier)
     (first : ComputationConditionOf Atom Predicate × ComputationConditionOf Atom Predicate)
     (rest : List (ComputationConditionOf Atom Predicate × ComputationConditionOf Atom Predicate)) : ComputationConditionOf Atom Predicate :=
-  let positives (join : ComputationConditionOf Atom Predicate → ComputationConditionOf Atom Predicate → ComputationConditionOf Atom Predicate) :=
-    rest.foldl (fun accumulated next => join accumulated next.1) first.1
-  let negatives (join : ComputationConditionOf Atom Predicate → ComputationConditionOf Atom Predicate → ComputationConditionOf Atom Predicate) :=
-    rest.foldl (fun accumulated next => join accumulated next.2) first.2
-  match operator with
-  | .allGroupsFilled => positives .and
-  | .noGroupFilled => negatives .and
-  | .atLeastOneGroupFilled => positives .or
-  | .notAllGroupsFilled => negatives .or
-  | .groupsNotCollectivelyFilled => .and (positives .or) (negatives .or)
+  operator.conditionTree first rest
 
 def ofGroupList (operator : GroupFillQuantifier)
     (first : ComputationCondition × ComputationCondition)

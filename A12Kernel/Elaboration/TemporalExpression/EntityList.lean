@@ -43,13 +43,20 @@ def readScalarTemporalField (model : FlatModel) (phase : Phase) (field : FlatTem
 
 namespace CheckedTemporalExtremumOperands
 
-/-- Scheduling includes filter reads even when every candidate is excluded. -/
-def fieldIds (source : CheckedTemporalExtremumOperands model) : List FieldId :=
+/-- Payload and selector reads remain ordinary dependencies regardless of filter group protection. -/
+def operandFieldIds (source : CheckedTemporalExtremumOperands model) : List FieldId :=
   source.shape.operands.flatMap (fun operand => match operand with
     | .indexed selected => (model.fields.filter (fun field => selected.referencesField field.id)).map (·.id)
     | .keyed selected => (model.fields.filter (fun field => selected.referencesField field.id)).map (·.id)
-    | operand => operand.expansionDeclarations.map (·.id)) ++
-    source.filters.flatMap (fun filter => filter.toList.flatMap (·.fieldIds))
+    | operand => operand.expansionDeclarations.map (·.id))
+
+/-- Complete references retain filter members even when a dependency query exempts them. -/
+def fieldIds (source : CheckedTemporalExtremumOperands model) : List FieldId :=
+  source.operandFieldIds ++ source.filters.flatMap (fun filter => filter.toList.flatMap (·.fieldIds))
+
+def referencesWith (source : CheckedTemporalExtremumOperands model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  source.operandFieldIds.contains field || source.filters.any (·.any filterReads)
 
 def bindingScopes (source : CheckedTemporalExtremumOperands model) : List (List RepeatableLevel) :=
   source.shape.operands.flatMap (·.bindingScopes) ++
@@ -101,11 +108,16 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
   let contextRead ← addressed context
   let resolved ← (source.path.resolveInCapacity contextRead.document context.row).mapError (fun _ => .calendarUnavailable)
   let read := fun row => readField model phase source.declaration (contextRead.read row source.declaration.id)
+  let groups := model.correlationGroupsWithRead contextRead.document (fun row field => pure (contextRead.read row field))
   let correlation : ResolvingCorrelationContext ScalarTemporalEvaluationFault := {
     read := fun row field => pure (contextRead.read row field)
     world := context.world
     unsupportedDateCalendar := .calendarUnavailable
     temporalValueFailure := .dateTimeLabelUnresolved
+    groupUnavailable := ScalarTemporalEvaluationFault.addressing ∘ CheckedAddressingError.checkedDocumentRequired
+    groups := some {
+      validation row reference := (groups.validation row reference).mapError .addressing
+      computation row source := (groups.computation row source).mapError .addressing }
     bindingError := fun _ => .calendarUnavailable }
   let values ← match filter, phase with
     | none, _ => resolved.environments.mapM read

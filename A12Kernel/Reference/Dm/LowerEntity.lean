@@ -52,6 +52,14 @@ private def presencePolarity? : String → Option HavingPresencePolarity
   | "FieldNotFilled" => some .notFilled
   | _ => none
 
+private def lowerHavingGroupReference : Argument → Lowering (HavingOrigin × SurfaceGroupReference)
+  | .mk (.entity { path, index := none, category := none }) none none =>
+      match path.havingGroup? with
+      | some reference => pure reference
+      | none => refuse "Having" "group path"
+  | .mk (.constant "RuleGroup") none none => pure (.inner, .ruleGroup false)
+  | _ => refuse "Having" "group operand"
+
 private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
   | .call id arguments none none => if let some op := aggregateOp? id then do
       let sources ← arguments.mapM fun
@@ -194,6 +202,14 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
           let some literal := decodeNumber? text | refuse "Having" "integer member"
           if literal.authoredScale == 0 then pure literal.value.num else refuse "Having" "integer member"
         return .literalMembership operator reference (.inl integers)
+      if id == "GroupFilled" || id == "GroupNotFilled" then
+        let [argument] := arguments | refuse "Having" "group-presence arity"
+        let (origin, reference) ← lowerHavingGroupReference argument
+        return .groupPresence (if id == "GroupFilled" then .filled else .notFilled) origin reference
+      if let some operator := groupQuantifier? id then
+        let references ← arguments.mapM lowerHavingGroupReference
+        let first :: rest := references | refuse "Having" "group-fill arity"
+        return .groupFill operator first rest
       if let some polarity := presencePolarity? id then
         match arguments with
         | [.mk (.entity { path, index := none, category := none }) none none] =>

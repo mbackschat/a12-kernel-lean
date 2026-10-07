@@ -365,10 +365,8 @@ def checkDocument (prepared : PreparedFlatStringContext model compilePattern)
     rowsNodup := checkedRows.nodup
   }
 
-namespace CheckedDocument
-
 /-- Project physical rows at the deepest level of one repeatable scope into complete named environments, preserving source order. Blank-but-instantiated rows remain observable; rows belonging to other groups do not enter the result. -/
-def actualRowEnvironments (checked : CheckedDocument model)
+def FlatModel.actualRowEnvironments (model : FlatModel) (rows : List RowAddr)
     (scope : List RepeatableLevel) :
     Except ActualRowEnvironmentError (List Env) :=
   match scope.reverse with
@@ -380,12 +378,19 @@ def actualRowEnvironments (checked : CheckedDocument model)
       let expected := model.repeatableScopeForGroupPath group.path
       if scope != expected then
         throw (.incoherentScope scope expected)
-      (checked.source.instantiatedRows.filter fun row =>
+      (rows.filter fun row =>
         row.group == deepest).mapM fun row =>
           if row.path.length == scope.length then
             pure (scope.zip row.path)
           else
             throw (.incoherentRow row)
+
+namespace CheckedDocument
+
+/-- Specialize physical-row enumeration to the checked document's immutable topology. -/
+def actualRowEnvironments (checked : CheckedDocument model)
+    (scope : List RepeatableLevel) : Except ActualRowEnvironmentError (List Env) :=
+  model.actualRowEnvironments checked.source.instantiatedRows scope
 
 /-- Whether one target-row environment lies beyond a declared capacity on any of its axes.
 

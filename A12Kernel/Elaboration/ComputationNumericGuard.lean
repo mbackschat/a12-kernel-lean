@@ -59,12 +59,12 @@ def referencesField (condition : CheckedComputationCondition model) (field : Fie
 
 def forbidsTarget (condition : CheckedComputationCondition model) (field : FieldId) : Bool :=
   ComputationConditionOf.forbidsTargetWith condition
-    (fun atom field => atom.references model field) (·.forbidsTarget) field
+    (fun atom field => atom.forbidsTarget model field) (·.forbidsTarget) field
 
 def requiresProducer (condition : CheckedComputationCondition model) (consumer producer : FieldId)
     (producerProtected : ResolvedGroupReference → Bool) : Bool :=
   ComputationConditionOf.requiresProducerWith condition
-    (fun atom field => atom.references model field)
+    (fun atom field => atom.requiresProducer model consumer field producerProtected)
     (fun predicate field => predicate.requiresProducer consumer field producerProtected) consumer producer producerProtected
 
 def rowBoundBool (condition : CheckedComputationCondition model) (scope : List RepeatableLevel) : Bool :=

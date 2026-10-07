@@ -196,7 +196,18 @@ structure CheckedTemporalFirstFilledSite (model : FlatModel) where
   sourceCarrier :
     site.source.declarations.all (·.temporalFirstFilledStarCarrier? == some sourceProfile) = true
   sourceAccepted : carrier.acceptsSource sourceProfile = true
-  excludesTarget : site.referencesField site.targetField = false
+  excludesTarget : site.referencesWith site.targetField (·.forbidsTarget site.targetField) = false
+
+namespace CheckedTemporalFirstFilledSite
+
+def referencesWith (shape : CheckedTemporalFirstFilledSite model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  shape.site.referencesWith field filterReads
+
+def referencesField (shape : CheckedTemporalFirstFilledSite model) (field : FieldId) : Bool :=
+  shape.referencesWith field (·.referencesField field)
+
+end CheckedTemporalFirstFilledSite
 
 /-- Place the target and source, then check both carriers against the target's own profile, read
 without the pre-1900 check when the calling carrier's target policy owns it. -/
@@ -216,7 +227,7 @@ def checkTemporalFirstFilledSite (model : FlatModel) (declaringGroup : GroupPath
         if hAccepted : carrier.acceptsSource sourceProfile = true then
           if let .list _ := site.source then
             if carrier.dateRangeComponents?.isSome then throw (.sourceShape site.target.path)
-          if hExcludes : site.referencesField site.targetField = false then
+          if hExcludes : site.referencesWith site.targetField (·.forbidsTarget site.targetField) = false then
             pure { site, carrier, sourceProfile, ownsBefore1900
                    targetCarrier := hTarget
                    sourceCarrier := hSource

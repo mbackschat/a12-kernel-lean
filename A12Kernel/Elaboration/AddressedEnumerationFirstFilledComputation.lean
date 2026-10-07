@@ -26,7 +26,7 @@ structure CheckedAddressedEnumerationFirstFilledComputation
   source : CheckedEnumerationFirstFilledSource model
     target.declaration.repeatableScope
   sourceAllowed : source.allowedFor target.projection = true
-  targetNotReferenced : source.referencesField target.field = false
+  targetNotReferenced : source.referencesWith target.field (·.forbidsTarget target.field) = false
 
 /-- Check the target before the shared first-filled source, then retain whole-domain compatibility and target exclusion as certificates. -/
 def checkAddressedEnumerationFirstFilledComputation
@@ -41,7 +41,7 @@ def checkAddressedEnumerationFirstFilledComputation
   let source ← elaborateEnumerationFirstFilledSource model declaringGroup
       target.declaration.repeatableScope authored declaringGroup
     |>.mapError .source
-  if hReference : source.referencesField target.field = true then
+  if hReference : source.referencesWith target.field (·.forbidsTarget target.field) = true then
     throw (.targetSelfReference target.field)
   else if hAllowed : source.allowedFor target.projection = true then
     pure {
@@ -49,7 +49,7 @@ def checkAddressedEnumerationFirstFilledComputation
       source
       sourceAllowed := hAllowed
       targetNotReferenced := by
-        cases hValue : source.referencesField target.field with
+        cases hValue : source.referencesWith target.field (·.forbidsTarget target.field) with
         | false => rfl
         | true => exact False.elim (hReference hValue)
     }

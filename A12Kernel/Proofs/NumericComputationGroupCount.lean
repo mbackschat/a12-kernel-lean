@@ -192,9 +192,22 @@ theorem readGroupCountOperand_fixed_error_iff_notAdmitted
     cases rows : reference.repeatableDescendantShape? model <;>
       cases bound : reference.boundInstanceOperand model <;>
         simp [Except.map, NumericComputationEvaluationContext.readGroupInstanceAt,
-          FlatModel.computationGroupSource, ResolvedComputationGroupSource.read] <;>
+          FlatModel.computationGroupSource, ResolvedComputationGroupSource.read,
+          ResolvedComputationGroupSource.readWith] <;>
         cases path : context.outer.pathForScope (model.repeatableScopeForGroupPath reference.path) <;>
-        simp [Except.mapError, Functor.map, Except.map]
+        simp [Except.mapError, Functor.map, Except.map, bind, Except.bind, pure, Except.pure,
+          Function.comp_def]
+  all_goals
+    have pureRead (Error : Type) (fields : List FlatFieldDecl) :
+        (fields.mapM fun declaration =>
+          (Except.ok (observeCell .computation (context.starRead context.outer declaration.id)) :
+            Except Error CellObservation)) =
+          Except.ok (fields.map fun declaration => observeCell .computation (context.starRead context.outer declaration.id)) := by
+      induction fields with
+      | nil => rfl
+      | cons first rest ih => simp [List.mapM_cons, ih, bind, Except.bind, Functor.map, Except.map, pure, Except.pure]
+    simp [pureRead]
+
 
 /-- The two group-count atom shapes gate an all-fixed operand list identically.
 

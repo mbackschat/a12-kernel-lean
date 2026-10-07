@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.HavingFieldValueList
+import A12Kernel.Elaboration.CheckedGroupPresence
 import A12Kernel.Elaboration.Flat.FieldValueRead
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.NumericSource
@@ -63,7 +64,7 @@ def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
       | _, _ => false
   -- Text, Boolean/Confirm and presence carry no declared scale; their kind gates belong to
   -- wellFormedForEnvironments.
-  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .presence _ _ => true
+  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .presence _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => true
 
 /-- Every leaf under the shared connective tree satisfies the static scale law. -/
 def CorrelatedHaving.equalityScalesAgree (condition : CorrelatedHaving) : Bool :=
@@ -80,7 +81,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
   -- The legacy one-group adapter admits only the leaves it was built for. The other
   -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
   -- extending an adapter no current consumer needs them on.
-  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .presence _ _ => false
+  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .presence _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
 
 def CorrelatedHaving.wellFormedForSingleGroup (condition : CorrelatedHaving)
     (model : FlatModel) (group : RepeatableGroupDecl) : Bool :=
@@ -186,6 +187,29 @@ private def calendarSourceAdmitted (model : FlatModel)
       declaration.toTemporalField? == some reference.field &&
         repeatableScopeAvailable declaration.repeatableScope (reference.origin.availableLevels candidateLevels outerLevels)
 
+/-- Authored group lists and reconstructed certificates reject the same strict ancestor overlap regardless of capture; identical paths remain origin-sensitive (kernel CheckEntityListenUtils / EntityRef, spec/07 §3). -/
+def firstOverlappingHavingPaths? : List (HavingOrigin × GroupPath) → Option (GroupPath × GroupPath)
+  | [] => none
+  | (origin, path) :: rest =>
+      match rest.find? fun (otherOrigin, other) => (path == other && origin == otherOrigin) ||
+          (path != other && (path.isPrefixOf other || other.isPrefixOf path)) with
+      | some (_, other) => some (path, other)
+      | none => firstOverlappingHavingPaths? rest
+
+private def HavingGroupOperand.path? (operand : HavingGroupOperand) (model : FlatModel) : Option GroupPath :=
+  match operand with
+  | .field reference => (model.lookupUniqueId reference.field).toOption.map (·.path)
+  | .group _ source => some source.reference.path
+
+private def HavingGroupOperand.admitted (operand : HavingGroupOperand) (model : FlatModel)
+    (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
+  match operand with
+  | .field reference => (model.lookupUniqueId reference.field).toOption.any fun declaration =>
+      repeatableScopeAvailable declaration.repeatableScope
+        (reference.origin.availableLevels candidateLevels outerLevels)
+  | .group origin source => source.starPath.isNone &&
+      source.admitted model (origin.availableLevels candidateLevels outerLevels)
+
 def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) :
     CorrelatedHavingLeaf → Bool
@@ -254,6 +278,24 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
         references.all fun ref => (model.lookupUniqueId ref.field).toOption.any fun declaration =>
           repeatableScopeAvailable declaration.repeatableScope
             (ref.origin.availableLevels candidateLevels outerLevels)
+  | .groupPresence _ origin source =>
+      source.dependencyKind == .conditionalPresence &&
+        (HavingGroupOperand.group origin source).admitted model candidateLevels outerLevels
+  | .groupFill operator first rest =>
+      let operands := first :: rest
+      (!operator.requiresMultipleOperands || !rest.isEmpty) &&
+        operands.eraseDups.length == operands.length &&
+        (firstOverlappingHavingPaths? (operands.filterMap fun operand =>
+          (operand.path? model).map (operand.origin, ·))).isNone &&
+        operands.all (fun operand => operand.admitted model candidateLevels outerLevels &&
+          match operand with
+          | .field _ => true
+          | .group _ source => source.dependencyKind ==
+              (if source.reference.isRoot then .conditionalPresence else .ordinaryList)) &&
+        (operands.all fun
+          | .field _ => true
+          | .group _ source => !source.reference.isRoot ||
+              (!operator.requiresMultipleOperands && rest.isEmpty))
   | .presence _ reference =>
       match model.lookupUniqueId reference.field with
       | .error _ => false
@@ -326,6 +368,13 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
   | .fieldFill _ references => references.any fun ref =>
       ref.origin == .inner && (model.lookupUniqueId ref.field).toOption.any fun declaration =>
         declaration.repeatableScope.any reopenedLevels.contains
+  | .groupPresence _ origin source =>
+      origin == .inner && source.content.scope.any reopenedLevels.contains
+  | .groupFill _ first rest => (first :: rest).any fun
+      | .field reference => reference.origin == .inner &&
+          (model.lookupUniqueId reference.field).toOption.any fun declaration =>
+            declaration.repeatableScope.any reopenedLevels.contains
+      | .group origin source => origin == .inner && source.content.scope.any reopenedLevels.contains
   | .presence _ reference =>
       match reference.origin, model.lookupUniqueId reference.field with
       | .inner, .ok declaration =>

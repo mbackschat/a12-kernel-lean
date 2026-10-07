@@ -215,6 +215,13 @@ private def havingStringReferencePointer (source : CheckedStarFieldPath model)
     | .error _ => throw (.incoherentHavingField reference.field.id)
   havingFieldPointerFor source environment declaration reference.origin
 
+private def havingGroupReferencePointers (source : CheckedStarFieldPath model)
+    (environment : Env) (origin : HavingOrigin) (reference : ResolvedGroupReference) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  let groupDepth := (model.repeatableScopeForGroupPath reference.path).length
+  groupExpansionPointers model reference.path
+    (match origin with | .outer => groupDepth | .inner => min groupDepth source.path.firstStar) environment
+
 private def correlatedHavingReferencePointers (source : CheckedStarFieldPath model)
     (environment : Env) : CorrelatedHaving →
     Except ReferenceProjectionError (List MessagePointer)
@@ -275,6 +282,15 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
         | .ok declaration => pure declaration
         | .error _ => throw (.incoherentHavingField reference.field)
       pure [← havingFieldPointerFor source environment declaration reference.origin]
+  | .leaf (.groupPresence _ origin group) =>
+      havingGroupReferencePointers source environment origin group.reference
+  | .leaf (.groupFill _ first rest) => do
+      let pointers ← (first :: rest).mapM fun
+        | .group origin group => havingGroupReferencePointers source environment origin group.reference
+        | .field reference => do
+            let declaration ← (model.lookupUniqueId reference.field).mapError fun _ => .incoherentHavingField reference.field
+            pure [← havingFieldPointerFor source environment declaration reference.origin]
+      pure pointers.flatten
   | .and left right | .or left right => do
       pure ((← correlatedHavingReferencePointers source environment left) ++
         (← correlatedHavingReferencePointers source environment right))

@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.CheckedDocument
-import A12Kernel.Semantics.GroupPresence
+import A12Kernel.Semantics.ComputationCondition
 
 /-! # Checked-document projection for resolved group presence -/
 
@@ -21,6 +21,19 @@ def FlatModel.computationGroupSource (model : FlatModel) (groupPath : GroupPath)
   { scope
     fields := ((model.groupSubtreeFields groupPath).filter (·.repeatableScope == scope)).map (·.id)
     rowLevels := (model.repeatableGroups.filter (groupPath.isPrefixOf ·.path)).map (·.level) }
+
+/-- Retain exact model-derived membership and content while binding the operand to the target row. -/
+def ComputationGroupOperand.admitted (source : ComputationGroupOperand)
+    (model : FlatModel) (scope : List RepeatableLevel) : Bool :=
+  model.hasGroupPath source.reference.path &&
+    source.content == model.computationGroupSource source.reference.path &&
+    source.members == (model.groupSubtreeFields source.reference.path).map (·.id) &&
+    source.reference.boundRepeatableScope == source.content.scope &&
+    match source.starPath with
+    | none => source.content.scope.isPrefixOf scope
+    | some path =>
+        model.repeatableAxesForScope? source.content.scope == some path.axes &&
+          path.firstStar < path.axes.length && path.bindingScope.isPrefixOf scope
 
 namespace CheckedDocument
 
@@ -78,8 +91,10 @@ private def resolveGroupPresenceScope (model : FlatModel)
     rows
   pure (addressPrefix, overLimitRow)
 
+end CheckedDocument
+
 /-- Derive one resolved validation-group slice using call-selected rows and a later checked-cell placement view over the same immutable document. The supplied slice must retain base addresses and may add model-owned absent-cell findings. -/
-def groupPresenceInputFromSlice (_checked : CheckedDocument model)
+def FlatModel.groupPresenceInputFromSlice (model : FlatModel)
     (rows : List RowAddr) (cells : List CheckedCellPlacement)
     (groupPath : GroupPath) (environment : Env)
     (relevance : GroupRelevance) (structuralError : Bool)
@@ -88,7 +103,7 @@ def groupPresenceInputFromSlice (_checked : CheckedDocument model)
   if !model.hasGroupPath groupPath then
     .error (.unknownGroup groupPath)
   else
-    match resolveGroupPresenceScope model rows groupPath environment with
+    match CheckedDocument.resolveGroupPresenceScope model rows groupPath environment with
     | .error error => .error error
     | .ok (addressPrefix, overLimitRow) =>
         let descendantCells := cells.filterMap fun placement =>
@@ -109,11 +124,22 @@ def groupPresenceInputFromSlice (_checked : CheckedDocument model)
         .ok {
           descendantCells
           hasInstantiatedRow := rows.any
-            (rowWithinGroup model groupPath addressPrefix)
+            (CheckedDocument.rowWithinGroup model groupPath addressPrefix)
           structuralError := structuralError || overLimitRow
           silentError
           relevance
         }
+
+namespace CheckedDocument
+
+/-- Specialize the model-owned slice calculation to a checked document and its later cell view. -/
+def groupPresenceInputFromSlice (_checked : CheckedDocument model)
+    (rows : List RowAddr) (cells : List CheckedCellPlacement)
+    (groupPath : GroupPath) (environment : Env)
+    (relevance : GroupRelevance) (structuralError : Bool)
+    (silentErrorAddresses : List CellAddr := []) :
+    Except CheckedGroupPresenceError ResolvedGroupPresenceInput :=
+  model.groupPresenceInputFromSlice rows cells groupPath environment relevance structuralError silentErrorAddresses
 
 /-- Derive one resolved validation-group slice using a later checked-cell placement view and every immutable source row. Full-validation and source-complete later views use this specialization. -/
 def groupPresenceInputFromCells (checked : CheckedDocument model)

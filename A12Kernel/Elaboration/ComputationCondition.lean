@@ -44,19 +44,6 @@ def ComputationFillSource.admitted (model : FlatModel) (scope : List RepeatableL
           boundCount ≤ axes.length && ((axes.take boundCount).map (·.level)).isPrefixOf scope
       | .error _ => false
 
-/-- Retain exact model-derived membership and content while binding the operand to the target row. -/
-def ComputationGroupOperand.admitted (source : ComputationGroupOperand)
-    (model : FlatModel) (scope : List RepeatableLevel) : Bool :=
-  model.hasGroupPath source.reference.path &&
-    source.content == model.computationGroupSource source.reference.path &&
-    source.members == (model.groupSubtreeFields source.reference.path).map (·.id) &&
-    source.reference.boundRepeatableScope == source.content.scope &&
-    match source.starPath with
-    | none => source.content.scope.isPrefixOf scope
-    | some path =>
-        model.repeatableAxesForScope? source.content.scope == some path.axes &&
-          path.firstStar < path.axes.length && path.bindingScope.isPrefixOf scope
-
 /-- Scalar equality preserves exact model-owned kind and target-bound field identity. -/
 def FlatModel.admitsScalarGuardIn (model : FlatModel) (scope : List RepeatableLevel)
     (comparison : FlatComparison) : Bool :=

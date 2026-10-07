@@ -231,6 +231,21 @@ def GroupFillQuantifier.evalValidation (operator : GroupFillQuantifier)
     (states : List GroupPresenceState) : ValidationFillOutcome :=
   operator.evalPresence (states.map GroupPresenceState.asGroupListPresence)
 
+/-- Group-list expansion preserves each operand's positive and negative presence reads and their authored short-circuit order (`ExpandService.expandAndCreate`, spec/09). -/
+def GroupFillQuantifier.conditionTree (operator : GroupFillQuantifier)
+    (first : ConditionTree Leaf × ConditionTree Leaf)
+    (rest : List (ConditionTree Leaf × ConditionTree Leaf)) : ConditionTree Leaf :=
+  let positives (join : ConditionTree Leaf → ConditionTree Leaf → ConditionTree Leaf) :=
+    rest.foldl (fun accumulated next => join accumulated next.1) first.1
+  let negatives (join : ConditionTree Leaf → ConditionTree Leaf → ConditionTree Leaf) :=
+    rest.foldl (fun accumulated next => join accumulated next.2) first.2
+  match operator with
+  | .allGroupsFilled => positives .and
+  | .noGroupFilled => negatives .and
+  | .atLeastOneGroupFilled => positives .or
+  | .notAllGroupsFilled => negatives .or
+  | .groupsNotCollectivelyFilled => .and (positives .or) (negatives .or)
+
 /-- The **validation** arm's multi-group numeric count: a value, or `unknown` when any operand is
     undecided, since unlike the group-list predicates it cannot skip one. Which states decide an
     operand differs by pass, as `numberOfFilledGroups` and `numberOfFilledGroupsPartial` state. The
@@ -350,13 +365,20 @@ structure ResolvedComputationGroupSource where
 
 /-- Read the same content slice for a group predicate and a numeric group count. Descendant row
 identity includes the enclosing coordinates; presence does not use a starred in-capacity extent. -/
+def ResolvedComputationGroupSource.readWith (source : ResolvedComputationGroupSource)
+    (document : Document) (readCell : Env → FieldId → Except Error CheckedCell)
+    (bindingError : EnvBindingError → Error) (outer : Env) :
+    Except Error (List CellObservation × Bool) := do
+  let addressPrefix ← (outer.pathForScope source.scope).mapError bindingError
+  let cells ← source.fields.mapM fun field => observeCell .computation <$> readCell outer field
+  pure (cells, document.instantiatedRows.any fun row =>
+    source.rowLevels.contains row.group && addressPrefix.isPrefixOf row.path)
+
+/-- Pure overlays specialize the same topology-and-content read used by checked addressed filters. -/
 def ResolvedComputationGroupSource.read (source : ResolvedComputationGroupSource)
     (document : Document) (readCell : Env → FieldId → CheckedCell) (outer : Env) :
-    Except EnvBindingError (List CellObservation × Bool) := do
-  let addressPrefix ← outer.pathForScope source.scope
-  pure (source.fields.map (fun field => observeCell .computation (readCell outer field)),
-    document.instantiatedRows.any fun row =>
-      source.rowLevels.contains row.group && addressPrefix.isPrefixOf row.path)
+    Except EnvBindingError (List CellObservation × Bool) :=
+  source.readWith document (fun env field => pure (readCell env field)) id outer
 
 /-- Evaluate either group predicate without erasing a missing or inconsistent outer binding. -/
 def ResolvedComputationGroupSource.eval (source : ResolvedComputationGroupSource)

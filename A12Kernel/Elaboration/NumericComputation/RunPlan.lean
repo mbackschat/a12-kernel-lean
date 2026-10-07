@@ -47,6 +47,15 @@ def referencesField (operation :
   operation.operation.core.expression.anyAtom
     (CheckedNumericComputationAtom.references model field)
 
+def forbidsTarget (operation : CheckedNumericTargetComputationOperation model) (field : FieldId) : Bool :=
+  operation.operation.core.expression.anyAtom
+    (CheckedNumericComputationAtom.forbidsTarget model field)
+
+def requiresProducer (operation : CheckedNumericTargetComputationOperation model)
+    (consumer producer : FieldId) (protectedGroup : ResolvedGroupReference → Bool) : Bool :=
+  operation.operation.core.expression.anyAtom
+    (CheckedNumericComputationAtom.requiresProducer model consumer producer protectedGroup)
+
 end CheckedNumericTargetComputationOperation
 
 namespace CheckedNumericComputationTable
@@ -82,7 +91,7 @@ def requiresProducer (table : CheckedNumericComputationTable model)
     (producerProtected : FieldId → ResolvedGroupReference → Bool) (field : FieldId) : Bool :=
   table.selectableAlternatives.any fun alternative =>
     alternative.precondition.any (·.requiresProducer table.targetField field (producerProtected field)) ||
-      alternative.operation.referencesField field
+      alternative.operation.requiresProducer table.targetField field (producerProtected field)
 
 end CheckedNumericComputationTable
 

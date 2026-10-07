@@ -12,10 +12,10 @@ theorem checkedEnumerationFirstFilled_sources_allowed
   simpa [CheckedEnumerationFirstFilledSource.allowedFor] using
     operation.sourceAllowed
 
-/-- Checked Enumeration-target `FirstFilledValue` excludes its target from every direct, selected or starred source slot. -/
-theorem checkedEnumerationFirstFilled_excludes_target_reference
+/-- Checked Enumeration-target `FirstFilledValue` excludes forbidden target references while retaining positive conditional group membership (spec/09 §5). -/
+theorem checkedEnumerationFirstFilled_excludes_forbidden_target_reference
     (operation : CheckedEnumerationFirstFilledComputationOperation model) :
-    operation.source.referencesField operation.target.field = false :=
+    operation.source.referencesWith operation.target.field (·.forbidsTarget operation.target.field) = false :=
   operation.targetNotReferenced
 
 /-- The target wrapper delegates exactly to the common checked first-filled scan and common Enumeration target projection. -/

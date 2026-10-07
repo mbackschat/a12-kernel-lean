@@ -197,31 +197,45 @@ def NumericComputationAtom.referencesField (model : FlatModel) (field : FieldId)
     (atom : NumericComputationAtom) : Bool :=
   atom.referencesFieldWith model field (·.referencesField field)
 
-def CheckedNumericComputationAtom.references
-    (model : FlatModel) (field : FieldId) :
+def CheckedNumericComputationAtom.referencesWith
+    (model : FlatModel) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) :
     CheckedNumericComputationAtom model → Bool
   | .indexed source => source.toCheckedSemanticIndexSource.referencesField field
   | .indexedString source => source.referencesField field
-  | .filledFieldCount source => source.referencesField field
-  | .firstFilled source => source.referencesField field
-  | .valueCount _ source => source.referencesField field
-  | .tokenDistinctCount source => source.referencesField field
-  | .temporalPart source => source.source.referencesField field
-  | .temporalDistinctCount run => run.source.referencesField field
-  | .tokenValueCount source => source.referencesField field
-  | .booleanValueCount source => source.referencesField field
+  | .filledFieldCount source => source.referencesField field (fun having _ => filterReads having)
+  | .firstFilled source => source.referencesField field (fun having _ => filterReads having)
+  | .valueCount _ source => source.referencesField field (fun having _ => filterReads having)
+  | .tokenDistinctCount source => source.referencesField field (fun having _ => filterReads having)
+  | .temporalPart source => source.source.referencesWith field filterReads
+  | .temporalDistinctCount run => run.source.referencesField field (fun having _ => filterReads having)
+  | .tokenValueCount source => source.referencesField field (fun having _ => filterReads having)
+  | .booleanValueCount source => source.referencesField field (fun having _ => filterReads having)
   | .sumOfProducts source =>
       source.referencesField field
   | .filledGroupCountMixed operands =>
       operands.any fun operand => operand.referencesField model field
-  | .numeric atom => atom.referencesFieldWith model field (·.referencesField field)
+  | .numeric atom => atom.referencesFieldWith model field (·.referencesField field (fun having _ => filterReads having))
+
+def CheckedNumericComputationAtom.references (model : FlatModel) (field : FieldId)
+    (atom : CheckedNumericComputationAtom model) : Bool :=
+  atom.referencesWith model field (·.referencesField field)
+
+/-- A filter's complete read inventory does not imply an unconditional self-reference or producer edge (spec/09 §5). -/
+def CheckedNumericComputationAtom.forbidsTarget (model : FlatModel) (field : FieldId)
+    (atom : CheckedNumericComputationAtom model) : Bool :=
+  atom.referencesWith model field (·.forbidsTarget field)
+
+def CheckedNumericComputationAtom.requiresProducer (model : FlatModel) (consumer producer : FieldId)
+    (protectedGroup : ResolvedGroupReference → Bool) (atom : CheckedNumericComputationAtom model) : Bool :=
+  atom.referencesWith model producer (fun having => having.requiresProducer consumer producer protectedGroup)
 
 def NumericComputationOperation.wellFormedBool
     (operation : NumericComputationOperation model) : Bool :=
   model.admitsNumericComputationTarget operation.target &&
     operation.expression.allAtoms (model.admitsNumericComputationOperand operation.readingScope) &&
     !operation.expression.anyAtom
-      (CheckedNumericComputationAtom.references model operation.target.id) &&
+      (CheckedNumericComputationAtom.forbidsTarget model operation.target.id) &&
     operation.expression.isAdmittedResolvedNumericOperation &&
     operation.expression.numericOperationAuthoringCheck == .accepted &&
     match operation.expression.summary?
@@ -689,7 +703,7 @@ def elaborateCompleteNumericComputationOperation
       -- ([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-computation-star-binding-gate)),
       -- and after the authoring and scale gates on every measured shape
       -- ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-join-operators-and-guards)).
-      if resolved.anyAtom (CheckedNumericComputationAtom.references model targetField) then
+      if resolved.anyAtom (CheckedNumericComputationAtom.forbidsTarget model targetField) then
         throw (.targetSelfReference targetField)
       let core : NumericComputationOperation model := {
         target

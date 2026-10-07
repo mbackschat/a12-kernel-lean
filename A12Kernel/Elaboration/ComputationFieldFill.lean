@@ -19,8 +19,9 @@ def elaborate (model : FlatModel) (declaringGroup targetGroup : GroupPath)
     (surface : SurfaceFieldEntitySource) : Except FieldFillListElabError (CheckedComputationFieldFill model) :=
   (fun source => ⟨source⟩) <$> elaborateComputationFieldFillList model declaringGroup targetGroup surface
 
-def referencesField (source : CheckedComputationFieldFill model) (field : FieldId) : Bool :=
-  source.source.referencesField field
+def referencesField (source : CheckedComputationFieldFill model) (field : FieldId)
+    (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) : Bool :=
+  source.source.referencesField field filterReads
 
 def rowBoundBool (source : CheckedComputationFieldFill model) (scope : List RepeatableLevel) : Bool :=
   source.source.rowBoundBool scope
@@ -94,11 +95,13 @@ private def scanStar (kind : ScanKind) (context : ScalarComputationContext)
         | .anyDeclaredEmpty => declaredRead model addressed.document
         | _ => fun reader => reader
       filter.condition.scanComputationResolving
-        { read := fun row field => pure (read filterRead row field)
+        (({
+          read := fun row field => pure (read filterRead row field)
           world := context.world
           unsupportedDateCalendar := .addressing .unsupportedDateCalendar
           temporalValueFailure := .addressing .temporalValueFailure
-          bindingError := fun error => .addressing error.toStarAddressingError }
+          groupUnavailable := ComputationFillError.addressing ∘ StarAddressingError.unsupportedGroupOperand
+          bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationFillError).withComputationGroups addressed.document)
         context.row (fun seen row => pure (step kind seen (observe (read addressed.read row field))))
         candidates seen
 

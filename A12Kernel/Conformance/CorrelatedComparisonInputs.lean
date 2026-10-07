@@ -124,7 +124,7 @@ example : (fill .allFieldsFilled).evalTruthIn fillContext frame = .unknown ∧
 
 private def failingFillContext : ResolvingCorrelationContext String := {
   unsupportedDateCalendar := "calendar"
-  temporalValueFailure := "value failure"
+  temporalValueFailure := "value failure", groupUnavailable := fun _ => "group unavailable"
   bindingError := fun _ => "binding"
   read := fun env _ => if env == frame.innerEnv then .ok (text "filled") else .error "captured read" }
 
@@ -267,7 +267,7 @@ example : [NumericToleranceRange.range1, .range2, .range5, .range10].all (fun ra
 private def toleranceRead : ResolvingCorrelationContext String := {
   read := fun env _ => if env == frame.innerEnv then .ok invalid else .error "captured read"
   unsupportedDateCalendar := "calendar"
-  temporalValueFailure := "value failure"
+  temporalValueFailure := "value failure", groupUnavailable := fun _ => "group unavailable"
   bindingError := fun _ => "binding" }
 
 example : (CorrelatedHavingLeaf.numeric (toleranceComparison .range1)).evalTruthInResolving toleranceRead frame =
@@ -451,7 +451,7 @@ example : (aggregateAtom .sum).readValidation aggregateRead frame = .ok (.value 
 
 private def aggregateStructuralRead : ResolvingCorrelationContext String := {
   unsupportedDateCalendar := "calendar"
-  temporalValueFailure := "value failure"
+  temporalValueFailure := "value failure", groupUnavailable := fun _ => "group unavailable"
   bindingError := fun _ => "binding"
   read := fun env _ => if env == frame.innerEnv then
     .ok { emptyRequired with findings := [] }

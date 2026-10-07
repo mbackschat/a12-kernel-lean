@@ -47,7 +47,8 @@ def computationSelection (document : Document) (outer : Env)
       let classify := source.valueListCellAt .computation read
       pure <| match source.filter with
         | none => .rows resolved.environments resolved.domain.hasOpenTail classify
-        | some having => .filtered having.condition { read, world } resolved.environments
+        | some having => .filtered having.condition
+            (({ read, world } : CorrelationContext).withComputationGroups document) resolved.environments
             resolved.domain.hasOpenTail classify
   | .group source => (.side ·) <$> source.resolvedSideIn .computation document outer read
 
@@ -99,7 +100,7 @@ structure CheckedStringFirstFilledComputation (model : FlatModel) where
   targetOrdinary : target.isOrdinaryStringComputationCarrier = true
   sourceOrdinary :
     source.operands.all (·.declarations.all (·.isOrdinaryStringComputationCarrier)) = true
-  excludesTarget : source.referencesField targetField = false
+  excludesTarget : source.referencesField targetField (fun having _ => having.forbidsTarget targetField) = false
 
 /-- Check the target's placement and carrier, then the source against the target's group. -/
 def checkStringFirstFilledComputation
@@ -120,7 +121,7 @@ def checkStringFirstFilledComputation
         throw (.unsupportedStar star.source.declaration.path)
       if hSource : source.operands.all
           (·.declarations.all (·.isOrdinaryStringComputationCarrier)) = true then
-        if hExcludes : source.referencesField targetField = false then
+        if hExcludes : source.referencesField targetField (fun having _ => having.forbidsTarget targetField) = false then
           if hValid : GroupPath.isValid declaringGroup = true then
             if hPlaced : (target.repeatableScope.isEmpty || (GroupPath.isPrefixOf declaringGroup
                 target.groupPath && !model.isIndexField targetField)) = true then
@@ -175,9 +176,12 @@ structure StringFirstFilledComputationRunView (model : FlatModel) (ResidualMessa
 
 namespace CheckedStringFirstFilledComputation
 
-def referencesField (operation : CheckedStringFirstFilledComputation model) (field : FieldId) :
-    Bool :=
-  operation.source.referencesField field
+def referencesWith (operation : CheckedStringFirstFilledComputation model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  operation.source.referencesField field (fun having _ => filterReads having)
+
+def referencesField (operation : CheckedStringFirstFilledComputation model) (field : FieldId) : Bool :=
+  operation.referencesWith field (·.referencesField field)
 
 /-- Scan the source at one target instance's environment, then run the exact declaration-owned
 String target policy and the target's prepared matcher. -/
@@ -189,7 +193,10 @@ def evaluateAt (operation : CheckedStringFirstFilledComputation model)
   let targetPath ← environment.pathForScope operation.target.repeatableScope
     |>.mapError .targetEnvironment
   let selected ← scanComputationFirstFilledSelections environment
-    (fun | .calendarUnavailable => .unsupportedDateCalendar | .valueFailure => .temporalValueFailure)
+    (fun
+      | .calendarUnavailable => .unsupportedDateCalendar
+      | .valueFailure => .temporalValueFailure
+      | .groupUnavailable path => .unsupportedGroupOperand path)
       (·.computationSelection (world := world) input.source.toDocument environment (input.computationCellAt read)
         (selectedRead := fun source => source.sideWith .computation input.source.toDocument environment
           (input.computationCellAt read environment) (input.storedTextWithRead read environment) (input.computationCellAt read)

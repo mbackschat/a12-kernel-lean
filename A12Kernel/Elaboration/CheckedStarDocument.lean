@@ -318,6 +318,31 @@ def fullValidationAddressedCell (checked : CheckedDocument model)
     Except CheckedAddressingError CheckedAddressedCell :=
   checked.validationAddressedCellWithRows checked.fullValidationRowEnvironments environment field
 
+end CheckedDocument
+
+/-- Group filters use the same exact-address view as fields. Enumerating model-owned positions includes values computed into previously absent cells; immutable rows still own structural content (spec/02 and spec/09). -/
+def FlatModel.correlationGroupsWithRead (model : FlatModel) (document : Document)
+    (read : Env → FieldId → Except CheckedAddressingError CheckedCell) :
+    CorrelationGroupReads CheckedAddressingError where
+  validation environment reference := do
+    let base ← (model.groupPresenceInputFromSlice document.instantiatedRows [] reference.path environment .fullyRelevant false).mapError .group
+    let addressPrefix ← (environment.pathForScope (model.repeatableScopeForGroupPath reference.path)).mapError .environment
+    let cells ← (model.groupSubtreeFields reference.path).mapM fun declaration => do
+      let environments ← if declaration.repeatableScope.isEmpty then pure [[]]
+        else (model.actualRowEnvironments document.instantiatedRows declaration.repeatableScope).mapError .rowEnvironment
+      let selected := environments.filter fun env => addressPrefix.isPrefixOf (env.map (·.2))
+      selected.mapM fun env => read env declaration.id
+    pure ({ base with descendantCells := cells.flatten }.derive)
+  computation environment source :=
+    source.content.readWith document read .environment environment
+
+namespace CheckedDocument
+
+def correlationGroupsWithRead (checked : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    CorrelationGroupReads CheckedAddressingError :=
+  model.correlationGroupsWithRead checked.source.toDocument (checked.checkedCellWithRead read)
+
 /-- Correlation reads through one caller-supplied exact-address view and preserve field/address failures separately from semantic UNKNOWN or computation poison. -/
 def resolvingCorrelationContextWithRead (checked : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
@@ -327,6 +352,8 @@ def resolvingCorrelationContextWithRead (checked : CheckedDocument model)
     checked.checkedCellWithRead read environment field
   unsupportedDateCalendar := .temporalUnavailable
   temporalValueFailure := .temporalValueFailure
+  groupUnavailable := .checkedDocumentRequired
+  groups := some (checked.correlationGroupsWithRead read)
   world := world
   bindingError := .environment
 
@@ -338,6 +365,8 @@ def resolvingCorrelationContext (checked : CheckedDocument model)
       (checked.fullValidationAddressedCell environment field).map (·.cell)
     unsupportedDateCalendar := .temporalUnavailable
     temporalValueFailure := .temporalValueFailure
+    groupUnavailable := .checkedDocumentRequired
+    groups := some (checked.correlationGroupsWithRead checked.read)
     world := world
     bindingError := .environment }
 

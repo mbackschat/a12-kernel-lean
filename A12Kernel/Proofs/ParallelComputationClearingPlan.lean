@@ -33,7 +33,7 @@ theorem parallelNumericTargetRouteEnvironments_cells_irrelevant
     route.targetEnvironments left =
       route.targetEnvironments right := by
   simp [CheckedParallelNumericTargetRoute.targetEnvironments,
-    CheckedDocument.actualRowEnvironments, rows]
+    CheckedDocument.actualRowEnvironments, FlatModel.actualRowEnvironments, rows]
 
 /-- Target-instance enumeration depends on checked physical row topology, never on placed target-cell payloads. -/
 theorem parallelNumericTargetEnvironments_cells_irrelevant

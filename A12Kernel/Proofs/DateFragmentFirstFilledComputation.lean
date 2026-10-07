@@ -22,8 +22,7 @@ theorem dateFragmentFirstFilledCellAt_poison
     dateFragmentFirstFilledCellAt addressed = .unknown cause := by
   simp [dateFragmentFirstFilledCellAt, observed]
 
-/-- The checked operation retains one exact fragment profile on the target and every source
-declaration, and a source that cannot read its target. -/
+/-- The checked operation retains exact fragment profiles and excludes forbidden target references; positive conditional group membership remains in the complete inventory (spec/09 §5). -/
 theorem checkedDateFragmentFirstFilled_carriers
     (operation : CheckedDateFragmentFirstFilledComputation model) :
     operation.shape.carrier.isDateFragment = true ∧
@@ -32,7 +31,7 @@ theorem checkedDateFragmentFirstFilled_carriers
       operation.shape.site.source.declarations.all
         (·.temporalFirstFilledStarCarrier? == some operation.shape.sourceProfile) = true ∧
       operation.shape.carrier.acceptsSource operation.shape.sourceProfile = true ∧
-      operation.referencesField operation.targetField = false :=
+      operation.referencesWith operation.targetField (·.forbidsTarget operation.targetField) = false :=
   ⟨operation.fragment, operation.shape.targetCarrier, operation.shape.sourceCarrier,
     operation.shape.sourceAccepted, operation.excludesTarget⟩
 

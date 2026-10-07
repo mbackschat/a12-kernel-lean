@@ -23,12 +23,11 @@ theorem customFirstFilledCellAt_registeredRejection
     } = .unknown (.registeredCustomValidation rejection) := by
   rfl
 
-/-- The checked operation retains one Custom declaration on the target and every source
-declaration, and a source that cannot read its target. -/
+/-- The checked operation retains one Custom declaration on the target and every source declaration and excludes forbidden target references; positive conditional group membership remains in the complete inventory (spec/09 §5). -/
 theorem checkedCustomFirstFilled_carriers (operation : CheckedCustomFirstFilledComputation model) :
     operation.target.customType = some operation.customType ∧
       operation.site.source.declarations.all (·.customType == some operation.customType) = true ∧
-      operation.referencesField operation.targetField = false :=
+      operation.referencesWith operation.targetField (·.forbidsTarget operation.targetField) = false :=
   ⟨operation.targetCustom, operation.sourceCustom, operation.excludesTarget⟩
 
 /-- The immutable addressed executor is definitionally the caller-read route specialized to the document's checked read. -/

@@ -294,11 +294,15 @@ def targetField (operation : CheckedDateRangeFirstFilledComputation model) : Fie
 def target (operation : CheckedDateRangeFirstFilledComputation model) : FlatFieldDecl :=
   operation.shape.site.target
 
+def referencesWith (operation : CheckedDateRangeFirstFilledComputation model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  operation.shape.referencesWith field filterReads
+
 def referencesField (operation : CheckedDateRangeFirstFilledComputation model) : FieldId → Bool :=
-  operation.shape.site.referencesField
+  fun field => operation.referencesWith field (·.referencesField field)
 
 theorem excludesTarget (operation : CheckedDateRangeFirstFilledComputation model) :
-    operation.referencesField operation.targetField = false :=
+    operation.referencesWith operation.targetField (·.forbidsTarget operation.targetField) = false :=
   operation.shape.excludesTarget
 
 /-- Scan the source at one target instance's environment, then render the selected exact or

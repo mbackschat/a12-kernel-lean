@@ -16,12 +16,11 @@ theorem firstFilledBoolean_false_is_value
       .value false := by
   rfl
 
-/-- The checked operation retains a Boolean target, Boolean sources, and a source that cannot read its
-target. -/
+/-- The checked operation retains Boolean carriers and excludes forbidden target references; positive conditional group membership remains in the complete inventory (spec/09 §5). -/
 theorem checkedBooleanFirstFilled_carriers (operation : CheckedBooleanFirstFilledComputation model) :
     operation.target.policy.kind = .boolean ∧
       operation.site.source.declarations.all (·.policy.kind == .boolean) = true ∧
-      operation.referencesField operation.targetField = false :=
+      operation.referencesWith operation.targetField (·.forbidsTarget operation.targetField) = false :=
   ⟨operation.targetBoolean, operation.sourceBoolean, operation.excludesTarget⟩
 
 /-- The immutable-document executor is definitionally the caller-read route specialized to the document's checked read. -/

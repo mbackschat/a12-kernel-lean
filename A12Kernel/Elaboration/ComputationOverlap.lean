@@ -31,9 +31,10 @@ def shape : CheckedComputationOverlap model → CheckedFieldEntityShape model
   | .yearlessAnyPair source => source.shape
   | .yearlessScalar source => source.shape
 
-def referencesField (source : CheckedComputationOverlap model) (field : FieldId) : Bool :=
+def referencesField (source : CheckedComputationOverlap model) (field : FieldId)
+    (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) : Bool :=
   source.shape.operands.any (fun operand => operand.expansionDeclarations.any (·.id == field)) ||
-    source.toValidation.filters.any (·.referencesField field)
+    source.toValidation.filters.any (filterReads · field)
 
 def rowBoundBool (source : CheckedComputationOverlap model) (scope : List RepeatableLevel) : Bool :=
   source.shape.operands.all (·.bindingScope.isPrefixOf scope)
@@ -93,11 +94,13 @@ private def scanStar (project : Value → Option α) (overlaps : α → α → B
   | none => scanSlots project overlaps field read resolved.environments state
   | some having =>
       having.scanComputationResolving
-        { read := fun row id => pure (filterRead row id)
+        (({
+          read := fun row id => pure (filterRead row id)
           world := context.world
           unsupportedDateCalendar := .addressing .unsupportedDateCalendar
           temporalValueFailure := .addressing .temporalValueFailure
-          bindingError := fun error => .addressing error.toStarAddressingError }
+          groupUnavailable := ComputationOverlapError.addressing ∘ StarAddressingError.unsupportedGroupOperand
+          bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationOverlapError).withComputationGroups contextRead.document)
         context.row (fun state row => state.step overlaps <$> observation project field (read row))
         resolved.environments state
 

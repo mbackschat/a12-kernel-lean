@@ -19,13 +19,14 @@ def runModel (model : FlatModel) (filter : String) (fresh : Bool)
     (extra : List (String × Json) := []) (operationOverride : Option String := none)
     (ruleExpected : String := "9") (clock : Instant := { epochMillis := 0 })
     (ruleCondition : Option String := none) (computationPrecondition : Option String := none)
-    (zoneRules : ModelZoneRules := ModelZoneRules.unavailable) : Option (Verdict × List String) := do
+    (zoneRules : ModelZoneRules := ModelZoneRules.unavailable)
+    (rowsOverride : Option (Array Json) := none) : Option (Verdict × List String) := do
   let dm : DmModel := {
     flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let row := fun (tag n : String) => Json.mkObj [("Tag", Json.str tag), ("N", Json.str n)]
   let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj ([
     ("Error", Json.str "ready"), ("Expected", Json.str expected),
-    ("Rows", Json.arr #[row first "2", row second "5", row first "7"])] ++ extra))])).toOption
+    ("Rows", Json.arr (rowsOverride.getD #[row first "2", row second "5", row first "7"]))] ++ extra))])).toOption
   if !input.refusals.isEmpty then none
   let world : World := { now := clock, modelZoneRules := zoneRules }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption

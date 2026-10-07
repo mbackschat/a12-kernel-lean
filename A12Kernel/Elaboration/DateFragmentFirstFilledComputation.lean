@@ -60,12 +60,15 @@ def targetField (operation : CheckedDateFragmentFirstFilledComputation model) : 
 def target (operation : CheckedDateFragmentFirstFilledComputation model) : FlatFieldDecl :=
   operation.shape.site.target
 
-def referencesField (operation : CheckedDateFragmentFirstFilledComputation model) :
-    FieldId → Bool :=
-  operation.shape.site.referencesField
+def referencesWith (operation : CheckedDateFragmentFirstFilledComputation model) (field : FieldId)
+    (filterReads : CorrelatedHaving → Bool) : Bool :=
+  operation.shape.referencesWith field filterReads
+
+def referencesField (operation : CheckedDateFragmentFirstFilledComputation model) : FieldId → Bool :=
+  fun field => operation.referencesWith field (·.referencesField field)
 
 theorem excludesTarget (operation : CheckedDateFragmentFirstFilledComputation model) :
-    operation.referencesField operation.targetField = false :=
+    operation.referencesWith operation.targetField (·.forbidsTarget operation.targetField) = false :=
   operation.shape.excludesTarget
 
 /-- Evaluate the shared checked DateFragment token scan over cells resolved at one instance. -/
