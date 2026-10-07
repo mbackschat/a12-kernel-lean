@@ -63,8 +63,8 @@ def sideWith (source : CheckedSelectedTokenEntity model) (phase : Phase)
 def sideIn (source : CheckedSelectedTokenEntity model) (phase : Phase)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (ResolvedValueListSide .token) :=
-  source.sideWith phase document.source.toDocument outer document.flatContext.read
-    document.flatContext.storedText document.computationFillContext.read
+  source.sideWith phase document.source.toDocument outer (document.computationContextAt outer).read
+    (document.computationContextAt outer).storedText document.computationFillContext.read
     (document.resolveSemanticIndexColumnWith document.read)
 
 def sideAt (source : CheckedSelectedTokenEntity model) (phase : Phase)

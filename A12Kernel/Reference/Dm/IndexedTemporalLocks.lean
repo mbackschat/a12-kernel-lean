@@ -672,7 +672,7 @@ private def indexedScalarDependencies : Option (List FieldId × List FieldId × 
   let checked ← (elaborateScalarTemporalExpression model ["Form"] surface).toOption
   pure (checked.fieldIds, checked.boundFieldIds, checked.bindingScopes, checked.requiresAddressed, checked.storedTextFields)
 
-example : indexedScalarDependencies = some ([4,5,6], [4], [[]], true, [4]) := by native_decide
+example : indexedScalarDependencies = some ([4,5,6], [4], [[],[]], true, [4]) := by native_decide
 
 example : (evaluate .date .fullDate "yyyy-MM-dd" "2024-01-01" "2024-01-03"
     "[Rows/Body/A For Key] == [Low]" false none { partialCoverage := some [] }) = some (.inl .unknown) ∧
@@ -791,8 +791,8 @@ private def indexedPartialDependencies (key : String) :
   let checked ← (elaborateScalarTemporalExpression model ["Form"] surface).toOption
   pure (checked.fieldIds, checked.boundFieldIds, checked.bindingScopes, checked.requiresAddressed, checked.storedTextFields)
 
-example : indexedPartialDependencies "Key" == some ([4,5,6], [4], [[]], true, [6,4]) ∧
-    indexedPartialDependencies "\"R1\"" == some ([5,6], [], [], true, [6]) := by native_decide
+example : indexedPartialDependencies "Key" == some ([4,5,6], [4], [[],[]], true, [6,4]) ∧
+    indexedPartialDependencies "\"R1\"" == some ([5,6], [], [[],[]], true, [6]) := by native_decide
 
 example : evaluate .date .fullDate "yyyy-MM-dd" "2024-02-01" "2024-02-01"
     "ValueAsDate(Rows/Body/A For Key,FirstDay)" true = none ∧

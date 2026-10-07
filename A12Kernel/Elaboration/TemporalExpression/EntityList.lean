@@ -52,7 +52,7 @@ def fieldIds (source : CheckedTemporalExtremumOperands model) : List FieldId :=
     source.filters.flatMap (fun filter => filter.toList.flatMap (·.fieldIds))
 
 def bindingScopes (source : CheckedTemporalExtremumOperands model) : List (List RepeatableLevel) :=
-  source.shape.operands.map (·.bindingScope) ++
+  source.shape.operands.flatMap (·.bindingScopes) ++
     (if source.filters.any Option.isSome then [source.filterBindingScope] else [])
 
 /-- Index and star selection own their free row levels; another operand's binding must not

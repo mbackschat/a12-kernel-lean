@@ -1,0 +1,665 @@
+{
+  "model": "NestedIndex_DM.json",
+  "locale": "en_US",
+  "clock": "2024-01-01T00:00:00Z",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "separate-parents",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a",
+          "Parents": [
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "2",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  },
+                  "Items": [
+                    {
+                      "N": "2"
+                    },
+                    {
+                      "N": "4"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                },
+                {
+                  "Id": "b",
+                  "N": "3",
+                  "Body": {
+                    "A": "3",
+                    "B": "4"
+                  },
+                  "Items": [
+                    {
+                      "N": "3"
+                    },
+                    {
+                      "N": "5"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                }
+              ],
+              "Scalar": "99",
+              "GroupSum": "99",
+              "StarSum": "99",
+              "Count": "99",
+              "First": "99"
+            },
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "7",
+                  "Body": {
+                    "A": "7",
+                    "B": "8"
+                  },
+                  "Items": [
+                    {
+                      "N": "7"
+                    },
+                    {
+                      "N": "9"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                },
+                {
+                  "Id": "b",
+                  "N": "11",
+                  "Body": {
+                    "A": "11",
+                    "B": "12"
+                  },
+                  "Items": [
+                    {
+                      "N": "11"
+                    },
+                    {
+                      "N": "13"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                }
+              ],
+              "Scalar": "99",
+              "GroupSum": "99",
+              "StarSum": "99",
+              "Count": "99",
+              "First": "99"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "missing-one",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a",
+          "Parents": [
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "2",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  },
+                  "Items": [
+                    {
+                      "N": "2"
+                    },
+                    {
+                      "N": "4"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                },
+                {
+                  "Id": "b",
+                  "N": "3",
+                  "Body": {
+                    "A": "3",
+                    "B": "4"
+                  },
+                  "Items": [
+                    {
+                      "N": "3"
+                    },
+                    {
+                      "N": "5"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                }
+              ],
+              "Scalar": "99",
+              "GroupSum": "99",
+              "StarSum": "99",
+              "Count": "99",
+              "First": "99"
+            },
+            {
+              "Key": "a",
+              "RequestedKey": "z",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "7",
+                  "Body": {
+                    "A": "7",
+                    "B": "8"
+                  },
+                  "Items": [
+                    {
+                      "N": "7"
+                    },
+                    {
+                      "N": "9"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                },
+                {
+                  "Id": "b",
+                  "N": "11",
+                  "Body": {
+                    "A": "11",
+                    "B": "12"
+                  },
+                  "Items": [
+                    {
+                      "N": "11"
+                    },
+                    {
+                      "N": "13"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                }
+              ],
+              "Scalar": "99",
+              "GroupSum": "99",
+              "StarSum": "99",
+              "Count": "99",
+              "First": "99"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "duplicate-one",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a",
+          "Parents": [
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "2",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  },
+                  "Items": [
+                    {
+                      "N": "2"
+                    },
+                    {
+                      "N": "4"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                },
+                {
+                  "Id": "a",
+                  "N": "3",
+                  "Body": {
+                    "A": "3",
+                    "B": "4"
+                  },
+                  "Items": [
+                    {
+                      "N": "3"
+                    },
+                    {
+                      "N": "5"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                }
+              ],
+              "Scalar": "99",
+              "GroupSum": "99",
+              "StarSum": "99",
+              "Count": "99",
+              "First": "99"
+            },
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "7",
+                  "Body": {
+                    "A": "7",
+                    "B": "8"
+                  },
+                  "Items": [
+                    {
+                      "N": "7"
+                    },
+                    {
+                      "N": "9"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                },
+                {
+                  "Id": "b",
+                  "N": "11",
+                  "Body": {
+                    "A": "11",
+                    "B": "12"
+                  },
+                  "Items": [
+                    {
+                      "N": "11"
+                    },
+                    {
+                      "N": "13"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                }
+              ],
+              "Scalar": "99",
+              "GroupSum": "99",
+              "StarSum": "99",
+              "Count": "99",
+              "First": "99"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "empty-parent",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a",
+          "Parents": [
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "2",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  },
+                  "Items": [
+                    {
+                      "N": "2"
+                    },
+                    {
+                      "N": "4"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                },
+                {
+                  "Id": "b",
+                  "N": "3",
+                  "Body": {
+                    "A": "3",
+                    "B": "4"
+                  },
+                  "Items": [
+                    {
+                      "N": "3"
+                    },
+                    {
+                      "N": "5"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                }
+              ],
+              "Scalar": "99",
+              "GroupSum": "99",
+              "StarSum": "99",
+              "Count": "99",
+              "First": "99"
+            },
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Rows": [],
+              "Scalar": "99",
+              "GroupSum": "99",
+              "StarSum": "99",
+              "Count": "99",
+              "First": "99"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "invalid-selected",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a",
+          "Parents": [
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "bad",
+                  "Body": {
+                    "A": "bad",
+                    "B": "3"
+                  },
+                  "Items": [
+                    {
+                      "N": "bad"
+                    },
+                    {
+                      "N": "4"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                },
+                {
+                  "Id": "b",
+                  "N": "3",
+                  "Body": {
+                    "A": "3",
+                    "B": "4"
+                  },
+                  "Items": [
+                    {
+                      "N": "3"
+                    },
+                    {
+                      "N": "5"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                }
+              ],
+              "Scalar": "99",
+              "GroupSum": "99",
+              "StarSum": "99",
+              "Count": "99",
+              "First": "99"
+            },
+            {
+              "Key": "a",
+              "RequestedKey": "a",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "7",
+                  "Body": {
+                    "A": "7",
+                    "B": "8"
+                  },
+                  "Items": [
+                    {
+                      "N": "7"
+                    },
+                    {
+                      "N": "9"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                },
+                {
+                  "Id": "b",
+                  "N": "11",
+                  "Body": {
+                    "A": "11",
+                    "B": "12"
+                  },
+                  "Items": [
+                    {
+                      "N": "11"
+                    },
+                    {
+                      "N": "13"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                }
+              ],
+              "Scalar": "99",
+              "GroupSum": "99",
+              "StarSum": "99",
+              "Count": "99",
+              "First": "99"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "current-key",
+      "documentInline": {
+        "Form": {
+          "RootKey": "a",
+          "Parents": [
+            {
+              "Key": "a",
+              "RequestedKey": "b",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "2",
+                  "Body": {
+                    "A": "2",
+                    "B": "3"
+                  },
+                  "Items": [
+                    {
+                      "N": "2"
+                    },
+                    {
+                      "N": "4"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                },
+                {
+                  "Id": "b",
+                  "N": "3",
+                  "Body": {
+                    "A": "3",
+                    "B": "4"
+                  },
+                  "Items": [
+                    {
+                      "N": "3"
+                    },
+                    {
+                      "N": "5"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                }
+              ],
+              "Scalar": "99",
+              "GroupSum": "99",
+              "StarSum": "99",
+              "Count": "99",
+              "First": "99"
+            },
+            {
+              "Key": "a",
+              "RequestedKey": "b",
+              "Rows": [
+                {
+                  "Id": "a",
+                  "N": "7",
+                  "Body": {
+                    "A": "7",
+                    "B": "8"
+                  },
+                  "Items": [
+                    {
+                      "N": "7"
+                    },
+                    {
+                      "N": "9"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                },
+                {
+                  "Id": "b",
+                  "N": "11",
+                  "Body": {
+                    "A": "11",
+                    "B": "12"
+                  },
+                  "Items": [
+                    {
+                      "N": "11"
+                    },
+                    {
+                      "N": "13"
+                    }
+                  ],
+                  "Scalar": "99",
+                  "GroupSum": "99",
+                  "StarSum": "99",
+                  "Count": "99",
+                  "First": "99"
+                }
+              ],
+              "Scalar": "99",
+              "GroupSum": "99",
+              "StarSum": "99",
+              "Count": "99",
+              "First": "99"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

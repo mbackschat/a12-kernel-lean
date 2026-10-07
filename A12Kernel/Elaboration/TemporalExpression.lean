@@ -50,7 +50,8 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
         throw .unsupportedSource
       pure (.atom (.field field), scalarComponents model field.components)
   | .indexed authored => do
-      let source ← (elaborateSemanticIndexSource model rowGroup authored).mapError .indexed
+      let source ← (elaborateSemanticIndexSource model rowGroup authored
+        (targetGroup?.map model.repeatableScopeForGroupPath)).mapError .indexed
       let some field := source.targetDeclaration.toTemporalField? | throw (.nonTemporal source.targetDeclaration.path)
       if source.targetDeclaration.toTemporalTargetPolicy?.any (·.partialMode != .full) then
         throw .unsupportedSource
@@ -101,7 +102,8 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
       let source ← (elaborateZonedValueAsDateSource model declaration.id endpoint scope).mapError .partialDate
       pure (.atom (.valueAsDate source), TemporalComponents.fullDate)
   | .indexedValueAsDate authored endpoint => do
-      let selection ← (elaborateSemanticIndexSource model rowGroup authored).mapError .indexed
+      let selection ← (elaborateSemanticIndexSource model rowGroup authored
+        (targetGroup?.map model.repeatableScopeForGroupPath)).mapError .indexed
       let source ← (elaborateZonedValueAsDateSource model selection.targetDeclaration.id endpoint
         selection.targetDeclaration.repeatableScope).mapError .partialDate
       if sameTarget : source.source.target.id = selection.targetDeclaration.id then
@@ -238,7 +240,8 @@ private def resolveScalarTimeComponent (model : FlatModel) (rowGroup : GroupPath
       let checked ← (elaborateTimeComponent model position source scope).mapError .timeComponents
       pure (.inl (.inl checked))
   | .inl (.inr authored) =>
-      let selection ← (elaborateSemanticIndexSource model rowGroup authored).mapError .indexed
+      let selection ← (elaborateSemanticIndexSource model rowGroup authored
+        (targetGroup?.map model.repeatableScopeForGroupPath)).mapError .indexed
       let field := selection.targetDeclaration
       let source ← match field.policy.kind.surfaceKind with
         | .number => pure (SurfaceTimeComponent.number field.id)

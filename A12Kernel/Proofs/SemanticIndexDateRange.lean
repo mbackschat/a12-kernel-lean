@@ -58,7 +58,7 @@ theorem semanticIndexDateRangeBoundPart_resolve_wrongKind
 field's kind reaches this operand without a second admission rule. -/
 theorem checkedDateRangeSemanticIndex_index_unconstrained
     (checked : CheckedDateRangeSemanticIndexSource model) :
-    model.admitsSingleGroupDeclaration checked.group
+    model.admitsSemanticIndexDeclaration checked.group
         checked.indexDeclaration = true ∧
       (checked.group.indexField == some checked.indexDeclaration.id) = true :=
   ⟨checked.indexOwned, checked.indexDeclared⟩

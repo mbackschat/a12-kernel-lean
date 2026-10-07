@@ -43,9 +43,9 @@ private def FlatModel.admitsTemporalComputationOperand
 
 def FlatModel.admitsNumericComputationOperand
     (model : FlatModel) (scope : List RepeatableLevel) : CheckedNumericComputationAtom model → Bool
-  | .indexed _ => true
-  | .indexedString source => model.directFieldsBoundBy scope source.boundFieldIds
-  | .temporalPart source => model.directFieldsBoundBy scope source.source.boundFieldIds
+  | .indexed source => source.toCheckedSemanticIndexSource.bindingScopes.all (·.isPrefixOf scope)
+  | .indexedString source => source.selection.bindingScopes.all (·.isPrefixOf scope)
+  | .temporalPart source => source.source.bindingScopes.all (·.isPrefixOf scope)
   | .filledFieldCount source =>
       !source.operands.isEmpty && source.rowBoundBool scope &&
         source.operands.all fun operand =>
@@ -63,9 +63,8 @@ def FlatModel.admitsNumericComputationOperand
   | .temporalDistinctCount run =>
       run.source.bindingScopes.all (·.isPrefixOf scope)
   | .tokenValueCount source => source.source.bindingScopes.all (·.isPrefixOf scope)
-  | .booleanValueCount source =>
-      model.directFieldsBoundBy scope (source.operands.filterMap (·.directField?.map (·.id)))
-  | .sumOfProducts _ => true
+  | .booleanValueCount source => source.bindingScopes.all (·.isPrefixOf scope)
+  | .sumOfProducts source => source.bindingScopes.all (·.isPrefixOf scope)
   -- Every operand carries its own model certificate, so admission is settled at elaboration.
   | .filledGroupCountMixed _ => true
   | .numeric (.field declaration) =>
@@ -336,9 +335,11 @@ def FlatModel.elaborateNumericComputationAtom
     SurfaceNumericComputationAtom →
       Except NumericComputationElabError (CheckedNumericComputationAtom model)
     | .indexedString source operation =>
-        (elaborateIndexedStringNumericSource model declaringGroup source operation).map .indexedString |>.mapError .indexedString
+        (elaborateIndexedStringNumericSource model declaringGroup source operation
+        (some (model.repeatableScopeForGroupPath targetGroup))).map .indexedString |>.mapError .indexedString
     | .indexed source =>
-        (elaborateNumericSemanticIndexSource model declaringGroup source).map .indexed |>.mapError .semanticIndex
+        (elaborateNumericSemanticIndexSource model declaringGroup source
+          (some (model.repeatableScopeForGroupPath targetGroup))).map .indexed |>.mapError .semanticIndex
     | .temporalPart source part =>
         (elaborateTemporalNumericExpression model declaringGroup source part (some targetGroup)).map .temporalPart
           |>.mapError .temporalExpression

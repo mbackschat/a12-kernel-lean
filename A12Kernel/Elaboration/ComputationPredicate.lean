@@ -154,17 +154,17 @@ def groupReference? : CheckedComputationPredicate model → Option (GroupPresenc
 def rowBoundBool (predicate : CheckedComputationPredicate model) (scope : List RepeatableLevel) : Bool :=
   match predicate with
   | .pattern source => source.source.declarations.all (·.repeatableScope.isPrefixOf scope)
-  | .indexedPattern source => source.bindingScope.isPrefixOf scope
+  | .indexedPattern source => source.bindingScopes.all (·.isPrefixOf scope)
   | .dateValidity _ source => source.scalarBindingScopes.all (·.isPrefixOf scope)
   | .typeValidity _ source _ => source.declaration.repeatableScope.isPrefixOf scope
-  | .indexedTypeValidity _ source _ => source.bindingScope.isPrefixOf scope
-  | .stringExpression source => source.boundDeclarations.all (·.repeatableScope.isPrefixOf scope)
+  | .indexedTypeValidity _ source _ => source.bindingScopes.all (·.isPrefixOf scope)
+  | .stringExpression source => source.bindingScopes.all (·.isPrefixOf scope)
   | .temporal source => (source.left.bindingScopes ++ source.right.bindingScopes).all (·.isPrefixOf scope)
   | .fieldComparison source => source.rowBoundBool scope
   | .valueList source | .scalarValueList _ source => source.bindingScopes.all (·.isPrefixOf scope)
   | .scalarNumberLiterals _ source _ => source.declaration.repeatableScope.isPrefixOf scope
-  | .keyedGroupPresence _ source _ => source.isGroup
-  | .indexedFieldPresence _ _ => true
+  | .keyedGroupPresence _ source _ => source.isGroup && source.bindingScopes.all (·.isPrefixOf scope)
+  | .indexedFieldPresence _ source => source.bindingScopes.all (·.isPrefixOf scope)
   | .fieldFill _ source => source.rowBoundBool scope
   | .uniqueness source => source.bindingScopes.all (·.isPrefixOf scope)
   | .overlap source => source.rowBoundBool scope
@@ -506,16 +506,19 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
     Except ComputationPredicateElabError (CheckedComputationPredicate model) := do
   match surface with
   | .keyedGroupPresence operator source => do
-      let checked ← elaborateKeyedEntityExtent model declaringGroup source |>.mapError .keyedGroup
+      let checked ← elaborateKeyedEntityExtent model declaringGroup source
+        (some (model.repeatableScopeForGroupPath targetGroup)) |>.mapError .keyedGroup
       if !checked.isGroup || checked.isStarredGroup then throw .incoherent
       pure (.keyedGroupPresence operator checked .conditionalPresence)
   | .indexedFieldPresence operator source =>
       CheckedComputationPredicate.indexedFieldPresence operator <$>
-        (elaborateSemanticIndexSource model declaringGroup source).mapError .semanticIndex
+        (elaborateSemanticIndexSource model declaringGroup source
+          (some (model.repeatableScopeForGroupPath targetGroup))).mapError .semanticIndex
   | .pattern source => CheckedComputationPredicate.pattern <$>
       (elaborateComputationStringPattern compilePattern model declaringGroup targetGroup source).mapError .pattern
   | .indexedPattern source => CheckedComputationPredicate.indexedPattern <$>
-      (elaborateIndexedStringPattern compilePattern model declaringGroup source).mapError .indexedPattern
+      (elaborateIndexedStringPattern compilePattern model declaringGroup source
+        (some (model.repeatableScopeForGroupPath targetGroup))).mapError .indexedPattern
   | .dateValidity operation source => do
       let checked ← (elaborateScalarDateValidityComponents model declaringGroup source targetGroup).mapError .temporal
       pure (.dateValidity operation checked)
@@ -525,7 +528,8 @@ def FlatModel.elaborateComputationPredicate (model : FlatModel)
       if name.isEmpty then throw (.typeName .emptyTypeName)
       pure (.typeValidity operation source name)
   | .indexedTypeValidity operation authored name => do
-      let source ← (elaborateIndexedCustomFieldValidityOperand model declaringGroup authored).mapError .indexedTypeOperand
+      let source ← (elaborateIndexedCustomFieldValidityOperand model declaringGroup authored
+        (some (model.repeatableScopeForGroupPath targetGroup))).mapError .indexedTypeOperand
       if name.isEmpty then throw (.typeName .emptyTypeName)
       pure (.indexedTypeValidity operation source name)
   | .uniqueness source =>

@@ -52,6 +52,9 @@ def entityPath (source : CheckedKeyedEntityExtent model) : List String :=
 def groupPath (source : CheckedKeyedEntityExtent model) : GroupPath :=
   match source.target with | .group path | .starredGroup path => path | .star path => path.declaration.groupPath
 
+def bindingScopes (source : CheckedKeyedEntityExtent model) : List (List RepeatableLevel) :=
+  source.selection.indexSource.bindingScopes
+
 def boundLevelCount (source : CheckedKeyedEntityExtent model) : Nat :=
   source.selection.indexDeclaration.repeatableScope.length
 
@@ -148,7 +151,7 @@ def selectedValueListSideWith {kind : ValueListKind}
 /-- Bind the innermost declared index before checking the remaining unbound extent. A group
 without its own star may retain only nonrepeatable steps below the selected level (`spec/08` §4). -/
 def elaborateKeyedEntityExtent (model : FlatModel) (declaringGroup : GroupPath)
-    (authored : SurfaceKeyedEntityExtent) : Except KeyedEntityExtentError (CheckedKeyedEntityExtent model) := do
+    (authored : SurfaceKeyedEntityExtent) (boundScope? : Option (List RepeatableLevel) := none) : Except KeyedEntityExtentError (CheckedKeyedEntityExtent model) := do
   if !GroupPath.isValid declaringGroup then
     throw (.group (.resolve (.invalidRuleGroup declaringGroup)))
   let (target, targetGroup, firstStar?) ← match authored.target with
@@ -166,7 +169,7 @@ def elaborateKeyedEntityExtent (model : FlatModel) (declaringGroup : GroupPath)
         let source ← elaborateStarFieldPath model declaringGroup path |>.mapError .star
         pure (CheckedKeyedEntityTarget.star source, source.declaration.groupPath, some source.path.firstStar)
   let some group := model.semanticIndexGroupForPath? targetGroup | throw (.index (.missingIndexField targetGroup))
-  let selection ← elaborateSemanticIndexSelection model declaringGroup group authored.key |>.mapError .index
+  let selection ← elaborateSemanticIndexSelection model declaringGroup group authored.key boundScope? |>.mapError .index
   let depth := selection.indexDeclaration.repeatableScope.length
   if let some firstStar := firstStar? then
     if firstStar != depth then throw .unsupportedExtent

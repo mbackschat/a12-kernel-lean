@@ -12,15 +12,15 @@ def CheckedSemanticIndexSource.selectPartial (source : CheckedSemanticIndexSourc
   let keyCell ← match source.key with
     | .literal .. => pure (checkAdmittedRawCell .empty)
     | .field declaration =>
-        if !view.relevance.coversField model declaration.id [] then return none
-        let available ← match read [] declaration.id with
+        if !view.relevance.coversField model declaration.id outer then return none
+        let available ← match read outer declaration.id with
           | .error (.partialUnavailable _ _) => pure none
           | result => result
         match available with
         | none => return none
         | some cell => pure cell
   let stored := fun field => do
-    let address ← (view.index.base.cellAddress [] field).toOption
+    let address ← (view.index.base.cellAddress outer field).toOption
     view.index.base.storedTextForCell address keyCell
   let key ← source.observeCurrentKey .validation (fun _ => keyCell) stored |>.mapError .semanticIndex
   let column ← view.index.resolveIndexColumn source.group outer

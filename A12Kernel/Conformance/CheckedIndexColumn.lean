@@ -305,6 +305,8 @@ private def checkedNumber :
     keyOwned := by native_decide
     keyAgrees := by native_decide
   }
+  singleGroup := by native_decide
+  scalarKey := by native_decide
   indexNumber := by native_decide
   targetNumber := by native_decide
 }

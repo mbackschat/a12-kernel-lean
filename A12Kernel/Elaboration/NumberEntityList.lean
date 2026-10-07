@@ -155,8 +155,8 @@ def sideWith (source : CheckedSelectedNumberEntity model) (phase : Phase)
 def sideIn (source : CheckedSelectedNumberEntity model) (phase : Phase)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (ResolvedValueListSide .number) :=
-  source.sideWith phase document.source.toDocument outer document.flatContext.read
-    document.flatContext.storedText document.computationFillContext.read
+  source.sideWith phase document.source.toDocument outer (document.computationContextAt outer).read
+    (document.computationContextAt outer).storedText document.computationFillContext.read
     (document.resolveSemanticIndexColumnWith document.read)
 
 end CheckedSelectedNumberEntity
@@ -292,7 +292,9 @@ end CheckedNumberEntitySource
 def CheckedNumberEntitySource.bindingScopes (source : CheckedNumberEntitySource model) : List (List RepeatableLevel) :=
   source.operands.flatMap fun
     | .field field => [field.declaration.repeatableScope]
-    | .selected _ => [[]]
+    | .selected source => match source.source with
+      | .inl selected => selected.bindingScopes
+      | .inr selected => selected.bindingScopes
     | .star source => [source.source.bindingScope]
     | .starHaving source => [source.source.source.bindingScope,
         model.repeatableScopeForGroupPath source.bindingGroup]

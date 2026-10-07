@@ -320,7 +320,7 @@ private def selectedSource : Option (CheckedTokenEntitySource (model false)) := 
   (elaborateFirstFilledTokenSource (model false) ["Form"] source).toOption
 
 example : selectedSource.any (fun source => source.referencesField 3 && source.referencesField 5 &&
-    source.referencesField 6 && source.referencesField 7 && source.bindingScopes.isEmpty) = true := by native_decide
+    source.referencesField 6 && source.referencesField 7 && source.bindingScopes.all List.isEmpty) = true := by native_decide
 
 example : selectedSource.any (fun source => match source.first.referencePointers [] with
     | .error .unclassifiedOperand => true

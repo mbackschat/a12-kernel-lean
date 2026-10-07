@@ -38,7 +38,7 @@ def elaborateScalarDateLeaf (model : FlatModel) (rowGroup : GroupPath)
   match surface with
   | .inl source => .inl <$> (elaborateConstructedDateSource model position source scope).mapError .dateComponents
   | .inr authored =>
-      let selection ← (elaborateSemanticIndexSource model rowGroup authored).mapError .indexed
+      let selection ← (elaborateSemanticIndexSource model rowGroup authored (some scope)).mapError .indexed
       let field := selection.targetDeclaration
       let source ← match field.policy.kind.surfaceKind with
         | .number => pure (SurfaceConstructedDateSource.numberField field.id)

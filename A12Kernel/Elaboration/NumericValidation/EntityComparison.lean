@@ -68,9 +68,11 @@ private def resolveEntityAtom (model : FlatModel) (rowGroup bindingGroup : Group
     SurfaceNumericComputationAtom →
       Except EntityNumericComparisonElabError (OrderedNumericValidationAtom model)
   | .indexedString source operation =>
-      (elaborateIndexedStringNumericSource model rowGroup source operation).map .indexedString |>.mapError .indexedString
+      (elaborateIndexedStringNumericSource model rowGroup source operation
+        (some (model.repeatableScopeForGroupPath bindingGroup))).map .indexedString |>.mapError .indexedString
   | .indexed source =>
-      (elaborateNumericSemanticIndexSource model rowGroup source).map .indexed |>.mapError .semanticIndex
+      (elaborateNumericSemanticIndexSource model rowGroup source
+        (some (model.repeatableScopeForGroupPath bindingGroup))).map .indexed |>.mapError .semanticIndex
   | .temporalPart source part =>
       (elaborateTemporalNumericExpression model rowGroup source part (some bindingGroup)).map .temporalPart
         |>.mapError .temporalExpression
@@ -106,10 +108,10 @@ private def resolveEntityAtom (model : FlatModel) (rowGroup bindingGroup : Group
         (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup)).map .tokenValueCount
         |>.mapError .tokenSource
   | .booleanValueCount expected source =>
-      (elaborateBooleanValueCountSource model rowGroup expected source).map .booleanValueCount
+      (elaborateBooleanValueCountSource model rowGroup expected source (writtenGroup := bindingGroup)).map .booleanValueCount
         |>.mapError .booleanSource
   | .sumOfProducts source =>
-      (elaborateNumericProductAggregate model rowGroup source).map .sumOfProducts
+      (elaborateNumericProductAggregate model rowGroup source bindingGroup).map .sumOfProducts
         |>.mapError .productSource
 
 /-- Elaborate a rule comparison whose operations read entity lists, at the rule group. -/

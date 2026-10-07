@@ -111,7 +111,7 @@ def bindingScopes (expression : ScalarTemporalExpression model) : List (List Rep
   scalarTemporalDependencies false
     (fun field => ((model.lookupUniqueId field).toOption.map (·.repeatableScope)).toList)
     (·.bindingScopes)
-    (fun source => match source.key with | .field key => [key.repeatableScope] | .literal .. => []) expression
+    (·.bindingScopes) expression
 
 def boundFieldIds (expression : ScalarTemporalExpression model) : List FieldId :=
   scalarTemporalDependencies false (fun field => [field]) (·.boundFieldIds)

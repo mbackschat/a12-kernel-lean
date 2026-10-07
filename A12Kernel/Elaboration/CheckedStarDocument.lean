@@ -68,19 +68,6 @@ def CheckedSemanticIndexSource.selectEnvironmentWith (source : CheckedSemanticIn
   | .unknown cause => pure (.unknown cause)
   | .poison cause => pure (.poison cause)
 
-/-- Full validation reads the selected target through the same checked preliminary column as counts.
-The index owns generated findings; the document owns the current key spelling (`spec/08` §4.2). -/
-def CheckedSemanticIndexSource.observeDocument (source : CheckedSemanticIndexSource model)
-    (document : CheckedDocument model) (outer : Env) (phase : Phase) :
-    Except CheckedAddressingError CellObservation := do
-  let preliminary ← document.applySelectedFullIndexPreliminary [source.indexDeclaration.id]
-    |>.mapError .indexPreliminary
-  let column ← source.resolvePreliminaryColumn preliminary outer |>.mapError .semanticIndex
-  let key ← source.observeCurrentKey phase
-    (fun field => (preliminary.readAuthoredValidation { field, path := [] }).toOption.getD malformedCheckedCell)
-    (fun field => document.storedTextAt { field, path := [] }) |>.mapError .semanticIndex
-  pure (column.lookupObservationForIndex phase source.numericIndex key)
-
 /-- Compatibility name for the original one-star projection API. -/
 abbrev CheckedStarDocumentError := CheckedAddressingError
 
@@ -435,6 +422,24 @@ def resolveCheckedGroupEntityOperandCore
 
 
 end CheckedDocument
+
+/-- Full validation reads the selected target through the same checked preliminary column as counts.
+The index owns generated findings; the document owns the current key spelling (`spec/08` §4.2). -/
+def CheckedSemanticIndexSource.observeDocument (source : CheckedSemanticIndexSource model)
+    (document : CheckedDocument model) (outer : Env) (phase : Phase) :
+    Except CheckedAddressingError CellObservation := do
+  let preliminary ← document.applySelectedFullIndexPreliminary [source.indexDeclaration.id]
+    |>.mapError .indexPreliminary
+  let column ← source.resolvePreliminaryColumn preliminary outer |>.mapError .semanticIndex
+  let keyCell ← match source.key with
+    | .literal .. => pure (checkAdmittedRawCell .empty)
+    | .field declaration => do
+        let address ← document.cellAddress outer declaration.id
+        preliminary.readAuthoredValidation address |>.mapError .document
+  let key ← source.observeCurrentKey phase (fun _ => keyCell)
+    (document.storedTextIn outer) |>.mapError .semanticIndex
+  pure (column.lookupObservationForIndex phase source.numericIndex key)
+
 
 namespace CheckedStarFieldPath
 

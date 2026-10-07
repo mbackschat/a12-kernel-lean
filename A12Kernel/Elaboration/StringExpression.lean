@@ -34,6 +34,12 @@ structure CheckedBoundStringExpression (model : FlatModel) where
   scope : List RepeatableLevel
   modelWellFormed : model.validate.isOk = true
 
+def CheckedBoundStringExpression.bindingScopes (source : CheckedBoundStringExpression model) :
+    List (List RepeatableLevel) :=
+  source.boundDeclarations.map (·.repeatableScope) ++ source.core.fields.flatMap fun
+    | .inl _ => []
+    | .inr selection => selection.bindingScopes
+
 private def certifyBoundStringExpression (model : FlatModel) (rowGroup : GroupPath)
     (core : StringExpr (ResolvedStringSource model)) :
     Except StringComputationElabError (CheckedBoundStringExpression model) := do
@@ -47,15 +53,18 @@ private def certifyBoundStringExpression (model : FlatModel) (rowGroup : GroupPa
       let boundDeclarations ← (core.fields.flatMap stringSourceBoundFields).mapM fun field =>
         (model.lookupUniqueId field).mapError .resolve
       let scope := model.repeatableScopeForGroupPath rowGroup
-      if !(boundDeclarations.all fun field => field.repeatableScope.isPrefixOf scope) then throw .incoherentCore
-      pure { core, declarations, boundDeclarations, scope, modelWellFormed := by rw [hModel]; rfl }
+      let checked : CheckedBoundStringExpression model :=
+        { core, declarations, boundDeclarations, scope, modelWellFormed := by rw [hModel]; rfl }
+      if !checked.bindingScopes.all (·.isPrefixOf scope) then throw .incoherentCore
+      pure checked
 
 private def elaborateSelectedStringCore (model : FlatModel) (declaringGroup rowGroup : GroupPath)
     (expression : SurfaceSelectedStringExpression) (categoryComparison : Bool := false) :
     Except StringComputationElabError (StringExpr (ResolvedStringSource model)) := do
   let direct (source : StringExpr SurfaceFieldPath String) :=
     (·.mapSources Sum.inl) <$> elaborateStringExprCore model declaringGroup rowGroup source
-  let selected source := (elaborateSemanticIndexSource model declaringGroup source).mapError StringComputationElabError.indexed
+  let selected source := (elaborateSemanticIndexSource model declaringGroup source
+    (some (model.repeatableScopeForGroupPath rowGroup))).mapError StringComputationElabError.indexed
   let admitField (declaration : FlatFieldDecl) :=
     if categoryComparison && (declaration.toEnumerationTextFieldComparison? .stored).isSome then
       pure declaration.id
@@ -193,6 +202,9 @@ def declarations (comparison : CheckedStringExpressionComparison model) : List F
 
 def boundDeclarations (comparison : CheckedStringExpressionComparison model) : List FlatFieldDecl :=
   comparison.left.boundDeclarations ++ comparison.right.boundDeclarations
+
+def bindingScopes (comparison : CheckedStringExpressionComparison model) : List (List RepeatableLevel) :=
+  comparison.left.bindingScopes ++ comparison.right.bindingScopes
 
 def hasIndexed (comparison : CheckedStringExpressionComparison model) : Bool :=
   comparison.left.hasIndexed || comparison.right.hasIndexed

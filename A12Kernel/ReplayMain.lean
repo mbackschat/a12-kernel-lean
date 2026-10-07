@@ -26,6 +26,7 @@ import A12Kernel.Reference.Dm.IndexedTypeValidityLocks
 import A12Kernel.Reference.Dm.IndexedPatternLocks
 import A12Kernel.Reference.Dm.GroupGuardLocks
 import A12Kernel.Reference.Dm.SemanticIndexLocks
+import A12Kernel.Reference.Dm.NestedSemanticIndexLocks
 import A12Kernel.Reference.Dm.KeyedExtentLocks
 import A12Kernel.Reference.Dm.IndexedGroupLocks
 import A12Kernel.Reference.Dm.IndexedTemporalLocks

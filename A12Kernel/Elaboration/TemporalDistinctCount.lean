@@ -257,7 +257,7 @@ def hasHaving (checked : CheckedTemporalDistinctCountSource model) : Bool :=
 
 /-- Expanded levels bind themselves; captured filter levels remain required from the caller. -/
 def bindingScopes (checked : CheckedTemporalDistinctCountSource model) : List (List RepeatableLevel) :=
-  checked.shape.operands.map (·.bindingScope) ++
+  checked.shape.operands.flatMap (·.bindingScopes) ++
     (if checked.hasHaving then [checked.filterBindingScope] else [])
 
 /-- The list's shared component set, which every operand carries by construction. -/
@@ -659,8 +659,8 @@ def evaluate (operation : CheckedTemporalDistinctCountRun model)
   let sides ← operation.source.operands.mapM fun operand => do
     match operand with
     | .selected source _ | .slot (.selected source _) =>
-        source.sideWith .validation document.source.toDocument outer document.flatContext.read
-          document.flatContext.storedText document.computationFillContext.read document.storedTextIn
+        source.sideWith .validation document.source.toDocument outer (document.computationContextAt outer).read
+          (document.computationContextAt outer).storedText document.computationFillContext.read document.storedTextIn
           (document.resolveSemanticIndexColumnWith document.read)
           (fun field cell _ => pure (temporalDistinctCountCell .validation field.components model.baseYear operation.arm cell))
     | _ =>

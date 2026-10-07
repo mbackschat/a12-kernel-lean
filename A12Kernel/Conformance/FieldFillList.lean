@@ -291,7 +291,7 @@ example : partialListCount { first := selectedFirst, rest := [] } .full =
 
 example : ((elaborateFieldFillList indexedListModel ["Probe"] {
     first := indexedValue 1 "1", rest := [direct "A"] }).toOption.map (·.supportsPartialCount)) =
-    some false := by native_decide
+    some true := by native_decide
 
 private def boundDirectResults (row : Nat) :
     Option (Option NumericOperand × Option ValidationFillOutcome) := do

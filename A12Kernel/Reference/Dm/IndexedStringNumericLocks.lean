@@ -108,8 +108,10 @@ example : evaluate "FieldValueAsNumber(../Rows/Text For ../Key) == 12" false { b
       some (.inl (.fired .value)) ∧
     evaluate "FieldValueAsNumber(../Rows/Text For ../Key)" true { boundKey := true } =
       some (.inr ["value 12", "value 12"]) ∧
-    (evaluate "FieldValueAsNumber(../Rows/Text For Key) == 34" false { boundKey := true }).isNone = true ∧
-    (evaluate "FieldValueAsNumber(../Rows/Text For Key)" true { boundKey := true }).isNone = true := by native_decide
+    evaluate "FieldValueAsNumber(../Rows/Text For Key) == 34" false { boundKey := true } =
+      some (.inl (.fired .value)) ∧
+    evaluate "FieldValueAsNumber(../Rows/Text For Key)" true { boundKey := true } =
+      some (.inr ["value 34", "value 12"]) := by native_decide
 
 private def partialVerdict (condition : String) (scope : ValidationRelevanceScope := .full)
     (scenario : Scenario := {}) (changes : List (FieldId × Option CheckedCell) := []) : Option Verdict := do

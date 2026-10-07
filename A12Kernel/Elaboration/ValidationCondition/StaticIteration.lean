@@ -41,11 +41,19 @@ private def mergeIterationScopeList :
   | scope :: remaining => do
       mergeIterationScopes scope (← mergeIterationScopeList remaining)
 
+private def selectedIterationScope
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
+    Except RuleIterationScopeError (Option (List RepeatableLevel)) :=
+  let scopes := match source with | .inl selected => selected.bindingScopes | .inr selected => selected.bindingScopes
+  mergeIterationScopeList (scopes.map fun scope => if scope.isEmpty then none else some scope)
+
 def ResolvedGroupListOperands.iterationScope
     (operands : List (ResolvedGroupListOperand model)) :
     Except RuleIterationScopeError (Option (List RepeatableLevel)) :=
-  mergeIterationScopeList
-    (operands.map ResolvedGroupListOperand.iterationScope)
+  do mergeIterationScopeList (← operands.mapM fun
+    | .indexed source => selectedIterationScope (.inl source)
+    | .keyed source => selectedIterationScope (.inr source)
+    | operand => pure operand.iterationScope)
 
 private def checkedHavingOuterIterationScope
     (checked : CheckedStarHaving model source declaringGroup) :
@@ -56,7 +64,7 @@ private def checkedHavingOuterIterationScope
 private def checkedNumberOperandIterationScope :
     CheckedNumberEntityOperand model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
-  | .selected _ => pure none
+  | .selected source => selectedIterationScope source.source
   | .field source =>
       pure (if source.declaration.repeatableScope.isEmpty then none
         else some source.declaration.repeatableScope)
@@ -74,7 +82,8 @@ private def checkedNumberOperandIterationScope :
 private def checkedTokenOperandIterationScope :
     CheckedTokenEntityOperand model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
-  | .field _ | .selected _ => pure none
+  | .field _ => pure none
+  | .selected source => selectedIterationScope source.source
   | .star source =>
       match source.filter with
       | none => pure (checkedStarBindingScope source.source)
@@ -103,7 +112,8 @@ private def checkedTokenSourceIterationScope
 private def checkedBooleanValueCountOperandIterationScope :
     CheckedBooleanValueCountOperand model expected →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
-  | .field _ | .selected _ => pure none
+  | .field _ => pure none
+  | .selected source => selectedIterationScope source.source
   | .star source =>
       match source.filter with
       | none => pure (checkedStarBindingScope source.source)
@@ -247,15 +257,11 @@ private def ordinaryNumericAtomIterationScope
 private def orderedNumericAtomIterationScope :
     OrderedNumericValidationAtom model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
-  | .indexed _ => pure none
+  | .indexed source => selectedIterationScope (.inl source.toCheckedSemanticIndexSource)
   | .indexedString source =>
-      mergeIterationScopeList (source.boundFieldIds.map fun field =>
-        let scope := model.fieldRepeatableScope field
-        if scope.isEmpty then none else some scope)
+      mergeIterationScopeList (source.selection.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
   | .temporalPart source =>
-      mergeIterationScopeList (source.source.boundFieldIds.map fun field =>
-        let scope := model.fieldRepeatableScope field
-        if scope.isEmpty then none else some scope)
+      mergeIterationScopeList (source.source.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
   | .ordinary source => ordinaryNumericAtomIterationScope model source
   | .firstFilled source | .valueCount _ source | .aggregate _ source =>
       checkedNumberSourceIterationScope source
@@ -268,7 +274,8 @@ private def orderedNumericAtomIterationScope :
         if scope.isEmpty then none else some scope
       mergeIterationScopeList (← run.source.operands.mapM fun operand =>
         match operand with
-        | .slot (.field _) | .slot (.selected _ _) | .selected _ _ => pure none
+        | .slot (.field _) => pure none
+        | .slot (.selected source _) | .selected source _ => selectedIterationScope source.source
         | .slot (.star path _ none) => pure (checkedStarBindingScope path)
         | .slot (.star path _ (some filter)) => do
             mergeIterationScopes (checkedStarBindingScope path)
@@ -277,7 +284,9 @@ private def orderedNumericAtomIterationScope :
         | .group source => pure (groupScope source.source))
   | .booleanValueCount source =>
       checkedBooleanValueCountSourceIterationScope source
-  | .sumOfProducts (.selected _) => pure none
+  | .sumOfProducts (.selected source) => do
+      mergeIterationScopes (← selectedIterationScope (.inr source.left.source))
+        (← selectedIterationScope (.inr source.right.source))
   | .sumOfProducts (.row source) =>
       mergeIterationScopes
         (checkedStarBindingScope source.left.source)
@@ -321,11 +330,14 @@ def orderedNumericComparisonIterationScope
 def ordinaryIterationScope :
     ValidationCondition model →
       Except RuleIterationScopeError (Option (List RepeatableLevel))
-  | .leaf (.keyedGroupPresence _ _) | .leaf (.indexedFieldPresence _ _) => pure none
+  | .leaf (.keyedGroupPresence _ source) =>
+      mergeIterationScopeList (source.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
+  | .leaf (.indexedFieldPresence _ source) =>
+      mergeIterationScopeList (source.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
   | .leaf (.indexedStringPattern leaf) =>
-      pure (if leaf.bindingScope.isEmpty then none else some leaf.bindingScope)
+      mergeIterationScopeList (leaf.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
   | .leaf (.indexedCustomFieldValidity leaf) =>
-      pure (if leaf.source.bindingScope.isEmpty then none else some leaf.source.bindingScope)
+      mergeIterationScopeList (leaf.source.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
   | .leaf (.repeatableFieldPresence _ declaration) =>
       pure (some declaration.repeatableScope)
   | .leaf (.constructedDateValidity _ source) =>
@@ -345,8 +357,8 @@ def ordinaryIterationScope :
       mergeIterationScopeList (source.operands.flatMap fun operand =>
         operand.bindingScopes.map fun scope => if scope.isEmpty then none else some scope)
   | .leaf (.stringExpression comparison) =>
-      mergeIterationScopeList (comparison.boundDeclarations.map fun field =>
-        if field.repeatableScope.isEmpty then none else some field.repeatableScope)
+      mergeIterationScopeList (comparison.bindingScopes.map fun scope =>
+        if scope.isEmpty then none else some scope)
   | .leaf (.scalarTemporal comparison) =>
       mergeIterationScopeList (comparison.bindingScopes.map fun scope =>
         if scope.isEmpty then none else some scope)

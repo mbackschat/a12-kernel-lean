@@ -111,19 +111,17 @@ inductive IndexedCustomFieldValidityElabError where
   deriving Repr, DecidableEq
 
 def elaborateIndexedCustomFieldValidityOperand (model : FlatModel) (rowGroup : GroupPath)
-    (surface : SurfaceSemanticIndex) :
+    (surface : SurfaceSemanticIndex) (boundScope? : Option (List RepeatableLevel) := none) :
     Except IndexedCustomFieldValidityElabError (CheckedIndexedCustomFieldValidityOperand model) := do
-  let selection ← (elaborateSemanticIndexSource model rowGroup surface).mapError .selection
+  let selection ← (elaborateSemanticIndexSource model rowGroup surface boundScope?).mapError .selection
   let operand ← (elaborateCustomFieldValidityOperand model selection.targetDeclaration.id).mapError .operand
   if sameTarget : selection.targetDeclaration.id = operand.source then
     pure { selection, operand, sameTarget }
   else throw .incoherent
 
-def CheckedIndexedCustomFieldValidityOperand.bindingScope
-    (source : CheckedIndexedCustomFieldValidityOperand model) : List RepeatableLevel :=
-  match source.selection.key with
-  | .literal .. => []
-  | .field declaration => declaration.repeatableScope
+def CheckedIndexedCustomFieldValidityOperand.bindingScopes
+    (source : CheckedIndexedCustomFieldValidityOperand model) : List (List RepeatableLevel) :=
+  source.selection.bindingScopes
 
 structure CheckedIndexedCustomFieldValidityLeaf (model : FlatModel) where
   source : CheckedIndexedCustomFieldValidityOperand model

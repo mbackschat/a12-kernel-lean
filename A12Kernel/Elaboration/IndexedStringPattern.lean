@@ -28,9 +28,10 @@ structure CheckedIndexedStringPatternLeaf (model : FlatModel) where
   sameTarget : selection.targetDeclaration.id = leaf.condition.field.id
 
 def elaborateIndexedStringPattern (compilePattern : StringPatternCompiler)
-    (model : FlatModel) (rowGroup : GroupPath) (surface : SurfaceIndexedStringPatternCondition) :
+    (model : FlatModel) (rowGroup : GroupPath) (surface : SurfaceIndexedStringPatternCondition)
+    (boundScope? : Option (List RepeatableLevel) := none) :
     Except IndexedStringPatternElabError (CheckedIndexedStringPatternLeaf model) := do
-  let selection ← (elaborateSemanticIndexSource model rowGroup surface.field).mapError .selection
+  let selection ← (elaborateSemanticIndexSource model rowGroup surface.field boundScope?).mapError .selection
   let declaration := selection.targetDeclaration
   let condition ← (elaborateStringPatternCondition compilePattern model declaration.groupPath
     { op := surface.op, field := { base := .relative 0, groups := [], field := declaration.name }, source := surface.source }).mapError .pattern
@@ -38,11 +39,9 @@ def elaborateIndexedStringPattern (compilePattern : StringPatternCompiler)
     pure { selection, leaf := { compilePattern, condition }, sameTarget }
   else throw .incoherent
 
-def CheckedIndexedStringPatternLeaf.bindingScope
-    (source : CheckedIndexedStringPatternLeaf model) : List RepeatableLevel :=
-  match source.selection.key with
-  | .literal .. => []
-  | .field declaration => declaration.repeatableScope
+def CheckedIndexedStringPatternLeaf.bindingScopes
+    (source : CheckedIndexedStringPatternLeaf model) : List (List RepeatableLevel) :=
+  source.selection.bindingScopes
 
 def CheckedIndexedStringPatternLeaf.evalObservation
     (source : CheckedIndexedStringPatternLeaf model) (observation : CellObservation) : Verdict :=

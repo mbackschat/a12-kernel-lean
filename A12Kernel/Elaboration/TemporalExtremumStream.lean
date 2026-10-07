@@ -353,7 +353,7 @@ def readAddressedSideWith (expected : TemporalComponents)
           match operand with
           | .indexed _ | .keyed _ =>
               (selectedSide operand phase {
-                read := document.flatContext.read, storedText := document.flatContext.storedText, world, row := outer,
+                read := (document.computationContextAt outer).read, storedText := (document.computationContextAt outer).storedText, world, row := outer,
                 addressed := some document.indexedComputationFillContext } (fun _ observation => pure (project observation))).mapError .addressing
           | _ => do
               let core ← operandExtent (world := world) document outer filter operand

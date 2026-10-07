@@ -193,7 +193,9 @@ end CheckedTokenEntitySource
 def CheckedTokenEntitySource.bindingScopes (source : CheckedTokenEntitySource model) : List (List RepeatableLevel) :=
   source.operands.flatMap fun
     | .field field => [field.declaration.repeatableScope]
-    | .selected _ => []
+    | .selected source => match source.source with
+      | .inl selected => selected.bindingScopes
+      | .inr selected => selected.bindingScopes
     | .star source => source.source.bindingScope ::
         (if source.filter.isSome then [model.repeatableScopeForGroupPath source.bindingGroup] else [])
     | .group source => [source.source.bindingScope]

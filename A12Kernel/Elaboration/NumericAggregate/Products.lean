@@ -26,8 +26,8 @@ def sideWith (source : CheckedKeyedNumberProductOperand model) (phase : Phase)
 def sideIn (source : CheckedKeyedNumberProductOperand model) (phase : Phase)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (ResolvedValueListSide .number) :=
-  source.sideWith phase document.source.toDocument outer document.flatContext.read
-    document.flatContext.storedText document.computationFillContext.read
+  source.sideWith phase document.source.toDocument outer (document.computationContextAt outer).read
+    (document.computationContextAt outer).storedText document.computationFillContext.read
     (document.resolveSemanticIndexColumnWith document.read)
 
 end CheckedKeyedNumberProductOperand
@@ -71,9 +71,9 @@ def elaborateNumericProductAggregate (model : FlatModel) (declaringGroup : Group
   | none, none => .row <$> elaborateRowNumericProductAggregate model declaringGroup authored writtenGroup
   | some leftKey, some rightKey =>
       let left ← elaborateKeyedEntityExtent model declaringGroup { target := .star authored.left, key := leftKey }
-        |>.mapError .keyed
+        (some (model.repeatableScopeForGroupPath writtenGroup)) |>.mapError .keyed
       let right ← elaborateKeyedEntityExtent model declaringGroup { target := .star authored.right, key := rightKey }
-        |>.mapError .keyed
+        (some (model.repeatableScopeForGroupPath writtenGroup)) |>.mapError .keyed
       if left.groupPath != right.groupPath then throw (.differentGroups left.groupPath right.groupPath)
       if authored.leftHaving.isSome || authored.rightHaving.isSome then throw .wildcardAtLowestLevelRequired
       requireKeyedProductLowestStar left
@@ -86,6 +86,10 @@ def elaborateNumericProductAggregate (model : FlatModel) (declaringGroup : Group
   | _, _ => throw .incompatibleTopology
 
 namespace CheckedNumericProductAggregate
+
+def bindingScopes : CheckedNumericProductAggregate model → List (List RepeatableLevel)
+  | .row source => [source.left.source.bindingScope, source.right.source.bindingScope]
+  | .selected source => source.left.source.bindingScopes ++ source.right.source.bindingScopes
 
 def scaleSummary : CheckedNumericProductAggregate model → NumericScaleSummary
   | .row source => source.scaleSummary

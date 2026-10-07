@@ -143,11 +143,19 @@ def overlaps (left right : ResolvedFieldEntityOperand model) : Bool :=
     scope. -/
 def bindingScope : ResolvedFieldEntityOperand model → List RepeatableLevel
   | .field declaration _ => declaration.repeatableScope
-  | .indexed _ | .keyed _ => []
+  | .indexed source => source.indexDeclaration.repeatableScope.dropLast
+  | .keyed source => source.selection.indexDeclaration.repeatableScope.dropLast
   | .star source | .starHaving source _ => source.bindingScope
   | .group reference => reference.boundRepeatableScope
   | .starredGroup source => source.path.bindingScope
   | .starredGroupPresence source => source.path.bindingScope
+
+/-- Dynamic keys retain their own binding demand beside the selected extent's parent. -/
+def bindingScopes (operand : ResolvedFieldEntityOperand model) : List (List RepeatableLevel) :=
+  match operand with
+  | .indexed source => source.bindingScopes
+  | .keyed source => source.bindingScopes
+  | _ => [operand.bindingScope]
 
 end ResolvedFieldEntityOperand
 
@@ -462,9 +470,11 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   -- stands ([`kf482`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf482)).
   let categoryRead := FlatFieldDecl.checkEntityCategoryRead
   match authored with
-  | .keyed source => (elaborateKeyedEntityExtent model declaringGroup source).map .keyed |>.mapError .keyed
+  | .keyed source => (elaborateKeyedEntityExtent model declaringGroup source
+      (some (model.repeatableScopeForGroupPath (fixedTargetGroup?.getD writtenGroup)))).map .keyed |>.mapError .keyed
   | .indexed source =>
-      (elaborateSemanticIndexSource model declaringGroup source).map .indexed |>.mapError .semanticIndex
+      (elaborateSemanticIndexSource model declaringGroup source
+        (some (model.repeatableScopeForGroupPath (fixedTargetGroup?.getD writtenGroup)))).map .indexed |>.mapError .semanticIndex
   | .field path form => do
       let resolved ←
         model.resolveFieldDeclarationUnchecked declaringGroup path
@@ -551,7 +561,7 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
           authored.rest groupReadScope
       if let some targetGroup := fixedTargetGroup? then
         if let some unbound := model.firstUnboundComputationLevel? declaringGroup targetGroup
-            ((first :: rest).map ResolvedFieldEntityOperand.bindingScope) then
+            ((first :: rest).flatMap ResolvedFieldEntityOperand.bindingScopes) then
           throw (.unboundOperandLevel unbound)
       if categoryGate == .aheadOfRepeat then
         if let some path := (first :: rest).findSome? ResolvedFieldEntityOperand.categoryPath? then
@@ -614,7 +624,8 @@ theorem resolveFieldEntityOperandIn_declaringGroupValid
       · exact valid
       · simp [elaborateKeyedEntityExtent, valid, Except.map, Except.mapError, bind, Except.bind] at ok
   | indexed source =>
-      cases hSource : elaborateSemanticIndexSource model declaringGroup source with
+      cases hSource : elaborateSemanticIndexSource model declaringGroup source
+        (some (model.repeatableScopeForGroupPath (fixedTargetGroup?.getD writtenGroup))) with
       | error error => simp [hSource, Except.map, Except.mapError] at ok
       | ok checked => exact elaborateSemanticIndexSource_declaringGroupValid hSource
   | field path form =>

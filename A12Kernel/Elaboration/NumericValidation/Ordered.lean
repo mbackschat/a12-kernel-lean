@@ -139,54 +139,57 @@ def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
 def admitted (atom : OrderedNumericValidationAtom model)
     (rowGroup : GroupPath)
     (scope : NumericOperandScope) : Bool :=
+  let bound (scopes : List (List RepeatableLevel)) := scopes.all fun required =>
+    match scope with
+    | .sameGroupAddressed | .modelWideCheckedComputation =>
+        required.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
+    | .sameGroup | .modelWideNonrepeatable => required.isEmpty
   match atom with
-  | .indexed _ => scope == .sameGroupAddressed || scope == .modelWideCheckedComputation
+  | .indexed source => (scope == .sameGroupAddressed || scope == .modelWideCheckedComputation) &&
+      bound source.toCheckedSemanticIndexSource.bindingScopes
   | .indexedString source =>
-      scope == .modelWideCheckedComputation ||
-        (scope == .sameGroupAddressed && source.boundFieldIds.all fun field =>
-          (model.fieldRepeatableScope field).isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
-  | .temporalPart source => source.source.boundFieldIds.all fun field =>
+      (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed) &&
+        bound source.selection.bindingScopes
+  | .temporalPart source => bound source.source.bindingScopes && source.source.boundFieldIds.all fun field =>
       (model.lookupUniqueId field).toOption.any fun declaration => match scope with
         | .sameGroup => declaration.groupPath == rowGroup && declaration.repeatableScope.isEmpty
         | .sameGroupAddressed => declaration.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
         | .modelWideNonrepeatable => declaration.repeatableScope.isEmpty
         | .modelWideCheckedComputation => true
   | .ordinary source => source.admitted model rowGroup scope
-  | .firstFilled source =>
+  | .firstFilled source => bound source.bindingScopes &&
       match scope with
-      | .sameGroupAddressed => source.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
+      | .sameGroupAddressed => true
       | _ => checkedNumberEntitySourceAdmittedIn source rowGroup scope
-  | .valueCount _ source =>
+  | .valueCount _ source => bound source.bindingScopes &&
       checkedNumberEntitySourceAdmittedIn source rowGroup scope
-  | .tokenValueCount source =>
+  | .tokenValueCount source => bound source.source.bindingScopes &&
       checkedTokenValueCountAdmittedIn source rowGroup scope
-  | .booleanValueCount source =>
+  | .booleanValueCount source => bound source.bindingScopes &&
       match scope with
       | .sameGroup =>
           match source.directFields? with
-          | some fields =>
-              fields.all fun field => field.groupPath == rowGroup
+          | some fields => fields.all fun field => field.groupPath == rowGroup
           | none => false
       | .sameGroupAddressed => source.directFields?.isNone
       | .modelWideNonrepeatable => source.directFields?.isSome
       | .modelWideCheckedComputation => true
-  | .aggregate _ source =>
-      (scope == .modelWideCheckedComputation ||
-        scope == .sameGroupAddressed) &&
+  | .aggregate _ source => bound source.bindingScopes &&
+      (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed) &&
         source.directAggregateFields?.isNone
-  | .sumOfProducts _ =>
-      scope == .modelWideCheckedComputation ||
-        scope == .sameGroupAddressed
+  | .sumOfProducts source => bound source.bindingScopes &&
+      (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed)
   | .filledGroupCountMixed operands =>
-      (scope == .modelWideCheckedComputation ||
-        scope == .sameGroupAddressed) &&
+      (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed) &&
         CheckedGroupCountOperand.admittedArity operands &&
         !operands.any CheckedGroupCountOperand.isRoot
   | .filledFieldCount source =>
       (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed) &&
         source.rowBoundBool (model.repeatableScopeForGroupPath rowGroup)
-  | .tokenDistinctCount _ | .temporalDistinctCount _ =>
-      scope == .modelWideCheckedComputation || scope == .sameGroupAddressed
+  | .tokenDistinctCount source => bound source.bindingScopes &&
+      (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed)
+  | .temporalDistinctCount run => bound run.source.bindingScopes &&
+      (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed)
 
 def referencesField (atom : OrderedNumericValidationAtom model)
     (field : FieldId) : Bool :=

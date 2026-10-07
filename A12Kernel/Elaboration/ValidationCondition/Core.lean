@@ -689,8 +689,7 @@ def wellFormedBool (rowGroup : GroupPath) :
       (model.repeatableScopeForGroupPath rowGroup).contains
   | .tokenComparison comparison => comparison.bindingScopes.flatten.all
       (model.repeatableScopeForGroupPath rowGroup).contains
-  | .stringExpression comparison => comparison.boundDeclarations.all fun field =>
-      field.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
+  | .stringExpression comparison => comparison.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
   | .scalarTemporal comparison =>
       comparison.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
   | .valuesNotUnique source => source.admittedMultiplicity && source.bindingScopes.flatten.all
@@ -706,8 +705,9 @@ def wellFormedBool (rowGroup : GroupPath) :
       reference.presenceWellFormedBool model rowGroup
   | .groupList operator operands =>
       ResolvedGroupListOperands.wellFormedBool operator operands rowGroup
-  | .keyedGroupPresence _ source => source.isGroup && !source.isStarredGroup
-  | .indexedFieldPresence _ _ => true
+  | .keyedGroupPresence _ source => source.isGroup && !source.isStarredGroup &&
+      source.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
+  | .indexedFieldPresence _ source => source.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
   | .repeatableFieldPresence _ declaration =>
       match model.lookupUniqueId declaration.id with
       | .ok checked =>
@@ -736,11 +736,11 @@ def wellFormedBool (rowGroup : GroupPath) :
   -- because none is measured — whether the Kernel requires the operand inside the rule's group is
   -- untested for this predicate.
   | .customFieldValidity leaf => leaf.operand.declaration.repeatableScope.isEmpty
-  | .indexedCustomFieldValidity leaf => leaf.source.bindingScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
+  | .indexedCustomFieldValidity leaf => leaf.source.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
   -- The rule's row must bind every level the operand leaves unstarred above its own depth.
   | .fieldFill _ source =>
       source.bindingScope.all (model.repeatableScopeForGroupPath rowGroup).contains
-  | .indexedStringPattern leaf => leaf.bindingScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
+  | .indexedStringPattern leaf => leaf.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
   | .stringPattern leaf => model.admitsStringPatternField leaf.condition.field &&
       (model.fieldRepeatableScope leaf.condition.field.id).isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
 

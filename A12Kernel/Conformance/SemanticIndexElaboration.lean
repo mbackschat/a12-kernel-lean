@@ -317,6 +317,8 @@ private def checked : CheckedNumberSemanticIndexSource model :=
       keyOwned := by native_decide
       keyAgrees := by native_decide
     }
+    singleGroup := by native_decide
+    scalarKey := by native_decide
     indexNumber := by native_decide
     targetNumber := by native_decide
   }
@@ -336,6 +338,8 @@ private def fieldChecked : CheckedNumberSemanticIndexSource model :=
       keyOwned := by native_decide
       keyAgrees := by native_decide
     }
+    singleGroup := by native_decide
+    scalarKey := by native_decide
     indexNumber := by native_decide
     targetNumber := by native_decide
   }
@@ -722,7 +726,7 @@ example :
     }
     semanticIndexErrorOf
       (elaborateNumberSemanticIndexSource twoGroupModel ["Order"] siblingKey) =
-        some (.resolve (.repeatableReference ["Order", "Notes", "LineNo"])) := by
+        some (.keyAdmission .semanticIndexKeyInvalidIteration) := by
   native_decide
 
 end A12Kernel

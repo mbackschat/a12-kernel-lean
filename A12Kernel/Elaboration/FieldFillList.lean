@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.PartialSemanticIndex
 import A12Kernel.Semantics.ComputationFillQuantifier
 import A12Kernel.Elaboration.FilledFieldGroupCount
 import A12Kernel.Elaboration.FilledFieldStarCount
@@ -76,7 +77,8 @@ def groupPath : CheckedFieldFillOperand model → GroupPath
 scope conflicts for the ordinary iteration merger. -/
 def bindingScopes : CheckedFieldFillOperand model → List (List RepeatableLevel)
   | .field declaration => [declaration.repeatableScope]
-  | .indexed _ | .keyed _ => [[]]
+  | .indexed source => source.bindingScopes
+  | .keyed source => source.bindingScopes
   | .star source => source.source.bindingScope ::
       (source.filter.toList.flatMap fun filter =>
         (CorrelatedHaving.outerIterationScopes model filter.condition).filterMap id)
@@ -107,7 +109,7 @@ def observations (document : CheckedDocument model) (outer : Env)
   | .indexed source => List.singleton <$> source.observeDocument document outer .validation
   | .keyed source => do
       let selected ← source.selectWith .validation (document.resolveSemanticIndexColumnWith document.read) outer
-        document.flatContext.read document.flatContext.storedText
+        (document.computationContextAt outer).read (document.computationContextAt outer).storedText
       source.observationsWith .validation document.source.toDocument selected document.computationFillContext.read
   | .field declaration => do
       -- EntityUtil.resolveIterations retains the bound singleton; RuntimeController's
@@ -150,7 +152,7 @@ def computationSlots (document : CheckedDocument model) (outer : Env) :
       pure [(← source.observeDocument document outer .computation).asComputationFillSlot]
   | .keyed source => do
       let selected ← source.selectWith .computation (document.resolveSemanticIndexColumnWith document.read) outer
-        document.flatContext.read document.flatContext.storedText
+        (document.computationContextAt outer).read (document.computationContextAt outer).storedText
       source.computationSlotsWith document.source.toDocument selected document.computationFillContext.read
   | .field declaration =>
       computationCoreSlots <$> document.resolveCheckedDirectEntityOperandCoreAt outer declaration.id
@@ -199,13 +201,30 @@ def countPartialFieldReads
               | .evaluated (.value remaining) => pure (.evaluated (.value (count + remaining)))
               | result => pure result
 
+/-- Selected counts use the same complete-extent test as ordinary counts (spec/10 §5), then
+reuse the ordered cell fold so unavailable keys and payloads cannot inspect the suffix. -/
+private def countPartialSelectedFields
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
+    (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    Except CheckedAddressingError PartialValidationFilledFieldCountResult := do
+  match ← resolvePartialSelectedAddresses source document scope outer read
+      (fun declaration bound reopened environment =>
+        scope.coversAggregateExtent model declaration.path bound reopened environment) with
+  | none => pure .nonRelevant
+  | some (.unknown _) | some (.poison _) => pure (.evaluated .unknown)
+  | some .empty => pure (.evaluated (.value 0))
+  | some (.value (addresses, _)) =>
+      countPartialFieldReads read (addresses.map fun (field, row) => (row, field.id))
+
 private def CheckedFieldFillOperand.partialCount
     (operand : CheckedFieldFillOperand model) (document : CheckedDocument model)
     (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
     Except CheckedAddressingError (Option PartialValidationFilledFieldCountResult) := do
   let rows ← match operand with
-    | .indexed _ | .keyed _ => return none
+    | .indexed source => return some (← countPartialSelectedFields (.inl source) document outer scope read)
+    | .keyed source => return some (← countPartialSelectedFields (.inr source) document outer scope read)
     | .field declaration =>
         if !scope.coversAggregateExtent model declaration.path declaration.repeatableScope [] outer then
           return some .nonRelevant
@@ -247,17 +266,16 @@ def hasHaving (list : CheckedFieldFillList model) : Bool :=
 
 /-- Structural support is separate from an admitted count's relevance or cell availability. -/
 def supportsPartialCount (list : CheckedFieldFillList model) : Bool :=
-  !list.hasIndexed && !list.hasHaving
+  !list.hasHaving
 
 /-- Partial counts preserve each operand's complete declared extent and read the call-local
-preliminary view. Indexed sources remain structurally unsupported (`none`); filtered rules
-retain their rule-owned skip. A reached unavailable operand stops the authored suffix. -/
+preliminary view, including the selected extent's complete-coverage gate (spec/10 §5).
+Filtered rules retain their rule-owned skip. A reached unavailable operand stops the authored suffix. -/
 def evaluatePartialCount (list : CheckedFieldFillList model) (document : CheckedDocument model)
     (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
     Except CheckedAddressingError (Option PartialValidationFilledFieldCountResult) :=
-  if list.hasIndexed then pure none
-  else if list.hasHaving then pure (some .skippedHaving)
+  if list.hasHaving then pure (some .skippedHaving)
   else go list.operands
 where
   go : List (CheckedFieldFillOperand model) →

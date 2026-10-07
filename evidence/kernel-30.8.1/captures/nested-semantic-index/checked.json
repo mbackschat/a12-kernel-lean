@@ -1,0 +1,1236 @@
+{
+  "target": "batch",
+  "op": "run",
+  "outcome": "completed",
+  "ok": false,
+  "summary": "[redacted]",
+  "data": {
+    "ops": 45,
+    "dispatched": true,
+    "allExitedZero": false,
+    "results": [
+      {
+        "op": 0,
+        "id": "root-literal-Scalar",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-literal-Scalar.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/ScalarComp"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 1,
+        "id": "root-literal-GroupSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-literal-GroupSum.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/GroupSumComp"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 2,
+        "id": "root-literal-StarSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-literal-StarSum.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/StarSumComp"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 3,
+        "id": "root-literal-Count",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-literal-Count.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/CountComp"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 4,
+        "id": "root-literal-First",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-literal-First.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/FirstComp"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 5,
+        "id": "root-rootkey-Scalar",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-rootkey-Scalar.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/ScalarComp"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 6,
+        "id": "root-rootkey-GroupSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-rootkey-GroupSum.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/GroupSumComp"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 7,
+        "id": "root-rootkey-StarSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-rootkey-StarSum.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/StarSumComp"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 8,
+        "id": "root-rootkey-Count",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-rootkey-Count.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/CountComp"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 9,
+        "id": "root-rootkey-First",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-rootkey-First.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_NO_WILDCARD",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/FirstComp"
+              },
+              "fix": "A repeatable group is referenced from a rule that does not iterate over it — the fix is operator-dependent. For an AGGREGATE, flatten the repetitions with the `*` wildcard: Sum(Lines*/Amount), NumberOfFilledFields(Lines*/Sku), NumberOfFilledGroups(Lines*). For a PER-REPETITION predicate (RepetitionNotUnique / CurrentRepetition), make the rule iterate by putting its group at the PARENT of the repeated group with the error field inside it — via the CLI, `rule check --group <parentGroup> --field <parentGroup>/<repeatedGroup>/<field>` (e.g. --group /Order --field /Order/Items/Sku for RepetitionNotUnique(Items/Sku)).",
+              "explain": "MVK_NO_WILDCARD fires when a repeatable group is referenced from a non-iterating scope: the kernel expected either a flattening `*` (aggregates) or a rule that iterates over that group (per-repetition predicates). The required form depends on the operator, so this code is not specific to any single one."
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 10,
+        "id": "root-parentkey-Scalar",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-parentkey-Scalar.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_SEMANTIC_INDEX_INVALID_ITER",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/ScalarComp"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 11,
+        "id": "root-parentkey-GroupSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-parentkey-GroupSum.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_SEMANTIC_INDEX_INVALID_ITER",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/GroupSumComp"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 12,
+        "id": "root-parentkey-StarSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-parentkey-StarSum.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_SEMANTIC_INDEX_INVALID_ITER",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/StarSumComp"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 13,
+        "id": "root-parentkey-Count",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-parentkey-Count.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_SEMANTIC_INDEX_INVALID_ITER",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/CountComp"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 14,
+        "id": "root-parentkey-First",
+        "verb": "computation",
+        "args": [
+          "add",
+          "root-parentkey-First.json",
+          "--dry-run"
+        ],
+        "exit": 1,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "rejected",
+          "ok": false,
+          "valid": false,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "diagnostics": [
+            {
+              "severity": "ERROR",
+              "source": "KERNEL",
+              "code": "MVK_SEMANTIC_INDEX_INVALID_ITER",
+              "summary": "[redacted]",
+              "where": {
+                "rule": "/Form/FirstComp"
+              }
+            }
+          ],
+          "written": false
+        }
+      },
+      {
+        "op": 15,
+        "id": "parent-literal-Scalar",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-literal-Scalar.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/ScalarComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 16,
+        "id": "parent-literal-GroupSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-literal-GroupSum.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/GroupSumComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 17,
+        "id": "parent-literal-StarSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-literal-StarSum.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/StarSumComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 18,
+        "id": "parent-literal-Count",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-literal-Count.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/CountComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 19,
+        "id": "parent-literal-First",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-literal-First.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/FirstComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 20,
+        "id": "parent-rootkey-Scalar",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-rootkey-Scalar.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/ScalarComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 21,
+        "id": "parent-rootkey-GroupSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-rootkey-GroupSum.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/GroupSumComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 22,
+        "id": "parent-rootkey-StarSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-rootkey-StarSum.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/StarSumComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 23,
+        "id": "parent-rootkey-Count",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-rootkey-Count.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/CountComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 24,
+        "id": "parent-rootkey-First",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-rootkey-First.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/FirstComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 25,
+        "id": "parent-parentkey-Scalar",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-parentkey-Scalar.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/ScalarComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 26,
+        "id": "parent-parentkey-GroupSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-parentkey-GroupSum.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/GroupSumComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 27,
+        "id": "parent-parentkey-StarSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-parentkey-StarSum.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/StarSumComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 28,
+        "id": "parent-parentkey-Count",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-parentkey-Count.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/CountComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 29,
+        "id": "parent-parentkey-First",
+        "verb": "computation",
+        "args": [
+          "add",
+          "parent-parentkey-First.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/FirstComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 30,
+        "id": "row-literal-Scalar",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-literal-Scalar.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/ScalarComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 31,
+        "id": "row-literal-GroupSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-literal-GroupSum.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/GroupSumComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 32,
+        "id": "row-literal-StarSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-literal-StarSum.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/StarSumComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 33,
+        "id": "row-literal-Count",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-literal-Count.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/CountComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 34,
+        "id": "row-literal-First",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-literal-First.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/FirstComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 35,
+        "id": "row-rootkey-Scalar",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-rootkey-Scalar.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/ScalarComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 36,
+        "id": "row-rootkey-GroupSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-rootkey-GroupSum.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/GroupSumComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 37,
+        "id": "row-rootkey-StarSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-rootkey-StarSum.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/StarSumComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 38,
+        "id": "row-rootkey-Count",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-rootkey-Count.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/CountComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 39,
+        "id": "row-rootkey-First",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-rootkey-First.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/FirstComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 40,
+        "id": "row-parentkey-Scalar",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-parentkey-Scalar.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/ScalarComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 41,
+        "id": "row-parentkey-GroupSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-parentkey-GroupSum.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/GroupSumComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 42,
+        "id": "row-parentkey-StarSum",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-parentkey-StarSum.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/StarSumComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 43,
+        "id": "row-parentkey-Count",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-parentkey-Count.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/CountComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      },
+      {
+        "op": 44,
+        "id": "row-parentkey-First",
+        "verb": "computation",
+        "args": [
+          "add",
+          "row-parentkey-First.json",
+          "--dry-run"
+        ],
+        "exit": 0,
+        "result": {
+          "target": "computation",
+          "op": "add",
+          "outcome": "preview",
+          "ok": true,
+          "verification": "KERNEL_CONFIRMED",
+          "summary": "[redacted]",
+          "changed": {
+            "computation": "/Form/Parents/Rows/FirstComp"
+          },
+          "diagnostics": [],
+          "written": false
+        }
+      }
+    ]
+  },
+  "diagnostics": [],
+  "written": false
+}

@@ -1,0 +1,632 @@
+{
+  "root-literal-Scalar": {
+    "computedField": "/Form/Scalar",
+    "alternatives": [
+      {
+        "operation": "[/Form/Parents/Rows/N For \"a\"]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-literal-GroupSum": {
+    "computedField": "/Form/GroupSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Body For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-literal-StarSum": {
+    "computedField": "/Form/StarSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Items*/N For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-literal-Count": {
+    "computedField": "/Form/Count",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledFields(/Form/Parents/Rows/Body For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-literal-First": {
+    "computedField": "/Form/First",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents/Rows/Body For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-rootkey-Scalar": {
+    "computedField": "/Form/Scalar",
+    "alternatives": [
+      {
+        "operation": "[/Form/Parents/Rows/N For /Form/RootKey]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-rootkey-GroupSum": {
+    "computedField": "/Form/GroupSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Body For /Form/RootKey)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-rootkey-StarSum": {
+    "computedField": "/Form/StarSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Items*/N For /Form/RootKey)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-rootkey-Count": {
+    "computedField": "/Form/Count",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledFields(/Form/Parents/Rows/Body For /Form/RootKey)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-rootkey-First": {
+    "computedField": "/Form/First",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents/Rows/Body For /Form/RootKey)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-parentkey-Scalar": {
+    "computedField": "/Form/Scalar",
+    "alternatives": [
+      {
+        "operation": "[/Form/Parents/Rows/N For /Form/Parents/Key]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-parentkey-GroupSum": {
+    "computedField": "/Form/GroupSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Body For /Form/Parents/Key)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-parentkey-StarSum": {
+    "computedField": "/Form/StarSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Items*/N For /Form/Parents/Key)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-parentkey-Count": {
+    "computedField": "/Form/Count",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledFields(/Form/Parents/Rows/Body For /Form/Parents/Key)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "root-parentkey-First": {
+    "computedField": "/Form/First",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents/Rows/Body For /Form/Parents/Key)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-literal-Scalar": {
+    "computedField": "/Form/Parents/Scalar",
+    "alternatives": [
+      {
+        "operation": "[/Form/Parents/Rows/N For \"a\"]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-literal-GroupSum": {
+    "computedField": "/Form/Parents/GroupSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Body For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-literal-StarSum": {
+    "computedField": "/Form/Parents/StarSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Items*/N For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-literal-Count": {
+    "computedField": "/Form/Parents/Count",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledFields(/Form/Parents/Rows/Body For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-literal-First": {
+    "computedField": "/Form/Parents/First",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents/Rows/Body For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-rootkey-Scalar": {
+    "computedField": "/Form/Parents/Scalar",
+    "alternatives": [
+      {
+        "operation": "[/Form/Parents/Rows/N For /Form/RootKey]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-rootkey-GroupSum": {
+    "computedField": "/Form/Parents/GroupSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Body For /Form/RootKey)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-rootkey-StarSum": {
+    "computedField": "/Form/Parents/StarSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Items*/N For /Form/RootKey)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-rootkey-Count": {
+    "computedField": "/Form/Parents/Count",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledFields(/Form/Parents/Rows/Body For /Form/RootKey)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-rootkey-First": {
+    "computedField": "/Form/Parents/First",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents/Rows/Body For /Form/RootKey)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-parentkey-Scalar": {
+    "computedField": "/Form/Parents/Scalar",
+    "alternatives": [
+      {
+        "operation": "[/Form/Parents/Rows/N For /Form/Parents/Key]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-parentkey-GroupSum": {
+    "computedField": "/Form/Parents/GroupSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Body For /Form/Parents/Key)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-parentkey-StarSum": {
+    "computedField": "/Form/Parents/StarSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Items*/N For /Form/Parents/Key)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-parentkey-Count": {
+    "computedField": "/Form/Parents/Count",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledFields(/Form/Parents/Rows/Body For /Form/Parents/Key)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "parent-parentkey-First": {
+    "computedField": "/Form/Parents/First",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents/Rows/Body For /Form/Parents/Key)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-literal-Scalar": {
+    "computedField": "/Form/Parents/Rows/Scalar",
+    "alternatives": [
+      {
+        "operation": "[/Form/Parents/Rows/N For \"a\"]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-literal-GroupSum": {
+    "computedField": "/Form/Parents/Rows/GroupSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Body For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-literal-StarSum": {
+    "computedField": "/Form/Parents/Rows/StarSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Items*/N For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-literal-Count": {
+    "computedField": "/Form/Parents/Rows/Count",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledFields(/Form/Parents/Rows/Body For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-literal-First": {
+    "computedField": "/Form/Parents/Rows/First",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents/Rows/Body For \"a\")"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-rootkey-Scalar": {
+    "computedField": "/Form/Parents/Rows/Scalar",
+    "alternatives": [
+      {
+        "operation": "[/Form/Parents/Rows/N For /Form/RootKey]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-rootkey-GroupSum": {
+    "computedField": "/Form/Parents/Rows/GroupSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Body For /Form/RootKey)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-rootkey-StarSum": {
+    "computedField": "/Form/Parents/Rows/StarSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Items*/N For /Form/RootKey)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-rootkey-Count": {
+    "computedField": "/Form/Parents/Rows/Count",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledFields(/Form/Parents/Rows/Body For /Form/RootKey)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-rootkey-First": {
+    "computedField": "/Form/Parents/Rows/First",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents/Rows/Body For /Form/RootKey)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-parentkey-Scalar": {
+    "computedField": "/Form/Parents/Rows/Scalar",
+    "alternatives": [
+      {
+        "operation": "[/Form/Parents/Rows/N For /Form/Parents/Key]"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-parentkey-GroupSum": {
+    "computedField": "/Form/Parents/Rows/GroupSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Body For /Form/Parents/Key)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-parentkey-StarSum": {
+    "computedField": "/Form/Parents/Rows/StarSum",
+    "alternatives": [
+      {
+        "operation": "Sum(/Form/Parents/Rows/Items*/N For /Form/Parents/Key)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-parentkey-Count": {
+    "computedField": "/Form/Parents/Rows/Count",
+    "alternatives": [
+      {
+        "operation": "NumberOfFilledFields(/Form/Parents/Rows/Body For /Form/Parents/Key)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  },
+  "row-parentkey-First": {
+    "computedField": "/Form/Parents/Rows/First",
+    "alternatives": [
+      {
+        "operation": "FirstFilledValue(/Form/Parents/Rows/Body For /Form/Parents/Key)"
+      }
+    ],
+    "messages": [
+      {
+        "locale": "en_US",
+        "text": "probe"
+      }
+    ]
+  }
+}

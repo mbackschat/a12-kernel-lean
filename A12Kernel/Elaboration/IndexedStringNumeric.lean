@@ -45,9 +45,10 @@ structure CheckedIndexedStringNumericSource (model : FlatModel) where
   projection : StringNumericProjection
 
 def elaborateIndexedStringNumericSource (model : FlatModel) (declaringGroup : GroupPath)
-    (surface : SurfaceSemanticIndex) (operation : IndexedStringNumericOperation) :
+    (surface : SurfaceSemanticIndex) (operation : IndexedStringNumericOperation)
+    (boundScope? : Option (List RepeatableLevel) := none) :
     Except IndexedStringNumericElabError (CheckedIndexedStringNumericSource model) := do
-  let selection ← (elaborateSemanticIndexSource model declaringGroup surface).mapError .index
+  let selection ← (elaborateSemanticIndexSource model declaringGroup surface boundScope?).mapError .index
   let declaration := selection.targetDeclaration
   let projection ← match operation with
     | .length => do

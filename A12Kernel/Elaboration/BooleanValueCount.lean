@@ -360,6 +360,16 @@ def operands (checked : CheckedBooleanValueCountSource model) :
     List (CheckedBooleanValueCountOperand model checked.expected) :=
   checked.first :: checked.rest
 
+def bindingScopes (checked : CheckedBooleanValueCountSource model) : List (List RepeatableLevel) :=
+  checked.operands.flatMap fun
+    | .field source => [source.declaration.repeatableScope]
+    | .selected selected => match selected.source with
+      | .inl source => source.bindingScopes | .inr source => source.bindingScopes
+    | .star source => source.source.bindingScope ::
+        (source.filter.toList.flatMap fun filter =>
+          (CorrelatedHaving.outerIterationScopes model filter.condition).filterMap id)
+    | .group source => [source.source.bindingScope]
+
 def directFields? (checked : CheckedBooleanValueCountSource model) :
     Option (List FlatFieldDecl) :=
   checked.operands.mapM CheckedBooleanValueCountOperand.directField?
@@ -509,8 +519,8 @@ def sideWith (source : CheckedSelectedBooleanCountEntity model expected) (phase 
 
 def sideIn (source : CheckedSelectedBooleanCountEntity model expected) (phase : Phase)
     (document : CheckedDocument model) (outer : Env) : Except CheckedAddressingError (ResolvedValueListSide .token) :=
-  source.sideWith phase document.source.toDocument outer document.flatContext.read
-    document.flatContext.storedText document.computationFillContext.read
+  source.sideWith phase document.source.toDocument outer (document.computationContextAt outer).read
+    (document.computationContextAt outer).storedText document.computationFillContext.read
     (document.resolveSemanticIndexColumnWith document.read)
 
 end CheckedSelectedBooleanCountEntity

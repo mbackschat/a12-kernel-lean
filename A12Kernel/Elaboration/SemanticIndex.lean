@@ -82,6 +82,8 @@ inductive SemanticIndexElabError where
   /-- The reduced raw-context route needs a Number index and a Number target; the general
   preliminary route does not. -/
   | reducedRouteNeedsNumber (path : List String)
+  | reducedRouteNeedsSingleGroup
+  | multipleIndexGroups
   /-- The field-valued key is read from inside the indexed group itself. -/
   | keyContainedInIndexedGroup (path : List String) (groupPath : GroupPath)
   | incoherentCore
@@ -100,10 +102,11 @@ remaining unmapped forms are unmeasured Kernel refusals: `missingIndexField` car
 own evidence before inheriting it. -/
 def diagnostic? : SemanticIndexElabError → Option KernelStaticDiagnostic
   | .keyAdmission diagnostic => some diagnostic
+  | .multipleIndexGroups => some .multipleIndexFields
   | .keyContainedInIndexedGroup _ _ => some .semanticIndexContainedInIndex
   | .resolve error => error.diagnostic?
   | .group _ | .missingIndexField _ | .indexKeyDomainMismatch _ _
-  | .targetNotNumber _ | .reducedRouteNeedsNumber _ | .incoherentCore => none
+  | .targetNotNumber _ | .reducedRouteNeedsNumber _ | .reducedRouteNeedsSingleGroup | .incoherentCore => none
 
 /-- Exact diagnostic projection measured for the `RuleGroup` literal suffix. A missing index on
 other carriers requires its own evidence before it can inherit this code
@@ -138,14 +141,18 @@ inductive CheckedSemanticIndexKey where
 
 namespace CheckedSemanticIndexKey
 
-/-- The dynamic key field must be the exact nonrepeatable declaration retained by the checked model. A literal has no additional model owner. -/
+/-- The key retains its exact model declaration; its reading scope is checked separately (spec/08 §4). -/
 def admittedBy (key : CheckedSemanticIndexKey) (model : FlatModel) : Bool :=
   match key with
   | .literal _ _ => true
   | .field source =>
       match model.lookupUniqueId source.id with
-      | .ok admitted => admitted == source && source.repeatableScope.isEmpty
+      | .ok admitted => admitted == source
       | .error _ => false
+
+def bindingScope : CheckedSemanticIndexKey → List RepeatableLevel
+  | .literal .. => []
+  | .field source => source.repeatableScope
 
 /-- Key identity must match the index declaration even when a checked source is constructed
 without the surface elaborator (`SemanticIndexAdmission.keyAgreementRefusal`). -/
@@ -175,6 +182,16 @@ def observe (key : CheckedSemanticIndexKey) (model : FlatModel)
 
 end CheckedSemanticIndexKey
 
+/-- Index declaration ownership follows the complete group scope. Parent rows stay bound while
+selection replaces the final coordinate (spec/08 §4 and the parent-scoped index checkpoint). -/
+def FlatModel.admitsSemanticIndexDeclaration (model : FlatModel)
+    (group : RepeatableGroupDecl) (declaration : FlatFieldDecl) : Bool :=
+  match model.lookupUniqueId declaration.id with
+  | .error _ => false
+  | .ok admitted => admitted == declaration && declaration.groupPath == group.path &&
+      declaration.repeatableScope == model.repeatableScopeForGroupPath group.path &&
+      declaration.repeatableScope.getLast? == some group.level
+
 /-- The shared checked selection core before a carrier chooses whether it reads one field or retains
 the selected group itself. -/
 structure CheckedSemanticIndexSelection (model : FlatModel) where
@@ -184,7 +201,7 @@ structure CheckedSemanticIndexSelection (model : FlatModel) where
   modelWellFormed : model.validate.isOk = true
   groupOwned : model.repeatableGroups.contains group = true
   indexDeclared : (group.indexField == some indexDeclaration.id) = true
-  indexOwned : model.admitsSingleGroupDeclaration group indexDeclaration = true
+  indexOwned : model.admitsSemanticIndexDeclaration group indexDeclaration = true
   keyOwned : key.admittedBy model = true
   keyAgrees : key.agreesWith indexDeclaration = true
 
@@ -211,7 +228,7 @@ def FlatModel.admitsSemanticIndexTarget (model : FlatModel)
   match model.lookupUniqueId declaration.id with
   | .error _ => false
   | .ok admitted => admitted == declaration && group.path.isPrefixOf declaration.groupPath &&
-      declaration.repeatableScope == [group.level]
+      declaration.repeatableScope == model.repeatableScopeForGroupPath group.path
 
 /-- A semantic-index source certified against one indexed ancestor, its declared index field, one
 selected target declaration at the same repeatable scope, and a literal or dynamic key. The index and target kinds
@@ -226,7 +243,7 @@ structure CheckedSemanticIndexSource (model : FlatModel) where
   groupOwned : model.repeatableGroups.contains group = true
   indexDeclared : (group.indexField == some indexDeclaration.id) = true
   indexOwned :
-    model.admitsSingleGroupDeclaration group indexDeclaration = true
+    model.admitsSemanticIndexDeclaration group indexDeclaration = true
   targetOwned :
     model.admitsSemanticIndexTarget group targetDeclaration = true
   keyOwned : key.admittedBy model = true
@@ -243,8 +260,13 @@ def CheckedSemanticIndexSelection.indexSource (selection : CheckedSemanticIndexS
       induction path <;> simp_all [GroupPath.isPrefixOf]
     have owned := selection.indexOwned
     cases resolved : model.lookupUniqueId selection.indexDeclaration.id <;>
-      simp_all [FlatModel.admitsSingleGroupDeclaration, FlatModel.admitsSemanticIndexTarget],
+      simp_all [FlatModel.admitsSemanticIndexDeclaration, FlatModel.admitsSemanticIndexTarget],
   keyOwned := selection.keyOwned, keyAgrees := selection.keyAgrees }
+
+/-- Selection binds its own level, while the caller supplies both the parent and key scopes. -/
+def CheckedSemanticIndexSource.bindingScopes (source : CheckedSemanticIndexSource model) :
+    List (List RepeatableLevel) :=
+  [source.indexDeclaration.repeatableScope.dropLast, source.key.bindingScope]
 
 /-- A Number selected field keeps its own scale and empty-fillability metadata independently
 of the index field's identity domain (`spec/08` §4). -/
@@ -303,6 +325,8 @@ structure CheckedStarredNumberSemanticIndexRefusal (model : FlatModel) where
 than projecting the shared one, so it needs a Number index and a Number target. -/
 structure CheckedNumberSemanticIndexSource (model : FlatModel)
     extends CheckedSemanticIndexSource model where
+  singleGroup : toCheckedSemanticIndexSource.indexDeclaration.repeatableScope = [toCheckedSemanticIndexSource.group.level]
+  scalarKey : toCheckedSemanticIndexSource.key.bindingScope = []
   indexNumber :
     toCheckedSemanticIndexSource.indexDeclaration.toNumberField?.isSome = true
   targetNumber :
@@ -325,8 +349,13 @@ end CheckedNumberSemanticIndexSource
 private def elaborateSemanticIndexSelectionWithValidatedModel
     (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceSemanticIndexKey)
-    (hModel : model.validate = .ok ()) :
+    (hModel : model.validate = .ok ()) (boundScope? : Option (List RepeatableLevel) := none) :
     Except SemanticIndexElabError (CheckedSemanticIndexSelection model) := do
+  let scope := boundScope?.getD (model.repeatableScopeForGroupPath declaringGroup)
+  let groupScope := model.repeatableScopeForGroupPath group.path
+  if (groupScope.filterMap fun level =>
+      (model.repeatableGroupAtLevel? level).filter (·.indexField.isSome)).length > 1 then
+    throw .multipleIndexGroups
   let indexId ← match group.indexField with
     | some indexId => pure indexId
     | none => throw (.missingIndexField group.path)
@@ -352,14 +381,15 @@ private def elaborateSemanticIndexSelectionWithValidatedModel
         if group.path.isPrefixOf declaration.groupPath then
           throw (.keyContainedInIndexedGroup declaration.path group.path)
         else
-          let checkedDeclaration ←
-            declaration.requireNonrepeatableAt (model.repeatableScopeForGroupPath declaringGroup)
-              |>.mapError .resolve
-          pure (.field checkedDeclaration)
+          if !declaration.repeatableScope.isPrefixOf scope then
+            throw (.keyAdmission .semanticIndexKeyInvalidIteration)
+          pure (.field declaration)
+  if !groupScope.dropLast.isPrefixOf scope then
+    throw (.resolve (.repeatableReference group.path))
   if hGroup : model.repeatableGroups.contains group = true then
     if hDeclared : group.indexField == some indexDeclaration.id then
       if hIndexOwned :
-          model.admitsSingleGroupDeclaration group indexDeclaration = true then
+          model.admitsSemanticIndexDeclaration group indexDeclaration = true then
         if hKeyOwned : key.admittedBy model = true then
           if hKeyAgrees : key.agreesWith indexDeclaration = true then
             pure {
@@ -386,11 +416,12 @@ private def elaborateSemanticIndexSelectionWithValidatedModel
 
 /-- Certify the shared selection before an extent consumer binds the chosen row. -/
 def elaborateSemanticIndexSelection (model : FlatModel) (declaringGroup : GroupPath)
-    (group : RepeatableGroupDecl) (key : SurfaceSemanticIndexKey) :
+    (group : RepeatableGroupDecl) (key : SurfaceSemanticIndexKey)
+    (boundScope? : Option (List RepeatableLevel) := none) :
     Except SemanticIndexElabError (CheckedSemanticIndexSelection model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
-  | .ok () => elaborateSemanticIndexSelectionWithValidatedModel model declaringGroup group key hModel
+  | .ok () => elaborateSemanticIndexSelectionWithValidatedModel model declaringGroup group key hModel boundScope?
 
 /-- One exact group selected by a literal text key, retaining the resolved group, index declaration,
 and authored token for carrier-specific static checks. -/
@@ -453,10 +484,11 @@ def elaborateRuleGroupSemanticIndexSource (model : FlatModel)
         selection := checked.selection
         groupSelected := checked.groupSelected }
 
-/-- Resolve the target before its nearest indexed ancestor, retaining the target at the same
-one-level row scope. The key is a declaration-admitted literal or a nonrepeatable field. -/
+/-- Resolve the target before its nearest indexed ancestor. The caller binds the ancestor's
+parent scope and any key field; selection supplies only the indexed coordinate (spec/08 §4). -/
 def elaborateSemanticIndexSource (model : FlatModel)
-    (declaringGroup : GroupPath) (authored : SurfaceSemanticIndex) :
+    (declaringGroup : GroupPath) (authored : SurfaceSemanticIndex)
+    (boundScope? : Option (List RepeatableLevel) := none) :
     Except SemanticIndexElabError (CheckedSemanticIndexSource model) :=
   match hModel : model.validate with
   | .error error => .error (.resolve error)
@@ -466,7 +498,7 @@ def elaborateSemanticIndexSource (model : FlatModel)
       let some group := model.semanticIndexGroupForPath? targetDeclaration.groupPath
         | throw (.missingIndexField targetDeclaration.groupPath)
       let selection ← elaborateSemanticIndexSelectionWithValidatedModel model declaringGroup
-        group authored.key hModel
+        group authored.key hModel boundScope?
       if hTargetOwned :
           model.admitsSemanticIndexTarget selection.group targetDeclaration = true then
         pure {
@@ -487,8 +519,8 @@ def elaborateSemanticIndexSource (model : FlatModel)
 
 theorem elaborateSemanticIndexSource_declaringGroupValid
     {model : FlatModel} {declaringGroup : GroupPath} {authored : SurfaceSemanticIndex}
-    {checked : CheckedSemanticIndexSource model}
-    (ok : elaborateSemanticIndexSource model declaringGroup authored = .ok checked) :
+    {checked : CheckedSemanticIndexSource model} {boundScope? : Option (List RepeatableLevel)}
+    (ok : elaborateSemanticIndexSource model declaringGroup authored boundScope? = .ok checked) :
     GroupPath.isValid declaringGroup = true := by
   unfold elaborateSemanticIndexSource at ok
   split at ok
@@ -607,16 +639,17 @@ def elaborateNumberSemanticIndexSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumberSemanticIndex) :
     Except SemanticIndexElabError (CheckedNumberSemanticIndexSource model) := do
   let checked ← elaborateSemanticIndexSource model declaringGroup authored
-  if hIndex : checked.indexDeclaration.toNumberField?.isSome = true then
-    if hTarget : checked.targetDeclaration.toNumberField?.isSome = true then
-      pure {
-        toCheckedSemanticIndexSource := checked
-        indexNumber := hIndex
-        targetNumber := hTarget }
-    else
-      throw (.reducedRouteNeedsNumber checked.targetDeclaration.path)
-  else
-    throw (.reducedRouteNeedsNumber checked.indexDeclaration.path)
+  if hSingle : checked.indexDeclaration.repeatableScope = [checked.group.level] then
+    if hKey : checked.key.bindingScope = [] then
+      if hIndex : checked.indexDeclaration.toNumberField?.isSome = true then
+        if hTarget : checked.targetDeclaration.toNumberField?.isSome = true then
+          pure { toCheckedSemanticIndexSource := checked
+                 singleGroup := hSingle, scalarKey := hKey
+                 indexNumber := hIndex, targetNumber := hTarget }
+        else throw (.reducedRouteNeedsNumber checked.targetDeclaration.path)
+      else throw (.reducedRouteNeedsNumber checked.indexDeclaration.path)
+    else throw .reducedRouteNeedsSingleGroup
+  else throw .reducedRouteNeedsSingleGroup
 
 inductive SemanticIndexContextError where
   | topology (error : SingleGroupContextError)
@@ -762,8 +795,9 @@ end CheckedNumberSemanticIndexSource
 
 /-- Refine an already checked selection by the target's Number kind, without narrowing the index kind. -/
 def elaborateNumericSemanticIndexSource (model : FlatModel) (declaringGroup : GroupPath)
-    (surface : SurfaceSemanticIndex) : Except SemanticIndexElabError (CheckedNumericSemanticIndexSource model) := do
-  let source ← elaborateSemanticIndexSource model declaringGroup surface
+    (surface : SurfaceSemanticIndex) (boundScope? : Option (List RepeatableLevel) := none) :
+    Except SemanticIndexElabError (CheckedNumericSemanticIndexSource model) := do
+  let source ← elaborateSemanticIndexSource model declaringGroup surface boundScope?
   match h : source.targetDeclaration.toNumberField? with
   | none => throw (.targetNotNumber source.targetDeclaration.path)
   | some field => pure { toCheckedSemanticIndexSource := source, field, targetNumber := h }

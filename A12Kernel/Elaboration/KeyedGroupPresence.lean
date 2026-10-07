@@ -29,7 +29,7 @@ is cleanly empty, while a missing starred selection contributes no group instanc
 def validationGroupStates (source : CheckedKeyedEntityExtent model) (document : CheckedDocument model)
     (outer : Env) : Except CheckedAddressingError (Option (List GroupPresenceState)) := do
   let selected ← source.selectWith .validation (document.resolveSemanticIndexColumnWith document.read)
-    outer document.flatContext.read document.flatContext.storedText
+    outer (document.computationContextAt outer).read (document.computationContextAt outer).storedText
   match selected with
   | .unknown _ | .poison _ => pure none
   | .empty => pure (some (if source.isStarredGroup then [] else

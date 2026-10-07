@@ -285,9 +285,9 @@ private def ValidationConditionLeaf.iterationGuardAt
   | .flat _ | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
   | .customCondition _ | .customFieldValidity _ => .noReference
   | .indexedStringPattern leaf =>
-      if leaf.bindingScope.contains level then .guarded else .noReference
+      if leaf.bindingScopes.any (·.contains level) then .guarded else .noReference
   | .indexedCustomFieldValidity leaf =>
-      if leaf.source.bindingScope.contains level then .guarded else .noReference
+      if leaf.source.bindingScopes.any (·.contains level) then .guarded else .noReference
   | .constructedDateValidity operation source =>
       if source.scalarBindingScopes.any (·.contains level) then
         match operation with
@@ -306,7 +306,7 @@ private def ValidationConditionLeaf.iterationGuardAt
   | .fieldFill _ source =>
       if source.bindingScope.contains level then .unclassified else .noReference
   | .stringExpression comparison =>
-      if comparison.boundDeclarations.any (·.repeatableScope.contains level) then .unclassified else .noReference
+      if comparison.bindingScopes.any (·.contains level) then .unclassified else .noReference
   | .firstFilledComparison comparison =>
       if comparison.bindingScopes.flatten.contains level then .unclassified else .noReference
   | .tokenComparison comparison =>

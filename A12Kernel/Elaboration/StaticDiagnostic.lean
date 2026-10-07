@@ -175,6 +175,8 @@ inductive KernelStaticDiagnostic where
   | semanticIndexKeyNotField
   /-- A semantic index whose key reference carries a wildcard. Distinct from `semanticIndexAndWildcard`, which is about a star on the **value spec**, and the two sit at opposite ends of the cascade. -/
   | semanticIndexKeyStarred
+  /-- A field-valued key needs an enclosing row unavailable at this read (spec/08 §4). -/
+  | semanticIndexKeyInvalidIteration
   /-- A semantic index whose value spec is itself a semantic index. -/
   | semanticIndexOnSemanticIndex
   /-- A semantic index whose constant key the index field's type does not accept, **or** which is empty. Two causes, one class, and the empty disjunct is written separately from the type test. -/
@@ -519,6 +521,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .charsetGraphemeOverlap => "CHARSET_GRAPHEME_OVERLAP"
   | .semanticIndexKeyNotField => "MVK_SEMANTIC_INDEX_NO_FIELD"
   | .semanticIndexKeyStarred => "MVK_SEMANTIC_INDEX_WITH_WILDCARD"
+  | .semanticIndexKeyInvalidIteration => "MVK_SEMANTIC_INDEX_INVALID_ITER"
   | .semanticIndexOnSemanticIndex => "MVK_SEMANTIC_INDEX_WITH_SEMANTIC_INDEX"
   | .semanticIndexConstantInvalid => "MVK_INDEX_VALUE_INVALID"
   | .semanticIndexKeyWithCategory => "MVK_SEMANTIC_INDEX_WITH_CATEGORY"
@@ -690,7 +693,7 @@ def all : List KernelStaticDiagnostic :=
     .charsetRangeStartAfterEnd, .charsetGraphemeClusterEqualsLength, .charsetParseError,
     .charsetContainsSurrogates, .charsetGraphemeTooLong, .charsetGraphemeOverlap,
     .semanticIndexKeyNotField, .semanticIndexKeyStarred, .semanticIndexOnSemanticIndex,
-    .semanticIndexConstantInvalid, .semanticIndexKeyWithCategory, .rawTypeOperandInvalid,
+    .semanticIndexKeyInvalidIteration, .semanticIndexConstantInvalid, .semanticIndexKeyWithCategory, .rawTypeOperandInvalid,
     .serialCoordinateInvalid, .lineCoordinateInvalid, .valueParameterOnStarredReference,
     .valueParameterNoValueValidation, .parameterTooManyParentGroups,
     .parameterInvalidInNewWorld, .noLineIteration, .noSubScopeIteration,

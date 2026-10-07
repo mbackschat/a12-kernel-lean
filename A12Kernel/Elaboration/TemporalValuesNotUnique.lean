@@ -434,8 +434,8 @@ def evaluateCheckedDocumentValuesNotUnique
     (fun operand => do
       match operand with
       | .selected source _ =>
-          source.sideWith .validation document.source.toDocument outer document.flatContext.read
-            document.flatContext.storedText document.computationFillContext.read document.storedTextIn
+          source.sideWith .validation document.source.toDocument outer (document.computationContextAt outer).read
+            (document.computationContextAt outer).storedText document.computationFillContext.read document.storedTextIn
             (document.resolveSemanticIndexColumnWith document.read)
             (fun _ cell stored => pure (temporalUniquenessCell cell stored))
       | _ =>
