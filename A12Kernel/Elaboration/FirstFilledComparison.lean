@@ -81,6 +81,7 @@ def fieldIds : CheckedFirstFilledComparisonOperand model → List FieldId
 
 def hasHaving : CheckedFirstFilledComparisonOperand model → Bool
   | .firstFilled source => source.source.hasHaving
+  | .temporal expression => expression.core.hasHaving
   | _ => false
 
 def referencesField (operand : CheckedFirstFilledComparisonOperand model) (field : FieldId)
@@ -113,7 +114,6 @@ private def checkFirstFilledComparisonOperand (model : FlatModel) (declaringGrou
       pure (.field declaration profile)
   | .temporal expression => do
       let checked ← (elaborateScalarTemporalExpression model declaringGroup expression (some bindingGroup)).mapError .temporal
-      if checked.requiresAddressed then throw .unsupportedSource
       pure (.temporal checked)
   | .firstFilled authored => do
       let _ ← (elaborateFieldEntityShapeIn model declaringGroup
@@ -196,13 +196,14 @@ private def CheckedFirstFilledComparisonOperand.evaluate
       Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault) (SimpleComparisonOperand FirstFilledComparisonValue)
   | .boolean value => pure (.value (.boolean value) true)
   | .temporal expression => do
-      let cells ← expression.fieldIds.mapM fun field => do
+      let cells ← expression.boundFieldIds.mapM fun field => do
         let cell ← (document.fullValidationAddressedCell outer field).mapError Sum.inl
         pure (field, cell.cell)
       let context := { context with
         read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell
         storedText := document.storedTextIn outer }
-      mapFirstFilledOperand .temporal <$> (expression.evalResult .validation context (row := outer)).mapError Sum.inr
+      mapFirstFilledOperand .temporal <$> (expression.evalResult .validation context
+        (some document.indexedComputationFillContext) outer).mapError ScalarTemporalEvaluationFault.separateAddressing
   | .field declaration _ => do
       let addressed ← (document.fullValidationAddressedCell outer declaration.id).mapError Sum.inl
       pure (projectFirstFilledValue model declaration (observeCell .validation addressed.cell).asValidationSimpleOperand)
@@ -278,14 +279,10 @@ private def CheckedFirstFilledComparisonOperand.evaluatePartial
       let value ← (scanPartialTypedFirstFilled document outer scope read source.source.operands {}).mapError Sum.inl
       pure (value.map (projectFirstFilledValue model source.first))
   | .temporal expression => do
-      let cells ← expression.fieldIds.mapM fun field => do
-        let cell ← if scope.coversField model field outer then (read outer field).mapError Sum.inl else pure none
-        pure (field, cell)
-      let context := { context with
-        read := fun field => ((cells.find? (·.1 == field)).bind (·.2)).getD (checkAdmittedRawCell .presentEmpty)
-        storedText := document.storedTextIn outer }
-      let result ← (expression.evalResult .validation context (row := outer)).mapError Sum.inr
-      pure (if cells.all (·.2.isSome) then some (mapFirstFilledOperand .temporal result) else none)
+      let partialRead : TemporalPartialReadContext model := { document, scope, read }
+      let result ← (expression.evalResult .validation context (row := outer)
+        (partialRead? := some partialRead)).mapError ScalarTemporalEvaluationFault.separateAddressing
+      pure (some (mapFirstFilledOperand .temporal result))
 
 namespace CheckedFirstFilledComparison
 

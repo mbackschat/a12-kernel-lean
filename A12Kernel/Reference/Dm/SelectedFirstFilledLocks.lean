@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.Validate
 
 namespace A12Kernel.Dm.SelectedFirstFilledLocks
 
@@ -571,5 +572,104 @@ example : profiles.all (fun profile =>
     run profile "FirstFilledValue(Children*/Value Having [Children/Allow] > 0)" {}
       true false true == some parentValues &&
     !admitted profile "FirstFilledValue(Rows*/Local Having [Rows/Allow] > [$Rows/Allow],Fallback)" false) = true := by native_decide
+
+private def temporalCompanion (profile : Profile) (companion : String)
+    (scenario : Scenario := {}) (reverse : Bool := false)
+    (partialScope : Option ValidationRelevanceScope := none)
+    (selected : String := "FirstFilledValue(Rows/Value For Key,Fallback)") : Option (List Verdict) := do
+  let document ← checked profile scenario
+  let (left, right) := if reverse then (companion, selected) else (selected, companion)
+  let dm : DmModel := {
+    flat := model profile, rules := [], computations := [],
+    conditionLanguage := "en_US", refusals := [] }
+  let rule ← (checkRule dm .english {
+    group := ["Form"], name := "Companion", errorCode := "COMPANION",
+    errorEntityRelPath := "../Out", severity := "ERROR",
+    condition := "FieldFilled(Out) And (" ++ left ++ " == " ++ right ++ ")" }).toOption
+  if let some scope := partialScope then
+    match ← (rule.evalAddressedPartial document scope (some world)).toOption with
+    | .skipped => return []
+    | .evaluated outcome => return [outcome.verdict]
+  let context : AddressedValidationEvaluationContext (model profile) := {
+    scalar := { fields := document.flatContext.withWorld world, groups := GroupPresenceContext.unavailable },
+    outer := [], input := .checked document }
+  pure [(← (rule.evalAddressedFull context true).toOption).verdict]
+
+private def companions : List (Profile × String × Verdict) := [
+  (.date, "AddDays(Rows/Value For Key,0)", .fired .value),
+  (.date, "AddDays(Rows/Value For Key,1)", .notFired),
+  (.date, "AddDays(Rows/Value For \"b\",0)", .notFired),
+  (.stamp, "AddHours(Rows/Value For Key,0)", .fired .value),
+  (.time, "MinValue(Rows/Children*/Value For Key)", .fired .omission),
+  (.date, "MinValue(Rows/Children*/Value For Key)", .fired .omission),
+  (.date, "MinValue(Rows/Value For Key,Rows/Local For \"b\")", .fired .value),
+  (.date, "Date(\"1\",\"2\",YearFromDate(Rows/Value For Key))", .fired .value)]
+
+example : companions.all (fun (profile, companion, expected) =>
+    [false,true].all (fun reverse => [none, some ValidationRelevanceScope.full].all fun scope =>
+      temporalCompanion profile companion {} reverse scope == some [expected])) = true := by native_decide
+
+example : [false,true].all (fun reverse => [none, some ValidationRelevanceScope.full].all fun scope =>
+    temporalCompanion .date "AddDays(Rows/Value For \"b\",0)" { key := "b" } reverse scope ==
+      some [.fired .value] &&
+    temporalCompanion .date "AddDays(Rows/Value For \"b\",0)" { key := "missing", fallback := some (second .date) } reverse scope ==
+      some [.fired .omission] &&
+    temporalCompanion .date "AddDays(Rows/Value For Key,0)" { selected := some "bad" } reverse scope ==
+      some [.unknown] &&
+    temporalCompanion .date "AddDays(Rows/Value For Key,0)" { secondId := "a" } reverse scope ==
+      some [.unknown]) = true := by native_decide
+
+example : temporalCompanion .date "AddDays(Rows/Value For Key,0)" {} false
+    (some (.partialSet [])) = some [] := by native_decide
+
+private def companionBindings (text : String) : Option (List FieldId) := do
+  let parsed ← (parseText .english text).toOption
+  let surface ← (lowerScalarTemporalExpression (model .date) ["Form"] parsed.body).toOption
+  let checked ← (elaborateScalarTemporalExpression (model .date) ["Form"] surface).toOption
+  pure checked.boundFieldIds
+
+example : companionBindings "MinValue(Rows/Children*/Value For Key)" = some [3] ∧
+    companionBindings "MinValue(Rows/Children*/Value For \"a\")" = some [] ∧
+    companionBindings "MinValue(Rows/Value For Key,Rows/Local For \"b\")" = some [3] := by native_decide
+
+private def companionScope : ValidationRelevanceScope :=
+  .partialSet (["Out", "Fallback", "Direct", "Key"].map fun field =>
+    { path := ["Form", field], indices := [.all, .all] })
+
+example : temporalCompanion .date "AddDays(Rows/Value For Key,0)" {} false
+      (some .full) "FirstFilledValue(Fallback,Direct)" = some [.notFired] ∧
+    temporalCompanion .date "AddDays(Rows/Value For Key,0)" {} false
+      (some companionScope) "FirstFilledValue(Fallback,Direct)" = some [.unknown] ∧
+    temporalCompanion .date "AddDays(Rows/Value For \"b\",0)" { key := "missing", fallback := some (second .date) }
+      false (some .full) "FirstFilledValue(Fallback,Direct)" = some [.fired .value] := by native_decide
+
+example : [false,true].all (fun reverse =>
+    temporalCompanion .date "MinValue(Rows*/Value Having FieldFilled(Rows/Value))" {} reverse ==
+      some [.fired .omission] &&
+    temporalCompanion .date "MinValue(Rows*/Value Having FieldFilled(Rows/Value))" {} reverse
+      (some .full) == some []) = true := by native_decide
+
+private def temporalCurrentRead (unavailable : Bool) (fail : Bool := false) :
+    Option (Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault) Verdict) := do
+  let document ← checked .date
+  let current ← checked .date { selected := some (fallback .date) }
+  let parsed ← (parseText .english
+    "FirstFilledValue(Fallback,Direct) == AddDays(Rows/Value For Key,0)").toOption
+  let condition ← (lowerCondition (model .date) ["Form"] false parsed.body).toOption
+  let .leaf (.firstFilledComparison comparison) := condition.core | none
+  let result ← comparison.evaluatePartial? document [] document.flatContext .full fun row field =>
+    if field == 5 && fail then throw (.checkedDocumentRequired ["Form", "Rows"])
+    else if field == 5 && unavailable then pure none
+    else ((if field == 5 then current else document).fullValidationAddressedCell row field).map
+      (fun addressed => some addressed.cell)
+  pure result
+
+private def temporalCurrentEffects : Bool :=
+  match temporalCurrentRead false, temporalCurrentRead true, temporalCurrentRead false true with
+  | some (.ok (.fired .value)), some (.ok .unknown),
+      some (.error (.inl (.checkedDocumentRequired path))) => path == ["Form", "Rows"]
+  | _, _, _ => false
+
+example : temporalCurrentEffects = true := by native_decide
 
 end A12Kernel.Dm.SelectedFirstFilledLocks

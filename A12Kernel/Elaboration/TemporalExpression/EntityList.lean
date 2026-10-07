@@ -56,11 +56,13 @@ def bindingScopes (source : CheckedTemporalExtremumOperands model) : List (List 
     (if source.filters.any Option.isSome then [source.filterBindingScope] else [])
 
 /-- Index and star selection own their free row levels; another operand's binding must not
-turn their scheduling dependencies into ordinary current-row reads (spec/08 §4). -/
+turn their payload dependencies into ordinary current-row reads. Dynamic keys still read at the caller’s row (spec/08 §4). -/
 def boundFieldIds (source : CheckedTemporalExtremumOperands model) : List FieldId :=
-  source.shape.operands.flatMap (fun operand =>
-    (operand.expansionDeclarations.filter fun field =>
-      field.repeatableScope.isPrefixOf operand.bindingScope).map (·.id)) ++
+  source.shape.operands.flatMap (fun operand => match operand with
+    | .indexed selected => match selected.key with | .field field => [field.id] | .literal .. => []
+    | .keyed selected => match selected.selection.key with | .field field => [field.id] | .literal .. => []
+    | operand => (operand.expansionDeclarations.filter fun field =>
+        field.repeatableScope.isPrefixOf operand.bindingScope).map (·.id)) ++
     (source.filters.flatMap (fun filter => filter.toList.flatMap (·.fieldIds))).filter fun field =>
       (model.fieldRepeatableScope field).isPrefixOf source.filterBindingScope
 

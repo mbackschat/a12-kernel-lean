@@ -1,0 +1,1447 @@
+{
+  "header" : {
+    "id" : "SelectedFirstFilled_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "SelectedFirstFilled_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "UTC",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Group",
+                "id" : "/Form/Rows/Items",
+                "name" : "Items",
+                "Group" : {
+                  "repeatability" : 3,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/B",
+                    "name" : "B",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "BooleanType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/D",
+                    "name" : "D",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateType",
+                        "DateType" : {
+                          "format" : "yyyy-MM-dd"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/T",
+                    "name" : "T",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "TimeType",
+                        "TimeType" : {
+                          "format" : "HH:mm:ss"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/S",
+                    "name" : "S",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateTimeType",
+                        "DateTimeType" : {
+                          "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/F",
+                    "name" : "F",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateFragmentType",
+                        "DateFragmentType" : {
+                          "formatOfFragment" : "MM"
+                        }
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Form/Rows/Items/R",
+                    "name" : "R",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "DateRangeType",
+                        "DateRangeType" : {
+                          "format" : "yyyy-MM-dd",
+                          "rangeSeparator" : "/"
+                        }
+                      }
+                    }
+                  } ]
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/Id",
+                "name" : "Id",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/B",
+                "name" : "B",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/BOut",
+                "name" : "BOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/BMixed",
+                "name" : "BMixed",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "BooleanType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/D",
+                "name" : "D",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/DOut",
+                "name" : "DOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/DMixed",
+                "name" : "DMixed",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/T",
+                "name" : "T",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/TOut",
+                "name" : "TOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/TMixed",
+                "name" : "TMixed",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/S",
+                "name" : "S",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateTimeType",
+                    "DateTimeType" : {
+                      "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/SOut",
+                "name" : "SOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateTimeType",
+                    "DateTimeType" : {
+                      "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/SMixed",
+                "name" : "SMixed",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateTimeType",
+                    "DateTimeType" : {
+                      "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/F",
+                "name" : "F",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "MM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/FOut",
+                "name" : "FOut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "MM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/FMixed",
+                "name" : "FMixed",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateFragmentType",
+                    "DateFragmentType" : {
+                      "formatOfFragment" : "MM"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/R",
+                "name" : "R",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/ROut",
+                "name" : "ROut",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/RMixed",
+                "name" : "RMixed",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateRangeType",
+                    "DateRangeType" : {
+                      "format" : "yyyy-MM-dd",
+                      "rangeSeparator" : "/"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/BOutComp",
+                "name" : "BOutComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../BOut",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(B For ../Key,../BFallback)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/BMixedComp",
+                "name" : "BMixedComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../BMixed",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(B,B For ../Key)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/DOutComp",
+                "name" : "DOutComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../DOut",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(D For ../Key,../DFallback)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/DMixedComp",
+                "name" : "DMixedComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../DMixed",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(D,D For ../Key)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/TOutComp",
+                "name" : "TOutComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../TOut",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(T For ../Key,../TFallback)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/TMixedComp",
+                "name" : "TMixedComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../TMixed",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(T,T For ../Key)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/SOutComp",
+                "name" : "SOutComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../SOut",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(S For ../Key,../SFallback)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/SMixedComp",
+                "name" : "SMixedComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../SMixed",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(S,S For ../Key)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/FOutComp",
+                "name" : "FOutComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../FOut",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(F For ../Key,../FFallback)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/FMixedComp",
+                "name" : "FMixedComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../FMixed",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(F,F For ../Key)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/ROutComp",
+                "name" : "ROutComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../ROut",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(R For ../Key,../RFallback)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              }, {
+                "type" : "Computation",
+                "id" : "/Form/Rows/RMixedComp",
+                "name" : "RMixedComp",
+                "Computation" : {
+                  "computedFieldRelPath" : "../RMixed",
+                  "computationAlternatives" : [ {
+                    "operation" : "FirstFilledValue(R,R For ../Key)"
+                  } ],
+                  "errorMessage" : [ {
+                    "locale" : "en_US",
+                    "text" : "probe"
+                  } ]
+                }
+              } ],
+              "indexFieldName" : "Id"
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Key",
+            "name" : "Key",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BBase",
+            "name" : "BBase",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BFallback",
+            "name" : "BFallback",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BDirect",
+            "name" : "BDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BSelected",
+            "name" : "BSelected",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BStar",
+            "name" : "BStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/BSingle",
+            "name" : "BSingle",
+            "Field" : {
+              "fieldType" : {
+                "type" : "BooleanType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DBase",
+            "name" : "DBase",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DFallback",
+            "name" : "DFallback",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DDirect",
+            "name" : "DDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DSelected",
+            "name" : "DSelected",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DStar",
+            "name" : "DStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DSingle",
+            "name" : "DSingle",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TBase",
+            "name" : "TBase",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TFallback",
+            "name" : "TFallback",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TDirect",
+            "name" : "TDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TSelected",
+            "name" : "TSelected",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TStar",
+            "name" : "TStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TSingle",
+            "name" : "TSingle",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TimeType",
+                "TimeType" : {
+                  "format" : "HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SBase",
+            "name" : "SBase",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SFallback",
+            "name" : "SFallback",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SDirect",
+            "name" : "SDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SSelected",
+            "name" : "SSelected",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SStar",
+            "name" : "SStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/SSingle",
+            "name" : "SSingle",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FBase",
+            "name" : "FBase",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FFallback",
+            "name" : "FFallback",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FDirect",
+            "name" : "FDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FSelected",
+            "name" : "FSelected",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FStar",
+            "name" : "FStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/FSingle",
+            "name" : "FSingle",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateFragmentType",
+                "DateFragmentType" : {
+                  "formatOfFragment" : "MM"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RBase",
+            "name" : "RBase",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RFallback",
+            "name" : "RFallback",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RDirect",
+            "name" : "RDirect",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RSelected",
+            "name" : "RSelected",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RStar",
+            "name" : "RStar",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/RSingle",
+            "name" : "RSingle",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateRangeType",
+                "DateRangeType" : {
+                  "format" : "yyyy-MM-dd",
+                  "rangeSeparator" : "/"
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BDirectComp",
+            "name" : "BDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BDirect",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(BBase,BFallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BSelectedComp",
+            "name" : "BSelectedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BSelected",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows/B For Key,BFallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/BStarComp",
+            "name" : "BStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../BStar",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows/Items*/B For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DDirectComp",
+            "name" : "DDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DDirect",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(DBase,DFallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DSelectedComp",
+            "name" : "DSelectedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DSelected",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows/D For Key,DFallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DStarComp",
+            "name" : "DStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DStar",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows/Items*/D For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TDirectComp",
+            "name" : "TDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TDirect",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(TBase,TFallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TSelectedComp",
+            "name" : "TSelectedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TSelected",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows/T For Key,TFallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TStarComp",
+            "name" : "TStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TStar",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows/Items*/T For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SDirectComp",
+            "name" : "SDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SDirect",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(SBase,SFallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SSelectedComp",
+            "name" : "SSelectedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SSelected",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows/S For Key,SFallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/SStarComp",
+            "name" : "SStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../SStar",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows/Items*/S For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FDirectComp",
+            "name" : "FDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FDirect",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(FBase,FFallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FSelectedComp",
+            "name" : "FSelectedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FSelected",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows/F For Key,FFallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/FStarComp",
+            "name" : "FStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../FStar",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows/Items*/F For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RDirectComp",
+            "name" : "RDirectComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RDirect",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(RBase,RFallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RSelectedComp",
+            "name" : "RSelectedComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RSelected",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows/R For Key,RFallback)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/RStarComp",
+            "name" : "RStarComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../RStar",
+              "computationAlternatives" : [ {
+                "operation" : "FirstFilledValue(Rows/Items*/R For Key)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Compdate",
+            "name" : "Compdate",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "Compdate",
+              "errorCondition" : "FieldFilled(DBase) And (FirstFilledValue(Rows/D For Key,DFallback) == AddDays(Rows/D For Key,0))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CompdateR",
+            "name" : "CompdateR",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "CompdateR",
+              "errorCondition" : "FieldFilled(DBase) And (AddDays(Rows/D For Key,0) == FirstFilledValue(Rows/D For Key,DFallback))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Compdateshift",
+            "name" : "Compdateshift",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "Compdateshift",
+              "errorCondition" : "FieldFilled(DBase) And (FirstFilledValue(Rows/D For Key,DFallback) == AddDays(Rows/D For Key,1))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CompdateshiftR",
+            "name" : "CompdateshiftR",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "CompdateshiftR",
+              "errorCondition" : "FieldFilled(DBase) And (AddDays(Rows/D For Key,1) == FirstFilledValue(Rows/D For Key,DFallback))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Compdateliteral",
+            "name" : "Compdateliteral",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "Compdateliteral",
+              "errorCondition" : "FieldFilled(DBase) And (FirstFilledValue(Rows/D For Key,DFallback) == AddDays(Rows/D For \"b\",0))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CompdateliteralR",
+            "name" : "CompdateliteralR",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "CompdateliteralR",
+              "errorCondition" : "FieldFilled(DBase) And (AddDays(Rows/D For \"b\",0) == FirstFilledValue(Rows/D For Key,DFallback))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Comptime",
+            "name" : "Comptime",
+            "Rule" : {
+              "errorEntityRelPath" : "../TBase",
+              "errorCode" : "Comptime",
+              "errorCondition" : "FieldFilled(TBase) And (FirstFilledValue(Rows/T For Key,TFallback) == MinValue(Rows/Items*/T For Key))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/ComptimeR",
+            "name" : "ComptimeR",
+            "Rule" : {
+              "errorEntityRelPath" : "../TBase",
+              "errorCode" : "ComptimeR",
+              "errorCondition" : "FieldFilled(TBase) And (MinValue(Rows/Items*/T For Key) == FirstFilledValue(Rows/T For Key,TFallback))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Compstamp",
+            "name" : "Compstamp",
+            "Rule" : {
+              "errorEntityRelPath" : "../SBase",
+              "errorCode" : "Compstamp",
+              "errorCondition" : "FieldFilled(SBase) And (FirstFilledValue(Rows/S For Key,SFallback) == AddHours(Rows/S For Key,0))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CompstampR",
+            "name" : "CompstampR",
+            "Rule" : {
+              "errorEntityRelPath" : "../SBase",
+              "errorCode" : "CompstampR",
+              "errorCondition" : "FieldFilled(SBase) And (AddHours(Rows/S For Key,0) == FirstFilledValue(Rows/S For Key,SFallback))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Compdatemin",
+            "name" : "Compdatemin",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "Compdatemin",
+              "errorCondition" : "FieldFilled(DBase) And (FirstFilledValue(Rows/D For Key,DFallback) == MinValue(Rows/Items*/D For Key))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CompdateminR",
+            "name" : "CompdateminR",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "CompdateminR",
+              "errorCondition" : "FieldFilled(DBase) And (MinValue(Rows/Items*/D For Key) == FirstFilledValue(Rows/D For Key,DFallback))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/Compdateconstruction",
+            "name" : "Compdateconstruction",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "Compdateconstruction",
+              "errorCondition" : "FieldFilled(DBase) And (FirstFilledValue(Rows/D For Key,DFallback) == Date(\"1\",\"2\",YearFromDate(Rows/D For Key)))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CompdateconstructionR",
+            "name" : "CompdateconstructionR",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "CompdateconstructionR",
+              "errorCondition" : "FieldFilled(DBase) And (Date(\"1\",\"2\",YearFromDate(Rows/D For Key)) == FirstFilledValue(Rows/D For Key,DFallback))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CompScalarPair",
+            "name" : "CompScalarPair",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "CompScalarPair",
+              "errorCondition" : "FieldFilled(DBase) And (FirstFilledValue(Rows/D For Key,DFallback) == MinValue(Rows/D For Key,Rows/D For \"b\"))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CompScalarPairR",
+            "name" : "CompScalarPairR",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "CompScalarPairR",
+              "errorCondition" : "FieldFilled(DBase) And (MinValue(Rows/D For Key,Rows/D For \"b\") == FirstFilledValue(Rows/D For Key,DFallback))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CompFiltered",
+            "name" : "CompFiltered",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "CompFiltered",
+              "errorCondition" : "FieldFilled(DBase) And (FirstFilledValue(Rows/D For Key,DFallback) == MinValue(Rows*/D Having FieldFilled(Rows/D)))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/CompFilteredR",
+            "name" : "CompFilteredR",
+            "Rule" : {
+              "errorEntityRelPath" : "../DBase",
+              "errorCode" : "CompFilteredR",
+              "errorCondition" : "FieldFilled(DBase) And (MinValue(Rows*/D Having FieldFilled(Rows/D)) == FirstFilledValue(Rows/D For Key,DFallback))",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "companion probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
