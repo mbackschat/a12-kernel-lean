@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.HavingNumberAggregate
+import A12Kernel.Semantics.HavingTemporalExpression
 
 /-! Correlated numeric atoms and phase-specific checked reads. -/
 
@@ -18,11 +19,13 @@ inductive HavingNumericAtom where
   | stringLength (origin : HavingOrigin) (field : FlatStringField)
   | stringRange (origin : HavingOrigin) (source : FlatStringField) (start finish : Nat)
   | dateRangeBoundPart (origin : HavingOrigin) (source : FlatDateRangeField) (bound : DateRangeBound) (part : DateNumericPart)
+  | temporalExpressionPart (part : TemporalNumericPart) (source : HavingTemporalExpression)
   | temporalPart (origin : HavingOrigin) (source : FlatTemporalField) (part : TemporalNumericPart)
   | repetition (reference : HavingRepetitionRef)
   deriving Repr, DecidableEq
 
 def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
+  | .temporalExpressionPart _ source => source.references.map (·.origin)
   | .aggregate _ slots => (slots.flatMap (·.references)).map (·.origin)
   | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (·.origin)
   | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (·.origin)
@@ -34,6 +37,7 @@ def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
 
 /-- Preserve each read's own origin inside a multi-source numeric atom (spec/07 §3). -/
 def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin × FieldId)
+  | .temporalExpressionPart _ source => source.references.map (fun ref => (ref.origin, ref.field.id))
   | .aggregate _ slots => (slots.flatMap (·.references)).map (fun reference => (reference.origin, reference.field.id))
   | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (fun reference => (reference.origin, reference.field.id))
   | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (fun reference => (reference.origin, reference.field.id))
@@ -45,6 +49,7 @@ def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin ×
   | .temporalPart origin source _ => [(origin, source.id)]
 
 def HavingNumericAtom.summary : HavingNumericAtom → NumericScaleSummary
+  | .temporalExpressionPart _ _ => .field 0
   | .aggregate .distinctCount _ => .field 0
   | .aggregate _ slots => (slots.flatMap (·.references)).foldl (fun summary reference => summary.union (.field reference.field.info.scale)) (.field 0)
   | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ => .field 0
@@ -197,6 +202,8 @@ private def readHavingDayOperand (profile : ModelZone.ConcreteProfile)
 
 def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : CorrelationFrame) :
     HavingNumericAtom → Except Unit NumericArithmeticOutcome
+  | .temporalExpressionPart part source =>
+      ((source.readNumeric part .validation context.asResolving frame (fun _ => ()) ()).mapError (fun _ => ())).bind id
   | .dateDifference unit left right =>
       (readHavingCalendarDifference .validation (fun env field => .ok (context.read env field)) frame
         (readHavingDateOperand context.world ()) (DateDifferenceOperand.evaluate unit) left right).bind (fun result => result.bind havingArithmetic)
@@ -235,6 +242,7 @@ def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : Cor
 def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) :
     HavingNumericAtom → Except Error (Except Unit NumericArithmeticOutcome)
+  | .temporalExpressionPart part source => source.readNumeric part .validation context frame (fun _ => ()) ()
   | .dateDifference unit left right => do
       pure ((← readHavingCalendarDifference .validation context.read frame (readHavingDateOperand context.world context.unsupportedDateCalendar) (DateDifferenceOperand.evaluate unit) left right).bind havingArithmetic)
   | .dayDifference profile left right => do
@@ -271,6 +279,12 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
 
 def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) : HavingNumericAtom → Except Error NumericComputationResult
+  | .temporalExpressionPart part source => do
+      let result ← source.readNumeric part .computation context frame NumericComputationResult.poison .domainFailure
+      pure (match result with
+        | .error result => result
+        | .ok (.value amount _) => .value amount
+        | .ok .notEvaluated => .domainFailure)
   | .dateDifference unit left right => do
       let result ← readHavingCalendarDifference .computation context.read frame (readHavingDateOperand context.world context.unsupportedDateCalendar) (DateDifferenceOperand.evaluate unit) left right
       (result.map NumericOperand.toComputationResult).mapError fun _ => context.unsupportedDateCalendar

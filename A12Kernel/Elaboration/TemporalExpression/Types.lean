@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.ScalarTemporalValue
 import A12Kernel.Elaboration.ConstructedDateEvaluation
 import A12Kernel.Semantics.TemporalExpression
 import A12Kernel.Elaboration.TemporalExtremumStream
@@ -88,44 +89,6 @@ def ScalarTemporalExpressionError.dateValidityDiagnostic? : ScalarTemporalExpres
   | .dateComponents .onlyConstantsUsed => some .onlyConstantsUsed
   | _ => none
 
-inductive ScalarTemporalValue where
-  /-- Payload absence and non-relevance are independent of the enclosing operand's missing flag.
-  Date, Time and DateTime constructors share this domain (stamp-construction grid, 2026-10-04). -/
-  | noValue
-  | nonRelevant
-  | date (value : DateValue)
-  | yearless (value : DateValue) (key : MonthDayValue)
-  | time (value : TimeOfDay)
-  | instant (value : Instant)
-  deriving Repr, DecidableEq
-
-namespace ScalarTemporalValue
-
-def select (operator : TemporalExtremumOp) : ScalarTemporalValue → ScalarTemporalValue → ScalarTemporalValue
-  | .nonRelevant, _ | _, .nonRelevant => .nonRelevant
-  | .noValue, right => right
-  | left, .noValue => left
-  | .date left, .date right =>
-      .date (match operator with
-        | .minimum => if right.instant.epochMillis < left.instant.epochMillis then right else left
-        | .maximum => if left.instant.epochMillis < right.instant.epochMillis then right else left)
-  | .yearless left leftKey, .yearless right rightKey =>
-      match operator with
-      | .minimum => if rightKey.before leftKey then .yearless right rightKey else .yearless left leftKey
-      | .maximum => if leftKey.before rightKey then .yearless right rightKey else .yearless left leftKey
-  | .time left, .time right => .time (operator.selectTime left right)
-  | .instant left, .instant right => .instant (operator.selectInstant left right)
-  | left, _ => left
-
-def holds (operator : TemporalComparisonOp) : ScalarTemporalValue → ScalarTemporalValue → Bool
-  | .date left, .date right => operator.holdsInstant left.instant right.instant
-  | .yearless _ left, .yearless _ right => operator.holdsMonthDay left right
-  | .time left, .time right => operator.holdsTime left right
-  | .instant left, .instant right => operator.holdsInstant left right
-  | _, _ => false
-
-end ScalarTemporalValue
-
 inductive ScalarTemporalEvaluationFault where
   | indexedOperandNotSupported
   | dateTimeLabelUnresolved
@@ -207,41 +170,17 @@ abbrev ScalarTemporalExpression (model : FlatModel) :=
 
 /-- Extractor admission follows the source's component set, including its Base Year completion
 (spec/05 and the numeric-extractor branch of CheckDatumExtractOpImpl). -/
-def TemporalNumericPart.admitsComponents (part : TemporalNumericPart)
-    (components : TemporalComponents) (hasBaseYear : Bool) : Bool :=
-  match part with
-  | .date part => part.admittedBy hasBaseYear components
-  | .time part => part.admittedBy components
+def ScalarTemporalPrimitiveFault.toEvaluation : ScalarTemporalPrimitiveFault → ScalarTemporalEvaluationFault
+  | .calendarUnavailable => .calendarUnavailable
+  | .dateTimeLabelUnresolved => .dateTimeLabelUnresolved
 
-def TemporalNumericPart.projectScalar (part : TemporalNumericPart) (profile : ModelZone.ConcreteProfile) :
-    ScalarTemporalValue → Except ScalarTemporalEvaluationFault Rat
-  | .date value | .yearless value _ =>
-      match part with
-      | .date part => pure (part.extract value.parts)
-      | .time _ => throw .calendarUnavailable
-  | .time value =>
-      match part with
-      | .time part => pure (part.extract value)
-      | .date _ => throw .calendarUnavailable
-  | .instant instant => do
-      let some label := profile.calendarLabel? instant | throw .calendarUnavailable
-      match part with
-      | .date part => pure (part.extract label.parts)
-      | .time part => pure (part.extract label.time)
-  | .noValue | .nonRelevant => throw .calendarUnavailable
+def TemporalNumericPart.projectScalar (part : TemporalNumericPart) (profile : ModelZone.ConcreteProfile)
+    (value : ScalarTemporalValue) : Except ScalarTemporalEvaluationFault Rat :=
+  (part.projectScalarCore profile value).mapError ScalarTemporalPrimitiveFault.toEvaluation
 
-/-- The Kernel's numeric extraction preserves non-relevance and symmetric missingness separately
-from the projected amount (BedingungsOperatorHelper.getDatumsTeil; recursive-temporal grid, 2026-10-04).
-A missing payload contributes zero, while a formally unavailable source keeps its cause. -/
 def TemporalNumericPart.observeScalar (part : TemporalNumericPart) (profile : ModelZone.ConcreteProfile)
     (source : SimpleComparisonOperand ScalarTemporalValue) : Except ScalarTemporalEvaluationFault
-      (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
-  match source with
-  | .unknown cause => pure (.error (.formal cause))
-  | .notEvaluated => pure (.ok (.value 0 .both))
-  | .value .nonRelevant _ => pure (.error .nonRelevant)
-  | .value .noValue given => pure (.ok (.value 0 (if given then .fixed else .both)))
-  | .value value given =>
-      pure (.ok (.value (← part.projectScalar profile value) (if given then .fixed else .both)))
+      (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
+  (part.observeScalarCore profile source NumericValidationUnavailable.formal .nonRelevant).mapError ScalarTemporalPrimitiveFault.toEvaluation
 
 end A12Kernel

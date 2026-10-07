@@ -42,6 +42,27 @@ structure SurfaceHavingTemporalRef where
   field : SurfaceFieldPath
   deriving Repr, DecidableEq
 
+/-- Constructor operands retain an origin at every field, including mixed captured/candidate reads. -/
+inductive SurfaceHavingTemporalExpression where
+  | field (reference : SurfaceHavingTemporalRef)
+  | dateLiteral (source : AuthoredDateLiteral)
+  | timeLiteral (value : TimeOfDay)
+  | dateTimeLiteral (value : LocalDateTime)
+  | today
+  | now
+  | baseYearBound (bound : BaseYearRangeEndpoint)
+  | grouped (source : SurfaceHavingTemporalExpression)
+  | dateTime (date time : SurfaceHavingTemporalExpression)
+  | dateFromDateTime (source : SurfaceHavingTemporalExpression)
+  | timeFromDateTime (source : SurfaceHavingTemporalExpression)
+  deriving Repr, DecidableEq
+
+def SurfaceHavingTemporalExpression.fields : SurfaceHavingTemporalExpression → List SurfaceHavingTemporalRef
+  | .field reference => [reference]
+  | .grouped source | .dateFromDateTime source | .timeFromDateTime source => source.fields
+  | .dateTime date time => date.fields ++ time.fields
+  | _ => []
+
 inductive SurfaceHavingNumericAtom where
   | aggregate (op : NumericAggregateOp) (source : SurfaceHavingEntitySource)
   | dateDifference (unit : DateDifferenceUnit) (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
@@ -55,6 +76,7 @@ inductive SurfaceHavingNumericAtom where
   | stringLength (origin : HavingOrigin) (field : SurfaceFieldPath)
   | stringRange (origin : HavingOrigin) (field : SurfaceFieldPath) (start finish : Nat)
   | dateRangeBoundPart (origin : HavingOrigin) (field : SurfaceFieldPath) (bound : DateRangeBound) (part : DateNumericPart)
+  | temporalExpressionPart (part : TemporalNumericPart) (source : SurfaceHavingTemporalExpression)
   | temporalPart (origin : HavingOrigin) (field : SurfaceFieldPath) (part : TemporalNumericPart)
   | repetition (reference : SurfaceHavingRepetitionRef)
   deriving Repr, DecidableEq
@@ -97,6 +119,7 @@ def SurfaceHavingDateComponents.references (source : SurfaceHavingDateComponents
 inductive SurfaceCorrelatedHaving where
   | compareBoolean (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : Bool)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceHavingStringRef)
+  | compareTemporalExpression (op : SurfaceComparisonOp) (left right : SurfaceHavingTemporalExpression)
   | compareTemporal (op : SurfaceComparisonOp) (left right : SurfaceHavingTemporalOperand)
   | tolerance (range : NumericToleranceRange)
       (left right : AuthoredNumericExpr SurfaceHavingNumericAtom)
@@ -326,6 +349,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
+        | .temporalExpressionPart _ source => source.fields.findSome? fun reference => field reference.origin reference.field
         | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ => none
         | .fieldValueAsNumber reference => field reference.origin reference.field
         | .field reference => field reference.origin reference.field
@@ -334,6 +358,8 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .compareTemporalExpression _ left right =>
+      (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
   | .compareTemporal _ left right =>
       (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
   | .literalMembership _ reference _ => field reference.origin reference.field

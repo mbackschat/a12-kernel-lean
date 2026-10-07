@@ -298,6 +298,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-having-direct-number-aggregates"></a>
 - [Number entity aggregates inside Having](implementation/repetition-and-paths.md#cap-having-direct-number-aggregates)
 
+<a id="cap-having-temporal-constructions"></a>
+- [DateTime construction and projections inside Having](implementation/repetition-and-paths.md#cap-having-temporal-constructions)
+
 <a id="cap-having-temporal-constants"></a>
 - [Temporal constants in Having comparisons](implementation/repetition-and-paths.md#cap-having-temporal-constants)
 

@@ -30,6 +30,9 @@ structure HavingLeafResolvers where
   fields : SurfaceComparisonOp → SurfaceHavingStringRef → SurfaceHavingStringRef →
     Except CorrelationElabError (Option FlatComparison)
 
+  temporalExpression : SurfaceComparisonOp → SurfaceHavingTemporalExpression → SurfaceHavingTemporalExpression →
+    Except CorrelationElabError HavingTemporalComparison
+  temporalExpressionPart : TemporalNumericPart → SurfaceHavingTemporalExpression → Except CorrelationElabError HavingNumericAtom
   temporal : SurfaceComparisonOp → SurfaceHavingTemporalOperand → SurfaceHavingTemporalOperand →
     Except CorrelationElabError (Option (HavingOrigin × HavingOrigin × FlatComparison))
   stringValue : HavingOrigin → SurfaceFieldPath → Except CorrelationElabError FlatStringField
@@ -99,6 +102,7 @@ private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
         pure (.stringRange origin source start finish)
     | .dateRangeBoundPart origin reference bound part =>
         (fun source => .dateRangeBoundPart origin source bound part) <$> resolvers.dateRangeBoundPart origin reference part
+    | .temporalExpressionPart part source => resolvers.temporalExpressionPart part source
     | .temporalPart origin reference part =>
         (fun source => .temporalPart origin source part) <$> resolvers.temporalPart origin reference part
     | .field reference => do
@@ -167,6 +171,7 @@ def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
     SurfaceCorrelatedHaving → Except CorrelationElabError CorrelatedHaving
   | .compareBoolean op reference expected => do
       pure (.leaf (.simpleComparison reference.origin .inner (← resolvers.boolean op reference expected)))
+  | .compareTemporalExpression op left right => (fun comparison => .leaf (.temporalExpression comparison)) <$> resolvers.temporalExpression op left right
   | .compareTemporal op left right => do
       match ← resolvers.temporal op left right with
       | some (leftOrigin, rightOrigin, comparison) =>

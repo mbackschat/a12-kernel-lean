@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.FirstFilledFieldSource
 import A12Kernel.Reference.Dm.LowerFlat
 import A12Kernel.Reference.Dm.LowerCore
+import A12Kernel.Reference.Dm.LowerHavingTemporal
 import A12Kernel.Elaboration.IndexKeyShape
 import A12Kernel.Semantics.NumericInput
 import A12Kernel.Elaboration.Correlation
@@ -37,11 +38,6 @@ def fieldFillOp? : String → Option FieldFillQuantifier
   | "FieldsNotCollectivelyFilled" => some .fieldsNotCollectivelyFilled
   | _ => none
 
-
-/-- A filter operand's path without its `$`, and the origin the `$` selects. -/
-def Path.havingField? (path : Path) : Option (HavingOrigin × SurfaceFieldPath) := do
-  let field ← { path with correlated := false }.toFieldPath?
-  pure (if path.correlated then .outer else .inner, field)
 
 private def Path.havingGroup? (path : Path) : Option (HavingOrigin × SurfaceGroupReference) := do
   let group ← { path with correlated := false }.toGroupPath?
@@ -88,9 +84,14 @@ private def havingEntityListMembers (arguments : List Argument) : Lowering Surfa
 
 
 private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
-  | .call id arguments none none => if let some op := aggregateOp? id then do
-      pure (.aggregate op (← havingEntityListMembers arguments))
-    else lowerNonAggregateHavingNumericAtom (.call id arguments none none)
+  | .call id arguments none none => do
+      if let [.mk source none none] := arguments then
+        if source.havingTemporalConstructor then
+          if let some part := ((datePart? id).map TemporalNumericPart.date).orElse (fun _ => (timePart? id).map TemporalNumericPart.time) then
+            return .temporalExpressionPart part (← lowerHavingTemporalExpression true source)
+      if let some op := aggregateOp? id then do
+        pure (.aggregate op (← havingEntityListMembers arguments))
+      else lowerNonAggregateHavingNumericAtom (.call id arguments none none)
   | other => lowerNonAggregateHavingNumericAtom other
 where
   lowerNonAggregateHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
@@ -280,6 +281,9 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
         let some source := right.patternConstant? | refuse "Having" "pattern constant"
         return .stringPattern (if op == .patternMatched then .matched else .violated) { origin, field } source
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
+      if left.havingTemporalConstructor || right.havingTemporalConstructor then
+        return .compareTemporalExpression surfaceOp
+          (← lowerHavingTemporalExpression false left) (← lowerHavingTemporalExpression false right)
       let rec temporal : Expr → Option SurfaceHavingTemporalOperand
         | .value { path, index := none, category := none } => do
             let (origin, field) ← path.havingField?

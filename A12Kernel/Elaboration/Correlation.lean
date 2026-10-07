@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.HavingNumberAggregate
+import A12Kernel.Elaboration.HavingTemporalExpression
 import A12Kernel.Elaboration.HavingDateValidity
 import A12Kernel.Elaboration.HavingTree
 import A12Kernel.Elaboration.HavingGroupPresence
@@ -91,14 +92,14 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).any fun
         | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ | .dateTimeDifference _ _ _ | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ | .fieldValueAsNumber _
-            | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
+            | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ | .temporalExpressionPart _ _ => false
         | .field reference => reference.origin == .inner &&
             (model.resolveNumberInGroup declaringGroup group reference.field).isOk
         | .repetition _ => false
   | .and left right | .or left right =>
       left.readsGroupNumber model declaringGroup group ||
         right.readsGroupNumber model declaringGroup group
-  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .dateValidity _ _ | .uniqueness _ | .literalList _ _ _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
+  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ | .compareTemporalExpression _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .dateValidity _ _ | .uniqueness _ | .literalList _ _ _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
 
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
     body in authored order, so each leaf's reads and comparison class answer as it closes; the
@@ -122,6 +123,8 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     stringValue := fun _ _ => throw .stringLeafOutsideStarRoute
     dateDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dayDifference := fun _ _ => throw .stringLeafOutsideStarRoute
+    temporalExpression := fun _ _ _ => throw .stringLeafOutsideStarRoute
+    temporalExpressionPart := fun _ _ => throw .stringLeafOutsideStarRoute
     temporal := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dateTimeDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dateRangeBoundPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
@@ -154,6 +157,8 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     stringValue := fun _ _ => throw .stringLeafOutsideStarRoute
     dateDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dayDifference := fun _ _ => throw .stringLeafOutsideStarRoute
+    temporalExpression := fun _ _ _ => throw .stringLeafOutsideStarRoute
+    temporalExpressionPart := fun _ _ => throw .stringLeafOutsideStarRoute
     temporal := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dateTimeDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dateRangeBoundPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
@@ -477,8 +482,10 @@ def CorrelatedHaving.outerIterationScopes
         | .field reference => [outerHavingNumberIterationScope model reference]
         | .stringLength origin field | .stringRange origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
         | .dateRangeBoundPart origin field _ _ => [outerHavingFieldIterationScope model origin field.id]
+        | .temporalExpressionPart _ source => source.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field.id
         | .temporalPart origin field _ => [outerHavingFieldIterationScope model origin field.id]
         | .repetition reference => [outerHavingRepetitionIterationScope model reference]
+  | .leaf (.temporalExpression comparison) => comparison.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field.id
   | .leaf (.simpleComparison left right comparison) =>
       comparison.inputFields.1.map (fun field => outerHavingFieldIterationScope model left field.id) ++
         comparison.inputFields.2.map (fun field => outerHavingFieldIterationScope model right field.id)
@@ -537,6 +544,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
+        | .temporalExpressionPart _ source => source.fields.findSome? fun ref => field ref.origin ref.field
         | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ => none
         | .fieldValueAsNumber reference => field reference.origin reference.field
         | .field reference => field reference.origin reference.field
@@ -545,6 +553,8 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
   | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .compareTemporalExpression _ left right =>
+      (left.fields ++ right.fields).findSome? fun ref => field ref.origin ref.field
   | .compareTemporal _ left right =>
       (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
   | .literalMembership _ reference _ => field reference.origin reference.field
@@ -659,6 +669,17 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
       let some source := declaration.toTemporalField? | throw .numericExpressionUnsupported
       if !part.admittedBy source model.hasBaseYear then throw .numericExpressionUnsupported
       pure source
+    temporalExpressionPart := fun part source => do
+      let source ← HavingTemporalExpression.elaborate model (resolveTemporal (fun _ => true)) source
+      if source.grouped then throw .numericExpressionUnsupported
+      let some components := source.components? | throw .numericExpressionUnsupported
+      if !part.admitsComponents components model.hasBaseYear then throw .numericExpressionUnsupported
+      pure (.temporalExpressionPart part source)
+    temporalExpression := fun operator left right => do
+      let left ← HavingTemporalExpression.elaborate model (resolveTemporal (fun _ => true)) left
+      let right ← HavingTemporalExpression.elaborate model (resolveTemporal (fun _ => true)) right
+      if !HavingTemporalExpression.comparisonAdmitted operator.toTemporal left right then throw .numericExpressionUnsupported
+      pure { operator := operator.toTemporal, left, right }
     temporal := model.resolveHavingTemporalConstant declaringGroup outerLevels
     fields := model.resolveHavingFieldsInEnvironment declaringGroup outerLevels
     number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels

@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.HavingNumberAggregate
+import A12Kernel.Elaboration.HavingTemporalExpression
 import A12Kernel.Elaboration.HavingDateValidity
 import A12Kernel.Elaboration.HavingUniqueness
 import A12Kernel.Elaboration.CheckedGroupPresence
@@ -66,7 +67,7 @@ def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
       | _, _ => false
   -- Text, Boolean/Confirm and presence carry no declared scale; their kind gates belong to
   -- wellFormedForEnvironments.
-  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .dateValidity _ _ | .uniqueness _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => true
+  | .temporalExpression _ | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .dateValidity _ _ | .uniqueness _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => true
 
 /-- Every leaf under the shared connective tree satisfies the static scale law. -/
 def CorrelatedHaving.equalityScalesAgree (condition : CorrelatedHaving) : Bool :=
@@ -78,12 +79,12 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
       | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
       | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ | .clockPart _ _ _ | .fieldValueAsNumber _ _ => false
       | .field reference => model.admitsSingleGroupNumber group reference.field
-      | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
+      | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ | .temporalExpressionPart _ _ => false
       | .repetition reference => reference.source == .repeatable group.level
   -- The legacy one-group adapter admits only the leaves it was built for. The other
   -- leaves reach the checked-star route instead, so refusing them here fails closed rather than
   -- extending an adapter no current consumer needs them on.
-  | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .dateValidity _ _ | .uniqueness _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
+  | .temporalExpression _ | .simpleComparison _ _ _ | .compareStringLiteral _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ | .dateValidity _ _ | .uniqueness _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
 
 def CorrelatedHaving.wellFormedForSingleGroup (condition : CorrelatedHaving)
     (model : FlatModel) (group : RepeatableGroupDecl) : Bool :=
@@ -250,11 +251,17 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
       | .dateRangeBoundPart origin field _ part => model.exposesDateRangeBoundPart field part &&
           (model.lookupUniqueId field.id).toOption.any fun declaration =>
             repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
+      | .temporalExpressionPart part source => source.wellFormed model candidateLevels outerLevels &&
+          !source.grouped && source.components?.any (fun components => part.admitsComponents components model.hasBaseYear)
       | .temporalPart origin field part => part.admittedBy field model.hasBaseYear &&
           (model.lookupUniqueId field.id).toOption.any fun declaration =>
             declaration.toTemporalField? == some field &&
               repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
       | .repetition reference => reference.availableIn model candidateLevels outerLevels
+  | .temporalExpression comparison =>
+      comparison.left.wellFormed model candidateLevels outerLevels &&
+        comparison.right.wellFormed model candidateLevels outerLevels &&
+        HavingTemporalExpression.comparisonAdmitted comparison.operator comparison.left comparison.right
   | .simpleComparison left right comparison =>
       model.admitsHavingSimpleComparison
         (left.availableLevels candidateLevels outerLevels)
@@ -359,11 +366,17 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
         | .dateRangeBoundPart origin field _ _ => origin == .inner &&
             (model.lookupUniqueId field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
+        | .temporalExpressionPart _ source => source.references.any fun ref => ref.origin == .inner &&
+            (model.lookupUniqueId ref.field.id).toOption.any fun declaration =>
+              declaration.repeatableScope.any reopenedLevels.contains
         | .temporalPart origin field _ => origin == .inner &&
             (model.lookupUniqueId field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
         | .repetition reference => reference.origin == .inner &&
             (reference.scope? model).any (·.any reopenedLevels.contains)
+  | .temporalExpression comparison => comparison.references.any fun ref => ref.origin == .inner &&
+      (model.lookupUniqueId ref.field.id).toOption.any fun declaration =>
+        declaration.repeatableScope.any reopenedLevels.contains
   | .simpleComparison left right comparison =>
       ([(left, comparison.inputFields.1), (right, comparison.inputFields.2)]).any fun (origin, fields) =>
         origin == .inner && fields.any fun field =>

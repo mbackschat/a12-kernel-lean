@@ -432,27 +432,9 @@ private def applyScalarTemporalTransform (phase : Phase) (context : ScalarComput
         | .instant instant => pure (.instant (instant.shift unit (temporalShiftAmountToInt32 amount)))
         | _ => throw .calendarUnavailable
   | .dateFromDateTime profile =>
-      match source with
-      | .value (.instant instant) given =>
-          let some label := profile.calendarLabel? instant | throw .calendarUnavailable
-          let midnight := { label with time := { hour := 0, minute := 0, second := 0, valid := by decide } }
-          let some instant := profile.resolveCalendarLabel? midnight | throw .dateTimeLabelUnresolved
-          pure (.value (.date { instant, parts := label.parts, basis := .legacyHybrid }) given)
-      | .value .noValue given => pure (.value .noValue given)
-      | .value .nonRelevant _ => pure (.value .nonRelevant true)
-      | .notEvaluated => pure .notEvaluated
-      | .unknown cause => pure (.unknown cause)
-      | _ => throw .calendarUnavailable
+      (ScalarTemporalConstructorOp.dateFromDateTime.apply profile [source]).mapError ScalarTemporalPrimitiveFault.toEvaluation
   | .timeFromDateTime profile =>
-      match source with
-      | .value (.instant instant) given =>
-          let some label := profile.calendarLabel? instant | throw .calendarUnavailable
-          pure (.value (.time label.time) given)
-      | .value .noValue given => pure (.value .noValue given)
-      | .value .nonRelevant _ => pure (.value .nonRelevant true)
-      | .notEvaluated => pure .notEvaluated
-      | .unknown cause => pure (.unknown cause)
-      | _ => throw .calendarUnavailable
+      (ScalarTemporalConstructorOp.timeFromDateTime.apply profile [source]).mapError ScalarTemporalPrimitiveFault.toEvaluation
   | .extremum _ | .dateTime _ => throw .calendarUnavailable
 
 termination_by (sizeOf operation, 0)
@@ -468,19 +450,7 @@ private def applyScalarTemporalOperation (phase : Phase) (context : ScalarComput
   | .extremum operator, operands => pure (evalTemporalExtremumAggregate (ScalarTemporalValue.select operator)
       { operands, hasUninstantiatedTail := false, hasHaving := false })
   | .dateTime profile, [date, time] =>
-      match date, time with
-      | .unknown cause, _ | _, .unknown cause => pure (.unknown cause)
-      | .value .nonRelevant _, _ | _, .value .nonRelevant _ => pure (.value .nonRelevant true)
-      | .value (.date date) dateGiven, .value (.time time) timeGiven => do
-          let some label := profile.calendarLabel? date.instant | throw .calendarUnavailable
-          let instant := profile.resolveCalendarLabel? { label with time }
-          pure (.value (instant.map ScalarTemporalValue.instant |>.getD .noValue) (dateGiven && timeGiven))
-      | .notEvaluated, _ | _, .notEvaluated | .value .noValue _, _ | _, .value .noValue _ =>
-          let given : SimpleComparisonOperand ScalarTemporalValue → Bool
-            | .value _ given => given
-            | _ => false
-          pure (.value .noValue (given date && given time))
-      | _, _ => throw .calendarUnavailable
+      (ScalarTemporalConstructorOp.dateTime.apply profile [date, time]).mapError ScalarTemporalPrimitiveFault.toEvaluation
   | _, [source] => applyScalarTemporalTransform phase context partialRead? operation source
   | _, _ => throw .calendarUnavailable
 

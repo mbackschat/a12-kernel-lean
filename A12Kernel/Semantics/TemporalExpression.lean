@@ -17,6 +17,40 @@ inductive TemporalExpressionOf (Atom : Type) (Operation : Type := Empty) where
 
 namespace TemporalExpressionOf
 
+private def format [Repr Atom] [Repr Operation] :
+    TemporalExpressionOf Atom Operation → Std.Format
+  | .atom source => "atom (" ++ repr source ++ ")"
+  | .apply operation first rest =>
+      "apply (" ++ repr operation ++ ") (" ++ format first ++ ") [" ++
+        Std.Format.joinSep (rest.map format) ", " ++ "]"
+
+instance [Repr Atom] [Repr Operation] : Repr (TemporalExpressionOf Atom Operation) where
+  reprPrec expression _ := format expression
+
+mutual
+private def decideEqual [DecidableEq Atom] [DecidableEq Operation]
+    (left right : TemporalExpressionOf Atom Operation) : Decidable (left = right) :=
+  match left, right with
+  | .atom a, .atom b => decidable_of_iff (a = b) (by simp)
+  | .atom _, .apply _ _ _ | .apply _ _ _, .atom _ => isFalse (by intro h; cases h)
+  | .apply op first rest, .apply other next remaining =>
+      letI := decideEqual first next
+      letI := decideListEqual rest remaining
+      decidable_of_iff (op = other ∧ first = next ∧ rest = remaining) (by simp)
+private def decideListEqual [DecidableEq Atom] [DecidableEq Operation]
+    (left right : List (TemporalExpressionOf Atom Operation)) : Decidable (left = right) :=
+  match left, right with
+  | [], [] => isTrue rfl
+  | [], _ :: _ | _ :: _, [] => isFalse (by intro h; cases h)
+  | first :: rest, next :: remaining =>
+      letI := decideEqual first next
+      letI := decideListEqual rest remaining
+      decidable_of_iff (first = next ∧ rest = remaining) (by simp)
+end
+
+instance [DecidableEq Atom] [DecidableEq Operation] : DecidableEq (TemporalExpressionOf Atom Operation) :=
+  decideEqual
+
 /-- Authored occurrence order, including repeated occurrences in distinct expressions. -/
 def atoms : TemporalExpressionOf Atom Operation → List Atom
   | .atom source => [source]

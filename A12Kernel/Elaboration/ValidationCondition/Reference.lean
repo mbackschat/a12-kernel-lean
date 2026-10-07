@@ -260,6 +260,10 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
             if !model.exposesDateRangeBoundPart field part then throw (.incoherentHavingField field.id)
             let declaration ← (model.lookupUniqueId field.id).mapError (fun _ => .incoherentHavingField field.id)
             pure [← havingFieldPointerFor source environment declaration origin]
+        | .temporalExpressionPart _ expression => expression.references.mapM fun reference => do
+            let declaration ← (model.lookupUniqueId reference.field.id).mapError (fun _ => .incoherentHavingField reference.field.id)
+            if declaration.toTemporalField? != some reference.field then throw (.incoherentHavingField reference.field.id)
+            havingFieldPointerFor source environment declaration reference.origin
         | .temporalPart origin field _ => do
             let declaration ← match model.lookupUniqueId field.id with
               | .ok declaration =>
@@ -269,6 +273,10 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
             pure [← havingFieldPointerFor source environment declaration origin]
         | .repetition _ => pure []
       pure pointers.flatten
+  | .leaf (.temporalExpression comparison) => comparison.references.mapM fun reference => do
+      let declaration ← (model.lookupUniqueId reference.field.id).mapError (fun _ => .incoherentHavingField reference.field.id)
+      if declaration.toTemporalField? != some reference.field then throw (.incoherentHavingField reference.field.id)
+      havingFieldPointerFor source environment declaration reference.origin
   | .leaf (.simpleComparison left right comparison) => do
       let pointers ← [(left, comparison.inputFields.1), (right, comparison.inputFields.2)].mapM fun (origin, fields) =>
         fields.mapM fun field => do

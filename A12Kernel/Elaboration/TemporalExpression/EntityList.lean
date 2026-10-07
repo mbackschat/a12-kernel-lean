@@ -3,39 +3,9 @@ import A12Kernel.Semantics.ComputationCondition
 
 namespace A12Kernel
 
-private def liftScalarTemporal (wrap : α → ScalarTemporalValue) :
-    SimpleComparisonOperand α → SimpleComparisonOperand ScalarTemporalValue
-  | .value value given => .value (wrap value) given
-  | .notEvaluated => .notEvaluated
-  | .unknown cause => .unknown cause
-
-/-- Preserve each declaration's precision before model Base Year completion (LF163). Both direct
-and expanded operands use this projection, so a row-set cannot borrow another field's components. -/
 def projectScalarTemporalObservation (model : FlatModel) (field : FlatTemporalField)
     (observation : CellObservation) : SimpleComparisonOperand ScalarTemporalValue :=
-  let components := if field.components.hasDate then field.components.withBaseYear model.hasBaseYear else field.components
-  if components == TemporalComponents.now then
-    liftScalarTemporal .instant observation.asDateTimeExtremumOperand
-  else if components == TemporalComponents.time then
-    liftScalarTemporal .time observation.asTimeExtremumOperand
-  else if components.year then
-    match observation with
-    | .empty => .notEvaluated
-    | .unknown cause | .poison cause => .unknown cause
-    | .value (.temporal (.date stored)) =>
-        let (year, month, day) := maskedDateComponents field.components model.baseYear stored.parts
-        let parts : DateParts := { year, month, day }
-        if stored.parts == parts then .value (.date stored) true
-        else match (ModelZone.ConcreteProfile.ofId? model.timeZoneId).bind
-            (fun profile => profile.resolveCompletedDateParts? parts) with
-          | some value => .value (.date value) true
-          | none => .unknown .malformed
-    | _ => .unknown .malformed
-  else match observation.asYearlessDateExtremumOperand field.components, observation with
-    | .value key given, .value (.temporal (.date value)) => .value (.yearless value key) given
-    | .notEvaluated, _ => .notEvaluated
-    | .unknown cause, _ => .unknown cause
-    | _, _ => .unknown .malformed
+  projectScalarTemporalObservationWith model.baseYear (ModelZone.ConcreteProfile.ofId? model.timeZoneId) field observation
 
 def readScalarTemporalField (model : FlatModel) (phase : Phase) (field : FlatTemporalField)
     (cell : CheckedCell) : SimpleComparisonOperand ScalarTemporalValue :=
