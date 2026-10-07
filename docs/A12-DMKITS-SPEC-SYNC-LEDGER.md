@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-07-01"></a>
+### SPEC-2026-10-07-01 — index-column poison is scoped to the enclosing parent
+
+- `status`: pending
+- `delta`: define the index column by the enclosing evaluation binding. Equal keys in sibling parents do not collide; compute-side column invalidity does not poison reads bound to another parent. This clarifies the scope of the existing per-column rule.
+- `basis`: [Nested-index checkpoint](sources/model-structure-and-declaration-probes.md#src-index-group-resolution), Kernel 30.8.1, clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`; both engines retain parent-local duplicate clearing. The [consumer readback](consumer-probes/EXECUTE.md#run-parent-scoped-selection-readback-01) exposed the missing canonical boundary.
+- `canonical`: [spec/08 §4.2](../spec/08-paths-and-references.md#42-per-lookup-validation-vs-per-column-compute) owns column scope; [spec/09 §5](../spec/09-computations.md#5-where-a-computation-runs--scope-and-the-parallel-join) refers to it.
+- `acceptance`: two parents may both contain key a; duplicate a within the first parent clears its indexed computations while the second parent's scalar remains 7. Preserve phase-specific lookup strictness and the enclosing binding. Lean already implements and guards this in `a688d21e`; introducing revision is the first commit containing this entry ID.
+
 <a id="spec-2026-10-06-05"></a>
 ### SPEC-2026-10-06-05 — constructed-Date validity requires an immediate entity and preserves non-relevance
 

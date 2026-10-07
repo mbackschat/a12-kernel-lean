@@ -239,3 +239,20 @@ Bounded Execute transport works across exact-address application, the admitted g
 - `acceptance`: recover the result and relevant dependency/binding distinction for each query, then state the identities and mutable inputs a selection/value cache must retain. Root reconciles results with [nested reader locks](../../A12Kernel/Reference/Dm/NestedSemanticIndexLocks.lean), the shared checked selector and the owned clauses; passing the readback does not establish broader Kernel correspondence.
 - `wrong-accounts`: global key-only lookup/cache; replacement of the enclosing environment; treating a duplicate as absence; stale pre-producer keys; using the target for lexical name lookup; and silently choosing a parent for an unbound root read. Expected outputs and this countermodel list are withheld from the isolated consumer.
 - `exclusions`: one unindexed parent, one String index, integral Number payloads, scalar computations and artifact-only knowledge transport. No partial validation, temporal profiles, rich pointers, wider topology, executable prototype, Rust/SMT integration, public shipment or broader qualification.
+
+<a id="run-parent-scoped-selection-readback-01"></a>
+### Parent-scoped selection — `parent-scoped-selection-readback-01`
+
+- `task`: [Parent-scoped selection](#task-parent-scoped-selection-readback)
+- `status`: red
+- `started-at`: 2026-10-07T02:13:16+00:00
+- `finished-at`: 2026-10-07T02:14:28+00:00
+- `duration-seconds`: 72
+- `semantic-basis`: `657d34b76860f29e4f9bd7214200ed416ec01b85`
+- `oracle`: HIGH reconciled the answers against [nested reader locks](../../A12Kernel/Reference/Dm/NestedSemanticIndexLocks.lean) and [column resolution](../../A12Kernel/Elaboration/CheckedIndexColumn.lean). Q2 was incomplete: parent 1 clears while parent 2 remains 7; both retained Kernel engines agree. Other claimed outcomes agree with the bounded matrix and lexical clauses.
+- `consumer-access`: fresh MEDIUM context; one scratch packet containing the frozen task and verbatim canonical clauses; no repository, Lean, Kernel, sibling-source, linked-source or external access. No produced code or dependencies.
+- `cost`: 72 seconds, one packet read, zero implementation/test lines, dependencies or runners; token usage unavailable. HIGH reconciliation used existing source, matrix and retained evidence without a build or replay.
+- `result`: Q1 2/7; Q3 2/0 in both variants; Q4 3/11; Q5 absolute references preserve 2/7 while unchanged relative references with fallback disabled fail; Q6 refuses the missing parent binding. Q2 correctly clears parent 1 but cannot decide parent 2 from the handover. The reader separates lexical identity, target binding, phase and current key/payload dependencies.
+- `wrong-accounts`: rejects global key-only selection, replacing the enclosing binding, duplicate-as-absence, stale keys, target-owned lexical lookup and arbitrary parent choice. Cross-parent poison remains undecidable from the supplied clause, so the finite task fails.
+- `questions-and-guesses`: one explicit unresolved question: whether column-strict computation invalidity is local to the bound parent or shared across all instances of the declaration. No semantic guess; conservative broader cache invalidation was proposed pending clarification.
+- `exclusions`: the frozen task exclusions apply; no executable consumer, Rust/SMT integration, public shipment or broader qualification.

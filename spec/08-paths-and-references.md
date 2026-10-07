@@ -83,6 +83,8 @@ Index-key identity belongs to the declared index field. For a **Number** index f
 
 ### 4.2 Per-lookup (validation) vs per-column (compute)
 
+An **index column belongs to the enclosing parent instance bound by the current evaluation**, not to every instance of the index-field declaration in the document. For an indexed group below an unindexed repeatable parent, collect index cells only from that parent's rows. Equal keys in different parents do not collide; a duplicate or invalid index column affects reads within its own parent binding, not reads bound to a sibling parent. Selection replaces only the indexed coordinate and preserves the enclosing bindings ([checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-index-group-resolution)).
+
 - **Validation-side** indexed reads are judged **per lookup**: a malformed key cell *elsewhere* in the column does **not** suppress a clean match; but an *unresolvable no-match* over a column that contains **any** not-check-relevant cell **suppresses** the referencing rule.
 - **Compute-side** is **stricter — per column**: any invalid cell in the index column clears every reading computation ([§11](09-computations.md)).
 
