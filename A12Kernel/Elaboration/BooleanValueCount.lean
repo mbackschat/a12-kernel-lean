@@ -38,7 +38,7 @@ def FlatFieldDecl.toBooleanValueCountField? (expected : Bool)
     none
 
 /-- One checked direct Boolean/Confirm operand. The list's shape decided which reading scope binds its
-levels: none on a rule, its target's on a computation. -/
+levels: the rule instance or the computation target. -/
 structure CheckedBooleanValueCountField (model : FlatModel)
     (expected : Bool) where
   declaration : FlatFieldDecl
@@ -383,11 +383,14 @@ end CheckedBooleanValueCountSource
 def elaborateBooleanValueCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (expected : Bool)
     (authored : SurfaceBooleanValueCountSource) (fixedTargetGroup? : Option GroupPath := none)
-    (writtenGroup : GroupPath := declaringGroup) :
+    (writtenGroup : GroupPath := declaringGroup) (bindingGroup? : Option GroupPath := none) :
     Except BooleanValueCountElabError
       (CheckedBooleanValueCountSource model) := do
+  let bindingGroup? := bindingGroup?.or fixedTargetGroup?
   let shape ←
-    elaborateFieldEntityShape model declaringGroup authored (fixedTargetGroup? := fixedTargetGroup?)
+    elaborateFieldEntityShapeIn model declaringGroup
+      (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD [])
+      authored (fixedTargetGroup? := fixedTargetGroup?)
       (writtenGroup := writtenGroup)
     |>.mapError .shape
   let first ←

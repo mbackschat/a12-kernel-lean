@@ -208,6 +208,16 @@
 - `lock`: [`ReadingScope`](../../A12Kernel/Conformance/ReadingScope.lean) names each row id beside the carrier that replays it.
 - `sync`: locally originated; the two deltas absent from the peer's findings are [`SPEC-2026-09-25-03`](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-09-25-03), and the other rows rest on the peer's `kf212`, `kf371` and `kf466`.
 
+
+- `selected-parent-revision`: On 2026-10-07, one structured `rule check` batch at clean a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, dmtool `0.13.0`, built/runtime Kernel `30.8.1`, checked 33 candidates: 24 admitted, nine refused, no failed operations. Six fields were added through kernel-confirmed structured authoring to the retained selected-message model; the batch reads that persisted model. The measurement checkout stayed clean.
+- `selected-parent-source`: `CheckEntityUtils.checkIterationAndErrorField` in the Kernel parser checks each iterating reference against the error-field path, accepting enclosing levels and refusing unbound descendants. This is the existing reading-scope mechanism; selected entity syntax does not erase an ordinary companion's parent binding.
+- `selected-parent-matrix`: Number, String and Date `FieldValuesNotUnique`, Boolean True/False counts and Confirm True counts each admit a parent field beside a selected child field, in both operand orders and with a literal or parent-field key. Removing the key refuses all six carriers with `MVK_NO_WILDCARD`. Separate controls retain sole-field `MVK_PARAMSIZE_INVALIDN`, Boolean uniqueness `MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED`, and Confirm False `MVK_NO_TYPEYESNO`.
+- `selected-parent-limit`: Static admission only, parent-bound rules and direct selected child fields. Runtime behavior, Enumeration and other temporal profiles, filtered operands, and rule/error groups at different depths were not measured by this extension. It closes a Lean reader omission under the existing scope clause; no new semantic clause or outbound request.
+- `selected-parent-lock`: [Reader and assembly matrix](../../A12Kernel/Reference/Dm/SelectedIterationLocks.lean) covers the 24 admitted shapes, bound ordinary-only control and the refusal boundaries. Exact local level checks distinguish the indexed child, a sibling child and a deeper descendant. Existing source evaluators and scope laws remain unchanged.
+- `selected-parent-model`: [model.json](../../evidence/kernel-30.8.1/captures/selected-parent-binding/model.json) SHA-256 `97138f1b39e396c024b1cd3a0f9e0391e4ec7627629a580d0252c290fc8b4422`.
+- `selected-parent-ops`: [ops.json](../../evidence/kernel-30.8.1/captures/selected-parent-binding/ops.json) SHA-256 `43dfde635e84a0310e6ab1ea473fb6a9e1270273cd272bf4caca887bab414000`.
+- `selected-parent-observations`: [observations.json](../../evidence/kernel-30.8.1/captures/selected-parent-binding/observations.json) SHA-256 `84e580f37aeab2f878abf297a2114923f04f19cf7c142cd30a6bc1b05967a811`.
+
 <a id="src-group-list-rnu-admission-correction"></a>
 #### Group-list and RNU admission correction
 

@@ -25,10 +25,14 @@ inductive NumberValuesNotUniqueElabError where
     refusal, Number-category homogeneity, then the existing Number certificate. -/
 def elaborateNumberValuesNotUniqueSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumberValuesNotUniqueSource)
-    (writtenGroup : GroupPath := declaringGroup) (targetGroup? : Option GroupPath := none) :
+    (writtenGroup : GroupPath := declaringGroup) (targetGroup? : Option GroupPath := none)
+    (bindingGroup? : Option GroupPath := none) :
     Except NumberValuesNotUniqueElabError
       (CheckedNumberValuesNotUniqueSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored (fixedTargetGroup? := targetGroup?) (writtenGroup := writtenGroup)
+  let bindingGroup? := bindingGroup?.or targetGroup?
+  let shape ← elaborateFieldEntityShapeIn model declaringGroup
+      (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD [])
+      authored (fixedTargetGroup? := targetGroup?) (writtenGroup := writtenGroup)
       (categoryGate := .behindRootGate)
     |>.mapError .shape
   match firstFieldListKindRefusal? shape.operands with
@@ -37,7 +41,7 @@ def elaborateNumberValuesNotUniqueSource (model : FlatModel)
   match firstFieldListCategoryMismatch? .number shape.operands with
   | some mismatch => throw (.mixedCategories mismatch.path mismatch.actual)
   | none => pure ()
-  certifyNumberEntityShape model declaringGroup shape (targetGroup?.getD writtenGroup)
+  certifyNumberEntityShape model declaringGroup shape (bindingGroup?.getD writtenGroup)
     |>.mapError .source
 
 namespace NumberValuesNotUniqueElabError

@@ -19,6 +19,10 @@ private def model : FlatModel := {
     { id := 15, name := "LookupKey", groupPath := ["Form", "Parents", "Lookup"], repeatableScope := [1, 30], policy := { kind := .string } },
     { id := 16, name := "RootNumber", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } },
     { id := 18, name := "ParentFlag", groupPath := ["Form", "Parents"], repeatableScope := [1], policy := { kind := .boolean } },
+    { id := 19, name := "Stamp", groupPath := ["Form", "Parents", "Rows"], repeatableScope := [1, 10], policy := { kind := .temporal .date .fullDate }, temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+    { id := 20, name := "ParentStamp", groupPath := ["Form", "Parents"], repeatableScope := [1], policy := { kind := .temporal .date .fullDate }, temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+    { id := 21, name := "Consent", groupPath := ["Form", "Parents", "Rows"], repeatableScope := [1, 10], policy := { kind := .confirm } },
+    { id := 22, name := "ParentConsent", groupPath := ["Form", "Parents"], repeatableScope := [1], policy := { kind := .confirm } },
     { id := 17, name := "Case", groupPath := ["Form", "Parents", "Lookup"], repeatableScope := [1, 30], policy := { kind := .number { scale := 0, signed := true } } }]
   repeatableGroups := [
     { level := 1, path := ["Form", "Parents"], repeatability := some 2 },
@@ -83,7 +87,7 @@ example : nested "Sum(/Form/Parents/Rows/Body For LookupKey) > 0" .guarded true 
     classifies "FieldFilled(Case) Or SumOfProducts(/Form/Parents/Rows/Items*/N For LookupKey,/Form/Parents/Rows/Items*/M For \"b\") == 0"
       .unguarded false ["Form", "Parents", "Lookup"] 17 1 := by native_decide
 
-/-- Isolate guard classification through the checked-source assembly boundary from the reader's separate operand-admission gate ([SG29](../../../docs/gaps/paths-and-groups.md#gap-sg29)). -/
+/-- Isolate guard classification through the checked-source assembly boundary from reader operand admission; the companion reader matrix below checks that boundary separately. -/
 private def booleanCompanion (expected : Bool) : Option Bool := do
   let group := ["Form", "Parents"]
   let parsed ← (parseText .english ("NumberOfValueInFields(" ++ (if expected then "True" else "False") ++ " In ParentFlag,Rows/Flag For Key)")).toOption
@@ -99,5 +103,71 @@ private def booleanCompanion (expected : Bool) : Option Bool := do
     (assembleResolvedValidationRule model checked 2 "BOOLEAN_GUARD" .error { parts := [] }).isOk)
 
 example : booleanCompanion true = some true ∧ booleanCompanion false = some true := by native_decide
+
+private def parentBindingCases : List (String × String × String) := [
+  ("FieldValuesNotUnique(", "Anchor", "Rows/N"),
+  ("FieldValuesNotUnique(", "Key", "Rows/Text"),
+  ("FieldValuesNotUnique(", "ParentStamp", "Rows/Stamp"),
+  ("NumberOfValueInFields(True In ", "ParentFlag", "Rows/Flag"),
+  ("NumberOfValueInFields(False In ", "ParentFlag", "Rows/Flag"),
+  ("NumberOfValueInFields(True In ", "ParentConsent", "Rows/Consent")]
+
+private def parentBindingText (opening parent child : String) (key : String)
+    (reverse : Bool) : String :=
+  let selected := child ++ " For " ++ key
+  opening ++ (if reverse then selected ++ "," ++ parent else parent ++ "," ++ selected) ++
+    (if opening.startsWith "Number" then ") > 0" else ")")
+
+example : parentBindingCases.all (fun (opening, parent, child) =>
+    ["Key", "\"a\""].all (fun key => [false, true].all (fun reverse =>
+      classifies ("FieldFilled(Anchor) And " ++ parentBindingText opening parent child key reverse)
+        .guarded true))) = true := by native_decide
+
+private def staticDiagnostic (text : String) :
+    Option KernelStaticDiagnostic := do
+  let group := ["Form", "Parents"]
+  let parsed ← (parseText .english text).toOption
+  let .call _ arguments listed none := parsed.body | none
+  let source ← (lowerEntitySource model group (listed.getD arguments)).toOption
+  match elaborateNumberValuesNotUniqueSource model group source (bindingGroup? := some group) with
+  | .error error => error.diagnostic?
+  | .ok _ => none
+
+private def booleanError (text : String) (expected : Bool) : Option BooleanValueCountElabError := do
+  let group := ["Form", "Parents"]
+  let parsed ← (parseText .english text).toOption
+  let .call _ _ (some listed) none := parsed.body | none
+  let source ← (lowerEntitySource model group listed).toOption
+  match elaborateBooleanValueCountSource model group expected source (bindingGroup? := some group) with
+  | .error error => some error
+  | .ok _ => none
+
+example : staticDiagnostic "FieldValuesNotUnique(Anchor)" = some .paramSizeInvalidN ∧
+    staticDiagnostic "FieldValuesNotUnique(ParentFlag,Rows/Flag For Key)" = some .onlyStringEnumNumberDateAllowed ∧
+    booleanError "NumberOfValueInFields(False In ParentConsent,Rows/Consent For Key)" false =
+      some (.fieldKindMismatch ["Form", "Parents", "ParentConsent"] false .confirm) := by native_decide
+
+example : parentBindingCases.all (fun (opening, parent, child) =>
+    !(condition ("FieldFilled(Anchor) And " ++ opening ++ parent ++ "," ++ child ++
+      (if opening.startsWith "Number" then ") > 0" else ")"))).isSome) = true ∧
+    classifies "FieldFilled(Anchor) And FieldValuesNotUnique(Anchor,/Form/RootNumber)" .guarded true ∧
+    !(condition "FieldFilled(Anchor) And FieldValuesNotUnique(Anchor,Lookup/Case)").isSome ∧
+    !(condition "FieldFilled(Anchor) And FieldValuesNotUnique(Anchor,Rows/Items/N)").isSome := by native_decide
+
+private def unboundAt (field : String) (level : RepeatableLevel) : Bool :=
+  let group := ["Form", "Parents"]
+  match parseText .english ("FieldValuesNotUnique(Anchor," ++ field ++ ")") with
+  | .ok parsed => match parsed.body with
+    | .call _ arguments none none => match lowerEntitySource model group arguments with
+      | .ok surface => match elaborateNumberValuesNotUniqueSource model group surface
+          (bindingGroup? := some group) with
+        | .error (.shape (.resolve (.unboundOperandLevel _ found))) => found.level == level
+        | _ => false
+      | _ => false
+    | _ => false
+  | _ => false
+
+example : unboundAt "Rows/N" 10 = true ∧ unboundAt "Lookup/Case" 30 = true ∧
+    unboundAt "Rows/Items/N" 10 = true := by native_decide
 
 end A12Kernel.Dm.SelectedIterationLocks

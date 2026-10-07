@@ -376,16 +376,20 @@ def firstKindGateRefusal? :
 /-- Admit one temporal operand list in the Kernel's gate order: the shared entity shape, then the kind gate over every operand, then the single-declared-format rule that shares the kind gate's code, and only then the category-mixing gate that certification reports. -/
 def elaborateTemporalValuesNotUniqueSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource)
-    (writtenGroup : GroupPath := declaringGroup) (targetGroup? : Option GroupPath := none) :
+    (writtenGroup : GroupPath := declaringGroup) (targetGroup? : Option GroupPath := none)
+    (bindingGroup? : Option GroupPath := none) :
     Except TemporalValuesNotUniqueElabError
       (CheckedTemporalValuesNotUniqueSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored (fixedTargetGroup? := targetGroup?) (writtenGroup := writtenGroup)
+  let bindingGroup? := bindingGroup?.or targetGroup?
+  let shape ← elaborateFieldEntityShapeIn model declaringGroup
+      (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD [])
+      authored (fixedTargetGroup? := targetGroup?) (writtenGroup := writtenGroup)
       (categoryGate := .behindRootGate)
     |>.mapError .shape
   match firstKindGateRefusal? shape.operands with
   | some refusal => throw refusal
   | none => pure ()
-  let bindingGroup := targetGroup?.getD writtenGroup
+  let bindingGroup := bindingGroup?.getD writtenGroup
   let first ← certifyTemporalUniquenessOperand model declaringGroup shape.first bindingGroup
   let rest ← certifyTemporalUniquenessOperands model declaringGroup shape.rest bindingGroup
   match hFormats : firstMismatchedTemporalFormat? first.format rest with

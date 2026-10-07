@@ -184,17 +184,17 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         let operands := lowerEntitySource model rowGroup arguments
         [do
           let source ← elaborated "FieldValuesNotUnique"
-            (elaborateNumberValuesNotUniqueSource model rowGroup (← operands))
+            (elaborateNumberValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some rowGroup))
           elaborated "FieldValuesNotUnique"
             (CheckedValidationCondition.fromValuesNotUnique rowGroup (.number source)),
          do
           let source ← elaborated "FieldValuesNotUnique"
-            (elaborateTokenValuesNotUniqueSource model rowGroup (← operands))
+            (elaborateTokenValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some rowGroup))
           elaborated "FieldValuesNotUnique"
             (CheckedValidationCondition.fromValuesNotUnique rowGroup (.token source)),
          do
           let source ← elaborated "FieldValuesNotUnique"
-            (elaborateTemporalValuesNotUniqueSource model rowGroup (← operands))
+            (elaborateTemporalValuesNotUniqueSource model rowGroup (← operands) (bindingGroup? := some rowGroup))
           elaborated "FieldValuesNotUnique"
             (CheckedValidationCondition.fromValuesNotUnique rowGroup (.temporal source))]
     | _ => []

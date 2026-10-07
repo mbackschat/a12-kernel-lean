@@ -49,10 +49,14 @@ structure CheckedTokenValuesNotUniqueSource (model : FlatModel) where
     or Enumeration category, then the existing token certificate. -/
 def elaborateTokenValuesNotUniqueSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceTokenValuesNotUniqueSource)
-    (writtenGroup : GroupPath := declaringGroup) (targetGroup? : Option GroupPath := none) :
+    (writtenGroup : GroupPath := declaringGroup) (targetGroup? : Option GroupPath := none)
+    (bindingGroup? : Option GroupPath := none) :
     Except TokenValuesNotUniqueElabError
       (CheckedTokenValuesNotUniqueSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored (fixedTargetGroup? := targetGroup?) (writtenGroup := writtenGroup)
+  let bindingGroup? := bindingGroup?.or targetGroup?
+  let shape ← elaborateFieldEntityShapeIn model declaringGroup
+      (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD [])
+      authored (fixedTargetGroup? := targetGroup?) (writtenGroup := writtenGroup)
       (categoryGate := .behindRootGate)
     |>.mapError fun error => .source (.shape error)
   match firstFieldListKindRefusal? shape.operands with
@@ -70,7 +74,7 @@ def elaborateTokenValuesNotUniqueSource (model : FlatModel)
           | some mismatch => throw (.mixedCategories mismatch.path mismatch.actual)
           | none => pure ()
   let source ← certifyTokenEntityShape model declaringGroup shape
-      (targetGroup?.getD writtenGroup) |>.mapError .source
+      (bindingGroup?.getD writtenGroup) |>.mapError .source
   if hKinds : ∀ kind ∈ source.declaredKinds,
       some kind = source.declaredKinds.head? then
     pure { source, oneDeclaredKind := hKinds }

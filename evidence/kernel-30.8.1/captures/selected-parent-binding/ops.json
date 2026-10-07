@@ -1,0 +1,431 @@
+[
+  {
+    "id": "number-dynamic",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Scalar,Rows/N For Key)"
+    ]
+  },
+  {
+    "id": "number-dynamic-reverse",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Rows/N For Key,Scalar)"
+    ]
+  },
+  {
+    "id": "number-literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Scalar,Rows/N For \"a\")"
+    ]
+  },
+  {
+    "id": "number-literal-reverse",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Rows/N For \"a\",Scalar)"
+    ]
+  },
+  {
+    "id": "number-unbound",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Scalar,Rows/N)"
+    ]
+  },
+  {
+    "id": "token-dynamic",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Key,Rows/Id For Key)"
+    ]
+  },
+  {
+    "id": "token-dynamic-reverse",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Rows/Id For Key,Key)"
+    ]
+  },
+  {
+    "id": "token-literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Key,Rows/Id For \"a\")"
+    ]
+  },
+  {
+    "id": "token-literal-reverse",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Rows/Id For \"a\",Key)"
+    ]
+  },
+  {
+    "id": "token-unbound",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Key,Rows/Id)"
+    ]
+  },
+  {
+    "id": "date-dynamic",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Day,Rows/Day For Key)"
+    ]
+  },
+  {
+    "id": "date-dynamic-reverse",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Rows/Day For Key,Day)"
+    ]
+  },
+  {
+    "id": "date-literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Day,Rows/Day For \"a\")"
+    ]
+  },
+  {
+    "id": "date-literal-reverse",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Rows/Day For \"a\",Day)"
+    ]
+  },
+  {
+    "id": "date-unbound",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Day,Rows/Day)"
+    ]
+  },
+  {
+    "id": "true-dynamic",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(True In Flag,Rows/Flag For Key) > 0"
+    ]
+  },
+  {
+    "id": "true-dynamic-reverse",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(True In Rows/Flag For Key,Flag) > 0"
+    ]
+  },
+  {
+    "id": "true-literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(True In Flag,Rows/Flag For \"a\") > 0"
+    ]
+  },
+  {
+    "id": "true-literal-reverse",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(True In Rows/Flag For \"a\",Flag) > 0"
+    ]
+  },
+  {
+    "id": "true-unbound",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(True In Flag,Rows/Flag) > 0"
+    ]
+  },
+  {
+    "id": "false-dynamic",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(False In Flag,Rows/Flag For Key) > 0"
+    ]
+  },
+  {
+    "id": "false-dynamic-reverse",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(False In Rows/Flag For Key,Flag) > 0"
+    ]
+  },
+  {
+    "id": "false-literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(False In Flag,Rows/Flag For \"a\") > 0"
+    ]
+  },
+  {
+    "id": "false-literal-reverse",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(False In Rows/Flag For \"a\",Flag) > 0"
+    ]
+  },
+  {
+    "id": "false-unbound",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(False In Flag,Rows/Flag) > 0"
+    ]
+  },
+  {
+    "id": "confirm-dynamic",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(True In Confirmed,Rows/Confirmed For Key) > 0"
+    ]
+  },
+  {
+    "id": "confirm-dynamic-reverse",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(True In Rows/Confirmed For Key,Confirmed) > 0"
+    ]
+  },
+  {
+    "id": "confirm-literal",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(True In Confirmed,Rows/Confirmed For \"a\") > 0"
+    ]
+  },
+  {
+    "id": "confirm-literal-reverse",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(True In Rows/Confirmed For \"a\",Confirmed) > 0"
+    ]
+  },
+  {
+    "id": "confirm-unbound",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(True In Confirmed,Rows/Confirmed) > 0"
+    ]
+  },
+  {
+    "id": "sole",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Scalar)"
+    ]
+  },
+  {
+    "id": "badkind",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And FieldValuesNotUnique(Flag,Rows/Flag For Key)"
+    ]
+  },
+  {
+    "id": "confirm-false",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Parents/Scalar",
+      "--code",
+      "BINDING",
+      "--condition",
+      "FieldFilled(Scalar) And NumberOfValueInFields(False In Confirmed,Rows/Confirmed For Key) > 0"
+    ]
+  }
+]

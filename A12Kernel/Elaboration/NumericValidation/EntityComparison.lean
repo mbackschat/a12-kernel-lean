@@ -108,7 +108,8 @@ private def resolveEntityAtom (model : FlatModel) (rowGroup bindingGroup : Group
         (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup)).map .tokenValueCount
         |>.mapError .tokenSource
   | .booleanValueCount expected source =>
-      (elaborateBooleanValueCountSource model rowGroup expected source (writtenGroup := bindingGroup)).map .booleanValueCount
+      (elaborateBooleanValueCountSource model rowGroup expected source
+        (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup)).map .booleanValueCount
         |>.mapError .booleanSource
   | .sumOfProducts source =>
       (elaborateNumericProductAggregate model rowGroup source bindingGroup).map .sumOfProducts
