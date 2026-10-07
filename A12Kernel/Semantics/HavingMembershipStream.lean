@@ -18,7 +18,7 @@ def resolveSlots (origin : Ref → HavingOrigin) (field : Ref → FieldId)
         let cell ← read environment reference
         pure (.inl { side with cells := cell :: side.cells }))
       (ResolvedValueListSide.empty (kind := kind)) [slot]
-      (fun side => pure (.inl { side with hasUninstantiatedTail := true }))
+      (fun side _ => pure (.inl { side with hasUninstantiatedTail := true }))
     match result with
     | .inl side => pure { side with cells := side.cells.reverse }
     | .inr impossible => nomatch impossible

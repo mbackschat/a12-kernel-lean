@@ -14,7 +14,7 @@ def evalValidationRead (operator : FieldFillQuantifier)
       let cell ← context.read environment reference.field
       pure (.inl (tally.combine (observeCell .validation cell).asValidationFillTally)))
     { filled := 0, empty := 0, unknown := 0, uninstantiated := 0 } slots
-    (fun tally => pure (.inl { tally with uninstantiated := tally.uninstantiated + 1 }))
+    (fun tally _ => pure (.inl { tally with uninstantiated := tally.uninstantiated + 1 }))
   match result with
   | .inl tally => pure (operator.evalValidation tally).asConservativeVerdict
   | .inr impossible => nomatch impossible
@@ -30,7 +30,7 @@ def evalComputationRead (operator : FieldFillQuantifier)
       (fun seen reference environment => do
         let cell ← context.read environment reference.field
         pure (FieldFillQuantifier.step kind seen (observeCell .computation cell).asComputationFillSlot))
-      false slots (fun seen => pure (FieldFillQuantifier.step kind seen .uninstantiated))
+      false slots (fun seen _ => pure (FieldFillQuantifier.step kind seen .uninstantiated))
     pure (match result with
       | .inl _ => .exhausted
       | .inr result => result)

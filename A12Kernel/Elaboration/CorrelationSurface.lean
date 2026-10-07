@@ -43,7 +43,7 @@ structure SurfaceHavingTemporalRef where
   deriving Repr, DecidableEq
 
 inductive SurfaceHavingNumericAtom where
-  | aggregate (op : NumericAggregateOp) (first : SurfaceHavingNumberRef) (rest : List SurfaceHavingNumberRef)
+  | aggregate (op : NumericAggregateOp) (source : SurfaceHavingEntitySource)
   | dateDifference (unit : DateDifferenceUnit) (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
   | dayDifference (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
   | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
@@ -321,7 +321,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
     SurfaceCorrelatedHaving → Option (List String × UnboundOperandLevel)
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
-        | .aggregate _ first rest => (first :: rest).findSome? fun reference => field reference.origin reference.field
+        | .aggregate _ source => (source.first :: source.rest).findSome? entity
         | .dateDifference _ left right | .dayDifference left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>

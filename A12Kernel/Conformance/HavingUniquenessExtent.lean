@@ -154,7 +154,7 @@ private def streamResult (context : ResolvingCorrelationContext CorrelationRunti
       (fun trace reference environment => do
         let _ ← context.read environment reference.field.id
         let next := trace ++ [(reference.field.id, environment)]
-        pure (if decideAtRow then .inr next else .inl next)) [] slots onOmitted with
+        pure (if decideAtRow then .inr next else .inl next)) [] slots (fun trace _ => onOmitted trace) with
   | .ok trace => .inr trace
   | .error error => .inl error
 

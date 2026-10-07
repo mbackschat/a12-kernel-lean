@@ -426,8 +426,7 @@ def CorrelatedHavingLeaf.evalComputationInResolving
 /-- A pure cell reader does not eliminate calendar support failures. -/
 def CorrelatedHavingLeaf.evalComputationIn (context : CorrelationContext)
     (frame : CorrelationFrame) : CorrelatedHavingLeaf → Except CorrelationRuntimeFault ComputationConditionResult
-  | .numeric comparison => (comparison.evalComputationWith (HavingNumericAtom.readComputation context frame)).mapError
-      (fun _ => .calendarUnavailable)
+  | .numeric comparison => comparison.evalComputationWith (HavingNumericAtom.readComputationIn context frame)
   | leaf => leaf.evalComputationInResolving context.asResolving frame
 
 /-- The shared effectful tree preserves support faults and computation short-circuiting. -/

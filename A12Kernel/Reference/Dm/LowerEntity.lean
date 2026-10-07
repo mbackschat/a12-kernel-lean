@@ -60,15 +60,36 @@ private def lowerHavingGroupReference : Argument → Lowering (HavingOrigin × S
   | .mk (.constant "RuleGroup") none none => pure (.inner, .ruleGroup false)
   | _ => refuse "Having" "group operand"
 
+private def havingMember? : Expr → Option SurfaceHavingDirectFieldOperand
+  | .value { path, index := none, category } => do
+      let (origin, field) ← path.havingField?
+      pure { origin, field, form := category.map FieldEntityReadForm.projected |>.getD .stored }
+  | _ => none
+
+private def havingEntity? : Expr → Option SurfaceHavingDirectFieldOperand
+  | .entity reference => havingMember? (.value reference)
+  | _ => none
+
+private def havingEntityListMembers (arguments : List Argument) : Lowering SurfaceHavingEntitySource := do
+  let operands ← arguments.mapM fun
+    | .mk (.constant "RuleGroup") none none => pure (.group .inner (.ruleGroup false))
+    | .mk (.entity { path, index := none, category }) none none => do
+        if path.segments.any (·.star) then
+          if category.isSome then refuse "Having" "category on a star"
+          pure (.star (if path.correlated then .outer else .inner)
+            { base := path.base, groups := path.starGroups })
+        else
+          let some reference := havingEntity? (.entity { path, index := none, category }) |
+            refuse "Having" "field-list entity"
+          pure (.entity reference)
+    | _ => refuse "Having" "field-list operand"
+  let first :: rest := operands | refuse "Having" "empty field list"
+  pure { first, rest }
+
+
 private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
   | .call id arguments none none => if let some op := aggregateOp? id then do
-      let sources ← arguments.mapM fun
-        | .mk (.entity { path, index := none, category := none }) none none => do
-            let some (origin, field) := path.havingField? | refuse "Having" "aggregate field"
-            pure ({ origin, field } : SurfaceHavingNumberRef)
-        | _ => refuse "Having" "aggregate operands"
-      let first :: rest := sources | refuse "Having" "aggregate arity"
-      pure (.aggregate op first rest)
+      pure (.aggregate op (← havingEntityListMembers arguments))
     else lowerNonAggregateHavingNumericAtom (.call id arguments none none)
   | other => lowerNonAggregateHavingNumericAtom other
 where
@@ -149,31 +170,6 @@ private def lowerHavingNumericField (source : Expr) : Lowering SurfaceHavingNume
   let reference ← numericFieldFormReference source
   lowerHavingNumericAtom (.value reference)
 
-private def havingMember? : Expr → Option SurfaceHavingDirectFieldOperand
-  | .value { path, index := none, category } => do
-      let (origin, field) ← path.havingField?
-      pure { origin, field, form := category.map FieldEntityReadForm.projected |>.getD .stored }
-  | _ => none
-
-private def havingEntity? : Expr → Option SurfaceHavingDirectFieldOperand
-  | .entity reference => havingMember? (.value reference)
-  | _ => none
-
-private def havingEntityListMembers (arguments : List Argument) : Lowering SurfaceHavingEntitySource := do
-  let operands ← arguments.mapM fun
-    | .mk (.constant "RuleGroup") none none => pure (.group .inner (.ruleGroup false))
-    | .mk (.entity { path, index := none, category }) none none => do
-        if path.segments.any (·.star) then
-          if category.isSome then refuse "Having" "category on a star"
-          pure (.star (if path.correlated then .outer else .inner)
-            { base := path.base, groups := path.starGroups })
-        else
-          let some reference := havingEntity? (.entity { path, index := none, category }) |
-            refuse "Having" "field-list entity"
-          pure (.entity reference)
-    | _ => refuse "Having" "field-list operand"
-  let first :: rest := operands | refuse "Having" "empty field list"
-  pure { first, rest }
 
 private def lowerHavingDateComponent : Expr → Lowering SurfaceHavingDateComponent
   | .string text => pure (.constant text)

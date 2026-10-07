@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.CorrelationInputs
+import A12Kernel.Semantics.CorrelationContext
 import A12Kernel.Semantics.StarAddressing
 
 namespace A12Kernel
@@ -59,7 +59,7 @@ private def foldExtent (source : HavingEntityExtent)
     (origin : Ref → HavingOrigin) (field : Ref → FieldId)
     (groups : CorrelationGroupReads Error) (frame : CorrelationFrame)
     (step : Accumulator → Ref → Env → Except Error (Sum Accumulator Result))
-    (onOmitted : Accumulator → Except Error (Sum Accumulator Result))
+    (onOmitted : Accumulator → Ref → Except Error (Sum Accumulator Result))
     (accumulator : Accumulator) : List Ref → Except Error (Sum Accumulator Result)
   | [] => pure (.inl accumulator)
   | reference :: remaining => do
@@ -67,7 +67,7 @@ private def foldExtent (source : HavingEntityExtent)
         source.boundCount (field reference)
       let result ← foldEnvironments reference step accumulator environments
       let result ← match result with
-        | .inl next => if omitted then onOmitted next else pure (.inl next)
+        | .inl next => if omitted then onOmitted next reference else pure (.inl next)
         | .inr result => pure (.inr result)
       match result with
       | .inl next => foldExtent source origin field groups frame step onOmitted next remaining
@@ -82,7 +82,7 @@ def foldRead (origin : Ref → HavingOrigin) (field : Ref → FieldId)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame)
     (step : Accumulator → Ref → Env → Except Error (Sum Accumulator Result))
     (accumulator : Accumulator) (slots : List (HavingFieldListSlot Ref))
-    (onOmitted : Accumulator → Except Error (Sum Accumulator Result) := fun next => pure (.inl next)) :
+    (onOmitted : Accumulator → Ref → Except Error (Sum Accumulator Result) := fun next _ => pure (.inl next)) :
     Except Error (Sum Accumulator Result) := match slots with
   | [] => pure (.inl accumulator)
   | slot :: remaining => do

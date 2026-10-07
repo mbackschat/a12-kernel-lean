@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.HavingNumberAggregate
 import A12Kernel.Elaboration.HavingDateValidity
 import A12Kernel.Elaboration.HavingTree
 import A12Kernel.Elaboration.HavingGroupPresence
@@ -89,7 +90,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
         (model.resolveNumberInGroup declaringGroup group reference.field).isOk
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).any fun
-        | .aggregate _ _ _ | .dateDifference _ _ _ | .dayDifference _ _ | .dateTimeDifference _ _ _ | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ | .fieldValueAsNumber _
+        | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ | .dateTimeDifference _ _ _ | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ | .fieldValueAsNumber _
             | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
         | .field reference => reference.origin == .inner &&
             (model.resolveNumberInGroup declaringGroup group reference.field).isOk
@@ -113,7 +114,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError CorrelatedHaving := do
   discard <| elaborateHavingCoreWith {
-    aggregate := fun _ _ _ => throw .stringLeafOutsideStarRoute
+    aggregate := fun _ _ => throw .stringLeafOutsideStarRoute
     baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
     clockPart := fun _ _ => throw .stringLeafOutsideStarRoute
     fieldValueAsNumber := fun _ => throw .stringLeafOutsideStarRoute
@@ -145,7 +146,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
   let readsGroup := authored.readsGroupNumber model declaringGroup group
   let condition ← (elaborateHavingCoreWith {
-    aggregate := fun _ _ _ => throw .stringLeafOutsideStarRoute
+    aggregate := fun _ _ => throw .stringLeafOutsideStarRoute
     baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
     clockPart := fun _ _ => throw .stringLeafOutsideStarRoute
     fieldValueAsNumber := fun _ => throw .stringLeafOutsideStarRoute
@@ -466,7 +467,7 @@ def CorrelatedHaving.outerIterationScopes
     CorrelatedHaving → List (Option (List RepeatableLevel))
   | .leaf (.numeric comparison) =>
       (comparison.left.atoms ++ comparison.right.atoms).flatMap fun
-        | .aggregate _ first rest => (first :: rest).map (outerHavingNumberIterationScope model)
+        | .aggregate _ slots => (HavingNumberAggregate.presenceSlots slots).map (·.outerIterationScope? model)
         | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map fun reference =>
             outerHavingFieldIterationScope model reference.origin reference.field.id
         | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map fun reference =>
@@ -531,7 +532,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
     SurfaceCorrelatedHaving → Option CorrelationElabError
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
-        | .aggregate _ first rest => (first :: rest).findSome? fun reference => field reference.origin reference.field
+        | .aggregate _ source => (source.first :: source.rest).findSome? entity
         | .dateDifference _ left right | .dayDifference left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
@@ -605,14 +606,8 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
         | none => throw .numericExpressionUnsupported
     | .now => throw .numericExpressionUnsupported
   let condition ← elaborateHavingCoreWith {
-    aggregate := fun op first rest => do
-      if rest.isEmpty then throw .numericExpressionUnsupported
-      let resolve (reference : SurfaceHavingNumberRef) :=
-        (model.resolveHavingNumberInEnvironment declaringGroup outerLevels reference.origin reference.field).map (·.core)
-      let first ← resolve first
-      let rest ← rest.mapM resolve
-      if !havingAggregateUnique first rest then throw .numericExpressionUnsupported
-      pure (.aggregate op first rest)
+    aggregate := fun op source =>
+      HavingNumericAtom.aggregate op <$> HavingNumberAggregate.elaborate model declaringGroup candidateLevels outerLevels source
     baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
     clockPart := fun source part => do
       if !source.admits part then throw .numericExpressionUnsupported

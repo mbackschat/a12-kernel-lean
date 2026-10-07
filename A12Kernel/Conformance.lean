@@ -7,6 +7,7 @@ import A12Kernel.Conformance.CorrelationResolving
 import A12Kernel.Conformance.CorrelatedComparisonInputs
 import A12Kernel.Conformance.HavingFieldFillExtent
 import A12Kernel.Conformance.HavingMembershipExtent
+import A12Kernel.Conformance.HavingAggregateExtent
 import A12Kernel.Conformance.CalendarExpressions
 import A12Kernel.Conformance.BooleanFirstFilledComputationRows
 import A12Kernel.Conformance.CustomFirstFilledComputationRows

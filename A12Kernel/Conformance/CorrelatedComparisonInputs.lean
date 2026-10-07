@@ -449,7 +449,7 @@ example : subdayCondition.wellFormedForEnvironments subdayModel [10] [10] = true
 private def aggregateRef (origin : HavingOrigin) (signed : Bool := true) : HavingNumberRef := {
   origin, field := { id := 1, info := { scale := 0, signed } } }
 private def aggregateAtom (op : NumericAggregateOp) (signed : Bool := true) : HavingNumericAtom :=
-  .aggregate op (aggregateRef .inner) [aggregateRef .outer signed]
+  .aggregate op [.direct (aggregateRef .inner), .direct (aggregateRef .outer signed)]
 private def aggregateRead : CorrelationContext := {
   read := fun env _ => if env == frame.innerEnv then
     { rawPresent := true, parsed := some (.num 2), findings := [] }
@@ -480,7 +480,7 @@ example : [NumericAggregateOp.sum, .minimum, .maximum, .distinctCount].all (fun 
 private def aggregateModel : FlatModel := { model with fields := model.fields.map fun field =>
   { field with policy := { kind := .number { scale := 0, signed := true } } } }
 private def aggregateCondition (first : HavingNumberRef) (rest : List HavingNumberRef) : CorrelatedHaving :=
-  .leaf (.numeric { op := .ordinary .equal, left := .atom (.aggregate .sum first rest), right := .literal { value := 2, authoredScale := 0 } })
+  .leaf (.numeric { op := .ordinary .equal, left := .atom (.aggregate .sum ((first :: rest).map .direct)), right := .literal { value := 2, authoredScale := 0 } })
 
 example : (aggregateCondition (aggregateRef .inner) [aggregateRef .outer]).wellFormedForEnvironments aggregateModel [10] [10] = true ∧
     (aggregateCondition (aggregateRef .inner) [aggregateRef .inner]).wellFormedForEnvironments aggregateModel [10] [10] = false ∧
@@ -489,16 +489,16 @@ example : (aggregateCondition (aggregateRef .inner) [aggregateRef .outer]).wellF
     (aggregateCondition (aggregateRef .inner) [aggregateRef .outer]).wellFormedForEnvironments model [10] [10] = false ∧
     (aggregateCondition (aggregateRef .inner) [aggregateRef .outer]).markedFieldIds = [1] := by native_decide
 
-example : (HavingNumericAtom.aggregate .sum { origin := .inner, field := { id := 1, info := { scale := 2, signed := true } } }
-      [aggregateRef .outer]).summary = .field 2 ∧
-    (HavingNumericAtom.aggregate .distinctCount { origin := .inner, field := { id := 1, info := { scale := 2, signed := true } } }
-      [aggregateRef .outer]).summary = .field 0 := by native_decide
+example : (HavingNumericAtom.aggregate .sum [.direct { origin := .inner, field := { id := 1, info := { scale := 2, signed := true } } },
+      .direct (aggregateRef .outer)]).summary = .field 2 ∧
+    (HavingNumericAtom.aggregate .distinctCount [.direct { origin := .inner, field := { id := 1, info := { scale := 2, signed := true } } },
+      .direct (aggregateRef .outer)]).summary = .field 0 := by native_decide
 
 example : [NumericAggregateOp.sum, .minimum, .maximum].all (fun op =>
-    (HavingNumericAtom.aggregate op (aggregateRef .inner)
-      [{ origin := .outer, field := { id := 2, info := { scale := 2, signed := true } } }]).summary == .field 2) = true ∧
-    (HavingNumericAtom.aggregate .distinctCount (aggregateRef .inner)
-      [{ origin := .outer, field := { id := 2, info := { scale := 2, signed := true } } }]).summary = .field 0 := by native_decide
+    (HavingNumericAtom.aggregate op [.direct (aggregateRef .inner),
+      .direct { origin := .outer, field := { id := 2, info := { scale := 2, signed := true } } }]).summary == .field 2) = true ∧
+    (HavingNumericAtom.aggregate .distinctCount [.direct (aggregateRef .inner),
+      .direct { origin := .outer, field := { id := 2, info := { scale := 2, signed := true } } }]).summary = .field 0 := by native_decide
 
 private def clockSourcePair : FlatComparison := .temporal .before .nowValue (.fieldValue (subdayRef .outer).field)
 

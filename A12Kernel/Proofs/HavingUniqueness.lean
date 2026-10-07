@@ -10,7 +10,7 @@ theorem foldRead_deciding_direct {Ref Error Accumulator Result : Type}
     (accumulator : Accumulator) (first : Ref) (rest : List (HavingFieldListSlot Ref))
     (result : Result)
     (decides : step accumulator first (frame.envAt (origin first)) = .ok (.inr result))
-    (onOmitted : Accumulator → Except Error (Sum Accumulator Result) := fun next => pure (.inl next)) :
+    (onOmitted : Accumulator → Ref → Except Error (Sum Accumulator Result) := fun next _ => pure (.inl next)) :
     foldRead origin field context frame step accumulator (.direct first :: rest) onOmitted = .ok (.inr result) := by
   simp [foldRead, decides, bind, Except.bind, pure, Except.pure]
 
