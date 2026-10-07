@@ -13,16 +13,6 @@ refused here, as is every operation no step admits.
 
 namespace A12Kernel.Dm
 
-/-- The scan source: one starred field alone is a star, anything else an entity list. -/
-private def firstFilledSource (model : FlatModel) (group : GroupPath) (arguments : List Argument) :
-    Lowering SurfaceFirstFilledSource :=
-  match arguments with
-  | [.mk (.entity { path, index := none, category := none }) none none] =>
-      match path.segments.any (·.star), path.toStarFieldPath? with
-      | true, some star => pure (.star star)
-      | _, _ => (.list ·) <$> lowerEntitySource model group arguments
-  | _ => (.list ·) <$> lowerEntitySource model group arguments
-
 /-- A carrier's whole-document step, which exists only at a fixed target. -/
 private def fixedStep : Option (CheckedDocumentComputationStep model) →
     Lowering (CheckedDocumentComputationStep model)
@@ -32,7 +22,7 @@ private def fixedStep : Option (CheckedDocumentComputationStep model) →
 /-- `FirstFilledValue` onto the step of the target's kind, a temporal target's chosen by its profile. -/
 private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (arguments : List Argument) : Lowering (CheckedDocumentComputationStep model) := do
-  let source ← firstFilledSource model group arguments
+  let source ← lowerFirstFilledSource model group arguments
   let check {ε α : Type} [Repr ε] (result : Except ε α) : Lowering α :=
     elaborated "FirstFilledValue" result
   match target.temporalFirstFilledFamily? with
@@ -51,6 +41,9 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
   | some .dateRange =>
       match source with
       | .list list =>
+          if (list.first :: list.rest).any (fun | .indexed _ | .keyed _ => true | _ => false) then
+            let operation ← check (checkDateRangeFirstFilledSourceComputation model group target.id source)
+            return ← fixedStep (CheckedDocumentComputationStep.ofDateRangeFirstFilled? operation)
           let operation ←
             check (checkDateRangeFirstFilledDirectComputation model group target.id list)
           return .ofDateRangeFirstFilledDirect operation

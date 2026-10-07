@@ -4,9 +4,8 @@ import A12Kernel.Elaboration.TimeComputation
 
 /-! # Time `FirstFilledValue` at a fixed or a repeatable target
 
-One carrier serves both address classes over the shared temporal site: a fixed target over a direct
-star or a list of plain fields, a repeatable one over a sibling single-axis star at every row of its
-scope. Source and target share the whole-second `HH:mm:ss` profile, and the target's clock format
+One carrier serves both address classes through the shared temporal site, including target-bound
+selected scalar and lower-star lists. `FirstFilledPlacement` owns admission and reached-source order. Source and target share the whole-second `HH:mm:ss` profile, and the target's clock format
 renders the selected clock.
 -/
 
@@ -93,7 +92,7 @@ def evaluateAt (operation : CheckedTimeFirstFilledComputation model)
     Except FirstFilledSiteFault TimeFirstFilledComputationOutcome := do
   let resolved ← (operation.shape.site.source.resolveAt input read environment).mapError .source
   pure { targetField := target
-         outcome := operation.targetPolicy.evaluate (evalTimeFirstFilledCells resolved.cells) }
+         outcome := operation.targetPolicy.evaluate (evaluateFirstFilledSource resolved .poison (fun resolved => evalTimeFirstFilledCells resolved.cells)) }
 
 /-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
 scope with a clear at each over-limit row. -/

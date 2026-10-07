@@ -27,9 +27,8 @@ structure CheckedBooleanFirstFilledComputation (model : FlatModel) where
   sourceBoolean : site.source.declarations.all (·.policy.kind == .boolean) = true
   excludesTarget : site.referencesField site.targetField = false
 
-/-- Check the externally measured Boolean computation shapes: a direct single-level star or a direct
-list at a fixed target, a sibling star at a repeatable one. Wider `entitySpec`, nested repetition and
-validation use remain outside this boundary. -/
+/-- Check Boolean payload agreement after the shared target-bound source admission, retaining
+selection dependencies separately from the Boolean declarations (`spec/08` §4). -/
 def checkBooleanFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFirstFilledSource) :
@@ -132,8 +131,8 @@ def evaluateAt (operation : CheckedBooleanFirstFilledComputation model)
     Except FirstFilledSiteFault BooleanFirstFilledComputationOutcome := do
   let resolved ← (operation.site.source.resolveAt input read environment).mapError .source
   pure { targetField := target
-         result := evalFirstFilledBoolean
-           (resolved.cells.map fun cell => booleanFirstFilledCellAt cell.cell) }
+         result := evaluateFirstFilledSource resolved .poison (fun resolved => evalFirstFilledBoolean
+           (resolved.cells.map fun cell => booleanFirstFilledCellAt cell.cell)) }
 
 /-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
 scope with a clear at each over-limit row. -/

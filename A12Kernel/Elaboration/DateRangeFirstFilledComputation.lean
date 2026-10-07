@@ -8,7 +8,7 @@ import A12Kernel.Semantics.TemporalTarget
 
 /-! # Bounded DateRange `FirstFilledValue` computations
 
-A starred source runs over the shared temporal site at a fixed or a repeatable target. A direct list
+Starred and selected field-list sources use the shared temporal site at fixed or repeatable targets. A direct list
 of plain fields at a fixed target is its own carrier, which owns the list's measured profile classes.
 -/
 
@@ -40,18 +40,23 @@ structure CheckedDateRangeFirstFilledComputation (model : FlatModel) where
   format : DateRangeInputFormat
   formatOwned : shape.carrier.dateRangeFormat? = some format
 
-/-- Check one starred DateRange source at a fixed or a repeatable target. A direct list over a
-DateRange profile is the direct-list carrier's below. -/
-def checkDateRangeFirstFilledComputation
+/-- Check a star or selected field-list DateRange source through the shared placed carrier. -/
+def checkDateRangeFirstFilledSourceComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceStarFieldPath) :
+    (authored : SurfaceFirstFilledSource) :
     Except DateRangeFirstFilledComputationElabError
       (CheckedDateRangeFirstFilledComputation model) := do
-  let shape ← (checkTemporalFirstFilledSite model declaringGroup targetField (.star authored)).mapError
+  let shape ← (checkTemporalFirstFilledSite model declaringGroup targetField authored).mapError
     .shape
   match formatOwned : shape.carrier.dateRangeFormat? with
   | some format => pure { shape, format, formatOwned }
   | none => throw (.targetNotDateRange shape.site.target.path)
+
+/-- Preserve the direct-star entry point used by existing callers. -/
+def checkDateRangeFirstFilledComputation
+    (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
+    (authored : SurfaceStarFieldPath) :=
+  checkDateRangeFirstFilledSourceComputation model declaringGroup targetField (.star authored)
 
 /-- Static refusal while checking the bounded direct-field-list DateRange source. -/
 inductive DateRangeFirstFilledDirectComputationElabError where
@@ -305,7 +310,7 @@ def evaluateAt (operation : CheckedDateRangeFirstFilledComputation model)
   let resolved ← (operation.shape.site.source.resolveAt input read environment).mapError
     (.site ∘ .source)
   let outcome ← (operation.format.evaluateComputationResult
-      (evalDateRangeFirstFilledCells resolved.cells)).mapError fun
+      (evaluateFirstFilledSource resolved .poison (fun resolved => evalDateRangeFirstFilledCells resolved.cells))).mapError fun
     | .unresolvedEndpoint value => .unresolvedEndpoint value
   pure { targetField := target, outcome }
 

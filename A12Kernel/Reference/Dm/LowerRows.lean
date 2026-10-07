@@ -164,35 +164,30 @@ private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : Fla
     return ← stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedEnumerationFirstFilled?
       (← elaborated "FirstFilledValue" (checkAddressedEnumerationFirstFilledComputation model group
         target.id (← lowerEnumerationFirstFilledSource model group arguments))))
-  let star ← match arguments with
-    | [.mk (.entity { path, index := none, category := none }) none none] =>
-        match path.segments.any (·.star), path.toStarFieldPath? with
-        | true, some star => pure star
-        | _, _ => refuse "FirstFilledValue" "row source"
-    | _ => refuse "FirstFilledValue" "row source"
+  let source ← lowerFirstFilledSource model group arguments
   if target.customType.isSome then
     return ← stepOf "FirstFilledValue" (CheckedRowComputationStep.ofCustomFirstFilled?
-      (← elaborated "FirstFilledValue" (checkCustomFirstFilledComputation model group target.id (.star star))))
+      (← elaborated "FirstFilledValue" (checkCustomFirstFilledComputation model group target.id source)))
   match target.temporalFirstFilledFamily?, target.policy.kind with
   | some .time, _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofTimeFirstFilled?
-        (← elaborated "FirstFilledValue" (checkTimeFirstFilledComputation model group target.id (.star star))))
+        (← elaborated "FirstFilledValue" (checkTimeFirstFilledComputation model group target.id source)))
   | some .dateTime, _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofDateTimeFirstFilled?
-        (← elaborated "FirstFilledValue" (checkDateTimeFirstFilledComputation model group target.id (.star star))))
+        (← elaborated "FirstFilledValue" (checkDateTimeFirstFilledComputation model group target.id source)))
   | some .dateFragment, _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofDateFragmentFirstFilled?
         (← elaborated "FirstFilledValue" (checkDateFragmentFirstFilledComputation model group target.id
-          (.star star))))
+          source)))
   | some .fullDate, _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofFullDateFirstFilled?
-        (← elaborated "FirstFilledValue" (checkFullDateFirstFilledComputation model group target.id (.star star))))
+        (← elaborated "FirstFilledValue" (checkFullDateFirstFilledComputation model group target.id source)))
   | some .dateRange, _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofDateRangeFirstFilled?
-        (← elaborated "FirstFilledValue" (checkDateRangeFirstFilledComputation model group target.id star)))
+        (← elaborated "FirstFilledValue" (checkDateRangeFirstFilledSourceComputation model group target.id source)))
   | none, .boolean => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofBooleanFirstFilled?
-        (← elaborated "FirstFilledValue" (checkBooleanFirstFilledComputation model group target.id (.star star))))
+        (← elaborated "FirstFilledValue" (checkBooleanFirstFilledComputation model group target.id source)))
   | none, _ => refuse "FirstFilledValue" "row target kind"
 
 /-- The row step one unguarded operation into a repeatable target names. -/

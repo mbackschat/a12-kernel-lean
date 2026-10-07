@@ -5,9 +5,8 @@ import A12Kernel.Elaboration.TemporalTargetPolicy
 
 /-! # DateTime `FirstFilledValue` at a fixed or a repeatable target
 
-One carrier serves both address classes over the shared temporal site: a fixed target over a direct
-star or a list of plain fields, a repeatable one over a sibling single-axis star at every row of its
-scope. Source and target share the ISO whole-second profile, and the target renders the selected exact
+One carrier serves both address classes through the shared temporal site, including target-bound
+selected scalar and lower-star lists. `FirstFilledPlacement` owns admission and reached-source order. Source and target share the ISO whole-second profile, and the target renders the selected exact
 instant in the model zone.
 -/
 
@@ -27,7 +26,7 @@ structure CheckedDateTimeFirstFilledComputation (model : FlatModel) where
   targetPolicy : CheckedDateTimeTarget model
 
 /-- Check the site, the ISO whole-second DateTime profile, and the target's policy at its own scope.
-Alternate formats, nesting, validation use, and materialized-document reconstruction remain
+Alternate formats and materialized-document reconstruction remain
 outside. -/
 def checkDateTimeFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
@@ -96,7 +95,7 @@ def evaluateAt (operation : CheckedDateTimeFirstFilledComputation model)
     Except DateTimeFirstFilledComputationFault DateTimeFirstFilledComputationOutcome := do
   let resolved ← (operation.shape.site.source.resolveAt input read environment).mapError
     (.site ∘ .source)
-  let outcome ← (operation.targetPolicy.evaluate (evalDateTimeFirstFilledCells resolved.cells)).mapError
+  let outcome ← (operation.targetPolicy.evaluate (evaluateFirstFilledSource resolved .poison (fun resolved => evalDateTimeFirstFilledCells resolved.cells))).mapError
     .target
   pure { targetField := target, outcome }
 

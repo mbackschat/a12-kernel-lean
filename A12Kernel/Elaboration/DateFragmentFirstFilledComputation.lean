@@ -6,9 +6,8 @@ import A12Kernel.Semantics.FirstFilledValue
 
 /-! # DateFragment `FirstFilledValue` at a fixed or a repeatable target
 
-One carrier serves both address classes over the shared temporal site: a fixed target over a direct
-star or a list of plain fields, a repeatable one over a sibling single-axis star at every row of its
-scope. Target and source share one of the four exact fragment profiles, and the selected stored token
+One carrier serves both address classes through the shared temporal site, including target-bound
+selected scalar and lower-star lists. `FirstFilledPlacement` owns admission and reached-source order. Target and source share one of the four exact fragment profiles, and the selected stored token
 is written as it stands.
 -/
 
@@ -86,7 +85,8 @@ def evaluateAt (operation : CheckedDateFragmentFirstFilledComputation model)
     Except FirstFilledSiteFault AddressedTokenComputationOutcome := do
   let resolved ← (operation.shape.site.source.resolveAt input read environment).mapError .source
   pure { targetField := target
-         result := evalResolvedDateFragmentFirstFilled resolved.cells resolved.hasOpenTail }
+         result := evaluateFirstFilledSource resolved .poison (fun resolved =>
+           evalResolvedDateFragmentFirstFilled resolved.cells resolved.hasOpenTail) }
 
 /-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
 scope with a clear at each over-limit row. -/

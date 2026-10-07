@@ -2,16 +2,12 @@ import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.CheckedStarShape
 import A12Kernel.Elaboration.FieldEntityList
 
-/-! # The source of a carrier-owned `FirstFilledValue`
+/-! # Carrier-owned `FirstFilledValue` sources
 
-A `FirstFilledValue` on the shared first-filled site reads one star or a direct list of plain
-nonrepeatable fields, and both feed the same ordered scan over checked cells; the site decides which
-shapes each target placement admits. On a list the Kernel
-selects the first filled cell, lets an empty one fall through and ends the scan at a malformed one,
-measured on Boolean, DateFragment, Time and DateTime
-([four-carrier checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-first-filled-formal-branch-four-carriers)).
-Each carrier keeps its own kind gate over the source's declarations; this module owns only the shape
-and the read.
+Payload declarations determine carrier agreement, while key/index declarations remain scheduling
+and eager formal-input dependencies. Selected field lists bind against the computed target's scope;
+legacy plain lists and sibling stars retain their established certificates. Source-order presence
+and poison follow the common first-filled mechanism in `spec/07` §5 and selection in `spec/08` §4.
 -/
 
 namespace A12Kernel
@@ -28,54 +24,92 @@ structure ResolvedFirstFilledSource where
   cells : List CheckedAddressedCell
   hasOpenTail : Bool
 
-/-- A checked `FirstFilledValue` source. -/
+/-- Project selection poison through each carrier's existing result type. Structural faults remain
+outside this projection and cannot be confused with a semantic clear. -/
+def evaluateFirstFilledSource (result : Except FormalCause ResolvedFirstFilledSource)
+    (poison : FormalCause → α) (scan : ResolvedFirstFilledSource → α) : α :=
+  match result with
+  | .error cause => poison cause
+  | .ok resolved => scan resolved
+
+/-- Stored scalar or selected-extent operands retain the selection certificate separately from
+payload declarations: index and key dependencies need not have the payload's kind (spec/08 §4). -/
+inductive FirstFilledFieldOperand (model : FlatModel) where
+  | field (declaration : FlatFieldDecl)
+  | indexed (source : CheckedSemanticIndexSource model)
+  | keyed (source : CheckedKeyedEntityExtent model)
+
+namespace FirstFilledFieldOperand
+
+def declarations : FirstFilledFieldOperand model → List FlatFieldDecl
+  | .field declaration => [declaration]
+  | .indexed source => [source.targetDeclaration]
+  | .keyed source => source.declarations
+
+def referencesField (operand : FirstFilledFieldOperand model) (field : FieldId) : Bool :=
+  match operand with
+  | .field declaration => declaration.id == field
+  | .indexed source => source.referencesField field
+  | .keyed source => source.referencesField field
+
+end FirstFilledFieldOperand
+
+/-- Legacy star/direct lists and target-bound selected lists share carrier-specific scans. -/
 inductive FirstFilledFieldSource (model : FlatModel) where
   | star (source : CheckedStarFieldPath model)
   | list (fields : List FlatFieldDecl)
+  | selected (operands : List (FirstFilledFieldOperand model))
 
 namespace FirstFilledFieldSource
 
-/-- The declarations the source reads, in authored order. -/
+/-- Payload declarations alone determine carrier agreement. -/
 def declarations : FirstFilledFieldSource model → List FlatFieldDecl
   | .star source => [source.declaration]
   | .list fields => fields
+  | .selected operands => operands.flatMap (·.declarations)
 
 def referencesField (source : FirstFilledFieldSource model) (field : FieldId) : Bool :=
-  source.declarations.any (·.id == field)
+  match source with
+  | .selected operands => operands.any (·.referencesField field)
+  | source => source.declarations.any (·.id == field)
 
-/-- The shapes this source admits at a fixed target: a direct single-level star, or a list of at
-least two plain nonrepeatable fields. -/
+/-- Selected lists have already passed the shared authored arity and binding gates. -/
 def admittedShape : FirstFilledFieldSource model → Bool
   | .star source => source.isDirectSingleStar
   | .list fields => decide (2 ≤ fields.length) && fields.all (·.repeatableScope.isEmpty)
+  | .selected _ => true
 
 end FirstFilledFieldSource
 
-/-- Why an authored list source is refused. The shape's own classes are the shared entity list's; an
-operand other than a plain stored field is this source's representation limit and claims no class. A
-field under a repeatable group never reaches this reading: resolved with no bound level, the shared
-shape refuses it as an unbound operand level first. -/
 inductive FirstFilledListElabError where
   | shape (cause : FieldEntityShapeElabError)
   | unsupportedOperand
   deriving Repr, DecidableEq
 
-/-- An authored list's plain fields, with the validity of the declaring group its shape resolved in. -/
-structure CheckedFirstFilledFieldList (declaringGroup : GroupPath) where
-  fields : List FlatFieldDecl
+structure CheckedFirstFilledFieldList (model : FlatModel) (declaringGroup : GroupPath) where
+  source : FirstFilledFieldSource model
   declaringGroupValid : GroupPath.isValid declaringGroup = true
 
-/-- Resolve an authored list through the shared entity-list shape, keeping its plain fields. -/
+/-- Resolve against the computed target's binding scope. Filtered and group operands require their
+own carrier contracts; selected scalar and lower-star sources use the measured field-list route. -/
 def elaborateFirstFilledFieldList (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (authored : SurfaceFieldEntitySource) :
-    Except FirstFilledListElabError (CheckedFirstFilledFieldList declaringGroup) :=
-  match hShape : elaborateFieldEntityShape model declaringGroup authored
-      (writtenGroup := writtenGroup) with
-  | .error cause => .error (.shape cause)
-  | .ok shape => do
-      let fields ← shape.operands.mapM fun
-        | .field declaration .stored => pure declaration
-        | _ => throw .unsupportedOperand
-      pure { fields, declaringGroupValid := elaborateFieldEntityShape_declaringGroupValid hShape }
+    Except FirstFilledListElabError (CheckedFirstFilledFieldList model declaringGroup) := do
+  let shape ← (elaborateFieldEntityShapeIn model declaringGroup
+    (model.repeatableScopeForGroupPath writtenGroup) authored .manyRequired
+    (some writtenGroup) writtenGroup).mapError .shape
+  let operands ← shape.operands.mapM fun
+    | .field declaration .stored => pure (FirstFilledFieldOperand.field declaration)
+    | .indexed source => pure (.indexed source)
+    | .keyed source => match source.target with
+      | .star _ => pure (.keyed source)
+      | _ => throw FirstFilledListElabError.unsupportedOperand
+    | _ => throw .unsupportedOperand
+  if hValid : GroupPath.isValid declaringGroup = true then
+    let fields := operands.filterMap fun | .field field => some field | _ => none
+    let source := if fields.length == operands.length && fields.all (·.repeatableScope.isEmpty)
+      then FirstFilledFieldSource.list fields else .selected operands
+    pure { source, declaringGroupValid := hValid }
+  else throw .unsupportedOperand
 
 end A12Kernel

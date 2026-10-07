@@ -219,7 +219,7 @@ example :
         | some (.sourceKind path _) => path == ["Fc", "T1"] | _ => false) &&
       (match booleanError?
           [operand "B1", .field { base := .relative 0, groups := ["Rows"], field := "RB" }] with
-        | some (.site (.list (.shape (.resolve (.unboundOperandLevel _ _))))) => true | _ => false)) =
+        | some (.site (.list (.shape (.unboundOperandLevel _)))) => true | _ => false)) =
       true := by
   native_decide
 

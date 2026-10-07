@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.FirstFilledFieldSource
 import A12Kernel.Reference.Dm.LowerFlat
 import A12Kernel.Reference.Dm.LowerCore
 import A12Kernel.Elaboration.IndexKeyShape
@@ -419,5 +420,15 @@ def lowerGroupCountOperand : Argument → Lowering SurfaceGroupCountOperand
         | some group => pure (.fixed (.path group))
         | none => refuse "NumberOfFilledGroups" "operand"
   | _ => refuse "NumberOfFilledGroups" "operand"
+
+/-- The common authored source dispatch for fixed and row first-filled targets. -/
+def lowerFirstFilledSource (model : FlatModel) (group : GroupPath) (arguments : List Argument) :
+    Lowering SurfaceFirstFilledSource :=
+  match arguments with
+  | [.mk (.entity { path, index := none, category := none }) none none] =>
+      match path.segments.any (·.star), path.toStarFieldPath? with
+      | true, some star => pure (.star star)
+      | _, _ => (.list ·) <$> lowerEntitySource model group arguments
+  | _ => (.list ·) <$> lowerEntitySource model group arguments
 
 end A12Kernel.Dm

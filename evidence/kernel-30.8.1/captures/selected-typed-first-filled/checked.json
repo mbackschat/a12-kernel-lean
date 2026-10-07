@@ -1,0 +1,741 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "[redacted]",
+  "data" : {
+    "ops" : 36,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "BDirect",
+      "verb" : "computation",
+      "args" : [ "add", "BDirect.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/BDirectComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "BSelected",
+      "verb" : "computation",
+      "args" : [ "add", "BSelected.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/BSelectedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "BStar",
+      "verb" : "computation",
+      "args" : [ "add", "BStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/BStarComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "BRow",
+      "verb" : "computation",
+      "args" : [ "add", "BRow.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/BOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "BMixed",
+      "verb" : "computation",
+      "args" : [ "add", "BMixed.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/BMixedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "BSingle",
+      "verb" : "computation",
+      "args" : [ "add", "BSingle.json", "--dry-run" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARAMSIZE_INVALIDN",
+          "summary" : "[redacted]",
+          "where" : {
+            "rule" : "/Form/BSingleComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — FieldValuesNotUnique needs more than one operand: list a second field, or use one flattened repetition list (Items*/Sku), which expands to a row stream and satisfies the arity on its own; list at least two fields (or one group) — for a single field use FieldFilled/FieldNotFilled"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "DDirect",
+      "verb" : "computation",
+      "args" : [ "add", "DDirect.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/DDirectComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "DSelected",
+      "verb" : "computation",
+      "args" : [ "add", "DSelected.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/DSelectedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "DStar",
+      "verb" : "computation",
+      "args" : [ "add", "DStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/DStarComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 9,
+      "id" : "DRow",
+      "verb" : "computation",
+      "args" : [ "add", "DRow.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/DOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 10,
+      "id" : "DMixed",
+      "verb" : "computation",
+      "args" : [ "add", "DMixed.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/DMixedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 11,
+      "id" : "DSingle",
+      "verb" : "computation",
+      "args" : [ "add", "DSingle.json", "--dry-run" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARAMSIZE_INVALIDN",
+          "summary" : "[redacted]",
+          "where" : {
+            "rule" : "/Form/DSingleComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — FieldValuesNotUnique needs more than one operand: list a second field, or use one flattened repetition list (Items*/Sku), which expands to a row stream and satisfies the arity on its own; list at least two fields (or one group) — for a single field use FieldFilled/FieldNotFilled"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 12,
+      "id" : "TDirect",
+      "verb" : "computation",
+      "args" : [ "add", "TDirect.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/TDirectComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 13,
+      "id" : "TSelected",
+      "verb" : "computation",
+      "args" : [ "add", "TSelected.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/TSelectedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 14,
+      "id" : "TStar",
+      "verb" : "computation",
+      "args" : [ "add", "TStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/TStarComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 15,
+      "id" : "TRow",
+      "verb" : "computation",
+      "args" : [ "add", "TRow.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/TOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 16,
+      "id" : "TMixed",
+      "verb" : "computation",
+      "args" : [ "add", "TMixed.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/TMixedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 17,
+      "id" : "TSingle",
+      "verb" : "computation",
+      "args" : [ "add", "TSingle.json", "--dry-run" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARAMSIZE_INVALIDN",
+          "summary" : "[redacted]",
+          "where" : {
+            "rule" : "/Form/TSingleComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — FieldValuesNotUnique needs more than one operand: list a second field, or use one flattened repetition list (Items*/Sku), which expands to a row stream and satisfies the arity on its own; list at least two fields (or one group) — for a single field use FieldFilled/FieldNotFilled"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 18,
+      "id" : "SDirect",
+      "verb" : "computation",
+      "args" : [ "add", "SDirect.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/SDirectComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 19,
+      "id" : "SSelected",
+      "verb" : "computation",
+      "args" : [ "add", "SSelected.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/SSelectedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 20,
+      "id" : "SStar",
+      "verb" : "computation",
+      "args" : [ "add", "SStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/SStarComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 21,
+      "id" : "SRow",
+      "verb" : "computation",
+      "args" : [ "add", "SRow.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/SOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 22,
+      "id" : "SMixed",
+      "verb" : "computation",
+      "args" : [ "add", "SMixed.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/SMixedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 23,
+      "id" : "SSingle",
+      "verb" : "computation",
+      "args" : [ "add", "SSingle.json", "--dry-run" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARAMSIZE_INVALIDN",
+          "summary" : "[redacted]",
+          "where" : {
+            "rule" : "/Form/SSingleComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — FieldValuesNotUnique needs more than one operand: list a second field, or use one flattened repetition list (Items*/Sku), which expands to a row stream and satisfies the arity on its own; list at least two fields (or one group) — for a single field use FieldFilled/FieldNotFilled"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 24,
+      "id" : "FDirect",
+      "verb" : "computation",
+      "args" : [ "add", "FDirect.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/FDirectComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 25,
+      "id" : "FSelected",
+      "verb" : "computation",
+      "args" : [ "add", "FSelected.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/FSelectedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 26,
+      "id" : "FStar",
+      "verb" : "computation",
+      "args" : [ "add", "FStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/FStarComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 27,
+      "id" : "FRow",
+      "verb" : "computation",
+      "args" : [ "add", "FRow.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/FOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 28,
+      "id" : "FMixed",
+      "verb" : "computation",
+      "args" : [ "add", "FMixed.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/FMixedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 29,
+      "id" : "FSingle",
+      "verb" : "computation",
+      "args" : [ "add", "FSingle.json", "--dry-run" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARAMSIZE_INVALIDN",
+          "summary" : "[redacted]",
+          "where" : {
+            "rule" : "/Form/FSingleComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — FieldValuesNotUnique needs more than one operand: list a second field, or use one flattened repetition list (Items*/Sku), which expands to a row stream and satisfies the arity on its own; list at least two fields (or one group) — for a single field use FieldFilled/FieldNotFilled"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 30,
+      "id" : "RDirect",
+      "verb" : "computation",
+      "args" : [ "add", "RDirect.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/RDirectComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 31,
+      "id" : "RSelected",
+      "verb" : "computation",
+      "args" : [ "add", "RSelected.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/RSelectedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 32,
+      "id" : "RStar",
+      "verb" : "computation",
+      "args" : [ "add", "RStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/RStarComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 33,
+      "id" : "RRow",
+      "verb" : "computation",
+      "args" : [ "add", "RRow.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/ROutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 34,
+      "id" : "RMixed",
+      "verb" : "computation",
+      "args" : [ "add", "RMixed.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/RMixedComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 35,
+      "id" : "RSingle",
+      "verb" : "computation",
+      "args" : [ "add", "RSingle.json", "--dry-run" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_PARAMSIZE_INVALIDN",
+          "summary" : "[redacted]",
+          "where" : {
+            "rule" : "/Form/RSingleComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — FieldValuesNotUnique needs more than one operand: list a second field, or use one flattened repetition list (Items*/Sku), which expands to a row stream and satisfies the arity on its own; list at least two fields (or one group) — for a single field use FieldFilled/FieldNotFilled"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

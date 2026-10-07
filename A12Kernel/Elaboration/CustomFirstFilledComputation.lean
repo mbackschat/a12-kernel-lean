@@ -6,10 +6,9 @@ import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Custom `FirstFilledValue` at a fixed or a repeatable target
 
-One carrier serves both address classes over the shared first-filled site: a fixed target over a
-direct single-level star or a list of plain nonrepeatable fields, a repeatable one over a sibling star
-at every row of its scope. The list is measured at a join
-([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-extractor-join)). -/
+One carrier serves both address classes through the shared first-filled site. Selected scalar and
+lower-star lists retain the registered Custom payload contract; their Custom calibration is internal
+only. The shared source/placement owner keeps lookup dependencies separate from payload kinds. -/
 
 namespace A12Kernel
 
@@ -33,9 +32,8 @@ structure CheckedCustomFirstFilledComputation (model : FlatModel) where
   sourceCustom : site.source.declarations.all (·.customType == some customType) = true
   excludesTarget : site.referencesField site.targetField = false
 
-/-- Check the measured Custom computation shapes: a direct single-level star or a direct list at a
-fixed target, a sibling star at a repeatable one. The validated model already guarantees that every
-Custom declaration is an evaluated String field. -/
+/-- Check exact Custom declaration agreement after shared source admission. The validated model
+already guarantees that each Custom declaration is an evaluated String field. -/
 def checkCustomFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFirstFilledSource) :
@@ -93,12 +91,14 @@ def evaluateAt (operation : CheckedCustomFirstFilledComputation model)
     (target : CellAddr) (environment : Env) :
     Except FirstFilledSiteFault AddressedTokenComputationOutcome := do
   let resolved ← (operation.site.source.resolveAt input read environment).mapError .source
-  let side : ResolvedValueListSide .token := {
-    cells := resolved.cells.map fun cell => customFirstFilledCellAt cell.cell
-    hasUninstantiatedTail := resolved.hasOpenTail
-    hasHaving := false
-  }
-  pure { targetField := target, result := (evalFirstFilledToken side).asComputationResult }
+  let result := evaluateFirstFilledSource resolved TokenComputationResult.poison fun resolved =>
+    let side : ResolvedValueListSide .token := {
+      cells := resolved.cells.map fun cell => customFirstFilledCellAt cell.cell
+      hasUninstantiatedTail := resolved.hasOpenTail
+      hasHaving := false }
+    (evalFirstFilledToken side).asComputationResult
+  pure { targetField := target, result }
+
 
 /-- Run at the fixed target's single instance, or at every instantiated row of a repeatable target's
 scope with a clear at each over-limit row. -/

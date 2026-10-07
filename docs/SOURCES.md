@@ -1250,8 +1250,11 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-firstfilled-string-boolean-runtime"></a>
 - [Fixed and parent-local starred String and Boolean computation outcomes](sources/evaluation-and-application-routes.md#src-firstfilled-string-boolean-runtime)
 
+<a id="src-selected-typed-first-filled"></a>
+- [Selected first-filled](sources/evaluation-and-application-routes.md#src-selected-typed-first-filled)
+
 <a id="src-first-filled-formal-branch-four-carriers"></a>
-- [The `FirstFilledValue` formal-failure branch is the same on Boolean, DateFragment, Time and DateTime as on full Date, closing six of the seven carriers](sources/evaluation-and-application-routes.md#src-first-filled-formal-branch-four-carriers)
+- [First-filled formal failure across six carriers](sources/evaluation-and-application-routes.md#src-first-filled-formal-branch-four-carriers)
 <a id="src-number-formal-cascade-code-axis-and-load-canonicalisation"></a>
 - [The Number formal cascade's surfaced code and its message text are independent axes, and the canonical Document JSON load removes four refusals' preconditions](sources/evaluation-and-application-routes.md#src-number-formal-cascade-code-axis-and-load-canonicalisation)
 <a id="src-index-iteration-and-constant-refusal-classes"></a>

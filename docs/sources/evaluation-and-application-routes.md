@@ -32,6 +32,23 @@ Evaluation, application, and runtime-route probes. Computation scheduling and jo
 - `bytes`: retained [request](../../evidence/kernel-30.8.1/captures/firstfilled-string-boolean-runtime/request.json), SHA-256 `4b81ac290ce8be1b7b7e38e07c8399d9f6a649721e751c103127f0c895fcdc21`; [artifact](../../evidence/kernel-30.8.1/captures/firstfilled-string-boolean-runtime/artifact.json), SHA-256 `ee327bf7f6351b69ab066bfcbb3440ec3a3afa57e9fb2e01ba4b4f8a38bb9423`. Authored Kernel message prose is redacted only at `message` and `summary` values before pinning; codes, values, flags, and addresses are retained.
 - `sync`: no canonical correction and no outbound request. The ordered scan and result clauses in [§7](../../spec/07-repetition-and-iteration.md) and [§9](../../spec/09-computations.md) already carry this account; the new evidence closes only the measured projections above.
 
+<a id="src-selected-typed-first-filled"></a>
+#### Selected typed first-filled sources share ordered computation selection, measured locally 2026-10-07
+
+- `revision`: a12-dmkits `6bc5e75337a6b2caea5b563e26d346cf53e163c8`, dmtool 0.13.0, Kernel 30.8.1 built/runtime, producer `CLEAN`. Primary and measurement checkouts were clean before and after. Both engines agree on all ten rows.
+- `source`: Kernel source `cb66e51fa7ab90b650698f861bf670754e2e1e66`, `kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/core/RuntimeController.java` (`combineFeldListe`) and sibling `FirstValueCombiner.java` (first-value termination).
+- `mechanism`: Kernel `RuntimeController.combineFeldListe` traverses authored entities in order; `FirstValueCombiner` stops at the first filled or unavailable entry. Those source reads settle traversal, while the matrix below measures authorability and returned values. No source expression is transcribed.
+- `admission`: Boolean, full Date, Time, DateTime, month DateFragment and full DateRange each admit selected scalar plus fallback, selected lower star, row-target selected plus fixed fallback, and row-local plus selected scalar. Each refuses a sole selected scalar with `MVK_PARAMSIZE_INVALIDN`: thirty admissions and six arity refusals.
+- `runtime`: all six carriers select either keyed row, treat Boolean false as filled, continue after missing/empty keys or empty selected cells, and stop at malformed selected cells. Missing keys or empty selected lower stars clear seeded targets. A malformed suffix does not replace the first value, but remains in the eager formal-input inventory.
+- `ordering`: duplicate keys poison reached scalar/star selections. Row-local filled values bypass that later selection independently for each target row. Lower-star scans skip empty prefixes, stop at reached malformed cells and exclude over-capacity-only values.
+- `limits`: the over-capacity row retains both engines' validation/computation observations, but `computeResults` faults during document serialization. It supplies no successful applied-document claim. Custom, filters, selected groups, wider temporal formats and independent consumer qualification are outside this capture.
+- `request`: [request](../../evidence/kernel-30.8.1/captures/selected-typed-first-filled/request.json), SHA-256 `211063d24bba2d28661854c13d464a435b3a5774ae4da0a70134f614dd0847f7`.
+- `model`: [model](../../evidence/kernel-30.8.1/captures/selected-typed-first-filled/SelectedFirstFilled_DM.json), SHA-256 `7c0c8209b0f1179a4f5ba1daa05e32bda1d3f66a195127a0873085ae0a7b8c30`.
+- `artifact`: [runtime artifact](../../evidence/kernel-30.8.1/captures/selected-typed-first-filled/artifact.json), SHA-256 `4b16981834a90398a4ab4efe3005fca8cb76b2a9821ef5c4ce2d38549bd291d0`.
+- `static`: [checks](../../evidence/kernel-30.8.1/captures/selected-typed-first-filled/checked.json), SHA-256 `15f84a339d378fb07482300a95da907d3939341150ac20b40815526b378fb8cd`; [authored computations](../../evidence/kernel-30.8.1/captures/selected-typed-first-filled/computations.json), SHA-256 `d07b294f20a357e2b392e08846f171c11281943ab9803496b8ac78dbbac15635`.
+- `normalization`: catalog `message` and `summary` string values are redacted before hashing; static scratch-directory prefixes are removed. Remaining bytes are preserved.
+- `sync`: existing ordered first-filled and selected-source clauses in [spec/07](../../spec/07-repetition-and-iteration.md), [spec/08](../../spec/08-paths-and-references.md) and [spec/09](../../spec/09-computations.md) already own these semantics; no canonical correction or outbound request.
+
 <a id="src-first-filled-formal-branch-four-carriers"></a>
 #### The `FirstFilledValue` formal-failure branch is the same on Boolean, DateFragment, Time and DateTime as on full Date, measured locally 2026-09-07
 

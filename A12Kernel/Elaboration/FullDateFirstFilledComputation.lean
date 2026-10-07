@@ -5,9 +5,8 @@ import A12Kernel.Elaboration.TemporalTargetPolicy
 
 /-! # Full-Date `FirstFilledValue` at a fixed or a repeatable target
 
-One carrier serves both address classes over the shared temporal site: a fixed target over a direct
-star or a list of plain fields, a repeatable one over a sibling single-axis star at every row of its
-scope. Source and target share one exact full-Date spelling, ISO or dotted, and the target policy
+One carrier serves both address classes through the shared temporal site, including target-bound
+selected scalar and lower-star lists. `FirstFilledPlacement` owns admission and reached-source order. Source and target share one exact full-Date spelling, ISO or dotted, and the target policy
 renders and classifies the selected Date.
 -/
 
@@ -100,7 +99,7 @@ def evaluateAt (operation : CheckedFullDateFirstFilledComputation model)
     Except FullDateFirstFilledComputationFault FullDateFirstFilledComputationOutcome := do
   let resolved ← (operation.shape.site.source.resolveAt input read environment).mapError
     (.site ∘ .source)
-  let outcome ← (operation.targetPolicy.evaluate (evalFullDateFirstFilledCells resolved.cells)).mapError
+  let outcome ← (operation.targetPolicy.evaluate (evaluateFirstFilledSource resolved .poison (fun resolved => evalFullDateFirstFilledCells resolved.cells))).mapError
     .target
   pure { targetField := target, outcome }
 
