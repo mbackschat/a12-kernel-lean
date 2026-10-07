@@ -1,6 +1,12 @@
-import A12Kernel.Semantics.Correlation
+import A12Kernel.Elaboration.CorrelationWellFormed
 
 namespace A12Kernel.Conformance.HavingDateValidity
+
+local instance [DecidableEq ε] [DecidableEq α] : DecidableEq (Except ε α)
+  | .ok a, .ok b => decidable_of_iff (a = b) (by simp)
+  | .error a, .error b => decidable_of_iff (a = b) (by simp)
+  | .ok _, .error _ => isFalse (by intro h; cases h)
+  | .error _, .ok _ => isFalse (by intro h; cases h)
 
 private def observed (value : Except CorrelationRuntimeFault α) : Sum CorrelationRuntimeFault α :=
   match value with | .ok result => .inr result | .error error => .inl error
@@ -65,5 +71,71 @@ private def split (century : Int) : HavingDateComponents := { source with
   year := .centuryAndShortYear (.inner, .constant century) (.outer, .constant 24) }
 example : observed ((split 0).evalComputationRead .invalid (context (number 1)).asResolving frame) = .inr .holds ∧
     observed ((split 20).evalComputationRead .invalid (context (number 1)).asResolving frame) = .inr .notTrue := by native_decide
+
+private def dateExpression (components : HavingDateComponents := source) : HavingTemporalExpression := {
+  core := .atom (.dateConstruction components), profile := components.profile, baseYear := none }
+private def yearPart : HavingNumericAtom := .temporalExpressionPart (.date .year) dateExpression
+
+example : observed (dateExpression.evaluate .validation (context (number 30)).asResolving frame) =
+      .inr (.value .noValue true) ∧
+    observed (dateExpression.evaluate .validation (context emptyCell).asResolving frame) =
+      .inr (.value .noValue false) ∧
+    observed (yearPart.readValidationResolving (context (number 30)).asResolving frame) =
+      .inr (.ok (.value 0 .fixed)) ∧
+    observed (yearPart.readValidationResolving (context emptyCell).asResolving frame) =
+      .inr (.ok (.value 0 .both)) ∧
+    observed (yearPart.readComputationResolving (context (number 30)).asResolving frame) = .inr (.value 0) ∧
+    observed (yearPart.readComputationResolving (context invalid).asResolving frame) = .inr (.poison .malformed) := by native_decide
+
+private def required : CheckedCell := { emptyCell with findings := [.required] }
+example : observed (dateExpression.evaluate .validation (context required).asResolving frame) =
+      .inr (.unknown .required) ∧
+    observed (dateExpression.evaluate .computation (context required).asResolving frame) =
+      .inr (.value .noValue false) ∧
+    observed ((dateExpression conversion).evaluate .validation conversionContext.asResolving frame) = .inl .valueFailure ∧
+    observed ((dateExpression conversion).evaluate .computation conversionContext.asResolving frame) = .inr (.unknown .malformed) ∧
+    observed ((dateExpression conversion).evaluate .computation
+      ({ conversionContext with read := fun env id => if id == 1 then emptyCell else conversionContext.read env id }).asResolving frame) =
+      .inl .valueFailure ∧
+    observed ((dateExpression missingClock).evaluate .validation (context invalid).asResolving frame) = .inl .worldUnavailable ∧
+    observed ((dateExpression missingClock).evaluate .computation (context invalid).asResolving frame) = .inr (.unknown .malformed) := by native_decide
+
+example : observed (dateExpression.evaluate .computation (context (number 29)).asResolving frame) =
+      .inr (.value (.date {
+        instant := { epochMillis := 1709164800000 }
+        parts := { year := 2024, month := 2, day := 29 }, basis := .legacyHybrid }) true) ∧
+    observed ((dateExpression { source with profile := .europeBerlin }).evaluate .computation (context (number 29)).asResolving frame) =
+      .inr (.value (.date {
+        instant := { epochMillis := 1709161200000 }
+        parts := { year := 2024, month := 2, day := 29 }, basis := .legacyHybrid }) true) ∧
+    observed ((dateExpression collapsedOrigin).evaluate .computation (context (number 29)).asResolving frame) =
+      .inr (.value .noValue true) ∧
+    yearPart.fieldOrigins = [(.inner, 1), (.inner, 2), (.outer, 3)] := by native_decide
+
+private def valueComparison : CorrelatedHaving := .leaf (.temporalExpression {
+  operator := .equal, left := dateExpression
+  right := { core := .atom .today, profile := .utc, baseYear := none } })
+example : valueComparison.fieldIds = [1, 2, 3] ∧ valueComparison.markedFieldIds = [3] := by native_decide
+
+private def model : FlatModel := {
+  fields := [(1, "Day", 31), (2, "Month", 12), (3, "Year", 9999)].map fun (id, name, maximum) => {
+    id, name, groupPath := ["Rows"], repeatableScope := [10]
+    policy := { kind := .number { scale := 0, signed := false } }
+    numericTargetConstraints := { maximum := some maximum } }
+  repeatableGroups := [{ level := 10, path := ["Rows"], repeatability := some 2 }] }
+private def constants : HavingDateComponents := {
+  day := (.inner, .constant 29), month := (.inner, .constant 2)
+  year := .complete (.inner, .constant 2024), profile := .utc }
+example : dateExpression.wellFormed model [10] [10] = true ∧
+    dateExpression.wellFormed model [10] [] = false ∧
+    dateExpression.wellFormed model [] [10] = false ∧
+    (dateExpression { source with month := source.day }).wellFormed model [10] [10] = false ∧
+    (dateExpression { source with day := (.inner, .numberField { id := 1, info := { scale := 1, signed := false } }) }).wellFormed model [10] [10] = false ∧
+    (dateExpression { source with profile := .europeBerlin }).wellFormed model [10] [10] = false ∧
+    ({ dateExpression with core := .atom (.dateConstruction { source with profile := .europeBerlin }) }).wellFormed model [10] [10] = false ∧
+    (dateExpression constants).wellFormed model [] [] = true ∧
+    constants.wellFormedForEnvironments model [] [] = false ∧
+    (dateExpression { constants with day := (.inner, .constant 32) }).wellFormed model [] [] = false ∧
+    (dateExpression { source with year := .baseYear 2024 }).wellFormed model [10] [10] = false := by native_decide
 
 end A12Kernel.Conformance.HavingDateValidity

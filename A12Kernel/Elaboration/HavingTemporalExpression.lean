@@ -1,14 +1,17 @@
-import A12Kernel.Elaboration.CorrelationSurface
+import A12Kernel.Elaboration.HavingDateValidity
 import A12Kernel.Elaboration.DateRangeBound
 
 namespace A12Kernel
 
 def HavingTemporalExpressionRef.matchesModel (reference : HavingTemporalExpressionRef) (model : FlatModel) : Bool :=
   match reference.source with
-  | .inl field => (model.lookupUniqueId field.id).toOption.any fun declaration =>
-      declaration.toTemporalField? == some field && declaration.fieldValueReadRefusal?.isNone &&
-        !(declaration.toTemporalTargetPolicy?.any (·.partialMode != .full))
-  | .inr (field, components) => (model.dateRangeSourceProfile field).any fun (_, _, format) =>
+  | .temporal field => (model.lookupUniqueId field.id).toOption.any fun declaration =>
+      declaration.toTemporalField? == some field
+  | .number field => (model.lookupUniqueId field.id).toOption.any fun declaration =>
+      declaration.toNumberField? == some field
+  | .string field => (model.lookupUniqueId field.id).toOption.any fun declaration =>
+      declaration.toStringValueField? == some field
+  | .range field components => (model.dateRangeSourceProfile field).any fun (_, _, format) =>
       format.components == components
 
 namespace HavingTemporalExpression
@@ -20,6 +23,9 @@ def wellFormed (source : HavingTemporalExpression) (model : FlatModel)
       reference.matchesModel model && (model.lookupUniqueId reference.fieldId).toOption.any fun declaration =>
         declaration.repeatableScope.isPrefixOf (reference.origin.availableLevels candidateLevels outerLevels)) &&
     source.core.atoms.all fun
+      | .field reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
+          declaration.fieldValueReadRefusal?.isNone && !(declaration.toTemporalTargetPolicy?.any (·.partialMode != .full))
+      | .dateConstruction components => components.wellFormedForEnvironments model candidateLevels outerLevels false
       | .dateLiteral value false =>
           let authored : AuthoredDateLiteral := { year := none, month := value.civil.parts.month, day := value.civil.parts.day }
           ((authored.completedDate? model).bind FullDate.ofCivil?) == some value
@@ -27,14 +33,20 @@ def wellFormed (source : HavingTemporalExpression) (model : FlatModel)
       | _ => true
 
 private def resolveCore (model : FlatModel)
-    (resolve : SurfaceHavingTemporalRef → Except CorrelationElabError HavingTemporalRef)
-    (resolveRange : SurfaceHavingTemporalRef → Except CorrelationElabError (FlatDateRangeField × TemporalComponents)) :
+    (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl) :
     SurfaceHavingTemporalExpression → Except CorrelationElabError
       (TemporalExpressionOf HavingTemporalAtom ScalarTemporalConstructorOp)
-  | .field reference => (fun reference => .atom (.field reference)) <$> resolve reference
+  | .field reference => do
+      let declaration ← resolve { origin := reference.origin, field := reference.field }
+      let some field := declaration.toTemporalField? | throw .numericExpressionUnsupported
+      pure (.atom (.field { origin := reference.origin, field }))
   | .rangeBound reference bound => do
-      let (field, components) ← resolveRange reference
-      pure (.atom (.rangeBound reference.origin field components bound))
+      let declaration ← resolve { origin := reference.origin, field := reference.field }
+      let field : FlatDateRangeField := { id := declaration.id }
+      let some (_, _, format) := model.dateRangeSourceProfile field | throw .numericExpressionUnsupported
+      pure (.atom (.rangeBound reference.origin field format.components bound))
+  | .dateConstruction components => do
+      pure (.atom (.dateConstruction (← elaborateHavingDateComponents model resolve components false)))
   | .dateLiteral authored => do
       let some value := (authored.completedDate? model).bind FullDate.ofCivil? | throw .numericExpressionUnsupported
       pure (.atom (.dateLiteral value authored.year.isSome))
@@ -46,20 +58,19 @@ private def resolveCore (model : FlatModel)
       if model.hasBaseYear then pure (.atom (.baseYearBound bound)) else throw .numericExpressionUnsupported
   | .grouped _ => throw .numericExpressionUnsupported
   | .dateTime date time => do
-      pure (.apply .dateTime (← resolveCore model resolve resolveRange date) [← resolveCore model resolve resolveRange time])
-  | .dateFromDateTime source => do pure (.apply .dateFromDateTime (← resolveCore model resolve resolveRange source) [])
-  | .timeFromDateTime source => do pure (.apply .timeFromDateTime (← resolveCore model resolve resolveRange source) [])
+      pure (.apply .dateTime (← resolveCore model resolve date) [← resolveCore model resolve time])
+  | .dateFromDateTime source => do pure (.apply .dateFromDateTime (← resolveCore model resolve source) [])
+  | .timeFromDateTime source => do pure (.apply .timeFromDateTime (← resolveCore model resolve source) [])
 
 def elaborate (model : FlatModel)
-    (resolve : SurfaceHavingTemporalRef → Except CorrelationElabError HavingTemporalRef)
-    (resolveRange : SurfaceHavingTemporalRef → Except CorrelationElabError (FlatDateRangeField × TemporalComponents))
+    (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl)
     (source : SurfaceHavingTemporalExpression) : Except CorrelationElabError HavingTemporalExpression := do
   let some profile := ModelZone.ConcreteProfile.ofId? model.timeZoneId | throw .numericExpressionUnsupported
   let rec strip : SurfaceHavingTemporalExpression → SurfaceHavingTemporalExpression
     | .grouped source => strip source
     | source => source
   let grouped := match source with | .grouped _ => true | _ => false
-  let core ← resolveCore model resolve resolveRange (strip source)
+  let core ← resolveCore model resolve (strip source)
   let result : HavingTemporalExpression := { core, profile, baseYear := model.baseYear, grouped }
   if result.components?.isNone then throw .numericExpressionUnsupported
   pure result

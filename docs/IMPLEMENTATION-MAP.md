@@ -307,6 +307,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-having-group-predicates"></a>
 - [Group predicates in correlated filters](implementation/repetition-and-paths.md#cap-having-group-predicates)
 
+<a id="cap-having-date-values"></a>
+- [Positional Date values inside Having](implementation/repetition-and-paths.md#cap-having-date-values)
+
 <a id="cap-having-date-validity"></a>
 - [Direct constructed-Date validity in correlated filters](implementation/repetition-and-paths.md#cap-having-date-validity)
 

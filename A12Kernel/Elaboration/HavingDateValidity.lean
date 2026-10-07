@@ -6,7 +6,7 @@ namespace A12Kernel
 uses its own environment; candidate availability remains the enclosing filter's final gate. -/
 def elaborateHavingDateComponents (model : FlatModel)
     (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl)
-    (source : SurfaceHavingDateComponents) : Except CorrelationElabError HavingDateComponents := do
+    (source : SurfaceHavingDateComponents) (requireEntity : Bool := true) : Except CorrelationElabError HavingDateComponents := do
   let some profile := ModelZone.ConcreteProfile.ofId? model.timeZoneId |
     throw (.dateComponents (.unsupportedZone model.timeZoneId))
   let component (position : ConstructedDateComponentPosition) (source : SurfaceHavingDateComponent) := do
@@ -38,7 +38,7 @@ def elaborateHavingDateComponents (model : FlatModel)
         | none => throw (.dateComponents .missingBaseYear)
     | .centuryAndShortYear century shortYear => do
         pure (.centuryAndShortYear (← component .century century) (← component .shortYear shortYear))
-  if !source.sources.any (fun | .field _ => true | _ => false) then
+  if requireEntity && !source.sources.any (fun | .field _ => true | _ => false) then
     throw (.dateComponents .onlyConstantsUsed)
   pure { day, month, year, profile }
 
@@ -60,12 +60,12 @@ private def componentWellFormed (model : FlatModel) (position : ConstructedDateC
       ModelZone.ConcreteProfile.ofId? zone == some profile && position.extractor? == some part
 
 def HavingDateComponents.wellFormedForEnvironments (source : HavingDateComponents) (model : FlatModel)
-    (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
+    (candidateLevels outerLevels : List RepeatableLevel) (requireEntity : Bool := true) : Bool :=
   let component (position : ConstructedDateComponentPosition) (operand : HavingOrigin × ResolvedConstructedDateSource) :=
     componentWellFormed model position (operand.1.availableLevels candidateLevels outerLevels) operand.2
   ModelZone.ConcreteProfile.ofId? model.timeZoneId == some source.profile &&
-    source.sources.any (fun (_, operand) => match operand with
-      | .numberField _ | .stringField _ | .dateYearField _ => true | _ => false) &&
+    (!requireEntity || source.sources.any (fun (_, operand) => match operand with
+      | .numberField _ | .stringField _ | .dateYearField _ => true | _ => false)) &&
     component .day source.day && component .month source.month && match source.year with
       | .complete year => component .year year
       | .baseYear year => model.baseYear == some year

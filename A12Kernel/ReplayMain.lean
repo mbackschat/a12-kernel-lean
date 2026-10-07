@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.HavingDateValidityLocks
+import A12Kernel.Reference.Dm.HavingDateConstructionLocks
 import A12Kernel.Reference.Dm.HavingUniquenessLocks
 import A12Kernel.Reference.Dm.HavingFieldFillLocks
 import A12Kernel.Reference.Dm.HavingMembershipExtentLocks

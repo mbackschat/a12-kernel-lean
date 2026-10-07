@@ -42,10 +42,32 @@ structure SurfaceHavingTemporalRef where
   field : SurfaceFieldPath
   deriving Repr, DecidableEq
 
+inductive SurfaceHavingDateComponent where
+  | field (reference : SurfaceHavingPresenceRef)
+  | constant (source : String)
+  | extractor (part : DateNumericPart) (reference : SurfaceHavingPresenceRef)
+  | baseYearExtractor (source : BaseYearDateSource) (part : DateNumericPart)
+  | clockExtractor (point : ConstructedDatePointInTime) (part : DateNumericPart)
+  deriving Repr, DecidableEq
+
+abbrev SurfaceHavingDateComponents := SurfaceConstructedDateComponents SurfaceHavingDateComponent
+
+def SurfaceHavingDateComponents.sources (source : SurfaceHavingDateComponents) : List SurfaceHavingDateComponent :=
+  [source.day, source.month] ++ match source.year with
+    | .complete year => [year]
+    | .baseYear => []
+    | .centuryAndShortYear century shortYear => [century, shortYear]
+
+def SurfaceHavingDateComponents.references (source : SurfaceHavingDateComponents) : List SurfaceHavingPresenceRef :=
+  source.sources.filterMap fun
+    | .field reference | .extractor _ reference => some reference
+    | _ => none
+
 /-- Constructor operands retain an origin at every field, including mixed captured/candidate reads. -/
 inductive SurfaceHavingTemporalExpression where
   | field (reference : SurfaceHavingTemporalRef)
   | rangeBound (reference : SurfaceHavingTemporalRef) (bound : DateRangeBound)
+  | dateConstruction (components : SurfaceHavingDateComponents)
   | dateLiteral (source : AuthoredDateLiteral)
   | timeLiteral (value : TimeOfDay)
   | dateTimeLiteral (value : LocalDateTime)
@@ -60,6 +82,7 @@ inductive SurfaceHavingTemporalExpression where
 
 def SurfaceHavingTemporalExpression.fields : SurfaceHavingTemporalExpression → List SurfaceHavingTemporalRef
   | .field reference | .rangeBound reference _ => [reference]
+  | .dateConstruction components => components.references.map fun ref => { origin := ref.origin, field := ref.field }
   | .grouped source | .dateFromDateTime source | .timeFromDateTime source => source.fields
   | .dateTime date time => date.fields ++ time.fields
   | _ => []
@@ -95,27 +118,6 @@ def SurfaceHavingTemporalOperand.fields : SurfaceHavingTemporalOperand → List 
   | .field reference => [reference]
   | .grouped source => source.fields
   | _ => []
-
-inductive SurfaceHavingDateComponent where
-  | field (reference : SurfaceHavingPresenceRef)
-  | constant (source : String)
-  | extractor (part : DateNumericPart) (reference : SurfaceHavingPresenceRef)
-  | baseYearExtractor (source : BaseYearDateSource) (part : DateNumericPart)
-  | clockExtractor (point : ConstructedDatePointInTime) (part : DateNumericPart)
-  deriving Repr, DecidableEq
-
-abbrev SurfaceHavingDateComponents := SurfaceConstructedDateComponents SurfaceHavingDateComponent
-
-def SurfaceHavingDateComponents.sources (source : SurfaceHavingDateComponents) : List SurfaceHavingDateComponent :=
-  [source.day, source.month] ++ match source.year with
-    | .complete year => [year]
-    | .baseYear => []
-    | .centuryAndShortYear century shortYear => [century, shortYear]
-
-def SurfaceHavingDateComponents.references (source : SurfaceHavingDateComponents) : List SurfaceHavingPresenceRef :=
-  source.sources.filterMap fun
-    | .field reference | .extractor _ reference => some reference
-    | _ => none
 
 inductive SurfaceCorrelatedHaving where
   | compareBoolean (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : Bool)

@@ -15,8 +15,40 @@ def Expr.havingTemporalConstructor : Expr → Bool
   | .braces source => source.havingTemporalConstructor
   | .call "StartOfDateRange" [.mk (.constant "BaseYear") none none] none none
   | .call "EndOfDateRange" [.mk (.constant "BaseYear") none none] none none => false
-  | .call name _ _ _ => ["DateTime", "DateFromDateTime", "TimeFromDateTime", "StartOfDateRange", "EndOfDateRange"].contains name
+  | .call name _ _ _ => ["Date", "DateTime", "DateFromDateTime", "TimeFromDateTime", "StartOfDateRange", "EndOfDateRange"].contains name
   | _ => false
+
+private def lowerHavingDateComponent : Expr → Lowering SurfaceHavingDateComponent
+  | .string text => pure (.constant text)
+  | .entity { path, index := none, category := none } => do
+      let some (origin, field) := path.havingField? | refuse "Date" "component path"
+      pure (.field { origin, field })
+  | .call name [.mk operand none none] none none => do
+      let some part := datePart? name | refuse "Date" "component extractor"
+      match operand with
+      | .constant "BaseYear" => pure (.baseYearExtractor .direct part)
+      | .constant "Today" => pure (.clockExtractor .today part)
+      | .constant "Now" => pure (.clockExtractor .now part)
+      | .call bound [.mk (.constant "BaseYear") none none] none none =>
+          match bound with
+          | "StartOfDateRange" => pure (.baseYearExtractor (.range .start) part)
+          | "EndOfDateRange" => pure (.baseYearExtractor (.range .finish) part)
+          | _ => refuse "Date" "Base Year endpoint"
+      | .entity { path, index := none, category := none } => do
+          let some (origin, field) := path.havingField? | refuse "Date" "extractor path"
+          pure (.extractor part { origin, field })
+      | _ => refuse "Date" "direct extractor operand"
+  | _ => refuse "Date" "direct component"
+
+def lowerHavingDateComponents (arguments : List Argument) : Lowering SurfaceHavingDateComponents := do
+  let components ← arguments.mapM fun
+    | .mk expression none none => lowerHavingDateComponent expression
+    | _ => refuse "Date" "component modifier"
+  match components with
+  | [day, month] => pure { day, month, year := .baseYear }
+  | [day, month, year] => pure { day, month, year := .complete year }
+  | [day, month, century, shortYear] => pure { day, month, year := .centuryAndShortYear century shortYear }
+  | _ => refuse "Date" "component arity"
 
 /-- Source slots use unbracketed entities and reject grouping, like ordinary temporal lowering
 (spec/12 §3). Every field keeps its own captured/candidate origin. -/
@@ -32,6 +64,7 @@ def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowering Surfac
   | .braces source => do
       if sourceSlot then refuse "Having" "grouped temporal source"
       .grouped <$> lowerHavingTemporalExpression false source
+  | .call "Date" arguments none none => .dateConstruction <$> lowerHavingDateComponents arguments
   | .call "DateTime" [.mk date none none, .mk time none none] none none => do
       pure (.dateTime (← lowerHavingTemporalExpression true date) (← lowerHavingTemporalExpression true time))
   | .call "DateFromDateTime" [.mk source none none] none none =>

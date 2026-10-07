@@ -56,7 +56,8 @@ theorem checkedConstructedDateComponents_evaluateValue_real
   unfold CheckedConstructedDateComponents.evaluateComponents at observed
   rw [observed]
   simp only [bind, Except.bind, CheckedConstructedDateComponents.finishValue]
-  rw [resolved]
+  have h := Except.ok.inj resolved
+  simp only [ResolvedConstructedDateComponents.finishValue, h]
   rfl
 
 /-- A checked Base-Year extraction delegates to its configured direct or range-selected Date source and cannot consult document state. -/

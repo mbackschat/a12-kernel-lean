@@ -175,38 +175,6 @@ private def lowerHavingNumericField (source : Expr) : Lowering SurfaceHavingNume
   lowerHavingNumericAtom (.value reference)
 
 
-private def lowerHavingDateComponent : Expr → Lowering SurfaceHavingDateComponent
-  | .string text => pure (.constant text)
-  | .entity { path, index := none, category := none } => do
-      let some (origin, field) := path.havingField? | refuse "Date" "component path"
-      pure (.field { origin, field })
-  | .call name [.mk operand none none] none none => do
-      let some part := datePart? name | refuse "Date" "component extractor"
-      match operand with
-      | .constant "BaseYear" => pure (.baseYearExtractor .direct part)
-      | .constant "Today" => pure (.clockExtractor .today part)
-      | .constant "Now" => pure (.clockExtractor .now part)
-      | .call bound [.mk (.constant "BaseYear") none none] none none =>
-          match bound with
-          | "StartOfDateRange" => pure (.baseYearExtractor (.range .start) part)
-          | "EndOfDateRange" => pure (.baseYearExtractor (.range .finish) part)
-          | _ => refuse "Date" "Base Year endpoint"
-      | .entity { path, index := none, category := none } => do
-          let some (origin, field) := path.havingField? | refuse "Date" "extractor path"
-          pure (.extractor part { origin, field })
-      | _ => refuse "Date" "direct extractor operand"
-  | _ => refuse "Date" "direct component"
-
-private def lowerHavingDateComponents (arguments : List Argument) : Lowering SurfaceHavingDateComponents := do
-  let components ← arguments.mapM fun
-    | .mk expression none none => lowerHavingDateComponent expression
-    | _ => refuse "Date" "component modifier"
-  match components with
-  | [day, month] => pure { day, month, year := .baseYear }
-  | [day, month, year] => pure { day, month, year := .complete year }
-  | [day, month, century, shortYear] => pure { day, month, year := .centuryAndShortYear century shortYear }
-  | _ => refuse "Date" "component arity"
-
 /-- A filter comparison uses the shared numeric expression reader over correlated field and
 repetition atoms. Typed field pairs, Boolean/text literals and presence retain their operand domains. -/
 partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving

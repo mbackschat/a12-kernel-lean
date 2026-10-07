@@ -263,16 +263,9 @@ def evaluate (checked : CheckedConstructedDateComponents model)
 /-- Finish one constructed observation at the shared exact value boundary. A real local
     label is resolved exactly once here; later comparison, shift, and difference
     consumers receive that retained instant rather than resolving `parts` again. -/
-def finishValue (checked : CheckedConstructedDateComponents model Source) :
-    ConstructedDateObservation → Except ConstructedDateEvaluationFault ConstructedDateValue
-  | .unavailable cause => pure (.unavailable cause)
-  | .resolved (.real parts) => do
-      match ← checked.resolveFreshInstant parts with
-      | some instant => pure (.value instant parts false)
-      | none => pure (.noValue false)
-  | .resolved .incomplete => pure (.noValue true)
-  | .resolved .unreal => pure (.noValue false)
-  | .resolved .unknown => pure (.unavailable .malformed)
+def finishValue (checked : CheckedConstructedDateComponents model Source)
+    (observation : ConstructedDateObservation) : Except ConstructedDateEvaluationFault ConstructedDateValue :=
+  pure (checked.resolved.finishValue observation)
 
 def evaluateValueWith (checked : CheckedConstructedDateComponents model Source)
     (readSource : Source → Except ConstructedDateEvaluationFault CheckedConstructedDateComponent)

@@ -1,21 +1,33 @@
-import A12Kernel.Semantics.CorrelationContext
+import A12Kernel.Semantics.HavingDateValidity
 import A12Kernel.Semantics.ScalarTemporalValue
 import A12Kernel.Semantics.TemporalExpression
 
 namespace A12Kernel
 
+inductive HavingTemporalReadSource where
+  | temporal (field : FlatTemporalField)
+  | range (field : FlatDateRangeField) (components : TemporalComponents)
+  | number (field : FlatNumberField)
+  | string (field : FlatStringField)
+  deriving Repr, DecidableEq
+
 /-- Each temporal-tree read retains its declared carrier as well as its capture origin. -/
 structure HavingTemporalExpressionRef where
   origin : HavingOrigin
-  source : Sum FlatTemporalField (FlatDateRangeField × TemporalComponents)
+  source : HavingTemporalReadSource
   deriving Repr, DecidableEq
 
 def HavingTemporalExpressionRef.fieldId (reference : HavingTemporalExpressionRef) : FieldId :=
-  match reference.source with | .inl field => field.id | .inr (field, _) => field.id
+  match reference.source with
+  | .temporal field => field.id
+  | .range field _ => field.id
+  | .number field => field.id
+  | .string field => field.id
 
 inductive HavingTemporalAtom where
   | field (reference : HavingTemporalRef)
   | rangeBound (origin : HavingOrigin) (source : FlatDateRangeField) (components : TemporalComponents) (bound : DateRangeBound)
+  | dateConstruction (components : HavingDateComponents)
   | dateLiteral (value : FullDate) (yearPresent : Bool)
   | timeLiteral (value : TimeOfDay)
   | dateTimeLiteral (value : LocalDateTime)
@@ -34,10 +46,16 @@ structure HavingTemporalExpression where
 namespace HavingTemporalExpression
 
 def references (source : HavingTemporalExpression) : List HavingTemporalExpressionRef :=
-  source.core.atoms.filterMap fun
-    | .field reference => some { origin := reference.origin, source := .inl reference.field }
-    | .rangeBound origin field components _ => some { origin, source := .inr (field, components) }
-    | _ => none
+  source.core.atoms.flatMap fun
+    | .field reference => [{ origin := reference.origin, source := .temporal reference.field }]
+    | .rangeBound origin field components _ => [{ origin, source := .range field components }]
+    | .dateConstruction components => components.sources.filterMap fun (origin, component) =>
+        match component with
+        | .numberField field => some { origin, source := .number field }
+        | .stringField field => some { origin, source := .string field }
+        | .dateYearField field | .extractor field _ _ => some { origin, source := .temporal field }
+        | _ => none
+    | _ => []
 
 def componentsWith (baseYear : Option Int) :
     TemporalExpressionOf HavingTemporalAtom ScalarTemporalConstructorOp → Option TemporalComponents
@@ -48,7 +66,7 @@ def componentsWith (baseYear : Option Int) :
       | .dateLiteral _ yearPresent => some ({ TemporalComponents.fullDate with year := yearPresent }.withBaseYear baseYear.isSome)
       | .timeLiteral _ => some TemporalComponents.time
       | .dateTimeLiteral _ | .now => some TemporalComponents.now
-      | .today | .baseYearBound _ => some TemporalComponents.fullDate
+      | .today | .baseYearBound _ | .dateConstruction _ => some TemporalComponents.fullDate
   | .apply .dateTime date [time] => do
       let date ← componentsWith baseYear date
       let time ← componentsWith baseYear time
@@ -76,6 +94,8 @@ private def readAtom (source : HavingTemporalExpression) (phase : Phase)
       let cell ← context.read (frame.envAt origin) field.id
       (projectScalarRangeBoundObservation source.profile (!components.year && source.baseYear.isNone)
         bound (observeCell phase cell)).mapError fun _ => context.unsupportedDateCalendar
+  | .dateConstruction components => do
+      pure (components.finishValue (← components.observe phase context frame)).asScalarTemporalOperand
   | .timeLiteral value => pure (.value (.time value) true)
   | .dateTimeLiteral value => do
       let some instant := source.profile.resolveLocal? value | throw context.temporalValueFailure

@@ -29,8 +29,8 @@ private def joined := source (.apply .dateTime date.core
 private def base : ResolvingCorrelationContext CorrelationRuntimeFault :=
   ({ read := fun env _ => stamp (if env == frame.innerEnv then 0 else 3600000) } : CorrelationContext).asResolving
 
-example : joined.references = [{ origin := .inner, source := .inl ref.field },
-      { origin := .outer, source := .inl (ref 1 .outer).field }] ∧
+example : joined.references = [{ origin := .inner, source := .temporal ref.field },
+      { origin := .outer, source := .temporal (ref 1 .outer).field }] ∧
     joined.evaluate .validation base frame = .ok (.value (.instant { epochMillis := 3600000 }) true) ∧
     joined.evaluate .computation base frame = .ok (.value (.instant { epochMillis := 3600000 }) true) ∧
     (HavingNumericAtom.temporalExpressionPart (.time .hour) joined).fieldOrigins = [(.inner, 1), (.outer, 1)] := by native_decide

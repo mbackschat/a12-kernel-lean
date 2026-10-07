@@ -334,4 +334,16 @@ def ResolvedConstructedDateComponents.applyProfileReality (checked : ResolvedCon
   | .resolved (.real parts) => if (checked.resolveFreshInstant parts).isSome then .resolved (.real parts) else .resolved .unreal
   | observation => observation
 
+/-- Preserve incomplete versus unreal provenance when turning a constructed label into a Date
+value; the selected instant is resolved once for all consumers (spec/05 §3). -/
+def ResolvedConstructedDateComponents.finishValue (checked : ResolvedConstructedDateComponents Source) :
+    ConstructedDateObservation → ConstructedDateValue
+  | .unavailable cause => .unavailable cause
+  | .resolved (.real parts) => match checked.resolveFreshInstant parts with
+      | some instant => .value instant parts false
+      | none => .noValue false
+  | .resolved .incomplete => .noValue true
+  | .resolved .unreal => .noValue false
+  | .resolved .unknown => .unavailable .malformed
+
 end A12Kernel

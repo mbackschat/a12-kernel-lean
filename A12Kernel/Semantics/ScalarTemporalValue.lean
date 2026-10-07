@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.ConstructedDateInputs
 import A12Kernel.Semantics.DateAggregate
 import A12Kernel.Semantics.DateTimeAggregate
 import A12Kernel.Semantics.TimeAggregate
@@ -192,5 +193,11 @@ def projectScalarRangeBoundObservation (profile : ModelZone.ConcreteProfile)
             year := 2000, month := key.month, day := key.day } | throw .calendarUnavailable
           pure (.value (.yearless value key) true)
   | .value _ => .error .calendarUnavailable
+
+def ConstructedDateValue.asScalarTemporalOperand :
+    ConstructedDateValue → SimpleComparisonOperand ScalarTemporalValue
+  | .value instant parts notGiven => .value (.date { instant, parts, basis := .legacyHybrid }) (!notGiven)
+  | .noValue notGiven => .value .noValue (!notGiven)
+  | .unavailable cause => .unknown cause
 
 end A12Kernel

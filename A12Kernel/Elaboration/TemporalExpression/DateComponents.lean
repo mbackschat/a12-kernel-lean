@@ -121,9 +121,6 @@ def finishScalarDateComponents (checked : CheckedConstructedDateComponents model
   | .unavailable cause => pure (.unknown cause)
   | _ =>
       if relevance == .nonRelevant then return .value .nonRelevant true
-      match ← (checked.finishValue observation).mapError scalarDateFault with
-      | .value instant parts notGiven => pure (.value (.date { instant, parts, basis := .legacyHybrid }) (!notGiven))
-      | .noValue notGiven => pure (.value .noValue (!notGiven))
-      | .unavailable cause => pure (.unknown cause)
+      pure (← (checked.finishValue observation).mapError scalarDateFault).asScalarTemporalOperand
 
 end A12Kernel

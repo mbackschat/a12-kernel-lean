@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.CorrelationInputs
+import A12Kernel.Semantics.CorrelationContext
 import A12Kernel.Semantics.ConstructedDateInputs
 
 namespace A12Kernel
@@ -13,7 +13,7 @@ def references (source : HavingDateComponents) : List HavingPresenceRef :=
   source.sources.filterMap fun (origin, component) =>
     component.fieldId?.map fun field => { origin, field }
 
-def evaluate (source : HavingDateComponents) (phase : Phase)
+def observe (source : HavingDateComponents) (phase : Phase)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
     Except Error ConstructedDateObservation := do
   let read (operand : HavingOrigin × ResolvedConstructedDateSource) :=
@@ -23,7 +23,12 @@ def evaluate (source : HavingDateComponents) (phase : Phase)
         | .dateYearStoredMissing field => context.storedTextUnavailable field
         | .todayWorldRequired | .nowWorldRequired => context.worldUnavailable
         | _ => context.unsupportedDateCalendar)
-  pure (source.applyProfileReality (← source.evaluateComponentsWith read phase))
+  source.evaluateComponentsWith read phase
+
+def evaluate (source : HavingDateComponents) (phase : Phase)
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
+    Except Error ConstructedDateObservation :=
+  source.applyProfileReality <$> source.observe phase context frame
 
 def evalValidationRead (source : HavingDateComponents) (operation : ConstructedDateValidityOp)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) : Except Error Verdict := do
