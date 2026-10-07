@@ -45,8 +45,11 @@ private def input (scenario : Scenario) : Lean.Json :=
     ("Key", .str scenario.key), ("Fresh", .str "y"), ("FreshEnum", .str "y"), ("Out", .str "9"), ("After", .str "9"), ("Clock", .str "09:08:07"),
     ("Rows", .arr #[row scenario.firstId scenario.unselected false, row "B" scenario.selected scenario.omitted])])]
 
-private def checked (scenario : Scenario := {}) (registered : Bool := false) : Option (CheckedDocument model) := do
-  let prepared ← (prepareFlatStringContext (world registered) builtinStringPatternCompiler model).toOption
+private def checked (scenario : Scenario := {}) (registered : Bool := false)
+    (fixtureModel : FlatModel := model) (fixtureWorld : World := world registered) :
+    Option (CheckedDocument fixtureModel) := do
+  let model := fixtureModel
+  let prepared ← (prepareFlatStringContext fixtureWorld builtinStringPatternCompiler model).toOption
   let raw ← (readDocument { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
     (input scenario)).toOption
   (checkDocument prepared "en_US" raw.data).toOption
@@ -68,11 +71,13 @@ example : validate "Valid(Key,\"Code\")" = some (.fired .value) ∧
     validate "Invalid(Out,\"Code\")" = none := by native_decide
 
 private def run (guard : String) (scenario : Scenario := {}) (registered : Bool := false)
-    (alternative : Bool := false) (target : String := "Out") (producer : Option (String × String) := none) :
+    (alternative : Bool := false) (target : String := "Out") (producer : Option (String × String) := none)
+    (fixtureModel : FlatModel := model) (fixtureWorld : World := world registered) :
     Option (List String) := do
-  let world := world registered
+  let model := fixtureModel
+  let world := fixtureWorld
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
-  let document ← checked scenario registered
+  let document ← checked scenario registered model world
   let definitions : List DmComputation := [
     { name := "Dependent", group := ["Form"], targetRelPath := "../After",
       commonPrecondition := if target == "Clock" then some "FieldNotFilled(Clock)" else none,
@@ -347,5 +352,24 @@ private def literalGuardChecks (guardText : String) : Option Bool := do
     partialMatches (partialLeaf guardText scenario (.partialSet [rowsRelevant]) 2 .unavailableError true) (.ok (.fired .value)))
 
 example : (guards.filter (fun guard => guard.contains 'B')).all (fun guard => literalGuardChecks guard == some true) = true := by native_decide
+
+private def normalizationModel : FlatModel := { model with fields := model.fields.map fun field =>
+  if field.id == 4 then { field with stringPolicy := { lineBreaksPermitted := true } } else field }
+
+private def normalizationWorld (accepted : String) : World := { (world true) with
+  customFieldValidator? := fun _ => some (fun value _ => if value == accepted then none else some { projectCode := "TYPE_REJECTED" }) }
+
+example : ["a\r\nb", "a\nb"].all (fun value => ["Valid", "Invalid"].all fun op =>
+    run (op ++ "(Rows/Text For Key, \"Code\")") { selected := value } true
+      (fixtureModel := normalizationModel) (fixtureWorld := normalizationWorld "a\nb") ==
+        some (if op == "Valid" then ["Form/After:value 2", "Form/Out:value 1"]
+          else ["Form/After:value 1", "Form/Out:cleared"])) = true := by native_decide
+
+example : run "Valid(Rows/Text For Key, \"Code\")" { selected := "\r\r\n" } true
+      (fixtureModel := normalizationModel) (fixtureWorld := normalizationWorld "\r\n") =
+        some ["Form/After:value 2", "Form/Out:value 1"] ∧
+    run "Valid(Rows/Text For Key, \"Code\")" { selected := "\r\r\n" } true
+      (fixtureModel := normalizationModel) (fixtureWorld := normalizationWorld "\n") =
+        some ["Form/After:value 1", "Form/Out:cleared"] := by native_decide
 
 end A12Kernel.Dm.IndexedTypeValidityLocks

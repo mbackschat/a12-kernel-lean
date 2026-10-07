@@ -9,6 +9,13 @@ The predefined types are a host client SPI, so the registry is **partial by cons
 
 namespace A12Kernel
 
+/-- Named-type validity consumes the checked String text or stored Enumeration token. Ingestion
+already normalizes String line breaks once; repeating it changes CR-CRLF (spec/06 A, A.3). -/
+def CellObservation.asTypeValidityText (observation : CellObservation) : CellObservation String :=
+  match observation with
+  | .value (.enum token) => .value token
+  | other => other.asText
+
 inductive CustomFieldValidityOp where
   | valid
   | invalid

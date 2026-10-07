@@ -12,15 +12,18 @@ private def model : FlatModel := { fields := [
   number 2 "Out", number 3 "After",
   { number 4 "Fresh" with policy := { kind := .string } }] }
 
-private def world (registered : Bool) : World := {
+private def world (registered : Bool) (accepted : String := "x") : World := {
   now := { epochMillis := 0 }
   customFieldValidator? := fun name =>
     if registered && name == "Code" then some (fun value context =>
-      if value == "x" && context == explicitCustomFieldValidationContext then none
+      if value == accepted && context == explicitCustomFieldValidationContext then none
       else some { projectCode := "TYPE_REJECTED" }) else none }
 
 private def run (guard value : String) (registered : Bool := false)
-    (enumerated : Bool := false) (rows : Bool := false) (producer : Bool := false) : Option (List String) := do
+    (enumerated : Bool := false) (rows : Bool := false) (producer : Bool := false)
+    (accepted : String := "x") (lineBreaks : Bool := false) : Option (List String) := do
+  let model := if lineBreaks then { model with fields := model.fields.map fun field =>
+    if field.id == 1 then { field with stringPolicy := { lineBreaksPermitted := true } } else field } else model
   let model := if enumerated then { model with fields := model.fields.map fun field =>
     if field.id == 1 then { field with
       policy := { kind := .enumeration }
@@ -30,7 +33,7 @@ private def run (guard value : String) (registered : Bool := false)
     fields := model.fields.map fun field => if field.id <= 3 then
       { field with groupPath := ["G", "Rows"], repeatableScope := [10] } else field
     repeatableGroups := [{ level := 10, path := ["G", "Rows"], repeatability := some 2 }] } else model
-  let world := world registered
+  let world := world registered accepted
   let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let input ← (readDocument dm (Lean.Json.mkObj [("G", Lean.Json.mkObj [
     ("S", .str value), ("Out", .str "9"), ("After", .str "9"), ("Fresh", .str "y"),
@@ -116,5 +119,12 @@ example : generatedPhase "Valid" false = some (true, true) ∧
     generatedPhase "Invalid" true = some (true, true) ∧
     generatedPhase "Invalid" true true = some (true, true) ∧
     generatedPhase "Valid" false true = some (true, true) := by native_decide
+
+example : ["a\r\nb", "a\nb"].all (fun value =>
+    run "Valid(S, \"Code\")" value true (accepted := "a\nb") (lineBreaks := true) == some ["value 1", "value 2"] &&
+    run "Invalid(S, \"Code\")" value true (accepted := "a\nb") (lineBreaks := true) == some ["cleared", "value 1"]) = true := by native_decide
+
+example : run "Valid(S, \"Code\")" "\r\r\n" true (accepted := "\r\n") (lineBreaks := true) = some ["value 1", "value 2"] ∧
+    run "Valid(S, \"Code\")" "\r\r\n" true (accepted := "\n") (lineBreaks := true) = some ["cleared", "value 1"] := by native_decide
 
 end A12Kernel.Dm.TypeValidityGuardLocks

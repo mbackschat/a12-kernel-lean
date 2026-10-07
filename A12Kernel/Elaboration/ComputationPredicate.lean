@@ -386,13 +386,12 @@ private def evalValueList (operator : ComputationValueListOperator)
       (fun test => anyResult <$> scanOperands (scanToken context filterRead (anyStep test)) source.fields.operands ())
 
 private def evalTypeValidity (operation : CustomFieldValidityOp) (name : String)
-    (observation : CellObservation) (stored : Option String) (world : Option World) :
+    (observation : CellObservation) (world : Option World) :
     Except ComputationPredicateError ComputationConditionResult := do
-  match observation with
+  match observation.asTypeValidityText with
   | .empty => pure .notTrue
   | .unknown cause | .poison cause => pure (.poison cause)
-  | .value _ =>
-      let some stored := stored | throw .contextRequired
+  | .value stored =>
       if stored.isEmpty then return .notTrue
       let some world := world | throw .contextRequired
       let checked : CheckedCustomFieldValidity := { name, validator? := world.resolveCustomFieldValidator? name }
@@ -446,7 +445,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
         | .ok _ => .notTrue)
   | .typeValidity operation source name =>
       evalTypeValidity operation name (observeCell .computation (context.read source.source))
-        (context.storedText source.source) context.world
+        context.world
   | .indexedTypeValidity operation source name => do
       let some addressed := context.addressed | throw .contextRequired
       let selected ← source.selection.selectEnvironmentWith .computation context.semanticIndexColumnReader
@@ -457,7 +456,7 @@ def evalChecked (predicate : CheckedComputationPredicate model)
       | .value row =>
           evalTypeValidity operation name
             (observeCell .computation (addressed.read row source.operand.source))
-            (addressed.storedText row source.operand.source) context.world
+            context.world
   | .stringExpression source => (source.evalComputation { read := context.read } context.numberText (some context)).mapError .stringExpression
   | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError (fun
       | .dateTimeLabelUnresolved | .componentNumberInvalid => .valueFailure

@@ -161,9 +161,7 @@ namespace CheckedCustomFieldValidityLeaf
     Scalar, selected and addressed partial reads share this projection, so a covered cell gets one answer by construction rather than by separate arms happening to agree. -/
 def evalObservation (leaf : CheckedCustomFieldValidityLeaf model)
     (observation : CellObservation) : Verdict :=
-  leaf.validity.eval leaf.operation (match observation with
-    | .value (.enum token) => .value token
-    | other => other.asText)
+  leaf.validity.eval leaf.operation observation.asTypeValidityText
 
 def evalCell (leaf : CheckedCustomFieldValidityLeaf model) (phase : Phase)
     (cell : CheckedCell) : Verdict :=
