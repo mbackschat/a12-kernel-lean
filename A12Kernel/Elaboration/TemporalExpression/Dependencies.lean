@@ -93,6 +93,12 @@ end
 
 namespace ScalarTemporalExpression
 
+/-- Reuse the complete recursive dependency traversal with consumer-owned projections of each retained source shape. -/
+def dependenciesWith (expression : ScalarTemporalExpression model)
+    (field : FieldId → List α) (entity : CheckedTemporalExtremumOperands model → List α)
+    (indexed : CheckedSemanticIndexSource model → List α) : List α :=
+  scalarTemporalDependencies false field entity indexed expression
+
 def hasHaving (expression : ScalarTemporalExpression model) : Bool :=
   !(scalarTemporalDependencies false (fun _ => ([] : List Unit))
     (fun source => if source.filters.any Option.isSome then [()] else []) (fun _ => []) expression).isEmpty

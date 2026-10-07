@@ -3,7 +3,7 @@ import A12Kernel.Proofs.MessagePointer
 
 /-! # A12Kernel.Proofs.ValidationCondition.Reference — structural reference laws
 
-The two pointer constructors are the whole projection's only producers, so their exactness and arity laws hold for every reference the tree can emit. The connective law states the projection's defining property: a reference exists by being authored, never by being decisive.
+The ordinary and reopened pointer constructors have exactness and arity laws. Selected references additionally use the cache laws in `Proofs.MessageIndex`. The connective law states the projection's defining property: a reference exists by being authored, never by being decisive.
 -/
 
 namespace A12Kernel
@@ -180,9 +180,9 @@ theorem sievedFieldPointers_exact (model : FlatModel)
 
 /-- The projection is blind to the connective, which is the precise sense in which it is structural: a reference is authored, not decisive, so an `Or` branch that never decided still contributes. -/
 theorem referencePointers_connective_blind (left right : ValidationCondition model)
-    (environment : Env) :
-    ValidationCondition.referencePointers (.and left right) environment =
-      ValidationCondition.referencePointers (.or left right) environment :=
+    (environment : Env) (inputs : Option MessageReferenceInputs := none) :
+    ValidationCondition.referencePointers (.and left right) environment inputs =
+      ValidationCondition.referencePointers (.or left right) environment inputs :=
   rfl
 
 end A12Kernel

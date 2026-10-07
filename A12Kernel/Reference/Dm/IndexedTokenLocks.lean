@@ -323,7 +323,7 @@ example : selectedSource.any (fun source => source.referencesField 3 && source.r
     source.referencesField 6 && source.referencesField 7 && source.bindingScopes.all List.isEmpty) = true := by native_decide
 
 example : selectedSource.any (fun source => match source.first.referencePointers [] with
-    | .error .unclassifiedOperand => true
+    | .error .missingIndexContext => true
     | _ => false) = true ∧
     selectedSource.any (fun source => match source.first with
       | .selected selection => match selection.sideAt .computation { read := fun _ => malformedCheckedCell } with

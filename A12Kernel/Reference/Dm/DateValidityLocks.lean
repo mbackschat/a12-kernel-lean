@@ -186,7 +186,8 @@ example : ["Date(Rows/Full For Key,\"2\",\"2024\")",
       ["Valid", "Invalid"].all fun operation => (validate (predicate operation source)).isNone &&
         (run (predicate operation source)).isNone) = true := by native_decide
 
-private def partialAndPointerBoundary (source : String) : Option Bool := do
+private def partialAndPointerBoundary (source : String)
+    (ordinaryPointers : Option (List MessagePointer) := none) : Option Bool := do
   let document ← checked {}
   let parsed ← (parseText .english (predicate "Valid" source)).toOption
   let condition ← (lowerCondition model ["Form"] false parsed.body).toOption
@@ -195,7 +196,9 @@ private def partialAndPointerBoundary (source : String) : Option Bool := do
     (leaf.evalAddressedPartial? { scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }, outer := [], input := .checked document } .full (fun _ => true)
       (fun _ _ => .error (.checkedDocumentRequired [])) none).bind Except.toOption == some (.fired .value) &&
     match condition.core.referencePointers [] with
-    | .error .unclassifiedOperand => true
+    | .error .missingIndexContext => ordinaryPointers.isNone
+    | .ok pointers => ordinaryPointers.any fun expected =>
+        pointers.length == expected.length && expected.all pointers.contains
     | _ => false)
 
 example : forms.all (fun source => partialAndPointerBoundary source == some true) = true := by native_decide
@@ -281,7 +284,8 @@ example : ["Valid", "Invalid"].all (fun operation =>
 private def directRecursive := "Date(D,MonthFromDate(AddDays(Out,1)),YearFromDate(AddDays(Out,1)))"
 
 example : validate (predicate "Valid" directRecursive) = some (.fired .value) ∧
-    partialAndPointerBoundary directRecursive = some true := by native_decide
+    partialAndPointerBoundary directRecursive (some [{ field := 16, coordinates := [] },
+      { field := 0, coordinates := [] }]) = some true := by native_decide
 
 example : ValidationConditionAssemblyError.emptyGroupList.groupListDiagnostic? = none := by decide
 

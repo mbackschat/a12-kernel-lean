@@ -90,6 +90,14 @@ An **index column belongs to the enclosing parent instance bound by the current 
 
 > **Non-normative implementation note.** Make indexed lookup phase-aware and return a `CellObservation`, with **no match returning `empty`** rather than `unknown` or `poison`. This is the load-bearing difference from “missing ⇒ invalid,” and it is why `[X For "k"] == 0` and `FieldNotFilled(X For "k")` fire on absence. Keep the validation-per-lookup versus computation-per-column strictness as an explicit lookup policy: validation checks the selected cell plus the documented no-match invalid-column guard, while computation can poison from the index column. Keep `CurrentRepetition` as a value-producing operand shaped around a resolved group level: return `1` for a non-repeatable level, otherwise read the named repeatable level's coordinate from the selected `Env`; `$` chooses the captured outer environment before that lookup. It is not a positional row selector; omit any positional-select constructor from the AST, and fail closed on a missing or ambiguous repeatable binding.
 
+### 4.3 Selected references in validation messages
+
+A fired message's reference collection is structural: a selected operand contributes its payload field or expanded group descendants, the selected group's index field, and the key field when the key is field-valued. A literal key contributes no key-field pointer. These references remain present when another branch determines the outcome or the selected payload is invalid; reference membership is not an evaluation trace ([checkpoint](../docs/sources/message-and-pointer-probes.md#src-selected-message-reference-resolution)).
+
+The selected coordinate replaces only the indexed level and preserves its enclosing parent. A missing or empty key, or a key with no association, yields the unknown selected coordinate (`-5` in the observed external paths). A star below the selected level remains wildcard (`0`) on each expanded payload pointer; the index-field pointer stops at the selected level. Unknown pointer coordinates do not change the no-match value semantics in §4.1.
+
+Pointer resolution reads the index cache independently of duplicate-invalid value evaluation. Duplicate keys can therefore leave a concrete selected pointer in a message fired by an independent branch. Source inspection establishes overwrite lookup over admitted normalized index insertions; the retained duplicate controls refute both first-physical-row and last-physical-row selection. The exact document-to-cache insertion order is unresolved. An implementation accepting that insertion sequence can model the cache lookup, but cannot infer the sequence from physical row order or claim complete duplicate-pointer correspondence without settling it. Calibration here covers String keys, Number payloads, selected groups and lower stars in full validation; other profiles and partial calls require their own evidence.
+
 ---
 
 ## Checklist for §10

@@ -299,7 +299,7 @@ private def metadata (guardText : String) : Option Bool := do
   let condition ← (lowerCondition model ["Form"] false parsed.body).toOption
   let document ← checked {}
   let rootOnly := match condition.core.ordinaryIterationScope with | .ok none => true | _ => false
-  let pointerRefusal := match condition.core.referencePointers [] with | .error .unclassifiedOperand => true | _ => false
+  let pointerRefusal := match condition.core.referencePointers [] with | .error .missingIndexContext => true | _ => false
   let missingDocument := match condition.core.evalAddressed {
       scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }
       outer := [], input := .legacy document.source.toDocument (fun _ _ => malformedCheckedCell) } with

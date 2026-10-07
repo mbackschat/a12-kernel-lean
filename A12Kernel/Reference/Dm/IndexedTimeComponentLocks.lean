@@ -244,7 +244,7 @@ private def partialAndPointerBoundary : Option Bool := do
     (leaf.evalAddressedPartial? { scalar := { fields := document.flatContext, groups := GroupPresenceContext.unavailable }, outer := [], input := .checked document } .full (fun _ => true)
       (fun _ _ => .error (.checkedDocumentRequired [])) none).bind Except.toOption == some (.fired .value) &&
     match condition.core.referencePointers [] with
-    | .error .unclassifiedOperand => true
+    | .error .missingIndexContext => true
     | _ => false)
 
 example : partialAndPointerBoundary = some true := by native_decide

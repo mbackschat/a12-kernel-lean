@@ -35,6 +35,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-07-02"></a>
+### SPEC-2026-10-07-02 — selected message references retain payload, index and dynamic key
+
+- `status`: pending
+- `canonical`: [spec/08 §4.3](../spec/08-paths-and-references.md#43-selected-references-in-validation-messages).
+- `delta`: retain payload/index/key membership on unreached branches; resolve selected coordinates through a parent-local index cache independently of duplicate-invalid value reads. Preserve lower-star wildcards and unknown no-match coordinates.
+- `basis`: [Selected-reference checkpoint](sources/message-and-pointer-probes.md#src-selected-message-reference-resolution), Kernel 30.8.1, eight retained documents on both strategies plus the cited cache source. Neither physical-first nor physical-last selection explains the duplicate controls.
+- `reconciliation`: inspect the interpreter's `AstRefs.messageReferences` semantic-index branch and coordinate resolution against the retained field, group and lower-star cases; reconcile the canonical account. No claim is made about an independently tested peer execution route.
+- `acceptance`: preserve payload/index/dynamic-key membership, parent scope and unknown/wildcard distinctions on the retained rows, including unreached invalid payloads. Keep duplicate pointer lookup distinct from value admission; leave exact document-to-cache order explicitly open unless evidence settles it. Introducing revision is the first commit containing this entry ID.
+
 <a id="spec-2026-10-07-01"></a>
 ### SPEC-2026-10-07-01 — index-column poison is scoped to the enclosing parent
 
