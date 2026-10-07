@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.Correlation
+import A12Kernel.Conformance.HavingUniquenessExtent
 
 namespace A12Kernel.Conformance.HavingUniqueness
 open A12Kernel
@@ -7,7 +8,7 @@ private def frame : CorrelationFrame := { innerEnv := [(10, 1)], outerEnv := [(1
 private def number (value : Rat) : CheckedCell := { rawPresent := true, parsed := some (.num value), findings := [] }
 private def invalid : CheckedCell := { rawPresent := true, parsed := none, findings := [.malformed] }
 private def emptyCell : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
-private def numbers (ids : List FieldId) : A12Kernel.HavingUniqueness := .number (ids.map fun id => {
+private def numbers (ids : List FieldId) : A12Kernel.HavingUniqueness := .number (ids.map fun id => .direct {
   origin := .inner, field := { id, info := { scale := if id == 2 then 2 else 0, signed := true } } })
 private def cells (second : CheckedCell) : CorrelationContext := {
   read := fun _ id => if id == 2 then second else number 5 }
@@ -25,8 +26,8 @@ example : result (numbers [1, 2, 3]) .validation (cells invalid) = .inr .holds �
     result (numbers [1, 2]) .computation (cells (number 5)) = .inr .holds := by native_decide
 
 private def tokenSource : A12Kernel.HavingUniqueness := .token [
-  { origin := .inner, operand := .string { id := 1 } },
-  { origin := .outer, operand := .string { id := 2 } }]
+  .direct { origin := .inner, operand := .string { id := 1 } },
+  .direct { origin := .outer, operand := .string { id := 2 } }]
 private def tokenContext : CorrelationContext := {
   read := fun env id => {
     rawPresent := true, findings := []
@@ -36,7 +37,7 @@ example : result tokenSource .validation tokenContext = .inr .holds ∧
     CorrelatedHaving.fieldIds (.leaf (.uniqueness tokenSource)) = [1, 2] ∧
     CorrelatedHaving.markedFieldIds (.leaf (.uniqueness tokenSource)) = [2] := by native_decide
 
-private def temporalSource (ids : List FieldId) : A12Kernel.HavingUniqueness := .temporal (ids.map fun id => {
+private def temporalSource (ids : List FieldId) : A12Kernel.HavingUniqueness := .temporal (ids.map fun id => .direct {
   origin := .inner, field := { id, kind := .date, components := .fullDate } })
 private def temporalContext (same : Bool) : CorrelationContext := {
   read := fun _ _ => { rawPresent := true, findings := [], parsed := some (.temporal (.date {

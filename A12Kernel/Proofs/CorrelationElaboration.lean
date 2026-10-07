@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.FieldEntityList
 
 /-! # A12Kernel.Proofs.CorrelationElaboration — checked repeatable-binding invariants -/

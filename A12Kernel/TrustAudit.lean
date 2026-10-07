@@ -3021,6 +3021,7 @@ run_cmd do
 #print axioms A12Kernel.RuleIterationDomain.descend_dense
 #print axioms A12Kernel.RuleIterationDomain.no_dispatched_roots
 
+#print axioms A12Kernel.HavingFieldListSlot.foldRead_deciding_direct
 #print axioms A12Kernel.HavingUniqueness.havingUniquenessScan_deciding_prefix
 #print axioms A12Kernel.HavingUniqueness.havingUniquenessScan_validation_skip_invalid
 #print axioms A12Kernel.HavingUniqueness.havingUniquenessScan_computation_poison

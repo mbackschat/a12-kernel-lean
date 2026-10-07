@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.Flat.Condition.SurfaceSupport
 import A12Kernel.Elaboration.Flat.Model
 import A12Kernel.Elaboration.FieldEntityList

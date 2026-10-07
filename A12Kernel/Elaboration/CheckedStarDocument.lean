@@ -342,6 +342,29 @@ def FlatModel.correlationGroupsWithRead (model : FlatModel) (document : Document
     pure ({ base with descendantCells := cells.flatten }.derive)
   computation environment source :=
     source.content.readWith document read .environment environment
+  fieldEnvironments _ environment boundCount field := do
+    let declaration ← (model.lookupUniqueId field).mapError (.field field)
+    (model.groupOperandEnvironments document environment boundCount declaration.repeatableScope).mapError .addressing
+
+private def FlatModel.correlationFieldEnvironments (model : FlatModel) (document : Document)
+    (unavailable : GroupPath → Error) (path : GroupPath) (environment : Env) (boundCount : Nat)
+    (field : FieldId) : Except Error (List Env) := do
+  let declaration ← (model.lookupUniqueId field).mapError (fun _ => unavailable path)
+  (model.groupOperandEnvironments document environment boundCount declaration.repeatableScope).mapError (fun _ => unavailable path)
+
+/-- Model ownership supplies extent topology while the caller retains its phase-specific cell
+view. The semantic-only adapter cannot infer a field's repeatable scope from its id. -/
+def CorrelationContext.withModelComputationGroups (context : CorrelationContext)
+    (model : FlatModel) (document : Document) : CorrelationContext :=
+  let context := context.withComputationGroups document
+  { context with groups := context.groups.map fun groups =>
+    { groups with fieldEnvironments := model.correlationFieldEnvironments document CorrelationRuntimeFault.groupUnavailable } }
+
+def ResolvingCorrelationContext.withModelComputationGroups (context : ResolvingCorrelationContext Error)
+    (model : FlatModel) (document : Document) : ResolvingCorrelationContext Error :=
+  let context := context.withComputationGroups document
+  { context with groups := context.groups.map fun groups =>
+    { groups with fieldEnvironments := model.correlationFieldEnvironments document context.groupUnavailable } }
 
 namespace CheckedDocument
 

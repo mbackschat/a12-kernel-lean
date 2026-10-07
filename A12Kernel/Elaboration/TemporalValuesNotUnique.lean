@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.FieldEntityList
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Elaboration.CheckedStarDocument

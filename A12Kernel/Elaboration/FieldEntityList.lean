@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.FieldEntityAdmission
 import A12Kernel.Elaboration.SemanticIndex
-import A12Kernel.Elaboration.Correlation
+import A12Kernel.Elaboration.CorrelationSurface
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.StarPath
@@ -36,7 +36,7 @@ structure SurfaceFieldEntitySource where
 
 /-- One kind-neutral resolved slot. Family-specific certification occurs only after the complete list has passed the star, duplicate, and cardinality gates.
 
-    A starred group retains the terminal-repeatable source only. A star above a nonrepeatable terminal is a third repetition shape that no retained observation covers on this carrier, so resolution refuses it without naming a class. -/
+    Terminal-repeatable groups and fixed terminals below a starred ancestor retain separate certificates because their row-selection boundaries differ. -/
 inductive ResolvedFieldEntityOperand (model : FlatModel) where
   | field (declaration : FlatFieldDecl) (form : FieldEntityReadForm)
   | indexed (source : CheckedSemanticIndexSource model)
@@ -114,28 +114,8 @@ def indexIdentity? : ResolvedFieldEntityOperand model → Option (GroupPath × C
 
     Two field-denoting slots never reach this arm: a field path cannot be an ancestor of another, and their repetition belongs to the direct arm above, which skips wildcarded references. -/
 def overlaps (left right : ResolvedFieldEntityOperand model) : Bool :=
-  if left.indexIdentity? != right.indexIdentity? then false else
-  match left.subtreePath?, right.subtreePath? with
-  | some leftPath, some rightPath =>
-      leftPath != rightPath &&
-        (leftPath.isPrefixOf rightPath || rightPath.isPrefixOf leftPath)
-  | some leftPath, none =>
-      match right with
-      | .field declaration _ => leftPath.isPrefixOf declaration.groupPath
-      | .star source | .starHaving source _ =>
-          leftPath.isPrefixOf source.declaration.groupPath
-      | .indexed source => leftPath.isPrefixOf source.targetDeclaration.groupPath
-      | .keyed source => leftPath.isPrefixOf source.groupPath
-      | .group _ | .starredGroup _ | .starredGroupPresence _ => false
-  | none, some rightPath =>
-      match left with
-      | .field declaration _ => rightPath.isPrefixOf declaration.groupPath
-      | .star source | .starHaving source _ =>
-          rightPath.isPrefixOf source.declaration.groupPath
-      | .indexed source => rightPath.isPrefixOf source.targetDeclaration.groupPath
-      | .keyed source => rightPath.isPrefixOf source.groupPath
-      | .group _ | .starredGroup _ | .starredGroupPresence _ => false
-  | none, none => false
+  left.indexIdentity? == right.indexIdentity? &&
+    entityListPathsOverlap left.entityPath right.entityPath left.subtreePath?.isSome right.subtreePath?.isSome
 
 /-- The repeatable levels this operand leaves for its evaluation to bind: a direct field's own
     scope, which resolution admitted only where the reading scope binds it unless a fixed-target

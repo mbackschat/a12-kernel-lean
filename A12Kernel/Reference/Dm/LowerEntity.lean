@@ -163,6 +163,22 @@ private def havingMembers (expressions : List Expr) : Lowering SurfaceHavingDire
   let some (first :: rest) := expressions.mapM havingEntity? | refuse "Having" "direct membership fields"
   pure { first, rest }
 
+private def havingUniquenessMembers (arguments : List Argument) : Lowering SurfaceHavingEntitySource := do
+  let operands ← arguments.mapM fun
+    | .mk (.constant "RuleGroup") none none => pure (.group .inner (.ruleGroup false))
+    | .mk (.entity { path, index := none, category }) none none => do
+        if path.segments.any (·.star) then
+          if category.isSome then refuse "Having" "category on a star"
+          pure (.star (if path.correlated then .outer else .inner)
+            { base := path.base, groups := path.starGroups })
+        else
+          let some reference := havingEntity? (.entity { path, index := none, category }) |
+            refuse "Having" "uniqueness entity"
+          pure (.entity reference)
+    | _ => refuse "Having" "uniqueness operand"
+  let first :: rest := operands | refuse "Having" "empty uniqueness"
+  pure { first, rest }
+
 private def lowerHavingDateComponent : Expr → Lowering SurfaceHavingDateComponent
   | .string text => pure (.constant text)
   | .entity { path, index := none, category := none } => do
@@ -216,10 +232,7 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
       pure (.fieldMembership (.quantified operator) subjects (← havingMembers values))
   | .call id arguments none none => do
       if id == "FieldValuesNotUnique" then
-        let expressions ← arguments.mapM fun
-          | .mk expression none none => pure expression
-          | _ => refuse "Having" "direct uniqueness fields"
-        return .uniqueness (← havingMembers expressions)
+        return .uniqueness (← havingUniquenessMembers arguments)
       if id == "FieldValueIncludedInValueList" || id == "FieldValueNotIncludedInValueList" then
         let operator := if id == "FieldValueIncludedInValueList" then ValueListMembershipOp.included else .notIncluded
         let .mk (.entity { path, index := none, category }) none none :: rest := arguments |

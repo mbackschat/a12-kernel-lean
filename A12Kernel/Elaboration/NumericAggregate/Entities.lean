@@ -169,7 +169,7 @@ def resolvedComputationAggregateSide
         (source.checkedValueListCellAt .computation starRead)))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
-      let filterContext := ({ read := filterRead, storedText := filterStoredText, world := direct.world } : CorrelationContext).withComputationGroups document
+      let filterContext := ({ read := filterRead, storedText := filterStoredText, world := direct.world } : CorrelationContext).withModelComputationGroups model document
       let consume := fun cells environment =>
         match source.source.checkedValueListCellAt .computation
             starRead environment with

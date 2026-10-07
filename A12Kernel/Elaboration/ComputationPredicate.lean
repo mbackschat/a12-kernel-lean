@@ -211,7 +211,7 @@ private def scanNumber (context : ScalarComputationContext)
   | .starHaving source =>
       let addressed ← addressed context
       let resolved ← (source.source.source.path.resolveInCapacity addressed.document context.row).mapError .addressing
-      (source.having.scanComputation (({ read := filterRead, storedText := filterStoredText, world := context.world } : CorrelationContext).withComputationGroups addressed.document) context.row
+      (source.having.scanComputation (({ read := filterRead, storedText := filterStoredText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
         (fun state environment => consume state
           (source.source.checkedValueListCellAt .computation addressed.read environment))
         resolved.environments state).mapError (fun
@@ -243,7 +243,7 @@ private def scanToken (context : ScalarComputationContext)
       match source.filter with
       | none => pure (scanCells consume
           (resolved.toResolvedSide (source.valueListCellAt .computation addressed.read)).cells state)
-      | some having => (having.condition.scanComputation (({ read := filterRead, storedText := filterStoredText, world := context.world } : CorrelationContext).withComputationGroups addressed.document) context.row
+      | some having => (having.condition.scanComputation (({ read := filterRead, storedText := filterStoredText, world := context.world } : CorrelationContext).withModelComputationGroups model addressed.document) context.row
           (fun state environment => consume state
             (source.valueListCellAt .computation addressed.read environment)) resolved.environments state).mapError (fun
               | .calendarUnavailable => .temporalUnavailable
@@ -321,7 +321,7 @@ private def scanTemporal (context : ScalarComputationContext)
               typeValidityValueFailure := .valueFailure
               storedTextUnavailable := ComputationPredicateError.addressing ∘ StarAddressingError.storedTextUnavailable
               groupUnavailable := ComputationPredicateError.addressing ∘ StarAddressingError.unsupportedGroupOperand
-              bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationPredicateError).withComputationGroups contextRead.document)
+              bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationPredicateError).withModelComputationGroups model contextRead.document)
             context.row (fun seen row => ValueListCell.duplicateComputationStep (kind := .token) seen <$> read row)
             resolved.environments seen
   | .group source =>

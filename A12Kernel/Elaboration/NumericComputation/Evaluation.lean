@@ -40,7 +40,7 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
             typeValidityValueFailure := .addressing .typeValidityValueFailure
             storedTextUnavailable := ComputationFillError.addressing ∘ StarAddressingError.storedTextUnavailable
             groupUnavailable := ComputationFillError.addressing ∘ StarAddressingError.unsupportedGroupOperand
-            bindingError := fun error => ComputationFillError.addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationFillError).withComputationGroups addressed.document)
+            bindingError := fun error => ComputationFillError.addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationFillError).withModelComputationGroups model addressed.document)
           context.row (fun count row => pure (match observeCell .computation
               (addressed.read row source.source.declaration.id) with
             | .value _ => Sum.inl (count + 1)

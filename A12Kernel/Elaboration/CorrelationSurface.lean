@@ -110,7 +110,7 @@ inductive SurfaceCorrelatedHaving where
   | literalList (quantifier : ValueListQuantifier) (subjects : SurfaceHavingDirectFieldSource)
       (values : List String)
   | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceHavingDateComponents)
-  | uniqueness (source : SurfaceHavingDirectFieldSource)
+  | uniqueness (source : SurfaceHavingEntitySource)
   | fieldMembership (operator : ComputationValueListOperator)
       (subjects members : SurfaceHavingDirectFieldSource)
   | literalMembership (operator : ValueListMembershipOp) (reference : SurfaceHavingStringRef)
@@ -308,5 +308,73 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .incoherentCore => none
 
 end CorrelationElabError
+
+/-- The first marked reference of an authored filter, in authored order, crossing a level the
+    reading rule does not bind, with the level the walk refuses. A marked reference reads the rule's
+    own environment, so it meets the walk like any read and its class is placed by the error field:
+    measured on a keyed and an unkeyed level beside the error field's group
+    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)).
+    A reference that does not resolve is left to the filter's own resolution. -/
+def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
+    (declaringGroup writtenGroup : GroupPath)
+    (bound : List RepeatableLevel := model.repeatableScopeForGroupPath declaringGroup) :
+    SurfaceCorrelatedHaving → Option (List String × UnboundOperandLevel)
+  | .numeric _ left right | .tolerance _ left right =>
+      (left.atoms ++ right.atoms).findSome? fun
+        | .aggregate _ first rest => (first :: rest).findSome? fun reference => field reference.origin reference.field
+        | .dateDifference _ left right | .dayDifference left right =>
+            (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
+        | .dateTimeDifference _ left right =>
+            (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
+        | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ => none
+        | .fieldValueAsNumber reference => field reference.origin reference.field
+        | .field reference => field reference.origin reference.field
+        | .dateRangeBoundPart origin reference _ _ | .stringLength origin reference | .stringRange origin reference _ _ | .temporalPart origin reference _ => field origin reference
+        | .repetition reference => group reference.origin reference.group
+  | .compareFields _ left right =>
+      (field left.origin left.field).orElse fun _ => field right.origin right.field
+  | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .compareTemporal _ left right =>
+      (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
+  | .literalMembership _ reference _ => field reference.origin reference.field
+  | .fieldMembership _ subjects members =>
+      (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field
+  | .dateValidity _ source => source.references.findSome? fun ref => field ref.origin ref.field
+  | .uniqueness source => (source.first :: source.rest).findSome? fun ref => do
+      guard (ref.origin == .outer)
+      let (path, scope) ← ref.bindingRead? model declaringGroup
+      let unbound ← model.unboundReadLevel? declaringGroup writtenGroup scope bound
+      pure (path, unbound)
+  | .literalList _ source _ | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
+  | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => field reference.origin reference.field
+  | .groupPresence _ origin reference => group origin reference
+  | .groupFill _ first rest => (first :: rest).findSome? fun (origin, reference) => group origin reference
+  | .and left right | .or left right =>
+      (left.unboundOuterReference? model declaringGroup writtenGroup bound).orElse fun _ =>
+        right.unboundOuterReference? model declaringGroup writtenGroup bound
+where
+  field (origin : HavingOrigin) (reference : SurfaceFieldPath) :
+      Option (List String × UnboundOperandLevel) := do
+    guard (origin == .outer)
+    let declaration ← (model.resolveFieldDeclarationUnchecked declaringGroup reference).toOption
+    let unbound ← model.unboundReadLevel? declaringGroup writtenGroup declaration.repeatableScope bound
+    pure (declaration.path, unbound)
+  group (origin : HavingOrigin) (reference : SurfaceGroupReference) :
+      Option (List String × UnboundOperandLevel) := do
+    guard (origin == .outer)
+    let resolved ← (reference.resolveAgainst declaringGroup).toOption
+    let unbound ← model.unboundReadLevel? declaringGroup writtenGroup
+      (model.repeatableScopeForGroupPath resolved.path) bound
+    pure (resolved.path, unbound)
+
+/-- Refuse a filter whose marked reference the walk refuses. Callers ask it before the filter's own
+    checks; no row measures a filter failing both, so that order is this project's choice. -/
+def SurfaceCorrelatedHaving.requireOuterReferencesBound (model : FlatModel)
+    (declaringGroup writtenGroup : GroupPath) (having : SurfaceCorrelatedHaving)
+    (bound : List RepeatableLevel := model.repeatableScopeForGroupPath declaringGroup) :
+    Except CorrelationElabError Unit :=
+  match having.unboundOuterReference? model declaringGroup writtenGroup bound with
+  | some (path, unbound) => throw (.outerLevelUnbound path unbound)
+  | none => pure ()
 
 end A12Kernel

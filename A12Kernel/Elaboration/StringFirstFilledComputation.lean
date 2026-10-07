@@ -49,7 +49,7 @@ def computationSelection (document : Document) (outer : Env)
       pure <| match source.filter with
         | none => .rows resolved.environments resolved.domain.hasOpenTail classify
         | some having => .filtered having.condition
-            (({ read, world, storedText := filterStoredText } : CorrelationContext).withComputationGroups document) resolved.environments
+            (({ read, world, storedText := filterStoredText } : CorrelationContext).withModelComputationGroups model document) resolved.environments
             resolved.domain.hasOpenTail classify
   | .group source => (.side ·) <$> source.resolvedSideIn .computation document outer read
 

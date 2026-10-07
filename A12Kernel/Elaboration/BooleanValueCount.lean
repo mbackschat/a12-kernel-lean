@@ -702,7 +702,7 @@ def resolvedComputationSide
           pure (.inl (resolved.toResolvedSide
             (starCellAt source .computation starRead)))
       | some having =>
-          let filterContext := ({ read := filterRead, storedText := filterStoredText, world } : CorrelationContext).withComputationGroups document
+          let filterContext := ({ read := filterRead, storedText := filterStoredText, world } : CorrelationContext).withModelComputationGroups model document
           let consume := fun cells environment =>
             match starCellAt source .computation starRead environment with
             | .unknown cause => .inr cause

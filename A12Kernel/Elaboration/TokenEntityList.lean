@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.SelectedTokenEntity
 
 /-! # Checked String/Enumeration entity lists
@@ -845,7 +846,7 @@ def resolvedComputationSide
           pure (.inl (resolved.toResolvedSide
             (source.valueListCellAt .computation starRead)))
       | some having =>
-          let filterContext := ({ read := filterRead, storedText := filterStoredText, world } : CorrelationContext).withComputationGroups document
+          let filterContext := ({ read := filterRead, storedText := filterStoredText, world } : CorrelationContext).withModelComputationGroups model document
           let consume := fun cells environment =>
             match source.valueListCellAt .computation starRead environment with
             | .unknown cause => .inr cause

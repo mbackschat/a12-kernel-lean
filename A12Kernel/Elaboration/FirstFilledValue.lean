@@ -204,7 +204,7 @@ private def CheckedNumberEntityOperand.computationSelection
         (source.checkedValueListCellAt .computation starRead))
   | .starHaving source => do
       let resolved ← source.source.source.path.resolveInCapacity document outer
-      pure (.filtered source.having (({ read := filterRead, storedText := filterStoredText, world := direct.world } : CorrelationContext).withComputationGroups document) resolved.environments
+      pure (.filtered source.having (({ read := filterRead, storedText := filterStoredText, world := direct.world } : CorrelationContext).withModelComputationGroups model document) resolved.environments
         resolved.domain.hasOpenTail (source.source.checkedValueListCellAt .computation starRead))
   -- The group's cells in the shared walk's declaration-major index order: every row of one
   -- declaration before the next, measured over a repeatable descendant

@@ -120,6 +120,7 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
     storedTextUnavailable := fun field => .addressing (.addressing (.storedTextUnavailable field))
     groupUnavailable := ScalarTemporalEvaluationFault.addressing ∘ CheckedAddressingError.checkedDocumentRequired
     groups := some {
+      fieldEnvironments path row depth field := (groups.fieldEnvironments path row depth field).mapError .addressing
       validation row reference := (groups.validation row reference).mapError .addressing
       computation row source := (groups.computation row source).mapError .addressing }
     bindingError := fun _ => .calendarUnavailable }

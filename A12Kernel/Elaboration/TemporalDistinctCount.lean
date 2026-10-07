@@ -772,7 +772,7 @@ private def computationSide (operation : CheckedTemporalDistinctCountRun model)
           let consume := fun cells environment => match read environment with
             | .unknown cause => .inr cause
             | cell => .inl (cell :: cells)
-          match ← (having.scanComputation (({ read := filterRead, storedText := filterStoredText, world } : CorrelationContext).withComputationGroups document) outer consume resolved.environments []).mapError (fun
+          match ← (having.scanComputation (({ read := filterRead, storedText := filterStoredText, world } : CorrelationContext).withModelComputationGroups model document) outer consume resolved.environments []).mapError (fun
             | .calendarUnavailable => .unsupportedDateCalendar
             | .valueFailure => .temporalValueFailure
             | .worldUnavailable => .worldUnavailable

@@ -48,7 +48,7 @@ structure HavingLeafResolvers where
     Except CorrelationElabError FlatLiteralMembership
   literalList : SurfaceHavingDirectFieldSource → List String → Except CorrelationElabError HavingFieldValueList
   dateValidity : SurfaceHavingDateComponents → Except CorrelationElabError HavingDateComponents
-  uniqueness : SurfaceHavingDirectFieldSource → Except CorrelationElabError HavingUniqueness
+  uniqueness : SurfaceHavingEntitySource → Except CorrelationElabError HavingUniqueness
   fieldMembership : ComputationValueListOperator → SurfaceHavingDirectFieldSource → SurfaceHavingDirectFieldSource →
     Except CorrelationElabError HavingFieldValueList
   fieldFill : SurfaceHavingDirectFieldSource → Except CorrelationElabError (List HavingPresenceRef)

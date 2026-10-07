@@ -31,6 +31,49 @@ structure SurfaceHavingDirectFieldSource where
   rest : List SurfaceHavingDirectFieldOperand
   deriving Repr, DecidableEq
 
+/-- Entity-list syntax inside a filter preserves stars and origins before model lookup
+(spec/07 §3 and §5). An unstarred entity may name a field or a group. -/
+inductive SurfaceHavingEntityOperand where
+  | entity (reference : SurfaceHavingDirectFieldOperand)
+  | star (origin : HavingOrigin) (path : SurfaceStarGroupPath)
+  | group (origin : HavingOrigin) (reference : SurfaceGroupReference)
+  deriving Repr, DecidableEq
+
+structure SurfaceHavingEntitySource where
+  first : SurfaceHavingEntityOperand
+  rest : List SurfaceHavingEntityOperand
+  deriving Repr, DecidableEq
+
+def SurfaceHavingEntityOperand.origin : SurfaceHavingEntityOperand → HavingOrigin
+  | .entity reference => reference.origin
+  | .star origin _ | .group origin _ => origin
+
+/-- Only the authored unstarred prefix participates in the surrounding filter's binding gates;
+a group's recursively expanded declarations do not create authored iteration reads (spec/07 §3). -/
+def SurfaceHavingEntityOperand.bindingRead? (model : FlatModel) (declaringGroup : GroupPath) :
+    SurfaceHavingEntityOperand → Option (GroupPath × List RepeatableLevel)
+  | .entity reference =>
+      match (model.resolveFieldDeclarationUnchecked declaringGroup reference.field).toOption with
+      | some declaration => some (declaration.path, declaration.repeatableScope)
+      | none => do
+          let path ← model.groupNamedBy? declaringGroup reference.field
+          pure (path, model.repeatableScopeForGroupPath path)
+  | .group _ reference => do
+      let resolved ← (reference.resolveAgainst declaringGroup).toOption
+      pure (resolved.path, model.repeatableScopeForGroupPath resolved.path)
+  | .star _ path => do
+      let last ← path.groups.getLast?
+      let field : SurfaceStarFieldPath := {
+        base := path.base, groups := path.groups.dropLast, field := last.name }
+      if !last.starred && (model.resolveFieldDeclarationUnchecked declaringGroup field.toFieldPath).isOk then
+        let resolved ← (elaborateStarFieldPath model declaringGroup field).toOption
+        pure (resolved.declaration.path, resolved.bindingScope)
+      else
+        let resolved ← (elaborateStarredGroupOperandSource model declaringGroup path).toOption
+        match resolved with
+        | .terminalRepeatable source => pure (source.group.path, source.path.bindingScope)
+        | .terminalPresence source => pure (source.groupPath, source.path.bindingScope)
+
 /-- The source-shape failures shared by every homogeneous aggregate family. -/
 inductive FieldEntityShapeElabError where
   | keyed (error : KeyedEntityExtentError)
@@ -95,6 +138,11 @@ def FlatFieldDecl.checkEntityCategoryRead (declaration : FlatFieldDecl) (form : 
       if declaration.enumeration.any (·.categories.any (·.name == category)) then pure ()
       else throw (.unknownCategory declaration.path category)
   | .stored, _ => pure ()
+
+/-- Strict containment is the indirect list-duplicate relation; equal starred paths retain
+separate authored slots (spec/07 §5 and spec/08 §4). -/
+def entityListPathsOverlap (left right : List String) (leftGroup rightGroup : Bool) : Bool :=
+  left != right && ((leftGroup && left.isPrefixOf right) || (rightGroup && right.isPrefixOf left))
 
 /-- Report the first exact duplicate whose second occurrence completes in authored encounter order. -/
 private def firstDuplicateInEncounterOrderFrom? [BEq β]

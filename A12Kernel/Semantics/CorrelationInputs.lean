@@ -251,6 +251,7 @@ structure CorrelationGroupReads (Error : Type) where
   validation : Env → ResolvedGroupReference → Except Error GroupPresenceState
   computation : Env → ComputationGroupOperand →
     Except Error (List CellObservation × Bool)
+  fieldEnvironments : GroupPath → Env → Nat → FieldId → Except Error (List Env)
 
 /-- Topology adapters supply environments; the shared evaluator reads their checked fields and the caller-owned evaluation clock. Retaining one World prevents candidate and captured reads from sampling different dates (spec/05 §7, clock-source semantics). -/
 structure CorrelationContext where

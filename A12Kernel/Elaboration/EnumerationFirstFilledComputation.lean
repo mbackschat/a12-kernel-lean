@@ -430,7 +430,7 @@ private def scanFilteredEnumerationFirstFilledStar (document : Document)
     (world : Option World := none) :
     Except CorrelationRuntimeFault (FirstFilledScanState ⊕ FirstFilledTokenResult) := do
   match ← scanFilteredComputationFirstFilled having.condition
-      (({ read := filterRead, world } : CorrelationContext).withComputationGroups document) outer
+      (({ read := filterRead, world } : CorrelationContext).withModelComputationGroups model document) outer
       (source.valueListCellAt .computation starRead)
       resolved.environments resolved.domain.hasOpenTail state with
   | .inl next => pure (.inl next)

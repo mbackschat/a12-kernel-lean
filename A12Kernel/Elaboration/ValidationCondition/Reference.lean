@@ -273,9 +273,17 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
   | .leaf (.dateValidity _ components) => components.references.mapM fun ref => do
       let declaration ← (model.lookupUniqueId ref.field).mapError fun _ => .incoherentHavingField ref.field
       havingFieldPointerFor source environment declaration ref.origin
-  | .leaf (.uniqueness uniqueness) => uniqueness.references.mapM fun ref => do
-      let declaration ← (model.lookupUniqueId ref.field).mapError fun _ => .incoherentHavingField ref.field
-      havingFieldPointerFor source environment declaration ref.origin
+  | .leaf (.uniqueness uniqueness) => do
+      let slots ← uniqueness.presenceSlots.mapM fun slot => slot.references.mapM fun ref => do
+        let declaration ← (model.lookupUniqueId ref.field).mapError fun _ => .incoherentHavingField ref.field
+        match slot with
+        | .direct _ => havingFieldPointerFor source environment declaration ref.origin
+        | .extent extent _ =>
+            let bound := if ref.origin == .outer then extent.boundCount
+              else min source.path.firstStar extent.boundCount
+            if declaration.repeatableScope.length ≤ bound then concreteFieldPointer declaration environment
+            else reopenedFieldPointer declaration bound environment
+      pure slots.flatten
   | .leaf (.fieldMembership _ membership) => membership.references.mapM fun ref => do
       let declaration ← (model.lookupUniqueId ref.field).mapError fun _ => .incoherentHavingField ref.field
       havingFieldPointerFor source environment declaration ref.origin

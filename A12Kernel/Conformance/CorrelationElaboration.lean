@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.FieldEntityList
 
 /-! # Checked single-group correlation-elaboration conformance locks -/

@@ -105,7 +105,7 @@ private def scanStar (project : Value → Option α) (overlaps : α → α → B
           typeValidityValueFailure := .addressing .typeValidityValueFailure
           storedTextUnavailable := ComputationOverlapError.addressing ∘ StarAddressingError.storedTextUnavailable
           groupUnavailable := ComputationOverlapError.addressing ∘ StarAddressingError.unsupportedGroupOperand
-          bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationOverlapError).withComputationGroups contextRead.document)
+          bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationOverlapError).withModelComputationGroups model contextRead.document)
         context.row (fun state row => state.step overlaps <$> observation project field (read row))
         resolved.environments state
 

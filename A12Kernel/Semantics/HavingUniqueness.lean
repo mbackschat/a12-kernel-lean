@@ -1,21 +1,37 @@
 import A12Kernel.Semantics.HavingFieldValueList
+import A12Kernel.Semantics.HavingEntityList
 
 namespace A12Kernel
 
-/-- Direct uniqueness retains typed Number equality and exact token/temporal text identity
+/-- Uniqueness retains authored slots, typed Number equality and exact token/temporal text identity
 (spec/07 §5); temporal decoding must not erase distinct stored spellings. -/
 inductive HavingUniqueness where
-  | number (operands : List HavingNumberRef)
-  | token (operands : List HavingStringRef)
-  | temporal (operands : List HavingTemporalRef)
+  | number (operands : List (HavingFieldListSlot HavingNumberRef))
+  | token (operands : List (HavingFieldListSlot HavingStringRef))
+  | temporal (operands : List (HavingFieldListSlot HavingTemporalRef))
   deriving Repr, DecidableEq
 
 namespace HavingUniqueness
 
 def references : HavingUniqueness → List HavingPresenceRef
-  | .number operands => operands.map fun ref => { origin := ref.origin, field := ref.field.id }
-  | .token operands => operands.map fun ref => { origin := ref.origin, field := ref.field.id }
-  | .temporal operands => operands.map fun ref => { origin := ref.origin, field := ref.field.id }
+  | .number operands => (operands.flatMap (·.references)).map fun ref => { origin := ref.origin, field := ref.field.id }
+  | .token operands => (operands.flatMap (·.references)).map fun ref => { origin := ref.origin, field := ref.field.id }
+  | .temporal operands => (operands.flatMap (·.references)).map fun ref => { origin := ref.origin, field := ref.field.id }
+
+def presenceSlots : HavingUniqueness → List (HavingFieldListSlot HavingPresenceRef)
+  | .number slots => slots.map (·.map fun ref => { origin := ref.origin, field := ref.field.id })
+  | .token slots => slots.map (·.map fun ref => { origin := ref.origin, field := ref.field.id })
+  | .temporal slots => slots.map (·.map fun ref => { origin := ref.origin, field := ref.field.id })
+
+def step (phase : Phase) (seen : List (ValueListAtom kind)) (cell : ValueListCell kind) :
+    Sum (List (ValueListAtom kind)) ComputationConditionResult :=
+  let cell : ValueListCell kind := match phase, cell with
+    | .validation, .unknown _ => .empty
+    | _, cell => cell
+  match cell.duplicateComputationStep seen with
+  | .inl seen => .inl seen
+  | .inr (.ok ()) => .inr .holds
+  | .inr (.error cause) => .inr (.poison cause)
 
 /-- Reuse the ordinary duplicate step, requesting only the deciding prefix. Validation's
 skip rule is the sole phase adaptation; computation retains reached poison (spec/07 §5). -/
@@ -24,29 +40,35 @@ def scan (phase : Phase) (read : Operand → Except Error (ValueListCell kind))
   | [] => pure .notTrue
   | operand :: remaining => do
       let cell ← read operand
-      let cell : ValueListCell kind := match phase, cell with
-        | .validation, .unknown _ => .empty
-        | _, cell => cell
-      match cell.duplicateComputationStep seen with
+      match step phase seen cell with
       | .inl seen => scan phase read seen remaining
-      | .inr (.ok ()) => pure .holds
-      | .inr (.error cause) => pure (.poison cause)
+      | .inr result => pure result
+
+def scanSlots (phase : Phase) (origin : Ref → HavingOrigin) (field : Ref → FieldId)
+    (read : Env → Ref → Except Error (ValueListCell kind))
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame)
+    (operands : List (HavingFieldListSlot Ref)) : Except Error ComputationConditionResult := do
+  match ← HavingFieldListSlot.foldRead origin field context frame
+      (fun seen ref environment => step phase seen <$> read environment ref) [] operands with
+  | .inl _ => pure .notTrue
+  | .inr result => pure result
 
 def evalRead (source : HavingUniqueness) (phase : Phase)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
     Except Error ComputationConditionResult :=
-  let read := fun origin => context.read (frame.envAt origin)
   match source with
-  | .number operands => scan phase (fun ref => ref.readValueListCell phase read) [] operands
-  | .token operands => scan phase (fun ref => ref.readValueListCell phase read) [] operands
-  | .temporal operands => scan phase (kind := .token) (fun ref => do
-      let cell ← read ref.origin ref.field.id
+  | .number operands => scanSlots phase (·.origin) (·.field.id)
+      (fun environment ref => ref.readValueListCell phase (fun _ => context.read environment)) context frame operands
+  | .token operands => scanSlots phase (·.origin) (·.field.id)
+      (fun environment ref => ref.readValueListCell phase (fun _ => context.read environment)) context frame operands
+  | .temporal operands => scanSlots phase (kind := .token) (·.origin) (·.field.id) (fun environment ref => do
+      let cell ← context.read environment ref.field.id
       match observeCell phase cell with
       | .empty => pure .empty
       | .unknown cause | .poison cause => pure (.unknown cause)
-      | .value _ => match context.storedText (frame.envAt ref.origin) ref.field.id with
+      | .value _ => match context.storedText environment ref.field.id with
           | some text => pure (.present text)
-          | none => throw (context.storedTextUnavailable ref.field.id)) [] operands
+          | none => throw (context.storedTextUnavailable ref.field.id)) context frame operands
 
 def evalValidationRead (source : HavingUniqueness)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) : Except Error Verdict := do

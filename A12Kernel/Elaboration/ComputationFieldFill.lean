@@ -106,7 +106,7 @@ private def scanStar (kind : ScanKind) (context : ScalarComputationContext)
           typeValidityValueFailure := .addressing .typeValidityValueFailure
           storedTextUnavailable := ComputationFillError.addressing ∘ StarAddressingError.storedTextUnavailable
           groupUnavailable := ComputationFillError.addressing ∘ StarAddressingError.unsupportedGroupOperand
-          bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationFillError).withComputationGroups addressed.document)
+          bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationFillError).withModelComputationGroups model addressed.document)
         context.row (fun seen row => pure (step kind seen (observe (read addressed.read row field))))
         candidates seen
 

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.Correlation
 import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.DateRangeBound
 import A12Kernel.Elaboration.DateRangeInput
