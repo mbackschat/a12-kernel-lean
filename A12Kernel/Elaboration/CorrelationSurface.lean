@@ -46,6 +46,7 @@ inductive SurfaceHavingNumericAtom where
   | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
   | baseYear
   | baseYearDatePart (source : BaseYearDateSource) (part : DateNumericPart)
+  | clockPart (source : HavingClockSource) (part : TemporalNumericPart)
   | fieldValueAsNumber (reference : SurfaceHavingStringRef)
   | field (reference : SurfaceHavingNumberRef)
   | stringLength (origin : HavingOrigin) (field : SurfaceFieldPath)

@@ -72,7 +72,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
     (model : FlatModel) (group : RepeatableGroupDecl) : CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
       | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
-      | .aggregate _ _ _ | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ | .fieldValueAsNumber _ _ => false
+      | .aggregate _ _ _ | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ | .clockPart _ _ _ | .fieldValueAsNumber _ _ => false
       | .field reference => model.admitsSingleGroupNumber group reference.field
       | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => false
       | .repetition reference => reference.source == .repeatable group.level
@@ -189,6 +189,8 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
                     declaration.toTemporalField? == some reference.field &&
                       repeatableScopeAvailable declaration.repeatableScope (reference.origin.availableLevels candidateLevels outerLevels)
       | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
+      | .clockPart source profile part => source.admits part &&
+          ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
       | .fieldValueAsNumber origin source => (model.certifiedFieldValueAsNumberDeclaration? source).any fun declaration =>
           repeatableScopeAvailable declaration.repeatableScope (origin.availableLevels candidateLevels outerLevels)
       | .field reference => model.admitsHavingNumberInEnvironment candidateLevels outerLevels reference
@@ -271,7 +273,7 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
         | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).any fun reference => reference.origin == .inner &&
             (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
-        | .baseYear _ | .baseYearDatePart _ _ _ => false
+        | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ => false
         | .fieldValueAsNumber origin source => origin == .inner &&
             (model.certifiedFieldValueAsNumberDeclaration? source).any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains

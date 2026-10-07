@@ -85,6 +85,14 @@ where
     | .call id [.mk (.constant "BaseYear") none none] none none => do
         let some part := datePart? id | refuse "Having" "BaseYear component"
         pure (.baseYearDatePart .direct part)
+    | .call id [.mk (.constant source) none none] none none => do
+        let source ← match source with
+          | "Today" => pure HavingClockSource.today
+          | "Now" => pure HavingClockSource.now
+          | _ => refuse "Having" "clock source"
+        let some part := (datePart? id).map TemporalNumericPart.date |>.orElse
+          (fun _ => (timePart? id).map TemporalNumericPart.time) | refuse "Having" "clock component"
+        pure (.clockPart source part)
     | .call id [.mk (.call bound [.mk (.constant "BaseYear") none none] none none) none none] none none => do
         let some part := datePart? id | refuse "Having" "BaseYear component"
         let source ← match bound with

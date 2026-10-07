@@ -229,7 +229,7 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
             let declaration ← (model.lookupUniqueId reference.field.id).mapError (fun _ => .incoherentHavingField reference.field.id)
             if declaration.toTemporalField? != some reference.field then throw (.incoherentHavingField reference.field.id)
             havingFieldPointerFor source environment declaration reference.origin
-        | .baseYear _ | .baseYearDatePart _ _ _ => pure []
+        | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ => pure []
         | .fieldValueAsNumber origin converted => do
             pure [← havingStringReferencePointer source environment { origin, operand := converted.operand }]
         | .field reference => do pure [← havingNumberReferencePointer source environment reference]

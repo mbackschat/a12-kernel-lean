@@ -24,6 +24,7 @@ structure ResolvedHavingNumberRef where
 structure HavingLeafResolvers where
   aggregate : NumericAggregateOp → SurfaceHavingNumberRef → List SurfaceHavingNumberRef → Except CorrelationElabError HavingNumericAtom
   baseYear : Except CorrelationElabError Int
+  clockPart : HavingClockSource → TemporalNumericPart → Except CorrelationElabError HavingNumericAtom
   fieldValueAsNumber : SurfaceHavingStringRef → Except CorrelationElabError ResolvedFieldValueAsNumberSource
   boolean : EqualityOp → SurfaceHavingStringRef → Bool → Except CorrelationElabError FlatComparison
   fields : SurfaceComparisonOp → SurfaceHavingStringRef → SurfaceHavingStringRef →
@@ -79,6 +80,7 @@ private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
     | .dateTimeDifference unit left right => resolvers.dateTimeDifference unit left right
     | .baseYear => HavingNumericAtom.baseYear <$> resolvers.baseYear
     | .baseYearDatePart source part => (fun year => .baseYearDatePart year source part) <$> resolvers.baseYear
+    | .clockPart source part => resolvers.clockPart source part
     | .fieldValueAsNumber reference => (.fieldValueAsNumber reference.origin ·) <$> resolvers.fieldValueAsNumber reference
     | .stringLength origin reference => (.stringLength origin ·) <$> resolvers.stringValue origin reference
     | .stringRange origin reference start finish => do

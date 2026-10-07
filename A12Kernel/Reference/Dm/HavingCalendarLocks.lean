@@ -423,4 +423,122 @@ example : ["UTC", "Europe/Berlin"].all (fun zone =>
 example : runModel (formatted "MM-dd" "MM-dd" (some 2023)) "[Rows/Tag] < \"01.03.\"" false
     "unused" "02-29" "03-01" = some (.notFired, []) := by native_decide
 
+private def clockComponents : List (String × String × String) :=
+  ["Today", "Now"].flatMap (fun source =>
+    [("DayFromDate", source, "1"), ("MonthFromDate", source, "4"),
+      ("QuarterFromDate", source, "2"), ("YearFromDate", source, "2024")]) ++
+    [("HoursFromTime", "Now", "12"), ("MinutesFromTime", "Now", "34"),
+      ("SecondsFromTime", "Now", "56")]
+
+example : clockComponents.all (fun (op, source, expected) =>
+    let filter := s!"[Rows/N] > 0 And {op}({source}) == {expected}"
+    admitted model filter && refused model s!"{op}({source}) == {expected}" &&
+      runModel model filter false "" "" "" (clock := { epochMillis := 1711974896999 })
+        (ruleExpected := "14") == some (.fired .omission, ["value 14"]) &&
+      runModel model s!"[Rows/N] > 0 And {op}({source}) == {expected} + 1" false "" "" ""
+        (clock := { epochMillis := 1711974896999 }) (ruleExpected := "14") ==
+          some (.notFired, ["value 0"])) = true := by native_decide
+
+example : ["HoursFromTime", "MinutesFromTime", "SecondsFromTime"].all (fun op =>
+    refused model s!"[Rows/N] > 0 And {op}(Today) == 0") = true ∧
+    clockComponents.all (fun (op, source, _) =>
+      refused { model with timeZoneId := "America/New_York" } s!"[Rows/N] > 0 And {op}({source}) == 0" &&
+      (admissions model s!"Sum(Rows/N Having [Rows/N] > 0 And {op}({source}) == 0)" false).all (!·)) = true := by native_decide
+
+example : runModel model
+    "[Rows/N] > 0 And MonthFromDate(Now) + QuarterFromDate(Today) * 2 == 8" false "" "" ""
+    (clock := { epochMillis := 1711974896999 }) (ruleExpected := "14") ==
+      some (.fired .omission, ["value 14"]) ∧
+    runModel model "[Rows/N] > 0 And SecondsFromTime(Now) == 0" false "" "" ""
+      (clock := { epochMillis := 999 }) (ruleExpected := "14") == some (.fired .omission, ["value 14"]) ∧
+    runModel model "[Rows/N] > 0 And SecondsFromTime(Now) == 1" false "" "" ""
+      (clock := { epochMillis := 1000 }) (ruleExpected := "14") == some (.fired .omission, ["value 14"]) := by native_decide
+
+example : [("UTC", "31", "12", "4", "1969", "23"),
+    ("Europe/Berlin", "1", "1", "1", "1970", "0")].all
+    (fun (zone, day, month, quarter, year, hour) =>
+      ["Today", "Now"].all (fun source =>
+        (["DayFromDate", "MonthFromDate", "QuarterFromDate", "YearFromDate"].zip [day, month, quarter, year]).all
+          fun (op, expected) => runModel { model with timeZoneId := zone }
+            s!"[Rows/N] > 0 And {op}({source}) == {expected}" false "" "" ""
+            (clock := { epochMillis := -1 }) (ruleExpected := "14") == some (.fired .omission, ["value 14"])) &&
+      runModel { model with timeZoneId := zone }
+        s!"[Rows/N] > 0 And HoursFromTime(Now) == {hour} And MinutesFromTime(Now) == 59 And SecondsFromTime(Now) == 59"
+        false "" "" "" (clock := { epochMillis := -1 }) (ruleExpected := "14") ==
+          some (.fired .omission, ["value 14"])) = true := by native_decide
+
+example : runModel model "[Rows/N] > 0 And DayFromDate(Now) == 4 And YearFromDate(Now) == 1582"
+    false "" "" "" (clock := { epochMillis := -12219379200000 }) (ruleExpected := "14") ==
+      some (.fired .omission, ["value 14"]) := by native_decide
+
+private def clockAtoms : List HavingNumericAtom :=
+  [.today, .now].flatMap (fun source => [.day, .month, .quarter, .year].map fun part =>
+    .clockPart source .utc (.date part)) ++
+    [.hour, .minute, .second].map (fun part => .clockPart .now .utc (.time part))
+
+private def clockFrame : CorrelationFrame := { innerEnv := [(10, 1)], outerEnv := [(10, 2)] }
+private def clockContext (clock : Option Instant) : CorrelationContext := {
+  read := fun _ _ => checkAdmittedRawCell (.rejected .malformed)
+  world := clock.map fun now => { now } }
+private def clockResolving (clock : Option Instant) : ResolvingCorrelationContext String := {
+  read := fun _ _ => .error "field read"
+  bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar"
+  world := clock.map fun now => { now } }
+private def calendarRefusal (result : Except String α) : Bool :=
+  match result with | .error reason => reason == "calendar" | .ok _ => false
+private def clockCondition (atom : HavingNumericAtom) : CorrelatedHaving := .leaf (.numeric {
+  op := .ordinary .equal, left := .atom atom, right := .literal { value := 0, authoredScale := 0 } })
+
+example : [none, some { epochMillis := -100000000000000 }].all (fun clock =>
+    clockAtoms.all fun atom =>
+      (atom.readValidation (clockContext clock) clockFrame).toOption.isNone &&
+      (atom.readComputation (clockContext clock) clockFrame).toOption.isNone &&
+      calendarRefusal (atom.readValidationResolving (clockResolving clock) clockFrame) &&
+      calendarRefusal (atom.readComputationResolving (clockResolving clock) clockFrame)) = true := by native_decide
+
+example :
+    let clock := some { epochMillis := -12219379200000 }
+    let today := HavingNumericAtom.clockPart .today .utc (.date .day)
+    let now := HavingNumericAtom.clockPart .now .utc (.date .day)
+    (today.readValidation (clockContext clock) clockFrame).toOption.isNone &&
+      (today.readComputation (clockContext clock) clockFrame).toOption.isNone &&
+      calendarRefusal (today.readValidationResolving (clockResolving clock) clockFrame) &&
+      calendarRefusal (today.readComputationResolving (clockResolving clock) clockFrame) &&
+      (now.readValidation (clockContext clock) clockFrame).toOption == some (.value 4 .fixed) &&
+      (now.readComputation (clockContext clock) clockFrame).toOption == some (.value 4) &&
+      ((now.readValidationResolving (clockResolving clock) clockFrame).toOption.bind (·.toOption)) ==
+        some (.value 4 .fixed) &&
+      (now.readComputationResolving (clockResolving clock) clockFrame).toOption == some (.value 4)
+    := by native_decide
+
+example : (clockAtoms.zip [1, 4, 2, 2024, 1, 4, 2, 2024, 12, 34, 56]).all (fun (atom, expected) =>
+    let clock := some { epochMillis := 1711974896999 }
+    (atom.readValidation (clockContext clock) clockFrame).toOption == some (.value expected .fixed) &&
+      ((atom.readValidationResolving (clockResolving clock) clockFrame).toOption.bind (·.toOption)) ==
+        some (.value expected .fixed) &&
+      (atom.readComputationResolving (clockResolving clock) clockFrame).toOption == some (.value expected)) = true := by native_decide
+
+example : clockAtoms.all (fun atom =>
+    let condition := clockCondition atom
+    atom.origins.isEmpty && atom.fieldOrigins.isEmpty && condition.fieldIds.isEmpty &&
+      condition.markedFieldIds.isEmpty && !condition.usesInner && !condition.usesOuter &&
+      condition.outerIterationScopes model == [none] &&
+      !condition.reachesReopenedLevel model [10] &&
+      condition.wellFormedForEnvironments model [10] [10] &&
+      !(CorrelatedHavingLeaf.numeric {
+        op := .ordinary .equal, left := .atom atom, right := .literal { value := 0, authoredScale := 0 } }).wellFormedForSingleGroup
+          model { level := 10, path := ["Form", "Rows"], repeatability := some 3 }) = true ∧
+    !(clockCondition (.clockPart .today .utc (.time .hour))).wellFormedForEnvironments model [10] [] ∧
+    !(clockCondition (.clockPart .now .europeBerlin (.date .year))).wellFormedForEnvironments model [10] [] := by native_decide
+
+private def clockReferenceIds (filter : String) : Option (List FieldId) := do
+  let parsed ← (parseText .english s!"FieldValuesNotUnique(/Form/Rows*/Tag Having [/Form/Rows/N] > 0 And {filter})").toOption
+  let checked ← (lowerCondition model ["Form", "Rows"] false parsed.body).toOption
+  let pointers ← (checked.core.referencePointers [(10, 2)]).toOption
+  pure (pointers.map (·.field) |>.eraseDups)
+
+example : clockComponents.all (fun (op, source, expected) =>
+    (clockReferenceIds s!"{op}({source}) == {expected}").any fun fields =>
+      fields.length == 2 && fields.contains 3 && fields.contains 4) = true := by native_decide
+
 end A12Kernel.Dm.HavingCalendarLocks

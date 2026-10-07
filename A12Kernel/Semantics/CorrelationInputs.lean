@@ -6,6 +6,7 @@ import A12Kernel.Semantics.NumericConversion
 import A12Kernel.Semantics.DateDifferenceSource
 import A12Kernel.Semantics.DateTimeDifference
 import A12Kernel.Semantics.NumericAggregate
+import A12Kernel.Semantics.LegacyCalendarExpression
 
 /-! Correlated operand identities, binding frames and phase-specific checked reads. -/
 
@@ -102,7 +103,40 @@ structure HavingTemporalRef where
   field : FlatTemporalField
   deriving Repr, DecidableEq
 
-/-- Model constants carry no row origin, so arithmetic cannot make them satisfy a filter reference requirement (spec/07 §3). Field and repetition atoms retain their own origins. -/
+inductive HavingClockSource where
+  | today
+  | now
+  deriving Repr, DecidableEq
+
+def HavingClockSource.components : HavingClockSource → TemporalComponents
+  | .today => TemporalComponents.fullDate
+  | .now => TemporalComponents.now
+
+def HavingClockSource.admits (source : HavingClockSource) : TemporalNumericPart → Bool
+  | .date part => part.admittedBy false source.components
+  | .time part => part.admittedBy source.components
+
+/-- Clock extraction follows the ordinary temporal source account: Today uses the resolved local civil date,
+while Now projects the legacy calendar label (spec/05 §7 and TemporalNumericPart.projectScalar).
+Both decode the caller's exact clock, without caching a label or substituting zero. -/
+def HavingClockSource.numericPart? (source : HavingClockSource)
+    (profile : ModelZone.ConcreteProfile) (world : Option World) (part : TemporalNumericPart) : Option Rat := do
+  let world ← world
+  match source with
+  | .today =>
+      let date ← profile.localDate? world.now
+      let _ ← profile.resolveLocal? {
+        date, time := { hour := 0, minute := 0, second := 0, valid := by decide } }
+      match part with
+      | .date part => pure (part.extract date.civil.parts)
+      | .time _ => none
+  | .now =>
+      let label ← profile.calendarLabel? world.now
+      pure (match part with
+        | .date part => part.extract label.parts
+        | .time part => part.extract label.time)
+
+/-- Clock and model constants carry no row origin, so arithmetic cannot make them satisfy a filter reference requirement (spec/07 §3). Field and repetition atoms retain their own origins. -/
 inductive HavingNumericAtom where
   | aggregate (op : NumericAggregateOp) (first : HavingNumberRef) (rest : List HavingNumberRef)
   | dateDifference (unit : DateDifferenceUnit) (left right : ResolvedDateDifferenceOperand HavingTemporalRef)
@@ -110,6 +144,7 @@ inductive HavingNumericAtom where
   | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : FlatTemporalOperand HavingTemporalRef)
   | baseYear (year : Int)
   | baseYearDatePart (year : Int) (source : BaseYearDateSource) (part : DateNumericPart)
+  | clockPart (source : HavingClockSource) (profile : ModelZone.ConcreteProfile) (part : TemporalNumericPart)
   | fieldValueAsNumber (origin : HavingOrigin) (source : ResolvedFieldValueAsNumberSource)
   | field (reference : HavingNumberRef)
   | stringLength (origin : HavingOrigin) (field : FlatStringField)
@@ -123,7 +158,7 @@ def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
   | .aggregate _ first rest => (first :: rest).map (·.origin)
   | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (·.origin)
   | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (·.origin)
-  | .baseYear _ | .baseYearDatePart _ _ _ => []
+  | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ => []
   | .field reference => [reference.origin]
   | .dateRangeBoundPart origin _ _ _ | .fieldValueAsNumber origin _ | .stringLength origin _
       | .stringRange origin _ _ _ | .temporalPart origin _ _ => [origin]
@@ -134,7 +169,7 @@ def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin ×
   | .aggregate _ first rest => (first :: rest).map (fun reference => (reference.origin, reference.field.id))
   | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (fun reference => (reference.origin, reference.field.id))
   | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (fun reference => (reference.origin, reference.field.id))
-  | .baseYear _ | .baseYearDatePart _ _ _ | .repetition _ => []
+  | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ | .repetition _ => []
   | .dateRangeBoundPart origin source _ _ => [(origin, source.id)]
   | .fieldValueAsNumber origin source => [(origin, source.fieldId)]
   | .field reference => [(reference.origin, reference.field.id)]
@@ -145,7 +180,7 @@ def HavingNumericAtom.summary : HavingNumericAtom → NumericScaleSummary
   | .aggregate .distinctCount _ _ => .field 0
   | .aggregate _ first rest => rest.foldl (fun summary reference => summary.union (.field reference.field.info.scale)) (.field first.field.info.scale)
   | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ => .field 0
-  | .baseYear _ | .baseYearDatePart _ _ _ => .field 0
+  | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ => .field 0
   | .fieldValueAsNumber _ source => .field source.scale
   | .field reference => .field reference.field.info.scale
   | .dateRangeBoundPart _ _ _ _ | .repetition _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ => .field 0
@@ -345,6 +380,12 @@ private def readHavingToday (world : Option World) (unavailable : Error)
   | some parts => pure parts
   | none => throw unavailable
 
+private def readHavingClockPart (world : Option World) (unavailable : Error)
+    (source : HavingClockSource) (profile : ModelZone.ConcreteProfile) (part : TemporalNumericPart) : Except Error Rat :=
+  match source.numericPart? profile world part with
+  | some amount => pure amount
+  | none => throw unavailable
+
 private def readHavingDateOperand (world : Option World) (unavailable : Error)
     (read : HavingTemporalRef → Except Error CellObservation) :
     ResolvedDateDifferenceOperand HavingTemporalRef → Except Error DateDifferenceOperand :=
@@ -376,6 +417,7 @@ def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : Cor
       havingArithmetic ((observeCell .validation (context.read (frame.envAt origin) source.id)).asDateRangeBoundNumericOperand bound part)
   | .baseYear year => .ok (.value year .fixed)
   | .baseYearDatePart year source part => .ok (.value (baseYearDateSourceNumericPart year source part) .fixed)
+  | .clockPart source profile part => (.value · .fixed) <$> readHavingClockPart context.world () source profile part
   | .fieldValueAsNumber origin source =>
       havingArithmetic (source.observeOperand (observeCell .validation (context.read (frame.envAt origin) source.fieldId)))
   | .stringLength origin source =>
@@ -409,6 +451,8 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
       pure (havingArithmetic ((observeCell .validation cell).asDateRangeBoundNumericOperand bound part))
   | .baseYear year => pure (.ok (.value year .fixed))
   | .baseYearDatePart year source part => pure (.ok (.value (baseYearDateSourceNumericPart year source part) .fixed))
+  | .clockPart source profile part => do
+      pure (.ok (.value (← readHavingClockPart context.world context.unsupportedDateCalendar source profile part) .fixed))
   | .fieldValueAsNumber origin source => do
       let cell ← context.read (frame.envAt origin) source.fieldId
       pure (havingArithmetic (source.observeOperand (observeCell .validation cell)))
@@ -445,6 +489,8 @@ def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationCo
       pure (((observeCell .computation cell).asDateRangeBoundNumericOperand bound part).toComputationResult)
   | .baseYear year => pure (.value year)
   | .baseYearDatePart year source part => pure (.value (baseYearDateSourceNumericPart year source part))
+  | .clockPart source profile part =>
+      .value <$> readHavingClockPart context.world context.unsupportedDateCalendar source profile part
   | .fieldValueAsNumber origin source => do
       let cell ← context.read (frame.envAt origin) source.fieldId
       pure ((source.observeOperand (observeCell .computation cell)).toComputationResult)
