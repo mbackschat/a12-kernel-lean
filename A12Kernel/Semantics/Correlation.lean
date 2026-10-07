@@ -299,7 +299,7 @@ def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
       | .ok verdict => CorrelatedHavingLeaf.verdictTruth verdict
       | .error _ => .unknown
   | .fieldMembership operator source =>
-      CorrelatedHavingLeaf.verdictTruth (source.evalValidation operator (fun origin => context.read (frame.envAt origin)))
+      CorrelatedHavingLeaf.verdictTruth (source.evalValidation operator context frame)
   | .literalMembership origin operator source =>
       CorrelatedHavingLeaf.verdictTruth (source.evalValidation operator (context.read (frame.envAt origin) source.field.id))
   | .fieldFill operator references =>
@@ -349,7 +349,7 @@ def CorrelatedHavingLeaf.evalTruthInResolving
   | .dateValidity operation source => CorrelatedHavingLeaf.verdictTruth <$> source.evalValidationRead operation context frame
   | .uniqueness source => CorrelatedHavingLeaf.verdictTruth <$> source.evalValidationRead context frame
   | .fieldMembership operator source => do
-      pure (CorrelatedHavingLeaf.verdictTruth (← source.evalValidationRead operator (fun origin => context.read (frame.envAt origin))))
+      pure (CorrelatedHavingLeaf.verdictTruth (← source.evalValidationRead operator context frame))
   | .literalMembership origin operator source => do
       pure (CorrelatedHavingLeaf.verdictTruth (source.evalValidation operator (← context.read (frame.envAt origin) source.field.id)))
   | .fieldFill operator references => do
@@ -401,7 +401,7 @@ def CorrelatedHavingLeaf.evalComputationInResolving
   | .dateValidity operation source => source.evalComputationRead operation context frame
   | .uniqueness source => source.evalRead .computation context frame
   | .fieldMembership operator source =>
-      source.evalComputationRead operator (fun origin => context.read (frame.envAt origin))
+      source.evalComputationRead operator context frame
   | .literalMembership origin operator source => do
       pure (source.evalComputation operator (← context.read (frame.envAt origin) source.field.id))
   | .fieldFill operator references =>
@@ -575,7 +575,7 @@ def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
   | .dateValidity operation source => ∃ polarity, source.evalValidationRead operation context.asResolving frame = .ok (.fired polarity)
   | .uniqueness source => ∃ polarity, source.evalValidationRead context.asResolving frame = .ok (.fired polarity)
   | .fieldMembership operator source =>
-      ∃ polarity, source.evalValidation operator (fun origin => context.read (frame.envAt origin)) = .fired polarity
+      ∃ polarity, source.evalValidation operator context frame = .fired polarity
   | .literalMembership origin operator source =>
       ∃ polarity, source.evalValidation operator (context.read (frame.envAt origin) source.field.id) = .fired polarity
   | .fieldFill operator references =>

@@ -159,10 +159,6 @@ private def havingEntity? : Expr → Option SurfaceHavingDirectFieldOperand
   | .entity reference => havingMember? (.value reference)
   | _ => none
 
-private def havingMembers (expressions : List Expr) : Lowering SurfaceHavingDirectFieldSource := do
-  let some (first :: rest) := expressions.mapM havingEntity? | refuse "Having" "direct membership fields"
-  pure { first, rest }
-
 private def havingEntityListMembers (arguments : List Argument) : Lowering SurfaceHavingEntitySource := do
   let operands ← arguments.mapM fun
     | .mk (.constant "RuleGroup") none none => pure (.group .inner (.ruleGroup false))
@@ -225,11 +221,11 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
       let plain (arguments : List Argument) := arguments.mapM fun
         | .mk expression none none => pure expression
         | _ => refuse "Having" "direct membership fields"
-      let subjects ← havingMembers (← plain arguments)
+      let subjects ← havingEntityListMembers arguments
       let values ← plain members
       if let some literals := values.mapM (fun | .string value => some value | _ => none) then
         return .literalList operator subjects literals
-      pure (.fieldMembership (.quantified operator) subjects (← havingMembers values))
+      pure (.fieldMembership (.quantified operator) subjects (← havingEntityListMembers members))
   | .call id arguments none none => do
       if id == "FieldValuesNotUnique" then
         return .uniqueness (← havingEntityListMembers arguments)
@@ -243,8 +239,8 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
           origin, field, projectionRef := category.map EnumerationProjectionRef.category |>.getD .stored }
         if let some (first :: rest) := values.mapM havingMember? then
           return .fieldMembership (.scalar operator)
-            { first := { origin, field, form := category.map FieldEntityReadForm.projected |>.getD .stored }, rest := [] }
-            { first, rest }
+            { first := .entity { origin, field, form := category.map FieldEntityReadForm.projected |>.getD .stored }, rest := [] }
+            { first := .entity first, rest := rest.map .entity }
         if let some strings := values.mapM (fun | .string value => some value | _ => none) then
           return .literalMembership operator reference (.inr strings)
         let integers ← values.mapM fun expression => do

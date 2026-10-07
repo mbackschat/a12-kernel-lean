@@ -209,7 +209,7 @@ private def categoryLiteralDomains : FlatModel := { categoryModel with fields :=
 private def categoryLiteralCertificate (value : String) : Option Bool := do
   let declaration ← (categoryLiteralDomains.lookupUniqueId 3).toOption
   let (operand, _) ← declaration.toEnumerationTextFieldComparison? (.category "Label")
-  pure ((HavingFieldValueList.tokenLiterals [{ origin := .inner, operand }] [value]).wellFormedForEnvironments
+  pure ((HavingFieldValueList.tokenLiterals [.direct { origin := .inner, operand }] [value]).wellFormedForEnvironments
     (.quantified .atLeastOne) categoryLiteralDomains [10] [])
 
 example : literalListFilters.map (fun operator =>

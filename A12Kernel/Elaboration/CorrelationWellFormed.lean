@@ -378,9 +378,9 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
   | .uniqueness source => source.presenceSlots.any fun slot =>
       slot.references.any (fun ref => ref.origin == .inner) &&
         (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
-  | .fieldMembership _ source => source.references.any fun ref =>
-      ref.origin == .inner && (model.lookupUniqueId ref.field).toOption.any fun declaration =>
-        declaration.repeatableScope.any reopenedLevels.contains
+  | .fieldMembership _ source => source.presenceSlots.any fun slot =>
+      slot.references.any (fun ref => ref.origin == .inner) &&
+        (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
   | .fieldFill _ references => references.any fun slot =>
       slot.references.any (fun ref => ref.origin == .inner) &&
         (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)

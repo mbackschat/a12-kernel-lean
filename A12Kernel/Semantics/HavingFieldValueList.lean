@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.CorrelationInputs
-import A12Kernel.Semantics.ComputationValueList
+import A12Kernel.Semantics.HavingMembershipStream
+import A12Kernel.Semantics.HavingGroupPresence
 
 namespace A12Kernel
 
@@ -12,68 +13,65 @@ def HavingStringRef.readValueListCell (ref : HavingStringRef) (phase : Phase)
     (read : HavingOrigin → FieldId → Except Error CheckedCell) : Except Error (ValueListCell .token) := do
   pure (ref.operand.checkedValueListCellAt phase (← read ref.origin ref.field.id))
 
-/-- Membership over direct fields retains each operand's origin and checked value domain.
+/-- Membership over authored field-list slots retains each operand's origin and checked value domain.
 Category identity remains in the token operand, independently of its physical field ID (spec/06 §B.4). -/
 inductive HavingFieldValueList where
-  | number (subjects members : List HavingNumberRef)
-  | token (subjects members : List HavingStringRef)
-  | tokenLiterals (subjects : List HavingStringRef) (members : List String)
+  | number (subjects members : List (HavingFieldListSlot HavingNumberRef))
+  | token (subjects members : List (HavingFieldListSlot HavingStringRef))
+  | tokenLiterals (subjects : List (HavingFieldListSlot HavingStringRef)) (members : List String)
   deriving Repr, DecidableEq
 
 namespace HavingFieldValueList
 
-def references : HavingFieldValueList → List HavingPresenceRef
-  | .number subjects members => (subjects ++ members).map fun ref => { origin := ref.origin, field := ref.field.id }
-  | .token subjects members => (subjects ++ members).map fun ref => { origin := ref.origin, field := ref.field.id }
-  | .tokenLiterals subjects _ => subjects.map fun ref => { origin := ref.origin, field := ref.field.id }
+def presenceSlots : HavingFieldValueList → List (HavingFieldListSlot HavingPresenceRef)
+  | .number subjects members => (subjects ++ members).map (·.map fun ref => { origin := ref.origin, field := ref.field.id })
+  | .token subjects members => (subjects ++ members).map (·.map fun ref => { origin := ref.origin, field := ref.field.id })
+  | .tokenLiterals subjects _ => subjects.map (·.map fun ref => { origin := ref.origin, field := ref.field.id })
 
-/-- The common selector owns traversal; this fold supplies typed, origin-sensitive singleton reads
-without materializing an operand before the selector asks for it (spec/06 §B.5). -/
-def foldOperands (source : HavingFieldValueList) (phase : Phase)
-    (read : HavingOrigin → FieldId → Except Error CheckedCell)
-    (consume : {kind : ValueListKind} → {subject member : Type} →
-      (subject → Except Error (ResolvedValueListSide kind)) →
-      (member → Except Error (ResolvedValueListSide kind)) →
-      List subject → List member → Except Error Result) : Except Error Result :=
-  let number (ref : HavingNumberRef) : Except Error (ResolvedValueListSide .number) := do
-    pure {
-      cells := [← ref.readValueListCell phase read],
-      hasUninstantiatedTail := false, hasHaving := false }
-  let token (ref : HavingStringRef) : Except Error (ResolvedValueListSide .token) := do
-    pure {
-      cells := [← ref.readValueListCell phase read],
-      hasUninstantiatedTail := false, hasHaving := false }
+def references (source : HavingFieldValueList) : List HavingPresenceRef :=
+  source.presenceSlots.flatMap (·.references)
+
+/-- The value domain changes the cell reader; the shared membership stream owns expansion
+and the ordinary selector owns phase order (spec/06 §B.3–B.5). -/
+private def withOperands (source : HavingFieldValueList) (phase : Phase)
+    (context : ResolvingCorrelationContext Error)
+    (consume : {kind : ValueListKind} → {Ref : Type} →
+      (Ref → HavingOrigin) → (Ref → FieldId) → (Env → Ref → Except Error (ValueListCell kind)) →
+      List (HavingFieldListSlot Ref) →
+      Sum (List (HavingFieldListSlot Ref)) (List (ValueListAtom kind)) → Except Error Result) : Except Error Result :=
   match source with
-  | .number subjects members => consume number number subjects members
-  | .token subjects members => consume token token subjects members
-  | .tokenLiterals subjects members => consume token (fun value => pure {
-      cells := [.present value], hasUninstantiatedTail := false, hasHaving := false }) subjects members
+  | .number subjects members => consume (kind := .number) (Ref := HavingNumberRef) (·.origin) (·.field.id)
+      (fun env ref => ref.readValueListCell phase (fun _ => context.read env)) subjects (.inl members)
+  | .token subjects members => consume (kind := .token) (Ref := HavingStringRef) (·.origin) (·.field.id)
+      (fun env ref => ref.readValueListCell phase (fun _ => context.read env)) subjects (.inl members)
+  | .tokenLiterals subjects members => consume (kind := .token) (Ref := HavingStringRef) (·.origin) (·.field.id)
+      (fun env ref => ref.readValueListCell phase (fun _ => context.read env)) subjects (.inr members)
 
 def evalValidationRead (source : HavingFieldValueList) (operator : ComputationValueListOperator)
-    (read : HavingOrigin → FieldId → Except Error CheckedCell) : Except Error Verdict :=
-  source.foldOperands .validation read fun resolveSubject resolveMember subjects members => do
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) : Except Error Verdict :=
+  source.withOperands .validation context fun origin field read subjects members => do
+    let resolve := HavingMembershipStream.resolveSlots origin field read context frame
     let quantifier := match operator with | .scalar op => op.quantifier | .quantified op => op
-    let (subjects, members) ← quantifier.resolveSidesOrdered
-      (fun _ => subjects.mapM resolveSubject) (fun _ => members.mapM resolveMember)
+    let (subjects, members) ← quantifier.resolveSidesOrdered (fun _ => resolve subjects) (fun _ =>
+      match members with
+      | .inl slots => resolve slots
+      | .inr values => pure (values.map fun value => {
+          cells := [.present value], hasUninstantiatedTail := false, hasHaving := false }))
     pure (quantifier.evalOrdered subjects members)
 
 def evalComputationRead (source : HavingFieldValueList) (operator : ComputationValueListOperator)
-    (read : HavingOrigin → FieldId → Except Error CheckedCell) : Except Error ComputationConditionResult :=
-  source.foldOperands .computation read fun resolveSubject resolveMember subjects members =>
-    operator.evalUsing (fun _ => ValueListQuantifier.collectOperands resolveMember members [])
-      (fun predicate => ValueListQuantifier.anyOperands resolveSubject predicate subjects)
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) : Except Error ComputationConditionResult :=
+  source.withOperands .computation context fun origin field read subjects members =>
+    operator.evalUsing (fun _ => match members with
+      | .inl slots => HavingMembershipStream.collectSlots origin field read context frame slots
+      | .inr values => pure (.ok values.reverse))
+      (HavingMembershipStream.anySlots origin field read context frame subjects)
 
 def evalValidation (source : HavingFieldValueList) (operator : ComputationValueListOperator)
-    (read : HavingOrigin → FieldId → CheckedCell) : Verdict :=
-  match source.evalValidationRead operator (fun origin field => Except.ok (ε := Empty) (read origin field)) with
+    (context : CorrelationContext) (frame : CorrelationFrame) : Verdict :=
+  match source.evalValidationRead operator context.asResolving frame with
   | .ok result => result
-  | .error impossible => nomatch impossible
-
-def evalComputation (source : HavingFieldValueList) (operator : ComputationValueListOperator)
-    (read : HavingOrigin → FieldId → CheckedCell) : ComputationConditionResult :=
-  match source.evalComputationRead operator (fun origin field => Except.ok (ε := Empty) (read origin field)) with
-  | .ok result => result
-  | .error impossible => nomatch impossible
+  | .error _ => .unknown
 
 end HavingFieldValueList
 end A12Kernel

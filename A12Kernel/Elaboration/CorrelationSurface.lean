@@ -107,12 +107,12 @@ inductive SurfaceCorrelatedHaving where
       SG17 owns integration of the existing comparison-entry refusal into this route. -/
   | compareStrings (op : EqualityOp) (reference : SurfaceHavingStringRef)
       (expected : String)
-  | literalList (quantifier : ValueListQuantifier) (subjects : SurfaceHavingDirectFieldSource)
+  | literalList (quantifier : ValueListQuantifier) (subjects : SurfaceHavingEntitySource)
       (values : List String)
   | dateValidity (operation : ConstructedDateValidityOp) (source : SurfaceHavingDateComponents)
   | uniqueness (source : SurfaceHavingEntitySource)
   | fieldMembership (operator : ComputationValueListOperator)
-      (subjects members : SurfaceHavingDirectFieldSource)
+      (subjects members : SurfaceHavingEntitySource)
   | literalMembership (operator : ValueListMembershipOp) (reference : SurfaceHavingStringRef)
       (values : Sum (List Int) (List String))
   | fieldFill (operator : FieldFillQuantifier) (source : SurfaceHavingEntitySource)
@@ -338,14 +338,10 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
       (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
   | .literalMembership _ reference _ => field reference.origin reference.field
   | .fieldMembership _ subjects members =>
-      (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field
+      (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? entity
   | .dateValidity _ source => source.references.findSome? fun ref => field ref.origin ref.field
-  | .uniqueness source | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => do
-      guard (ref.origin == .outer)
-      let (path, scope) ← ref.bindingRead? model declaringGroup
-      let unbound ← model.unboundReadLevel? declaringGroup writtenGroup scope bound
-      pure (path, unbound)
-  | .literalList _ source _ => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
+  | .uniqueness source | .fieldFill _ source | .literalList _ source _ =>
+      (source.first :: source.rest).findSome? entity
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => field reference.origin reference.field
   | .groupPresence _ origin reference => group origin reference
   | .groupFill _ first rest => (first :: rest).findSome? fun (origin, reference) => group origin reference
@@ -353,6 +349,11 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
       (left.unboundOuterReference? model declaringGroup writtenGroup bound).orElse fun _ =>
         right.unboundOuterReference? model declaringGroup writtenGroup bound
 where
+  entity (ref : SurfaceHavingEntityOperand) : Option (List String × UnboundOperandLevel) := do
+    guard (ref.origin == .outer)
+    let (path, scope) ← ref.bindingRead? model declaringGroup
+    let unbound ← model.unboundReadLevel? declaringGroup writtenGroup scope bound
+    pure (path, unbound)
   field (origin : HavingOrigin) (reference : SurfaceFieldPath) :
       Option (List String × UnboundOperandLevel) := do
     guard (origin == .outer)

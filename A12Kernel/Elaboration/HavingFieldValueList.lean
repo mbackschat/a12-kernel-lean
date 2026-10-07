@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CorrelationSurface
 import A12Kernel.Elaboration.Flat.FieldValueRead
+import A12Kernel.Elaboration.HavingEntityList
 
 namespace A12Kernel
 
@@ -13,36 +14,58 @@ private def tokenLiteralAllowed (model : FlatModel) (subjects : List HavingStrin
         (model.checkedEnumerationOperandIn? declaration.repeatableScope operand).any fun checked =>
           checked.declaration.literalAllowed checked.projection value
 
-private def tokenReferencesWellFormed (model : FlatModel) (candidateLevels outerLevels : List RepeatableLevel)
-    (references : List HavingStringRef) : Bool :=
-  !references.isEmpty && references.eraseDups.length == references.length &&
-    references.all (fun ref =>
-      let scope := ref.origin.availableLevels candidateLevels outerLevels
+private def membershipSlotsUnique [BEq Ref] (origin : Ref → HavingOrigin)
+    (slots : List (HavingFieldListSlot Ref)) : Bool :=
+  (firstDuplicateInEncounterOrder? (fun slot => match slot with
+    | .direct ref => some (Sum.inl ref : Sum Ref (HavingOrigin × GroupPath))
+    | .extent (.group source) (ref :: _) => some (.inr (origin ref, source.path))
+    | _ => none) slots).isNone
+
+private def membershipSlotsDisjoint (model : FlatModel)
+    (slots : List (HavingFieldListSlot HavingPresenceRef)) : Bool :=
+  !(slots.any fun left => slots.any fun right =>
+    (left.entityPath? model).any fun (leftPath, leftGroup) =>
+      (right.entityPath? model).any fun (rightPath, rightGroup) =>
+        entityListPathsOverlap leftPath rightPath leftGroup rightGroup)
+
+private def tokenReferencesWellFormed (model : FlatModel)
+    (slots : List (HavingFieldListSlot HavingStringRef)) : Bool :=
+  let references := slots.flatMap (·.references)
+  slots.all (fun slot => slot.references.all (fun ref =>
+    (model.lookupUniqueId ref.field.id).toOption.any fun declaration =>
+      -- Group/star expansion supplies stored reads; only direct syntax names a category
+      -- (havingResolvedEntitySlots, spec/06 §B.3).
+      (slot.isDirect || declaration.toTextFieldComparison?.any (fun (operand, _) => operand == ref.operand)) &&
       match ref.operand with
-      | .string _ => model.directComparableIn? scope ref.operand == some .plainString
-      | .enumeration operand => (model.checkedEnumerationOperandIn? scope operand).isSome) &&
-    references.all (fun ref => references.head?.any fun first =>
-      match first.operand, ref.operand with
-      | .string _, .string _ | .enumeration _, .enumeration _ => true
-      | _, _ => false)
+      | .string _ => model.directComparableIn? declaration.repeatableScope ref.operand == some .plainString
+      | .enumeration operand => (model.checkedEnumerationOperandIn? declaration.repeatableScope operand).isSome)) &&
+  references.all (fun ref => references.head?.any fun first =>
+    match first.operand, ref.operand with
+    | .string _, .string _ | .enumeration _, .enumeration _ => true
+    | _, _ => false)
 
 def HavingFieldValueList.wellFormedForEnvironments (source : HavingFieldValueList)
     (operator : ComputationValueListOperator) (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
+  source.presenceSlots.all (·.wellFormedForEnvironments model candidateLevels outerLevels) &&
+  membershipSlotsDisjoint model source.presenceSlots &&
   match source with
   | .number subjects members =>
       membershipMultiplicity operator subjects.length && !members.isEmpty &&
-        (subjects ++ members).eraseDups.length == (subjects ++ members).length &&
-        (subjects ++ members).all fun ref => (model.lookupUniqueId ref.field.id).toOption.any fun declaration =>
-          (FlatField.number ref.field).matchesDecl declaration &&
-            declaration.repetitionBoundBy (ref.origin.availableLevels candidateLevels outerLevels)
+      (match operator with | .scalar _ => (subjects ++ members).all (·.isDirect) | .quantified _ => true) &&
+      membershipSlotsUnique (·.origin) (subjects ++ members) &&
+      ((subjects ++ members).flatMap (·.references)).all fun ref =>
+        (model.lookupUniqueId ref.field.id).toOption.any fun declaration => (FlatField.number ref.field).matchesDecl declaration
   | .token subjects members =>
       membershipMultiplicity operator subjects.length && !members.isEmpty &&
-        tokenReferencesWellFormed model candidateLevels outerLevels (subjects ++ members)
+      (match operator with | .scalar _ => (subjects ++ members).all (·.isDirect) | .quantified _ => true) &&
+      membershipSlotsUnique (·.origin) (subjects ++ members) &&
+      tokenReferencesWellFormed model (subjects ++ members)
   | .tokenLiterals subjects values =>
-      !values.isEmpty && tokenReferencesWellFormed model candidateLevels outerLevels subjects &&
-        values.all (tokenLiteralAllowed model subjects) &&
-        (match operator with | .quantified _ => true | .scalar _ => false)
+      !subjects.isEmpty && !values.isEmpty && membershipSlotsUnique (·.origin) subjects &&
+      tokenReferencesWellFormed model subjects &&
+      values.all (tokenLiteralAllowed model (subjects.flatMap (·.references))) &&
+      (match operator with | .quantified _ => true | .scalar _ => false)
 
 private def membershipProjection : FieldEntityReadForm → EnumerationProjectionRef
   | .stored => .stored
@@ -75,33 +98,26 @@ private def checkMembershipValues (operands : List (ResolvedHavingDirectFieldOpe
       if let some error := operand.declaration.projectedReadRefusal? (membershipProjection operand.form) then
         throw (CorrelationElabError.resolve error)
 
-/-- Scalar members ask their read gates before the subject's kind gate; plural lists retain
-side-local and cross-side identity checks around value validation (spec/06 §B.3–B.5). -/
-def elaborateHavingFieldValueList (model : FlatModel) (operator : ComputationValueListOperator)
+/-- Scalar members ask their read gates before the subject's kind gate (spec/06 §B.4). -/
+private def elaborateHavingScalarFieldValueList (model : FlatModel)
     (subjects members : SurfaceHavingDirectFieldSource)
     (readEntity readValue : SurfaceHavingDirectFieldOperand → Except CorrelationElabError FlatFieldDecl) :
     Except CorrelationElabError HavingFieldValueList := do
   let writtenSubjects := subjects.first :: subjects.rest
   let writtenMembers := members.first :: members.rest
-  let (subjectDecls, memberDecls) ← match operator with
-    | .scalar _ => do
-        if !subjects.rest.isEmpty then throw .incoherentCore
-        let (subject, members) ← resolveScalarMembershipReads readEntity readValue
-          (fun subject error => match subject.form, error with
-            | .stored, .resolve (.groupInFieldValueRead _ none _) => true
-            | _, _ => false) subjects.first writtenMembers
-        pure ([subject], members)
-    | .quantified _ => do
-        pure (← writtenSubjects.mapM readEntity, ← writtenMembers.mapM readEntity)
+  if !subjects.rest.isEmpty then throw .incoherentCore
+  let (subject, memberDecls) ← resolveScalarMembershipReads readEntity readValue
+    (fun subject error => match subject.form, error with
+      | .stored, .resolve (.groupInFieldValueRead _ none _) => true
+      | _, _ => false) subjects.first writtenMembers
+  let subjectDecls := [subject]
   let fields := resolvedMembershipOperands (model := model) writtenSubjects subjectDecls
   let values := resolvedMembershipOperands (model := model) writtenMembers memberDecls
-  if let .quantified _ := operator then checkMembershipDuplicates fields
   let some first := subjectDecls.head? | throw .incoherentCore
   let kind := first.policy.kind.surfaceKind
   checkMembershipKinds kind subjectDecls
   if kind != .number && kind != .string && kind != .enumeration then throw (.membershipKind first.path)
   checkMembershipValues fields
-  if let .quantified _ := operator then checkMembershipDuplicates values
   checkMembershipKinds kind memberDecls
   checkMembershipDuplicates (fields ++ values)
   checkMembershipValues values
@@ -109,29 +125,77 @@ def elaborateHavingFieldValueList (model : FlatModel) (operator : ComputationVal
     let number (operand : ResolvedHavingDirectFieldOperand model) := do
       let some field := operand.declaration.toNumberField? | throw CorrelationElabError.incoherentCore
       pure ({ origin := operand.origin, field } : HavingNumberRef)
-    return .number (← fields.mapM number) (← values.mapM number)
-  return .token (← fields.mapM membershipText) (← values.mapM membershipText)
+    return .number ((← fields.mapM number).map .direct) ((← values.mapM number).map .direct)
+  return .token ((← fields.mapM membershipText).map .direct) ((← values.mapM membershipText).map .direct)
 
-/-- A plural literal list checks every field read before list gates and admits Enumeration values
-against the union of the selected domains (spec/06 §B.3). -/
-def elaborateHavingTokenLiteralList (model : FlatModel) (subjects : SurfaceHavingDirectFieldSource)
-    (values : List String)
-    (readEntity : SurfaceHavingDirectFieldOperand → Except CorrelationElabError FlatFieldDecl) :
+private def directSource (source : SurfaceHavingEntitySource) : Except CorrelationElabError SurfaceHavingDirectFieldSource := do
+  let operands ← (source.first :: source.rest).mapM fun
+    | .entity ref => pure ref
+    | _ => throw .incoherentCore
+  let first :: rest := operands | throw .incoherentCore
+  pure { first, rest }
+
+private def certifyMembershipSlots (kind : SurfaceScalarKind)
+    (slots : List (HavingFieldListSlot (ResolvedHavingDirectFieldOperand model))) :
+    Except CorrelationElabError (Sum (List (HavingFieldListSlot HavingNumberRef)) (List (HavingFieldListSlot HavingStringRef))) := do
+  if kind == .number then
+    return .inl (← slots.mapM fun slot => slot.mapM fun operand => do
+      let some field := operand.declaration.toNumberField? | throw .incoherentCore
+      pure { origin := operand.origin, field })
+  return .inr (← slots.mapM fun slot => slot.mapM membershipText)
+
+/-- Resolve both sides before the staged list gates; cross-side repeats follow subject value
+validation and member base types, as in spec/06 §B.3. Scalar forms retain field-read admission. -/
+def elaborateHavingFieldValueList (model : FlatModel) (declaringGroup : GroupPath)
+    (candidateLevels outerLevels : List RepeatableLevel) (operator : ComputationValueListOperator)
+    (subjects members : SurfaceHavingEntitySource)
+    (readEntity readValue : SurfaceHavingDirectFieldOperand → Except CorrelationElabError FlatFieldDecl) :
     Except CorrelationElabError HavingFieldValueList := do
-  let written := subjects.first :: subjects.rest
-  let declarations ← written.mapM readEntity
-  let fields := resolvedMembershipOperands (model := model) written declarations
-  checkMembershipDuplicates fields
+  if let .scalar _ := operator then
+    return ← elaborateHavingScalarFieldValueList model (← directSource subjects) (← directSource members) readEntity readValue
+  let fields ← resolveHavingEntityListOperands model declaringGroup candidateLevels outerLevels subjects
+  let values ← resolveHavingEntityListOperands model declaringGroup candidateLevels outerLevels members
+  let fieldSlots ← havingResolvedEntitySlots fields
+  let valueSlots ← havingResolvedEntitySlots values
+  let fieldRefs := fieldSlots.flatMap (·.references)
+  let valueRefs := valueSlots.flatMap (·.references)
+  checkHavingEntityDuplicates fields
+  checkHavingEntityRoots fields
+  let some first := fieldRefs.head? | throw .incoherentCore
+  let kind := first.declaration.policy.kind.surfaceKind
+  checkMembershipKinds kind (fieldRefs.map (·.declaration))
+  if kind != .number && kind != .string && kind != .enumeration then throw (.membershipKind first.declaration.path)
+  checkMembershipValues fieldRefs
+  checkHavingEntityDuplicates values
+  checkHavingEntityRoots values
+  checkMembershipKinds kind (valueRefs.map (·.declaration))
+  checkHavingEntityDuplicates (fields ++ values)
+  checkMembershipValues valueRefs
+  match ← certifyMembershipSlots kind fieldSlots, ← certifyMembershipSlots kind valueSlots with
+  | .inl subjects, .inl members => pure (.number subjects members)
+  | .inr subjects, .inr members => pure (.token subjects members)
+  | _, _ => throw .incoherentCore
+
+/-- Literal domains use the union of all projected declarations, while authored slots retain
+scope and expansion boundaries (spec/06 §B.3). -/
+def elaborateHavingTokenLiteralList (model : FlatModel) (declaringGroup : GroupPath)
+    (candidateLevels outerLevels : List RepeatableLevel) (subjects : SurfaceHavingEntitySource)
+    (values : List String) : Except CorrelationElabError HavingFieldValueList := do
+  let operands ← resolveHavingEntityListOperands model declaringGroup candidateLevels outerLevels subjects
+  let slots ← havingResolvedEntitySlots operands
+  let fields := slots.flatMap (·.references)
+  checkHavingEntityDuplicates operands
+  checkHavingEntityRoots operands
   if values.isEmpty then throw .incoherentCore
-  let some first := declarations.head? | throw .incoherentCore
-  let kind := first.policy.kind.surfaceKind
-  checkMembershipKinds kind declarations
-  if kind != .number && kind != .string && kind != .enumeration then throw (.membershipKind first.path)
-  if kind == .number then throw (.membershipStringLiteralKind first.path)
+  let some first := fields.head? | throw .incoherentCore
+  let kind := first.declaration.policy.kind.surfaceKind
+  checkMembershipKinds kind (fields.map (·.declaration))
+  if kind != .number && kind != .string && kind != .enumeration then throw (.membershipKind first.declaration.path)
+  if kind == .number then throw (.membershipStringLiteralKind first.declaration.path)
   checkMembershipValues fields
-  let operands ← fields.mapM membershipText
-  if let some value := values.find? fun value => !tokenLiteralAllowed model operands value then
-    throw (.text (.enumerationOperand first.path (.invalidLiteral value)))
+  let operands ← slots.mapM fun slot => slot.mapM membershipText
+  if let some value := values.find? fun value => !tokenLiteralAllowed model (operands.flatMap (·.references)) value then
+    throw (.text (.enumerationOperand first.declaration.path (.invalidLiteral value)))
   pure (.tokenLiterals operands values)
 
 end A12Kernel

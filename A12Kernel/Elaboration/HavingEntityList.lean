@@ -18,11 +18,11 @@ private def ordinaryOperand (model : FlatModel) (declaringGroup : GroupPath) :
 
 /-- Ordinary entity-list shape and category gates are applied before the enclosing filter's
 candidate-scope gate. Captured references retain their immediate host-scope check (spec/07 §3). -/
-def elaborateHavingEntityList (model : FlatModel) (declaringGroup : GroupPath)
+def resolveHavingEntityListOperands (model : FlatModel) (declaringGroup : GroupPath)
     (_candidateLevels outerLevels : List RepeatableLevel) (source : SurfaceHavingEntitySource) :
-    Except CorrelationElabError (List (HavingFieldListSlot (ResolvedHavingDirectFieldOperand model))) := do
+    Except CorrelationElabError (List (HavingOrigin × ResolvedFieldEntityOperand model)) := do
   model.validate |>.mapError .resolve
-  let operands ← (source.first :: source.rest).mapM fun authored => do
+  (source.first :: source.rest).mapM fun authored => do
     let operand ← resolveFieldEntityOperandIn model declaringGroup []
       (ordinaryOperand model declaringGroup authored) (some declaringGroup) declaringGroup
       |>.mapError .fieldFill
@@ -33,19 +33,10 @@ def elaborateHavingEntityList (model : FlatModel) (declaringGroup : GroupPath)
       if !operand.bindingScope.isPrefixOf outerLevels then
         throw (.fieldOutsideEnvironment .outer operand.entityPath outerLevels operand.bindingScope)
     pure (authored.origin, operand)
-  if let some (_, duplicate) := firstDuplicateInEncounterOrder?
-      (fun (origin, operand) => operand.exactIdentity?.map (origin, ·)) operands then
-    match duplicate with
-    | .field (field, _) | .indexed (field, _) => throw (.fieldFill (.duplicateOperand field))
-    | .fixedGroup path | .keyedGroup path _ => throw (.fieldFill (.duplicateGroupOperand path))
-  if let some (left, right) := firstResolvedOperandOverlap? (operands.map (·.2)) then
-    throw (.fieldFill (.overlappingOperands left right))
-  if let some path := operands.findSome? (fun (_, operand) => operand.rootGroupPath?) then
-    throw (.fieldFill (.rootGroupOperand path))
-  if let some path := operands.findSome? (fun (_, operand) => operand.categoryPath?) then
-    throw (.fieldFill (.categoryNotAllowed path))
-  if operands.length < 2 && !operands.any (fun (_, operand) => operand.isAlreadyMany) then
-    throw (.fieldFill .tooFewFields)
+
+/-- Preserve the authored extent while projecting its declared members for a typed consumer. -/
+def havingResolvedEntitySlots (operands : List (HavingOrigin × ResolvedFieldEntityOperand model)) :
+    Except CorrelationElabError (List (HavingFieldListSlot (ResolvedHavingDirectFieldOperand model))) := do
   operands.mapM fun (origin, operand) => do
     let references := operand.expansionDeclarations.map fun declaration =>
       ({ origin, declaration, form := .stored } : ResolvedHavingDirectFieldOperand model)
@@ -56,6 +47,33 @@ def elaborateHavingEntityList (model : FlatModel) (declaringGroup : GroupPath)
     | .starredGroup source => pure (.extent (.starredGroup source.group.path source.path) references)
     | .starredGroupPresence source => pure (.extent (.starredGroup source.groupPath source.path) references)
     | _ => throw .incoherentCore
+
+def checkHavingEntityDuplicates (operands : List (HavingOrigin × ResolvedFieldEntityOperand model)) :
+    Except CorrelationElabError Unit := do
+  if let some (_, duplicate) := firstDuplicateInEncounterOrder?
+      (fun (origin, operand) => operand.exactIdentity?.map (origin, ·)) operands then
+    match duplicate with
+    | .field (field, _) | .indexed (field, _) => throw (.fieldFill (.duplicateOperand field))
+    | .fixedGroup path | .keyedGroup path _ => throw (.fieldFill (.duplicateGroupOperand path))
+  if let some (left, right) := firstResolvedOperandOverlap? (operands.map (·.2)) then
+    throw (.fieldFill (.overlappingOperands left right))
+
+def checkHavingEntityRoots (operands : List (HavingOrigin × ResolvedFieldEntityOperand model)) :
+    Except CorrelationElabError Unit := do
+  if let some path := operands.findSome? (fun (_, operand) => operand.rootGroupPath?) then
+    throw (.fieldFill (.rootGroupOperand path))
+
+def elaborateHavingEntityList (model : FlatModel) (declaringGroup : GroupPath)
+    (candidateLevels outerLevels : List RepeatableLevel) (source : SurfaceHavingEntitySource) :
+    Except CorrelationElabError (List (HavingFieldListSlot (ResolvedHavingDirectFieldOperand model))) := do
+  let operands ← resolveHavingEntityListOperands model declaringGroup candidateLevels outerLevels source
+  checkHavingEntityDuplicates operands
+  checkHavingEntityRoots operands
+  if let some path := operands.findSome? (fun (_, operand) => operand.categoryPath?) then
+    throw (.fieldFill (.categoryNotAllowed path))
+  if operands.length < 2 && !operands.any (fun (_, operand) => operand.isAlreadyMany) then
+    throw (.fieldFill .tooFewFields)
+  havingResolvedEntitySlots operands
 
 namespace HavingFieldListSlot
 

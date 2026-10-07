@@ -46,10 +46,10 @@ structure HavingLeafResolvers where
     Except CorrelationElabError HavingStringRef
   literalMembership : SurfaceHavingStringRef → Sum (List Int) (List String) →
     Except CorrelationElabError FlatLiteralMembership
-  literalList : SurfaceHavingDirectFieldSource → List String → Except CorrelationElabError HavingFieldValueList
+  literalList : SurfaceHavingEntitySource → List String → Except CorrelationElabError HavingFieldValueList
   dateValidity : SurfaceHavingDateComponents → Except CorrelationElabError HavingDateComponents
   uniqueness : SurfaceHavingEntitySource → Except CorrelationElabError HavingUniqueness
-  fieldMembership : ComputationValueListOperator → SurfaceHavingDirectFieldSource → SurfaceHavingDirectFieldSource →
+  fieldMembership : ComputationValueListOperator → SurfaceHavingEntitySource → SurfaceHavingEntitySource →
     Except CorrelationElabError HavingFieldValueList
   fieldFill : SurfaceHavingEntitySource → Except CorrelationElabError (List (HavingFieldListSlot HavingPresenceRef))
   groupPresence : HavingOrigin → SurfaceGroupReference → Except CorrelationElabError ComputationGroupOperand

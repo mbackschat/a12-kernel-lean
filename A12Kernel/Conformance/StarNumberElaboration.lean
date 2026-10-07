@@ -882,8 +882,8 @@ example : havingErrorOf ["Shop"] source (memberAt otherAmount) =
 private def membershipOf (subject member : FlatFieldDecl)
     (operator : ComputationValueListOperator := .scalar .included) : SurfaceCorrelatedHaving :=
   .fieldMembership operator
-    { first := { origin := .inner, field := { base := .absolute, groups := subject.groupPath, field := subject.name } }, rest := [] }
-    { first := { origin := .inner, field := { base := .absolute, groups := member.groupPath, field := member.name } }, rest := [] }
+    { first := .entity { origin := .inner, field := { base := .absolute, groups := subject.groupPath, field := subject.name } }, rest := [] }
+    { first := .entity { origin := .inner, field := { base := .absolute, groups := member.groupPath, field := member.name } }, rest := [] }
 
 example : havingErrorOf ["Shop"] source (membershipOf amount otherAmount) =
       some (.having (.fieldOutsideEnvironment .inner otherAmount.path [10, 20] [30])) ∧

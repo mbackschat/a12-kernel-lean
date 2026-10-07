@@ -490,7 +490,7 @@ def CorrelatedHaving.outerIterationScopes
   | .leaf (.uniqueness source) =>
       source.presenceSlots.map (·.outerIterationScope? model)
   | .leaf (.fieldMembership _ source) =>
-      source.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
+      source.presenceSlots.map (·.outerIterationScope? model)
   | .leaf (.fieldFill _ references) =>
       references.map (·.outerIterationScope? model)
   | .leaf (.presence _ reference) | .leaf (.typeValidity _ reference _) | .leaf (.stringPattern _ reference _) =>
@@ -548,14 +548,10 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
       (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
   | .literalMembership _ reference _ => field reference.origin reference.field
   | .fieldMembership _ subjects members =>
-      (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field
+      (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? entity
   | .dateValidity _ source => source.references.findSome? fun ref => field ref.origin ref.field
-  | .uniqueness source | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => do
-      guard (ref.origin == .inner)
-      let (path, scope) ← ref.bindingRead? model declaringGroup
-      guard !(repeatableScopeAvailable scope candidateLevels)
-      pure (.fieldOutsideEnvironment .inner path candidateLevels scope)
-  | .literalList _ source _ => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
+  | .uniqueness source | .fieldFill _ source | .literalList _ source _ =>
+      (source.first :: source.rest).findSome? entity
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => field reference.origin reference.field
   | .groupPresence _ origin reference => group origin reference
   | .groupFill _ first rest => (first :: rest).findSome? fun (origin, reference) => group origin reference
@@ -563,6 +559,11 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
       (left.candidateEnvironmentRefusal? model declaringGroup candidateLevels).orElse fun _ =>
         right.candidateEnvironmentRefusal? model declaringGroup candidateLevels
 where
+  entity (ref : SurfaceHavingEntityOperand) : Option CorrelationElabError := do
+    guard (ref.origin == .inner)
+    let (path, scope) ← ref.bindingRead? model declaringGroup
+    guard !(repeatableScopeAvailable scope candidateLevels)
+    pure (.fieldOutsideEnvironment .inner path candidateLevels scope)
   field (origin : HavingOrigin) (reference : SurfaceFieldPath) : Option CorrelationElabError := do
     guard (origin == .inner)
     let declaration ← (model.resolveFieldDeclarationUnchecked declaringGroup reference).toOption
@@ -669,11 +670,7 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels
     string := model.resolveHavingStringInEnvironment declaringGroup outerLevels
     literalMembership := model.resolveHavingLiteralMembership declaringGroup outerLevels
-    literalList := fun subjects values =>
-      elaborateHavingTokenLiteralList model subjects values (fun ref =>
-        model.resolveHavingEntityRead declaringGroup outerLevels {
-          origin := ref.origin, field := ref.field, projectionRef := match ref.form with
-            | .stored => .stored | .projected category => .category category })
+    literalList := elaborateHavingTokenLiteralList model declaringGroup candidateLevels outerLevels
     dateValidity := elaborateHavingDateComponents model (fun ref =>
       model.resolveHavingEntityRead declaringGroup outerLevels { origin := ref.origin, field := ref.field })
     uniqueness := elaborateHavingUniqueness model declaringGroup candidateLevels outerLevels
@@ -682,7 +679,7 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
         model.resolveHavingEntityRead declaringGroup outerLevels {
           origin := ref.origin, field := ref.field, projectionRef := match ref.form with
             | .stored => .stored | .projected category => .category category } valueRead
-      elaborateHavingFieldValueList (model := model) operator subjects members (read false) (read true)
+      elaborateHavingFieldValueList model declaringGroup candidateLevels outerLevels operator subjects members (read false) (read true)
     fieldFill := fun source => do
       let slots ← elaborateHavingEntityList model declaringGroup candidateLevels outerLevels source
       pure (slots.map (·.map fun operand => { origin := operand.origin, field := operand.declaration.id }))

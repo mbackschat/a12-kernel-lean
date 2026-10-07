@@ -169,26 +169,30 @@ example : numericMembership.evalValidation .included cleanEmpty = .notFired ∧
     numericMembership.evalComputation .notIncluded invalid = .poison .malformed := by native_decide
 
 private def fieldMembership : HavingFieldValueList := .token
-  [{ origin := .inner, operand := .string { id := 1 } }]
-  [{ origin := .outer, operand := .string { id := 1 } }]
+  [.direct { origin := .inner, operand := .string { id := 1 } }]
+  [.direct { origin := .outer, operand := .string { id := 1 } }]
+
+private def membershipContext (read : HavingOrigin → FieldId → Except String CheckedCell) :
+    ResolvingCorrelationContext String :=
+  { failingFillContext with read := fun env => read (if env == frame.outerEnv then .outer else .inner) }
 
 private def membershipOperators : List ComputationValueListOperator :=
   [.scalar .included, .scalar .notIncluded, .quantified .atLeastOne, .quantified .no, .quantified .notAll]
 
 example : membershipOperators.map (fun op => fieldMembership.evalComputationRead op
-      (fun _ _ => Except.ok (ε := String) (text "match"))) =
+      (membershipContext (fun _ _ => Except.ok (ε := String) (text "match"))) frame) =
     [.ok .holds, .ok .notTrue, .ok .holds, .ok .notTrue, .ok .notTrue] := by native_decide
 
 example : membershipOperators.map (fun op => fieldMembership.evalComputationRead op
-      (fun origin _ => if origin == .inner then .ok cleanEmpty else Except.error "members")) =
+      (membershipContext (fun origin _ => if origin == .inner then .ok cleanEmpty else Except.error "members")) frame) =
     [.error "members", .error "members", .error "members", .error "members", .ok .notTrue] := by native_decide
 
 example : membershipOperators.map (fun op => fieldMembership.evalComputationRead op
-      (fun origin _ => if origin == .outer then .ok cleanEmpty else Except.error "subject")) =
+      (membershipContext (fun origin _ => if origin == .outer then .ok cleanEmpty else Except.error "subject")) frame) =
     [.error "subject", .error "subject", .ok .notTrue, .error "subject", .error "subject"] := by native_decide
 
 example : membershipOperators.map (fun op => fieldMembership.evalValidationRead op
-      (fun _ _ => Except.ok (ε := String) (text "match"))) =
+      (membershipContext (fun _ _ => Except.ok (ε := String) (text "match"))) frame) =
     [.ok (.fired .value), .ok .notFired, .ok (.fired .value), .ok .notFired, .ok .notFired] ∧
     fieldMembership.references = [{ origin := .inner, field := 1 }, { origin := .outer, field := 1 }] := by native_decide
 
@@ -202,31 +206,31 @@ example : fieldMembershipLeaf.evalTruthIn context frame = .fls ∧
     CorrelatedHaving.markedFieldIds (.leaf fieldMembershipLeaf) = [1] := by native_decide
 
 example : (HavingFieldValueList.token
-      [{ origin := .inner, operand := .string { id := 1 } }]
-      [{ origin := .inner, operand := .string { id := 1 } }]).wellFormedForEnvironments
+      [.direct { origin := .inner, operand := .string { id := 1 } }]
+      [.direct { origin := .inner, operand := .string { id := 1 } }]).wellFormedForEnvironments
         (.scalar .included) model [10] [10] = false ∧
-    (HavingFieldValueList.token [] [{ origin := .inner, operand := .string { id := 1 } }]).wellFormedForEnvironments
+    (HavingFieldValueList.token [] [.direct { origin := .inner, operand := .string { id := 1 } }]).wellFormedForEnvironments
         (.quantified .no) model [10] [10] = false := by native_decide
 
 example : membershipOperators.map (fun op => fieldMembership.evalValidationRead op
-      (fun origin _ => Except.error (if origin == .inner then "subject" else "members"))) =
+      (membershipContext (fun origin _ => Except.error (if origin == .inner then "subject" else "members"))) frame) =
     [.error "members", .error "subject", .error "members", .error "members", .error "subject"] := by native_decide
 
 example : membershipOperators.map (fun op => fieldMembership.evalComputationRead op
-      (fun origin _ => Except.ok (ε := String) (if origin == .inner then emptyRequired else text "match"))) =
+      (membershipContext (fun origin _ => Except.ok (ε := String) (if origin == .inner then emptyRequired else text "match"))) frame) =
     [.ok .notTrue, .ok .notTrue, .ok .notTrue, .ok .holds, .ok .notTrue] := by native_decide
 
 private def membershipPrefix : HavingFieldValueList := .token
-  [{ origin := .inner, operand := .string { id := 1 } }, { origin := .inner, operand := .string { id := 2 } }]
-  [{ origin := .outer, operand := .string { id := 1 } }]
+  [.direct { origin := .inner, operand := .string { id := 1 } }, .direct { origin := .inner, operand := .string { id := 2 } }]
+  [.direct { origin := .outer, operand := .string { id := 1 } }]
 
 example : [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
     membershipPrefix.evalComputationRead (.quantified operator)
-      (fun _ field => if field == 2 then Except.error "late subject" else .ok (text "match"))) =
+      (membershipContext (fun _ field => if field == 2 then Except.error "late subject" else .ok (text "match"))) frame) =
     [.ok .holds, .ok .notTrue, .error "late subject"] := by native_decide
 
 private def tokenLiteralList : HavingFieldValueList := .tokenLiterals
-  [{ origin := .inner, operand := .string { id := 1 } }, { origin := .outer, operand := .string { id := 1 } }]
+  [.direct { origin := .inner, operand := .string { id := 1 } }, .direct { origin := .outer, operand := .string { id := 1 } }]
   ["candidate"]
 
 example : [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
@@ -237,25 +241,27 @@ example : [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
 
 example : [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
     tokenLiteralList.evalComputationRead (.quantified operator)
-      (fun origin _ => if origin == .inner then .ok (text "candidate") else Except.error "late subject")) =
+      (membershipContext (fun origin _ => if origin == .inner then .ok (text "candidate") else Except.error "late subject")) frame) =
     [.ok .holds, .ok .notTrue, .error "late subject"] ∧
     [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
       tokenLiteralList.evalValidationRead (.quantified operator)
-        (fun origin _ => if origin == .inner then .ok (text "candidate") else Except.error "late subject")) =
+        (membershipContext (fun origin _ => if origin == .inner then .ok (text "candidate") else Except.error "late subject")) frame) =
     [.error "late subject", .error "late subject", .error "late subject"] := by native_decide
 
 example : tokenLiteralList.wellFormedForEnvironments (.quantified .no) model [10] [10] = true ∧
     tokenLiteralList.wellFormedForEnvironments (.quantified .no) model [10] [] = false ∧
     tokenLiteralList.wellFormedForEnvironments (.scalar .included) model [10] [10] = false ∧
     (HavingFieldValueList.tokenLiterals [] ["candidate"]).wellFormedForEnvironments (.quantified .no) model [10] [10] = false ∧
-    (HavingFieldValueList.tokenLiterals [{ origin := .inner, operand := .string { id := 1 } }] []).wellFormedForEnvironments
+    (HavingFieldValueList.tokenLiterals [.direct { origin := .inner, operand := .string { id := 1 } }] []).wellFormedForEnvironments
       (.quantified .no) model [10] [10] = false := by native_decide
 
 example : [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
-    tokenLiteralList.evalComputationRead (.quantified operator) (fun _ _ => Except.ok (ε := String) emptyRequired)) =
+    tokenLiteralList.evalComputationRead (.quantified operator)
+      (membershipContext (fun _ _ => Except.ok (ε := String) emptyRequired)) frame) =
     [.ok .notTrue, .ok .holds, .ok .notTrue] ∧
     [ValueListQuantifier.atLeastOne, .no, .notAll].map (fun operator =>
-      tokenLiteralList.evalComputationRead (.quantified operator) (fun _ _ => Except.ok (ε := String) invalid)) =
+      tokenLiteralList.evalComputationRead (.quantified operator)
+        (membershipContext (fun _ _ => Except.ok (ε := String) invalid)) frame) =
     [.ok (.poison .malformed), .ok (.poison .malformed), .ok (.poison .malformed)] := by native_decide
 
 private def toleranceComparison (range : NumericToleranceRange) : NumericComparisonOf HavingNumericAtom := {

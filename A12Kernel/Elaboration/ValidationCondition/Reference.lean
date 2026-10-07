@@ -289,9 +289,8 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
       havingFieldPointerFor source environment declaration ref.origin
   | .leaf (.uniqueness uniqueness) =>
       havingEntityListReferencePointers source environment uniqueness.presenceSlots
-  | .leaf (.fieldMembership _ membership) => membership.references.mapM fun ref => do
-      let declaration ← (model.lookupUniqueId ref.field).mapError fun _ => .incoherentHavingField ref.field
-      havingFieldPointerFor source environment declaration ref.origin
+  | .leaf (.fieldMembership _ membership) =>
+      havingEntityListReferencePointers source environment membership.presenceSlots
   | .leaf (.fieldFill _ references) =>
       havingEntityListReferencePointers source environment references
   | .leaf (.presence _ reference) => do
