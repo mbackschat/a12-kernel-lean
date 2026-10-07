@@ -51,7 +51,7 @@ structure HavingLeafResolvers where
   uniqueness : SurfaceHavingEntitySource → Except CorrelationElabError HavingUniqueness
   fieldMembership : ComputationValueListOperator → SurfaceHavingDirectFieldSource → SurfaceHavingDirectFieldSource →
     Except CorrelationElabError HavingFieldValueList
-  fieldFill : SurfaceHavingDirectFieldSource → Except CorrelationElabError (List HavingPresenceRef)
+  fieldFill : SurfaceHavingEntitySource → Except CorrelationElabError (List (HavingFieldListSlot HavingPresenceRef))
   groupPresence : HavingOrigin → SurfaceGroupReference → Except CorrelationElabError ComputationGroupOperand
   groupFill : GroupFillQuantifier → (HavingOrigin × SurfaceGroupReference) →
     List (HavingOrigin × SurfaceGroupReference) → Except CorrelationElabError (HavingGroupOperand × List HavingGroupOperand)

@@ -115,7 +115,7 @@ inductive SurfaceCorrelatedHaving where
       (subjects members : SurfaceHavingDirectFieldSource)
   | literalMembership (operator : ValueListMembershipOp) (reference : SurfaceHavingStringRef)
       (values : Sum (List Int) (List String))
-  | fieldFill (operator : FieldFillQuantifier) (source : SurfaceHavingDirectFieldSource)
+  | fieldFill (operator : FieldFillQuantifier) (source : SurfaceHavingEntitySource)
   /-- `FieldFilled` or `FieldNotFilled`. The negative polarity is authorable here because the
       kernel admits it inside a filter without the iteration-negativity refusal that governs a
       rule's own condition. -/
@@ -340,12 +340,12 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
   | .fieldMembership _ subjects members =>
       (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field
   | .dateValidity _ source => source.references.findSome? fun ref => field ref.origin ref.field
-  | .uniqueness source => (source.first :: source.rest).findSome? fun ref => do
+  | .uniqueness source | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => do
       guard (ref.origin == .outer)
       let (path, scope) ← ref.bindingRead? model declaringGroup
       let unbound ← model.unboundReadLevel? declaringGroup writtenGroup scope bound
       pure (path, unbound)
-  | .literalList _ source _ | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
+  | .literalList _ source _ => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => field reference.origin reference.field
   | .groupPresence _ origin reference => group origin reference
   | .groupFill _ first rest => (first :: rest).findSome? fun (origin, reference) => group origin reference

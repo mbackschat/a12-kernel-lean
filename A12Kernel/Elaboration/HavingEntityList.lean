@@ -64,6 +64,13 @@ def bindingScope? (model : FlatModel) : HavingFieldListSlot HavingPresenceRef �
   | .extent (.group reference) _ => some reference.boundRepeatableScope
   | .extent (.starField _ path) _ | .extent (.starredGroup _ path) _ => some path.bindingScope
 
+def outerIterationScope? (slot : HavingFieldListSlot HavingPresenceRef)
+    (model : FlatModel) : Option (List RepeatableLevel) := do
+  let reference ← slot.references.head?
+  if reference.origin != .outer then none
+  let scope ← slot.bindingScope? model
+  if scope.isEmpty then none else some scope
+
 def entityPath? (model : FlatModel) : HavingFieldListSlot HavingPresenceRef → Option (List String × Bool)
   | .direct reference | .extent (.starField _ _) [reference] =>
       (model.lookupUniqueId reference.field).toOption.map fun declaration => (declaration.path, false)

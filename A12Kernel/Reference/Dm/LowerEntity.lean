@@ -163,7 +163,7 @@ private def havingMembers (expressions : List Expr) : Lowering SurfaceHavingDire
   let some (first :: rest) := expressions.mapM havingEntity? | refuse "Having" "direct membership fields"
   pure { first, rest }
 
-private def havingUniquenessMembers (arguments : List Argument) : Lowering SurfaceHavingEntitySource := do
+private def havingEntityListMembers (arguments : List Argument) : Lowering SurfaceHavingEntitySource := do
   let operands ← arguments.mapM fun
     | .mk (.constant "RuleGroup") none none => pure (.group .inner (.ruleGroup false))
     | .mk (.entity { path, index := none, category }) none none => do
@@ -173,10 +173,10 @@ private def havingUniquenessMembers (arguments : List Argument) : Lowering Surfa
             { base := path.base, groups := path.starGroups })
         else
           let some reference := havingEntity? (.entity { path, index := none, category }) |
-            refuse "Having" "uniqueness entity"
+            refuse "Having" "field-list entity"
           pure (.entity reference)
-    | _ => refuse "Having" "uniqueness operand"
-  let first :: rest := operands | refuse "Having" "empty uniqueness"
+    | _ => refuse "Having" "field-list operand"
+  let first :: rest := operands | refuse "Having" "empty field list"
   pure { first, rest }
 
 private def lowerHavingDateComponent : Expr → Lowering SurfaceHavingDateComponent
@@ -232,7 +232,7 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
       pure (.fieldMembership (.quantified operator) subjects (← havingMembers values))
   | .call id arguments none none => do
       if id == "FieldValuesNotUnique" then
-        return .uniqueness (← havingUniquenessMembers arguments)
+        return .uniqueness (← havingEntityListMembers arguments)
       if id == "FieldValueIncludedInValueList" || id == "FieldValueNotIncludedInValueList" then
         let operator := if id == "FieldValueIncludedInValueList" then ValueListMembershipOp.included else .notIncluded
         let .mk (.entity { path, index := none, category }) none none :: rest := arguments |
@@ -275,14 +275,7 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
             return .presence polarity { origin, field }
         | _ => refuse "Having" "presence arity"
       let some operator := fieldFillOp? id | refuse "Having" id
-      let references ← arguments.mapM fun argument => match argument with
-        | .mk (.entity { path, index := none, category := none }) none none =>
-            match path.havingField? with
-            | some (origin, field) => pure ({ origin, field } : SurfaceHavingDirectFieldOperand)
-            | none => refuse "Having" "field-fill path"
-        | _ => refuse "Having" "field-fill operand"
-      let first :: rest := references | refuse "Having" "field-fill arity"
-      pure (.fieldFill operator { first, rest })
+      pure (.fieldFill operator (← havingEntityListMembers arguments))
   | .compare op@(.tolerance _) left right => do
       let some (.tolerance range) := op.toNumeric? | refuse "Having" "tolerance band"
       pure (.tolerance range

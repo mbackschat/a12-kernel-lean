@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.StringPattern
 import A12Kernel.Semantics.HavingDateValidity
+import A12Kernel.Semantics.HavingFieldFill
 import A12Kernel.Semantics.HavingUniqueness
 import A12Kernel.Semantics.HavingGroupPresence
 import A12Kernel.Semantics.HavingTypeValidity
@@ -37,7 +38,7 @@ inductive CorrelatedHavingLeaf where
   | fieldMembership (operator : ComputationValueListOperator) (source : HavingFieldValueList)
   | literalMembership (origin : HavingOrigin) (operator : ValueListMembershipOp)
       (source : FlatLiteralMembership)
-  | fieldFill (operator : FieldFillQuantifier) (references : List HavingPresenceRef)
+  | fieldFill (operator : FieldFillQuantifier) (references : List (HavingFieldListSlot HavingPresenceRef))
   /-- `FieldFilled` or `FieldNotFilled` on any declared field. The kernel admits both inside a
       filter, the negative one without the iteration-negativity refusal that governs a rule's own
       condition. -/
@@ -107,7 +108,7 @@ def fieldIds : CorrelatedHaving → List FieldId
   | .leaf (.dateValidity _ source) => source.references.map (·.field) |>.eraseDups
   | .leaf (.uniqueness source) => source.references.map (·.field) |>.eraseDups
   | .leaf (.fieldMembership _ source) => source.references.map (·.field) |>.eraseDups
-  | .leaf (.fieldFill _ references) => references.map (·.field) |>.eraseDups
+  | .leaf (.fieldFill _ references) => (references.flatMap (·.references)).map (·.field) |>.eraseDups
   | .leaf (.presence _ reference) | .leaf (.typeValidity _ reference _) | .leaf (.stringPattern _ reference _) => [reference.field]
   | .leaf (.groupPresence _ _ source) => source.members.eraseDups
   | .leaf (.groupFill _ first rest) => ((first :: rest).flatMap (·.fieldIds)).eraseDups
@@ -138,7 +139,7 @@ def markedFieldIds : CorrelatedHaving → List FieldId
   | .leaf (.fieldMembership _ source) =>
       (source.references.filter (·.origin == .outer)).map (·.field) |>.eraseDups
   | .leaf (.fieldFill _ references) =>
-      (references.filter (·.origin == .outer)).map (·.field) |>.eraseDups
+      ((references.flatMap (·.references)).filter (·.origin == .outer)).map (·.field) |>.eraseDups
   | .leaf (.presence _ reference) | .leaf (.typeValidity _ reference _) | .leaf (.stringPattern _ reference _) =>
       if reference.origin == .outer then [reference.field] else []
   | .leaf (.groupPresence _ origin source) =>
@@ -203,7 +204,7 @@ private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
   | .dateValidity _ source => source.references.any (·.origin.isInner)
   | .uniqueness source => source.references.any (·.origin.isInner)
   | .fieldMembership _ source => source.references.any (·.origin.isInner)
-  | .fieldFill _ references => references.any (·.origin.isInner)
+  | .fieldFill _ references => (references.flatMap (·.references)).any (·.origin.isInner)
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => reference.origin.isInner
   | .groupPresence _ origin _ => origin.isInner
   | .groupFill _ first rest => (first :: rest).any (·.origin.isInner)
@@ -219,7 +220,7 @@ private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
   | .dateValidity _ source => source.references.any (·.origin.isOuter)
   | .uniqueness source => source.references.any (·.origin.isOuter)
   | .fieldMembership _ source => source.references.any (·.origin.isOuter)
-  | .fieldFill _ references => references.any (·.origin.isOuter)
+  | .fieldFill _ references => (references.flatMap (·.references)).any (·.origin.isOuter)
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => reference.origin.isOuter
   | .groupPresence _ origin _ => origin.isOuter
   | .groupFill _ first rest => (first :: rest).any (·.origin.isOuter)
@@ -270,8 +271,10 @@ def CorrelatedHavingLeaf.verdictTruth : Verdict → K
   | .unknown => .unknown
 
 def evalHavingFieldFillValidation (operator : FieldFillQuantifier)
-    (references : List HavingPresenceRef) (context : CorrelationContext) (frame : CorrelationFrame) : Verdict :=
-  Id.run (operator.evalValidationRead (fun ref => pure (ref.observeInAt .validation context frame)) references)
+    (references : List (HavingFieldListSlot HavingPresenceRef)) (context : CorrelationContext) (frame : CorrelationFrame) : Verdict :=
+  match HavingFieldFill.evalValidationRead operator references context.asResolving frame with
+  | .ok verdict => verdict
+  | .error _ => .unknown
 
 def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
     (frame : CorrelationFrame) : CorrelatedHavingLeaf → K
@@ -350,8 +353,7 @@ def CorrelatedHavingLeaf.evalTruthInResolving
   | .literalMembership origin operator source => do
       pure (CorrelatedHavingLeaf.verdictTruth (source.evalValidation operator (← context.read (frame.envAt origin) source.field.id)))
   | .fieldFill operator references => do
-      pure (CorrelatedHavingLeaf.verdictTruth (← operator.evalValidationRead
-        (fun ref => ref.observeInAtResolving .validation context frame) references))
+      pure (CorrelatedHavingLeaf.verdictTruth (← HavingFieldFill.evalValidationRead operator references context frame))
   | .presence polarity reference => do
       pure (CorrelatedHavingLeaf.verdictTruth
         (polarity.evalObservation
@@ -403,8 +405,7 @@ def CorrelatedHavingLeaf.evalComputationInResolving
   | .literalMembership origin operator source => do
       pure (source.evalComputation operator (← context.read (frame.envAt origin) source.field.id))
   | .fieldFill operator references =>
-      operator.evalComputationRead (fun ref =>
-        CellObservation.asComputationFillSlot <$> ref.observeInAtResolving .computation context frame) references
+      HavingFieldFill.evalComputationRead operator references context frame
   | .presence polarity reference => do
       match ← reference.observeInAtResolving .computation context frame with
       | .unknown cause | .poison cause => pure (.poison cause)

@@ -20,8 +20,8 @@ def CorrelationContext.asResolving (context : CorrelationContext) :
 def CorrelationContext.withComputationGroups (context : CorrelationContext) (document : Document) :
     CorrelationContext :=
   { context with groups := some {
-      fieldEnvironments := fun path env depth field => match context.groups with
-        | some groups => groups.fieldEnvironments path env depth field
+      fieldExtent := fun path env depth field => match context.groups with
+        | some groups => groups.fieldExtent path env depth field
         | none => .error (.groupUnavailable path)
       validation := fun env reference => match context.groups with
         | some groups => groups.validation env reference
@@ -34,8 +34,8 @@ def CorrelationContext.withComputationGroups (context : CorrelationContext) (doc
 def ResolvingCorrelationContext.withComputationGroups (context : ResolvingCorrelationContext Error)
     (document : Document) : ResolvingCorrelationContext Error :=
   { context with groups := some {
-      fieldEnvironments := fun path env depth field => match context.groups with
-        | some groups => groups.fieldEnvironments path env depth field
+      fieldExtent := fun path env depth field => match context.groups with
+        | some groups => groups.fieldExtent path env depth field
         | none => .error (context.groupUnavailable path)
       validation := fun env reference => match context.groups with
         | some groups => groups.validation env reference

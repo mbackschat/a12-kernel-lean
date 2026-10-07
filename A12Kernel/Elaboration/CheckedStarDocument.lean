@@ -139,13 +139,24 @@ walk, on the checked document and on the reader route, takes its rows from here;
 star and a group count's bound instance read their own instance environments instead. A scope the model
 declares no repeatable axes for, which a certified operand cannot carry, is refused as the deepest
 level's invalid repeatability. -/
-def FlatModel.groupOperandEnvironments (model : FlatModel) (document : Document) (outer : Env)
-    (boundCount : Nat) (scope : List RepeatableLevel) : Except StarAddressingError (List Env) := do
-  if scope.isEmpty then return [[]]
+def FlatModel.groupOperandExtent (model : FlatModel) (document : Document) (outer : Env)
+    (boundCount : Nat) (scope : List RepeatableLevel) : Except StarAddressingError (List Env × Bool) := do
+  if scope.isEmpty then return ([[]], false)
   let axes ← match model.repeatableAxesForScope? scope with
     | some axes => pure axes
     | none => throw (.invalidRepeatability (scope.getLast?.getD 0))
-  return (← StarAxes.resolveOperandExtent axes document outer boundCount).1
+  let (environments, omitted) ← StarAxes.resolveOperandExtent axes document outer boundCount
+  if scope.length ≤ boundCount && environments.isEmpty then
+    let path ← (outer.pathForScope scope).mapError (·.toStarAddressingError)
+    -- A bound declaration still has one declared slot when its in-capacity row is absent.
+    -- Fill predicates must agree with its direct-field spelling (spec/07 §5); the row walk
+    -- remains empty so consumers that ignore omissions retain their instantiated domain.
+    return (environments, !StarAxes.environmentOverLimit axes (scope.zip path))
+  return (environments, omitted)
+
+def FlatModel.groupOperandEnvironments (model : FlatModel) (document : Document) (outer : Env)
+    (boundCount : Nat) (scope : List RepeatableLevel) : Except StarAddressingError (List Env) :=
+  Prod.fst <$> model.groupOperandExtent document outer boundCount scope
 
 /-- Whether any repeatable scope a group operand reopens retains **declared but uninstantiated**
 capacity at the operand's own depth, read off the same star topology `groupOperandEnvironments`
@@ -342,15 +353,15 @@ def FlatModel.correlationGroupsWithRead (model : FlatModel) (document : Document
     pure ({ base with descendantCells := cells.flatten }.derive)
   computation environment source :=
     source.content.readWith document read .environment environment
-  fieldEnvironments _ environment boundCount field := do
+  fieldExtent _ environment boundCount field := do
     let declaration ← (model.lookupUniqueId field).mapError (.field field)
-    (model.groupOperandEnvironments document environment boundCount declaration.repeatableScope).mapError .addressing
+    (model.groupOperandExtent document environment boundCount declaration.repeatableScope).mapError .addressing
 
-private def FlatModel.correlationFieldEnvironments (model : FlatModel) (document : Document)
+private def FlatModel.correlationFieldExtent (model : FlatModel) (document : Document)
     (unavailable : GroupPath → Error) (path : GroupPath) (environment : Env) (boundCount : Nat)
-    (field : FieldId) : Except Error (List Env) := do
+    (field : FieldId) : Except Error (List Env × Bool) := do
   let declaration ← (model.lookupUniqueId field).mapError (fun _ => unavailable path)
-  (model.groupOperandEnvironments document environment boundCount declaration.repeatableScope).mapError (fun _ => unavailable path)
+  (model.groupOperandExtent document environment boundCount declaration.repeatableScope).mapError (fun _ => unavailable path)
 
 /-- Model ownership supplies extent topology while the caller retains its phase-specific cell
 view. The semantic-only adapter cannot infer a field's repeatable scope from its id. -/
@@ -358,13 +369,13 @@ def CorrelationContext.withModelComputationGroups (context : CorrelationContext)
     (model : FlatModel) (document : Document) : CorrelationContext :=
   let context := context.withComputationGroups document
   { context with groups := context.groups.map fun groups =>
-    { groups with fieldEnvironments := model.correlationFieldEnvironments document CorrelationRuntimeFault.groupUnavailable } }
+    { groups with fieldExtent := model.correlationFieldExtent document CorrelationRuntimeFault.groupUnavailable } }
 
 def ResolvingCorrelationContext.withModelComputationGroups (context : ResolvingCorrelationContext Error)
     (model : FlatModel) (document : Document) : ResolvingCorrelationContext Error :=
   let context := context.withComputationGroups document
   { context with groups := context.groups.map fun groups =>
-    { groups with fieldEnvironments := model.correlationFieldEnvironments document context.groupUnavailable } }
+    { groups with fieldExtent := model.correlationFieldExtent document context.groupUnavailable } }
 
 namespace CheckedDocument
 

@@ -322,24 +322,21 @@ def StarPath.resolveTopology (path : StarPath) (document : Document) (outer : En
   let bound ← path.boundEnvironment outer
   document.resolveAxes (path.axes.drop path.firstStar) (bound.map (·.2)) bound
 
-/-- Keep only the leaf environments within every declared repeatability. A row beyond its level's
-capacity stays in the physical topology but lies outside the evaluation domain of an operand that
-expands rows, on the validation and the computation arm alike, so its cell contributes neither a value
-nor a formal poison ([`spec/07`](../../spec/07-repetition-and-iteration.md)). The domain stays the
-physical tree, over-limit rows included, so the environment correspondence
-`StarPath.resolveTopology_environmentCorrespondence` states holds for the resolved topology and not for this
-projection; consumers read only the domain's open-tail state, which is unchanged because a level
-holding an over-limit row is full. -/
+/-- Project both cells and completeness onto the operand's declared-capacity domain
+(spec/07). An excluded bound prefix has no capacity to complete; its empty projection
+uses a zero-capacity root. Physical topology remains available through `resolveTopology`. -/
 def ResolvedStarTopology.inCapacity (resolved : ResolvedStarTopology)
-    (axes : List StarAxis) : ResolvedStarTopology :=
-  { resolved with
+    (axes : List StarAxis) (boundOverLimit : Bool := false) : ResolvedStarTopology :=
+  { domain := if boundOverLimit then .repeatable (some 0) .nil else resolved.domain.inCapacity
     environments := resolved.environments.filter fun environment =>
       !StarAxes.environmentOverLimit axes environment }
 
 /-- Resolve the topology and narrow it to the declared-capacity extent. -/
 def StarPath.resolveInCapacity (path : StarPath) (document : Document) (outer : Env) :
-    Except StarAddressingError ResolvedStarTopology :=
-  (·.inCapacity path.axes) <$> path.resolveTopology document outer
+    Except StarAddressingError ResolvedStarTopology := do
+  let physical ← path.resolveTopology document outer
+  let bound ← path.boundEnvironment outer
+  return physical.inCapacity path.axes (StarAxes.environmentOverLimit path.axes bound)
 
 /-- Resolve one declaration under an operand's bound depth. Fully bound repeated declarations
 contribute only an instantiated in-capacity row; reopened declarations retain their omitted tail. -/

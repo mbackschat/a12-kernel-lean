@@ -246,12 +246,13 @@ inductive CorrelationRuntimeFault where
   deriving Repr, DecidableEq
 
 /-- Both phases reuse their ordinary group inputs. Callers retain physical row content and the
-current read view; a missing reader is not an empty group (spec/07 §5). -/
+current read view; a missing reader is not an empty group (spec/07 §5). Each field extent pairs
+in-capacity environments with whether declared but uninstantiated capacity remains. -/
 structure CorrelationGroupReads (Error : Type) where
   validation : Env → ResolvedGroupReference → Except Error GroupPresenceState
   computation : Env → ComputationGroupOperand →
     Except Error (List CellObservation × Bool)
-  fieldEnvironments : GroupPath → Env → Nat → FieldId → Except Error (List Env)
+  fieldExtent : GroupPath → Env → Nat → FieldId → Except Error (List Env × Bool)
 
 /-- Topology adapters supply environments; the shared evaluator reads their checked fields and the caller-owned evaluation clock. Retaining one World prevents candidate and captured reads from sampling different dates (spec/05 §7, clock-source semantics). -/
 structure CorrelationContext where

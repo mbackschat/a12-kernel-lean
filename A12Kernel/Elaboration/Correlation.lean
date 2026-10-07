@@ -488,15 +488,11 @@ def CorrelatedHaving.outerIterationScopes
   | .leaf (.dateValidity _ source) =>
       source.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
   | .leaf (.uniqueness source) =>
-      source.presenceSlots.map fun slot => do
-        let reference ← slot.references.head?
-        if reference.origin != .outer then none
-        let scope ← slot.bindingScope? model
-        if scope.isEmpty then none else some scope
+      source.presenceSlots.map (·.outerIterationScope? model)
   | .leaf (.fieldMembership _ source) =>
       source.references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
   | .leaf (.fieldFill _ references) =>
-      references.map fun ref => outerHavingFieldIterationScope model ref.origin ref.field
+      references.map (·.outerIterationScope? model)
   | .leaf (.presence _ reference) | .leaf (.typeValidity _ reference _) | .leaf (.stringPattern _ reference _) =>
       [outerHavingFieldIterationScope model reference.origin reference.field]
   | .leaf (.groupPresence _ origin source) =>
@@ -554,12 +550,12 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
   | .fieldMembership _ subjects members =>
       (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field
   | .dateValidity _ source => source.references.findSome? fun ref => field ref.origin ref.field
-  | .uniqueness source => (source.first :: source.rest).findSome? fun ref => do
+  | .uniqueness source | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => do
       guard (ref.origin == .inner)
       let (path, scope) ← ref.bindingRead? model declaringGroup
       guard !(repeatableScopeAvailable scope candidateLevels)
       pure (.fieldOutsideEnvironment .inner path candidateLevels scope)
-  | .literalList _ source _ | .fieldFill _ source => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
+  | .literalList _ source _ => (source.first :: source.rest).findSome? fun ref => field ref.origin ref.field
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => field reference.origin reference.field
   | .groupPresence _ origin reference => group origin reference
   | .groupFill _ first rest => (first :: rest).findSome? fun (origin, reference) => group origin reference
@@ -688,11 +684,8 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
             | .stored => .stored | .projected category => .category category } valueRead
       elaborateHavingFieldValueList (model := model) operator subjects members (read false) (read true)
     fieldFill := fun source => do
-      let checked ← elaborateHavingDirectFieldSource model declaringGroup candidateLevels outerLevels source .deferCandidate
-        |>.mapError .fieldFill
-      checked.operands.mapM fun operand => do
-        if operand.form != .stored then throw .incoherentCore
-        pure { origin := operand.origin, field := operand.declaration.id }
+      let slots ← elaborateHavingEntityList model declaringGroup candidateLevels outerLevels source
+      pure (slots.map (·.map fun operand => { origin := operand.origin, field := operand.declaration.id }))
     stringPattern := model.resolveHavingStringPattern declaringGroup outerLevels compilePattern
     typeValidity := model.resolveHavingTypeValidity declaringGroup outerLevels
     groupPresence := model.resolveHavingGroupPresence declaringGroup outerLevels

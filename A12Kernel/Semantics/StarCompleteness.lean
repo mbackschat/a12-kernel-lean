@@ -50,6 +50,20 @@ mutual
 end
 
 mutual
+  /-- Project operand completeness onto declared capacity: excluded parent rows cannot
+      contribute missing descendants (spec/07, in-capacity operand expansion). -/
+  def ReopenedStarDomain.inCapacity : ReopenedStarDomain → ReopenedStarDomain
+    | .selectedLeaf => .selectedLeaf
+    | .repeatable capacity rows => .repeatable capacity (rows.inCapacity capacity)
+
+  def ReopenedStarRows.inCapacity (capacity : Option Nat) : ReopenedStarRows → ReopenedStarRows
+    | .nil => .nil
+    | .cons coordinate child rest =>
+        if capacity.any (coordinate > ·) then rest.inCapacity capacity
+        else .cons coordinate child.inCapacity (rest.inCapacity capacity)
+end
+
+mutual
   /-- Whether declared capacity below the first star remains structurally open. -/
   def ReopenedStarDomain.hasOpenTail : ReopenedStarDomain → Bool
     | .selectedLeaf => false

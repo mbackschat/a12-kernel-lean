@@ -277,10 +277,7 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
   | .fieldMembership operator source =>
       source.wellFormedForEnvironments operator model candidateLevels outerLevels
   | .fieldFill _ references =>
-      references.length >= 2 && references.eraseDups.length == references.length &&
-        references.all fun ref => (model.lookupUniqueId ref.field).toOption.any fun declaration =>
-          repeatableScopeAvailable declaration.repeatableScope
-            (ref.origin.availableLevels candidateLevels outerLevels)
+      havingEntityListWellFormed model candidateLevels outerLevels references
   | .stringPattern _ reference _ =>
       model.admitsStringPatternField { id := reference.field } &&
         (model.lookupUniqueId reference.field).toOption.any fun declaration =>
@@ -384,9 +381,9 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
   | .fieldMembership _ source => source.references.any fun ref =>
       ref.origin == .inner && (model.lookupUniqueId ref.field).toOption.any fun declaration =>
         declaration.repeatableScope.any reopenedLevels.contains
-  | .fieldFill _ references => references.any fun ref =>
-      ref.origin == .inner && (model.lookupUniqueId ref.field).toOption.any fun declaration =>
-        declaration.repeatableScope.any reopenedLevels.contains
+  | .fieldFill _ references => references.any fun slot =>
+      slot.references.any (fun ref => ref.origin == .inner) &&
+        (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
   | .groupPresence _ origin source =>
       origin == .inner && source.content.scope.any reopenedLevels.contains
   | .groupFill _ first rest => (first :: rest).any fun

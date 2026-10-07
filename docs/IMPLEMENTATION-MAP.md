@@ -332,7 +332,7 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Numeric tolerance inside Having](implementation/repetition-and-paths.md#cap-having-tolerance)
 
 <a id="cap-having-direct-field-fill"></a>
-- [Direct field-fill lists inside Having](implementation/repetition-and-paths.md#cap-having-direct-field-fill)
+- [Field-fill entity lists inside Having](implementation/repetition-and-paths.md#cap-having-direct-field-fill)
 
 <a id="cap-having-literal-membership"></a>
 - [Literal membership inside Having](implementation/repetition-and-paths.md#cap-having-literal-membership)

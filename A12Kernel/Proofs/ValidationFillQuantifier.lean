@@ -174,4 +174,13 @@ theorem validationFillRanges_preserves_nonfiring (operator : FieldFillQuantifier
   | falseOrUnknown => simp
   | fired polarity => cases polarity <;> simp
 
+/-- Fill predicates distinguish an absent declared tail from a present one, never its positive
+size; one marker therefore preserves validation as well as the computation omitted-run law. -/
+theorem validationFill_positive_omitted_tail (operator : FieldFillQuantifier)
+    (input : ValidationFillTally) (count : Nat) :
+    operator.evalValidation { input with uninstantiated := count + 1 } =
+      operator.evalValidation { input with uninstantiated := 1 } := by
+  have positive : 0 < input.empty + (count + 1) := by omega
+  cases operator <;> simp [FieldFillQuantifier.evalValidation, positive]
+
 end A12Kernel

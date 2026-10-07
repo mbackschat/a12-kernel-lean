@@ -29,6 +29,20 @@ private def envsAndTail (path : StarPath) (document : Document) (environment : E
   | .error _ => none
   | .ok resolved => some (resolved.environments, resolved.domain.hasOpenTail)
 
+private def excludedParentDocument : Document := { completeDocument with
+  instantiatedRows := { group := 10, path := [3] } :: completeDocument.instantiatedRows }
+
+private def operandSnapshot (path : StarPath) (document : Document) (environment : Env) :=
+  (path.resolveInCapacity document environment).toOption.map fun resolved =>
+    (resolved.environments, resolved.domain.hasOpenTail)
+
+example : (operandSnapshot allRows excludedParentDocument [] ==
+    operandSnapshot allRows completeDocument [] &&
+    operandSnapshot innerStarOnly excludedParentDocument [(10, 3)] == some ([], false) &&
+    operandSnapshot innerStarOnly excludedParentDocument [(20, 1), (10, 3)] == some ([], false) &&
+    operandSnapshot innerStarOnly { instantiatedRows := [], rawCells := fun _ => none }
+      [(10, 3)] == some ([], false)) = true := by native_decide
+
 private def rejectsAs (expected : StarAddressingError)
     (path : StarPath) (document : Document := partialDocument) (environment : Env := []) : Bool :=
   match path.resolveTopology document environment with

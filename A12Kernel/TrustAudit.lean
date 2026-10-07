@@ -761,6 +761,7 @@ run_cmd do
 #print axioms A12Kernel.validationFillTally_combine_associative
 #print axioms A12Kernel.validationFillRange_prefix_decides
 #print axioms A12Kernel.validationFillRanges_preserves_nonfiring
+#print axioms A12Kernel.validationFill_positive_omitted_tail
 #print axioms A12Kernel.validationAllFieldsFilled_unknown_prevents
 #print axioms A12Kernel.validationNoFieldFilled_zeroKnownFilled_fires
 #print axioms A12Kernel.validationAtLeastOne_filledWitness_fires

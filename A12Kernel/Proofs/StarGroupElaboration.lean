@@ -295,10 +295,12 @@ theorem checkedStarredGroupSource_evaluateFull_of_resolved
         !StarAxes.environmentOverLimit checked.path.axes environment).length) := by
   have pathResolution : checked.path.resolveTopology document outer = .ok resolved := by
     simpa [CheckedStarredGroupSource.resolvedTopology] using resolution
+  obtain ⟨bound, boundResolution, _⟩ :=
+    checked.path.resolveTopology_environmentCorrespondence document outer resolved pathResolution
   unfold CheckedStarredGroupSource.evaluateFull
     CheckedStarredGroupSource.inCapacityRowCount
     StarPath.inCapacityEnvironments StarPath.resolveInCapacity
-  rw [pathResolution]
+  simp only [pathResolution, bind, Except.bind, boundResolution]
   rfl
 
 /-- The starred numeric count consumes only the successful topology's in-capacity rows. -/
@@ -311,10 +313,12 @@ theorem checkedStarredGroupSource_numberOfFilledGroups_of_resolved
         !StarAxes.environmentOverLimit checked.path.axes environment).length) := by
   have pathResolution : checked.path.resolveTopology document outer = .ok resolved := by
     simpa [CheckedStarredGroupSource.resolvedTopology] using resolution
+  obtain ⟨bound, boundResolution, _⟩ :=
+    checked.path.resolveTopology_environmentCorrespondence document outer resolved pathResolution
   unfold CheckedStarredGroupSource.numberOfFilledGroups
     CheckedStarredGroupSource.inCapacityRowCount
     StarPath.inCapacityEnvironments StarPath.resolveInCapacity
-  rw [pathResolution]
+  simp only [pathResolution, bind, Except.bind, boundResolution]
   rfl
 
 end A12Kernel

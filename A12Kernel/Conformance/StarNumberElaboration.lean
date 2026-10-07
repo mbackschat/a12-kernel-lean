@@ -608,7 +608,7 @@ example :
 /- A star leaves out every environment holding an over-capacity coordinate, inner or outer, rather
    than reading its cell as unavailable ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-validation-capacity-consumers)).
    An outer row beyond capacity is one no rule iterates, its ordinary checks being suppressed, so its
-   empty stream answers no Kernel row. -/
+   empty stream answers no Kernel row and has no declared tail to complete. -/
 example :
     let innerRows := standardRows ++ [{ group := 20, path := [1, 3] }]
     let outerRows := standardRows ++ [
@@ -618,7 +618,7 @@ example :
         some ([.present 1, .empty, .present 3], true) ∧
     cellsOf (source (outerStar := false)) outerRows [(10, 3)] (read := fun env _ =>
       if env == [(10, 3), (20, 1)] then .parsed (.num 9) else readAmount env amount.id) =
-        some ([], true) := by
+        some ([], false) := by
   native_decide
 
 /- General checked path admission remains kind-safe for the concrete Number consumer. -/
@@ -851,8 +851,8 @@ example : entityDiagnostic .minimum (starOperand "Amount") [starOperand "Cust"] 
 
 private def filledPair (other : FlatFieldDecl) : SurfaceCorrelatedHaving :=
   .fieldFill .allFieldsFilled {
-    first := { origin := .inner, field := { base := .absolute, groups := amount.groupPath, field := amount.name } }
-    rest := [{ origin := .inner, field := { base := .absolute, groups := other.groupPath, field := other.name } }] }
+    first := .entity { origin := .inner, field := { base := .absolute, groups := amount.groupPath, field := amount.name } }
+    rest := [.entity { origin := .inner, field := { base := .absolute, groups := other.groupPath, field := other.name } }] }
 
 example : havingErrorOf ["Shop"] source (filledPair otherAmount) =
       some (.having (.fieldOutsideEnvironment .inner otherAmount.path [10, 20] [30])) ∧

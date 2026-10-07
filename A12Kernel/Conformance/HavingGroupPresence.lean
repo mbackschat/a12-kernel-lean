@@ -28,7 +28,7 @@ private def dependency : CheckedCell := { rawPresent := true, parsed := none, fi
 private def groupContext (cell : CheckedCell) (rows : Bool := false) (otherCell : CheckedCell := empty) : CorrelationContext := {
   read := fun _ field => if field == 1 then cell else otherCell
   groups := some {
-    fieldEnvironments := fun path _ _ _ => .error (.groupUnavailable path)
+    fieldExtent := fun path _ _ _ => .error (.groupUnavailable path)
     validation := fun _ reference => pure (({
       descendantCells := [if reference.path == source.reference.path then cell else otherCell]
       hasInstantiatedRow := rows, structuralError := false, relevance := .fullyRelevant } :
@@ -71,7 +71,7 @@ example : (CorrelatedHavingLeaf.groupPresence .filled .inner source).evalTruthIn
 private def originContext : CorrelationContext := {
   read := fun env _ => if env == frame.innerEnv then value else empty
   groups := some {
-    fieldEnvironments := fun path _ _ _ => .error (.groupUnavailable path)
+    fieldExtent := fun path _ _ _ => .error (.groupUnavailable path)
     validation := fun env _ => pure {
       content := env == frame.innerEnv
       erroneous := false
@@ -107,7 +107,7 @@ private def failing : ResolvingCorrelationContext String := {
   typeValidityValueFailure := "type validity value failure"
   groupUnavailable := fun _ => "group unavailable"
   groups := some {
-    fieldEnvironments := fun _ _ _ _ => .error "extent unavailable"
+    fieldExtent := fun _ _ _ _ => .error "extent unavailable"
     validation := fun _ reference =>
       if reference.path == source.reference.path then
         .ok { content := true, erroneous := false, relevance := .fullyRelevant }

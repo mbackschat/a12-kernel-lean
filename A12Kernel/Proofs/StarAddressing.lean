@@ -226,10 +226,10 @@ theorem starPath_resolveInCapacity_agreeOutsideReopened
   unfold StarPath.resolveInCapacity at resolution
   cases topology : path.resolveTopology document outer with
   | error cause =>
-      rw [topology] at resolution
+      simp only [topology, bind, Except.bind] at resolution
       cases resolution
   | ok physical =>
-      rw [topology] at resolution
+      simp only [topology, boundEnvironment, bind, Except.bind, pure, Except.pure] at resolution
       cases resolution
       intro candidate member
       simp only [ResolvedStarTopology.inCapacity, List.mem_filter] at member

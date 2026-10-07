@@ -112,7 +112,7 @@ example : partialModel.admitsHavingSimpleComparison [10] [10]
       some .invalidCompareToDateRange := by native_decide
 
 private def fill (operator : FieldFillQuantifier) : CorrelatedHavingLeaf :=
-  .fieldFill operator [{ origin := .inner, field := 1 }, { origin := .outer, field := 1 }]
+  .fieldFill operator [.direct { origin := .inner, field := 1 }, .direct { origin := .outer, field := 1 }]
 private def fillContext : CorrelationContext := {
   read := fun env _ => if env == frame.innerEnv then text "filled" else emptyRequired }
 
@@ -138,8 +138,8 @@ example : (fill .atLeastOneFieldFilled).evalComputationInResolving failingFillCo
 
 example : (fill .allFieldsFilled).wellFormedForEnvironments model [10] [10] = true ∧
     (fill .allFieldsFilled).wellFormedForEnvironments model [10] [] = false ∧
-    (CorrelatedHavingLeaf.fieldFill .allFieldsFilled [{ origin := .inner, field := 1 },
-      { origin := .inner, field := 1 }]).wellFormedForEnvironments model [10] [10] = false ∧
+    (CorrelatedHavingLeaf.fieldFill .allFieldsFilled [.direct { origin := .inner, field := 1 },
+      .direct { origin := .inner, field := 1 }]).wellFormedForEnvironments model [10] [10] = false ∧
     (CorrelationElabError.fieldFill .tooFewFields).diagnostic? = some .paramSizeInvalidN ∧
     (CorrelationElabError.fieldFill (.duplicateOperand 1)).diagnostic? = some .duplicateParam1 := by native_decide
 

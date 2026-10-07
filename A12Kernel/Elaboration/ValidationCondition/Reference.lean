@@ -222,6 +222,20 @@ private def havingGroupReferencePointers (source : CheckedStarFieldPath model)
   groupExpansionPointers model reference.path
     (match origin with | .outer => groupDepth | .inner => min groupDepth source.path.firstStar) environment
 
+private def havingEntityListReferencePointers (source : CheckedStarFieldPath model)
+    (environment : Env) (operands : List (HavingFieldListSlot HavingPresenceRef)) :
+    Except ReferenceProjectionError (List MessagePointer) := do
+  let slots ← operands.mapM fun slot => slot.references.mapM fun ref => do
+    let declaration ← (model.lookupUniqueId ref.field).mapError fun _ => .incoherentHavingField ref.field
+    match slot with
+    | .direct _ => havingFieldPointerFor source environment declaration ref.origin
+    | .extent extent _ =>
+        let bound := if ref.origin == .outer then extent.boundCount
+          else min source.path.firstStar extent.boundCount
+        if declaration.repeatableScope.length ≤ bound then concreteFieldPointer declaration environment
+        else reopenedFieldPointer declaration bound environment
+  pure slots.flatten
+
 private def correlatedHavingReferencePointers (source : CheckedStarFieldPath model)
     (environment : Env) : CorrelatedHaving →
     Except ReferenceProjectionError (List MessagePointer)
@@ -273,23 +287,13 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
   | .leaf (.dateValidity _ components) => components.references.mapM fun ref => do
       let declaration ← (model.lookupUniqueId ref.field).mapError fun _ => .incoherentHavingField ref.field
       havingFieldPointerFor source environment declaration ref.origin
-  | .leaf (.uniqueness uniqueness) => do
-      let slots ← uniqueness.presenceSlots.mapM fun slot => slot.references.mapM fun ref => do
-        let declaration ← (model.lookupUniqueId ref.field).mapError fun _ => .incoherentHavingField ref.field
-        match slot with
-        | .direct _ => havingFieldPointerFor source environment declaration ref.origin
-        | .extent extent _ =>
-            let bound := if ref.origin == .outer then extent.boundCount
-              else min source.path.firstStar extent.boundCount
-            if declaration.repeatableScope.length ≤ bound then concreteFieldPointer declaration environment
-            else reopenedFieldPointer declaration bound environment
-      pure slots.flatten
+  | .leaf (.uniqueness uniqueness) =>
+      havingEntityListReferencePointers source environment uniqueness.presenceSlots
   | .leaf (.fieldMembership _ membership) => membership.references.mapM fun ref => do
       let declaration ← (model.lookupUniqueId ref.field).mapError fun _ => .incoherentHavingField ref.field
       havingFieldPointerFor source environment declaration ref.origin
-  | .leaf (.fieldFill _ references) => references.mapM fun reference => do
-      let declaration ← (model.lookupUniqueId reference.field).mapError fun _ => .incoherentHavingField reference.field
-      havingFieldPointerFor source environment declaration reference.origin
+  | .leaf (.fieldFill _ references) =>
+      havingEntityListReferencePointers source environment references
   | .leaf (.presence _ reference) => do
       -- Presence names any declared field, so its coherence check is existence alone.
       let declaration ← match model.lookupUniqueId reference.field with
