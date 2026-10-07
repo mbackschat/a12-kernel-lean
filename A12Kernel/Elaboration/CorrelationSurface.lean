@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.NumericSource
 import A12Kernel.Elaboration.FieldEntityAdmission
 import A12Kernel.Elaboration.Flat.Condition.Surface
@@ -96,6 +97,7 @@ inductive SurfaceCorrelatedHaving where
       rule's own condition. -/
   | presence (polarity : HavingPresencePolarity)
       (reference : SurfaceHavingPresenceRef)
+  | stringPattern (operation : StringPatternOp) (reference : SurfaceHavingPresenceRef) (source : String)
   | typeValidity (operation : CustomFieldValidityOp) (reference : SurfaceHavingPresenceRef) (name : String)
   | groupPresence (operator : GroupPresenceOperator) (origin : HavingOrigin)
       (reference : SurfaceGroupReference)
@@ -135,6 +137,7 @@ inductive CorrelationElabError where
   | fieldFill (error : FieldEntityShapeElabError)
   | groupFill (error : FieldEntityShapeElabError)
   | groupPresence (error : FixedGroupReferenceError)
+  | stringPattern (error : StringPatternConditionElabError)
   | typeValidityOperand (error : CustomFieldValidityOperandElabError)
   | typeValidityName (error : CustomFieldValidityElabError)
   | text (error : ElabError)
@@ -238,6 +241,7 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .membershipStringLiteralKind _ => some .invalidTypesForComparison
   | .fieldFill error | .groupFill error => error.diagnostic?
   | .groupPresence error => error.diagnostic?
+  | .stringPattern error => error.diagnostic?
   | .typeValidityOperand error => error.diagnostic?
   | .typeValidityName .emptyTypeName => some .noEmpty
   | .dateRangeComponentsMismatch _ _ => some .invalidCompareToDateRange

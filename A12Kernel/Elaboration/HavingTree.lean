@@ -53,6 +53,8 @@ structure HavingLeafResolvers where
   groupPresence : HavingOrigin → SurfaceGroupReference → Except CorrelationElabError ComputationGroupOperand
   groupFill : GroupFillQuantifier → (HavingOrigin × SurfaceGroupReference) →
     List (HavingOrigin × SurfaceGroupReference) → Except CorrelationElabError (HavingGroupOperand × List HavingGroupOperand)
+  stringPattern : HavingOrigin → SurfaceFieldPath → String →
+    Except CorrelationElabError (HavingPresenceRef × CompiledStringPattern)
   typeValidity : HavingOrigin → SurfaceFieldPath → String → Except CorrelationElabError HavingPresenceRef
   presence : HavingOrigin → SurfaceFieldPath →
     Except CorrelationElabError HavingPresenceRef
@@ -200,6 +202,9 @@ def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
   | .presence polarity reference => do
       pure (.presence polarity
         (← resolvers.presence reference.origin reference.field))
+  | .stringPattern operation reference source => do
+      let (reference, compiled) ← resolvers.stringPattern reference.origin reference.field source
+      pure (.leaf (.stringPattern operation reference compiled))
   | .typeValidity operation reference name => do
       pure (.leaf (.typeValidity operation (← resolvers.typeValidity reference.origin reference.field name) name))
   | .groupPresence operator origin reference => do

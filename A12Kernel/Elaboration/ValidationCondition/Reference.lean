@@ -282,7 +282,7 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
         | .ok declaration => pure declaration
         | .error _ => throw (.incoherentHavingField reference.field)
       pure [← havingFieldPointerFor source environment declaration reference.origin]
-  | .leaf (.typeValidity _ reference _) => do
+  | .leaf (.typeValidity _ reference _) | .leaf (.stringPattern _ reference _) => do
       let declaration ← (model.lookupUniqueId reference.field).mapError fun _ =>
         .incoherentHavingField reference.field
       pure [← havingFieldPointerFor source environment declaration reference.origin]

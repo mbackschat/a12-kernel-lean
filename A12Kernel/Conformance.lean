@@ -1,3 +1,4 @@
+import A12Kernel.Conformance.HavingStringPattern
 import A12Kernel.Conformance.HavingCalendarDifference
 import A12Kernel.Conformance.HavingGroupPresence
 import A12Kernel.Conformance.CorrelationResolving

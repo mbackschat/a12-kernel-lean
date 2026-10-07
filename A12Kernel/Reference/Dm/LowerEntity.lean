@@ -237,6 +237,11 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
         (← lowerNumericExpr lowerHavingNumericAtom lowerHavingNumericField left)
         (← lowerNumericExpr lowerHavingNumericAtom lowerHavingNumericField right))
   | .compare op left right => do
+      if op == .patternMatched || op == .patternViolated then
+        let .value { path, index := none, category := none } := left | refuse "Having" "pattern field"
+        let some (origin, field) := path.havingField? | refuse "Having" "pattern field path"
+        let some source := right.patternConstant? | refuse "Having" "pattern constant"
+        return .stringPattern (if op == .patternMatched then .matched else .violated) { origin, field } source
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
       let rec temporal : Expr → Option SurfaceHavingTemporalOperand
         | .value { path, index := none, category := none } => do

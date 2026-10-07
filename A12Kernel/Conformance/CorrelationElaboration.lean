@@ -147,14 +147,20 @@ private def equalCount (left right : HavingOrigin) : SurfaceCorrelatedHaving :=
     (numberRef left (absolute items.path "Count"))
     (numberRef right (absolute items.path "Count"))
 
+private instance : DecidableEq (NumericComparisonOf HavingNumericAtom) := inferInstance
+
+private def numericLeaf? : CorrelatedHaving → Option (NumericComparisonOf HavingNumericAtom)
+  | .leaf (.numeric comparison) => some comparison
+  | _ => none
+
 private def shapeOf (result : Except CorrelationElabError (CheckedSingleCorrelatedRule model)) :
     Option (RepeatableGroupDecl × FlatNumberField × FlatNumberField ×
-      FlatNumberField × CorrelatedHaving) :=
+      FlatNumberField × Option (NumericComparisonOf HavingNumericAtom)) :=
   match result with
   | .error _ => none
   | .ok checked => some (checked.core.group, checked.core.errorField,
       checked.core.guardField, checked.core.star.valueField,
-      checked.core.star.having.condition)
+      numericLeaf? checked.core.star.having.condition)
 
 private def havingOf
     (result : Except CorrelationElabError (CheckedSingleCorrelatedRule model)) :
@@ -268,14 +274,14 @@ example : errorOf ordinaryHierarchyCollisionModel.validate =
   native_decide
 
 private def expectedShape : RepeatableGroupDecl × FlatNumberField ×
-    FlatNumberField × FlatNumberField × CorrelatedHaving :=
+    FlatNumberField × FlatNumberField × Option (NumericComparisonOf HavingNumericAtom) :=
   (items,
     { id := 0, info := { scale := 0, signed := false } },
     { id := 0, info := { scale := 0, signed := false } },
     { id := 1, info := { scale := 2, signed := false } },
-    .compareNumbers .equal
+    numericLeaf? (.compareNumbers .equal
       { origin := .inner, field := { id := 0, info := { scale := 0, signed := false } } }
-      { origin := .outer, field := { id := 0, info := { scale := 0, signed := false } } })
+      { origin := .outer, field := { id := 0, info := { scale := 0, signed := false } } }))
 
 private def forgedOrRule : ResolvedSingleCorrelatedRule :=
   let count : FlatNumberField :=
@@ -307,20 +313,20 @@ example : shapeOf (elaborateSingleCorrelatedRule model ["Order"]
       (numberRef .outer (relative ["Items"] "Count"))))) = some expectedShape := by
   native_decide
 
-example : havingOf (elaborateSingleCorrelatedRule model ["Order"]
+example : (havingOf (elaborateSingleCorrelatedRule model ["Order"]
     (absoluteRule (.compareRepetitions .equal
       (repetitionRef .inner (absoluteGroup items.path))
-      (repetitionRef .outer (absoluteGroup items.path))))) =
-    some (.compareRepetitions .equal
+      (repetitionRef .outer (absoluteGroup items.path)))))).bind numericLeaf? =
+    numericLeaf? (.compareRepetitions .equal
       { origin := .inner, source := .repeatable items.level }
       { origin := .outer, source := .repeatable items.level }) := by
   native_decide
 
 /- `RuleGroup` retains its keyword origin while both current-repetition operands resolve to the rule's own repeatable level. -/
-example : havingOf (elaborateSingleCorrelatedRule model items.path
+example : (havingOf (elaborateSingleCorrelatedRule model items.path
     (absoluteRule (.compareRepetitions .notEqual
-      (ruleGroupRef .inner) (ruleGroupRef .outer)))) =
-    some (.compareRepetitions .notEqual
+      (ruleGroupRef .inner) (ruleGroupRef .outer))))).bind numericLeaf? =
+    numericLeaf? (.compareRepetitions .notEqual
       { origin := .inner, source := .repeatable items.level }
       { origin := .outer, source := .repeatable items.level }) := by
   native_decide
@@ -331,10 +337,10 @@ statically for `>` and `>=`; the rows compare by index, which `HavingNumberLiter
 example :
     [(SurfaceComparisonOp.greater, CorrelationComparisonOp.greaterThan),
      (.greaterEqual, .greaterEqual), (.lessEqual, .lessEqual)].all fun (surface, core) =>
-      havingOf (elaborateSingleCorrelatedRule model items.path
+      (havingOf (elaborateSingleCorrelatedRule model items.path
         (absoluteRule (.compareRepetitions surface
-          (ruleGroupRef .inner) (ruleGroupRef .outer)))) ==
-      some (.compareRepetitions core
+          (ruleGroupRef .inner) (ruleGroupRef .outer))))).bind numericLeaf? ==
+      numericLeaf? (.compareRepetitions core
         { origin := .inner, source := .repeatable items.level }
         { origin := .outer, source := .repeatable items.level }) := by
   native_decide

@@ -86,11 +86,15 @@ example : (elaborateStarNumberHavingSource model ["Rep"] (writtenGroup := ["Rep"
     (.compareRepetitions .equal (reference .inner fixedPath) (reference .inner fixedPath))).isOk
     = true := by native_decide
 
-private def checkedHaving? (path : GroupPath) : Option CorrelatedHaving :=
-  (elaborateStarNumberHavingSource model base.groupPath (writtenGroup := base.groupPath) source
-    (condition .outer path)).toOption.map (·.having)
+private def numericLeaf? : CorrelatedHaving → Option (NumericComparisonOf HavingNumericAtom)
+  | .leaf (.numeric comparison) => some comparison
+  | _ => none
 
-example : checkedHaving? fixedPath = some
+private def checkedHaving? (path : GroupPath) : Option (NumericComparisonOf HavingNumericAtom) :=
+  (elaborateStarNumberHavingSource model base.groupPath (writtenGroup := base.groupPath) source
+    (condition .outer path)).toOption.bind (fun checked => numericLeaf? checked.having)
+
+example : checkedHaving? fixedPath = numericLeaf?
     (.compareRepetitions .equal
       { origin := .outer, source := .fixed fixedPath }
       { origin := .inner, source := .repeatable 10 }) := by native_decide

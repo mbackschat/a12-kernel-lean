@@ -304,6 +304,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-having-group-predicates"></a>
 - [Group predicates in correlated filters](implementation/repetition-and-paths.md#cap-having-group-predicates)
 
+<a id="cap-having-pattern-predicates"></a>
+- [Pattern predicates in correlated filters](implementation/repetition-and-paths.md#cap-having-pattern-predicates)
+
 <a id="cap-having-named-type-predicates"></a>
 - [Named-type predicates in correlated filters](implementation/repetition-and-paths.md#cap-having-named-type-predicates)
 
