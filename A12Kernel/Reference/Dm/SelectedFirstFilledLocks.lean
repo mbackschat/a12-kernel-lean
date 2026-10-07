@@ -70,25 +70,29 @@ private structure Scenario where
   fallback : Option String := none
   outSeed : Option String := none
   children : Option (List String) := none
+  localValue : Option String := none
   localEmpty : Bool := false
   omitted : Bool := false
   bodyZeta : Option String := none
   bodyAlpha : Option String := none
+  secondBodyZeta : Option String := none
   slots : Option (List (String × String)) := none
   bodyOmitted : Bool := false
   rowsAbsent : Bool := false
 
 private def input (profile : Profile) (scenario : Scenario) : Lean.Json :=
-  let body (value : String) := Lean.Json.mkObj [
-    ("Zeta", .str (scenario.bodyZeta.getD value)), ("Alpha", .str (scenario.bodyAlpha.getD (second profile))),
+  let body (value : String) (selected : Bool) := Lean.Json.mkObj [
+    ("Zeta", .str (if selected then scenario.bodyZeta.getD value else
+      scenario.secondBodyZeta.getD (scenario.bodyZeta.getD value))),
+    ("Alpha", .str (scenario.bodyAlpha.getD (second profile))),
     ("Slots", .arr ((scenario.slots.getD [(value, second profile)]).map fun pair =>
       Lean.Json.mkObj [("Zeta", .str pair.1), ("Alpha", .str pair.2)]).toArray)]
   let row (id value localText : String) (selected : Bool) := Lean.Json.mkObj
     ([("Id", .str id), ("Out", .str (scenario.outSeed.getD (seed profile))),
-      ("Local", .str (if scenario.localEmpty then "" else localText)),
+      ("Local", .str (if scenario.localEmpty then "" else scenario.localValue.getD localText)),
       ("Children", .arr ((scenario.children.getD [value]).map (fun child =>
         Lean.Json.mkObj [("Value", .str child)])).toArray)] ++
-      (if scenario.bodyOmitted then [] else [("Body", body value)]) ++
+      (if scenario.bodyOmitted then [] else [("Body", body value selected)]) ++
       if selected && scenario.omitted then [] else [("Value", .str value)])
   Lean.Json.mkObj [("Form", Lean.Json.mkObj [
     ("Out", .str (scenario.outSeed.getD (seed profile))), ("Fallback", .str (scenario.fallback.getD (fallback profile))),
@@ -290,11 +294,11 @@ example : profiles.all (fun profile => groupSources.all fun source =>
     run profile ("FirstFilledValue(Rows/Local," ++ source ++ " For Key)")
       { secondId := "a", localEmpty := true } true == some (cleared true)) = true := by native_decide
 
-private def selfGroupRefused (profile : Profile) : Bool :=
+private def selfGroupRefused (profile : Profile) (operation : String := groupOperation "Rows/Body") : Bool :=
   let nested := { model profile with fields := (model profile).fields.map fun field =>
     if field.id == 7 then { field with groupPath := ["Form", "Rows", "Body"] } else field }
   !(lowerComputation nested .english
-    { definition (groupOperation "Rows/Body") true with targetRelPath := "../Rows/Body/Out" }).isOk
+    { definition operation true with targetRelPath := "../Rows/Body/Out" }).isOk
 
 example : profiles.all (fun profile => [false,true].all (fun repeated =>
     !admitted profile (groupOperation "Rows/Mixed") repeated) && selfGroupRefused profile) = true := by native_decide
@@ -338,5 +342,119 @@ example : profiles.all (fun profile => [false,true].all fun repeated =>
 example : profiles.all (fun profile => ["Body", "Body/Slots*"].all fun source =>
     run profile ("FirstFilledValue(" ++ source ++ " For ../Key,../Fallback)") {} true false true ==
       some (expected profile (first profile) true)) = true := by native_decide
+
+example : profiles.all (fun profile => [false,true].all fun repeated =>
+    run profile "FirstFilledValue(Rows/Value For Key,Rows*/Local)" {} repeated ==
+      some (expected profile (first profile) repeated) &&
+    run profile "FirstFilledValue(Rows/Value For Key,Rows*/Local)" { key := "missing" } repeated ==
+      some (expected profile (first profile) repeated)) = true := by native_decide
+
+example : profiles.all (fun profile =>
+    run profile "FirstFilledValue(Rows/Value For Key,Rows*/Body)" { key := "missing" } ==
+      some (expected profile (first profile))) = true := by native_decide
+
+private def ordinarySources : List String := ["Rows*/Local", "Rows*/Body", "Rows*/Body/Slots*"]
+
+private def mixedOperation (ordinary : String) (ordinaryFirst : Bool := false) : String :=
+  "FirstFilledValue(" ++ (if ordinaryFirst then ordinary ++ ",Rows/Value For Key" else
+    "Rows/Value For Key," ++ ordinary) ++ ")"
+
+private def emptyOrdinary (selected : Option String := none) : Scenario := {
+  selected, localEmpty := true, bodyZeta := some "", bodyAlpha := some "", slots := some [("", "")] }
+
+example : profiles.all (fun profile => [false,true].all fun repeated => ordinarySources.all fun source =>
+    run profile (mixedOperation source) { key := "b" } repeated ==
+      some (expected profile (second profile) repeated) &&
+    run profile (mixedOperation source true) { key := "b" } repeated ==
+      some (expected profile (first profile) repeated) &&
+    run profile (mixedOperation source) { key := "missing" } repeated ==
+      some (expected profile (first profile) repeated) &&
+    run profile (mixedOperation source true) (emptyOrdinary) repeated ==
+      some (expected profile (first profile) repeated) &&
+    [false,true].all (fun ordinaryFirst =>
+      run profile (mixedOperation source ordinaryFirst) (emptyOrdinary (some "")) repeated ==
+        some (cleared repeated))) = true := by native_decide
+
+example : profiles.all (fun profile => [false,true].all fun repeated =>
+    run profile (mixedOperation "Rows*/Local") { localValue := some "bad" } repeated ==
+      some (expected profile (first profile) repeated) &&
+    run profile (mixedOperation "Rows*/Local" true) { localValue := some "bad" } repeated == some (cleared repeated) &&
+    run profile (mixedOperation "Rows*/Local") { selected := some "", localValue := some "bad" } repeated == some (cleared repeated) &&
+    ordinarySources.all (fun source =>
+      run profile (mixedOperation source true) { secondId := "a" } repeated ==
+        some (expected profile (first profile) repeated) &&
+      run profile (mixedOperation source) { secondId := "a" } repeated == some (cleared repeated)) &&
+    ["Rows*/Body", "Rows*/Body/Slots*"].all (fun source =>
+      let poisoned := { bodyZeta := some "bad", slots := some [("bad", second profile)] : Scenario }
+      run profile (mixedOperation source) poisoned repeated == some (expected profile (first profile) repeated) &&
+      run profile (mixedOperation source true) poisoned repeated == some (cleared repeated))) = true := by native_decide
+
+example : profiles.all (fun profile => [false,true].all fun repeated =>
+    run profile (mixedOperation "Rows*/Body" true)
+      { bodyZeta := some "", secondBodyZeta := some (first profile), bodyAlpha := some (second profile), slots := some [] }
+      repeated == some (expected profile (first profile) repeated) &&
+    ["Rows*/Body", "Rows*/Body/Slots*"].all (fun source =>
+      run profile (mixedOperation source true)
+        { bodyZeta := some "", bodyAlpha := some "", slots := some [("", second profile), (first profile, "")] }
+        repeated == some (expected profile (first profile) repeated) &&
+      run profile (mixedOperation source true) { bodyOmitted := true } repeated ==
+        some (expected profile (first profile) repeated) &&
+      run profile (mixedOperation source true)
+        { bodyZeta := some "", bodyAlpha := some "", slots := some [("", ""), ("", ""), ("", ""), ("bad", "bad")] }
+        repeated == some (expected profile (first profile) repeated) &&
+      run profile (mixedOperation source true)
+        { key := "missing", bodyZeta := some "", bodyAlpha := some "",
+          slots := some [("", ""), ("", ""), ("", ""), (first profile, "")] }
+        repeated == some (cleared repeated))) = true := by native_decide
+
+example : profiles.all (fun profile => ["Body", "Body/Slots*"].all fun source =>
+    let ordinaryExpected := (expected profile (first profile) true).filter (·.pointer == "Form/Rows/Out") ++
+      (expected profile (second profile) true).filter (·.pointer == "Form/Rows[2]/Out")
+    run profile ("FirstFilledValue(" ++ source ++ " For ../Key," ++ source ++ ")") { key := "b" }
+      true false true == some (expected profile (second profile) true) &&
+    run profile ("FirstFilledValue(" ++ source ++ "," ++ source ++ " For ../Key)") { key := "b" }
+      true false true == some ordinaryExpected &&
+    run profile ("FirstFilledValue(" ++ source ++ " For ../Key," ++ source ++ ")") { key := "missing" }
+      true false true == some ordinaryExpected &&
+    run profile ("FirstFilledValue(" ++ source ++ ",Value For ../Key)") { bodyOmitted := true }
+      true false true == some (expected profile (first profile) true)) = true := by native_decide
+
+example : exactFailure (mixedOperation "Rows*/Local" true) 6 [1] {} = true ∧
+    resolutionTag (resolveWithFailure (mixedOperation "Rows*/Local") 6 {} (some [1])) = "value" ∧
+    exactFailure (mixedOperation "Rows*/Local") 6 [1] { key := "missing" } = true ∧
+    resolutionTag (resolveWithFailure (mixedOperation "Rows*/Local" true) 3) = "value" ∧
+    exactFailure (mixedOperation "Rows*/Local") 3 [] {} = true ∧
+    resolutionTag (resolveWithFailure (mixedOperation "Rows*/Local" true) 4 {} (some [1])) = "value" ∧
+    exactFailure (mixedOperation "Rows*/Local" true) 3 [] { localEmpty := true } = true := by native_decide
+
+-- Index fields cannot be computation targets (spec/09 §1); selection uses their prepared
+-- immutable column rather than the dependency overlay, unlike reached key and payload reads.
+example : resolutionTag (resolveWithFailure (mixedOperation "Rows*/Local") 4 {} (some [1])) =
+    "value" := by native_decide
+
+example : exactFailure (mixedOperation "Rows*/Body" true) 11 [1] {} = true ∧
+    resolutionTag (resolveWithFailure (mixedOperation "Rows*/Body") 11 {} (some [1])) = "value" ∧
+    resolutionTag (resolveWithFailure (mixedOperation "Rows*/Body" true) 12 {} (some [1])) = "value" ∧
+    exactFailure (mixedOperation "Rows*/Body" true) 12 [1]
+      { bodyZeta := some "", slots := some [] } = true ∧
+    resolutionTag (resolveWithFailure (mixedOperation "Rows*/Body/Slots*" true) 13
+      { slots := some [("false", "true"), ("true", "false")] } (some [1,2])) = "value" ∧
+    exactFailure (mixedOperation "Rows*/Body/Slots*" true) 13 [1,2]
+      { slots := some [("", "true"), ("false", "")] } = true ∧
+    resolutionTag (resolveWithFailure (mixedOperation "Rows*/Body/Slots*" true) 14
+      { slots := some [("", "true"), ("false", "")] } (some [1,1])) = "value" ∧
+    exactFailure (mixedOperation "Rows*/Body/Slots*" true) 14 [1,1]
+      { slots := some [("", "true"), ("", "false")] } = true := by native_decide
+
+example : dependencies (mixedOperation "Rows*/Local") = some [3,4,5,6] ∧
+    dependencies (mixedOperation "Rows*/Local" true) = some [3,4,5,6] ∧
+    dependencies (mixedOperation "Rows*/Body") = some [3,4,5,11,12,13,14] ∧
+    dependencies (mixedOperation "Rows*/Body/Slots*") = some [3,4,5,13,14] ∧
+    dependencies "FirstFilledValue(Rows/Value For \"a\",Rows*/Body)" = some [4,5,11,12,13,14] := by native_decide
+
+example : profiles.all (fun profile => [false,true].all (fun repeated =>
+    !admitted profile (mixedOperation "Rows*/Mixed") repeated &&
+    !admitted profile "FirstFilledValue(Rows/Value For Key,Rows*/Out)" true) &&
+    selfGroupRefused profile (mixedOperation "Rows*/Body")) = true := by native_decide
 
 end A12Kernel.Dm.SelectedFirstFilledLocks

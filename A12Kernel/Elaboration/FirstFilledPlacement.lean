@@ -139,11 +139,27 @@ private def selectedEnvironment (source : CheckedSemanticIndexSource model)
   source.selectEnvironmentWith .computation (fun _ _ _ => pure column) outer
     (fun _ => cell) (fun _ => stored)
 
+private def scanFieldRows (input : CheckedDocument model)
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    List (FlatFieldDecl × Env) → Except CheckedAddressingError (Option CheckedAddressedCell)
+  | [] => pure none
+  | (declaration, environment) :: rest => do
+      match ← scanCells input read declaration.id [environment] with
+      | some cell => pure (some cell)
+      | none => scanFieldRows input read rest
+
 def resolveOperandAt (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env) :
     FirstFilledFieldOperand model →
       Except CheckedAddressingError (Except FormalCause (Option CheckedAddressedCell))
   | .field declaration => Except.ok <$> scanCells input read declaration.id [outer]
+  | .star source => do
+      let resolved ← (source.path.resolveInCapacity input.source.toDocument outer).mapError .addressing
+      Except.ok <$> scanCells input read source.declaration.id resolved.environments
+  | .group source => do
+      let rows ← (model.groupOperandRows input.source.toDocument outer
+        source.source.boundLevelCount source.declarations (·.repeatableScope)).mapError .addressing
+      Except.ok <$> scanFieldRows input read rows
   | .indexed source => do
       let selected ← selectedEnvironment source input read outer
       match selected with
@@ -157,14 +173,8 @@ def resolveOperandAt (input : CheckedDocument model)
       | .unknown cause | .poison cause => pure (.error cause)
       | .value environment =>
         let rows ← (source.rows input.source.toDocument environment).mapError .addressing
-        let rec scan : List (FlatFieldDecl × List Env × Bool) →
-            Except CheckedAddressingError (Option CheckedAddressedCell)
-          | [] => pure none
-          | (declaration, environments, _) :: rest => do
-              match ← scanCells input read declaration.id environments with
-              | some cell => pure (some cell)
-              | none => scan rest
-        Except.ok <$> scan rows
+        Except.ok <$> scanFieldRows input read
+          (rows.flatMap fun (declaration, environments, _) => environments.map (declaration, ·))
 
 private def selectedOperands (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) (outer : Env) :

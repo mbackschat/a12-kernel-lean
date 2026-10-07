@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Elaboration.CheckedStarShape
 import A12Kernel.Elaboration.FieldEntityList
+import A12Kernel.Elaboration.FilledFieldGroupCount
 
 /-! # Carrier-owned `FirstFilledValue` sources
 
@@ -32,12 +33,15 @@ def evaluateFirstFilledSource (result : Except FormalCause ResolvedFirstFilledSo
   | .error cause => poison cause
   | .ok resolved => scan resolved
 
-/-- Stored scalar or selected-extent operands retain the selection certificate separately from
-payload declarations: index and key dependencies need not have the payload's kind (spec/08 §4). -/
+/-- Stored scalar, ordinary extent and selected operands retain selection certificates separately from
+payload declarations: index and key dependencies need not have the payload's kind (spec/08 §4).
+Ordinary star and group slots retain their established extent certificates (spec/07 §5). -/
 inductive FirstFilledFieldOperand (model : FlatModel) where
   | field (declaration : FlatFieldDecl)
   | indexed (source : CheckedSemanticIndexSource model)
   | keyed (source : CheckedKeyedEntityExtent model)
+  | star (source : CheckedStarFieldPath model)
+  | group (source : CheckedFilledFieldCountGroupSource model)
 
 namespace FirstFilledFieldOperand
 
@@ -45,16 +49,20 @@ def declarations : FirstFilledFieldOperand model → List FlatFieldDecl
   | .field declaration => [declaration]
   | .indexed source => [source.targetDeclaration]
   | .keyed source => source.declarations
+  | .star source => [source.declaration]
+  | .group source => source.declarations
 
 def referencesField (operand : FirstFilledFieldOperand model) (field : FieldId) : Bool :=
   match operand with
   | .field declaration => declaration.id == field
   | .indexed source => source.referencesField field
   | .keyed source => source.referencesField field
+  | .star source => source.declaration.id == field
+  | .group source => source.declarations.any (·.id == field)
 
 end FirstFilledFieldOperand
 
-/-- Legacy star/direct lists and target-bound selected lists share carrier-specific scans. -/
+/-- Legacy star/direct lists and target-bound mixed lists share carrier-specific scans. -/
 inductive FirstFilledFieldSource (model : FlatModel) where
   | star (source : CheckedStarFieldPath model)
   | list (fields : List FlatFieldDecl)
@@ -83,6 +91,7 @@ end FirstFilledFieldSource
 
 inductive FirstFilledListElabError where
   | shape (cause : FieldEntityShapeElabError)
+  | group (cause : FilledFieldCountGroupElabError)
   | unsupportedOperand
   deriving Repr, DecidableEq
 
@@ -91,17 +100,24 @@ structure CheckedFirstFilledFieldList (model : FlatModel) (declaringGroup : Grou
   declaringGroupValid : GroupPath.isValid declaringGroup = true
 
 /-- Resolve against the computed target's binding scope. Spec/07 §5 and spec/08 §4 use the
-selected extent's declaration order; plain groups and filtered operands keep their separate gates. -/
+extent's declaration order; filtered operands keep their separate gate. -/
 def elaborateFirstFilledFieldList (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (authored : SurfaceFieldEntitySource) :
     Except FirstFilledListElabError (CheckedFirstFilledFieldList model declaringGroup) := do
   let shape ← (elaborateFieldEntityShapeIn model declaringGroup
     (model.repeatableScopeForGroupPath writtenGroup) authored .manyRequired
     (some writtenGroup) writtenGroup).mapError .shape
+  let group (source : CheckedEntityGroupSource model) :=
+    (FirstFilledFieldOperand.group <$>
+      CheckedFilledFieldCountGroupSource.ofResolved model source).mapError FirstFilledListElabError.group
   let operands ← shape.operands.mapM fun
     | .field declaration .stored => pure (FirstFilledFieldOperand.field declaration)
     | .indexed source => pure (.indexed source)
     | .keyed source => pure (.keyed source)
+    | .star source => pure (.star source)
+    | .group reference => group (.fixed reference)
+    | .starredGroup source => group (.starred source)
+    | .starredGroupPresence source => group (.starredPresence source)
     | _ => throw .unsupportedOperand
   if hValid : GroupPath.isValid declaringGroup = true then
     let fields := operands.filterMap fun | .field field => some field | _ => none

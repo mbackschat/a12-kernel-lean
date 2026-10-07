@@ -205,14 +205,13 @@ private def rowsStar : SurfaceFieldEntityOperand :=
 
 /- The list's representation boundary, each refusal at the layer that owns it and none claiming a
 Kernel class: three fields are admitted, a sole direct field fails the entity list's arity, a star
-operand is no plain field, a list naming its own target and a list mixing kinds are refused by the
+operand keeps its checked extent, a list naming its own target and a list mixing kinds are refused by the
 carrier, and a field under a repeatable group fails the shared shape as an unbound level. -/
 example :
     ((booleanError? [operand "B1", operand "B2", operand "B3"]).isNone &&
       (match booleanError? [operand "B1"] with
         | some (.site (.list (.shape .tooFewFields))) => true | _ => false) &&
-      (match booleanError? [operand "B1", rowsStar] with
-        | some (.site (.list .unsupportedOperand)) => true | _ => false) &&
+      (booleanError? [operand "B1", rowsStar]).isNone &&
       (match booleanError? [operand "B1", operand "BTgt"] with
         | some (.targetSelfReference path) => path == ["Fc", "BTgt"] | _ => false) &&
       (match booleanError? [operand "B1", operand "T1"] with
