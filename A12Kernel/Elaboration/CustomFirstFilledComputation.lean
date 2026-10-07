@@ -6,8 +6,8 @@ import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Custom `FirstFilledValue` at a fixed or a repeatable target
 
-One carrier serves both address classes through the shared first-filled site. Selected scalar and
-lower-star lists retain the registered Custom payload contract; their Custom calibration is internal
+One carrier serves both address classes through the shared first-filled site. Selected entity
+lists retain the registered Custom payload contract; their Custom calibration is internal
 only. The shared source/placement owner keeps lookup dependencies separate from payload kinds. -/
 
 namespace A12Kernel

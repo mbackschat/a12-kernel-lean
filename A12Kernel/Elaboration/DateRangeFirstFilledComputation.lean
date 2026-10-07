@@ -8,7 +8,7 @@ import A12Kernel.Semantics.TemporalTarget
 
 /-! # Bounded DateRange `FirstFilledValue` computations
 
-Starred and selected field-list sources use the shared temporal site at fixed or repeatable targets. A direct list
+Starred and selected entity-list sources use the shared temporal site at fixed or repeatable targets. A direct list
 of plain fields at a fixed target is its own carrier, which owns the list's measured profile classes.
 -/
 
@@ -40,7 +40,7 @@ structure CheckedDateRangeFirstFilledComputation (model : FlatModel) where
   format : DateRangeInputFormat
   formatOwned : shape.carrier.dateRangeFormat? = some format
 
-/-- Check a star or selected field-list DateRange source through the shared placed carrier. -/
+/-- Check a star or selected entity-list DateRange source through the shared placed carrier. -/
 def checkDateRangeFirstFilledSourceComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFirstFilledSource) :

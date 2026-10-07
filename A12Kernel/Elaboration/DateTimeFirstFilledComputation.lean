@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.TemporalTargetPolicy
 /-! # DateTime `FirstFilledValue` at a fixed or a repeatable target
 
 One carrier serves both address classes through the shared temporal site, including target-bound
-selected scalar and lower-star lists. `FirstFilledPlacement` owns admission and reached-source order. Source and target share the ISO whole-second profile, and the target renders the selected exact
+selected entity lists. `FirstFilledPlacement` owns admission and reached-source order. Source and target share the ISO whole-second profile, and the target renders the selected exact
 instant in the model zone.
 -/
 

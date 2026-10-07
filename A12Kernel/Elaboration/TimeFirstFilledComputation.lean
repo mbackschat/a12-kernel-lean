@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.TimeComputation
 /-! # Time `FirstFilledValue` at a fixed or a repeatable target
 
 One carrier serves both address classes through the shared temporal site, including target-bound
-selected scalar and lower-star lists. `FirstFilledPlacement` owns admission and reached-source order. Source and target share the whole-second `HH:mm:ss` profile, and the target's clock format
+selected entity lists. `FirstFilledPlacement` owns admission and reached-source order. Source and target share the whole-second `HH:mm:ss` profile, and the target's clock format
 renders the selected clock.
 -/
 

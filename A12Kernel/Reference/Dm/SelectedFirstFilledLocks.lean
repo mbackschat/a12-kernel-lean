@@ -45,9 +45,16 @@ private def model (profile : Profile) : FlatModel :=
       { id := 4, name := "Id", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind := .string } },
       field 5 "Value" ["Form", "Rows"] [10], field 6 "Local" ["Form", "Rows"] [10],
       field 7 "Out" ["Form", "Rows"] [10], field 8 "Value" ["Form", "Rows", "Children"] [10,20],
-      field 9 "Suffix", field 10 "Direct"]
+      field 9 "Suffix", field 10 "Direct",
+      field 11 "Zeta" ["Form", "Rows", "Body"] [10], field 12 "Alpha" ["Form", "Rows", "Body"] [10],
+      field 13 "Zeta" ["Form", "Rows", "Body", "Slots"] [10,30],
+      field 14 "Alpha" ["Form", "Rows", "Body", "Slots"] [10,30],
+      field 15 "Zeta" ["Form", "Rows", "Mixed"] [10],
+      { id := 16, name := "Alpha", groupPath := ["Form", "Rows", "Mixed"], repeatableScope := [10],
+        policy := { kind := .number { scale := 0, signed := true } } }]
     repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 2, indexField := some 4 },
-      { level := 20, path := ["Form", "Rows", "Children"], repeatability := some 3 }]
+      { level := 20, path := ["Form", "Rows", "Children"], repeatability := some 3 },
+      { level := 30, path := ["Form", "Rows", "Body", "Slots"], repeatability := some 3 }]
     timeZoneId := "UTC" }
 
 private def world : World := {
@@ -65,19 +72,30 @@ private structure Scenario where
   children : Option (List String) := none
   localEmpty : Bool := false
   omitted : Bool := false
+  bodyZeta : Option String := none
+  bodyAlpha : Option String := none
+  slots : Option (List (String × String)) := none
+  bodyOmitted : Bool := false
+  rowsAbsent : Bool := false
 
 private def input (profile : Profile) (scenario : Scenario) : Lean.Json :=
+  let body (value : String) := Lean.Json.mkObj [
+    ("Zeta", .str (scenario.bodyZeta.getD value)), ("Alpha", .str (scenario.bodyAlpha.getD (second profile))),
+    ("Slots", .arr ((scenario.slots.getD [(value, second profile)]).map fun pair =>
+      Lean.Json.mkObj [("Zeta", .str pair.1), ("Alpha", .str pair.2)]).toArray)]
   let row (id value localText : String) (selected : Bool) := Lean.Json.mkObj
     ([("Id", .str id), ("Out", .str (scenario.outSeed.getD (seed profile))),
       ("Local", .str (if scenario.localEmpty then "" else localText)),
       ("Children", .arr ((scenario.children.getD [value]).map (fun child =>
         Lean.Json.mkObj [("Value", .str child)])).toArray)] ++
+      (if scenario.bodyOmitted then [] else [("Body", body value)]) ++
       if selected && scenario.omitted then [] else [("Value", .str value)])
   Lean.Json.mkObj [("Form", Lean.Json.mkObj [
     ("Out", .str (scenario.outSeed.getD (seed profile))), ("Fallback", .str (scenario.fallback.getD (fallback profile))),
     ("Suffix", .str (scenario.suffix.getD (second profile))), ("Direct", .str (first profile)), ("Key", .str scenario.key),
-    ("Rows", .arr #[row "a" (scenario.selected.getD (first profile)) (first profile) true,
-      row scenario.secondId (second profile) (second profile) false])])]
+    ("Rows", .arr (if scenario.rowsAbsent then #[] else
+      #[row "a" (scenario.selected.getD (first profile)) (first profile) true,
+        row scenario.secondId (second profile) (second profile) false]))])]
 
 private def checked (profile : Profile) (scenario : Scenario := {}) : Option (CheckedDocument (model profile)) := do
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler (model profile)).toOption
@@ -85,15 +103,16 @@ private def checked (profile : Profile) (scenario : Scenario := {}) : Option (Ch
     (input profile scenario)).toOption
   (checkDocument prepared "en_US" raw.data).toOption
 
-private def definition (operation : String) (repeated : Bool := false) : DmComputation := {
-  name := "Selected", group := ["Form"], targetRelPath := if repeated then "../Rows/Out" else "../Out"
+private def definition (operation : String) (repeated : Bool := false) (rowDeclared : Bool := false) : DmComputation := {
+  name := "Selected", group := if rowDeclared then ["Form", "Rows"] else ["Form"]
+  targetRelPath := if rowDeclared then "../Out" else if repeated then "../Rows/Out" else "../Out"
   commonPrecondition := none, alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }
 
 private def run (profile : Profile) (operation : String) (scenario : Scenario := {})
-    (repeated : Bool := false) (produceKey : Bool := false) : Option (List ComputedOutcome) := do
+    (repeated : Bool := false) (produceKey : Bool := false) (rowDeclared : Bool := false) : Option (List ComputedOutcome) := do
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler (model profile)).toOption
   let document ← checked profile scenario
-  let step ← (lowerComputation (model profile) .english (definition operation repeated)).toOption
+  let step ← (lowerComputation (model profile) .english (definition operation repeated rowDeclared)).toOption
   let producers ← if produceKey then do
     let producer ← (lowerComputation (model profile) .english
       { definition "\"b\"" with name := "KeyProducer", targetRelPath := "../Key" }).toOption
@@ -220,5 +239,104 @@ example : resolutionTag (resolveWithFailure "FirstFilledValue(Rows/Children*/Val
     { children := some ["false", "true"] } (some [1,2])) = "value" ∧
     resolutionTag (resolveWithFailure "FirstFilledValue(Rows/Children*/Value For Key)" 8
       { children := some ["", "true"] } (some [1,2])) = "fault" := by native_decide
+
+private def groupSources : List String := ["Rows/Body", "Rows/Body/Slots*"]
+
+private def groupOperation (source : String) (key : String := "Key") (withFallback : Bool := true) : String :=
+  "FirstFilledValue(" ++ source ++ " For " ++ key ++ (if withFallback then ",Fallback)" else ")")
+
+example : profiles.all (fun profile => [false,true].all fun repeated => groupSources.all fun source =>
+    ["Key", "\"a\""].all fun key => [false,true].all fun withFallback =>
+      run profile (groupOperation source key withFallback) {} repeated ==
+        some (expected profile (first profile) repeated)) = true := by native_decide
+
+example : profiles.all (fun profile => [false,true].all fun repeated =>
+    run profile (groupOperation "Rows/Body") { bodyZeta := some "", bodyAlpha := some (second profile), slots := some [] }
+      repeated == some (expected profile (second profile) repeated) &&
+    run profile (groupOperation "Rows/Body") { bodyZeta := some "", bodyAlpha := some "" }
+      repeated == some (expected profile (first profile) repeated) &&
+    groupSources.all (fun source => run profile (groupOperation source)
+      { bodyZeta := some "", bodyAlpha := some "", slots := some [("", second profile), (first profile, "")] }
+      repeated == some (expected profile (first profile) repeated))) = true := by native_decide
+
+example : profiles.all (fun profile => [false,true].all fun repeated => groupSources.all fun source =>
+    run profile (groupOperation source) { key := "b" } repeated ==
+      some (expected profile (second profile) repeated) &&
+    ["missing", ""].all (fun key =>
+      run profile (groupOperation source) { key, outSeed := some (first profile) } repeated ==
+        some (expected profile (fallback profile) repeated (some (first profile))) &&
+      run profile (groupOperation source "Key" false) { key } repeated == some (cleared repeated)) &&
+    run profile (groupOperation source) { bodyOmitted := true, outSeed := some (first profile) } repeated ==
+      some (expected profile (fallback profile) repeated (some (first profile))) &&
+    run profile (groupOperation source "Key" false) { bodyOmitted := true } repeated == some (cleared repeated) &&
+    run profile (groupOperation source) { bodyZeta := some "", bodyAlpha := some "", slots := some [], fallback := some "" }
+      repeated == some (cleared repeated) &&
+    run profile (groupOperation source) { secondId := "a" } repeated == some (cleared repeated) &&
+    run profile (groupOperation source) { bodyZeta := some "bad", slots := some [("bad", second profile)] }
+      repeated == some (cleared repeated)) = true := by native_decide
+
+example : profiles.all (fun profile => [false,true].all fun repeated =>
+    run profile (groupOperation "Rows/Body") { bodyAlpha := some "bad" } repeated ==
+      some (expected profile (first profile) repeated) &&
+    groupSources.all (fun source =>
+      run profile (groupOperation source) { rowsAbsent := true, outSeed := some (first profile) } repeated ==
+        some (if repeated then [] else expected profile (fallback profile) false (some (first profile))))) = true := by native_decide
+
+example : profiles.all (fun profile => groupSources.all fun source =>
+    let localExpected := expected profile (first profile) true |>.filter (·.pointer == "Form/Rows/Out")
+    let secondExpected := expected profile (second profile) true |>.filter (·.pointer == "Form/Rows[2]/Out")
+    run profile ("FirstFilledValue(Rows/Local," ++ source ++ " For Key)") { secondId := "a" } true ==
+      some (localExpected ++ secondExpected) &&
+    run profile ("FirstFilledValue(Rows/Local," ++ source ++ " For Key)")
+      { secondId := "a", localEmpty := true } true == some (cleared true)) = true := by native_decide
+
+private def selfGroupRefused (profile : Profile) : Bool :=
+  let nested := { model profile with fields := (model profile).fields.map fun field =>
+    if field.id == 7 then { field with groupPath := ["Form", "Rows", "Body"] } else field }
+  !(lowerComputation nested .english
+    { definition (groupOperation "Rows/Body") true with targetRelPath := "../Rows/Body/Out" }).isOk
+
+example : profiles.all (fun profile => [false,true].all (fun repeated =>
+    !admitted profile (groupOperation "Rows/Mixed") repeated) && selfGroupRefused profile) = true := by native_decide
+
+example : dependencies (groupOperation "Rows/Body") = some [2,3,4,11,12,13,14] ∧
+    dependencies (groupOperation "Rows/Body" "\"a\"") = some [2,4,11,12,13,14] ∧
+    dependencies (groupOperation "Rows/Body/Slots*") = some [2,3,4,13,14] := by native_decide
+
+private def eagerGroupFinding (profile : Profile) : Option Bool := do
+  let site ← siteFor profile (groupOperation "Rows/Body")
+  let document ← checked profile { bodyAlpha := some "bad" }
+  let plan ← site.formalInputPlan.toOption
+  let prepared ← (plan.prepare document).toOption
+  pure (prepared.formalErrorsInOperands.any fun finding => finding.address == { field := 12, path := [1] })
+
+example : profiles.all (fun profile => eagerGroupFinding profile == some true) = true := by native_decide
+
+private def exactFailure (operation : String) (field : FieldId) (path : List Nat) (scenario : Scenario) : Bool :=
+  match resolveWithFailure operation field scenario (some path) with
+  | some (.error (.document (.incoherentCell address))) => address == { field, path }
+  | _ => false
+
+example : resolutionTag (resolveWithFailure (groupOperation "Rows/Body") 12 {} (some [1])) = "value" ∧
+    exactFailure (groupOperation "Rows/Body") 12 [1] { bodyZeta := some "" } = true ∧
+    resolutionTag (resolveWithFailure (groupOperation "Rows/Body/Slots*") 13
+      { slots := some [("false", "true"), ("true", "false")] } (some [1,2])) = "value" ∧
+    exactFailure (groupOperation "Rows/Body/Slots*") 13 [1,2]
+      { slots := some [("", "true"), ("false", "")] } = true ∧
+    resolutionTag (resolveWithFailure (groupOperation "Rows/Body/Slots*") 14
+      { slots := some [("", "true"), ("false", "")] } (some [1,1])) = "value" ∧
+    exactFailure (groupOperation "Rows/Body/Slots*") 14 [1,1]
+      { slots := some [("", "true"), ("", "false")] } = true := by native_decide
+
+example : profiles.all (fun profile => [false,true].all fun repeated =>
+    run profile (groupOperation "Rows/Body/Slots*" "Key" false)
+      { slots := some [("", ""), ("", ""), ("", ""), (first profile, "")] } repeated == some (cleared repeated) &&
+    run profile (groupOperation "Rows/Body/Slots*" "Key" false)
+      { slots := some [("", ""), ("", ""), (first profile, ""), ("bad", "bad")] } repeated ==
+        some (expected profile (first profile) repeated)) = true := by native_decide
+
+example : profiles.all (fun profile => ["Body", "Body/Slots*"].all fun source =>
+    run profile ("FirstFilledValue(" ++ source ++ " For ../Key,../Fallback)") {} true false true ==
+      some (expected profile (first profile) true)) = true := by native_decide
 
 end A12Kernel.Dm.SelectedFirstFilledLocks

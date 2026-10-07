@@ -5,7 +5,7 @@ import A12Kernel.Elaboration.FieldEntityList
 /-! # Carrier-owned `FirstFilledValue` sources
 
 Payload declarations determine carrier agreement, while key/index declarations remain scheduling
-and eager formal-input dependencies. Selected field lists bind against the computed target's scope;
+and eager formal-input dependencies. Selected entity lists bind against the computed target's scope;
 legacy plain lists and sibling stars retain their established certificates. Source-order presence
 and poison follow the common first-filled mechanism in `spec/07` §5 and selection in `spec/08` §4.
 -/
@@ -90,8 +90,8 @@ structure CheckedFirstFilledFieldList (model : FlatModel) (declaringGroup : Grou
   source : FirstFilledFieldSource model
   declaringGroupValid : GroupPath.isValid declaringGroup = true
 
-/-- Resolve against the computed target's binding scope. Filtered and group operands require their
-own carrier contracts; selected scalar and lower-star sources use the measured field-list route. -/
+/-- Resolve against the computed target's binding scope. Spec/07 §5 and spec/08 §4 use the
+selected extent's declaration order; plain groups and filtered operands keep their separate gates. -/
 def elaborateFirstFilledFieldList (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (authored : SurfaceFieldEntitySource) :
     Except FirstFilledListElabError (CheckedFirstFilledFieldList model declaringGroup) := do
@@ -101,9 +101,7 @@ def elaborateFirstFilledFieldList (model : FlatModel) (declaringGroup writtenGro
   let operands ← shape.operands.mapM fun
     | .field declaration .stored => pure (FirstFilledFieldOperand.field declaration)
     | .indexed source => pure (.indexed source)
-    | .keyed source => match source.target with
-      | .star _ => pure (.keyed source)
-      | _ => throw FirstFilledListElabError.unsupportedOperand
+    | .keyed source => pure (.keyed source)
     | _ => throw .unsupportedOperand
   if hValid : GroupPath.isValid declaringGroup = true then
     let fields := operands.filterMap fun | .field field => some field | _ => none

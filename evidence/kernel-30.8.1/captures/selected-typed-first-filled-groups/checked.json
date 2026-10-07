@@ -1,0 +1,855 @@
+{
+  "target" : "batch",
+  "op" : "run",
+  "outcome" : "completed",
+  "ok" : false,
+  "summary" : "[redacted]",
+  "data" : {
+    "ops" : 42,
+    "dispatched" : true,
+    "allExitedZero" : false,
+    "results" : [ {
+      "op" : 0,
+      "id" : "BDirect",
+      "verb" : "computation",
+      "args" : [ "add", "BDirect.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/BDirectComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 1,
+      "id" : "BGroup",
+      "verb" : "computation",
+      "args" : [ "add", "BGroup.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/BGroupComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 2,
+      "id" : "BSingle",
+      "verb" : "computation",
+      "args" : [ "add", "BSingle.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/BSingleComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 3,
+      "id" : "BStar",
+      "verb" : "computation",
+      "args" : [ "add", "BStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/BStarComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 4,
+      "id" : "BRowGroup",
+      "verb" : "computation",
+      "args" : [ "add", "BRowGroup.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/BGroupOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 5,
+      "id" : "BRowStar",
+      "verb" : "computation",
+      "args" : [ "add", "BRowStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/BStarOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 6,
+      "id" : "BMixed",
+      "verb" : "computation",
+      "args" : [ "add", "BMixed.json", "--dry-run" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_VARYING_TYPES_NOT_ALLOWED",
+          "summary" : "[redacted]",
+          "where" : {
+            "rule" : "/Form/BBadComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — list only same-type fields — here a string and a number field are mixed; list operands of ONE comparability category — all String (Custom counts as String here), all Enumeration, all Number (any scales), or all temporal at ONE identical declared format. To count distinct values across a String/Enumeration mix instead, use NumberOfDifferentValues, whose comparability rule is the looser one"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 7,
+      "id" : "DDirect",
+      "verb" : "computation",
+      "args" : [ "add", "DDirect.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/DDirectComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 8,
+      "id" : "DGroup",
+      "verb" : "computation",
+      "args" : [ "add", "DGroup.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/DGroupComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 9,
+      "id" : "DSingle",
+      "verb" : "computation",
+      "args" : [ "add", "DSingle.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/DSingleComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 10,
+      "id" : "DStar",
+      "verb" : "computation",
+      "args" : [ "add", "DStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/DStarComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 11,
+      "id" : "DRowGroup",
+      "verb" : "computation",
+      "args" : [ "add", "DRowGroup.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/DGroupOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 12,
+      "id" : "DRowStar",
+      "verb" : "computation",
+      "args" : [ "add", "DRowStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/DStarOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 13,
+      "id" : "DMixed",
+      "verb" : "computation",
+      "args" : [ "add", "DMixed.json", "--dry-run" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_VARYING_TYPES_NOT_ALLOWED",
+          "summary" : "[redacted]",
+          "where" : {
+            "rule" : "/Form/DBadComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — list only same-type fields — here a string and a number field are mixed; list operands of ONE comparability category — all String (Custom counts as String here), all Enumeration, all Number (any scales), or all temporal at ONE identical declared format. To count distinct values across a String/Enumeration mix instead, use NumberOfDifferentValues, whose comparability rule is the looser one"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 14,
+      "id" : "TDirect",
+      "verb" : "computation",
+      "args" : [ "add", "TDirect.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/TDirectComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 15,
+      "id" : "TGroup",
+      "verb" : "computation",
+      "args" : [ "add", "TGroup.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/TGroupComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 16,
+      "id" : "TSingle",
+      "verb" : "computation",
+      "args" : [ "add", "TSingle.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/TSingleComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 17,
+      "id" : "TStar",
+      "verb" : "computation",
+      "args" : [ "add", "TStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/TStarComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 18,
+      "id" : "TRowGroup",
+      "verb" : "computation",
+      "args" : [ "add", "TRowGroup.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/TGroupOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 19,
+      "id" : "TRowStar",
+      "verb" : "computation",
+      "args" : [ "add", "TRowStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/TStarOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 20,
+      "id" : "TMixed",
+      "verb" : "computation",
+      "args" : [ "add", "TMixed.json", "--dry-run" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_VARYING_TYPES_NOT_ALLOWED",
+          "summary" : "[redacted]",
+          "where" : {
+            "rule" : "/Form/TBadComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — list only same-type fields — here a string and a number field are mixed; list operands of ONE comparability category — all String (Custom counts as String here), all Enumeration, all Number (any scales), or all temporal at ONE identical declared format. To count distinct values across a String/Enumeration mix instead, use NumberOfDifferentValues, whose comparability rule is the looser one"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 21,
+      "id" : "SDirect",
+      "verb" : "computation",
+      "args" : [ "add", "SDirect.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/SDirectComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 22,
+      "id" : "SGroup",
+      "verb" : "computation",
+      "args" : [ "add", "SGroup.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/SGroupComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 23,
+      "id" : "SSingle",
+      "verb" : "computation",
+      "args" : [ "add", "SSingle.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/SSingleComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 24,
+      "id" : "SStar",
+      "verb" : "computation",
+      "args" : [ "add", "SStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/SStarComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 25,
+      "id" : "SRowGroup",
+      "verb" : "computation",
+      "args" : [ "add", "SRowGroup.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/SGroupOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 26,
+      "id" : "SRowStar",
+      "verb" : "computation",
+      "args" : [ "add", "SRowStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/SStarOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 27,
+      "id" : "SMixed",
+      "verb" : "computation",
+      "args" : [ "add", "SMixed.json", "--dry-run" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_VARYING_TYPES_NOT_ALLOWED",
+          "summary" : "[redacted]",
+          "where" : {
+            "rule" : "/Form/SBadComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — list only same-type fields — here a string and a number field are mixed; list operands of ONE comparability category — all String (Custom counts as String here), all Enumeration, all Number (any scales), or all temporal at ONE identical declared format. To count distinct values across a String/Enumeration mix instead, use NumberOfDifferentValues, whose comparability rule is the looser one"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 28,
+      "id" : "FDirect",
+      "verb" : "computation",
+      "args" : [ "add", "FDirect.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/FDirectComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 29,
+      "id" : "FGroup",
+      "verb" : "computation",
+      "args" : [ "add", "FGroup.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/FGroupComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 30,
+      "id" : "FSingle",
+      "verb" : "computation",
+      "args" : [ "add", "FSingle.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/FSingleComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 31,
+      "id" : "FStar",
+      "verb" : "computation",
+      "args" : [ "add", "FStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/FStarComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 32,
+      "id" : "FRowGroup",
+      "verb" : "computation",
+      "args" : [ "add", "FRowGroup.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/FGroupOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 33,
+      "id" : "FRowStar",
+      "verb" : "computation",
+      "args" : [ "add", "FRowStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/FStarOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 34,
+      "id" : "FMixed",
+      "verb" : "computation",
+      "args" : [ "add", "FMixed.json", "--dry-run" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_VARYING_TYPES_NOT_ALLOWED",
+          "summary" : "[redacted]",
+          "where" : {
+            "rule" : "/Form/FBadComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — list only same-type fields — here a string and a number field are mixed; list operands of ONE comparability category — all String (Custom counts as String here), all Enumeration, all Number (any scales), or all temporal at ONE identical declared format. To count distinct values across a String/Enumeration mix instead, use NumberOfDifferentValues, whose comparability rule is the looser one"
+        } ],
+        "written" : false
+      }
+    }, {
+      "op" : 35,
+      "id" : "RDirect",
+      "verb" : "computation",
+      "args" : [ "add", "RDirect.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/RDirectComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 36,
+      "id" : "RGroup",
+      "verb" : "computation",
+      "args" : [ "add", "RGroup.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/RGroupComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 37,
+      "id" : "RSingle",
+      "verb" : "computation",
+      "args" : [ "add", "RSingle.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/RSingleComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 38,
+      "id" : "RStar",
+      "verb" : "computation",
+      "args" : [ "add", "RStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/RStarComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 39,
+      "id" : "RRowGroup",
+      "verb" : "computation",
+      "args" : [ "add", "RRowGroup.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/RGroupOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 40,
+      "id" : "RRowStar",
+      "verb" : "computation",
+      "args" : [ "add", "RRowStar.json", "--dry-run" ],
+      "exit" : 0,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "preview",
+        "ok" : true,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "changed" : {
+          "computation" : "/Form/Rows/RStarOutComp"
+        },
+        "diagnostics" : [ ],
+        "written" : false
+      }
+    }, {
+      "op" : 41,
+      "id" : "RMixed",
+      "verb" : "computation",
+      "args" : [ "add", "RMixed.json", "--dry-run" ],
+      "exit" : 1,
+      "result" : {
+        "target" : "computation",
+        "op" : "add",
+        "outcome" : "rejected",
+        "ok" : false,
+        "valid" : false,
+        "verification" : "KERNEL_CONFIRMED",
+        "summary" : "[redacted]",
+        "diagnostics" : [ {
+          "severity" : "ERROR",
+          "source" : "KERNEL",
+          "code" : "MVK_VARYING_TYPES_NOT_ALLOWED",
+          "summary" : "[redacted]",
+          "where" : {
+            "rule" : "/Form/RBadComp"
+          },
+          "fix" : "this code is raised by more than one construct; the corrective depends on which you used — list only same-type fields — here a string and a number field are mixed; list operands of ONE comparability category — all String (Custom counts as String here), all Enumeration, all Number (any scales), or all temporal at ONE identical declared format. To count distinct values across a String/Enumeration mix instead, use NumberOfDifferentValues, whose comparability rule is the looser one"
+        } ],
+        "written" : false
+      }
+    } ]
+  },
+  "diagnostics" : [ ],
+  "written" : false
+}

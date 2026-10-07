@@ -1,0 +1,1827 @@
+{
+  "model": "SelectedFirstFilledGroups_DM.json",
+  "locale": "en_US",
+  "clock": "2024-01-01T00:00:00Z",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "direct-first",
+      "documentInline": {
+        "Form": {
+          "Key": "a",
+          "Rows": [
+            {
+              "Id": "a",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "false",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Alpha": "true"
+                  },
+                  {
+                    "Zeta": "false"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-02-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01"
+                  },
+                  {
+                    "Zeta": "2024-02-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "03:04:05",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Alpha": "06:07:08"
+                  },
+                  {
+                    "Zeta": "03:04:05"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-02-01T03:04:05",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01T06:07:08"
+                  },
+                  {
+                    "Zeta": "2024-02-01T03:04:05"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "02",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Alpha": "03"
+                  },
+                  {
+                    "Zeta": "02"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-02-01/2024-02-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "Zeta": "2024-02-01/2024-02-02"
+                  }
+                ]
+              }
+            },
+            {
+              "Id": "b",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "true",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Zeta": "true",
+                    "Alpha": "true"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-03-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01",
+                    "Alpha": "2024-03-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "06:07:08",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "06:07:08",
+                    "Alpha": "06:07:08"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-03-01T06:07:08",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01T06:07:08",
+                    "Alpha": "2024-03-01T06:07:08"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "03",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Zeta": "03",
+                    "Alpha": "03"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-03-01/2024-03-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01/2024-03-02",
+                    "Alpha": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          ],
+          "BBase": "false",
+          "BFallback": "true",
+          "BDirect": "true",
+          "BGroup": "true",
+          "BSingle": "true",
+          "BStar": "true",
+          "DBase": "2024-02-01",
+          "DFallback": "2024-03-01",
+          "DDirect": "1999-01-01",
+          "DGroup": "1999-01-01",
+          "DSingle": "1999-01-01",
+          "DStar": "1999-01-01",
+          "TBase": "03:04:05",
+          "TFallback": "06:07:08",
+          "TDirect": "00:00:00",
+          "TGroup": "00:00:00",
+          "TSingle": "00:00:00",
+          "TStar": "00:00:00",
+          "SBase": "2024-02-01T03:04:05",
+          "SFallback": "2024-03-01T06:07:08",
+          "SDirect": "1999-01-01T00:00:00",
+          "SGroup": "1999-01-01T00:00:00",
+          "SSingle": "1999-01-01T00:00:00",
+          "SStar": "1999-01-01T00:00:00",
+          "FBase": "02",
+          "FFallback": "03",
+          "FDirect": "12",
+          "FGroup": "12",
+          "FSingle": "12",
+          "FStar": "12",
+          "RBase": "2024-02-01/2024-02-02",
+          "RFallback": "2024-03-01/2024-03-02",
+          "RDirect": "1999-01-01/1999-01-02",
+          "RGroup": "1999-01-01/1999-01-02",
+          "RSingle": "1999-01-01/1999-01-02",
+          "RStar": "1999-01-01/1999-01-02"
+        }
+      }
+    },
+    {
+      "name": "second-only",
+      "documentInline": {
+        "Form": {
+          "Key": "a",
+          "Rows": [
+            {
+              "Id": "a",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Alpha": "true"
+                  },
+                  {}
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01"
+                  },
+                  {}
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Alpha": "06:07:08"
+                  },
+                  {}
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01T06:07:08"
+                  },
+                  {}
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Alpha": "03"
+                  },
+                  {}
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01/2024-03-02"
+                  },
+                  {}
+                ]
+              }
+            },
+            {
+              "Id": "b",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "true",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Zeta": "true",
+                    "Alpha": "true"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-03-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01",
+                    "Alpha": "2024-03-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "06:07:08",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "06:07:08",
+                    "Alpha": "06:07:08"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-03-01T06:07:08",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01T06:07:08",
+                    "Alpha": "2024-03-01T06:07:08"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "03",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Zeta": "03",
+                    "Alpha": "03"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-03-01/2024-03-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01/2024-03-02",
+                    "Alpha": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          ],
+          "BBase": "false",
+          "BFallback": "true",
+          "BDirect": "true",
+          "BGroup": "true",
+          "BSingle": "true",
+          "BStar": "true",
+          "DBase": "2024-02-01",
+          "DFallback": "2024-03-01",
+          "DDirect": "1999-01-01",
+          "DGroup": "1999-01-01",
+          "DSingle": "1999-01-01",
+          "DStar": "1999-01-01",
+          "TBase": "03:04:05",
+          "TFallback": "06:07:08",
+          "TDirect": "00:00:00",
+          "TGroup": "00:00:00",
+          "TSingle": "00:00:00",
+          "TStar": "00:00:00",
+          "SBase": "2024-02-01T03:04:05",
+          "SFallback": "2024-03-01T06:07:08",
+          "SDirect": "1999-01-01T00:00:00",
+          "SGroup": "1999-01-01T00:00:00",
+          "SSingle": "1999-01-01T00:00:00",
+          "SStar": "1999-01-01T00:00:00",
+          "FBase": "02",
+          "FFallback": "03",
+          "FDirect": "12",
+          "FGroup": "12",
+          "FSingle": "12",
+          "FStar": "12",
+          "RBase": "2024-02-01/2024-02-02",
+          "RFallback": "2024-03-01/2024-03-02",
+          "RDirect": "1999-01-01/1999-01-02",
+          "RGroup": "1999-01-01/1999-01-02",
+          "RSingle": "1999-01-01/1999-01-02",
+          "RStar": "1999-01-01/1999-01-02"
+        }
+      }
+    },
+    {
+      "name": "nested-order",
+      "documentInline": {
+        "Form": {
+          "Key": "a",
+          "Rows": [
+            {
+              "Id": "a",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Items": [
+                  {
+                    "Alpha": "true"
+                  },
+                  {
+                    "Zeta": "false"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01"
+                  },
+                  {
+                    "Zeta": "2024-02-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Items": [
+                  {
+                    "Alpha": "06:07:08"
+                  },
+                  {
+                    "Zeta": "03:04:05"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01T06:07:08"
+                  },
+                  {
+                    "Zeta": "2024-02-01T03:04:05"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Items": [
+                  {
+                    "Alpha": "03"
+                  },
+                  {
+                    "Zeta": "02"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "Zeta": "2024-02-01/2024-02-02"
+                  }
+                ]
+              }
+            },
+            {
+              "Id": "b",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "true",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Zeta": "true",
+                    "Alpha": "true"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-03-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01",
+                    "Alpha": "2024-03-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "06:07:08",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "06:07:08",
+                    "Alpha": "06:07:08"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-03-01T06:07:08",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01T06:07:08",
+                    "Alpha": "2024-03-01T06:07:08"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "03",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Zeta": "03",
+                    "Alpha": "03"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-03-01/2024-03-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01/2024-03-02",
+                    "Alpha": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          ],
+          "BBase": "false",
+          "BFallback": "true",
+          "BDirect": "true",
+          "BGroup": "true",
+          "BSingle": "true",
+          "BStar": "true",
+          "DBase": "2024-02-01",
+          "DFallback": "2024-03-01",
+          "DDirect": "1999-01-01",
+          "DGroup": "1999-01-01",
+          "DSingle": "1999-01-01",
+          "DStar": "1999-01-01",
+          "TBase": "03:04:05",
+          "TFallback": "06:07:08",
+          "TDirect": "00:00:00",
+          "TGroup": "00:00:00",
+          "TSingle": "00:00:00",
+          "TStar": "00:00:00",
+          "SBase": "2024-02-01T03:04:05",
+          "SFallback": "2024-03-01T06:07:08",
+          "SDirect": "1999-01-01T00:00:00",
+          "SGroup": "1999-01-01T00:00:00",
+          "SSingle": "1999-01-01T00:00:00",
+          "SStar": "1999-01-01T00:00:00",
+          "FBase": "02",
+          "FFallback": "03",
+          "FDirect": "12",
+          "FGroup": "12",
+          "FSingle": "12",
+          "FStar": "12",
+          "RBase": "2024-02-01/2024-02-02",
+          "RFallback": "2024-03-01/2024-03-02",
+          "RDirect": "1999-01-01/1999-01-02",
+          "RGroup": "1999-01-01/1999-01-02",
+          "RSingle": "1999-01-01/1999-01-02",
+          "RStar": "1999-01-01/1999-01-02"
+        }
+      }
+    },
+    {
+      "name": "missing-key",
+      "documentInline": {
+        "Form": {
+          "Key": "z",
+          "Rows": [
+            {
+              "Id": "a",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "false",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Alpha": "true"
+                  },
+                  {
+                    "Zeta": "false"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-02-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01"
+                  },
+                  {
+                    "Zeta": "2024-02-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "03:04:05",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Alpha": "06:07:08"
+                  },
+                  {
+                    "Zeta": "03:04:05"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-02-01T03:04:05",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01T06:07:08"
+                  },
+                  {
+                    "Zeta": "2024-02-01T03:04:05"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "02",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Alpha": "03"
+                  },
+                  {
+                    "Zeta": "02"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-02-01/2024-02-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "Zeta": "2024-02-01/2024-02-02"
+                  }
+                ]
+              }
+            },
+            {
+              "Id": "b",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "true",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Zeta": "true",
+                    "Alpha": "true"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-03-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01",
+                    "Alpha": "2024-03-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "06:07:08",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "06:07:08",
+                    "Alpha": "06:07:08"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-03-01T06:07:08",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01T06:07:08",
+                    "Alpha": "2024-03-01T06:07:08"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "03",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Zeta": "03",
+                    "Alpha": "03"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-03-01/2024-03-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01/2024-03-02",
+                    "Alpha": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          ],
+          "BBase": "false",
+          "BFallback": "true",
+          "BDirect": "true",
+          "BGroup": "true",
+          "BSingle": "true",
+          "BStar": "true",
+          "DBase": "2024-02-01",
+          "DFallback": "2024-03-01",
+          "DDirect": "1999-01-01",
+          "DGroup": "1999-01-01",
+          "DSingle": "1999-01-01",
+          "DStar": "1999-01-01",
+          "TBase": "03:04:05",
+          "TFallback": "06:07:08",
+          "TDirect": "00:00:00",
+          "TGroup": "00:00:00",
+          "TSingle": "00:00:00",
+          "TStar": "00:00:00",
+          "SBase": "2024-02-01T03:04:05",
+          "SFallback": "2024-03-01T06:07:08",
+          "SDirect": "1999-01-01T00:00:00",
+          "SGroup": "1999-01-01T00:00:00",
+          "SSingle": "1999-01-01T00:00:00",
+          "SStar": "1999-01-01T00:00:00",
+          "FBase": "02",
+          "FFallback": "03",
+          "FDirect": "12",
+          "FGroup": "12",
+          "FSingle": "12",
+          "FStar": "12",
+          "RBase": "2024-02-01/2024-02-02",
+          "RFallback": "2024-03-01/2024-03-02",
+          "RDirect": "1999-01-01/1999-01-02",
+          "RGroup": "1999-01-01/1999-01-02",
+          "RSingle": "1999-01-01/1999-01-02",
+          "RStar": "1999-01-01/1999-01-02"
+        }
+      }
+    },
+    {
+      "name": "empty-group",
+      "documentInline": {
+        "Form": {
+          "Key": "a",
+          "Rows": [
+            {
+              "Id": "a",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {},
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {},
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {},
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {},
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {},
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {}
+            },
+            {
+              "Id": "b",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "true",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Zeta": "true",
+                    "Alpha": "true"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-03-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01",
+                    "Alpha": "2024-03-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "06:07:08",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "06:07:08",
+                    "Alpha": "06:07:08"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-03-01T06:07:08",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01T06:07:08",
+                    "Alpha": "2024-03-01T06:07:08"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "03",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Zeta": "03",
+                    "Alpha": "03"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-03-01/2024-03-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01/2024-03-02",
+                    "Alpha": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          ],
+          "BBase": "false",
+          "BFallback": "true",
+          "BDirect": "true",
+          "BGroup": "true",
+          "BSingle": "true",
+          "BStar": "true",
+          "DBase": "2024-02-01",
+          "DFallback": "2024-03-01",
+          "DDirect": "1999-01-01",
+          "DGroup": "1999-01-01",
+          "DSingle": "1999-01-01",
+          "DStar": "1999-01-01",
+          "TBase": "03:04:05",
+          "TFallback": "06:07:08",
+          "TDirect": "00:00:00",
+          "TGroup": "00:00:00",
+          "TSingle": "00:00:00",
+          "TStar": "00:00:00",
+          "SBase": "2024-02-01T03:04:05",
+          "SFallback": "2024-03-01T06:07:08",
+          "SDirect": "1999-01-01T00:00:00",
+          "SGroup": "1999-01-01T00:00:00",
+          "SSingle": "1999-01-01T00:00:00",
+          "SStar": "1999-01-01T00:00:00",
+          "FBase": "02",
+          "FFallback": "03",
+          "FDirect": "12",
+          "FGroup": "12",
+          "FSingle": "12",
+          "FStar": "12",
+          "RBase": "2024-02-01/2024-02-02",
+          "RFallback": "2024-03-01/2024-03-02",
+          "RDirect": "1999-01-01/1999-01-02",
+          "RGroup": "1999-01-01/1999-01-02",
+          "RSingle": "1999-01-01/1999-01-02",
+          "RStar": "1999-01-01/1999-01-02"
+        }
+      }
+    },
+    {
+      "name": "malformed-first",
+      "documentInline": {
+        "Form": {
+          "Key": "a",
+          "Rows": [
+            {
+              "Id": "a",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "bad",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Zeta": "bad",
+                    "Alpha": "true"
+                  },
+                  {
+                    "Zeta": "false"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "bad",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Zeta": "bad",
+                    "Alpha": "2024-03-01"
+                  },
+                  {
+                    "Zeta": "2024-02-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "bad",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "bad",
+                    "Alpha": "06:07:08"
+                  },
+                  {
+                    "Zeta": "03:04:05"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "bad",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "bad",
+                    "Alpha": "2024-03-01T06:07:08"
+                  },
+                  {
+                    "Zeta": "2024-02-01T03:04:05"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "bad",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Zeta": "bad",
+                    "Alpha": "03"
+                  },
+                  {
+                    "Zeta": "02"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "bad",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Zeta": "bad",
+                    "Alpha": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "Zeta": "2024-02-01/2024-02-02"
+                  }
+                ]
+              }
+            },
+            {
+              "Id": "b",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "true",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Zeta": "true",
+                    "Alpha": "true"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-03-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01",
+                    "Alpha": "2024-03-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "06:07:08",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "06:07:08",
+                    "Alpha": "06:07:08"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-03-01T06:07:08",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01T06:07:08",
+                    "Alpha": "2024-03-01T06:07:08"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "03",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Zeta": "03",
+                    "Alpha": "03"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-03-01/2024-03-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01/2024-03-02",
+                    "Alpha": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          ],
+          "BBase": "false",
+          "BFallback": "true",
+          "BDirect": "true",
+          "BGroup": "true",
+          "BSingle": "true",
+          "BStar": "true",
+          "DBase": "2024-02-01",
+          "DFallback": "2024-03-01",
+          "DDirect": "1999-01-01",
+          "DGroup": "1999-01-01",
+          "DSingle": "1999-01-01",
+          "DStar": "1999-01-01",
+          "TBase": "03:04:05",
+          "TFallback": "06:07:08",
+          "TDirect": "00:00:00",
+          "TGroup": "00:00:00",
+          "TSingle": "00:00:00",
+          "TStar": "00:00:00",
+          "SBase": "2024-02-01T03:04:05",
+          "SFallback": "2024-03-01T06:07:08",
+          "SDirect": "1999-01-01T00:00:00",
+          "SGroup": "1999-01-01T00:00:00",
+          "SSingle": "1999-01-01T00:00:00",
+          "SStar": "1999-01-01T00:00:00",
+          "FBase": "02",
+          "FFallback": "03",
+          "FDirect": "12",
+          "FGroup": "12",
+          "FSingle": "12",
+          "FStar": "12",
+          "RBase": "2024-02-01/2024-02-02",
+          "RFallback": "2024-03-01/2024-03-02",
+          "RDirect": "1999-01-01/1999-01-02",
+          "RGroup": "1999-01-01/1999-01-02",
+          "RSingle": "1999-01-01/1999-01-02",
+          "RStar": "1999-01-01/1999-01-02"
+        }
+      }
+    },
+    {
+      "name": "malformed-suffix",
+      "documentInline": {
+        "Form": {
+          "Key": "a",
+          "Rows": [
+            {
+              "Id": "a",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "false",
+                "Alpha": "bad",
+                "Items": [
+                  {
+                    "Zeta": "false",
+                    "Alpha": "bad"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-02-01",
+                "Alpha": "bad",
+                "Items": [
+                  {
+                    "Zeta": "2024-02-01",
+                    "Alpha": "bad"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "03:04:05",
+                "Alpha": "bad",
+                "Items": [
+                  {
+                    "Zeta": "03:04:05",
+                    "Alpha": "bad"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-02-01T03:04:05",
+                "Alpha": "bad",
+                "Items": [
+                  {
+                    "Zeta": "2024-02-01T03:04:05",
+                    "Alpha": "bad"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "02",
+                "Alpha": "bad",
+                "Items": [
+                  {
+                    "Zeta": "02",
+                    "Alpha": "bad"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-02-01/2024-02-02",
+                "Alpha": "bad",
+                "Items": [
+                  {
+                    "Zeta": "2024-02-01/2024-02-02",
+                    "Alpha": "bad"
+                  }
+                ]
+              }
+            },
+            {
+              "Id": "b",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "true",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Zeta": "true",
+                    "Alpha": "true"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-03-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01",
+                    "Alpha": "2024-03-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "06:07:08",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "06:07:08",
+                    "Alpha": "06:07:08"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-03-01T06:07:08",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01T06:07:08",
+                    "Alpha": "2024-03-01T06:07:08"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "03",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Zeta": "03",
+                    "Alpha": "03"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-03-01/2024-03-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01/2024-03-02",
+                    "Alpha": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          ],
+          "BBase": "false",
+          "BFallback": "true",
+          "BDirect": "true",
+          "BGroup": "true",
+          "BSingle": "true",
+          "BStar": "true",
+          "DBase": "2024-02-01",
+          "DFallback": "2024-03-01",
+          "DDirect": "1999-01-01",
+          "DGroup": "1999-01-01",
+          "DSingle": "1999-01-01",
+          "DStar": "1999-01-01",
+          "TBase": "03:04:05",
+          "TFallback": "06:07:08",
+          "TDirect": "00:00:00",
+          "TGroup": "00:00:00",
+          "TSingle": "00:00:00",
+          "TStar": "00:00:00",
+          "SBase": "2024-02-01T03:04:05",
+          "SFallback": "2024-03-01T06:07:08",
+          "SDirect": "1999-01-01T00:00:00",
+          "SGroup": "1999-01-01T00:00:00",
+          "SSingle": "1999-01-01T00:00:00",
+          "SStar": "1999-01-01T00:00:00",
+          "FBase": "02",
+          "FFallback": "03",
+          "FDirect": "12",
+          "FGroup": "12",
+          "FSingle": "12",
+          "FStar": "12",
+          "RBase": "2024-02-01/2024-02-02",
+          "RFallback": "2024-03-01/2024-03-02",
+          "RDirect": "1999-01-01/1999-01-02",
+          "RGroup": "1999-01-01/1999-01-02",
+          "RSingle": "1999-01-01/1999-01-02",
+          "RStar": "1999-01-01/1999-01-02"
+        }
+      }
+    },
+    {
+      "name": "duplicate-key",
+      "documentInline": {
+        "Form": {
+          "Key": "a",
+          "Rows": [
+            {
+              "Id": "a",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "false",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Alpha": "true"
+                  },
+                  {
+                    "Zeta": "false"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-02-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01"
+                  },
+                  {
+                    "Zeta": "2024-02-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "03:04:05",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Alpha": "06:07:08"
+                  },
+                  {
+                    "Zeta": "03:04:05"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-02-01T03:04:05",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01T06:07:08"
+                  },
+                  {
+                    "Zeta": "2024-02-01T03:04:05"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "02",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Alpha": "03"
+                  },
+                  {
+                    "Zeta": "02"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-02-01/2024-02-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "Zeta": "2024-02-01/2024-02-02"
+                  }
+                ]
+              }
+            },
+            {
+              "Id": "a",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "true",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Zeta": "true",
+                    "Alpha": "true"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-03-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01",
+                    "Alpha": "2024-03-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "06:07:08",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "06:07:08",
+                    "Alpha": "06:07:08"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-03-01T06:07:08",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01T06:07:08",
+                    "Alpha": "2024-03-01T06:07:08"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "03",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Zeta": "03",
+                    "Alpha": "03"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-03-01/2024-03-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01/2024-03-02",
+                    "Alpha": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          ],
+          "BBase": "false",
+          "BFallback": "true",
+          "BDirect": "true",
+          "BGroup": "true",
+          "BSingle": "true",
+          "BStar": "true",
+          "DBase": "2024-02-01",
+          "DFallback": "2024-03-01",
+          "DDirect": "1999-01-01",
+          "DGroup": "1999-01-01",
+          "DSingle": "1999-01-01",
+          "DStar": "1999-01-01",
+          "TBase": "03:04:05",
+          "TFallback": "06:07:08",
+          "TDirect": "00:00:00",
+          "TGroup": "00:00:00",
+          "TSingle": "00:00:00",
+          "TStar": "00:00:00",
+          "SBase": "2024-02-01T03:04:05",
+          "SFallback": "2024-03-01T06:07:08",
+          "SDirect": "1999-01-01T00:00:00",
+          "SGroup": "1999-01-01T00:00:00",
+          "SSingle": "1999-01-01T00:00:00",
+          "SStar": "1999-01-01T00:00:00",
+          "FBase": "02",
+          "FFallback": "03",
+          "FDirect": "12",
+          "FGroup": "12",
+          "FSingle": "12",
+          "FStar": "12",
+          "RBase": "2024-02-01/2024-02-02",
+          "RFallback": "2024-03-01/2024-03-02",
+          "RDirect": "1999-01-01/1999-01-02",
+          "RGroup": "1999-01-01/1999-01-02",
+          "RSingle": "1999-01-01/1999-01-02",
+          "RStar": "1999-01-01/1999-01-02"
+        }
+      }
+    },
+    {
+      "name": "selected-second",
+      "documentInline": {
+        "Form": {
+          "Key": "b",
+          "Rows": [
+            {
+              "Id": "a",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "false",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Alpha": "true"
+                  },
+                  {
+                    "Zeta": "false"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-02-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01"
+                  },
+                  {
+                    "Zeta": "2024-02-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "03:04:05",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Alpha": "06:07:08"
+                  },
+                  {
+                    "Zeta": "03:04:05"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-02-01T03:04:05",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01T06:07:08"
+                  },
+                  {
+                    "Zeta": "2024-02-01T03:04:05"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "02",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Alpha": "03"
+                  },
+                  {
+                    "Zeta": "02"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-02-01/2024-02-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Alpha": "2024-03-01/2024-03-02"
+                  },
+                  {
+                    "Zeta": "2024-02-01/2024-02-02"
+                  }
+                ]
+              }
+            },
+            {
+              "Id": "b",
+              "BGroupOut": "true",
+              "BStarOut": "true",
+              "BBox": {
+                "Zeta": "true",
+                "Alpha": "true",
+                "Items": [
+                  {
+                    "Zeta": "true",
+                    "Alpha": "true"
+                  }
+                ]
+              },
+              "DGroupOut": "1999-01-01",
+              "DStarOut": "1999-01-01",
+              "DBox": {
+                "Zeta": "2024-03-01",
+                "Alpha": "2024-03-01",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01",
+                    "Alpha": "2024-03-01"
+                  }
+                ]
+              },
+              "TGroupOut": "00:00:00",
+              "TStarOut": "00:00:00",
+              "TBox": {
+                "Zeta": "06:07:08",
+                "Alpha": "06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "06:07:08",
+                    "Alpha": "06:07:08"
+                  }
+                ]
+              },
+              "SGroupOut": "1999-01-01T00:00:00",
+              "SStarOut": "1999-01-01T00:00:00",
+              "SBox": {
+                "Zeta": "2024-03-01T06:07:08",
+                "Alpha": "2024-03-01T06:07:08",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01T06:07:08",
+                    "Alpha": "2024-03-01T06:07:08"
+                  }
+                ]
+              },
+              "FGroupOut": "12",
+              "FStarOut": "12",
+              "FBox": {
+                "Zeta": "03",
+                "Alpha": "03",
+                "Items": [
+                  {
+                    "Zeta": "03",
+                    "Alpha": "03"
+                  }
+                ]
+              },
+              "RGroupOut": "1999-01-01/1999-01-02",
+              "RStarOut": "1999-01-01/1999-01-02",
+              "RBox": {
+                "Zeta": "2024-03-01/2024-03-02",
+                "Alpha": "2024-03-01/2024-03-02",
+                "Items": [
+                  {
+                    "Zeta": "2024-03-01/2024-03-02",
+                    "Alpha": "2024-03-01/2024-03-02"
+                  }
+                ]
+              }
+            }
+          ],
+          "BBase": "false",
+          "BFallback": "true",
+          "BDirect": "true",
+          "BGroup": "true",
+          "BSingle": "true",
+          "BStar": "true",
+          "DBase": "2024-02-01",
+          "DFallback": "2024-03-01",
+          "DDirect": "1999-01-01",
+          "DGroup": "1999-01-01",
+          "DSingle": "1999-01-01",
+          "DStar": "1999-01-01",
+          "TBase": "03:04:05",
+          "TFallback": "06:07:08",
+          "TDirect": "00:00:00",
+          "TGroup": "00:00:00",
+          "TSingle": "00:00:00",
+          "TStar": "00:00:00",
+          "SBase": "2024-02-01T03:04:05",
+          "SFallback": "2024-03-01T06:07:08",
+          "SDirect": "1999-01-01T00:00:00",
+          "SGroup": "1999-01-01T00:00:00",
+          "SSingle": "1999-01-01T00:00:00",
+          "SStar": "1999-01-01T00:00:00",
+          "FBase": "02",
+          "FFallback": "03",
+          "FDirect": "12",
+          "FGroup": "12",
+          "FSingle": "12",
+          "FStar": "12",
+          "RBase": "2024-02-01/2024-02-02",
+          "RFallback": "2024-03-01/2024-03-02",
+          "RDirect": "1999-01-01/1999-01-02",
+          "RGroup": "1999-01-01/1999-01-02",
+          "RSingle": "1999-01-01/1999-01-02",
+          "RStar": "1999-01-01/1999-01-02"
+        }
+      }
+    },
+    {
+      "name": "no-parent-row",
+      "documentInline": {
+        "Form": {
+          "Key": "a",
+          "Rows": [],
+          "BBase": "false",
+          "BFallback": "true",
+          "BDirect": "true",
+          "BGroup": "true",
+          "BSingle": "true",
+          "BStar": "true",
+          "DBase": "2024-02-01",
+          "DFallback": "2024-03-01",
+          "DDirect": "1999-01-01",
+          "DGroup": "1999-01-01",
+          "DSingle": "1999-01-01",
+          "DStar": "1999-01-01",
+          "TBase": "03:04:05",
+          "TFallback": "06:07:08",
+          "TDirect": "00:00:00",
+          "TGroup": "00:00:00",
+          "TSingle": "00:00:00",
+          "TStar": "00:00:00",
+          "SBase": "2024-02-01T03:04:05",
+          "SFallback": "2024-03-01T06:07:08",
+          "SDirect": "1999-01-01T00:00:00",
+          "SGroup": "1999-01-01T00:00:00",
+          "SSingle": "1999-01-01T00:00:00",
+          "SStar": "1999-01-01T00:00:00",
+          "FBase": "02",
+          "FFallback": "03",
+          "FDirect": "12",
+          "FGroup": "12",
+          "FSingle": "12",
+          "FStar": "12",
+          "RBase": "2024-02-01/2024-02-02",
+          "RFallback": "2024-03-01/2024-03-02",
+          "RDirect": "1999-01-01/1999-01-02",
+          "RGroup": "1999-01-01/1999-01-02",
+          "RSingle": "1999-01-01/1999-01-02",
+          "RStar": "1999-01-01/1999-01-02"
+        }
+      }
+    }
+  ]
+}

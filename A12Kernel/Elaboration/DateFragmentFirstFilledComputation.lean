@@ -7,7 +7,7 @@ import A12Kernel.Semantics.FirstFilledValue
 /-! # DateFragment `FirstFilledValue` at a fixed or a repeatable target
 
 One carrier serves both address classes through the shared temporal site, including target-bound
-selected scalar and lower-star lists. `FirstFilledPlacement` owns admission and reached-source order. Target and source share one of the four exact fragment profiles, and the selected stored token
+selected entity lists. `FirstFilledPlacement` owns admission and reached-source order. Target and source share one of the four exact fragment profiles, and the selected stored token
 is written as it stands.
 -/
 
