@@ -42,7 +42,9 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
         | .repetition reference => group reference.origin reference.group
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
-  | .compareBoolean _ reference _ | .compareStrings _ reference _ | .compareTemporal _ _ reference _ => field reference.origin reference.field
+  | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .compareTemporal _ left right =>
+      (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
   | .literalMembership _ reference _ => field reference.origin reference.field
   | .fieldMembership _ subjects members =>
       (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field
@@ -153,7 +155,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .and left right | .or left right =>
       left.readsGroupNumber model declaringGroup group ||
         right.readsGroupNumber model declaringGroup group
-  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .literalList _ _ _ | .presence _ _ => false
+  | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .literalList _ _ _ | .presence _ _ => false
 
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
     body in authored order, so each leaf's reads and comparison class answer as it closes; the
@@ -177,7 +179,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     stringValue := fun _ _ => throw .stringLeafOutsideStarRoute
     dateDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dayDifference := fun _ _ => throw .stringLeafOutsideStarRoute
-    temporal := fun _ _ _ _ => throw .stringLeafOutsideStarRoute
+    temporal := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dateTimeDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dateRangeBoundPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
@@ -203,7 +205,7 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     stringValue := fun _ _ => throw .stringLeafOutsideStarRoute
     dateDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dayDifference := fun _ _ => throw .stringLeafOutsideStarRoute
-    temporal := fun _ _ _ _ => throw .stringLeafOutsideStarRoute
+    temporal := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dateTimeDifference := fun _ _ _ => throw .stringLeafOutsideStarRoute
     dateRangeBoundPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
     temporalPart := fun _ _ _ => throw .stringLeafOutsideStarRoute
@@ -363,35 +365,55 @@ private def FlatModel.resolveHavingFieldsInEnvironment (model : FlatModel)
     | .accepted => pure (some (.textFields equality leftOperand.1 rightOperand.1))
     | .rejected error => throw (.text (.enumerationComparability leftDecl.path rightDecl.path error))
 
+private def FlatModel.resolveHavingTemporalOperand (model : FlatModel)
+    (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel) :
+    SurfaceHavingTemporalOperand → Except CorrelationElabError (HavingOrigin × FlatTemporalOperand)
+  | .field reference => do
+      let declaration ← model.resolveHavingFieldValueRead declaringGroup outerLevels
+        reference.origin reference.field reference.projectionRef
+      if reference.projectionRef != .stored then throw .incoherentCore
+      let some field := declaration.toTemporalField? | throw .numericExpressionUnsupported
+      pure (reference.origin, .fieldValue field)
+  | .grouped source => do
+      let (origin, operand) ← model.resolveHavingTemporalOperand declaringGroup outerLevels source
+      pure (origin, .grouped operand)
+  | .timeLiteral value => pure (.inner, .timeValue value)
+  | .dateTimeLiteral value => do
+      let some profile := ModelZone.ConcreteProfile.ofId? model.timeZoneId | throw .numericExpressionUnsupported
+      pure (.inner, .localDateTimeValue profile value)
+  | .constant source => do
+      let operand ← match source with
+        | .field impossible => nomatch impossible
+        | .today => pure (.todayValue model.timeZoneId)
+        | .now => pure .nowValue
+        | .baseYear source => do
+            let some year := model.baseYear | throw (.text .baseYearNotDeclared)
+            pure (match source with
+              | .direct => .baseYearValue model.timeZoneId year
+              | .range endpoint => .baseYearRangeValue model.timeZoneId year endpoint)
+        | .literal literal => do
+            let some instant := literal.comparisonInstant? model | throw .numericExpressionUnsupported
+            pure (.literalValue instant literal.components)
+      pure (.inner, operand)
+
 private def FlatModel.resolveHavingTemporalConstant (model : FlatModel)
     (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
-    (op : SurfaceComparisonOp) (position : SurfacePointInTimePosition)
-    (reference : SurfaceHavingStringRef) (source : SurfaceDateDifferenceOperand Empty) :
-    Except CorrelationElabError (Option FlatComparison) := do
-  let declaration ← model.resolveHavingFieldValueRead declaringGroup outerLevels
-    reference.origin reference.field reference.projectionRef
-  if reference.projectionRef != .stored then throw .incoherentCore
-  if source == .baseYear .direct && declaration.policy.kind.surfaceKind == .number then return none
-  let some field := declaration.toTemporalField? | throw .numericExpressionUnsupported
-  let comparison := op.toTemporal
-  let (operand, admitted) ← match source with
-    | .field impossible => nomatch impossible
-    | .today => pure (.todayValue model.timeZoneId, comparison.admitsToday model.hasBaseYear field.components)
-    | .now => pure (.nowValue, comparison.admitsNow model.hasBaseYear field.components)
-    | .baseYear source => do
-        let some year := model.baseYear | throw (.text .baseYearNotDeclared)
-        match source with
-        | .direct => pure (.baseYearValue model.timeZoneId year, comparison.admitsBaseYear field.components)
-        | .range endpoint => pure (.baseYearRangeValue model.timeZoneId year endpoint,
-            comparison.admitsFormats true field.components TemporalComponents.fullDate)
-    | .literal literal => do
-        let some instant := literal.comparisonInstant? model | throw .numericExpressionUnsupported
-        pure (.literalValue instant literal.components,
-          comparison.admitsFormats model.hasBaseYear field.components literal.components)
-  if !admitted then throw .numericExpressionUnsupported
-  pure (some (match position with
-    | .left => .temporal comparison operand (.fieldValue field)
-    | .right => .temporal comparison (.fieldValue field) operand))
+    (op : SurfaceComparisonOp) (left right : SurfaceHavingTemporalOperand) :
+    Except CorrelationElabError (Option (HavingOrigin × HavingOrigin × FlatComparison)) := do
+  let rec numeric : SurfaceHavingTemporalOperand → Except CorrelationElabError Bool
+    | .field reference => do
+        let declaration ← model.resolveHavingFieldValueRead declaringGroup outerLevels
+          reference.origin reference.field reference.projectionRef
+        pure (reference.projectionRef == .stored && declaration.policy.kind.surfaceKind == .number)
+    | .constant (.baseYear .direct) => pure true
+    | .grouped source => numeric source
+    | _ => pure false
+  if (← numeric left) && (← numeric right) then return none
+  let (leftOrigin, left) ← model.resolveHavingTemporalOperand declaringGroup outerLevels left
+  let (rightOrigin, right) ← model.resolveHavingTemporalOperand declaringGroup outerLevels right
+  if !comparisonConstantPairAllowed left.havingEntry right.havingEntry then throw .constantNumericComparison
+  if !model.admitsHavingTemporalOperands op.toTemporal left right then throw .numericExpressionUnsupported
+  pure (some (leftOrigin, rightOrigin, .temporal op.toTemporal left right))
 
 private def FlatModel.resolveHavingBooleanInEnvironment (model : FlatModel)
     (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel)
@@ -536,7 +558,9 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
         | .repetition reference => group reference.origin reference.group
   | .compareFields _ left right =>
       (field left.origin left.field).orElse fun _ => field right.origin right.field
-  | .compareBoolean _ reference _ | .compareStrings _ reference _ | .compareTemporal _ _ reference _ => field reference.origin reference.field
+  | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
+  | .compareTemporal _ left right =>
+      (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
   | .literalMembership _ reference _ => field reference.origin reference.field
   | .fieldMembership _ subjects members =>
       (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? fun ref => field ref.origin ref.field

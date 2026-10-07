@@ -207,7 +207,7 @@ theorem validationCondition_numeric_evalSelected_of_relevant
     (ValidationCondition.numeric (model := model) comparison).evalSelected
         context isRelevant =
       comparison.evalSelectedWithGroups context := by
-  simp [ValidationCondition.numeric, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult,
+  simp [ValidationCondition.numeric, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
     Except.mapError,
     ValidationConditionLeaf.evalSelected, relevant]
 
@@ -222,7 +222,7 @@ theorem validationCondition_groupPresence_evalSelected
     (ValidationCondition.groupPresence (model := model)
         operator reference).evalSelected
         context isRelevant = operator.eval state := by
-  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult,
+  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
     Except.mapError,
     ValidationConditionLeaf.evalSelected, resolved]
 
@@ -237,7 +237,7 @@ theorem validationCondition_groupPresence_missing_isUnknown
     (ValidationCondition.groupPresence (model := model)
         operator reference).evalSelected
         context isRelevant = .unknown := by
-  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult,
+  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
     Except.mapError,
     ValidationConditionLeaf.evalSelected, missing]
 
@@ -283,7 +283,7 @@ theorem validationCondition_groupPresence_evalAddressed_checked
             fun input => operator.eval input.derive := by
   cases h : document.groupPresenceInput reference.path outer .fullyRelevant false <;>
     simp [ValidationCondition.groupPresence, ValidationCondition.evalAddressed,
-      ValidationCondition.evalWithTemporalResult,
+      ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
       ValidationConditionLeaf.evalAddressed, h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
 
 
@@ -341,7 +341,8 @@ theorem validationCondition_repeatablePresence_requiresAddressed
       operator declaration).requiresAddressedValidation = true := by
   rfl
 
-/-- A selected ordinary repeatable presence leaf reads the exact current environment and delegates to the established phase observation. -/
+/-- A selected presence leaf reads its current environment. The rule handler preserves structural
+errors and classifies an explicit runtime value failure supplied by the addressed read channel. -/
 @[simp]
 theorem validationCondition_repeatablePresence_evalAddressed
     (model : FlatModel) (operator : RepeatableFieldPresenceOperator)
@@ -349,12 +350,20 @@ theorem validationCondition_repeatablePresence_evalAddressed
     (context : AddressedValidationEvaluationContext model) :
     (ValidationCondition.repeatableFieldPresence (model := model)
       operator declaration).evalAddressed context =
-      (context.readCell context.outer declaration.id).map fun cell =>
-        operator.eval (observeCell .validation cell) := by
-  cases h : context.readCell context.outer declaration.id <;>
-    simp [ValidationCondition.repeatableFieldPresence, ValidationCondition.evalAddressed,
-      ValidationCondition.evalWithTemporalResult,
-      ValidationConditionLeaf.evalAddressed, h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
+      (match context.readCell context.outer declaration.id with
+      | .ok cell => .ok (operator.eval (observeCell .validation cell))
+      | .error error => if (ValidationCondition.addressedValueFailure? error).isSome then
+          .ok (.fired .value) else .error error) := by
+  cases h : context.readCell context.outer declaration.id with
+  | ok cell => simp [ValidationCondition.repeatableFieldPresence, ValidationCondition.evalAddressed,
+      ValidationCondition.evalWithTemporalResult, ValidationConditionLeaf.evalAddressed,
+      h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
+  | error error =>
+      cases error <;> simp [ValidationCondition.repeatableFieldPresence, ValidationCondition.evalAddressed,
+        ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
+        ValidationConditionLeaf.evalAddressed, h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
+      rename_i cause
+      cases cause <;> rfl
 
 
 /-- One non-starred repeatable field declaration is the sole source of its ordinary rule-iteration scope. -/
@@ -432,7 +441,7 @@ theorem validationCondition_repetitionNotUnique_preparedResult
         .error (.repetitionNotUniqueResult context.outer) := by
   by_cases sameRow : result.row = context.outer <;>
     simp [ValidationCondition.repetitionNotUnique,
-    ValidationCondition.evalAddressedWithRepetitionNotUnique, ValidationCondition.evalWithTemporalResult,
+    ValidationCondition.evalAddressedWithRepetitionNotUnique, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
     Except.mapError, pure, Except.pure,
     ValidationConditionLeaf.evalAddressedWithRepetitionNotUnique,
     sameRow]

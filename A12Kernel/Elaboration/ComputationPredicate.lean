@@ -209,7 +209,7 @@ private def scanNumber (context : ScalarComputationContext)
       (source.having.scanComputation { read := filterRead, world := context.world } context.row
         (fun state environment => consume state
           (source.source.checkedValueListCellAt .computation addressed.read environment))
-        resolved.environments state).mapError (fun _ => .temporalUnavailable)
+        resolved.environments state).mapError (fun | .calendarUnavailable => .temporalUnavailable | .valueFailure => .valueFailure)
 
 private def scanToken (context : ScalarComputationContext)
     (filterRead : Env → FieldId → CheckedCell)
@@ -233,7 +233,7 @@ private def scanToken (context : ScalarComputationContext)
           (resolved.toResolvedSide (source.valueListCellAt .computation addressed.read)).cells state)
       | some having => (having.condition.scanComputation { read := filterRead, world := context.world } context.row
           (fun state environment => consume state
-            (source.valueListCellAt .computation addressed.read environment)) resolved.environments state).mapError (fun _ => .temporalUnavailable)
+            (source.valueListCellAt .computation addressed.read environment)) resolved.environments state).mapError (fun | .calendarUnavailable => .temporalUnavailable | .valueFailure => .valueFailure)
 
 private def scanOperands
     (scan : operand → State → Except error (ComputationHavingScanResult State Result)) :
@@ -295,6 +295,7 @@ private def scanTemporal (context : ScalarComputationContext)
             { read := fun row field => pure (filterRead row field)
               world := context.world
               unsupportedDateCalendar := .temporalUnavailable
+              temporalValueFailure := .valueFailure
               bindingError := fun error => .addressing error.toStarAddressingError }
             context.row (fun seen row => ValueListCell.duplicateComputationStep (kind := .token) seen <$> read row)
             resolved.environments seen

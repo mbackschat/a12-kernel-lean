@@ -75,7 +75,8 @@ structure AddressedEnumerationFirstFilledComputationRunView (model : FlatModel)
 
 namespace CheckedAddressedEnumerationFirstFilledComputation
 
-private def evaluateAtWithRead
+/-- Evaluate one target instance through the caller's read view, preserving filter failures for its handler. -/
+def evaluateAtWithRead
     (operation : CheckedAddressedEnumerationFirstFilledComputation model)
     (input : CheckedDocument model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)

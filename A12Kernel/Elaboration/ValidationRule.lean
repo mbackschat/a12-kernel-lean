@@ -413,6 +413,7 @@ private def evalOrdinaryPartialAdmittedAt
       (onTemporalValueFailure := fun fault => .error (.inr fault))
       (leafRuntimeFault? := fun
         | .inl (.conditionAddressing (.constructedDate (.stringNotConvertible _ _))) => some .componentNumberInvalid
+        | .inl (.conditionAddressing .temporalValueFailure) => some .dateTimeLabelUnresolved
         | _ => none)
       (firstFilledResult := fun comparison =>
         match comparison.evaluatePartial? checked environment context.scalar.fields scope context.readPartialCell with

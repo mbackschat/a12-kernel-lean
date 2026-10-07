@@ -97,6 +97,7 @@ private def scanStar (kind : ScanKind) (context : ScalarComputationContext)
         { read := fun row field => pure (read filterRead row field)
           world := context.world
           unsupportedDateCalendar := .addressing .unsupportedDateCalendar
+          temporalValueFailure := .addressing .temporalValueFailure
           bindingError := fun error => .addressing error.toStarAddressingError }
         context.row (fun seen row => pure (step kind seen (observe (read addressed.read row field))))
         candidates seen

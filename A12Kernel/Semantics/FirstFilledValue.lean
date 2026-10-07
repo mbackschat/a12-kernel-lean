@@ -144,7 +144,7 @@ def scanFilteredComputationFirstFilled
     (outer : Env) (cell : Env → ValueListCell kind)
     (environments : List Env) (hasUninstantiatedTail : Bool)
     (state : FirstFilledScanState) :
-    Except Unit (FirstFilledScanState ⊕ FirstFilledScanResult kind) := do
+    Except CorrelationRuntimeFault (FirstFilledScanState ⊕ FirstFilledScanResult kind) := do
   let entered := state.enter hasUninstantiatedTail true
   let consume := fun current environment =>
     match current.step (cell environment) with
@@ -190,7 +190,7 @@ namespace FirstFilledComputationSelection
 /-- Scan one reached selection: a star with no row reached is a not-given prefix, and a filter owns
 its candidates' order and poison timing. -/
 def scan (outer : Env) (state : FirstFilledScanState) :
-    FirstFilledComputationSelection kind → Except Unit (FirstFilledScanState ⊕ FirstFilledScanResult kind)
+    FirstFilledComputationSelection kind → Except CorrelationRuntimeFault (FirstFilledScanState ⊕ FirstFilledScanResult kind)
   | .cell reached => match state.step reached with
       | .continue next => pure (.inl next)
       | .done result => pure (.inr result)
@@ -207,13 +207,13 @@ end FirstFilledComputationSelection
 /-- Scan authored operands in order, resolving each only once every earlier one has fallen through,
 so a later operand's structural failure is never reached past a selected value. The caller closes an
 exhausted scan with its family's identity. -/
-def scanComputationFirstFilledSelections (outer : Env) (unsupportedDateCalendar : Error)
+def scanComputationFirstFilledSelections (outer : Env) (runtimeFault : CorrelationRuntimeFault → Error)
     (resolve : α → Except Error (FirstFilledComputationSelection kind)) :
     List α → FirstFilledScanState → Except Error (FirstFilledScanState ⊕ FirstFilledScanResult kind)
   | [], state => pure (.inl state)
   | operand :: remaining, state => do
-      match ← ((← resolve operand).scan outer state).mapError (fun _ => unsupportedDateCalendar) with
-      | .inl next => scanComputationFirstFilledSelections outer unsupportedDateCalendar resolve remaining next
+      match ← ((← resolve operand).scan outer state).mapError runtimeFault with
+      | .inl next => scanComputationFirstFilledSelections outer runtimeFault resolve remaining next
       | .inr result => pure (.inr result)
 
 private def scanFirstFilledCells

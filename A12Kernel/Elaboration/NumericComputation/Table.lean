@@ -308,8 +308,9 @@ def evaluate (table : CheckedNumericComputationTable model)
     (context : ScalarComputationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
   match CheckedComputationAlternative.selectFirstChecked table.selectableAlternatives context with
-  | .error (.predicate .valueFailure) => pure (.supported (.invalidNoValue .calculationValue))
-  | .error error => throw error.toNumericFault
+  | .error error =>
+      if error.isValueFailure then pure (.supported (.invalidNoValue .calculationValue))
+      else throw error.toNumericFault
   | .ok .noMatch => pure (.supported .noValue)
   | .ok (.poison cause) => pure (.supported (.inheritedPoison cause))
   | .ok (.selected operation) => operation.evaluate context
@@ -320,8 +321,9 @@ def evaluateIn (table : CheckedNumericComputationTable model)
     (context : NumericComputationEvaluationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
   match CheckedComputationAlternative.selectFirstCheckedIn table.selectableAlternatives context with
-  | .error (.predicate .valueFailure) => pure (.supported (.invalidNoValue .calculationValue))
-  | .error error => throw error.toNumericFault
+  | .error error =>
+      if error.isValueFailure then pure (.supported (.invalidNoValue .calculationValue))
+      else throw error.toNumericFault
   | .ok .noMatch => pure (.supported .noValue)
   | .ok (.poison cause) => pure (.supported (.inheritedPoison cause))
   | .ok (.selected operation) => operation.evaluateIn context

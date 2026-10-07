@@ -124,6 +124,7 @@ example : (fill .allFieldsFilled).evalTruthIn fillContext frame = .unknown ∧
 
 private def failingFillContext : ResolvingCorrelationContext String := {
   unsupportedDateCalendar := "calendar"
+  temporalValueFailure := "value failure"
   bindingError := fun _ => "binding"
   read := fun env _ => if env == frame.innerEnv then .ok (text "filled") else .error "captured read" }
 
@@ -266,6 +267,7 @@ example : [NumericToleranceRange.range1, .range2, .range5, .range10].all (fun ra
 private def toleranceRead : ResolvingCorrelationContext String := {
   read := fun env _ => if env == frame.innerEnv then .ok invalid else .error "captured read"
   unsupportedDateCalendar := "calendar"
+  temporalValueFailure := "value failure"
   bindingError := fun _ => "binding" }
 
 example : (CorrelatedHavingLeaf.numeric (toleranceComparison .range1)).evalTruthInResolving toleranceRead frame =
@@ -449,6 +451,7 @@ example : (aggregateAtom .sum).readValidation aggregateRead frame = .ok (.value 
 
 private def aggregateStructuralRead : ResolvingCorrelationContext String := {
   unsupportedDateCalendar := "calendar"
+  temporalValueFailure := "value failure"
   bindingError := fun _ => "binding"
   read := fun env _ => if env == frame.innerEnv then
     .ok { emptyRequired with findings := [] }
@@ -511,5 +514,30 @@ example : [FlatTemporalOperand.todayValue "UTC", .baseYearValue "UTC" 1970,
 example : ComputationCondition.evalSimpleComparison
     (.temporal .equal (.todayValue "UTC") (.literalValue { epochMillis := 1234 }))
     { read := fun _ => invalid, world := some injectedCalendar } = .holds := by native_decide
+
+private def gapLiteral : FlatTemporalOperand := .localDateTimeValue .europeBerlin
+  ((LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide))
+private def stampField : FlatTemporalOperand := .fieldValue
+  { id := 1, kind := .dateTime, components := TemporalComponents.now }
+private def gapPair (literalFirst : Bool) : FlatComparison :=
+  if literalFirst then .temporal .before gapLiteral stampField
+  else .temporal .after stampField gapLiteral
+
+example : [false, true].all (fun first => [invalid, emptyRequired].all fun cell =>
+    (gapPair first).evalSimpleValidationReads (fun _ => .ok cell) (fun _ => .ok cell)
+      none (some "value failure") == .error "value failure") = true := by native_decide
+
+example : (gapPair false).evalSimpleComputationReads (fun _ => .ok invalid) (fun _ => .ok invalid)
+      none (some "value failure") = .ok (.poison .malformed) ∧
+    (gapPair true).evalSimpleComputationReads (fun _ => .ok invalid) (fun _ => .ok invalid)
+      none (some "value failure") = .error "value failure" ∧
+    (gapPair false).evalSimpleComputationReads (fun _ => .ok emptyRequired) (fun _ => .ok emptyRequired)
+      none (some "value failure") = .error "value failure" := by native_decide
+
+private def gapCondition : CorrelatedHaving := .leaf (.simpleComparison .inner .inner (gapPair true))
+example : gapCondition.evalComputationIn { read := fun _ _ => emptyRequired } frame =
+      .error .valueFailure ∧
+    gapCondition.scanComputation { read := fun _ _ => emptyRequired } []
+      (fun (n : Nat) _ => Sum.inl (β := Unit) (n + 1)) [] 0 = .ok (.exhausted 0) := by native_decide
 
 end A12Kernel.Conformance.CorrelatedComparisonInputs

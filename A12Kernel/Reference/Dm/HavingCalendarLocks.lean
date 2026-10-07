@@ -483,6 +483,7 @@ private def clockContext (clock : Option Instant) : CorrelationContext := {
 private def clockResolving (clock : Option Instant) : ResolvingCorrelationContext String := {
   read := fun _ _ => .error "field read"
   bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar"
+  temporalValueFailure := "value failure"
   world := clock.map fun now => { now } }
 private def calendarRefusal (result : Except String α) : Bool :=
   match result with | .error reason => reason == "calendar" | .ok _ => false
@@ -540,5 +541,120 @@ private def clockReferenceIds (filter : String) : Option (List FieldId) := do
 example : clockComponents.all (fun (op, source, expected) =>
     (clockReferenceIds s!"{op}({source}) == {expected}").any fun fields =>
       fields.length == 2 && fields.contains 3 && fields.contains 4) = true := by native_decide
+
+example : ["[Rows/Tag] == \"05.03.2024T03:04:05\"", "\"05.03.2024T03:04:05\" == [Rows/Tag]"].all
+    (fun filter => runModel utcInstants filter false "unused" "2024-03-05T03:04:05" "2024-03-06T03:04:05" ==
+      some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : ["{Today} == Today", "Today == {Today}", "{Now} == Now", "Now == {Now}",
+    "Now == \"01.01.1970T00:00:00\"", "\"01.01.1970T00:00:00\" == Now"].all
+    (fun condition => runModel model ("[Rows/N] > 0 And " ++ condition) false "" "" ""
+      (ruleExpected := "14") (zoneRules := ModelZone.concreteRules) ==
+        some (.fired .omission, ["value 14"])) = true := by native_decide
+
+private def clocks : FlatModel := { dates with fields := dates.fields.map fun field =>
+  if field.id == 2 || field.id == 3 then { field with
+    policy := { kind := .temporal .time TemporalComponents.time }
+    temporalTargetPolicy := some { format := "HH:mm:ss" } } else field }
+
+example : ["[Rows/Tag] == \"03:04:05\"", "\"03:04:05\" == [Rows/Tag]"].all (fun filter =>
+    runModel clocks filter false "" "03:04:05" "04:05:06" == some (.fired .omission, ["value 9"])) = true := by native_decide
+
+example : ["Today == Today", "Now == Now", "{Today} == {Today}", "{Now} == {Now}",
+    "\"05.03.2024\" == \"05.03.2024\"", "Now == \"05.03.2024\"",
+    "\"05.03.2024\" == Now", "\"03:04:05\" == Now"].all (fun condition =>
+    (runModel model ("[Rows/N] > 0 And " ++ condition) false "" "" "").isNone) = true := by native_decide
+
+private def gapFilter (literalFirst : Bool) : String :=
+  if literalFirst then "\"31.03.2024T02:30:00\" < [Rows/Tag]"
+  else "[Rows/Tag] > \"31.03.2024T02:30:00\""
+
+example : [false, true].all (fun first => ["", "bad", "2024-03-05T03:04:05"].all fun value =>
+    (runModel dateTimes (gapFilter first) false "" value "2024-03-05T03:04:05") ==
+      some (.fired .value, [])) = true := by native_decide
+
+example : runModel dateTimes ("[Rows/N] < 0 And " ++ gapFilter true) false "" "bad" "bad"
+    (ruleExpected := "0") = some (.fired .omission, ["value 0"]) := by native_decide
+
+example : runModel dateTimes ("[Rows/N] > 0 Or " ++ gapFilter true) false "" "bad" "bad"
+    (ruleExpected := "14") = some (.fired .omission, ["value 14"]) ∧
+    runModel dateTimes ("[Rows/Tag] == \"05.03.2024T03:04:05\" And " ++ gapFilter true) false "" "bad" "bad"
+    (ruleExpected := "0") = some (.fired .omission, []) := by native_decide
+
+private def gapTargetOutcome (literalFirst : Bool) (value : String) (rows : Bool := true) :
+    Option NumericTargetCheckResult := do
+  let dm : DmModel := { flat := dateTimes, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+    ("Rows", Json.arr (if rows then #[Json.mkObj [("Tag", Json.str value), ("N", Json.str "2")]] else #[]))])])).toOption
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dateTimes).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let (_, .number table _) ← (lowerComputation dateTimes .english {
+    group := ["Form"], name := "Total", targetRelPath := "../Out", commonPrecondition := none,
+    alternatives := [{ precondition := none, operation := "Sum(Rows*/N Having " ++ gapFilter literalFirst ++ ")" }],
+    errorCodesToSuppress := [] }).toOption | none
+  let addressed := checked.indexedComputationFillContext
+  (table.evaluateIn {
+    scalar := checked.scalarComputationContext world
+    document := addressed.document
+    outer := []
+    filterRead := addressed.read
+    starRead := addressed.read }).toOption
+
+example : gapTargetOutcome false "" = some (.supported (.invalidNoValue .calculationValue)) ∧
+    gapTargetOutcome true "bad" = some (.supported (.invalidNoValue .calculationValue)) ∧
+    gapTargetOutcome false "bad" = some (.supported (.inheritedPoison .dateFormat)) := by native_decide
+
+private def keywordTargets : FlatModel := { model with
+  fields := model.fields ++ (["Date", "Time", "Datum", "Zeit"].zipIdx.map fun (name, index) =>
+    { id := index + 20, groupPath := ["Form"], name,
+      policy := { kind := .number { scale := 0, signed := true } } }) }
+
+example : [Language.english, .german].all (fun language =>
+    (["Date", "Time", "Datum", "Zeit"].zipIdx).all fun (name, index) =>
+      ((targetOf language keywordTargets {
+        group := ["Form"]
+        name := "Compute"
+        targetRelPath := "../" ++ name
+        commonPrecondition := none
+        alternatives := []
+        errorCodesToSuppress := [] }).toOption.map (·.id)) == some (index + 20) &&
+      (errorFieldOf language keywordTargets {
+        group := ["Form"]
+        name := "Validate"
+        errorEntityRelPath := "../" ++ name
+        condition := ""
+        severity := "ERROR"
+        errorCode := "E" }).toOption == some (index + 20)) = true := by native_decide
+
+example : [("==", "9", "9"), ("!=", "5", "5"), ("<", "0", "5"),
+    ("<=", "9", "14"), (">", "5", "0"), (">=", "14", "9")].all
+    (fun (op, forward, reverse) =>
+      [(clocks, "03:04:05", "03:04:05", "04:05:06"),
+        (utcInstants, "05.03.2024T03:04:05", "2024-03-05T03:04:05", "2024-03-06T03:04:05")].all
+        fun (profile, literal, first, second) =>
+          runModel profile ("[Rows/Tag] " ++ op ++ " \"" ++ literal ++ "\"") false "" first second
+            (ruleExpected := forward) == some (.fired .omission, ["value " ++ forward]) &&
+          runModel profile ("\"" ++ literal ++ "\" " ++ op ++ " [Rows/Tag]") false "" first second
+            (ruleExpected := reverse) == some (.fired .omission, ["value " ++ reverse])) = true := by native_decide
+
+private def groupedNumericPreserved (plain grouped : String) : Bool :=
+  let configured := { model with baseYear := some 2024 }
+  let expected := runModel configured plain false "" "" ""
+  expected.isSome && runModel configured grouped false "" "" "" == expected
+
+example : ["==", "!=", "<", "<=", ">", ">="].all (fun op =>
+    [("[Rows/N]", "{[Rows/N]}"), ("BaseYear", "{BaseYear}")].all (fun (right, groupedRight) =>
+      groupedNumericPreserved s!"[Rows/N] {op} {right}" ("{[Rows/N]} " ++ op ++ " " ++ right) &&
+      groupedNumericPreserved s!"[Rows/N] {op} {right}" s!"[Rows/N] {op} {groupedRight}" &&
+      groupedNumericPreserved s!"{right} {op} [Rows/N]" (groupedRight ++ " " ++ op ++ " {[Rows/N]}"))) = true := by
+  native_decide
+
+example : runModel { model with timeZoneId := "Europe/Berlin" }
+    "[Rows/N] > 0 Or Now > \"31.03.2024T02:30:00\"" false "" "" "" (ruleExpected := "14") =
+      some (.fired .omission, ["value 14"]) ∧
+    runModel { model with timeZoneId := "Europe/Berlin" }
+    "Now > \"31.03.2024T02:30:00\" Or [Rows/N] > 0" false "" "" "" (ruleExpected := "14") =
+      some (.fired .value, []) := by native_decide
 
 end A12Kernel.Dm.HavingCalendarLocks

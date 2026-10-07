@@ -96,6 +96,7 @@ private def scanStar (project : Value → Option α) (overlaps : α → α → B
         { read := fun row id => pure (filterRead row id)
           world := context.world
           unsupportedDateCalendar := .addressing .unsupportedDateCalendar
+          temporalValueFailure := .addressing .temporalValueFailure
           bindingError := fun error => .addressing error.toStarAddressingError }
         context.row (fun state row => state.step overlaps <$> observation project field (read row))
         resolved.environments state

@@ -230,6 +230,7 @@ private def resolvingContext (left : RawCell) : ResolvingCorrelationContext Stri
   read _ id := if id == 0 then .ok (checkedNumber left) else .error "right read"
   bindingError _ := "binding"
   unsupportedDateCalendar := "calendar"
+  temporalValueFailure := "value failure"
 
 example : (match failureComparison.evalTruthInResolving
     (resolvingContext (.rejected .malformed)) (frame 1) with

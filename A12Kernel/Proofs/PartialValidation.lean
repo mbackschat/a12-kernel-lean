@@ -83,7 +83,7 @@ private theorem selectedOr_eq_disj (left right : FlatCondition)
 /-- Phase-aware correlated reads preserve the ordinary temporal interpretation on validation, including injected clock and zone capabilities. -/
 theorem flatTemporalOperand_resolveAt_validation (operand : FlatTemporalOperand) (context : FlatContext) :
     operand.resolveAt context .validation = operand.resolve context := by
-  cases operand <;> rfl
+  induction operand <;> simp_all only [FlatTemporalOperand.resolveAt, FlatTemporalOperand.resolve]
 
 private theorem temporalOperand_resolve_agreesOn
     (operand : FlatTemporalOperand) (left right : FlatContext)
@@ -91,13 +91,18 @@ private theorem temporalOperand_resolve_agreesOn
     (agreement : ∀ field, isRelevant field = true → left.read field = right.read field)
     (relevant : (operand.fields.map FlatField.id).all isRelevant = true) :
     operand.resolve left = operand.resolve right := by
-  cases operand with
+  induction operand with
   | fieldValue field =>
       have readEq := agreement field.id (by
         simpa [FlatTemporalOperand.fields, FlatTemporalOperand.fieldValues, FlatField.id] using relevant)
       simp_all [FlatTemporalOperand.resolve,
         FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy]
   | literalValue instant components => rfl
+  | timeValue value => rfl
+  | localDateTimeValue profile label => rfl
+  | grouped source ih =>
+      apply ih
+      simpa [FlatTemporalOperand.fields, FlatTemporalOperand.fieldValues] using relevant
   | todayValue zoneId =>
       simp [FlatTemporalOperand.resolve, worldAgreement]
   | baseYearValue zoneId year =>

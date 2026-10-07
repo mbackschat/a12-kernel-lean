@@ -216,11 +216,9 @@ private def parsed (language : Language) (text : String) : Lowering Text :=
 /-- The declaration a computation targets. Its path is relative to the computation element. -/
 def targetOf (language : Language) (model : FlatModel) (computation : DmComputation) :
     Lowering FlatFieldDecl := do
-  let text ← parsed language computation.targetRelPath
-  let some path := match text.body with
-      | .entity { path, index := none, category := none } => some path
-      | _ => none
-    | refuse "Target" computation.targetRelPath
+  let path ← match parseModelPath language computation.targetRelPath with
+    | .ok path => pure path
+    | .error error => refuse "Target" error.errorClass.code
   -- The path is written from the element, one step below its group; a relative path without that
   -- step is outside every retained model, so it is refused rather than read at the group.
   if !path.absolute && path.ups == 0 then refuse "Target" computation.targetRelPath

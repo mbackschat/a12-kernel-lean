@@ -66,13 +66,17 @@ def checkResult (operation : CheckedNumericTargetComputationOperation model)
 def evaluate (operation : CheckedNumericTargetComputationOperation model)
     (context : ScalarComputationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
-  pure (operation.checkResult (← operation.operation.evaluate context))
+  match operation.operation.evaluate context with
+  | .ok result => pure (operation.checkResult result)
+  | .error error => if error.isTemporalFilterValueFailure then pure (operation.checkResult .domainFailure) else throw error
 
 /-- Preserve the same retained target-policy dispatch after repeatable expression evaluation. Source-relative target policy and result classification are not recomputed or reordered. -/
 def evaluateIn (operation : CheckedNumericTargetComputationOperation model)
     (context : NumericComputationEvaluationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
-  pure (operation.checkResult (← operation.operation.evaluateIn context))
+  match operation.operation.evaluateIn context with
+  | .ok result => pure (operation.checkResult result)
+  | .error error => if error.isTemporalFilterValueFailure then pure (operation.checkResult .domainFailure) else throw error
 
 end CheckedNumericTargetComputationOperation
 

@@ -29,6 +29,11 @@ def CheckedComputationConditionError.toNumericFault :
   | .predicate .contextRequired => .repeatableContextRequired
   | .predicate (.addressing error) => .repeatableAddressing error
 
+/-- Every target handler distinguishes a reached value failure from inherited operand poison;
+the failure can originate in either a scalar predicate or a filtered numeric source (spec/09). -/
+def CheckedComputationConditionError.isValueFailure (error : CheckedComputationConditionError) : Bool :=
+  error.toNumericFault == .guardValueFailure || error.toNumericFault.isTemporalFilterValueFailure
+
 inductive CheckedComputationConditionElabError where
   | primitive (error : ComputationConditionElabError)
   | numeric (error : NumericComputationElabError)

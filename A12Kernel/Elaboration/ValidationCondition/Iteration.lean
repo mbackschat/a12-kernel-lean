@@ -514,11 +514,12 @@ def evalWithTemporalResult (condition : ValidationCondition model)
         | leaf@(.orderedNumeric _ comparison) =>
             if comparison.hasTemporalExpression then numericResult comparison
             else (evaluate leaf).mapError Sum.inl
-        | leaf@(.constructedDateValidity _ _) => (evaluate leaf).mapError fun error =>
-            match leafRuntimeFault? error with
-            | some fault => .inr fault
-            | none => .inl error
         | leaf => (evaluate leaf).mapError Sum.inl
+  let readLeaf := fun leaf => (readLeaf leaf).mapError fun
+    | .inl error => match leafRuntimeFault? error with
+        | some fault => .inr fault
+        | none => .inl error
+    | .inr fault => .inr fault
   let hasCustom := condition.anyLeaf fun | .customCondition _ => true | _ => false
   let result : Except (Sum Error ScalarTemporalEvaluationFault) Verdict :=
     if hasCustom then condition.evalObservedM
@@ -595,8 +596,9 @@ private def addressedTemporalContext (context : AddressedValidationEvaluationCon
 
 /-- A legal extensible String can fail numeric conversion at runtime; the generated rule
 handler catches that failure outside the Boolean tree (spec/05 §3), unlike a missing host input. -/
-private def constructedComponentRuntimeFault? : CheckedAddressingError → Option ScalarTemporalEvaluationFault
+def addressedValueFailure? : CheckedAddressingError → Option ScalarTemporalEvaluationFault
   | .constructedDate (.stringNotConvertible _ _) => some .componentNumberInvalid
+  | .temporalValueFailure => some .dateTimeLabelUnresolved
   | _ => none
 
 /-- Evaluate one row-selected checked tree while retaining structural addressing failure outside the verdict algebra. Truth testing and conditional classification retain their separate failure boundaries. -/
@@ -608,7 +610,7 @@ def evalAddressed (condition : ValidationCondition model)
     (addressedTemporalFields context)
     (temporalAddressed := addressedTemporalContext context)
     (numericResult := fun comparison => comparison.evalAddressedResult context)
-    (leafRuntimeFault? := constructedComponentRuntimeFault?)
+    (leafRuntimeFault? := addressedValueFailure?)
     (firstFilledResult := ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context)
     (customResult := fun name => (context.scalar.customResult name).mapError CheckedAddressingError.customCondition)
 
@@ -623,7 +625,7 @@ def evalAddressedWithRepetitionNotUnique
     (addressedTemporalFields context)
     (temporalAddressed := addressedTemporalContext context)
     (numericResult := fun comparison => comparison.evalAddressedResult context)
-    (leafRuntimeFault? := constructedComponentRuntimeFault?)
+    (leafRuntimeFault? := addressedValueFailure?)
     (firstFilledResult := ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context)
     (customResult := fun name => (context.scalar.customResult name).mapError CheckedAddressingError.customCondition)
 
@@ -644,7 +646,7 @@ def evalAddressedWithRepetitionNotUniqueResult
       | .inl error => .inl (.inl error)
       | .inr fault => .inr fault)
     (leafRuntimeFault? := fun
-      | .inl error => constructedComponentRuntimeFault? error
+      | .inl error => addressedValueFailure? error
       | .inr fault => some fault)
     (firstFilledResult := fun comparison =>
       (ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context comparison).mapError fun

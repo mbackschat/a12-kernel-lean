@@ -14,6 +14,7 @@ This boundary joins the immutable checked input to the existing checked star pat
 namespace A12Kernel
 
 inductive CheckedAddressingError where
+  | temporalValueFailure
   | customCondition (cause : CustomConditionLookupError)
   | unsupportedIndexedFillQuantifier
   | semanticIndex (cause : SemanticIndexContextError)
@@ -325,6 +326,7 @@ def resolvingCorrelationContextWithRead (checked : CheckedDocument model)
   read environment field :=
     checked.checkedCellWithRead read environment field
   unsupportedDateCalendar := .temporalUnavailable
+  temporalValueFailure := .temporalValueFailure
   world := world
   bindingError := .environment
 
@@ -335,6 +337,7 @@ def resolvingCorrelationContext (checked : CheckedDocument model)
   { read := fun environment field =>
       (checked.fullValidationAddressedCell environment field).map (·.cell)
     unsupportedDateCalendar := .temporalUnavailable
+    temporalValueFailure := .temporalValueFailure
     world := world
     bindingError := .environment }
 

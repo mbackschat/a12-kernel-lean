@@ -94,13 +94,20 @@ theorem validationCondition_groupList_evalAddressed
     (context : AddressedValidationEvaluationContext model) :
     (ValidationCondition.groupList (model := model)
         operator operands).evalAddressed context =
-      (ResolvedGroupListOperands.evalAddressedTally context operands).map
-        fun tally =>
-          (operator.evalTally tally).asConservativeVerdict := by
-  cases result : ResolvedGroupListOperands.evalAddressedTally context operands <;>
-    simp [ValidationCondition.groupList, ValidationCondition.evalAddressed,
-      ValidationCondition.evalWithTemporalResult,
-      ValidationConditionLeaf.evalAddressed, result, Functor.map, Except.map, Except.mapError]
+      (match ResolvedGroupListOperands.evalAddressedTally context operands with
+      | .ok tally => .ok (operator.evalTally tally).asConservativeVerdict
+      | .error error => if (ValidationCondition.addressedValueFailure? error).isSome then
+          .ok (.fired .value) else .error error) := by
+  cases result : ResolvedGroupListOperands.evalAddressedTally context operands with
+  | ok tally => simp [ValidationCondition.groupList, ValidationCondition.evalAddressed,
+      ValidationCondition.evalWithTemporalResult, ValidationConditionLeaf.evalAddressed,
+      result, Functor.map, Except.map, Except.mapError]
+  | error error =>
+      cases error <;> simp [ValidationCondition.groupList, ValidationCondition.evalAddressed,
+        ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
+        ValidationConditionLeaf.evalAddressed, result, Functor.map, Except.map, Except.mapError]
+      rename_i cause
+      cases cause <;> rfl
 
 /-- A reached topology or document failure stays in the structural error channel and cannot become semantic UNKNOWN. -/
 theorem validationCondition_groupList_addressing_failure
@@ -108,12 +115,13 @@ theorem validationCondition_groupList_addressing_failure
     (operands : List (ResolvedGroupListOperand model))
     (context : AddressedValidationEvaluationContext model)
     (cause : CheckedAddressingError)
+    (structural : ValidationCondition.addressedValueFailure? cause = none)
     (fails : ResolvedGroupListOperands.evalAddressedTally
       context operands = .error cause) :
     (ValidationCondition.groupList (model := model)
       operator operands).evalAddressed context = .error cause := by
   rw [validationCondition_groupList_evalAddressed, fails]
-  rfl
+  simp [structural]
 
 /-- A sole nonrepeatable terminal below starred ancestry has partial support exactly for the two quantifiers admitted on every sole starred group operand. -/
 @[simp]

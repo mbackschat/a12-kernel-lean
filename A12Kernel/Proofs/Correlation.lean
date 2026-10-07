@@ -610,13 +610,13 @@ theorem computationHavingScan_terminalCurrent_hidesAfterSuccessor
     CorrelatedHaving.scanComputationCandidates, bind, Except.bind, pure, Except.pure, firstHolds, secondHolds,
     currentTerminates]
 
-/-- A calendar support failure during successor lookahead aborts before the pending target, just as an addressed read failure does. -/
+/-- A runtime failure during successor lookahead aborts before the pending target, just as an addressed read failure does. -/
 theorem computationHavingScan_failedSuccessor_precedesCurrent
     (condition : CorrelatedHaving) (context : CorrelationContext)
-    (outer first second : Env) (consume : State → Env → State ⊕ Result) (initial : State)
+    (outer first second : Env) (fault : CorrelationRuntimeFault) (consume : State → Env → State ⊕ Result) (initial : State)
     (firstHolds : condition.evalComputationIn context { innerEnv := first, outerEnv := outer } = .ok .holds)
-    (secondFails : condition.evalComputationIn context { innerEnv := second, outerEnv := outer } = .error ()) :
-    condition.scanComputation context outer consume [first, second] initial = .error () := by
+    (secondFails : condition.evalComputationIn context { innerEnv := second, outerEnv := outer } = .error fault) :
+    condition.scanComputation context outer consume [first, second] initial = .error fault := by
   simp [CorrelatedHaving.scanComputation, CorrelatedHaving.scanComputationCandidates,
     firstHolds, secondFails, bind, Except.bind, pure, Except.pure]
 

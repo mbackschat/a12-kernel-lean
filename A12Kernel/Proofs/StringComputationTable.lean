@@ -34,7 +34,7 @@ theorem checkedStringComputationTable_evaluateOutcome_erases
       (match (table.toResolved .empty).evaluateOutcomeWithGuard
           (fun condition => condition.evalChecked guardContext)
           CheckedStringComputationFault.guard CheckedStringComputationFault.operation wholeValueMatches? context with
-        | .error (.guard (.predicate .valueFailure)) => .ok .invalidNoValue
+        | .error (.guard error) => if error.isValueFailure then .ok .invalidNoValue else .error (.guard error)
         | result => result) := by
   rfl
 

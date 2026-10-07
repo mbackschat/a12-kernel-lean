@@ -216,13 +216,22 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
         (← lowerNumericExpr lowerHavingNumericAtom lowerHavingNumericField right))
   | .compare op left right => do
       let some surfaceOp := op.toSurface? | refuse "Having" "operator"
-      let temporal (field other : Expr) (position : SurfacePointInTimePosition) : Option SurfaceCorrelatedHaving := do
-        let .value { path, index := none, category := none } := field | none
-        let (origin, field) ← path.havingField?
-        let source ← dateDifferenceOperandWith? (fun _ => (none : Option Empty)) other
-        pure (.compareTemporal surfaceOp position { origin, field } source)
-      if let some condition := (temporal left right .right).orElse (fun _ => temporal right left .left) then
-        return condition
+      let rec temporal : Expr → Option SurfaceHavingTemporalOperand
+        | .value { path, index := none, category := none } => do
+            let (origin, field) ← path.havingField?
+            pure (.field { origin, field })
+        | .braces source => .grouped <$> temporal source
+        | expression =>
+            match expression with
+            | .string text => match dateTimeConstant? text, timeConstant? text with
+                | some value, _ => some (.dateTimeLiteral value)
+                | _, some value => some (.timeLiteral value)
+                | _, _ => .constant <$> dateDifferenceOperandWith? (fun _ => (none : Option Empty)) expression
+            | _ => .constant <$> dateDifferenceOperandWith? (fun _ => (none : Option Empty)) expression
+      if let (some l, some r) := (temporal left, temporal right) then
+        match l, r with
+        | .field _, .field _ => pure ()
+        | _, _ => return .compareTemporal surfaceOp l r
       match left, right with
       | .value { path, index := none, category := none }, .constant literal
       | .constant literal, .value { path, index := none, category := none } =>

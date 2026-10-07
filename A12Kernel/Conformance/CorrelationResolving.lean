@@ -18,6 +18,7 @@ private def nestedItems : RepeatableLevel := 20
 
 private inductive ResolvingProbeError where
   | unsupportedDateCalendar
+  | temporalValueFailure
   | read (field : FieldId)
   | binding (cause : EnvBindingError)
   deriving Repr, DecidableEq
@@ -30,6 +31,7 @@ private def resolvingContext :
   read _ field :=
     if field == marker.id then .error (.read field) else .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
+  temporalValueFailure := .temporalValueFailure
   bindingError := .binding
 
 private def resolvingFrame : CorrelationFrame :=
@@ -74,6 +76,7 @@ private def orderedResolvingContext :
     else
       .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
+  temporalValueFailure := .temporalValueFailure
   bindingError := .binding
 
 private def trueResolvingHaving : CorrelatedHaving :=
@@ -101,11 +104,11 @@ private def scanSnapshot :
   | .ok (.poison cause) => .poison cause
   | .error cause => .error cause
 
-/- Validation's strong-Kleene connective still reaches the right leaf, so structural failure cannot be collapsed into UNKNOWN or hidden by a false left truth. -/
+/- The generated validation filter tests known truth with Boolean short-circuiting (spec/07 §3). -/
 example :
     truthSnapshot
       (falseThenBadRead.evalTruthInResolving resolvingContext resolvingFrame) =
-        .error (.read marker.id) := by
+        .truth .fls := by
   native_decide
 
 /- Computation retains its distinct left-to-right short circuit: clean false decides `And` before the structurally failing right leaf is reached. -/
@@ -173,6 +176,7 @@ private def absentAtSecondContext :
     else
       .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
+  temporalValueFailure := .temporalValueFailure
   bindingError := .binding
 
 private def markerFilledHaving : CorrelatedHaving :=
@@ -200,6 +204,7 @@ private def allPresentContext :
     ResolvingCorrelationContext ResolvingProbeError where
   read _ _ := .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
+  temporalValueFailure := .temporalValueFailure
   bindingError := .binding
 
 /-- With every operand present, candidate 2 is kept and the identical target failure surfaces. -/
@@ -227,6 +232,7 @@ private def markerPoisonedContext :
   read _ field :=
     if field == marker.id then .ok poisonedResolvingCell else .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
+  temporalValueFailure := .temporalValueFailure
   bindingError := .binding
 
 private def poisonedThenFilled : CorrelatedHaving :=
@@ -276,6 +282,7 @@ private def poisonedAndEmptyContext :
     else if field == payload.id then .ok emptyResolvingCell
     else .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
+  temporalValueFailure := .temporalValueFailure
   bindingError := .binding
 
 private def falseThenPoisoned : CorrelatedHaving :=
@@ -328,6 +335,7 @@ private def outerOnlyContext :
     else
       .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
+  temporalValueFailure := .temporalValueFailure
   bindingError := .binding
 
 private def presenceAt (origin : HavingOrigin) : CorrelatedHaving :=
@@ -363,6 +371,7 @@ private def textOnOuterContext :
     else
       .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
+  temporalValueFailure := .temporalValueFailure
   bindingError := .binding
 
 example :
@@ -395,6 +404,7 @@ private def stringContext (cell : CheckedCell) :
     ResolvingCorrelationContext ResolvingProbeError where
   read _ field := if field == marker.id then .ok cell else .ok resolvingCell
   unsupportedDateCalendar := .unsupportedDateCalendar
+  temporalValueFailure := .temporalValueFailure
   bindingError := .binding
 
 example :

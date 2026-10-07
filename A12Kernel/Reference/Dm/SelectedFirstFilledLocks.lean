@@ -672,4 +672,69 @@ private def temporalCurrentEffects : Bool :=
 
 example : temporalCurrentEffects = true := by native_decide
 
+private def filterFailureOutcomes (profile : Profile) (repeated : Bool) (guarded : Bool := false)
+    (tokenKind : Option FieldKind := none) :
+    Option (List (CellAddr × DocumentTargetOutcome)) := do
+  let model := { model profile with
+    timeZoneId := "Europe/Berlin"
+    fields := (model profile).fields.map fun field =>
+      match tokenKind with
+      | some kind => if field.customType.isSome then { field with
+          customType := none
+          policy := { kind }
+          enumeration := if kind == .enumeration then some { storedTokens := ["alpha", "beta", "omega", "seed"] } else none } else field
+      | none => field }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let raw ← (readDocument { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    (input profile { allows := ["1", "0"] })).toOption
+  let document ← (checkDocument prepared "en_US" raw.data).toOption
+  let operation := if repeated then
+      "FirstFilledValue(Children*/Value Having [Children/Allow] > 0 And [$Allow] > 0 And Now > \"31.03.2024T02:30:00\")"
+    else "FirstFilledValue(Rows*/Value Having [Rows/Allow] > 0 And Now > \"31.03.2024T02:30:00\")"
+  let constant := match profile with
+    | .boolean => "True"
+    | .date => "Today"
+    | .stamp => "\"01.01.2000T01:01:01\""
+    | _ => "\"" ++ seed profile ++ "\""
+  let computation := if guarded then
+      { definition constant repeated repeated with
+        commonPrecondition := some (if repeated then
+          "Sum(Children*/Allow Having [Children/Allow] > 0 And [$Allow] > 0 And Now > \"31.03.2024T02:30:00\") > 0"
+          else "Sum(Rows*/Allow Having [Rows/Allow] > 0 And Now > \"31.03.2024T02:30:00\") > 0") }
+    else definition operation repeated repeated
+  let (_, step) ← (lowerComputation model .english computation).toOption
+  match step with
+  | .rows step =>
+      let outcomes ← ((step builtinStringPatternCompiler).run world prepared.patterns document).toOption
+      pure (outcomes.map fun (address, outcome, _) => (address, outcome))
+  | .document step =>
+      let (outcome, _) ← (step.run world prepared.patterns.targetMatcher? document).toOption
+      pure [({ field := step.target, path := [] }, outcome)]
+  | _ => none
+
+example : profiles.all (fun profile => [false, true].all fun repeated =>
+    (filterFailureOutcomes profile repeated).any fun outcomes =>
+      match outcomes with
+      | [(_, .valueError _)] => !repeated
+      | [(first, .valueError _), (second, outcome)] =>
+          repeated && first.path == [1] && second.path == [2] &&
+            (match outcome with | .valueError _ => false | _ => outcome.storedText?.isNone)
+      | _ => false) = true := by native_decide
+
+example : [Profile.boolean, .date, .time, .stamp].all (fun profile => [false, true].all fun repeated =>
+    (filterFailureOutcomes profile repeated true).any fun outcomes =>
+      match outcomes with
+      | [(_, .valueError _)] => !repeated
+      | [(first, .valueError _), (second, outcome)] => repeated && first.path == [1] && second.path == [2] &&
+          (match outcome with | .valueError _ => false | _ => outcome.storedText?.isNone)
+      | _ => false) = true := by native_decide
+
+example : [FieldKind.string, .enumeration].all (fun kind => [false, true].all fun repeated =>
+    (filterFailureOutcomes .custom repeated (tokenKind := some kind)).any fun outcomes =>
+      match outcomes with
+      | [(_, .valueError _)] => !repeated
+      | [(first, .valueError _), (second, outcome)] => repeated && first.path == [1] && second.path == [2] &&
+          (match outcome with | .valueError _ => false | _ => outcome.storedText?.isNone)
+      | _ => false) = true := by native_decide
+
 end A12Kernel.Dm.SelectedFirstFilledLocks

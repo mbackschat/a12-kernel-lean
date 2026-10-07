@@ -251,7 +251,8 @@ def CorrelatedHavingLeaf.evalTruthInResolving
           NumericComparisonOf (Except Unit NumericArithmeticOutcome)).evalWith id))
   | .simpleComparison left right comparison => do
       pure (CorrelatedHavingLeaf.verdictTruth (← comparison.evalSimpleValidationReads
-        (context.read (frame.envAt left)) (context.read (frame.envAt right)) context.world))
+        (context.read (frame.envAt left)) (context.read (frame.envAt right)) context.world
+        (some context.temporalValueFailure)))
   | .compareStringLiteral op reference expected => do
       pure (CorrelatedHavingLeaf.verdictTruth
         (reference.compareResolved (← reference.resolveInAtResolving .validation context frame)
@@ -268,12 +269,14 @@ def CorrelatedHavingLeaf.evalTruthInResolving
         (polarity.evalObservation
           (← reference.observeInAtResolving .validation context frame)))
 
-/-- Evaluate one validation filter tree without converting addressed failure to UNKNOWN. -/
+/-- Generated filters test each leaf for known truth and short-circuit their Boolean tree
+(`CodeGenFilterCondition`, `CompositeCondition.getBooleanCode`, spec/07 §3). -/
 def CorrelatedHaving.evalTruthInResolving (condition : CorrelatedHaving)
     (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) : Except Error K :=
-  condition.evalKExcept
-    (CorrelatedHavingLeaf.evalTruthInResolving context frame)
+  (condition.evalBoolExcept fun leaf => do
+    pure ((← leaf.evalTruthInResolving context frame) == .tru)).map fun holds =>
+      if holds then .tru else .fls
 
 /-- Computation filter evaluation over an addressed reader. Structural failures are distinct from poison, while numeric poison and connective short-circuiting retain their established order. -/
 def CorrelatedHavingLeaf.evalComputationInResolving
@@ -285,6 +288,7 @@ def CorrelatedHavingLeaf.evalComputationInResolving
   | .simpleComparison left right comparison =>
       comparison.evalSimpleComputationReads
         (context.read (frame.envAt left)) (context.read (frame.envAt right)) context.world
+        (some context.temporalValueFailure)
   | .compareStringLiteral op reference expected => do
       match ← reference.resolveInAtResolving .computation context frame with
       | .unknown cause => pure (.poison cause)
@@ -311,16 +315,18 @@ def CorrelatedHavingLeaf.evalComputationInResolving
 
 /-- A pure cell reader does not eliminate calendar support failures. -/
 def CorrelatedHavingLeaf.evalComputationIn (context : CorrelationContext)
-    (frame : CorrelationFrame) : CorrelatedHavingLeaf → Except Unit ComputationConditionResult
-  | .numeric comparison => comparison.evalComputationWith (HavingNumericAtom.readComputation context frame)
+    (frame : CorrelationFrame) : CorrelatedHavingLeaf → Except CorrelationRuntimeFault ComputationConditionResult
+  | .numeric comparison => (comparison.evalComputationWith (HavingNumericAtom.readComputation context frame)).mapError
+      (fun _ => .calendarUnavailable)
   | leaf => leaf.evalComputationInResolving {
       read := fun env field => .ok (context.read env field)
       world := context.world
-      bindingError := fun _ => (), unsupportedDateCalendar := () } frame
+      bindingError := fun _ => .calendarUnavailable, unsupportedDateCalendar := .calendarUnavailable
+      temporalValueFailure := .valueFailure } frame
 
 /-- The shared effectful tree preserves support faults and computation short-circuiting. -/
 def CorrelatedHaving.evalComputationIn (condition : CorrelatedHaving)
-    (context : CorrelationContext) (frame : CorrelationFrame) : Except Unit ComputationConditionResult :=
+    (context : CorrelationContext) (frame : CorrelationFrame) : Except CorrelationRuntimeFault ComputationConditionResult :=
   condition.evalComputationExcept (CorrelatedHavingLeaf.evalComputationIn context frame)
 
 /-- Evaluate one computation filter tree without converting addressed failure to poison or clean non-holding. -/
@@ -367,7 +373,7 @@ inductive ComputationHavingScanResult (State Result : Type) where
 def CorrelatedHaving.scanComputationCandidates
     (condition : CorrelatedHaving) (context : CorrelationContext)
     (outerEnv : Env) (consume : State → Env → State ⊕ Result) :
-    List Env → Option Env → State → Except Unit (ComputationHavingScanResult State Result)
+    List Env → Option Env → State → Except CorrelationRuntimeFault (ComputationHavingScanResult State Result)
   | [], none, state => pure (.exhausted state)
   | [], some pending, state =>
       match consume state pending with
@@ -397,7 +403,7 @@ def CorrelatedHaving.scanComputation (condition : CorrelatedHaving)
     (context : CorrelationContext) (outerEnv : Env)
     (consume : State → Env → State ⊕ Result)
     (candidates : List Env) (initial : State) :
-    Except Unit (ComputationHavingScanResult State Result) :=
+    Except CorrelationRuntimeFault (ComputationHavingScanResult State Result) :=
   condition.scanComputationCandidates context outerEnv consume
     candidates none initial
 

@@ -13,6 +13,7 @@ import A12Kernel.Semantics.DateNumeric
 import A12Kernel.Semantics.TimeNumeric
 import A12Kernel.Semantics.EnumerationValueList
 import A12Kernel.Semantics.Condition
+import A12Kernel.Semantics.ModelZone
 
 /-! # A12Kernel.Semantics.FlatValidation — the first condition fragment
 
@@ -97,6 +98,9 @@ def StringLengthComparisonOp.toNumeric : StringLengthComparisonOp → NumericCom
 inductive FlatTemporalOperand (Field : Type := FlatTemporalField) where
   | fieldValue (field : Field)
   | literalValue (instant : Instant) (components : TemporalComponents := TemporalComponents.fullDate)
+  | timeValue (value : TimeOfDay)
+  | localDateTimeValue (profile : ModelZone.ConcreteProfile) (label : LocalDateTime)
+  | grouped (source : FlatTemporalOperand Field)
   | todayValue (zoneId : String)
   | baseYearValue (zoneId : String) (year : Int)
   | baseYearRangeValue (zoneId : String) (year : Int)
@@ -108,6 +112,7 @@ namespace FlatTemporalOperand
 
 def fieldValues : FlatTemporalOperand Field → List Field
   | .fieldValue field => [field]
+  | .grouped source => source.fieldValues
   | _ => []
 
 def fields (operand : FlatTemporalOperand) : List FlatField :=
@@ -502,10 +507,22 @@ def FlatContext.resolveLocalDateComparisonOperand
   | some instant => .value instant true
   | none => .unknown .malformed
 
+/-- Date-free comparisons observe wall-clock components, independent of the storage anchor
+(spec/05 and the cross-kind temporal-read checkpoint). -/
+def FlatTemporalField.comparisonCoordinate? (field : FlatTemporalField) (value : TemporalValue) : Option Instant :=
+  if field.components.hasDate then some value.instant
+  else value.time?.map fun time => Instant.ofEpochSecond time.secondsSinceMidnight
+
 def FlatTemporalOperand.resolve (context : FlatContext) : FlatTemporalOperand →
     SimpleComparisonOperand Instant
-  | .fieldValue field => context.resolveTemporalComparisonOperand field
+  | .fieldValue field => context.resolveTemporalFieldBy field field.comparisonCoordinate? .validation
   | .literalValue instant _ => .value instant true
+  | .timeValue value => .value (Instant.ofEpochSecond value.secondsSinceMidnight) true
+  | .localDateTimeValue profile label =>
+      match profile.resolveLocal? label with
+      | some instant => .value instant true
+      | none => .unknown .malformed
+  | .grouped source => source.resolve context
   | .todayValue zoneId =>
       match context.world.bind (·.today? zoneId) with
       | some instant => .value instant true
@@ -523,8 +540,20 @@ def FlatTemporalOperand.resolve (context : FlatContext) : FlatTemporalOperand �
 /-- Constants use the existing world interpretation; fields retain the caller's observation phase (spec/02, spec/05). -/
 def FlatTemporalOperand.resolveAt (context : FlatContext) (phase : Phase) :
     FlatTemporalOperand → SimpleComparisonOperand Instant
-  | .fieldValue field => context.resolveTemporalFieldBy field (fun value => some value.instant) phase
+  | .fieldValue field => context.resolveTemporalFieldBy field field.comparisonCoordinate? phase
+  | .grouped source => source.resolveAt context phase
   | operand => operand.resolve context
+
+/-- A local literal resolves when reached, not at admission (spec/07 §3). The legacy observation
+projection above cannot report a runtime exception; effectful consumers use this read. -/
+def FlatTemporalOperand.resolveResultAt (context : FlatContext) (phase : Phase) :
+    FlatTemporalOperand → Except Unit (SimpleComparisonOperand Instant)
+  | .localDateTimeValue profile label =>
+      match profile.resolveLocal? label with
+      | some instant => pure (.value instant true)
+      | none => throw ()
+  | .grouped source => source.resolveResultAt context phase
+  | operand => pure (operand.resolveAt context phase)
 
 /-- Direct String equality suppresses an empty literal only after the field read has
     preserved malformed input as unknown. -/

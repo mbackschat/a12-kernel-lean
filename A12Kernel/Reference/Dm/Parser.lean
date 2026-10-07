@@ -246,6 +246,16 @@ def parseLexemes (lexemes : Array Lexeme) : Except SyntaxError Text :=
 def parseText (language : Language) (text : String) : Except SyntaxError Text := do
   parseLexemes (← lex language text)
 
+/-- Model reference attributes name declarations, including DSL keywords. The retained temporal
+filter matrix targets fields named Date and Time without expression-language quoting. -/
+def parseModelPath (language : Language) (text : String) : Except SyntaxError Path := do
+  let lexemes ← lex language text (recognizeKeywords := false)
+  let grammar : P Path := do
+    let result ← path
+    if (← peek).isSome then failHere .unexpectedToken
+    return result
+  (grammar.run' 0).run lexemes
+
 /-- Whether every parenthesis groups a condition in a condition position (spec §12.3): a whole
 condition, a connective's part, a parenthesised condition's body or a filter body. A parenthesised
 comparison side, operation, argument or whole computation operation is `MVK_UNEXPECTED_TOKEN`. The

@@ -177,7 +177,7 @@ private def slice (chars : Array Char) (start stop : Nat) : String :=
   String.ofList (chars.extract start stop).toList
 
 /-- Split a text into lexemes, or the offset of the first character the lexer cannot take. -/
-partial def lex (language : Language) (text : String) : Except SyntaxError (Array Lexeme) :=
+partial def lex (language : Language) (text : String) (recognizeKeywords : Bool := true) : Except SyntaxError (Array Lexeme) :=
   let chars := text.toList.toArray
   let rec go (index : Nat) (out : Array Lexeme) : Except SyntaxError (Array Lexeme) :=
     let index := skipWhitespace chars index
@@ -210,7 +210,9 @@ partial def lex (language : Language) (text : String) : Except SyntaxError (Arra
       else if isNameChar c then
         let stop := takeWhile isNameChar chars index
         let word := slice chars index stop
-        emit (match keywordId? language word with | some id => .keyword id | none => .name word) stop
+        emit (if recognizeKeywords then
+          match keywordId? language word with | some id => .keyword id | none => .name word
+          else .name word) stop
       else if c == '@' then
         let stop := takeWhile isNameChar chars (index + 1)
         match keywordId? language (slice chars index stop) with

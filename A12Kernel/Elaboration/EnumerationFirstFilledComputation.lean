@@ -416,7 +416,7 @@ private def scanFilteredEnumerationFirstFilledStar
     (starRead : Env → FieldId → RawCell) (outer : Env)
     (resolved : ResolvedStarTopology) (state : FirstFilledScanState)
     (world : Option World := none) :
-    Except Unit (FirstFilledScanState ⊕ FirstFilledTokenResult) := do
+    Except CorrelationRuntimeFault (FirstFilledScanState ⊕ FirstFilledTokenResult) := do
   match ← scanFilteredComputationFirstFilled having.condition
       { read := filterRead, world } outer
       (source.valueListCellAt .computation starRead)
@@ -446,7 +446,7 @@ private def scanEnumerationFirstFilledOperand
               resolved.domain.hasOpenTail false))
       | some having =>
           (scanFilteredEnumerationFirstFilledStar (world := direct.world) source having filterRead
-            starRead outer resolved state).mapError (fun _ => .unsupportedDateCalendar)
+            starRead outer resolved state).mapError (fun | .calendarUnavailable => .unsupportedDateCalendar | .valueFailure => .temporalValueFailure)
 
 private def scanEnumerationFirstFilledOperands
     (document : Document) (outer : Env) (direct : FlatContext)

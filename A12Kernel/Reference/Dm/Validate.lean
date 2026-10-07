@@ -38,13 +38,9 @@ private def severity? : String → Option ValidationSeverity
 /-- The field an error-entity path names. The path is relative to the rule element, so its first
 `..` climbs from the rule to the group declaring it. -/
 def errorFieldOf (language : Language) (model : FlatModel) (rule : DmRule) : Lowering FieldId := do
-  let text ← match parseText language rule.errorEntityRelPath with
-    | .ok text => pure text
+  let path ← match parseModelPath language rule.errorEntityRelPath with
+    | .ok path => pure path
     | .error error => refuse "ErrorEntity" (repr error).pretty
-  let some path := match text.body with
-      | .entity { path, index := none, category := none } => some path
-      | _ => none
-    | refuse "ErrorEntity" rule.errorEntityRelPath
   -- The path is written from the element, one step below its group; a relative path without that
   -- step is outside every retained model, so it is refused rather than read at the group.
   if !path.absolute && path.ups == 0 then refuse "ErrorEntity" rule.errorEntityRelPath

@@ -227,6 +227,12 @@ inductive CorrelatedNumberOperand where
   | unknown (cause : FormalCause)
   deriving Repr, DecidableEq
 
+/-- A reached runtime value failure differs from a missing calendar capability (spec/07 §3). -/
+inductive CorrelationRuntimeFault where
+  | calendarUnavailable
+  | valueFailure
+  deriving Repr, DecidableEq
+
 /-- Topology adapters supply environments; the shared evaluator reads their checked fields and the caller-owned evaluation clock. Retaining one World prevents candidate and captured reads from sampling different dates (spec/05 §7, clock-source semantics). -/
 structure CorrelationContext where
   read : Env → FieldId → CheckedCell
@@ -237,6 +243,7 @@ structure ResolvingCorrelationContext (Error : Type) where
   read : Env → FieldId → Except Error CheckedCell
   bindingError : EnvBindingError → Error
   unsupportedDateCalendar : Error
+  temporalValueFailure : Error
   world : Option World := none
 
 /-- Resolve one numeric filter reference through the selected environment and caller-selected phase. Empty-to-zero is local to numeric comparison; formal invalidity retains its cause for the consuming phase projection. -/
@@ -519,6 +526,6 @@ def HavingNumericAtom.readComputation (context : CorrelationContext)
   | atom => atom.readComputationResolving {
       read := fun env field => .ok (context.read env field)
       world := context.world
-      bindingError := fun _ => (), unsupportedDateCalendar := () } frame
+      bindingError := fun _ => (), unsupportedDateCalendar := (), temporalValueFailure := () } frame
 
 end A12Kernel

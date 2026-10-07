@@ -86,6 +86,14 @@ inductive NumericComputationFault where
   | repeatableAddressing (error : StarAddressingError)
   deriving Repr, DecidableEq
 
+/-- Reached filter failures escape the expression fold before the target handler records VALUE;
+formal poison and unavailable host inputs retain their separate channels (spec/07 §3). -/
+def NumericComputationFault.isTemporalFilterValueFailure : NumericComputationFault → Bool
+  | .repeatableAddressing .temporalValueFailure
+  | .indexSelection .temporalValueFailure
+  | .guardBinding (.fieldFill (.addressing .temporalValueFailure)) => true
+  | _ => false
+
 /-- The bounded runtime inputs needed when one checked numeric expression contains repeatable entity-list atoms. This is an expression evaluator context, not a document scheduler or dependency overlay. -/
 structure NumericComputationEvaluationContext where
   scalar : ScalarComputationContext

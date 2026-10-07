@@ -32,6 +32,7 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
           { world := context.world
             read := fun row field => pure ((filterRead?.getD addressed.read) row field)
             unsupportedDateCalendar := .addressing .unsupportedDateCalendar
+            temporalValueFailure := .addressing .temporalValueFailure
             bindingError := fun error => ComputationFillError.addressing error.toStarAddressingError }
           context.row (fun count row => pure (match observeCell .computation
               (addressed.read row source.source.declaration.id) with

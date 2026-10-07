@@ -236,7 +236,7 @@ example :
         (fun count _ => .inl (count + 1))
         (malformedSecond.candidates.map malformedSecond.envAt) 0 =
       (.ok (ComputationHavingScanResult.poison .malformed) :
-        Except Unit (ComputationHavingScanResult Nat Nat)) := by
+        Except CorrelationRuntimeFault (ComputationHavingScanResult Nat Nat)) := by
   native_decide
 
 /-- Self-exclusion is authored, not inferred by the evaluator. -/

@@ -221,7 +221,8 @@ def evaluateComputationFirstFilled
     (world : Option World := none)
     (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath)) :
     Except StarAddressingError FirstFilledNumberResult := do
-  match ← scanComputationFirstFilledSelections outer .unsupportedDateCalendar
+  match ← scanComputationFirstFilledSelections outer
+    (fun | .calendarUnavailable => .unsupportedDateCalendar | .valueFailure => .temporalValueFailure)
       (·.computationSelection document outer { read := directRead, world } filterRead starRead selectedRead)
       checked.operands {} with
   | .inl state => pure state.finish

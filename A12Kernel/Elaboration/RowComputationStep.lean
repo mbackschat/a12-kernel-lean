@@ -190,6 +190,35 @@ private def readBack {Outcome : Type} (outcomes : List (CellAddr × Outcome))
   outcomes.mapM fun (address, outcome) => do
     pure (address, wrap outcome, ← (cell address.field outcome).mapError .readBack)
 
+private def isFilterValueFailure : RowComputationStepFault → Bool
+  | .stringFirstFilled (.source .temporalValueFailure)
+  | .enumerationFirstFilled (.source .temporalValueFailure)
+  | .firstFilledSite (.source .temporalValueFailure)
+  | .dateTimeFirstFilled (.site (.source .temporalValueFailure))
+  | .fullDateFirstFilled (.site (.source .temporalValueFailure))
+  | .dateRangeFirstFilled (.site (.source .temporalValueFailure)) => true
+  | _ => false
+
+/-- A reached filter exception belongs to this target instance, like a failed computation guard
+(spec/09). Keep the typed source error until the instance handler can retain its address. -/
+private def firstFilledRows (target : FlatFieldDecl) (family : DocumentTargetFamily)
+    (document : CheckedDocument model)
+    (rowError : ActualRowEnvironmentError → RowComputationStepFault)
+    (environmentError : EnvBindingError → RowComputationStepFault)
+    (evaluate : CellAddr → Env → Except RowComputationStepFault (DocumentTargetOutcome × CheckedCell)) :
+    Except RowComputationStepFault (List (CellAddr × DocumentTargetOutcome × CheckedCell)) :=
+  let atRow (clear : Bool) (environment : Env) := do
+    let path ← (environment.pathForScope target.repeatableScope).mapError environmentError
+    let address := { field := target.id, path }
+    if clear then return (address, family.noValue, DocumentComputationReadBack.empty)
+    match evaluate address environment with
+    | .ok (outcome, cell) => pure (address, outcome, cell)
+    | .error error =>
+        if isFilterValueFailure error then
+          pure (address, .valueError family, DocumentComputationReadBack.poison)
+        else throw error
+  document.computationTargetOutcomes target.repeatableScope rowError (atRow true) (atRow false)
+
 /-- A per-row `FieldValueAsString` of a Number source. -/
 def ofAddressedFieldValueAsString? (operation : CheckedAddressedFieldValueAsString model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
@@ -202,82 +231,95 @@ def ofAddressedFieldValueAsString? (operation : CheckedAddressedFieldValueAsStri
 projection reads it. -/
 def ofAddressedEnumerationFirstFilled? (operation : CheckedAddressedEnumerationFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.target.field .enumeration operation.source.referencesField fun _ world _ document => do
-    let outcomes ← (operation.execute (world := some world) document).mapError .enumerationFirstFilled
-    readBack (outcomes.map fun entry => (entry.targetField, entry.result.asExactStringTargetOutcome))
-      .enumeration fun _ outcome => pure (DocumentComputationReadBack.enumeration
-        operation.target.projection outcome)
+  checked? operation.target.field .enumeration operation.source.referencesField fun _ world _ document =>
+    firstFilledRows operation.target.declaration .enumeration document
+      (.enumerationFirstFilled ∘ .targetRows) (.enumerationFirstFilled ∘ .targetEnvironment) fun _ environment => do
+        let entry ← (operation.evaluateAtWithRead (world := some world) document document.read environment).mapError .enumerationFirstFilled
+        let outcome := entry.result.asExactStringTargetOutcome
+        pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
 
 /-- A per-row String `FirstFilledValue` over its entity-list source. -/
 def ofStringFirstFilled? (operation : CheckedStringFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
   checked? operation.targetField .string operation.referencesField fun _ world patterns document => do
-    let outcomes ← (operation.execute (world := some world) patterns document).mapError .stringFirstFilled
-    readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .string
-      fun _ => DocumentComputationReadBack.string
+    let some matcher := patterns.targetMatcher? operation.targetField
+      | throw (.stringFirstFilled (.targetPatternUnavailable operation.targetField))
+    firstFilledRows operation.target .string document
+      (.stringFirstFilled ∘ .targetRows) (.stringFirstFilled ∘ .targetEnvironment) fun _ environment => do
+        let entry ← (operation.evaluateAt (world := some world) matcher document document.read environment).mapError .stringFirstFilled
+        pure (.string entry.outcome, ← (DocumentComputationReadBack.string entry.outcome).mapError .readBack)
 
 /-- A per-row DateFragment `FirstFilledValue` over its checked source. -/
 def ofDateFragmentFirstFilled? (operation : CheckedDateFragmentFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .dateFragment operation.referencesField fun _ world _ document => do
-    let outcomes ← (operation.execute document (some world)).mapError .firstFilledSite
-    readBack (outcomes.map fun entry => (entry.targetField, entry.result.asExactStringTargetOutcome))
-      .dateFragment (DocumentComputationReadBack.dateFragment model)
+  checked? operation.targetField .dateFragment operation.referencesField fun _ world _ document =>
+    firstFilledRows operation.target .dateFragment document
+      (.firstFilledSite ∘ .targetRows) (.firstFilledSite ∘ .targetEnvironment) fun target environment => do
+        let entry ← (operation.evaluateAt (world := some world) document document.read target environment).mapError .firstFilledSite
+        let outcome := entry.result.asExactStringTargetOutcome
+        pure (.dateFragment outcome, ← (DocumentComputationReadBack.dateFragment model operation.targetField outcome).mapError .readBack)
 
 /-- A per-row Custom `FirstFilledValue` over its checked source, read back as a String completion is. -/
 def ofCustomFirstFilled? (operation : CheckedCustomFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .string operation.referencesField fun _ world _ document => do
-    let outcomes ← (operation.execute document (some world)).mapError .firstFilledSite
-    readBack (outcomes.map fun entry => (entry.targetField, entry.result.asExactStringTargetOutcome))
-      .string fun _ => DocumentComputationReadBack.string
+  checked? operation.targetField .string operation.referencesField fun _ world _ document =>
+    firstFilledRows operation.target .string document
+      (.firstFilledSite ∘ .targetRows) (.firstFilledSite ∘ .targetEnvironment) fun target environment => do
+        let entry ← (operation.evaluateAt (world := some world) document document.read target environment).mapError .firstFilledSite
+        let outcome := entry.result.asExactStringTargetOutcome
+        pure (.string outcome, ← (DocumentComputationReadBack.string outcome).mapError .readBack)
 
 /-- A per-row Boolean `FirstFilledValue` over its checked source. -/
 def ofBooleanFirstFilled? (operation : CheckedBooleanFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .boolean operation.referencesField fun _ world _ document => do
-    let outcomes ← (operation.execute document (some world)).mapError .firstFilledSite
-    readBack (outcomes.map fun entry => (entry.targetField, entry.result)) .boolean
-      fun _ result => pure (DocumentComputationReadBack.boolean result)
+  checked? operation.targetField .boolean operation.referencesField fun _ world _ document =>
+    firstFilledRows operation.target .boolean document
+      (.firstFilledSite ∘ .targetRows) (.firstFilledSite ∘ .targetEnvironment) fun target environment => do
+        let entry ← (operation.evaluateAt (world := some world) document document.read target environment).mapError .firstFilledSite
+        let outcome := entry.result
+        pure (.boolean outcome, ← pure (DocumentComputationReadBack.boolean outcome))
 
 /-- A per-row Time `FirstFilledValue` over its checked source. -/
 def ofTimeFirstFilled? (operation : CheckedTimeFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .time operation.referencesField
-    fun _ world _ document => do
-      let outcomes ← (operation.execute document (some world)).mapError .firstFilledSite
-      readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .time
-        (DocumentComputationReadBack.time model)
+  checked? operation.targetField .time operation.referencesField fun _ world _ document =>
+    firstFilledRows operation.target .time document
+      (.firstFilledSite ∘ .targetRows) (.firstFilledSite ∘ .targetEnvironment) fun target environment => do
+        let entry ← (operation.evaluateAt (world := some world) document document.read target environment).mapError .firstFilledSite
+        let outcome := entry.outcome
+        pure (.time outcome, ← (DocumentComputationReadBack.time model operation.targetField outcome).mapError .readBack)
 
 /-- A per-row DateTime `FirstFilledValue` over its checked source. -/
 def ofDateTimeFirstFilled? (operation : CheckedDateTimeFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .dateTime operation.referencesField
-    fun _ world _ document => do
-      let outcomes ← (operation.execute document (some world)).mapError .dateTimeFirstFilled
-      readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .dateTime
-        (DocumentComputationReadBack.dateTime model)
+  checked? operation.targetField .dateTime operation.referencesField fun _ world _ document =>
+    firstFilledRows operation.target .dateTime document
+      (.dateTimeFirstFilled ∘ .site ∘ .targetRows) (.dateTimeFirstFilled ∘ .site ∘ .targetEnvironment) fun target environment => do
+        let entry ← (operation.evaluateAt (world := some world) document document.read target environment).mapError .dateTimeFirstFilled
+        let outcome := entry.outcome
+        pure (.dateTime outcome, ← (DocumentComputationReadBack.dateTime model operation.targetField outcome).mapError .readBack)
 
 /-- A per-row full-Date `FirstFilledValue` over its checked source. -/
 def ofFullDateFirstFilled? (operation : CheckedFullDateFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .fullDate operation.referencesField
-    fun _ world _ document => do
-      let outcomes ← (operation.execute document (some world)).mapError .fullDateFirstFilled
-      readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .fullDate
-        (DocumentComputationReadBack.fullDate model)
+  checked? operation.targetField .fullDate operation.referencesField fun _ world _ document =>
+    firstFilledRows operation.target .fullDate document
+      (.fullDateFirstFilled ∘ .site ∘ .targetRows) (.fullDateFirstFilled ∘ .site ∘ .targetEnvironment) fun target environment => do
+        let entry ← (operation.evaluateAt (world := some world) document document.read target environment).mapError .fullDateFirstFilled
+        let outcome := entry.outcome
+        pure (.fullDate outcome, ← (DocumentComputationReadBack.fullDate model operation.targetField outcome).mapError .readBack)
 
 /-- A per-row DateRange `FirstFilledValue` over its checked source, read back through the target's own
 declared range policy. -/
 def ofDateRangeFirstFilled? (operation : CheckedDateRangeFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .dateRange operation.referencesField
-    fun _ world _ document => do
-      let outcomes ← (operation.execute document (some world)).mapError .dateRangeFirstFilled
-      readBack (outcomes.map fun entry => (entry.targetField, entry.outcome)) .dateRange fun target outcome => do
-        let policy ← ((model.lookupUniqueId target).toOption.bind
-          FlatFieldDecl.toDateRangeDeclarationPolicy?).getDM (throw .targetNotReadable)
-        DocumentComputationReadBack.dateRange model policy outcome
+  checked? operation.targetField .dateRange operation.referencesField fun _ world _ document =>
+    firstFilledRows operation.target .dateRange document
+      (.dateRangeFirstFilled ∘ .site ∘ .targetRows) (.dateRangeFirstFilled ∘ .site ∘ .targetEnvironment) fun target environment => do
+        let entry ← (operation.evaluateAt (world := some world) document document.read target environment).mapError .dateRangeFirstFilled
+        let outcome := entry.outcome
+        let some policy := operation.target.toDateRangeDeclarationPolicy? | throw (.readBack .targetNotReadable)
+        pure (.dateRange outcome, ← (DocumentComputationReadBack.dateRange model policy outcome).mapError .readBack)
 
 /-- A per-row `DateFromDateTime` of a source the target row binds. -/
 def ofAddressedDateFromDateTime? (operation : CheckedAddressedDateFromDateTime model) :

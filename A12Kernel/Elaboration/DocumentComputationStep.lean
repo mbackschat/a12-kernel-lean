@@ -176,6 +176,17 @@ inductive DocumentComputationStepFault where
   | targetNotReadable
   deriving Repr, DecidableEq
 
+private def DocumentComputationStepFault.isFilterValueFailure : DocumentComputationStepFault → Bool
+  | .firstFilledSource .temporalValueFailure
+  | .enumerationFirstFilled .temporalValueFailure
+  | .stringFirstFilled (.source .temporalValueFailure)
+  | .firstFilledSite (.source .temporalValueFailure)
+  | .dateTimeFirstFilled (.site (.source .temporalValueFailure))
+  | .fullDateFirstFilled (.site (.source .temporalValueFailure))
+  | .dateRangeFirstFilled (.site (.source .temporalValueFailure)) => true
+  | .guardBinding error => error.isValueFailure
+  | _ => false
+
 namespace DocumentComputationReadBack
 
 /-- A cleared target, read as the absent cell a pending one also reads as. -/
@@ -407,6 +418,16 @@ structure CheckedDocumentComputationStep (model : FlatModel) where
     Except DocumentComputationStepFault (DocumentTargetOutcome × CheckedCell)
 
 namespace CheckedDocumentComputationStep
+
+/-- Handle source failure at the computation target, retaining its family for the residual value
+message and poisoning dependency read-back (spec/07 §3, spec/09). -/
+private def filterValueResult (family : DocumentTargetFamily)
+    (result : Except DocumentComputationStepFault (DocumentTargetOutcome × CheckedCell)) :
+    Except DocumentComputationStepFault (DocumentTargetOutcome × CheckedCell) :=
+  match result with
+  | .error error => if error.isFilterValueFailure then
+      .ok (.valueError family, DocumentComputationReadBack.poison) else .error error
+  | .ok value => .ok value
 
 /-- The fixed adapter uses the same operation as the addressed table, at the empty environment. -/
 def ofScalarTemporalExpression? (expression : CheckedScalarTemporalExpression model)
@@ -646,7 +667,7 @@ def ofEnumerationFirstFilled (operation : CheckedEnumerationFirstFilledComputati
   family := .enumeration
   operationReferencesField := operation.source.referencesField
   excludesTarget := operation.targetNotReferenced
-  run world _ document := do
+  run world _ document := filterValueResult .enumeration do
     let selected ← (operation.source.evaluateCheckedDocument (world := some world) document []).mapError
       .enumerationFirstFilled
     let outcome := selected.asComputationResult.asExactStringTargetOutcome
@@ -689,7 +710,8 @@ evaluation, by `firstFilledSite_instances_fixed` on the shared site and by the f
 `CheckedDocument.computationTargetOutcomes` for String. -/
 private def fixedTargetOnly (target : FlatFieldDecl) (step : CheckedDocumentComputationStep model) :
     Option (CheckedDocumentComputationStep model) :=
-  if target.repeatableScope.isEmpty then some step else none
+  if target.repeatableScope.isEmpty then some { step with
+    run := fun world matchers document => filterValueResult step.family (step.run world matchers document) } else none
 
 def ofBooleanFirstFilled? (operation : CheckedBooleanFirstFilledComputation model) :
     Option (CheckedDocumentComputationStep model) :=
@@ -805,8 +827,9 @@ def guarded (guard : CheckedComputationCondition model) (step : CheckedDocumentC
           decide⟩
   run world matchers document := do
     match guard.evalChecked (document.indexedScalarComputationContext world) with
-    | .error (.predicate .valueFailure) => pure (.valueError step.family, DocumentComputationReadBack.poison)
-    | .error error => throw (.guardBinding error)
+    | .error error =>
+        if error.isValueFailure then pure (.valueError step.family, DocumentComputationReadBack.poison)
+        else throw (.guardBinding error)
     | .ok .holds => step.run world matchers document
     | .ok .notTrue => pure (step.family.noValue, DocumentComputationReadBack.empty)
     | .ok (.poison cause) => pure (step.family.poison cause, DocumentComputationReadBack.poison)

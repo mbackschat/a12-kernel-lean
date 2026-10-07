@@ -175,7 +175,7 @@ def resolvedComputationAggregateSide
         | .unknown cause => .inr cause
         | cell => .inl (cell :: cells)
       match ← (source.having.scanComputation filterContext outer consume
-          resolved.environments []).mapError (fun _ => .unsupportedDateCalendar) with
+          resolved.environments []).mapError (fun | .calendarUnavailable => .unsupportedDateCalendar | .valueFailure => .temporalValueFailure) with
       | .exhausted reversed =>
           pure (.inl {
             cells := reversed.reverse

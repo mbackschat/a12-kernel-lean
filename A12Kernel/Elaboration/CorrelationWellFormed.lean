@@ -4,6 +4,7 @@ import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.NumericSource
 import A12Kernel.Elaboration.DateRangeBoundComponent
 import A12Kernel.Semantics.Correlation
+import A12Kernel.Elaboration.ComparisonEntry
 
 /-! # Static well-formedness of a resolved filter tree
 
@@ -112,16 +113,40 @@ private def FlatModel.admitsComparisonInputsIn (model : FlatModel)
       field.matchesDecl declaration && declaration.fieldValueReadRefusal?.isNone &&
         repeatableScopeAvailable declaration.repeatableScope scope
 
-private def temporalConstantAdmitted (model : FlatModel) (op : TemporalComparisonOp)
-    (field : FlatTemporalField) : FlatTemporalOperand → Bool
-  | .todayValue zone => zone == model.timeZoneId && op.admitsToday model.hasBaseYear field.components
-  | .nowValue => op.admitsNow model.hasBaseYear field.components
-  | .baseYearValue zone year => zone == model.timeZoneId && model.baseYear == some year && op.admitsBaseYear field.components
-  | .baseYearRangeValue zone year _ => zone == model.timeZoneId && model.baseYear == some year &&
-      op.admitsFormats true field.components TemporalComponents.fullDate
-  | .literalValue _ components => components.isDateLiteral &&
-      op.admitsFormats model.hasBaseYear field.components components
-  | .fieldValue _ => false
+/-- Authored clock grouping remains visible to the ordinary entry gate (spec/04). -/
+def FlatTemporalOperand.havingEntry : FlatTemporalOperand → ComparisonEntryOperand
+  | .fieldValue field => .field (.temporal field.kind)
+  | .literalValue _ components => .literal (.temporal (components.family?.getD .date))
+  | .timeValue _ => .literal (.temporal .time)
+  | .localDateTimeValue _ _ => .literal (.temporal .dateTime)
+  | .todayValue _ => .clock .date
+  | .nowValue => .clock .dateTime
+  | .baseYearValue _ _ => .literal .number
+  | .baseYearRangeValue _ _ _ => .literal (.temporal .date)
+  | .grouped source => .grouped source.havingEntry
+
+def FlatTemporalOperand.havingComponents : FlatTemporalOperand → TemporalComponents
+  | .fieldValue field => field.components
+  | .literalValue _ components => components
+  | .timeValue _ => TemporalComponents.time
+  | .localDateTimeValue _ _ | .nowValue => TemporalComponents.now
+  | .grouped source => source.havingComponents
+  | _ => TemporalComponents.fullDate
+
+private def FlatTemporalOperand.havingSourceAdmitted (model : FlatModel) : FlatTemporalOperand → Bool
+  | .todayValue zone => zone == model.timeZoneId
+  | .baseYearValue zone year | .baseYearRangeValue zone year _ =>
+      zone == model.timeZoneId && model.baseYear == some year
+  | .localDateTimeValue profile _ => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
+  | .literalValue _ components => components.isDateLiteral
+  | .grouped source => source.havingSourceAdmitted model
+  | .fieldValue _ | .timeValue _ | .nowValue => true
+
+def FlatModel.admitsHavingTemporalOperands (model : FlatModel) (op : TemporalComparisonOp)
+    (left right : FlatTemporalOperand) : Bool :=
+  comparisonConstantPairAllowed left.havingEntry right.havingEntry &&
+    left.havingSourceAdmitted model && right.havingSourceAdmitted model &&
+    op.admitsFormats model.hasBaseYear left.havingComponents right.havingComponents
 
 /-- Each side is checked in its own environment; comparability and Boolean/Confirm restrictions retain their ordinary rules. -/
 def FlatModel.admitsHavingSimpleComparison (model : FlatModel)
@@ -142,13 +167,9 @@ def FlatModel.admitsHavingSimpleComparison (model : FlatModel)
   | comparison@(.dateRange _ left right) =>
       model.dateRangeComparisonProfilesMatch left right &&
         model.admitsComparisonInputsIn comparison leftScope rightScope
-  | comparison@(.temporal op (.fieldValue left) (.fieldValue right)) =>
-      left.components.hasDate && right.components.hasDate &&
-        op.admitsFormats model.hasBaseYear left.components right.components &&
+  | comparison@(.temporal op left right) =>
+      model.admitsHavingTemporalOperands op left right &&
         model.admitsComparisonInputsIn comparison leftScope rightScope
-  | comparison@(.temporal op (.fieldValue field) constant)
-      | comparison@(.temporal op constant (.fieldValue field)) =>
-      temporalConstantAdmitted model op field constant && model.admitsComparisonInputsIn comparison leftScope rightScope
   | comparison@(.time op left right) =>
       !left.components.hasDate && !right.components.hasDate &&
         op.admitsFormats model.hasBaseYear left.components right.components &&

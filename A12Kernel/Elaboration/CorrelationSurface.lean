@@ -56,11 +56,24 @@ inductive SurfaceHavingNumericAtom where
   | repetition (reference : SurfaceHavingRepetitionRef)
   deriving Repr, DecidableEq
 
+/-- Temporal operands preserve grouping for the ordinary constant-pair gate (spec/04). -/
+inductive SurfaceHavingTemporalOperand where
+  | field (reference : SurfaceHavingStringRef)
+  | constant (source : SurfaceDateDifferenceOperand Empty)
+  | timeLiteral (value : TimeOfDay)
+  | dateTimeLiteral (value : LocalDateTime)
+  | grouped (source : SurfaceHavingTemporalOperand)
+  deriving Repr, DecidableEq
+
+def SurfaceHavingTemporalOperand.fields : SurfaceHavingTemporalOperand → List SurfaceHavingStringRef
+  | .field reference => [reference]
+  | .grouped source => source.fields
+  | _ => []
+
 inductive SurfaceCorrelatedHaving where
   | compareBoolean (op : EqualityOp) (reference : SurfaceHavingStringRef) (expected : Bool)
   | compareFields (op : SurfaceComparisonOp) (left right : SurfaceHavingStringRef)
-  | compareTemporal (op : SurfaceComparisonOp) (position : SurfacePointInTimePosition)
-      (reference : SurfaceHavingStringRef) (source : SurfaceDateDifferenceOperand Empty)
+  | compareTemporal (op : SurfaceComparisonOp) (left right : SurfaceHavingTemporalOperand)
   | tolerance (range : NumericToleranceRange)
       (left right : AuthoredNumericExpr SurfaceHavingNumericAtom)
   | numeric (op : SurfaceComparisonOp)

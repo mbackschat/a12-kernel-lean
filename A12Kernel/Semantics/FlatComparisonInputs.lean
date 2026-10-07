@@ -20,7 +20,7 @@ def FlatComparison.foldSimpleReads {Error Result : Type}
     (readLeft readRight : FieldId → Except Error CheckedCell)
     (consume : {α : Type} → (α → α → Bool) → Except Error (SimpleComparisonOperand α) →
       (Unit → Except Error (SimpleComparisonOperand α)) → Except Error Result)
-    (world : Option World := none) :
+    (world : Option World := none) (temporalValueFailure? : Option Error := none) :
     Option (Except Error Result) :=
   let text (read : FieldId → Except Error CheckedCell) (operand : FlatTextFieldOperand) := do
     let cell ← read operand.field.id
@@ -37,11 +37,14 @@ def FlatComparison.foldSimpleReads {Error Result : Type}
     let cell ← read field.id
     pure (({ read := fun _ => cell } : FlatContext).resolveTemporalFieldBy field project phase)
   let instant (read : FieldId → Except Error CheckedCell) (operand : FlatTemporalOperand) := do
-    match operand with
-    | .fieldValue field =>
-        let cell ← read field.id
-        pure (operand.resolveAt { read := fun _ => cell, world } phase)
-    | _ => pure (operand.resolveAt { read := fun _ => { rawPresent := false, parsed := none, findings := [] }, world } phase)
+    let cells ← operand.fieldValues.mapM fun field => do pure (field.id, ← read field.id)
+    let result := operand.resolveResultAt {
+      read := fun field => (cells.find? (fun pair => pair.1 == field)).map (·.2) |>.getD
+        { rawPresent := false, parsed := none, findings := [] }, world } phase
+    match result, temporalValueFailure? with
+    | .ok value, _ => pure value
+    | .error _, some error => throw error
+    | .error _, none => pure (.unknown .malformed)
   let range (read : FieldId → Except Error CheckedCell) (field : FlatDateRangeField) := do
     let cell ← read field.id
     pure (({ read := fun _ => cell } : FlatContext).resolveDateRangeComparisonOperandAt phase field)
@@ -65,16 +68,18 @@ def FlatComparison.foldSimpleReads {Error Result : Type}
 
 /-- Validation reaches both addressed operands before projecting formal invalidity to UNKNOWN. -/
 def FlatComparison.evalSimpleValidationReads (comparison : FlatComparison)
-    (readLeft readRight : FieldId → Except Error CheckedCell) (world : Option World := none) : Except Error Verdict :=
+    (readLeft readRight : FieldId → Except Error CheckedCell) (world : Option World := none)
+    (temporalValueFailure? : Option Error := none) : Except Error Verdict :=
   (comparison.foldSimpleReads .validation readLeft readRight (fun holds left right => do
     let left ← left
     let right ← right ()
-    pure (evalSymmetricComparison holds left right)) world).getD (.ok .unknown)
+    pure (evalSymmetricComparison holds left right)) world temporalValueFailure?).getD (.ok .unknown)
 
 def FlatComparison.evalSimpleComputationReads (comparison : FlatComparison)
-    (readLeft readRight : FieldId → Except Error CheckedCell) (world : Option World := none) :
+    (readLeft readRight : FieldId → Except Error CheckedCell) (world : Option World := none)
+    (temporalValueFailure? : Option Error := none) :
     Except Error ComputationConditionResult :=
   (comparison.foldSimpleReads .computation readLeft readRight
-    evalComputationComparisonExcept world).getD (.ok .notTrue)
+    evalComputationComparisonExcept world temporalValueFailure?).getD (.ok .notTrue)
 
 end A12Kernel

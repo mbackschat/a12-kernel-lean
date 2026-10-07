@@ -105,6 +105,7 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
     read := fun row field => pure (contextRead.read row field)
     world := context.world
     unsupportedDateCalendar := .calendarUnavailable
+    temporalValueFailure := .dateTimeLabelUnresolved
     bindingError := fun _ => .calendarUnavailable }
   let values ← match filter, phase with
     | none, _ => resolved.environments.mapM read
