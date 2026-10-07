@@ -43,8 +43,12 @@ theorem evalSimple_complement_regions (op : EqualityOp) (equivalent : α → α 
       (((op.evalSimple equivalent operand expected).fires ||
           (op.complement.evalSimple equivalent operand expected).fires) = false ↔
         ∀ actual given, operand ≠ .value actual given) := by
-  cases op <;> cases operand <;> simp only [evalSimple, complement, holds]
-  all_goals (repeat' split) <;> simp_all [Verdict.fires]
+  cases operand with
+  | value actual given =>
+      cases matchResult : equivalent actual expected <;> cases given <;> cases op <;>
+        simp [evalSimple, complement, holds, matchResult, Verdict.fires]
+  | notEvaluated => cases op <;> simp [evalSimple, Verdict.fires]
+  | unknown cause => cases op <;> simp [evalSimple, Verdict.fires]
 
 /-- Direct String equality and its complement never both fire, and both are silent exactly when the
 field holds no value or the literal is empty, which the String reader suppresses. -/
@@ -55,9 +59,17 @@ theorem evalDirectString_complement_regions (op : EqualityOp)
       (((operand.evalDirectString op expected).fires ||
           (operand.evalDirectString op.complement expected).fires) = false ↔
         expected.isEmpty ∨ ∀ actual given, operand ≠ .value actual given) := by
-  cases op <;> cases operand <;>
-    simp only [SimpleComparisonOperand.evalDirectString, evalSimple, complement, holds]
-  all_goals (repeat' split) <;> simp_all [Verdict.fires]
+  cases operand with
+  | value actual given =>
+      cases op <;> cases given <;>
+        by_cases empty : expected = "" <;>
+        by_cases equal : actual = expected <;>
+        simp [SimpleComparisonOperand.evalDirectString, evalSimple, complement,
+          holds, empty, equal, Verdict.fires]
+  | notEvaluated =>
+      cases op <;> simp [SimpleComparisonOperand.evalDirectString, Verdict.fires]
+  | unknown cause =>
+      cases op <;> simp [SimpleComparisonOperand.evalDirectString, Verdict.fires]
 
 end EqualityOp
 

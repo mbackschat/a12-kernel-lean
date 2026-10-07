@@ -182,8 +182,8 @@ theorem stringComputationRun_unchanged_notApplied
       .ok destination := by
   simp [StringComputationRunView.fromSourcedOutcomes,
     StringComputationRunView.changedInstance?,
-    StringComputationRunView.successfulInstance?,
-    StringComputationRunView.computedError?,
+    StringComputationRunView.successfulInstance?.eq_def,
+    StringComputationRunView.computedError?.eq_def,
     StringComputationRunView.shouldClear,
     StringTargetOutcome.hasComputedInstance,
     StringTargetState.storedValue,
@@ -216,7 +216,7 @@ theorem stringComputationRun_changed_applies
         some ({ targetField := target, value } :
           StringComputedInstance Target) := by
     simp [entry, StringComputationRunView.changedInstance?,
-      StringComputationRunView.successfulInstance?, changed]
+      StringComputationRunView.successfulInstance?.eq_def, changed]
   have noError :
       StringComputationRunView.computedError? entry = none := by
     simp [entry, StringComputationRunView.computedError?]
@@ -248,8 +248,8 @@ theorem stringComputationRun_error_applies
       .ok (destination.applyOutcome target (.errored attempted cause)) := by
   simp [StringComputationRunView.fromSourcedOutcomes,
     StringComputationRunView.changedInstance?,
-    StringComputationRunView.successfulInstance?,
-    StringComputationRunView.computedError?,
+    StringComputationRunView.successfulInstance?.eq_def,
+    StringComputationRunView.computedError?.eq_def,
     StringComputationRunView.shouldClear,
     StringTargetOutcome.hasComputedInstance,
     StringComputationRunView.applyTo,
@@ -273,8 +273,8 @@ theorem stringComputationRun_cleared_applies
       .ok (destination.applyRetainedClear target) := by
   simp [StringComputationRunView.fromSourcedOutcomes,
     StringComputationRunView.changedInstance?,
-    StringComputationRunView.successfulInstance?,
-    StringComputationRunView.computedError?,
+    StringComputationRunView.successfulInstance?.eq_def,
+    StringComputationRunView.computedError?.eq_def,
     StringComputationRunView.shouldClear,
     StringTargetOutcome.hasComputedInstance,
     StringComputationRunView.applyTo,

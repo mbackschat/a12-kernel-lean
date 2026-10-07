@@ -233,7 +233,7 @@ def elaborateRowNumericProductAggregate (model : FlatModel)
   let left ← leftRead.toShape
   let right ← rightRead.toShape
   if hGroup : left.groupPath = right.groupPath then
-    match left, right with
+    match hLeft : left, hRight : right with
     | .fixed _, .fixed _ => throw .repeatableLevelRequired
     | .starred left, .starred right =>
         if hPath : left.source.source.path = right.source.source.path then
@@ -242,7 +242,7 @@ def elaborateRowNumericProductAggregate (model : FlatModel)
             left := left.source
             right := right.source
             sameGroup := by
-              simpa [NumericProductOperandShape.groupPath] using hGroup
+              simpa [hLeft, hRight, NumericProductOperandShape.groupPath] using hGroup
             lowestStar := left.lowestStar
             samePath := hPath
             bindingScopeBound := left.bindingScopeBound }

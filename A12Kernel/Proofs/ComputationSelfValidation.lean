@@ -60,7 +60,8 @@ theorem computedNumberSelfValidation_below_omission_iff
   simp only [computedNumberSelfValidation, NumericComparisonOp.eval,
     NumericComparisonOp.holds, NumericComparisonOp.fillCanBreak,
     numericDifferenceFillCanClose, computedNumberFillability, NumericFillability.fixed]
-  cases growth : operands.any ComputationOperandGrowth.canGrow <;> simp [differs, below]
+  by_cases growth : operands.any ComputationOperandGrowth.canGrow = true <;>
+    simp [differs, below, growth]
 
 /-- Above its seed, the message types VALUE whatever headroom the operands have.
 

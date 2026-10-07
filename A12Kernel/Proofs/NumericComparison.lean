@@ -114,7 +114,7 @@ theorem numericNotEqual_eval_comm (left right : NumericOperand) :
               have closes := numericDifferenceFillCanClose_comm_of_ne
                 leftAmount rightAmount leftFill rightFill different
               simp [NumericComparisonOp.eval, holds, swapped,
-                NumericComparisonOp.fillCanBreak, closes]
+                NumericComparisonOp.fillCanBreak, closes] <;> rfl
 
 /-- A fixed numeric operand that satisfies its comparison always produces a value firing. -/
 theorem fixedNumericFiring_is_value (op : NumericComparisonOp) (actual expected : Rat)

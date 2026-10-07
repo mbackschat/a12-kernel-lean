@@ -1,6 +1,6 @@
 /-! # A12Kernel.Process.Bounded — bounded subprocess capture
 
-This IO-only module runs a candidate behind the project-owned streaming relay. The outer child has null stdin and therefore retains its original `setsid` metadata, which the pinned Lean 4.31 runtime uses to hard-kill the relay process group. The helper is a resource boundary for cooperative implementation testing on macOS and Linux, not a security sandbox; the candidate and its descendants must retain the caller's credentials.
+This IO-only module runs a candidate behind the project-owned streaming relay. The outer child has null stdin and therefore retains its original `setsid` metadata, which the pinned Lean runtime uses to hard-kill the relay process group. The helper is a resource boundary for cooperative implementation testing on macOS and Linux, not a security sandbox; the candidate and its descendants must retain the caller's credentials.
 -/
 
 namespace A12Kernel.Process.Bounded

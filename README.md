@@ -86,7 +86,7 @@ This is an active formal-semantics project, not a complete A12 interpreter or a 
 
 ## Quick start
 
-The project is pinned to **Lean 4.31.0** in [`lean-toolchain`](lean-toolchain) and uses Lake 5.0. Install Lean through [`elan`](https://github.com/leanprover/elan); there are no external Lake package dependencies.
+The project is pinned to **Lean 4.34.1** in [`lean-toolchain`](lean-toolchain) and uses Lake 5.0. Install Lean through [`elan`](https://github.com/leanprover/elan); there are no external Lake package dependencies.
 
 Build the theory, run the retained evidence replay, and audit the proof/runtime trust boundary:
 

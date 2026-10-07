@@ -66,9 +66,12 @@ theorem stringPattern_evalResolved_fired_is_value
     (operand : SimpleComparisonOperand String) (polarity : Polarity)
     (fired : op.evalResolved wholeValueMatches operand = .fired polarity) :
   polarity = .value := by
-  cases op <;> cases operand <;>
-    simp_all [StringPatternOp.evalResolved, StringPatternOp.acceptsMatchResult] <;>
-    split at fired <;> simp_all
+  cases operand with
+  | value actual given =>
+      cases matchResult : wholeValueMatches actual <;> cases op <;>
+        simp_all [StringPatternOp.evalResolved, StringPatternOp.acceptsMatchResult]
+  | notEvaluated => cases op <;> simp_all [StringPatternOp.evalResolved]
+  | unknown cause => cases op <;> simp_all [StringPatternOp.evalResolved]
 
 /-- The flat integration gives the matcher exactly the normalized checked String cached by formal checking. -/
 theorem resolvedStringPattern_readsNormalized (context : FlatContext)

@@ -94,7 +94,7 @@ def evalWithResult (read : Atom → Except Error Operand)
 @[simp] theorem evalWithResult_atom (read : Atom → Except Error Operand)
     (apply : Operation → List Operand → Except Error Operand) (source : Atom) :
     (TemporalExpressionOf.atom source).evalWithResult read apply = read source := by
-  simp [evalWithResult]
+  rw [evalWithResult, evalWithResultSubterm.eq_1]
 
 @[simp] theorem evalWithResult_apply (read : Atom → Except Error Operand)
     (apply : Operation → List Operand → Except Error Operand) (operation : Operation)
@@ -103,7 +103,8 @@ def evalWithResult (read : Atom → Except Error Operand)
       let first ← first.evalWithResult read apply
       let rest ← rest.mapM (evalWithResult read apply)
       apply operation (first :: rest)) := by
-  simp [evalWithResult, evalWithResultSubterm]
+  simp only [evalWithResult, evalWithResultSubterm.eq_2]
+  simp
   rfl
 
 end TemporalExpressionOf

@@ -66,7 +66,8 @@ theorem validationNotAll_emptyWitness_fires
     FieldFillQuantifier.notAllFieldsFilled.evalValidation
       (validationTally filled (empty + 1) unknown uninstantiated) =
         .fired .omission := by
-  simp [FieldFillQuantifier.evalValidation, validationTally]
+  have emptyPresent : 0 < empty + 1 + uninstantiated := by omega
+  simp [FieldFillQuantifier.evalValidation, validationTally, emptyPresent]
 
 /-- A known filled witness and a declared empty witness decide the mixed predicate even when unknown cells remain. -/
 theorem validationNotCollectively_mixedWitnesses_fire
@@ -74,7 +75,8 @@ theorem validationNotCollectively_mixedWitnesses_fire
     FieldFillQuantifier.fieldsNotCollectivelyFilled.evalValidation
       (validationTally (filled + 1) (empty + 1) unknown uninstantiated) =
         .fired .omission := by
-  simp [FieldFillQuantifier.evalValidation, validationTally]
+  have emptyPresent : 0 < empty + 1 + uninstantiated := by omega
+  simp [FieldFillQuantifier.evalValidation, validationTally, emptyPresent]
 
 /-- An unknown cell is neither empty nor filled: it prevents the all-empty `NoFieldFilled` result. -/
 theorem validationFillQuantifier_unknown_isNotEmpty :

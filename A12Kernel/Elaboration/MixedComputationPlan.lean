@@ -134,16 +134,20 @@ private def insertMixedComputationStep (incoming : MixedComputationStep model co
   | [] => pure [incoming]
   | current :: rest => do
       if same : incoming.targetField = current.targetField then
-        match incoming, current, same with
-        | .number incoming, .number current, same =>
+        match hIncoming : incoming, hCurrent : current with
+        | .number incoming, .number current =>
+            have sameTarget : incoming.targetField = current.targetField := by
+              simpa [hIncoming, hCurrent, MixedComputationStep.targetField] using same
             if policy : incoming.targetPolicy = current.targetPolicy then
-              pure (.number (current.appendSameTarget incoming same policy) :: rest)
+              pure (.number (current.appendSameTarget incoming sameTarget policy) :: rest)
             else throw (.conflictingTargetPolicy current.targetField)
-        | .string incoming, .string current, same =>
+        | .string incoming, .string current =>
+            have sameTarget : incoming.targetField = current.targetField := by
+              simpa [hIncoming, hCurrent, MixedComputationStep.targetField] using same
             if policy : incoming.targetPolicy = current.targetPolicy then
-              pure (.string (current.appendSameTarget incoming same policy) :: rest)
+              pure (.string (current.appendSameTarget incoming sameTarget policy) :: rest)
             else throw (.conflictingTargetPolicy current.targetField)
-        | _, _, _ => throw (.duplicateTarget current.targetField)
+        | _, _ => throw (.duplicateTarget current.targetField)
       else pure (current :: (← insertMixedComputationStep incoming rest))
 
 /-- Preserve authored alternative order before certifying one execution step per target. -/

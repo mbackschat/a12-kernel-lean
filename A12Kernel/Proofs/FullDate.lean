@@ -70,7 +70,9 @@ theorem fullDate_ofYmd_isSome_iff (year : Int) (month day : Nat) :
   change ((CivilDate.ofParts? parts).bind FullDate.ofCivil?).isSome = true ↔
     parts.Real ∧ ¬parts.Before CivilDate.gregorianFloor.parts
   by_cases real : parts.Real
-  · simp [CivilDate.ofParts?, real, FullDate.ofCivil?, CivilDate.Before]
+  · by_cases admissible : ¬parts.Before CivilDate.gregorianFloor.parts <;>
+      simp [CivilDate.ofParts?, real, FullDate.ofCivil?, CivilDate.Before,
+        admissible]
   · simp [CivilDate.ofParts?, real]
 
 /-- Every constructed `FullDate` remains Gregorian-real. -/

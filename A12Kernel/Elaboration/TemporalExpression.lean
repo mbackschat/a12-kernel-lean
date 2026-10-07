@@ -170,7 +170,7 @@ private def resolveScalarTemporalAmount (model : FlatModel) (rowGroup : GroupPat
     (surface : AuthoredNumericExpr (Sum SurfaceNumericAtom (TemporalNumericPart × SurfaceScalarTemporalExpression))) :
     Except ScalarTemporalExpressionError (AuthoredNumericExpr (ScalarTemporalNumericAtom model)) := do
   let core ← surface.mapMSubterm fun atom _ => do
-    match atom with
+    match _hAtom : atom with
     | .inl source =>
         let checked ← (match targetGroup? with
           | none => elaborateTemporalExpressionShiftAmount model rowGroup (.atom source)
@@ -528,7 +528,7 @@ private def readRecursiveTimeComponents (phase : Phase) (context : ScalarComputa
     (components : TimeComponentPrefix (ScalarTimeComponent model)) :
     Except ScalarTemporalEvaluationFault TimeConstructionResult :=
   components.evaluateWithSubterm (fun component _ => do
-    match component with
+    match _hComponent : component with
     | .inl source => match partialRead? with
         | some partialRead => readPartialScalarTimeLeaf context partialRead source
         | none => readScalarTimeLeaf phase context source
