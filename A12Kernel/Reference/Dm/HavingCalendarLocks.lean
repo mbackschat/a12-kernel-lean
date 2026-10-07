@@ -485,6 +485,7 @@ private def clockResolving (clock : Option Instant) : ResolvingCorrelationContex
   bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar"
   temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"
+  storedTextUnavailable := fun _ => "stored text unavailable"
   typeValidityValueFailure := "type validity value failure", groupUnavailable := fun _ => "group unavailable"
   world := clock.map fun now => { now } }
 private def calendarRefusal (result : Except String α) : Bool :=
@@ -601,7 +602,8 @@ private def gapTargetOutcome (literalFirst : Bool) (value : String) (rows : Bool
     document := addressed.document
     outer := []
     filterRead := addressed.read
-    starRead := addressed.read }).toOption
+    filterStoredText := addressed.storedText
+    starRead := addressed.read, starStoredText := addressed.storedText }).toOption
 
 example : gapTargetOutcome false "" = some (.supported (.invalidNoValue .calculationValue)) ∧
     gapTargetOutcome true "bad" = some (.supported (.invalidNoValue .calculationValue)) ∧

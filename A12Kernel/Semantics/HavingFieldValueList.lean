@@ -3,6 +3,15 @@ import A12Kernel.Semantics.ComputationValueList
 
 namespace A12Kernel
 
+def HavingNumberRef.readValueListCell (ref : HavingNumberRef) (phase : Phase)
+    (read : HavingOrigin → FieldId → Except Error CheckedCell) : Except Error (ValueListCell .number) := do
+  let cell ← read ref.origin ref.field.id
+  pure (ref.field.valueListCellAt phase { read := fun _ => cell })
+
+def HavingStringRef.readValueListCell (ref : HavingStringRef) (phase : Phase)
+    (read : HavingOrigin → FieldId → Except Error CheckedCell) : Except Error (ValueListCell .token) := do
+  pure (ref.operand.checkedValueListCellAt phase (← read ref.origin ref.field.id))
+
 /-- Membership over direct fields retains each operand's origin and checked value domain.
 Category identity remains in the token operand, independently of its physical field ID (spec/06 §B.4). -/
 inductive HavingFieldValueList where
@@ -27,14 +36,12 @@ def foldOperands (source : HavingFieldValueList) (phase : Phase)
       (member → Except Error (ResolvedValueListSide kind)) →
       List subject → List member → Except Error Result) : Except Error Result :=
   let number (ref : HavingNumberRef) : Except Error (ResolvedValueListSide .number) := do
-    let cell ← read ref.origin ref.field.id
     pure {
-      cells := [ref.field.valueListCellAt phase { read := fun _ => cell }],
+      cells := [← ref.readValueListCell phase read],
       hasUninstantiatedTail := false, hasHaving := false }
   let token (ref : HavingStringRef) : Except Error (ResolvedValueListSide .token) := do
-    let cell ← read ref.origin ref.field.id
     pure {
-      cells := [ref.operand.checkedValueListCellAt phase cell],
+      cells := [← ref.readValueListCell phase read],
       hasUninstantiatedTail := false, hasHaving := false }
   match source with
   | .number subjects members => consume number number subjects members

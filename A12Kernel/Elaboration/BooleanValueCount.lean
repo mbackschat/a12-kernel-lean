@@ -687,7 +687,8 @@ def resolvedComputationSide
     (filterRead starRead : Env → FieldId → CheckedCell)
     (world : Option World := none)
     (selectedRead : CheckedSelectedBooleanCountEntity model expected → Except StarAddressingError (ResolvedValueListSide .token) :=
-      fun source => .error (.unsupportedGroupOperand source.path)) :
+      fun source => .error (.unsupportedGroupOperand source.path))
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
     Except StarAddressingError
       (Sum (ResolvedValueListSide .token) NumericOperand) :=
   match checked with
@@ -701,7 +702,7 @@ def resolvedComputationSide
           pure (.inl (resolved.toResolvedSide
             (starCellAt source .computation starRead)))
       | some having =>
-          let filterContext := ({ read := filterRead, world } : CorrelationContext).withComputationGroups document
+          let filterContext := ({ read := filterRead, storedText := filterStoredText, world } : CorrelationContext).withComputationGroups document
           let consume := fun cells environment =>
             match starCellAt source .computation starRead environment with
             | .unknown cause => .inr cause
@@ -712,6 +713,7 @@ def resolvedComputationSide
                 | .valueFailure => .temporalValueFailure
                 | .worldUnavailable => .worldUnavailable
                 | .typeValidityValueFailure => .typeValidityValueFailure
+                | .storedTextUnavailable fieldId => .storedTextUnavailable fieldId
                 | .groupUnavailable path => .unsupportedGroupOperand path) with
           | .exhausted reversed =>
               pure (.inl {
@@ -797,12 +799,13 @@ def evaluateComputation (checked : CheckedBooleanValueCountSource model)
     (filterRead starRead : Env → FieldId → CheckedCell)
     (world : Option World := none)
     (selectedRead : CheckedSelectedBooleanCountEntity model checked.expected → Except StarAddressingError (ResolvedValueListSide .token) :=
-      fun source => .error (.unsupportedGroupOperand source.path)) :
+      fun source => .error (.unsupportedGroupOperand source.path))
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
     Except StarAddressingError NumericOperand :=
   evalResolvedValueCountOperands
     (booleanValueCountToken checked.expected) checked.operands fun operand =>
       operand.resolvedComputationSide (world := world) document outer directRead
-        filterRead starRead (selectedRead := selectedRead)
+        filterRead starRead (selectedRead := selectedRead) (filterStoredText := filterStoredText)
 
 end CheckedBooleanValueCountSource
 

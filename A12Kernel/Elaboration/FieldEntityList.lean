@@ -236,64 +236,6 @@ def everyDeclarationCovers (source : CheckedEntityGroupSource model)
 
 end CheckedEntityGroupSource
 
-/-- One comparability category admitted by the Kernel's field-list operators. String and Enumeration remain distinct even though both use the token runtime domain.
-
-`temporal` collapses DATE, TIME, DATETIME and DATEFRAGMENT, and that collapse is **measured rather than assumed**. A cross-kind temporal pair whose formats also differ moves two variables and is answered by the prior format gate, so only a pair sharing one identical declared format asks this gate anything. Four such pairs are admitted: DATE beside DATEFRAGMENT at `yyyy`, TIME beside DATETIME at `HH:mm:ss`, and a DATE declared with that same clock format beside each of the clock kinds ([inbound](../../docs/SOURCES.md#inbound-2026-09-22-temporal-category)).
-
-**The last two pairs are what make this one category rather than two.** Two admitted same-shape pairs are equally what two categories each holding two kinds would produce, so the pairs alone cannot tell one category from two; the spanning edge leaves every kind one measured edge from the rest. [`Conformance/TemporalValuesNotUnique`](../Conformance/TemporalValuesNotUnique.lean) locks all four with the format-gate and category-mismatch controls that keep them readable. This estate's DATEFRAGMENT shares `.date`'s constructor, so the first pair varies nothing here and the matrix rests on the other three. -/
-inductive FieldListComparabilityCategory where
-  | string | enumeration | number | temporal
-  deriving Repr, DecidableEq
-
-/-- The kind-only admission stage: one comparability category, or refusal before category comparison. -/
-inductive FieldListOperandAdmission where
-  | category (value : FieldListComparabilityCategory)
-  | refusedByKind
-  deriving Repr, DecidableEq
-
-/-- Classify every represented scalar kind for the shared `FieldValuesNotUnique` kind gate. BOOLEAN, CONFIRM, and DATE_RANGE are measured outright refusals. -/
-def SurfaceScalarKind.fieldListAdmission :
-    SurfaceScalarKind → FieldListOperandAdmission
-  | .string => .category .string
-  | .enumeration => .category .enumeration
-  | .number => .category .number
-  | .temporal _ => .category .temporal
-  | .boolean | .confirm | .dateRange => .refusedByKind
-
-structure FieldListKindRefusal where
-  path : List String
-  actual : SurfaceScalarKind
-  deriving Repr, DecidableEq
-
-structure FieldListCategoryMismatch where
-  path : List String
-  actual : SurfaceScalarKind
-  deriving Repr, DecidableEq
-
-/-- Scan one slot's expansion for the first outright-refused kind. Public because the whole-list law is proved through it. -/
-def firstExpandedKindRefusal? :
-    List FlatFieldDecl → Option FieldListKindRefusal
-  | [] => none
-  | declaration :: remaining =>
-      let actual := declaration.policy.kind.surfaceKind
-      match actual.fieldListAdmission with
-      | .refusedByKind => some { path := declaration.path, actual }
-      | .category _ => firstExpandedKindRefusal? remaining
-
-/-- Scan one slot's expansion for the first declaration outside `expected`. -/
-def firstExpandedCategoryMismatch?
-    (expected : FieldListComparabilityCategory) :
-    List FlatFieldDecl → Option FieldListCategoryMismatch
-  | [] => none
-  | declaration :: remaining =>
-      let actual := declaration.policy.kind.surfaceKind
-      match actual.fieldListAdmission with
-      | .refusedByKind => firstExpandedCategoryMismatch? expected remaining
-      | .category category =>
-          if category == expected then
-            firstExpandedCategoryMismatch? expected remaining
-          else some { path := declaration.path, actual }
-
 /-- The first expanded declaration of the whole list, whose comparability category the rest must match. A family that derives its expected category from the list itself reads it here rather than from the first *slot*, because a group slot carries no declaration of its own.
 
     `none` means no slot expanded to any declaration at all — a fieldless repeatable group is resolvable. The category gate then has nothing to compare and the caller's certification decides. -/

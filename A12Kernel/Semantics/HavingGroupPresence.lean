@@ -5,6 +5,7 @@ namespace A12Kernel
 def CorrelationContext.asResolving (context : CorrelationContext) :
     ResolvingCorrelationContext CorrelationRuntimeFault := {
   read := fun env field => .ok (context.read env field)
+  storedText := context.storedText
   world := context.world
   bindingError := fun _ => .calendarUnavailable
   unsupportedDateCalendar := .calendarUnavailable
@@ -12,6 +13,7 @@ def CorrelationContext.asResolving (context : CorrelationContext) :
   worldUnavailable := .worldUnavailable
   typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
+  storedTextUnavailable := .storedTextUnavailable
   groups := context.groups }
 
 /-- Computation-only adapters retain physical row content and their current cell overlay. Validation requires its own checked product-state reader (spec/02, group presence). -/

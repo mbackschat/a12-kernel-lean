@@ -66,12 +66,17 @@ def executeAggregateAfterRows
     Except RepeatableNumberAggregateCascadeFault
       (SourcedNumericTargetOutcome CellAddr) := do
   let read := readAfterRows input rows
+  let storedText := fun environment field => do
+    let address ← (input.cellAddress environment field).toOption
+    input.storedTextForCell address (read environment field)
   let checked ← plan.total.evaluateIn {
       scalar := input.scalarComputationContext world
       document := input.source.toDocument
       outer := []
       filterRead := read
+      filterStoredText := storedText
       starRead := read
+      starStoredText := storedText
     } |>.mapError .aggregate
   let outcome ← match checked with
     | .supported outcome => pure outcome

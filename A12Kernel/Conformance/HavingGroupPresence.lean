@@ -101,6 +101,7 @@ private def failing : ResolvingCorrelationContext String := {
   unsupportedDateCalendar := "calendar unavailable"
   temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"
+  storedTextUnavailable := fun _ => "stored text unavailable"
   typeValidityValueFailure := "type validity value failure"
   groupUnavailable := fun _ => "group unavailable"
   groups := some {

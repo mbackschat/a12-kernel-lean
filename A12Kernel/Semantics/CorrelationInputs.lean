@@ -242,6 +242,7 @@ inductive CorrelationRuntimeFault where
   | worldUnavailable
   | typeValidityValueFailure
   | groupUnavailable (path : GroupPath)
+  | storedTextUnavailable (field : FieldId)
   deriving Repr, DecidableEq
 
 /-- Both phases reuse their ordinary group inputs. Callers retain physical row content and the
@@ -254,18 +255,21 @@ structure CorrelationGroupReads (Error : Type) where
 /-- Topology adapters supply environments; the shared evaluator reads their checked fields and the caller-owned evaluation clock. Retaining one World prevents candidate and captured reads from sampling different dates (spec/05 §7, clock-source semantics). -/
 structure CorrelationContext where
   read : Env → FieldId → CheckedCell
+  storedText : Env → FieldId → Option String := fun _ _ => none
   world : Option World := none
   groups : Option (CorrelationGroupReads CorrelationRuntimeFault) := none
 
 /-- The addressed counterpart of `CorrelationContext`. It preserves caller-owned field-read failures and maps repetition-binding and calendar-support failures into that same explicit error channel. -/
 structure ResolvingCorrelationContext (Error : Type) where
   read : Env → FieldId → Except Error CheckedCell
+  storedText : Env → FieldId → Option String := fun _ _ => none
   bindingError : EnvBindingError → Error
   unsupportedDateCalendar : Error
   temporalValueFailure : Error
   worldUnavailable : Error
   typeValidityValueFailure : Error
   groupUnavailable : GroupPath → Error
+  storedTextUnavailable : FieldId → Error
   world : Option World := none
   groups : Option (CorrelationGroupReads Error) := none
 
@@ -548,9 +552,10 @@ def HavingNumericAtom.readComputation (context : CorrelationContext)
       | none => .domainFailure)
   | atom => atom.readComputationResolving {
       read := fun env field => .ok (context.read env field)
+      storedText := context.storedText
       world := context.world
       bindingError := fun _ => (), unsupportedDateCalendar := (), temporalValueFailure := ()
       worldUnavailable := (), typeValidityValueFailure := ()
-      groupUnavailable := fun _ => () } frame
+      groupUnavailable := fun _ => (), storedTextUnavailable := fun _ => () } frame
 
 end A12Kernel

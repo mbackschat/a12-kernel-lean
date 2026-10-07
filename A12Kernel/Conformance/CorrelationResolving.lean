@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.Correlation
+import A12Kernel.Elaboration.NumericComputation.Evaluation
 
 namespace A12Kernel.Conformance.CorrelationResolving
 open A12Kernel
@@ -22,6 +23,7 @@ private inductive ResolvingProbeError where
   | worldUnavailable
   | typeValidityValueFailure
   | groupUnavailable (path : GroupPath)
+  | storedTextUnavailable (field : FieldId)
   | read (field : FieldId)
   | binding (cause : EnvBindingError)
   deriving Repr, DecidableEq
@@ -36,6 +38,7 @@ private def resolvingContext :
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
+  storedTextUnavailable := .storedTextUnavailable
   typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
@@ -84,6 +87,7 @@ private def orderedResolvingContext :
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
+  storedTextUnavailable := .storedTextUnavailable
   typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
@@ -187,6 +191,7 @@ private def absentAtSecondContext :
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
+  storedTextUnavailable := .storedTextUnavailable
   typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
@@ -218,6 +223,7 @@ private def allPresentContext :
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
+  storedTextUnavailable := .storedTextUnavailable
   typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
@@ -249,6 +255,7 @@ private def markerPoisonedContext :
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
+  storedTextUnavailable := .storedTextUnavailable
   typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
@@ -302,6 +309,7 @@ private def poisonedAndEmptyContext :
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
+  storedTextUnavailable := .storedTextUnavailable
   typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
@@ -358,6 +366,7 @@ private def outerOnlyContext :
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
+  storedTextUnavailable := .storedTextUnavailable
   typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
@@ -397,6 +406,7 @@ private def textOnOuterContext :
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
+  storedTextUnavailable := .storedTextUnavailable
   typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
@@ -433,6 +443,7 @@ private def stringContext (cell : CheckedCell) :
   unsupportedDateCalendar := .unsupportedDateCalendar
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
+  storedTextUnavailable := .storedTextUnavailable
   typeValidityValueFailure := .typeValidityValueFailure
   groupUnavailable := .groupUnavailable
   bindingError := .binding
@@ -494,5 +505,35 @@ example :
       .computation (.poison .malformed) := by
   native_decide
 
+
+private def storageContext : CorrelationContext := {
+  read := fun _ _ => resolvingCell
+  storedText := fun env field => if field == payload.id then
+    some (if env == resolvingCandidate 1 then "candidate spelling" else "captured spelling") else none }
+
+example : storageContext.asResolving.storedText (resolvingCandidate 1) payload.id = some "candidate spelling" ∧
+    storageContext.asResolving.storedText (resolvingCandidate 2) payload.id = some "captured spelling" ∧
+    storageContext.asResolving.storedTextUnavailable payload.id = .storedTextUnavailable payload.id := by native_decide
+
+private def numericStorageContext : NumericComputationEvaluationContext := {
+  scalar := {
+    read := fun _ => resolvingCell
+    addressed := some {
+      document := { instantiatedRows := [], rawCells := fun _ => some "backing spelling" }
+      read := fun _ _ => resolvingCell
+      storedText := fun _ _ => some "backing spelling" } }
+  document := { instantiatedRows := [], rawCells := fun _ => some "backing spelling" }
+  outer := []
+  filterRead := fun _ _ => resolvingCell
+  filterStoredText := fun _ _ => some "filter spelling"
+  starRead := fun _ _ => resolvingCell
+  starStoredText := fun _ _ => some "current spelling" }
+
+example : (numericStorageContext.scalarContext { fields := [] }).addressed.bind (fun view => view.storedText [] payload.id) =
+      some "current spelling" ∧
+    ({ numericStorageContext with starStoredText := fun _ _ => none }.scalarContext { fields := [] }).addressed.bind
+      (fun view => view.storedText [] payload.id) = none ∧
+    NumericComputationFault.isFilterValueFailure (.repeatableAddressing (.storedTextUnavailable payload.id)) = false := by
+  native_decide
 
 end A12Kernel.Conformance.CorrelationResolving

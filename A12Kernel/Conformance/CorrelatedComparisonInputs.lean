@@ -126,6 +126,7 @@ private def failingFillContext : ResolvingCorrelationContext String := {
   unsupportedDateCalendar := "calendar"
   temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"
+  storedTextUnavailable := fun _ => "stored text unavailable"
   typeValidityValueFailure := "type validity value failure", groupUnavailable := fun _ => "group unavailable"
   bindingError := fun _ => "binding"
   read := fun env _ => if env == frame.innerEnv then .ok (text "filled") else .error "captured read" }
@@ -271,6 +272,7 @@ private def toleranceRead : ResolvingCorrelationContext String := {
   unsupportedDateCalendar := "calendar"
   temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"
+  storedTextUnavailable := fun _ => "stored text unavailable"
   typeValidityValueFailure := "type validity value failure", groupUnavailable := fun _ => "group unavailable"
   bindingError := fun _ => "binding" }
 
@@ -457,6 +459,7 @@ private def aggregateStructuralRead : ResolvingCorrelationContext String := {
   unsupportedDateCalendar := "calendar"
   temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"
+  storedTextUnavailable := fun _ => "stored text unavailable"
   typeValidityValueFailure := "type validity value failure", groupUnavailable := fun _ => "group unavailable"
   bindingError := fun _ => "binding"
   read := fun env _ => if env == frame.innerEnv then

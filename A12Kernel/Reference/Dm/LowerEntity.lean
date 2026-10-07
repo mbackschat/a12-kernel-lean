@@ -183,6 +183,11 @@ partial def lowerHaving : Expr → Lowering SurfaceCorrelatedHaving
         return .literalList operator subjects literals
       pure (.fieldMembership (.quantified operator) subjects (← havingMembers values))
   | .call id arguments none none => do
+      if id == "FieldValuesNotUnique" then
+        let expressions ← arguments.mapM fun
+          | .mk expression none none => pure expression
+          | _ => refuse "Having" "direct uniqueness fields"
+        return .uniqueness (← havingMembers expressions)
       if id == "FieldValueIncludedInValueList" || id == "FieldValueNotIncludedInValueList" then
         let operator := if id == "FieldValueIncludedInValueList" then ValueListMembershipOp.included else .notIncluded
         let .mk (.entity { path, index := none, category }) none none :: rest := arguments |

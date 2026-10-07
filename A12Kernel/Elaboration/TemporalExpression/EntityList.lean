@@ -111,11 +111,13 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
   let groups := model.correlationGroupsWithRead contextRead.document (fun row field => pure (contextRead.read row field))
   let correlation : ResolvingCorrelationContext ScalarTemporalEvaluationFault := {
     read := fun row field => pure (contextRead.read row field)
+    storedText := contextRead.storedText
     world := context.world
     unsupportedDateCalendar := .calendarUnavailable
     temporalValueFailure := .dateTimeLabelUnresolved
     worldUnavailable := .addressing .worldUnavailable
     typeValidityValueFailure := .addressing .typeValidityValueFailure
+    storedTextUnavailable := fun field => .addressing (.addressing (.storedTextUnavailable field))
     groupUnavailable := ScalarTemporalEvaluationFault.addressing ∘ CheckedAddressingError.checkedDocumentRequired
     groups := some {
       validation row reference := (groups.validation row reference).mapError .addressing

@@ -52,6 +52,7 @@ inductive StarAddressingError where
   | temporalValueFailure
   | worldUnavailable
   | typeValidityValueFailure
+  | storedTextUnavailable (field : FieldId)
   /-- Reached filter arithmetic can exceed the implemented calendar profile; this is a support fault, not a cell finding. -/
   | unsupportedDateCalendar
   | invalidStarPosition (firstStar axisCount : Nat)

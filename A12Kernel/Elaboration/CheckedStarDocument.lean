@@ -357,6 +357,8 @@ def resolvingCorrelationContextWithRead (checked : CheckedDocument model)
     ResolvingCorrelationContext CheckedAddressingError where
   read environment field :=
     checked.checkedCellWithRead read environment field
+  storedText := checked.storedTextWithRead read
+  storedTextUnavailable := CheckedAddressingError.addressing ∘ StarAddressingError.storedTextUnavailable
   unsupportedDateCalendar := .temporalUnavailable
   temporalValueFailure := .temporalValueFailure
   worldUnavailable := .worldUnavailable
@@ -372,6 +374,8 @@ def resolvingCorrelationContext (checked : CheckedDocument model)
     ResolvingCorrelationContext CheckedAddressingError :=
   { read := fun environment field =>
       (checked.fullValidationAddressedCell environment field).map (·.cell)
+    storedText := checked.storedTextIn
+    storedTextUnavailable := CheckedAddressingError.addressing ∘ StarAddressingError.storedTextUnavailable
     unsupportedDateCalendar := .temporalUnavailable
     temporalValueFailure := .temporalValueFailure
     worldUnavailable := .worldUnavailable

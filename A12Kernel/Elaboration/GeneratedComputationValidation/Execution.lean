@@ -129,7 +129,9 @@ private def addressedEvaluationContextWithRead
   document := input.source.toDocument
   outer := []
   filterRead := checkedReadAtWith input read
+  filterStoredText := input.storedTextWithRead read
   starRead := checkedReadAtWith input read
+  starStoredText := input.storedTextWithRead read
   indexColumn? := some (input.resolveSemanticIndexColumnWith read)
 }
 

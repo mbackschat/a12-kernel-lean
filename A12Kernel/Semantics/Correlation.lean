@@ -1,5 +1,5 @@
 import A12Kernel.Semantics.StringPattern
-import A12Kernel.Semantics.HavingFieldValueList
+import A12Kernel.Semantics.HavingUniqueness
 import A12Kernel.Semantics.HavingGroupPresence
 import A12Kernel.Semantics.HavingTypeValidity
 import A12Kernel.Semantics.CorrelationInputs
@@ -31,6 +31,7 @@ inductive CorrelatedHavingLeaf where
       so the exclusion is carried by this type instead of by a runtime check. -/
   | compareStringLiteral (op : EqualityOp) (reference : HavingStringRef)
       (expected : String)
+  | uniqueness (source : HavingUniqueness)
   | fieldMembership (operator : ComputationValueListOperator) (source : HavingFieldValueList)
   | literalMembership (origin : HavingOrigin) (operator : ValueListMembershipOp)
       (source : FlatLiteralMembership)
@@ -101,6 +102,7 @@ def fieldIds : CorrelatedHaving → List FieldId
   | .leaf (.simpleComparison _ _ comparison) => comparison.fields.map (·.id) |>.eraseDups
   | .leaf (.compareStringLiteral _ reference _) => [reference.field.id]
   | .leaf (.literalMembership _ _ source) => [source.field.id]
+  | .leaf (.uniqueness source) => source.references.map (·.field) |>.eraseDups
   | .leaf (.fieldMembership _ source) => source.references.map (·.field) |>.eraseDups
   | .leaf (.fieldFill _ references) => references.map (·.field) |>.eraseDups
   | .leaf (.presence _ reference) | .leaf (.typeValidity _ reference _) | .leaf (.stringPattern _ reference _) => [reference.field]
@@ -126,6 +128,8 @@ def markedFieldIds : CorrelatedHaving → List FieldId
       if reference.origin == .outer then [reference.field.id] else []
   | .leaf (.literalMembership origin _ source) =>
       if origin == .outer then [source.field.id] else []
+  | .leaf (.uniqueness source) =>
+      (source.references.filter (·.origin == .outer)).map (·.field) |>.eraseDups
   | .leaf (.fieldMembership _ source) =>
       (source.references.filter (·.origin == .outer)).map (·.field) |>.eraseDups
   | .leaf (.fieldFill _ references) =>
@@ -191,6 +195,7 @@ private def CorrelatedHavingLeaf.usesInner : CorrelatedHavingLeaf → Bool
         (right.isInner && !comparison.inputFields.2.isEmpty)
   | .compareStringLiteral _ reference _ => reference.origin.isInner
   | .literalMembership origin _ _ => origin.isInner
+  | .uniqueness source => source.references.any (·.origin.isInner)
   | .fieldMembership _ source => source.references.any (·.origin.isInner)
   | .fieldFill _ references => references.any (·.origin.isInner)
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => reference.origin.isInner
@@ -205,6 +210,7 @@ private def CorrelatedHavingLeaf.usesOuter : CorrelatedHavingLeaf → Bool
         (right.isOuter && !comparison.inputFields.2.isEmpty)
   | .compareStringLiteral _ reference _ => reference.origin.isOuter
   | .literalMembership origin _ _ => origin.isOuter
+  | .uniqueness source => source.references.any (·.origin.isOuter)
   | .fieldMembership _ source => source.references.any (·.origin.isOuter)
   | .fieldFill _ references => references.any (·.origin.isOuter)
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => reference.origin.isOuter
@@ -274,6 +280,10 @@ def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
   | .compareStringLiteral op reference expected =>
       CorrelatedHavingLeaf.verdictTruth
         (reference.compareResolved (reference.resolveInAt .validation context frame) op expected)
+  | .uniqueness source =>
+      match source.evalValidationRead context.asResolving frame with
+      | .ok verdict => CorrelatedHavingLeaf.verdictTruth verdict
+      | .error _ => .unknown
   | .fieldMembership operator source =>
       CorrelatedHavingLeaf.verdictTruth (source.evalValidation operator (fun origin => context.read (frame.envAt origin)))
   | .literalMembership origin operator source =>
@@ -322,6 +332,7 @@ def CorrelatedHavingLeaf.evalTruthInResolving
       pure (CorrelatedHavingLeaf.verdictTruth
         (reference.compareResolved (← reference.resolveInAtResolving .validation context frame)
           op expected))
+  | .uniqueness source => CorrelatedHavingLeaf.verdictTruth <$> source.evalValidationRead context frame
   | .fieldMembership operator source => do
       pure (CorrelatedHavingLeaf.verdictTruth (← source.evalValidationRead operator (fun origin => context.read (frame.envAt origin))))
   | .literalMembership origin operator source => do
@@ -373,6 +384,7 @@ def CorrelatedHavingLeaf.evalComputationInResolving
               reference.compareResolved (.value actual given) op expected with
             | .fired _ => .holds
             | _ => .notTrue)
+  | .uniqueness source => source.evalRead .computation context frame
   | .fieldMembership operator source =>
       source.evalComputationRead operator (fun origin => context.read (frame.envAt origin))
   | .literalMembership origin operator source => do
@@ -546,6 +558,7 @@ def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
       ∃ messagePolarity,
         reference.compareResolved (reference.resolveInAt .validation context frame) op expected
           = .fired messagePolarity
+  | .uniqueness source => ∃ polarity, source.evalValidationRead context.asResolving frame = .ok (.fired polarity)
   | .fieldMembership operator source =>
       ∃ polarity, source.evalValidation operator (fun origin => context.read (frame.envAt origin)) = .fired polarity
   | .literalMembership origin operator source =>

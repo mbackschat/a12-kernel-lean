@@ -1,3 +1,5 @@
+import A12Kernel.Proofs.HavingUniqueness
+import A12Kernel.Proofs.CorrelationReferences
 import A12Kernel.Proofs.LegacyCalendarExpression
 import A12Kernel.Proofs.AddressedDateFromDateTime
 import A12Kernel.Proofs.AddressedDateFromDateTimeFormalInput

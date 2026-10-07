@@ -420,9 +420,9 @@ private def twoLevelCount (rows : List RowAddr) : Option NumericComputationResul
   | .ok checked =>
       match checked.core.expression with
       | .atom atom =>
-          ((⟨{ read := fun _ => emptyCell },
-             { instantiatedRows := rows, rawCells := fun _ => none },
-             [], fun _ _ => emptyCell, fun _ _ => emptyCell, none⟩ :
+          (({ scalar := { read := fun _ => emptyCell }
+              document := { instantiatedRows := rows, rawCells := fun _ => none }
+              outer := [], filterRead := fun _ _ => emptyCell, starRead := fun _ _ => emptyCell } :
             NumericComputationEvaluationContext).readCheckedNumericComputationAtom
               (model := twoLevelModel) atom).toOption
       | _ => none

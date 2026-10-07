@@ -711,7 +711,8 @@ private def indexedNumericContexts (expression : String) : Option (List (Option 
   let scalar := checked.indexedScalarComputationContext world
   let context : NumericComputationEvaluationContext := {
     scalar, document := checked.computationFillContext.document, outer := [],
-    filterRead := checked.computationFillContext.read, starRead := checked.computationFillContext.read }
+    filterRead := checked.computationFillContext.read, filterStoredText := checked.computationFillContext.storedText,
+    starRead := checked.computationFillContext.read, starStoredText := checked.computationFillContext.storedText }
   let atom := CheckedNumericComputationAtom.temporalPart source
   let explicit := { context with indexColumn? := some scalar.semanticIndexColumnReader }
   pure ([scalar.readCheckedNumericComputationAtom atom, context.readCheckedNumericComputationAtom atom,

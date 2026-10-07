@@ -76,7 +76,8 @@ private def scanExpanded (kind : ScanKind) (context : ScalarComputationContext)
   | result => pure result
 
 private def scanStar (kind : ScanKind) (context : ScalarComputationContext)
-    (filterRead : Env → FieldId → CheckedCell) (source : CheckedFilledFieldStarSource model) (seen : Bool) :
+    (filterRead : Env → FieldId → CheckedCell)
+    (filterStoredText : Env → FieldId → Option String) (source : CheckedFilledFieldStarSource model) (seen : Bool) :
     Except ComputationFillError SearchResult := do
   let path := source.source.path
   let field := source.source.declaration.id
@@ -97,24 +98,27 @@ private def scanStar (kind : ScanKind) (context : ScalarComputationContext)
       filter.condition.scanComputationResolving
         (({
           read := fun row field => pure (read filterRead row field)
+          storedText := filterStoredText
           world := context.world
           unsupportedDateCalendar := .addressing .unsupportedDateCalendar
           temporalValueFailure := .addressing .temporalValueFailure
           worldUnavailable := .addressing .worldUnavailable
           typeValidityValueFailure := .addressing .typeValidityValueFailure
+          storedTextUnavailable := ComputationFillError.addressing ∘ StarAddressingError.storedTextUnavailable
           groupUnavailable := ComputationFillError.addressing ∘ StarAddressingError.unsupportedGroupOperand
           bindingError := fun error => .addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationFillError).withComputationGroups addressed.document)
         context.row (fun seen row => pure (step kind seen (observe (read addressed.read row field))))
         candidates seen
 
 private def scanOperand (kind : ScanKind) (context : ScalarComputationContext)
-    (filterRead : Env → FieldId → CheckedCell) :
+    (filterRead : Env → FieldId → CheckedCell)
+    (filterStoredText : Env → FieldId → Option String) :
     CheckedFieldFillOperand model → Bool → Except ComputationFillError SearchResult
   | .indexed _, _ | .keyed _, _ => throw .indexedOperandNotSupported
   | .field declaration, seen =>
       if (context.read declaration.id).findings.contains .overRepetition then pure (.exhausted seen)
       else pure (scanValues kind (fun _ => observe (context.read declaration.id)) [()] seen)
-  | .star source, seen => scanStar kind context filterRead source seen
+  | .star source, seen => scanStar kind context filterRead filterStoredText source seen
   | .group source, seen => scanSources (fun (declaration : FlatFieldDecl) seen => do
       if declaration.repeatableScope.isEmpty then
         pure (scanValues kind (fun _ => observe (context.read declaration.id)) [()] seen)
@@ -130,7 +134,8 @@ def evalCheckedWith (source : CheckedComputationFieldFill model) (operator : Fie
     (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell)
     (liftError : ComputationFillError → Error)
     (indexedRead : CheckedSemanticIndexSource model → Except Error CellObservation)
-    (keyedRead : CheckedKeyedEntityExtent model → Except Error (List ComputationFillSlot)) :
+    (keyedRead : CheckedKeyedEntityExtent model → Except Error (List ComputationFillSlot))
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
     Except Error ComputationConditionResult :=
   operator.evalComputationUsing fun kind => do
     let consume operand seen := match operand with
@@ -139,17 +144,18 @@ def evalCheckedWith (source : CheckedComputationFieldFill model) (operator : Fie
           pure (scanValues kind id [observation.asComputationFillSlot] seen)
       | .keyed keyed => do
           pure (scanValues kind id (← keyedRead keyed) seen)
-      | operand => (scanOperand kind context filterRead operand seen).mapError liftError
+      | operand => (scanOperand kind context filterRead filterStoredText operand seen).mapError liftError
     match ← scanSources consume source.source.operands false with
     | .exhausted _ => pure .exhausted
     | .terminated result => pure result
     | .poison cause => pure (.poison cause)
 
 def evalChecked (source : CheckedComputationFieldFill model) (operator : FieldFillQuantifier)
-    (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell) :
+    (context : ScalarComputationContext) (filterRead : Env → FieldId → CheckedCell)
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
     Except ComputationFillError ComputationConditionResult :=
   source.evalCheckedWith operator context filterRead id (fun _ => .error .indexedOperandNotSupported)
-    (fun _ => .error .indexedOperandNotSupported)
+    (fun _ => .error .indexedOperandNotSupported) (filterStoredText := filterStoredText)
 
 end CheckedComputationFieldFill
 end A12Kernel

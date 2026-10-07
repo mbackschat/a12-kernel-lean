@@ -304,6 +304,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-having-group-predicates"></a>
 - [Group predicates in correlated filters](implementation/repetition-and-paths.md#cap-having-group-predicates)
 
+<a id="cap-having-direct-uniqueness"></a>
+- [Direct field uniqueness in correlated filters](implementation/repetition-and-paths.md#cap-having-direct-uniqueness)
+
 <a id="cap-having-pattern-predicates"></a>
 - [Pattern predicates in correlated filters](implementation/repetition-and-paths.md#cap-having-pattern-predicates)
 

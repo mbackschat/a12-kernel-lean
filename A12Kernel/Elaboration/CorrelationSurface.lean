@@ -87,6 +87,7 @@ inductive SurfaceCorrelatedHaving where
       (expected : String)
   | literalList (quantifier : ValueListQuantifier) (subjects : SurfaceHavingDirectFieldSource)
       (values : List String)
+  | uniqueness (source : SurfaceHavingDirectFieldSource)
   | fieldMembership (operator : ComputationValueListOperator)
       (subjects members : SurfaceHavingDirectFieldSource)
   | literalMembership (operator : ValueListMembershipOp) (reference : SurfaceHavingStringRef)
@@ -131,6 +132,8 @@ structure SurfaceSingleCorrelatedRule where
   deriving Repr, DecidableEq
 
 inductive CorrelationElabError where
+  | uniquenessKind (path : List String)
+  | uniquenessFormat (path : List String)
   | membershipKind (path : List String)
   | membershipBaseType (path : List String)
   | membershipStringLiteralKind (path : List String)
@@ -236,6 +239,7 @@ and [field-reference checkpoint](../../docs/sources/having-filter-probes.md#src-
 The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
+  | .uniquenessKind _ | .uniquenessFormat _ => some .onlyStringEnumNumberDateAllowed
   | .membershipKind _ => some .onlyStringEnumNumberAllowed
   | .membershipBaseType _ => some .varyingTypesNotAllowed
   | .membershipStringLiteralKind _ => some .invalidTypesForComparison

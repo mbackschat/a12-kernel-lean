@@ -37,7 +37,8 @@ def computationSelection (document : Document) (outer : Env)
     (read : Env → FieldId → CheckedCell)
     (world : Option World := none)
     (selectedRead : CheckedSelectedTokenEntity model → Except StarAddressingError (ResolvedValueListSide .token) :=
-      fun source => .error (.unsupportedGroupOperand source.path)) :
+      fun source => .error (.unsupportedGroupOperand source.path))
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
     CheckedTokenEntityOperand model →
       Except StarAddressingError (FirstFilledComputationSelection .token)
   | .selected source => (.side ·) <$> selectedRead source
@@ -48,7 +49,7 @@ def computationSelection (document : Document) (outer : Env)
       pure <| match source.filter with
         | none => .rows resolved.environments resolved.domain.hasOpenTail classify
         | some having => .filtered having.condition
-            (({ read, world } : CorrelationContext).withComputationGroups document) resolved.environments
+            (({ read, world, storedText := filterStoredText } : CorrelationContext).withComputationGroups document) resolved.environments
             resolved.domain.hasOpenTail classify
   | .group source => (.side ·) <$> source.resolvedSideIn .computation document outer read
 
@@ -198,8 +199,9 @@ def evaluateAt (operation : CheckedStringFirstFilledComputation model)
       | .valueFailure => .temporalValueFailure
       | .worldUnavailable => .worldUnavailable
       | .typeValidityValueFailure => .typeValidityValueFailure
+      | .storedTextUnavailable fieldId => .storedTextUnavailable fieldId
       | .groupUnavailable path => .unsupportedGroupOperand path)
-      (·.computationSelection (world := world) input.source.toDocument environment (input.computationCellAt read)
+      (·.computationSelection (world := world) (filterStoredText := input.storedTextWithRead read) input.source.toDocument environment (input.computationCellAt read)
         (selectedRead := fun source => source.sideWith .computation input.source.toDocument environment
           (input.computationCellAt read environment) (input.storedTextWithRead read environment) (input.computationCellAt read)
           (input.resolveSemanticIndexColumnWith read) |>.mapError (fun _ => .unsupportedGroupOperand source.path)))

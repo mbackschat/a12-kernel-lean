@@ -7,7 +7,8 @@ namespace A12Kernel
 
 private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFillOperand model)
     (context : ScalarComputationContext) (filterRead? : Option (Env → FieldId → CheckedCell))
-    (indexColumn? : Option SemanticIndexColumnReader) :
+    (indexColumn? : Option SemanticIndexColumnReader)
+    (filterStoredText? : Option (Env → FieldId → Option String)) :
     Except NumericComputationFault (Except FormalCause Nat) := do
   match operand with
   | .keyed source => do
@@ -32,10 +33,12 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
           (({
             world := context.world
             read := fun row field => pure ((filterRead?.getD addressed.read) row field)
+            storedText := filterStoredText?.getD (if filterRead?.isSome then fun _ _ => none else addressed.storedText)
             unsupportedDateCalendar := .addressing .unsupportedDateCalendar
             temporalValueFailure := .addressing .temporalValueFailure
             worldUnavailable := .addressing .worldUnavailable
             typeValidityValueFailure := .addressing .typeValidityValueFailure
+            storedTextUnavailable := ComputationFillError.addressing ∘ StarAddressingError.storedTextUnavailable
             groupUnavailable := ComputationFillError.addressing ∘ StarAddressingError.unsupportedGroupOperand
             bindingError := fun error => ComputationFillError.addressing error.toStarAddressingError } : ResolvingCorrelationContext ComputationFillError).withComputationGroups addressed.document)
           context.row (fun count row => pure (match observeCell .computation
@@ -60,11 +63,12 @@ private def CheckedFieldFillOperand.countComputation (operand : CheckedFieldFill
 (spec/09 §5). Finish its selected count before reaching the next authored operand. -/
 def CheckedFieldFillList.evaluateComputationCount (source : CheckedFieldFillList model)
     (context : ScalarComputationContext) (filterRead? : Option (Env → FieldId → CheckedCell) := none)
-    (indexColumn? : Option SemanticIndexColumnReader := none) :
+    (indexColumn? : Option SemanticIndexColumnReader := none)
+    (filterStoredText? : Option (Env → FieldId → Option String) := none) :
     Except NumericComputationFault NumericComputationResult := do
   let mut total := 0
   for operand in source.operands do
-    match ← operand.countComputation context filterRead? indexColumn? with
+    match ← operand.countComputation context filterRead? indexColumn? filterStoredText? with
     | .error cause => return .poison cause
     | .ok count => total := total + count
   pure (.value total)
@@ -90,10 +94,11 @@ def evaluateComputation (checked : CheckedNumberEntitySource model)
     (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
     (world : Option World := none)
-    (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath)) :
+    (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath))
+    (filterStoredText : Env → FieldId → Option String := fun _ _ => none) :
     Except StarAddressingError NumericComputationResult := do
   pure ((← checked.evaluateComputationAggregate op document outer directRead
-    filterRead starRead world selectedRead).toComputationResult)
+    filterRead starRead world selectedRead filterStoredText).toComputationResult)
 
 end CheckedNumberEntitySource
 
@@ -544,7 +549,7 @@ def selectedBooleanCountSide (context : NumericComputationEvaluationContext)
 /-- Numeric operands and guards share the caller's addressed text and index capabilities;
 rebuilding only checked reads loses partial-Date interpretation (spec/05 §§3,6). -/
 def scalarContext
-    (context : NumericComputationEvaluationContext) (model : FlatModel) : ScalarComputationContext :=
+    (context : NumericComputationEvaluationContext) (_model : FlatModel) : ScalarComputationContext :=
   let addressed := context.scalar.addressed.getD {
     document := context.document, read := context.starRead }
   { context.scalar with
@@ -552,12 +557,7 @@ def scalarContext
     addressed := some { addressed with
       document := context.document
       read := context.starRead
-      storedText := fun row field => match context.scalar.addressed with
-        | some addressed => addressed.storedText row field
-        | none => do
-            let declaration ← (model.lookupUniqueId field).toOption
-            let path ← (row.pathForScope declaration.repeatableScope).toOption
-            context.document.rawCells { field, path } } }
+      storedText := context.starStoredText } }
 
 /-- Evaluate one model-checked atom against its complete direct/repeatable computation inputs. Addressing failures stay explicit and cannot collapse into a numeric value, clean absence, or formal poison. -/
 def readCheckedNumericComputationAtom
@@ -579,25 +579,25 @@ def readCheckedNumericComputationAtom
       let scalar := scalar.withIndexColumnReader model (context.indexColumn?.getD context.scalar.semanticIndexColumnReader)
       scalar.readTemporalNumericExpression source
   | .filledFieldCount source =>
-      source.evaluateComputationCount (context.scalarContext model) (some context.filterRead) context.indexColumn?
+      source.evaluateComputationCount (context.scalarContext model) (some context.filterRead) context.indexColumn? (some context.filterStoredText)
   | .firstFilled source => do
       let result ←
-        (source.evaluateComputationFirstFilled (world := context.scalar.world) context.document context.outer
+        (source.evaluateComputationFirstFilled (world := context.scalar.world) (filterStoredText := context.filterStoredText) context.document context.outer
           context.scalar.read context.filterRead context.starRead (selectedRead := context.selectedNumberSide)).mapError
             NumericComputationFault.repeatableAddressing
       pure result.asComputationResult
   | .valueCount expected source =>
-      (source.evaluateValueCountComputation (world := context.scalar.world) expected context.document
+      (source.evaluateValueCountComputation (world := context.scalar.world) (filterStoredText := context.filterStoredText) expected context.document
         context.outer context.scalar.read context.filterRead
         context.starRead (selectedRead := context.selectedNumberSide)).map NumericOperand.toComputationResult
           |>.mapError NumericComputationFault.repeatableAddressing
   | .tokenDistinctCount source =>
-      (source.evaluateDistinctComputation (world := context.scalar.world) context.document context.outer
+      (source.evaluateDistinctComputation (world := context.scalar.world) (filterStoredText := context.filterStoredText) context.document context.outer
         context.scalar.read context.filterRead context.starRead
         (selectedRead := context.selectedTokenSide)).map NumericOperand.toComputationResult
           |>.mapError .repeatableAddressing
   | .temporalDistinctCount run =>
-      (run.evaluateComputation (world := context.scalar.world) context.document context.outer
+      (run.evaluateComputation (world := context.scalar.world) (filterStoredText := context.filterStoredText) context.document context.outer
         context.scalar.read context.filterRead context.starRead
         (selectedRead := fun source => run.selectedSideWith source context.document context.outer
           context.scalar.read context.scalar.storedText context.starRead
@@ -605,13 +605,13 @@ def readCheckedNumericComputationAtom
             |>.mapError (fun _ => .unsupportedGroupOperand source.path))).map NumericOperand.toComputationResult
           |>.mapError .repeatableAddressing
   | .tokenValueCount source =>
-      (source.evaluateComputation (world := context.scalar.world) context.document context.outer
+      (source.evaluateComputation (world := context.scalar.world) (filterStoredText := context.filterStoredText) context.document context.outer
         context.scalar.read context.filterRead context.starRead
         (selectedRead := context.selectedTokenSide)).map
           NumericOperand.toComputationResult
         |>.mapError NumericComputationFault.repeatableAddressing
   | .booleanValueCount source =>
-      (source.evaluateComputation (world := context.scalar.world) context.document context.outer
+      (source.evaluateComputation (world := context.scalar.world) (filterStoredText := context.filterStoredText) context.document context.outer
         context.scalar.read context.filterRead context.starRead
         (selectedRead := context.selectedBooleanCountSide)).map
           NumericOperand.toComputationResult
@@ -626,7 +626,7 @@ def readCheckedNumericComputationAtom
       context.scalar.readNumericComputationAtomWith
         (fun op aggregate =>
           (aggregate.evaluateComputation op context.document context.outer
-            context.scalar.read context.filterRead context.starRead context.scalar.world context.selectedNumberSide).mapError
+            context.scalar.read context.filterRead context.starRead context.scalar.world context.selectedNumberSide context.filterStoredText).mapError
               NumericComputationFault.repeatableAddressing)
         (context.readFilledGroupCount model) source
 

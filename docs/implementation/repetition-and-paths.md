@@ -131,6 +131,17 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `consumer`: Execute receives phase-correct selection with the supplied matcher; Analyze retains source, origin and dependencies without treating opaque matcher functions as decidably equal.
 - `limit`: Indexed/category/starred leaves, nested filters, broader reader regex compilation and raw-adapter effects remain outside this slice. Authored empty-pattern runtime correspondence requires the [SG7 investigation](../gaps/strings-and-messages.md#gap-sg7). Neither Having cell is promoted.
 
+<a id="cap-having-direct-uniqueness"></a>
+#### Direct FieldValuesNotUnique in Having
+
+- `boundary`: Direct Number, String/Custom, stored-Enumeration and temporal field lists enter the checked-star filter tree with candidate/captured origins. Shared shape admission retains multiplicity and exact-reference duplicates; the complete kind scan precedes category homogeneity, and temporal operands require one identical declared format. Category projections remain refused.
+- `owner`: The [uniqueness leaf](../../A12Kernel/Semantics/HavingUniqueness.lean) reuses the ordinary duplicate step and the [typed field-list readers](../../A12Kernel/Semantics/HavingFieldValueList.lean). [Admission](../../A12Kernel/Elaboration/HavingUniqueness.lean) reuses the shared field-list classification in [FieldEntityAdmission](../../A12Kernel/Elaboration/FieldEntityAdmission.lean); the existing filter tree, scope checks and pointer projector retain every reference.
+- `phase`: Validation skips empty and formally invalid cells; computation skips empties and preserves reached poison. Both stop at the deciding duplicate. Temporal identity uses exact text paired with the current reader; the resolving evaluators report missing text on a reached valued field as a structural input fault. The legacy total truth projection maps unavailable inputs to UNKNOWN and is not the effect-preserving consumer API.
+- `assurance`: [Core separators](../../A12Kernel/Conformance/HavingUniqueness.lean), [reader cases](../../A12Kernel/Reference/Dm/HavingUniquenessLocks.lean) and [scan laws](../../A12Kernel/Proofs/HavingUniqueness.lean) cover phase handling, deciding-prefix reachability, origins, dependencies, whole-list gates, fixed/repeated targets, aggregate/FirstFilled/guard consumers, producer freshness and partial-validation skip. The [truth/Holds bridge](../../A12Kernel/Proofs/Correlation.lean) and [marked-reference inclusion](../../A12Kernel/Proofs/CorrelationReferences.lean) cover this leaf.
+- `basis`: Reuses [spec/07 §5](../../spec/07-repetition-and-iteration.md#5-groupfilled-and-the-other-repetition-rules) and the ordinary uniqueness account. Filter-specific external calibration remains pending; synthetic distinct spellings test preservation of stored identity and do not establish that both spellings pass Kernel ingress.
+- `consumer`: Execute can distinguish reached poison, unavailable storage and a duplicate without rebuilding identity from decoded values. Analyze/Transform retain typed operands, origins and complete dependencies, including captured producer reads.
+- `limit`: Group/starred uniqueness operands, broader filter constructors and exact indexed/nested-filter refusal precedence remain in [SG17](../gaps/paths-and-groups.md#gap-sg17). Pure callbacks without exact storage cannot execute valued temporal uniqueness. Neither Having cell is promoted by this slice.
+
 <a id="cap-having-temporal-constants"></a>
 #### Temporal constants in Having comparisons
 

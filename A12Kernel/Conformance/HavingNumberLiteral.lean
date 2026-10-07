@@ -232,6 +232,7 @@ private def resolvingContext (left : RawCell) : ResolvingCorrelationContext Stri
   unsupportedDateCalendar := "calendar"
   temporalValueFailure := "value failure"
   worldUnavailable := "world unavailable"
+  storedTextUnavailable := fun _ => "stored text unavailable"
   typeValidityValueFailure := "type validity value failure"
   groupUnavailable := fun _ => "group unavailable"
 
