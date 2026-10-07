@@ -1,0 +1,106 @@
+[
+  {
+    "id": "refusal0",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Error",
+      "--code",
+      "Refusal0",
+      "--condition",
+      "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And Today == Today) > 0"
+    ]
+  },
+  {
+    "id": "refusal1",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Error",
+      "--code",
+      "Refusal1",
+      "--condition",
+      "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And Now == Now) > 0"
+    ]
+  },
+  {
+    "id": "refusal2",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Error",
+      "--code",
+      "Refusal2",
+      "--condition",
+      "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And {Today} == {Today}) > 0"
+    ]
+  },
+  {
+    "id": "refusal3",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Error",
+      "--code",
+      "Refusal3",
+      "--condition",
+      "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And {Now} == {Now}) > 0"
+    ]
+  },
+  {
+    "id": "refusal4",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Error",
+      "--code",
+      "Refusal4",
+      "--condition",
+      "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And \"05.03.2024\" == \"05.03.2024\") > 0"
+    ]
+  },
+  {
+    "id": "refusal5",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Error",
+      "--code",
+      "Refusal5",
+      "--condition",
+      "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And Now == \"05.03.2024\") > 0"
+    ]
+  },
+  {
+    "id": "refusal6",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Error",
+      "--code",
+      "Refusal6",
+      "--condition",
+      "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And \"05.03.2024\" == Now) > 0"
+    ]
+  },
+  {
+    "id": "refusal7",
+    "verb": "rule",
+    "args": [
+      "check",
+      "--field",
+      "/Form/Error",
+      "--code",
+      "Refusal7",
+      "--condition",
+      "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And \"12:30:00\" == Now) > 0"
+    ]
+  }
+]

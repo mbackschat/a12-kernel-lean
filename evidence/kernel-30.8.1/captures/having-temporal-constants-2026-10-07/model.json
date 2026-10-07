@@ -1,0 +1,826 @@
+{
+  "header" : {
+    "id" : "HavingTemporalConstants_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "HavingTemporalConstants_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Form/Rows",
+            "name" : "Rows",
+            "Group" : {
+              "repeatability" : 3,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Form/Rows/D",
+                "name" : "D",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/T",
+                "name" : "T",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TimeType",
+                    "TimeType" : {
+                      "format" : "HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/S",
+                "name" : "S",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateTimeType",
+                    "DateTimeType" : {
+                      "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Form/Rows/N",
+                "name" : "N",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Error",
+            "name" : "Error",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : { }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Date",
+            "name" : "Date",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/DateR",
+            "name" : "DateR",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Time",
+            "name" : "Time",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TimeR",
+            "name" : "TimeR",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/Stamp",
+            "name" : "Stamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/StampR",
+            "name" : "StampR",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TodayDate",
+            "name" : "TodayDate",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/TodayDateR",
+            "name" : "TodayDateR",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NowStamp",
+            "name" : "NowStamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/NowStampR",
+            "name" : "NowStampR",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GroupedToday",
+            "name" : "GroupedToday",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GroupedTodayR",
+            "name" : "GroupedTodayR",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GroupedNow",
+            "name" : "GroupedNow",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GroupedNowR",
+            "name" : "GroupedNowR",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GapStamp",
+            "name" : "GapStamp",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GapStampR",
+            "name" : "GapStampR",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GapNow",
+            "name" : "GapNow",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Form/GapNowR",
+            "name" : "GapNowR",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DateRule",
+            "name" : "DateRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "Date",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And [Rows/D] < \"05.03.2024\") > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DateComp",
+            "name" : "DateComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Date",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And [Rows/D] < \"05.03.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/DateRRule",
+            "name" : "DateRRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "DateR",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And \"05.03.2024\" > [Rows/D]) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/DateRComp",
+            "name" : "DateRComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../DateR",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And \"05.03.2024\" > [Rows/D])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/TimeRule",
+            "name" : "TimeRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "Time",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And [Rows/T] == \"03:04:05\") > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TimeComp",
+            "name" : "TimeComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Time",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And [Rows/T] == \"03:04:05\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/TimeRRule",
+            "name" : "TimeRRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "TimeR",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And \"03:04:05\" == [Rows/T]) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TimeRComp",
+            "name" : "TimeRComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TimeR",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And \"03:04:05\" == [Rows/T])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/StampRule",
+            "name" : "StampRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "Stamp",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And [Rows/S] == \"05.03.2024T03:04:05\") > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/StampComp",
+            "name" : "StampComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Stamp",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And [Rows/S] == \"05.03.2024T03:04:05\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/StampRRule",
+            "name" : "StampRRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "StampR",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And \"05.03.2024T03:04:05\" == [Rows/S]) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/StampRComp",
+            "name" : "StampRComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../StampR",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And \"05.03.2024T03:04:05\" == [Rows/S])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/TodayDateRule",
+            "name" : "TodayDateRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "TodayDate",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And Today == \"05.03.2024\") > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TodayDateComp",
+            "name" : "TodayDateComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TodayDate",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And Today == \"05.03.2024\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/TodayDateRRule",
+            "name" : "TodayDateRRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "TodayDateR",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And \"05.03.2024\" == Today) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/TodayDateRComp",
+            "name" : "TodayDateRComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../TodayDateR",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And \"05.03.2024\" == Today)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/NowStampRule",
+            "name" : "NowStampRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NowStamp",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And Now == \"05.03.2024T03:04:05\") > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NowStampComp",
+            "name" : "NowStampComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NowStamp",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And Now == \"05.03.2024T03:04:05\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/NowStampRRule",
+            "name" : "NowStampRRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "NowStampR",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And \"05.03.2024T03:04:05\" == Now) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/NowStampRComp",
+            "name" : "NowStampRComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../NowStampR",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And \"05.03.2024T03:04:05\" == Now)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GroupedTodayRule",
+            "name" : "GroupedTodayRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "GroupedToday",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And {Today} == Today) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GroupedTodayComp",
+            "name" : "GroupedTodayComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GroupedToday",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And {Today} == Today)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GroupedTodayRRule",
+            "name" : "GroupedTodayRRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "GroupedTodayR",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And Today == {Today}) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GroupedTodayRComp",
+            "name" : "GroupedTodayRComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GroupedTodayR",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And Today == {Today})"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GroupedNowRule",
+            "name" : "GroupedNowRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "GroupedNow",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And {Now} == Now) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GroupedNowComp",
+            "name" : "GroupedNowComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GroupedNow",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And {Now} == Now)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GroupedNowRRule",
+            "name" : "GroupedNowRRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "GroupedNowR",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And Now == {Now}) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GroupedNowRComp",
+            "name" : "GroupedNowRComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GroupedNowR",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And Now == {Now})"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GapStampRule",
+            "name" : "GapStampRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "GapStamp",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And [Rows/S] > \"31.03.2024T02:30:00\") > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GapStampComp",
+            "name" : "GapStampComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GapStamp",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And [Rows/S] > \"31.03.2024T02:30:00\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GapStampRRule",
+            "name" : "GapStampRRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "GapStampR",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And \"31.03.2024T02:30:00\" < [Rows/S]) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GapStampRComp",
+            "name" : "GapStampRComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GapStampR",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And \"31.03.2024T02:30:00\" < [Rows/S])"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GapNowRule",
+            "name" : "GapNowRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "GapNow",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And Now > \"31.03.2024T02:30:00\") > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GapNowComp",
+            "name" : "GapNowComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GapNow",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And Now > \"31.03.2024T02:30:00\")"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/GapNowRRule",
+            "name" : "GapNowRRule",
+            "Rule" : {
+              "errorEntityRelPath" : "../Error",
+              "errorCode" : "GapNowR",
+              "errorCondition" : "FieldFilled(Error) And Sum(Rows*/N Having [Rows/N] > 0 And \"31.03.2024T02:30:00\" < Now) > 0",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Form/GapNowRComp",
+            "name" : "GapNowRComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../GapNowR",
+              "computationAlternatives" : [ {
+                "operation" : "Sum(Rows*/N Having [Rows/N] > 0 And \"31.03.2024T02:30:00\" < Now)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "temporal probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

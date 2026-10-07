@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-07-04"></a>
+### SPEC-2026-10-07-04 — reached temporal literal failures escape filter selection
+
+- `status`: pending
+- `canonical`: [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
+- `delta`: An unresolved DateTime literal inside a Sum filter preserves validation VALUE failure and computation clearing/residual failure; it is not UNKNOWN-as-drop. Earlier malformed computation operands suppress a later literal failure, while validation reaches both positions.
+- `basis`: [Temporal filter checkpoint](sources/having-filter-probes.md#src-having-temporal-constant-effects), Kernel 30.8.1, both runtime strategies, UTC static profile and Berlin model. The existing static-host/runtime-model zone split remains unchanged.
+- `acceptance`: Reconcile the reached/unreached literal-failure channel and malformed operand-order separator without generalizing to unmeasured carriers or zones. Introducing revision is the first commit containing this entry ID; local shared-effect implementation is pending.
+
 <a id="spec-2026-10-07-03"></a>
 ### SPEC-2026-10-07-03 — selected entity guards retain parent and key iteration
 

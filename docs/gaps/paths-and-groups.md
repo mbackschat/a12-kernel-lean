@@ -134,6 +134,7 @@ One family shard of the open-gap index. [`SEMANTICS-GAPS.md`](../SEMANTICS-GAPS.
 <a id="gap-sg17"></a>
 ### SG17 — `Having`-filter leaf and connective completion
 
+- `temporal-comparison-effects`: The [constant/literal matrix](../sources/having-filter-probes.md#src-having-temporal-constant-effects) settles field Time/DateTime literals, grouped clocks and constant comparisons, including runtime label failure. The shared filter model needs a distinct reached value-failure channel, preserved through every ready consuming carrier; flat false/UNKNOWN and computation poison alone cannot represent its residual finding. Implement the shared delayed operand read before admitting these surfaces, retaining eager validation, computation poison short circuit and no-row non-reachability. Baseline focused replay is 12 matches/132 unsupported, not a completed family.
 - `boolean-filter-binding`: [Boolean value-count star certificates](../../A12Kernel/Elaboration/BooleanValueCount.lean) type the filter against `declaringGroup`; the list reader now independently accepts a supplied parent binding. A distinct declaration/error or computation-target group cannot simply be forwarded into that certificate. Reproduce a filtered case with different groups and settle its oracle before changing the certificate; the selected/direct parent-binding fix leaves this existing boundary unchanged.
 
 - `state`: open

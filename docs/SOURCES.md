@@ -813,11 +813,11 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 <a id="src-date-range-direct-list-cross-group-sources"></a>
 - [A direct-list `FirstFilledValue` places its sources freely](sources/computation-placement-and-constant-probes.md#src-date-range-direct-list-cross-group-sources)
 <a id="src-having-filter-condition-scope"></a>
-- [A `Having` condition must bind the filtered list's own iterated level, and admits a group-presence leaf](sources/having-filter-probes.md#src-having-filter-condition-scope)
+- [Having binds the filtered level and admits group-presence leaves](sources/having-filter-probes.md#src-having-filter-condition-scope)
 <a id="src-having-filter-nontrue-row"></a>
 - [A non-true `Having` conjunct drops its own row, and the empty-as-zero rule does not reach a malformed operand](sources/having-filter-probes.md#src-having-filter-nontrue-row)
 <a id="src-having-filter-condition-grammar"></a>
-- [A `Having` condition is the ordinary condition grammar, and every refusal reached is an ordinary one](sources/having-filter-probes.md#src-having-filter-condition-grammar)
+- [Having uses ordinary condition grammar and observed refusal classes](sources/having-filter-probes.md#src-having-filter-condition-grammar)
 <a id="src-having-filter-presence-leaf"></a>
 - [Both presence polarities are real per-row filter predicates and exact complements over clean cells](sources/having-filter-probes.md#src-having-filter-presence-leaf)
 <a id="src-having-filter-disjunction"></a>
@@ -1291,11 +1291,11 @@ Search stable `src-` anchors in this hub, then follow the link to the bounded fa
 - [Numeric filter expressions and captured repetition ordering](sources/having-filter-probes.md#src-having-numeric-expression-runtime)
 
 <a id="src-having-number-leaf-grid"></a>
-- [A filter's Number field takes every ordinary operator against a literal on either side, under the ordinary literal scale gate on `==` and `!=` alone](sources/having-filter-probes.md#src-having-number-leaf-grid)
+- [Number/literal filters: all operators and operand orders, scale gates only on equality](sources/having-filter-probes.md#src-having-number-leaf-grid)
 <a id="src-filter-reference-two-levels-above"></a>
-- [Both filter gates read path membership and nothing about depth, and the admitted constant is keyed to the referenced level](sources/having-filter-probes.md#src-filter-reference-two-levels-above)
+- [Filter gates use path membership; the referenced level determines the admitted constant](sources/having-filter-probes.md#src-filter-reference-two-levels-above)
 <a id="src-filter-reference-level-runtime"></a>
-- [An admitted filter reference the star does not reopen is a constant, per host row or per document](sources/having-filter-probes.md#src-filter-reference-level-runtime)
+- [Non-reopened filter references are constant per host row or document](sources/having-filter-probes.md#src-filter-reference-level-runtime)
 <a id="src-repeatable-computation-row-extent"></a>
 - [A repeatable computation's row extent is exactly the instantiated rows, with no phantom tail](sources/group-list-and-capacity-probes.md#src-repeatable-computation-row-extent)
 <a id="src-distinct-count-first-operand-class"></a>
@@ -1798,3 +1798,6 @@ Edit the source shard when its provenance or drill route changes; change this hu
 
 <a id="src-partial-temporal-reads"></a>
 - [Partial temporal reads](sources/temporal-runtime-fold-probes.md#src-partial-temporal-reads)
+
+<a id="src-having-temporal-constant-effects"></a>
+- [Temporal filter constants: admission and reached literal failures](sources/having-filter-probes.md#src-having-temporal-constant-effects)

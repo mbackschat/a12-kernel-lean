@@ -1,0 +1,173 @@
+{
+  "model": "model.json",
+  "locale": "en_US",
+  "clock": "2024-03-05T02:04:05Z",
+  "observe": [
+    "validateFull",
+    "validatePart",
+    "compute"
+  ],
+  "rows": [
+    {
+      "name": "values",
+      "documentInline": {
+        "Form": {
+          "Error": "ready",
+          "Date": "999",
+          "DateR": "999",
+          "Time": "999",
+          "TimeR": "999",
+          "Stamp": "999",
+          "StampR": "999",
+          "TodayDate": "999",
+          "TodayDateR": "999",
+          "NowStamp": "999",
+          "NowStampR": "999",
+          "GroupedToday": "999",
+          "GroupedTodayR": "999",
+          "GroupedNow": "999",
+          "GroupedNowR": "999",
+          "GapStamp": "999",
+          "GapStampR": "999",
+          "GapNow": "999",
+          "GapNowR": "999",
+          "Rows": [
+            {
+              "N": "2",
+              "D": "2024-03-04",
+              "T": "03:04:05",
+              "S": "2024-03-05T03:04:05"
+            },
+            {
+              "N": "5",
+              "D": "2024-03-06",
+              "T": "06:00:00",
+              "S": "2024-03-06T03:04:05"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-payload",
+      "documentInline": {
+        "Form": {
+          "Error": "ready",
+          "Date": "999",
+          "DateR": "999",
+          "Time": "999",
+          "TimeR": "999",
+          "Stamp": "999",
+          "StampR": "999",
+          "TodayDate": "999",
+          "TodayDateR": "999",
+          "NowStamp": "999",
+          "NowStampR": "999",
+          "GroupedToday": "999",
+          "GroupedTodayR": "999",
+          "GroupedNow": "999",
+          "GroupedNowR": "999",
+          "GapStamp": "999",
+          "GapStampR": "999",
+          "GapNow": "999",
+          "GapNowR": "999",
+          "Rows": [
+            {
+              "N": "2"
+            },
+            {
+              "N": "5"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "malformed-payload",
+      "documentInline": {
+        "Form": {
+          "Error": "ready",
+          "Date": "999",
+          "DateR": "999",
+          "Time": "999",
+          "TimeR": "999",
+          "Stamp": "999",
+          "StampR": "999",
+          "TodayDate": "999",
+          "TodayDateR": "999",
+          "NowStamp": "999",
+          "NowStampR": "999",
+          "GroupedToday": "999",
+          "GroupedTodayR": "999",
+          "GroupedNow": "999",
+          "GroupedNowR": "999",
+          "GapStamp": "999",
+          "GapStampR": "999",
+          "GapNow": "999",
+          "GapNowR": "999",
+          "Rows": [
+            {
+              "N": "2",
+              "D": "bad",
+              "T": "bad",
+              "S": "bad"
+            },
+            {
+              "N": "5",
+              "D": "2024-03-06",
+              "T": "06:00:00",
+              "S": "2024-03-06T03:04:05"
+            }
+          ]
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    },
+    {
+      "name": "empty-rows",
+      "documentInline": {
+        "Form": {
+          "Error": "ready",
+          "Date": "999",
+          "DateR": "999",
+          "Time": "999",
+          "TimeR": "999",
+          "Stamp": "999",
+          "StampR": "999",
+          "TodayDate": "999",
+          "TodayDateR": "999",
+          "NowStamp": "999",
+          "NowStampR": "999",
+          "GroupedToday": "999",
+          "GroupedTodayR": "999",
+          "GroupedNow": "999",
+          "GroupedNowR": "999",
+          "GapStamp": "999",
+          "GapStampR": "999",
+          "GapNow": "999",
+          "GapNowR": "999",
+          "Rows": []
+        }
+      },
+      "relevant": [
+        {
+          "path": "/Form"
+        }
+      ]
+    }
+  ]
+}

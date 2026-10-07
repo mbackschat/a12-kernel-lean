@@ -1,0 +1,4609 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "model.json",
+    "locale": "en_US",
+    "clock": "2024-03-05T02:04:05Z"
+  },
+  "rows": [
+    {
+      "name": "values",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "Date",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "DateComp",
+              "field": "Form/Date",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ]
+            },
+            {
+              "code": "DateR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "DateRComp",
+              "field": "Form/DateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ]
+            },
+            {
+              "code": "GapNow",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowComp",
+              "field": "Form/GapNow",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowRComp",
+              "field": "Form/GapNowR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampComp",
+              "field": "Form/GapStamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampRComp",
+              "field": "Form/GapStampR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GroupedNow",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedNowComp",
+              "field": "Form/GroupedNow",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ]
+            },
+            {
+              "code": "GroupedNowR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedNowRComp",
+              "field": "Form/GroupedNowR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ]
+            },
+            {
+              "code": "GroupedToday",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedTodayComp",
+              "field": "Form/GroupedToday",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ]
+            },
+            {
+              "code": "GroupedTodayR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedTodayRComp",
+              "field": "Form/GroupedTodayR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ]
+            },
+            {
+              "code": "NowStamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "NowStampComp",
+              "field": "Form/NowStamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ]
+            },
+            {
+              "code": "NowStampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "NowStampRComp",
+              "field": "Form/NowStampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ]
+            },
+            {
+              "code": "Stamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S"
+              ]
+            },
+            {
+              "code": "StampComp",
+              "field": "Form/Stamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ]
+            },
+            {
+              "code": "StampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S"
+              ]
+            },
+            {
+              "code": "StampRComp",
+              "field": "Form/StampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ]
+            },
+            {
+              "code": "Time",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code": "TimeComp",
+              "field": "Form/Time",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ]
+            },
+            {
+              "code": "TimeR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code": "TimeRComp",
+              "field": "Form/TimeR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ]
+            },
+            {
+              "code": "TodayDate",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "TodayDateComp",
+              "field": "Form/TodayDate",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ]
+            },
+            {
+              "code": "TodayDateR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "TodayDateRComp",
+              "field": "Form/TodayDateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Date",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/DateR",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/GapNow",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapNowR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapStamp",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapStampR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GroupedNow",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedNowR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedToday",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedTodayR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/NowStamp",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/NowStampR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Stamp",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/StampR",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Time",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/TimeR",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/TodayDate",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/TodayDateR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapNow",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapNow"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapNowR",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapNowR"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapStamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapStamp"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapStampR",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapStampR"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "Date",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "DateComp",
+              "field": "Form/Date",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ]
+            },
+            {
+              "code": "DateR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "DateRComp",
+              "field": "Form/DateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ]
+            },
+            {
+              "code": "GapNow",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowComp",
+              "field": "Form/GapNow",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowRComp",
+              "field": "Form/GapNowR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampComp",
+              "field": "Form/GapStamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampRComp",
+              "field": "Form/GapStampR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GroupedNow",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedNowComp",
+              "field": "Form/GroupedNow",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ]
+            },
+            {
+              "code": "GroupedNowR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedNowRComp",
+              "field": "Form/GroupedNowR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ]
+            },
+            {
+              "code": "GroupedToday",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedTodayComp",
+              "field": "Form/GroupedToday",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ]
+            },
+            {
+              "code": "GroupedTodayR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedTodayRComp",
+              "field": "Form/GroupedTodayR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ]
+            },
+            {
+              "code": "NowStamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "NowStampComp",
+              "field": "Form/NowStamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ]
+            },
+            {
+              "code": "NowStampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "NowStampRComp",
+              "field": "Form/NowStampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ]
+            },
+            {
+              "code": "Stamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S"
+              ]
+            },
+            {
+              "code": "StampComp",
+              "field": "Form/Stamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ]
+            },
+            {
+              "code": "StampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S"
+              ]
+            },
+            {
+              "code": "StampRComp",
+              "field": "Form/StampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ]
+            },
+            {
+              "code": "Time",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code": "TimeComp",
+              "field": "Form/Time",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ]
+            },
+            {
+              "code": "TimeR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T"
+              ]
+            },
+            {
+              "code": "TimeRComp",
+              "field": "Form/TimeR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ]
+            },
+            {
+              "code": "TodayDate",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "TodayDateComp",
+              "field": "Form/TodayDate",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ]
+            },
+            {
+              "code": "TodayDateR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "TodayDateRComp",
+              "field": "Form/TodayDateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Date",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/DateR",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/GapNow",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapNowR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapStamp",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapStampR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GroupedNow",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedNowR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedToday",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedTodayR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/NowStamp",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/NowStampR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Stamp",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/StampR",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/Time",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/TimeR",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Form/TodayDate",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/TodayDateR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapNow",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapNow"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapNowR",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapNowR"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapStamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapStamp"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapStampR",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapStampR"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": []
+        }
+      ]
+    },
+    {
+      "name": "empty-payload",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DateComp",
+              "field": "Form/Date",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ]
+            },
+            {
+              "code": "DateRComp",
+              "field": "Form/DateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ]
+            },
+            {
+              "code": "GapNow",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowComp",
+              "field": "Form/GapNow",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowRComp",
+              "field": "Form/GapNowR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampComp",
+              "field": "Form/GapStamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampRComp",
+              "field": "Form/GapStampR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GroupedNow",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedNowComp",
+              "field": "Form/GroupedNow",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ]
+            },
+            {
+              "code": "GroupedNowR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedNowRComp",
+              "field": "Form/GroupedNowR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ]
+            },
+            {
+              "code": "GroupedToday",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedTodayComp",
+              "field": "Form/GroupedToday",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ]
+            },
+            {
+              "code": "GroupedTodayR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedTodayRComp",
+              "field": "Form/GroupedTodayR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ]
+            },
+            {
+              "code": "NowStamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "NowStampComp",
+              "field": "Form/NowStamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ]
+            },
+            {
+              "code": "NowStampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "NowStampRComp",
+              "field": "Form/NowStampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ]
+            },
+            {
+              "code": "StampComp",
+              "field": "Form/Stamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ]
+            },
+            {
+              "code": "StampRComp",
+              "field": "Form/StampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ]
+            },
+            {
+              "code": "TimeComp",
+              "field": "Form/Time",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ]
+            },
+            {
+              "code": "TimeRComp",
+              "field": "Form/TimeR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ]
+            },
+            {
+              "code": "TodayDate",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "TodayDateComp",
+              "field": "Form/TodayDate",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ]
+            },
+            {
+              "code": "TodayDateR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "TodayDateRComp",
+              "field": "Form/TodayDateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Date",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/DateR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GapNow",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapNowR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapStamp",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapStampR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GroupedNow",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedNowR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedToday",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedTodayR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/NowStamp",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/NowStampR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Stamp",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/StampR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Time",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/TimeR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/TodayDate",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/TodayDateR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapNow",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapNow"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapNowR",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapNowR"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapStamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapStamp"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapStampR",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapStampR"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DateComp",
+              "field": "Form/Date",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ]
+            },
+            {
+              "code": "DateRComp",
+              "field": "Form/DateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ]
+            },
+            {
+              "code": "GapNow",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowComp",
+              "field": "Form/GapNow",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowRComp",
+              "field": "Form/GapNowR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampComp",
+              "field": "Form/GapStamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampRComp",
+              "field": "Form/GapStampR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GroupedNow",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedNowComp",
+              "field": "Form/GroupedNow",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ]
+            },
+            {
+              "code": "GroupedNowR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedNowRComp",
+              "field": "Form/GroupedNowR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ]
+            },
+            {
+              "code": "GroupedToday",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedTodayComp",
+              "field": "Form/GroupedToday",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ]
+            },
+            {
+              "code": "GroupedTodayR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedTodayRComp",
+              "field": "Form/GroupedTodayR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ]
+            },
+            {
+              "code": "NowStamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "NowStampComp",
+              "field": "Form/NowStamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ]
+            },
+            {
+              "code": "NowStampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "NowStampRComp",
+              "field": "Form/NowStampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ]
+            },
+            {
+              "code": "StampComp",
+              "field": "Form/Stamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ]
+            },
+            {
+              "code": "StampRComp",
+              "field": "Form/StampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ]
+            },
+            {
+              "code": "TimeComp",
+              "field": "Form/Time",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ]
+            },
+            {
+              "code": "TimeRComp",
+              "field": "Form/TimeR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ]
+            },
+            {
+              "code": "TodayDate",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "TodayDateComp",
+              "field": "Form/TodayDate",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ]
+            },
+            {
+              "code": "TodayDateR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "TodayDateRComp",
+              "field": "Form/TodayDateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Date",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/DateR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GapNow",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapNowR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapStamp",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapStampR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GroupedNow",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedNowR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedToday",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedTodayR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/NowStamp",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/NowStampR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Stamp",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/StampR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Time",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/TimeR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/TodayDate",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/TodayDateR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapNow",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapNow"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapNowR",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapNowR"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapStamp",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapStamp"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapStampR",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapStampR"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": []
+        }
+      ]
+    },
+    {
+      "name": "malformed-payload",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DateComp",
+              "field": "Form/Date",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ]
+            },
+            {
+              "code": "DateRComp",
+              "field": "Form/DateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ]
+            },
+            {
+              "code": "GapNow",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowComp",
+              "field": "Form/GapNow",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowRComp",
+              "field": "Form/GapNowR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampComp",
+              "field": "Form/GapStamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampRComp",
+              "field": "Form/GapStampR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GroupedNow",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedNowComp",
+              "field": "Form/GroupedNow",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ]
+            },
+            {
+              "code": "GroupedNowR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedNowRComp",
+              "field": "Form/GroupedNowR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ]
+            },
+            {
+              "code": "GroupedToday",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedTodayComp",
+              "field": "Form/GroupedToday",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ]
+            },
+            {
+              "code": "GroupedTodayR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedTodayRComp",
+              "field": "Form/GroupedTodayR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ]
+            },
+            {
+              "code": "NowStamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "NowStampComp",
+              "field": "Form/NowStamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ]
+            },
+            {
+              "code": "NowStampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "NowStampRComp",
+              "field": "Form/NowStampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ]
+            },
+            {
+              "code": "StampComp",
+              "field": "Form/Stamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ]
+            },
+            {
+              "code": "StampRComp",
+              "field": "Form/StampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ]
+            },
+            {
+              "code": "TimeComp",
+              "field": "Form/Time",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ]
+            },
+            {
+              "code": "TimeRComp",
+              "field": "Form/TimeR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ]
+            },
+            {
+              "code": "TodayDate",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "TodayDateComp",
+              "field": "Form/TodayDate",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ]
+            },
+            {
+              "code": "TodayDateR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "TodayDateRComp",
+              "field": "Form/TodayDateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ]
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/Rows/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/T",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Date",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DateR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapNow",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapNowR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapStamp",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapStampR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GroupedNow",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedNowR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedToday",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedTodayR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/NowStamp",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/NowStampR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Stamp",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StampR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Time",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/TimeR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/TodayDate",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/TodayDateR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapNow",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapNow"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapNowR",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapNowR"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapStampR",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapStampR"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/D",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/Rows/D"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/S",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/Rows/S"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/T",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/Rows/T"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/Rows/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/T",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DateComp",
+              "field": "Form/Date",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ]
+            },
+            {
+              "code": "DateRComp",
+              "field": "Form/DateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ]
+            },
+            {
+              "code": "GapNow",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowComp",
+              "field": "Form/GapNow",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapNowRComp",
+              "field": "Form/GapNowR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampComp",
+              "field": "Form/GapStamp",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GapStampRComp",
+              "field": "Form/GapStampR",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "GroupedNow",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedNowComp",
+              "field": "Form/GroupedNow",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ]
+            },
+            {
+              "code": "GroupedNowR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedNowRComp",
+              "field": "Form/GroupedNowR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ]
+            },
+            {
+              "code": "GroupedToday",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedTodayComp",
+              "field": "Form/GroupedToday",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ]
+            },
+            {
+              "code": "GroupedTodayR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "GroupedTodayRComp",
+              "field": "Form/GroupedTodayR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ]
+            },
+            {
+              "code": "NowStamp",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "NowStampComp",
+              "field": "Form/NowStamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ]
+            },
+            {
+              "code": "NowStampR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "NowStampRComp",
+              "field": "Form/NowStampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ]
+            },
+            {
+              "code": "StampComp",
+              "field": "Form/Stamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ]
+            },
+            {
+              "code": "StampRComp",
+              "field": "Form/StampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ]
+            },
+            {
+              "code": "TimeComp",
+              "field": "Form/Time",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ]
+            },
+            {
+              "code": "TimeRComp",
+              "field": "Form/TimeR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ]
+            },
+            {
+              "code": "TodayDate",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "TodayDateComp",
+              "field": "Form/TodayDate",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ]
+            },
+            {
+              "code": "TodayDateR",
+              "field": "Form/Error",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/Error"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N"
+              ]
+            },
+            {
+              "code": "TodayDateRComp",
+              "field": "Form/TodayDateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ]
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/Rows/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/T",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Date",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DateR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapNow",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapNowR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapStamp",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GapStampR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/GroupedNow",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedNowR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedToday",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/GroupedTodayR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/NowStamp",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/NowStampR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/Stamp",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/StampR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Time",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/TimeR",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/TodayDate",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Form/TodayDateR",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapNow",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapNow"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapNowR",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapNowR"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "berechnungsWertFehler",
+                "field": "Form/GapStampR",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/GapStampR"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/D",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/Rows/D"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/S",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/Rows/S"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/T",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Form/Rows/T"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "partialMessages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/D",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/Rows/D"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/S",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/T",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Form/Rows/T"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-rows",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "DateComp",
+              "field": "Form/Date",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ]
+            },
+            {
+              "code": "DateRComp",
+              "field": "Form/DateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ]
+            },
+            {
+              "code": "GapNowComp",
+              "field": "Form/GapNow",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GapNow"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GapNow"
+              ]
+            },
+            {
+              "code": "GapNowRComp",
+              "field": "Form/GapNowR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GapNowR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GapNowR"
+              ]
+            },
+            {
+              "code": "GapStampComp",
+              "field": "Form/GapStamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/GapStamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/GapStamp"
+              ]
+            },
+            {
+              "code": "GapStampRComp",
+              "field": "Form/GapStampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/GapStampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/GapStampR"
+              ]
+            },
+            {
+              "code": "GroupedNowComp",
+              "field": "Form/GroupedNow",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ]
+            },
+            {
+              "code": "GroupedNowRComp",
+              "field": "Form/GroupedNowR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ]
+            },
+            {
+              "code": "GroupedTodayComp",
+              "field": "Form/GroupedToday",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ]
+            },
+            {
+              "code": "GroupedTodayRComp",
+              "field": "Form/GroupedTodayR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ]
+            },
+            {
+              "code": "NowStampComp",
+              "field": "Form/NowStamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ]
+            },
+            {
+              "code": "NowStampRComp",
+              "field": "Form/NowStampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ]
+            },
+            {
+              "code": "StampComp",
+              "field": "Form/Stamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ]
+            },
+            {
+              "code": "StampRComp",
+              "field": "Form/StampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ]
+            },
+            {
+              "code": "TimeComp",
+              "field": "Form/Time",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ]
+            },
+            {
+              "code": "TimeRComp",
+              "field": "Form/TimeR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ]
+            },
+            {
+              "code": "TodayDateComp",
+              "field": "Form/TodayDate",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ]
+            },
+            {
+              "code": "TodayDateRComp",
+              "field": "Form/TodayDateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Date",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/DateR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GapNow",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GapNowR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GapStamp",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GapStampR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GroupedNow",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GroupedNowR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GroupedToday",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GroupedTodayR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/NowStamp",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/NowStampR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Stamp",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/StampR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Time",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/TimeR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/TodayDate",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/TodayDateR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "DateComp",
+              "field": "Form/Date",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/Date"
+              ]
+            },
+            {
+              "code": "DateRComp",
+              "field": "Form/DateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/D",
+                "/Form[1]/Rows[0]/N",
+                "Form/DateR"
+              ]
+            },
+            {
+              "code": "GapNowComp",
+              "field": "Form/GapNow",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GapNow"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GapNow"
+              ]
+            },
+            {
+              "code": "GapNowRComp",
+              "field": "Form/GapNowR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GapNowR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GapNowR"
+              ]
+            },
+            {
+              "code": "GapStampComp",
+              "field": "Form/GapStamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/GapStamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/GapStamp"
+              ]
+            },
+            {
+              "code": "GapStampRComp",
+              "field": "Form/GapStampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/GapStampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/GapStampR"
+              ]
+            },
+            {
+              "code": "GroupedNowComp",
+              "field": "Form/GroupedNow",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNow"
+              ]
+            },
+            {
+              "code": "GroupedNowRComp",
+              "field": "Form/GroupedNowR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedNowR"
+              ]
+            },
+            {
+              "code": "GroupedTodayComp",
+              "field": "Form/GroupedToday",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedToday"
+              ]
+            },
+            {
+              "code": "GroupedTodayRComp",
+              "field": "Form/GroupedTodayR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/GroupedTodayR"
+              ]
+            },
+            {
+              "code": "NowStampComp",
+              "field": "Form/NowStamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStamp"
+              ]
+            },
+            {
+              "code": "NowStampRComp",
+              "field": "Form/NowStampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/NowStampR"
+              ]
+            },
+            {
+              "code": "StampComp",
+              "field": "Form/Stamp",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/Stamp"
+              ]
+            },
+            {
+              "code": "StampRComp",
+              "field": "Form/StampR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/S",
+                "Form/StampR"
+              ]
+            },
+            {
+              "code": "TimeComp",
+              "field": "Form/Time",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/Time"
+              ]
+            },
+            {
+              "code": "TimeRComp",
+              "field": "Form/TimeR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/T",
+                "Form/TimeR"
+              ]
+            },
+            {
+              "code": "TodayDateComp",
+              "field": "Form/TodayDate",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDate"
+              ]
+            },
+            {
+              "code": "TodayDateRComp",
+              "field": "Form/TodayDateR",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "",
+              "referenced": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ],
+              "fillToFix": [
+                "/Form[1]/Rows[0]/N",
+                "Form/TodayDateR"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/Date",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/DateR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GapNow",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GapNowR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GapStamp",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GapStampR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GroupedNow",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GroupedNowR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GroupedToday",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/GroupedTodayR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/NowStamp",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/NowStampR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Stamp",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/StampR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/Time",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/TimeR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/TodayDate",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Form/TodayDateR",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "partialMessages": []
+        }
+      ]
+    }
+  ]
+}

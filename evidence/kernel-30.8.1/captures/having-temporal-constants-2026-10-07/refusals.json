@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 2,
+  "dmtool": "0.13.0",
+  "kernelBuilt": "30.8.1",
+  "kernelRuntime": "30.8.1",
+  "source": {
+    "revision": "6bc5e75337a6b2caea5b563e26d346cf53e163c8",
+    "state": "CLEAN"
+  },
+  "model": "6507e3921c4cc54bf6e2e76ff9aea4022e16dd862febfbf3ca44fed81dda5144",
+  "observations": [
+    {
+      "id": "refusal0",
+      "inputHash": "5fd88c412d0cc0b5fd11b66aeff70902783e2903746c122974f69111d2b6ebda",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_TO_CONST"
+      ]
+    },
+    {
+      "id": "refusal1",
+      "inputHash": "80b4c10d3b1709e6da741f5bb449f0e10b6aaa14efd5fecd5f55e35b8aa7b194",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_TO_CONST"
+      ]
+    },
+    {
+      "id": "refusal2",
+      "inputHash": "0e38a035516b228732e6766bd4794f5a2eadbfbb35909d1ec3ab9a88696be956",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_TO_CONST"
+      ]
+    },
+    {
+      "id": "refusal3",
+      "inputHash": "53cc3cc9922bf59165665287f67fb4e9f35bc442206025b599c6c52201e6fa61",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_TO_CONST"
+      ]
+    },
+    {
+      "id": "refusal4",
+      "inputHash": "16f4c945b7a3a3abb45a497d41820e10235c333806f619ffd74e96a0b2ce4f65",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_TO_CONST"
+      ]
+    },
+    {
+      "id": "refusal5",
+      "inputHash": "5e3e82cc6dbfb9fe432e10a538130918702663cc9b7c2e522e291370156eb817",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_TO_DATE"
+      ]
+    },
+    {
+      "id": "refusal6",
+      "inputHash": "07b8e4336c6ec4093cc906223ebc7b2bb916d613afc6d9b805532e5b31236283",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_TO_DATE"
+      ]
+    },
+    {
+      "id": "refusal7",
+      "inputHash": "fb8bb946eb8b6bb3c870483f959096ee0a8ca4a6207227ea4352385b15a94427",
+      "ok": true,
+      "valid": false,
+      "codes": [
+        "MVK_INVALID_COMPARE_TO_DATE"
+      ]
+    }
+  ]
+}
