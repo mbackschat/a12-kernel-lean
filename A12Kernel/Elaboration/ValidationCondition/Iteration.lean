@@ -111,10 +111,17 @@ private def orderedNumericDirectWrapperLiteralGuardAt
   | some status => some status
   | none => classify comparison.right comparison.left
 
+/-- A selected entity still references its enclosing parent and dynamic key scopes. The selected level itself is supplied by lookup (`SemanticIndex.bindingScopes`); the Kernel's `IterationNotValidVisitor.isIteration(IEntityId)` also follows the key's iteration. -/
+private def selectedEntityGuardScope
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
+    List RepeatableLevel :=
+  (match source with | .inl source => source.bindingScopes | .inr source => source.bindingScopes).flatten
+
 private def numberEntityOperandReferenceScope? :
     CheckedNumberEntityOperand model →
       Option (List RepeatableLevel)
-  | .field _ | .selected _ => some []
+  | .field source => some source.declaration.repeatableScope
+  | .selected source => some (selectedEntityGuardScope source.source)
   | .star checked => checkedStarBindingScope checked.source
   | .starHaving checked => checkedStarBindingScope checked.source.source
   | .group slot =>
@@ -129,7 +136,8 @@ private def numberEntityReferenceScopes?
 private def tokenEntityOperandReferenceScope? :
     CheckedTokenEntityOperand model →
       Option (List RepeatableLevel)
-  | .field _ | .selected _ => some []
+  | .field source => some source.declaration.repeatableScope
+  | .selected source => some (selectedEntityGuardScope source.source)
   | .star checked => checkedStarBindingScope checked.source
   | .group slot =>
       let scope := slot.source.bindingScope
@@ -143,7 +151,8 @@ private def tokenEntityReferenceScopes?
 private def booleanValueCountOperandReferenceScope? :
     CheckedBooleanValueCountOperand model expected →
       Option (List RepeatableLevel)
-  | .field _ | .selected _ => some []
+  | .field source => some source.declaration.repeatableScope
+  | .selected source => some (selectedEntityGuardScope source.source)
   | .star source => checkedStarBindingScope source.source
   | .group slot =>
       let scope := slot.source.bindingScope
@@ -158,7 +167,8 @@ private def productReferenceScopes?
     (source : CheckedNumericProductAggregate model) :
     Option (List (List RepeatableLevel)) := do
   match source with
-  | .selected _ => pure []
+  | .selected source => pure [source.left.source.bindingScopes.flatten,
+      source.right.source.bindingScopes.flatten]
   | .row source =>
       let left ← checkedStarBindingScope source.left.source
       let right ← checkedStarBindingScope source.right.source
@@ -168,26 +178,27 @@ private structure NumericEntityGuardShape where
   referenceScopes : List (List RepeatableLevel)
   zeroSensitive : Bool
   positiveSensitive : Bool
+  rejectsMixedReferences : Bool
 
-/-- The source visitor gives Number entity operations two independent static sensitivities plus a stronger any-constant rejection when their references mix at the queried level. -/
+/-- The source visitor gives Number entity operations two independent static sensitivities plus an operator-specific rejection of mixed references. The Kernel visitor excludes `SumOfProducts` from its mixed-reference rejection, while preserving its zero sensitivity. -/
 private def numericEntityGuardShape? :
     OrderedNumericValidationAtom model →
       Option NumericEntityGuardShape
   | .firstFilled source =>
-      (numberEntityReferenceScopes? source).map (⟨·, true, false⟩)
+      (numberEntityReferenceScopes? source).map (⟨·, true, false, true⟩)
   | .valueCount _ source =>
-      (numberEntityReferenceScopes? source).map (⟨·, true, true⟩)
+      (numberEntityReferenceScopes? source).map (⟨·, true, true, true⟩)
   | .aggregate op source =>
       (numberEntityReferenceScopes? source).map fun scopes =>
         match op with
-        | .sum | .minimum | .maximum => ⟨scopes, true, false⟩
-        | .distinctCount => ⟨scopes, false, true⟩
+        | .sum | .minimum | .maximum => ⟨scopes, true, false, true⟩
+        | .distinctCount => ⟨scopes, false, true, true⟩
   | .sumOfProducts source =>
-      (productReferenceScopes? source).map (⟨·, true, false⟩)
+      (productReferenceScopes? source).map (⟨·, true, false, false⟩)
   | .tokenValueCount source =>
-      (tokenEntityReferenceScopes? source.source).map (⟨·, true, true⟩)
+      (tokenEntityReferenceScopes? source.source).map (⟨·, true, true, true⟩)
   | .booleanValueCount source =>
-      (booleanValueCountReferenceScopes? source).map (⟨·, true, true⟩)
+      (booleanValueCountReferenceScopes? source).map (⟨·, true, true, true⟩)
   -- The guard shape exists for Number entity operations whose references sit at a queried level.
   -- A group count references groups, not levelled Number entities, so it has no shape here — the
   -- same answer the scalar leaf gives.
@@ -223,7 +234,7 @@ private def orderedNumericPlainStarLiteralGuardAt
     | .literal _ =>
         match levelReferenceShapeAt level shape.referenceScopes with
         | .none => some .noReference
-        | .mixed => some .unguarded
+        | .mixed => some (if shape.rejectsMixedReferences then .unguarded else .guarded)
         | .allIterating =>
             let literal ← hostConvertedLiteralValue? literalExpr
             if (shape.zeroSensitive && literal == 0 &&

@@ -48,6 +48,7 @@ import A12Kernel.Reference.Dm.NumericCountLocks
 import A12Kernel.Reference.Dm.FirstFilledValidationLocks
 import A12Kernel.Reference.Dm.SelectedFirstFilledLocks
 import A12Kernel.Reference.Dm.SelectedMessageLocks
+import A12Kernel.Reference.Dm.SelectedIterationLocks
 import A12Kernel.Reference.Dm.DateRangeConstructionLocks
 import A12Kernel.Reference.Dm.BandedComputationLocks
 import A12Kernel.Reference.Dm.DistinctCountLocks

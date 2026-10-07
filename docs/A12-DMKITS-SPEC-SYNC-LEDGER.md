@@ -35,6 +35,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-07-03"></a>
+### SPEC-2026-10-07-03 — selected entity guards retain parent and key iteration
+
+- `status`: pending
+- `canonical`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands).
+- `delta`: selected entities still reference their parent and dynamic-key iteration levels. Apply the existing per-level literal sensitivities; the extra mixed-reference rejection excludes `SumOfProducts`.
+- `basis`: [Selected-reference checkpoint](sources/message-and-pointer-probes.md#src-selected-message-reference-resolution), Kernel 30.8.1. Both strategies admit the retained group/lower-star Sum disjunctions; the cited static visitor establishes key traversal and the product exception. Broader carrier locks are internal, with external calibration pending.
+- `acceptance`: preserve the admitted `RefUnreachedGroup` and `RefUnreachedStar` rules; reconcile parent/key level classification and the separate mixed-reference gate against the cited source. Do not flatten multi-level legality into one Boolean reference flag or claim the whole wider matrix was measured. Introducing revision is the first commit containing this entry ID.
+
 <a id="spec-2026-10-07-02"></a>
 ### SPEC-2026-10-07-02 — selected message references retain payload, index and dynamic key
 
