@@ -45,8 +45,8 @@ structure HavingLeafResolvers extends HavingNumericResolvers where
     Except CorrelationElabError HavingFieldValueList
   fieldFill : SurfaceHavingEntitySource → Except CorrelationElabError (List (HavingFieldListSlot HavingPresenceRef))
   groupPresence : HavingOrigin → SurfaceGroupReference → Except CorrelationElabError ComputationGroupOperand
-  groupFill : GroupFillQuantifier → (HavingOrigin × SurfaceGroupReference) →
-    List (HavingOrigin × SurfaceGroupReference) → Except CorrelationElabError (HavingGroupOperand × List HavingGroupOperand)
+  groupFill : GroupFillQuantifier → SurfaceHavingEntityOperand →
+    List SurfaceHavingEntityOperand → Except CorrelationElabError (HavingGroupOperand × List HavingGroupOperand)
   stringPattern : HavingOrigin → SurfaceFieldPath → String →
     Except CorrelationElabError (HavingPresenceRef × CompiledStringPattern)
   typeValidity : HavingOrigin → SurfaceFieldPath → String → Except CorrelationElabError HavingPresenceRef

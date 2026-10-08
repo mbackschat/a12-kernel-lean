@@ -91,7 +91,7 @@ private def filtered (guard : SurfaceCorrelatedHaving) (directTarget : Bool := f
 
 private def positiveGroup : SurfaceCorrelatedHaving := .groupPresence .filled .inner containingGroup
 private def negativeGroup : SurfaceCorrelatedHaving := .groupPresence .notFilled .inner containingGroup
-private def ordinaryGroup : SurfaceCorrelatedHaving := .groupFill .atLeastOneGroupFilled (.inner, containingGroup) []
+private def ordinaryGroup : SurfaceCorrelatedHaving := .groupFill .atLeastOneGroupFilled (.group .inner containingGroup) []
 private def directTarget : SurfaceCorrelatedHaving := .presence .filled {
   origin := .inner
   field := { base := .absolute, groups := ["Review", "Target"], field := "FirstApproved" } }

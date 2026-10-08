@@ -156,15 +156,6 @@ def FlatModel.admitsHavingSimpleComparison (model : FlatModel)
         model.admitsComparisonInputsIn comparison leftScope rightScope
   | _ => false
 
-/-- Authored group lists and reconstructed certificates reject the same strict ancestor overlap regardless of capture; identical paths remain origin-sensitive (kernel CheckEntityListenUtils / EntityRef, spec/07 §3). -/
-def firstOverlappingHavingPaths? : List (HavingOrigin × GroupPath) → Option (GroupPath × GroupPath)
-  | [] => none
-  | (origin, path) :: rest =>
-      match rest.find? fun (otherOrigin, other) => (path == other && origin == otherOrigin) ||
-          (path != other && (path.isPrefixOf other || other.isPrefixOf path)) with
-      | some (_, other) => some (path, other)
-      | none => firstOverlappingHavingPaths? rest
-
 private def HavingGroupOperand.path? (operand : HavingGroupOperand) (model : FlatModel) : Option GroupPath :=
   match operand with
   | .field reference => (model.lookupUniqueId reference.field).toOption.map (·.path)
@@ -176,8 +167,21 @@ private def HavingGroupOperand.admitted (operand : HavingGroupOperand) (model : 
   | .field reference => (model.lookupUniqueId reference.field).toOption.any fun declaration =>
       repeatableScopeAvailable declaration.repeatableScope
         (reference.origin.availableLevels candidateLevels outerLevels)
-  | .group origin source => source.starPath.isNone &&
+  | .group origin source => model.groupContributesField source.reference.path &&
       source.admitted model (origin.availableLevels candidateLevels outerLevels)
+
+private def HavingGroupOperand.isStarred : HavingGroupOperand → Bool
+  | .field _ => false
+  | .group _ source => source.starPath.isSome
+
+private def havingGroupOperandsDisjoint (model : FlatModel) : List HavingGroupOperand → Bool
+  | [] => true
+  | first :: rest =>
+      rest.all (fun other => match first.path? model, other.path? model with
+        | some left, some right =>
+            if left == right then first.isStarred || other.isStarred || first.origin != other.origin
+            else !(left.isPrefixOf right || right.isPrefixOf left)
+        | _, _ => false) && havingGroupOperandsDisjoint model rest
 
 def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) :
@@ -229,19 +233,18 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
           declaration.fieldValueReadRefusal?.isNone && repeatableScopeAvailable declaration.repeatableScope
             (reference.origin.availableLevels candidateLevels outerLevels)
   | .groupPresence _ origin source =>
-      source.dependencyKind == .conditionalPresence &&
+      source.dependencyKind == .conditionalPresence && source.starPath.isNone &&
         (HavingGroupOperand.group origin source).admitted model candidateLevels outerLevels
   | .groupFill operator first rest =>
       let operands := first :: rest
       (!operator.requiresMultipleOperands || !rest.isEmpty) &&
-        operands.eraseDups.length == operands.length &&
-        (firstOverlappingHavingPaths? (operands.filterMap fun operand =>
-          (operand.path? model).map (operand.origin, ·))).isNone &&
+        havingGroupOperandsDisjoint model operands &&
+        (!operator.requiresMultipleOperands || operands.all (fun operand => !operand.isStarred)) &&
         operands.all (fun operand => operand.admitted model candidateLevels outerLevels &&
           match operand with
           | .field _ => true
           | .group _ source => source.dependencyKind ==
-              (if source.reference.isRoot then .conditionalPresence else .ordinaryList)) &&
+              (if source.reference.isRoot && source.starPath.isNone then .conditionalPresence else .ordinaryList)) &&
         (operands.all fun
           | .field _ => true
           | .group _ source => !source.reference.isRoot ||
@@ -352,7 +355,8 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
       | .field reference => reference.origin == .inner &&
           (model.lookupUniqueId reference.field).toOption.any fun declaration =>
             declaration.repeatableScope.any reopenedLevels.contains
-      | .group origin source => origin == .inner && source.content.scope.any reopenedLevels.contains
+      | .group origin source => origin == .inner &&
+          (source.starPath.map (·.bindingScope) |>.getD source.content.scope).any reopenedLevels.contains
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ =>
       match reference.origin, model.lookupUniqueId reference.field with
       | .inner, .ok declaration =>

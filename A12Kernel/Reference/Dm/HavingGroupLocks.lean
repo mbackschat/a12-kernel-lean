@@ -304,4 +304,226 @@ example : producerProtection "GroupFilled(Info)" = some true ∧
     producerProtection "Sum(Rows*/N Having [Rows/N] > 0 And GroupFilled(Info)) > 0" = some false := by
   native_decide
 
+example : ["AtLeastOneGroupFilled(Rows*)", "NoGroupFilled(Rows*)"].all (fun predicate =>
+    groupAdmission groupedModel ("[Rows/N] > 0 And " ++ predicate) == .admitted) = true ∧
+    runModel groupedModel "[Rows/N] > 0 And AtLeastOneGroupFilled(Rows*)" false "" "" ""
+      (ruleExpected := "14") = some (.fired .omission, ["value 14"]) ∧
+    runModel groupedModel "[Rows/N] > 0 And NoGroupFilled(Rows*)" false "" "" ""
+      (ruleExpected := "0") = some (.fired .omission, ["value 0"]) := by native_decide
+
+private def groupStarRows (values : List String) : Array Json :=
+  ((["2", "5", "7", "11"].zip values).map fun (n, value) => Json.mkObj [
+    ("N", .str n), ("Info", Json.mkObj [("Value", .str value)])]).toArray
+
+private def groupStarMatrix (operands : String) (rows : Array Json)
+    (validationNo computationNo validationSome computationSome : String)
+    (extra : List (String × Json) := []) : Bool :=
+  [("NoGroupFilled", validationNo, computationNo),
+    ("AtLeastOneGroupFilled", validationSome, computationSome)].all fun (operator, validation, computation) =>
+      runModel candidateModel ("FieldFilled(Rows/N) And " ++ operator ++ "(" ++ operands ++ ")")
+        false "" "" "" (ruleExpected := validation) (rowsOverride := some rows) (extra := extra) ==
+          some (.fired .omission, ["value " ++ computation])
+
+example : groupStarMatrix "Rows*" candidateRows "0" "0" "14" "14" ∧
+    groupStarMatrix "Rows*/Info" candidateRows "0" "0" "14" "14" ∧
+    groupStarMatrix "Rows*, Rows*" candidateRows "0" "0" "14" "14" ∧
+    groupStarMatrix "Rows*/Info, Rows*/Info" candidateRows "0" "0" "14" "14" ∧
+    groupStarMatrix "Rows*/Info, Rows*/Other" candidateRows "0" "0" "14" "14" ∧
+    groupStarMatrix "Rows*/Info" (groupStarRows ["", "", ""]) "14" "14" "0" "0" ∧
+    groupStarMatrix "Rows*/Info" (groupStarRows ["bad", "", ""]) "0" "0" "0" "14" ∧
+    groupStarMatrix "Rows*/Info" (groupStarRows ["", "", "", "3"]) "14" "14" "0" "0" ∧
+    groupStarMatrix "Rows*, Info, Other/Value" candidateRows "0" "0" "14" "14" ∧
+    groupStarMatrix "Rows*/Info, Info, Other/Value" (groupStarRows ["", "", ""])
+      "0" "0" "14" "14" [("Other", Json.mkObj [("Value", .str "3")])] := by native_decide
+
+private def groupStarRead (predicate : String) (rows : Array Json)
+    (extra : List (String × Json) := []) : Option (K × ComputationConditionResult) := do
+  let dm : DmModel := {
+    flat := candidateModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj (("Rows", .arr rows) :: extra))])).toOption
+  if !input.refusals.isEmpty then none
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler candidateModel).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let parsed ← (parseText .english (predicate ++ " And FieldFilled(Rows/N)")).toOption
+  let authored ← (lowerHaving parsed.body).toOption
+  let path ← (elaborateStarFieldPath candidateModel ["Form"] {
+    base := .relative 0, groups := [{ name := "Rows", starred := true }], field := "N" }).toOption
+  let checked ← (elaborateStarHavingCore candidateModel ["Form"] path authored).toOption
+  let .and (.leaf leaf@(.groupFill _ _ _)) _ := checked.condition | none
+  let frame : CorrelationFrame := { innerEnv := [(10, 1)], outerEnv := [] }
+  pure (← (leaf.evalTruthInResolving document.resolvingCorrelationContext frame).toOption,
+    ← (leaf.evalComputationInResolving document.resolvingCorrelationContext frame).toOption)
+
+example : ["Rows*", "Rows*/Info"].all (fun operand =>
+    groupStarRead ("NoGroupFilled(" ++ operand ++ ")") #[] == some (.tru, .holds) &&
+    groupStarRead ("AtLeastOneGroupFilled(" ++ operand ++ ")") #[] == some (.unknown, .notTrue)) = true ∧
+    [#[Json.mkObj []], #[Json.mkObj [("N", .str "bad")]]].all (fun rows =>
+      groupStarRead "AtLeastOneGroupFilled(Rows*)" rows == some (.tru, .holds) &&
+      groupStarRead "NoGroupFilled(Rows*)" rows == some (.unknown, .notTrue)) = true ∧
+    groupStarRead "NoGroupFilled(Rows*/Info)" (groupStarRows ["bad"]) = some (.unknown, .notTrue) ∧
+    groupStarRead "AtLeastOneGroupFilled(Rows*/Info)" (groupStarRows ["bad"]) = some (.unknown, .holds) := by
+  native_decide
+
+example : groupStarRead "AtLeastOneGroupFilled(Rows*, Info/Value)" candidateRows
+      [("Info", Json.mkObj [("Value", .str "bad")])] = some (.tru, .holds) ∧
+    groupStarRead "AtLeastOneGroupFilled(Info/Value, Rows*)" candidateRows
+      [("Info", Json.mkObj [("Value", .str "bad")])] = some (.tru, .poison .malformed) ∧
+    groupStarRead "NoGroupFilled(Rows*, Info/Value)" candidateRows
+      [("Info", Json.mkObj [("Value", .str "bad")])] = some (.unknown, .notTrue) ∧
+    groupStarRead "NoGroupFilled(Info/Value, Rows*)" candidateRows
+      [("Info", Json.mkObj [("Value", .str "bad")])] = some (.unknown, .poison .malformed) := by
+  native_decide
+
+private def groupStarDeclarations : FlatModel := { candidateModel with
+  fields := candidateModel.fields ++ [{
+    id := 12, groupPath := ["Form", "Rows", "Descendant", "Child"], name := "Value", repeatableScope := [10],
+    policy := { kind := .number { scale := 0, signed := true } } }]
+  repeatableGroups := candidateModel.repeatableGroups ++ [{
+    level := 40, path := ["Form", "Hollow"], repeatability := some 2 }] }
+
+private def groupCategoryModel : FlatModel := { candidateModel with fields := candidateModel.fields.map fun field =>
+  if field.id == 6 then { field with policy := { kind := .enumeration }, enumeration := some {
+    storedTokens := ["1", "2"], categories := [{ name := "Label", tokens := ["one", "two"] }] } } else field }
+
+example : ["NoGroupFilled", "AtLeastOneGroupFilled"].all (fun operator =>
+    ["Rows*", "Rows*/Info", "Rows*, Rows*", "Rows*/Info, Rows*/Info", "Rows*, Info, Other/Value"].all
+      (fun operands => groupAdmission candidateModel
+        ("FieldFilled(Rows/N) And " ++ operator ++ "(" ++ operands ++ ")") == .admitted) &&
+    groupAdmission candidateModel (operator ++ "(Rows*)") == .refused (some .noIterationForWildcard) &&
+    groupAdmission candidateModel (operator ++ "(Rows*/Info)") == .refused (some .noIterationForWildcard) &&
+    groupAdmission candidateModel ("FieldFilled(Rows/N) And " ++ operator ++ "(Info, Info)") ==
+      .refused (some .duplicateParam1) &&
+    groupAdmission candidateModel ("FieldFilled(Rows/N) And " ++ operator ++ "(Rows*/Info, Rows/Info/Value)") ==
+      .refused (some .duplicateParam2) &&
+    groupAdmission candidateModel ("FieldFilled(Rows/N) And " ++ operator ++ "(Rows*, $/Form/Rows*/Info)") ==
+      .refused (some .duplicateParam2) &&
+    groupAdmission groupCategoryModel ("FieldFilled(Rows/N) And " ++ operator ++ "(Rows*, Info/Value -> Label)") ==
+      .refused (some .categoryNotAllowed) &&
+    groupAdmission groupCategoryModel ("FieldFilled(Rows/N) And " ++ operator ++ "(Rows*, Info/Value)") == .admitted &&
+    groupAdmission groupStarDeclarations ("FieldFilled(Rows/N) And " ++ operator ++ "(Rows*/Descendant)") == .admitted &&
+    groupAdmission groupStarDeclarations ("FieldFilled(Rows/N) And " ++ operator ++ "(Hollow*)") ==
+      .refused (some .groupIsEmpty)) = true := by native_decide
+
+example : ["AllGroupsFilled", "NotAllGroupsFilled", "GroupsNotCollectivelyFilled"].all (fun operator =>
+    ["Rows*, Info", "Rows*/Info, Info"].all (fun operands =>
+      groupAdmission candidateModel ("FieldFilled(Rows/N) And " ++ operator ++ "(" ++ operands ++ ")") ==
+        .refused (some .noWildcardsGAllowed)) &&
+    groupAdmission groupCategoryModel ("FieldFilled(Rows/N) And " ++ operator ++ "(Info/Value -> Label, Other)") ==
+      .refused (some .categoryNotAllowed)) = true ∧
+    groupAdmission candidateModel "FieldFilled(Rows/N) And GroupFilled(Rows*)" =
+      .readerRefused "Having" "group path" := by native_decide
+
+private def nestedGroupModel : FlatModel := { model with
+  fields := (model.fields.map fun field => if field.id == 5 then
+    { field with groupPath := ["Form", "Rows"], repeatableScope := [10] } else field) ++ [{
+      id := 11, groupPath := ["Form", "Rows", "Bucket", "Items"], name := "C", repeatableScope := [10, 20],
+      policy := { kind := .number { scale := 0, signed := true } } }]
+  repeatableGroups := model.repeatableGroups ++ [{
+    level := 20, path := ["Form", "Rows", "Bucket", "Items"], repeatability := some 2 }] }
+
+private def nestedGroupFilter (operator operand : String) :=
+  operator ++ "(" ++ operand ++ ") And FieldFilled(N)"
+
+private def nestedGroupRun (operator operand : String) : Option (List Bool × List String) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let dm : DmModel := {
+    flat := nestedGroupModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let row (n : String) (values : List String) := Json.mkObj [
+    ("N", .str n), ("Tag", .str "x"), ("Out", .str "99"), ("Bucket", Json.mkObj [
+      ("Items", .arr ((values.map fun value => Json.mkObj [("C", .str value)]).toArray))])]
+  let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+    ("Rows", .arr #[row "2" ["1", "1"], row "5" ["2"], row "13" []])])])).toOption
+  if !input.refusals.isEmpty then none
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler nestedGroupModel).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let operation := "Sum(/Form/Rows*/N Having " ++ nestedGroupFilter operator operand ++ ")"
+  let rule ← (checkRule dm .english {
+    group := ["Form", "Rows"], name := "Nested", errorCode := "NESTED", errorEntityRelPath := "../N",
+    condition := "FieldFilled(N) And " ++ operation ++ " > 0", severity := "ERROR" } world).toOption
+  let verdicts ← (rule.evalOrdinaryRepeatableFull document (some world)).toOption
+  let (_, computation) ← (lowerComputation nestedGroupModel .english {
+    group := ["Form", "Rows"], name := "Nested", targetRelPath := "../Out", commonPrecondition := none,
+    alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).toOption
+  let outcomes ← (runComputations world prepared document [computation]).toOption
+  pure (verdicts.map (fun result => result.2.verdict.keepsHaving), outcomes.map (·.outcome))
+
+example : ["Bucket", "Bucket/Items*"].all (fun operand =>
+    nestedGroupRun "AtLeastOneGroupFilled" operand == some ([true, true, true], ["value 7", "value 7", "value 7"]) &&
+    nestedGroupRun "AtLeastOneGroupFilled" ("$" ++ operand) ==
+      some ([true, true, false], ["value 20", "value 20", "value 0"]) &&
+    nestedGroupRun "NoGroupFilled" operand == some ([true, true, true], ["value 13", "value 13", "value 13"]) &&
+    nestedGroupRun "NoGroupFilled" ("$" ++ operand) ==
+      some ([false, false, true], ["value 0", "value 0", "value 20"])) = true := by native_decide
+
+private def nestedGroupReferences (operator operand : String) :
+    Option (Option (List RepeatableLevel) × Bool × Bool) := do
+  let filter := nestedGroupFilter operator operand
+  let parsed ← (parseText .english ("FieldValuesNotUnique(/Form/Rows*/Tag Having " ++ filter ++ ")")).toOption
+  let checked ← (lowerCondition nestedGroupModel ["Form", "Rows"] false parsed.body).toOption
+  let numeric ← (parseText .english ("Sum(/Form/Rows*/N Having " ++ filter ++ ") > 0")).toOption
+  let numericChecked ← (lowerCondition nestedGroupModel ["Form", "Rows"] false numeric.body).toOption
+  let scope ← numericChecked.core.ordinaryIterationScope.toOption
+  let pointers ← (checked.core.referencePointers [(10, 2)]).toOption
+  pure (scope, pointers.contains { field := 11, coordinates := [.wildcard, .wildcard] },
+    pointers.contains { field := 11, coordinates := [.concrete 2, .wildcard] })
+
+example : ["NoGroupFilled", "AtLeastOneGroupFilled"].all (fun operator =>
+    ["Bucket", "Bucket/Items*"].all (fun operand =>
+      nestedGroupReferences operator operand == some (none, true, false) &&
+      nestedGroupReferences operator ("$" ++ operand) == some (some [10], false, true))) = true := by
+  native_decide
+
+private def freshGroupStar (operator expected : String) : Option (Verdict × List String) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let dm : DmModel := {
+    flat := candidateModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+    ("Error", .str "ready"), ("Rows", .arr (groupStarRows ["", "", ""]))])])).toOption
+  if !input.refusals.isEmpty then none
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler candidateModel).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let operation := "Sum(Rows*/N Having FieldFilled(Rows/N) And " ++ operator ++ "(Rows*/Info))"
+  let rule ← (checkRule dm .english {
+    group := ["Form"], name := "Fresh", errorCode := "FRESH", errorEntityRelPath := "../Error",
+    condition := "FieldFilled(Error) And " ++ operation ++ " == " ++ expected, severity := "ERROR" } world).toOption
+  let context : AddressedValidationEvaluationContext candidateModel := {
+    scalar := { fields := document.flatContext.withWorld world, groups := GroupPresenceContext.unavailable }
+    outer := [], input := .checked document }
+  let verdict := (← (rule.evalAddressedFull context true).toOption).verdict
+  let computation (name : String) (group : GroupPath) (target operation : String) := lowerComputation candidateModel .english {
+    group, name, targetRelPath := target, commonPrecondition := none,
+    alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }
+  let (_, consumer) ← (computation "Consumer" ["Form"] "../Out" operation).toOption
+  let (_, producer) ← (computation "Producer" ["Form", "Rows", "Info"] "../Value" "4").toOption
+  let outcomes ← (runComputations world prepared document [consumer, producer]).toOption
+  pure (verdict, outcomes.map (·.outcome))
+
+example : freshGroupStar "AtLeastOneGroupFilled" "0" =
+      some (.fired .omission, ["value 4", "value 4", "value 4", "value 14"]) ∧
+    freshGroupStar "NoGroupFilled" "14" =
+      some (.fired .omission, ["value 4", "value 4", "value 4", "value 0"]) := by native_decide
+
+private def groupStarCertificate : Option (List Bool) := do
+  let parsed ← (parseText .english "AtLeastOneGroupFilled(Rows*/Info) And FieldFilled(Rows/N)").toOption
+  let authored ← (lowerHaving parsed.body).toOption
+  let path ← (elaborateStarFieldPath candidateModel ["Form"] {
+    base := .relative 0, groups := [{ name := "Rows", starred := true }], field := "N" }).toOption
+  let checked ← (elaborateStarHavingCore candidateModel ["Form"] path authored).toOption
+  let .and (.leaf (.groupFill _ (.group origin source) [])) _ := checked.condition | none
+  let test (source : ComputationGroupOperand) (operator := GroupFillQuantifier.atLeastOneGroupFilled) :=
+    (CorrelatedHavingLeaf.groupFill operator (.group origin source) []).wellFormedForEnvironments candidateModel [10] []
+  pure [test source, test { source with members := [] },
+    test { source with content := { source.content with rowLevels := [10] } },
+    test { source with starPath := some { axes := [{ level := 10, repeatability := some 4 }], firstStar := 0 } },
+    test { source with dependencyKind := .conditionalPresence },
+    [GroupFillQuantifier.allGroupsFilled, .notAllGroupsFilled, .groupsNotCollectivelyFilled].all (fun operator =>
+      let second := HavingGroupOperand.field { origin := .inner, field := 6 }
+      let checked (first : ComputationGroupOperand) :=
+        (CorrelatedHavingLeaf.groupFill operator (.group origin first) [second]).wellFormedForEnvironments candidateModel [10] []
+      checked { source with starPath := none } && !checked source),
+    (CorrelatedHavingLeaf.groupPresence .filled origin { source with dependencyKind := .conditionalPresence }).wellFormedForEnvironments candidateModel [10] []]
+
+example : groupStarCertificate = some [true, false, false, false, false, true, false] := by native_decide
+
 end A12Kernel.Dm.HavingGroupLocks

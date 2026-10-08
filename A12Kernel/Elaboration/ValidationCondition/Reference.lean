@@ -326,13 +326,8 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
       pure [← havingFieldPointerFor source environment declaration reference.origin]
   | .leaf (.groupPresence _ origin group) =>
       havingGroupReferencePointers source environment origin group.reference
-  | .leaf (.groupFill _ first rest) => do
-      let pointers ← (first :: rest).mapM fun
-        | .group origin group => havingGroupReferencePointers source environment origin group.reference
-        | .field reference => do
-            let declaration ← (model.lookupUniqueId reference.field).mapError fun _ => .incoherentHavingField reference.field
-            pure [← havingFieldPointerFor source environment declaration reference.origin]
-      pure pointers.flatten
+  | .leaf (.groupFill _ first rest) =>
+      havingEntityListReferencePointers source environment ((first :: rest).map (·.presenceSlot))
   | .and left right | .or left right => do
       pure ((← correlatedHavingReferencePointers source environment left) ++
         (← correlatedHavingReferencePointers source environment right))

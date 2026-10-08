@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.CorrelationInputs
+import A12Kernel.Semantics.HavingEntityList
 
 namespace A12Kernel
 
@@ -39,6 +40,13 @@ def HavingGroupOperand.fieldIds : HavingGroupOperand → List FieldId
   | .field reference => [reference.field]
   | .group _ source => source.members
 
+def HavingGroupOperand.presenceSlot : HavingGroupOperand → HavingFieldListSlot HavingPresenceRef
+  | .field reference => .direct reference
+  | .group origin source => .extent (match source.starPath with
+      | none => .group source.reference
+      | some path => .starredGroup source.reference.path path)
+      (source.members.map fun field => { origin, field })
+
 private def readValidationGroup (context : ResolvingCorrelationContext Error)
     (frame : CorrelationFrame) (origin : HavingOrigin) (source : ComputationGroupOperand) :
     Except Error GroupPresenceState := do
@@ -52,26 +60,47 @@ def evalHavingGroupPresenceValidation (operator : GroupPresenceOperator)
 
 private def HavingGroupOperand.readValidation (operand : HavingGroupOperand)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
-    Except Error GroupListPresenceState :=
+    Except Error GroupListPresenceTally :=
   match operand with
-  | .field reference =>
-      CellObservation.asGroupListPresence <$> reference.observeInAtResolving .validation context frame
-  | .group origin source =>
-      GroupPresenceState.asGroupListPresence <$> readValidationGroup context frame origin source
+  | .field reference => do
+      pure (GroupListPresenceTally.ofStates [(← reference.observeInAtResolving .validation context frame).asGroupListPresence])
+  | .group origin source => do
+      match source.starPath with
+      | none => pure (GroupListPresenceTally.ofGroupStates [← readValidationGroup context frame origin source])
+      | some path =>
+          let some groups := context.groups | throw (context.groupUnavailable source.reference.path)
+          let some extent := groups.groupExtent? | throw (context.groupUnavailable source.reference.path)
+          let environments ← extent source.reference.path (frame.envAt origin) path
+          -- A terminal repeatable group contributes structure, while a fixed terminal below a
+          -- star contributes its product state (spec/07 §5; ordinary group-list tally).
+          if path.axes.getLast?.any (fun axis => source.content.rowLevels.contains axis.level) then
+            pure (GroupListPresenceTally.filledOnly environments.length)
+          else
+            GroupListPresenceTally.ofGroupStates <$> environments.mapM (fun env => groups.validation env source.reference)
 
 def evalHavingGroupFillValidation (operator : GroupFillQuantifier)
     (first : HavingGroupOperand) (rest : List HavingGroupOperand)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) : Except Error Verdict := do
-  let states ← (first :: rest).mapM (·.readValidation context frame)
-  pure ((operator.evalPresence states).asConservativeVerdict)
+  let tallies ← (first :: rest).mapM (·.readValidation context frame)
+  pure ((operator.evalTally (tallies.foldl GroupListPresenceTally.add (GroupListPresenceTally.ofStates []))).asConservativeVerdict)
 
 def evalHavingGroupPresenceComputation (operator : GroupPresenceOperator)
     (origin : HavingOrigin) (source : ComputationGroupOperand)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
     Except Error ComputationConditionResult := do
   let some groups := context.groups | throw (context.groupUnavailable source.reference.path)
-  let (cells, rows) ← groups.computation (frame.envAt origin) source
-  pure (operator.evalComputation cells rows)
+  match source.starPath with
+  | none =>
+      let (cells, rows) ← groups.computation (frame.envAt origin) source
+      pure (operator.evalComputation cells rows)
+  | some path =>
+      let some extent := groups.groupExtent? | throw (context.groupUnavailable source.reference.path)
+      let environments ← extent source.reference.path (frame.envAt origin) path
+      let instances ← environments.mapM fun env => do
+        let (cells, rows) ← groups.computation env source
+        pure (GroupPresenceOperator.filled.evalComputation cells rows)
+      let present := instances.any (· == .holds)
+      pure (if (match operator with | .filled => present | .notFilled => !present) then .holds else .notTrue)
 
 def havingGroupFillTree (operator : GroupFillQuantifier)
     (first : HavingGroupOperand) (rest : List HavingGroupOperand) :

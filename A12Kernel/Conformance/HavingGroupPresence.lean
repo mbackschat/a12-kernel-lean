@@ -179,4 +179,30 @@ example : [GroupFillQuantifier.allGroupsFilled, .noGroupFilled, .atLeastOneGroup
     CorrelatedHaving.requiresProducer (.or conditional ordinary) 1 3 (fun _ => true) = true ∧
     CorrelatedHaving.fieldIds (.and conditional ordinary) = [1, 3, 2] := by native_decide
 
+private def starred (terminal : Bool := false) : ComputationGroupOperand := { source with
+  starPath := some { axes := [{ level := 10, repeatability := some 2 }], firstStar := 0 }
+  content := { source.content with rowLevels := if terminal then [10] else [] }
+  dependencyKind := .ordinaryList }
+
+private def starredContext : CorrelationContext :=
+  let base := groupContext value
+  { base with groups := base.groups.map fun groups => { groups with
+    groupExtent? := some fun _ _ _ => pure [[(10, 1)], [(10, 2)]]
+    validation := fun env reference => if env == [(10, 2)] then .error (.groupUnavailable ["Later"])
+      else groups.validation env reference
+    computation := fun env source => if env == [(10, 2)] then .error (.groupUnavailable ["Later"])
+      else groups.computation env source } }
+
+example : [GroupFillQuantifier.noGroupFilled, .atLeastOneGroupFilled].all (fun operator =>
+    let leaf := CorrelatedHavingLeaf.groupFill operator (.group .inner (starred false)) []
+    decide (leaf.evalTruthInResolving starredContext.asResolving frame = .error (.groupUnavailable ["Later"])) &&
+    decide (leaf.evalComputationInResolving starredContext.asResolving frame = .error (.groupUnavailable ["Later"])) &&
+    decide (leaf.evalTruthInResolving (groupContext value).asResolving frame =
+      .error (.groupUnavailable source.reference.path)) &&
+    decide (leaf.evalComputationInResolving (groupContext value).asResolving frame =
+      .error (.groupUnavailable source.reference.path))) = true := by native_decide
+
+example : (CorrelatedHavingLeaf.groupFill .atLeastOneGroupFilled (.group .inner (starred true)) []).evalTruthInResolving starredContext.asResolving frame = .ok .tru ∧
+    (CorrelatedHavingLeaf.groupFill .noGroupFilled (.group .inner (starred true)) []).evalTruthInResolving starredContext.asResolving frame = .ok .unknown := by native_decide
+
 end A12Kernel.Conformance.HavingGroupPresence

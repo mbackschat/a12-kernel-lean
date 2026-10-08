@@ -17,43 +17,36 @@ def FlatModel.resolveHavingGroupPresence (model : FlatModel) (declaringGroup : G
     content := model.computationGroupSource reference.path
     members := (model.groupSubtreeFields reference.path).map (·.id) }
 
-private def resolveOperand (model : FlatModel) (declaringGroup : GroupPath)
-    (outerLevels : List RepeatableLevel) (origin : HavingOrigin) (surface : SurfaceGroupReference) :
-    Except CorrelationElabError (HavingGroupOperand × GroupPath) := do
-  let reference ← surface.resolveAgainst declaringGroup |>.mapError (fun error => .groupPresence (.reference error))
-  if model.hasGroupPath reference.path then
-    let source ← model.resolveHavingGroupPresence declaringGroup outerLevels origin surface
-    pure (.group origin { source with dependencyKind :=
-      if source.reference.isRoot then .conditionalPresence else .ordinaryList }, reference.path)
-  else
-    let some name := reference.path.getLast? | throw (.groupPresence (.unknownGroup reference.path))
-    let declaration ← (model.resolveFieldDeclarationUnchecked declaringGroup {
-      base := .absolute, groups := reference.path.dropLast, field := name }).mapError .resolve
-    if origin == .outer && !declaration.repeatableScope.isPrefixOf outerLevels then
-      throw (.fieldOutsideEnvironment origin declaration.path outerLevels declaration.repeatableScope)
-    pure (.field { origin, field := declaration.id }, declaration.path)
-
 /-- Group-list filters preserve authored entity identity, origin and order. Duplicate/overlap and arity gates precede the final whole-filter candidate gate, as for the existing field-list route. -/
 def FlatModel.resolveHavingGroupFill (model : FlatModel) (declaringGroup : GroupPath)
     (outerLevels : List RepeatableLevel) (operator : GroupFillQuantifier)
-    (first : HavingOrigin × SurfaceGroupReference) (rest : List (HavingOrigin × SurfaceGroupReference)) :
+    (first : SurfaceHavingEntityOperand) (rest : List SurfaceHavingEntityOperand) :
     Except CorrelationElabError (HavingGroupOperand × List HavingGroupOperand) := do
-  let operands : List (HavingGroupOperand × GroupPath) ← (first :: rest).mapM fun (origin, surface) =>
-    resolveOperand model declaringGroup outerLevels origin surface
-  if let some (origin, path) := firstDuplicateInEncounterOrder?
-      (fun (operand, path) => some (operand.origin, path)) operands then
-    match operands.find? (fun (operand, found) => operand.origin == origin && found == path) with
-    | some (HavingGroupOperand.field reference, _) => throw (.groupFill (.duplicateOperand reference.field))
-    | _ => throw (.groupFill (.duplicateGroupOperand path))
-  if let some (left, right) := firstOverlappingHavingPaths? (operands.map fun (operand, path) => (operand.origin, path)) then
-    throw (.groupFill (.overlappingOperands left right))
-  if let some path := operands.findSome? fun
-      | (.group _ source, _) => if source.reference.isRoot then some source.reference.path else none
-      | _ => none then
+  let resolved ← resolveHavingEntityListOperands model declaringGroup [] outerLevels { first, rest }
+  checkHavingEntityDuplicates resolved
+  if let some path := resolved.findSome? fun (_, operand) => operand.categoryPath? then
+    throw (.groupFill (.categoryNotAllowed path))
+  if let some path := resolved.findSome? fun (_, operand) => operand.rootGroupPath? then
     if operator.requiresMultipleOperands || !rest.isEmpty then
       throw (.groupFill (.rootGroupOperand path))
+  if operator.requiresMultipleOperands && resolved.any (fun (_, operand) => match operand with
+      | .starredGroup _ | .starredGroupPresence _ => true | _ => false) then
+    throw .groupListStarNotAllowed
   if operator.requiresMultipleOperands && rest.isEmpty then throw (.groupFill .tooFewFields)
-  match operands.map (·.1) with
+  let group (origin : HavingOrigin) (reference : ResolvedGroupReference) (starPath : Option StarPath := none) :=
+    HavingGroupOperand.group origin {
+      reference := { reference with boundRepeatableScope := model.repeatableScopeForGroupPath reference.path }
+      content := model.computationGroupSource reference.path
+      members := (model.groupSubtreeFields reference.path).map (·.id)
+      starPath
+      dependencyKind := if reference.isRoot && starPath.isNone then .conditionalPresence else .ordinaryList }
+  let operands ← resolved.mapM fun (origin, operand) => match operand with
+    | .field declaration .stored => pure (.field { origin, field := declaration.id })
+    | .group reference => pure (group origin reference)
+    | .starredGroup source => pure (group origin { path := source.group.path, origin := .path } (some source.path))
+    | .starredGroupPresence source => pure (group origin { path := source.groupPath, origin := .path } (some source.path))
+    | _ => throw .numericExpressionUnsupported
+  match operands with
   | first :: rest => pure (first, rest)
   | [] => throw .incoherentCore
 end A12Kernel

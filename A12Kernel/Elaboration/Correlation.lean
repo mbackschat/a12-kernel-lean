@@ -533,7 +533,8 @@ def CorrelatedHaving.outerIterationScopes
   | .leaf (.groupFill _ first rest) => (first :: rest).map fun
       | .field reference => outerHavingFieldIterationScope model reference.origin reference.field
       | .group origin source =>
-          if origin == .outer && !source.content.scope.isEmpty then some source.content.scope else none
+          let scope := source.starPath.map (·.bindingScope) |>.getD source.content.scope
+          if origin == .outer && !scope.isEmpty then some scope else none
   | .and left right | .or left right =>
       CorrelatedHaving.outerIterationScopes model left ++
         CorrelatedHaving.outerIterationScopes model right
@@ -599,7 +600,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
       (source.first :: source.rest).findSome? entity
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => field reference.origin reference.field
   | .groupPresence _ origin reference => group origin reference
-  | .groupFill _ first rest => (first :: rest).findSome? fun (origin, reference) => group origin reference
+  | .groupFill _ first rest => (first :: rest).findSome? entity
   | .and left right | .or left right =>
       (left.candidateEnvironmentRefusal? model declaringGroup candidateLevels).orElse fun _ =>
         right.candidateEnvironmentRefusal? model declaringGroup candidateLevels

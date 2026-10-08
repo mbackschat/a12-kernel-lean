@@ -589,7 +589,7 @@ inductive SurfaceCorrelatedHaving where
   | groupPresence (operator : GroupPresenceOperator) (origin : HavingOrigin)
       (reference : SurfaceGroupReference)
   | groupFill (operator : GroupFillQuantifier)
-      (first : HavingOrigin × SurfaceGroupReference) (rest : List (HavingOrigin × SurfaceGroupReference))
+      (first : SurfaceHavingEntityOperand) (rest : List SurfaceHavingEntityOperand)
   | and (left right : SurfaceCorrelatedHaving)
   /-- Disjunction inside a filter. The filter's condition is the ordinary condition production, so
       this is a strong-Kleene `Or` and a true disjunct dominates an unavailable one, keeping its
@@ -628,6 +628,7 @@ inductive CorrelationElabError where
   | fieldFill (error : FieldEntityShapeElabError)
   | groupFill (error : FieldEntityShapeElabError)
   | groupPresence (error : FixedGroupReferenceError)
+  | groupListStarNotAllowed
   | stringPattern (error : StringPatternConditionElabError)
   | typeValidityOperand (error : CustomFieldValidityOperandElabError)
   | typeValidityName (error : CustomFieldValidityElabError)
@@ -737,6 +738,7 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .membershipStringLiteralKind _ => some .invalidTypesForComparison
   | .fieldFill error | .groupFill error => error.diagnostic?
   | .groupPresence error => error.diagnostic?
+  | .groupListStarNotAllowed => some .noWildcardsGAllowed
   | .stringPattern error => error.diagnostic?
   | .typeValidityOperand error => error.diagnostic?
   | .typeValidityName .emptyTypeName => some .noEmpty
@@ -823,7 +825,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
       (source.first :: source.rest).findSome? entity
   | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => field reference.origin reference.field
   | .groupPresence _ origin reference => group origin reference
-  | .groupFill _ first rest => (first :: rest).findSome? fun (origin, reference) => group origin reference
+  | .groupFill _ first rest => (first :: rest).findSome? entity
   | .and left right | .or left right =>
       (left.unboundOuterReference? model declaringGroup writtenGroup bound).orElse fun _ =>
         right.unboundOuterReference? model declaringGroup writtenGroup bound

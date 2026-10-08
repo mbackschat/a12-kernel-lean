@@ -223,9 +223,8 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
         let (origin, reference) ← lowerHavingGroupReference argument
         return .groupPresence (if id == "GroupFilled" then .filled else .notFilled) origin reference
       if let some operator := groupQuantifier? id then
-        let references ← arguments.mapM lowerHavingGroupReference
-        let first :: rest := references | refuse "Having" "group-fill arity"
-        return .groupFill operator first rest
+        let source ← lowerHavingEntitySource arguments
+        return .groupFill operator source.first source.rest
       if let some polarity := presencePolarity? id then
         match arguments with
         | [.mk (.entity { path, index := none, category := none }) none none] =>
