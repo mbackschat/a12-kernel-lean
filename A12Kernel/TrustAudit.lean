@@ -556,6 +556,7 @@ run_cmd do
 #print axioms A12Kernel.computationDescendants_admitted_eq_subtreeFields
 #print axioms A12Kernel.correlatedHaving_wellFormed_equalityScalesAgree
 #print axioms A12Kernel.resolvedSingleCorrelatedRule_wellFormed_equalityScalesAgree
+#print axioms A12Kernel.havingBodyAdmission_forbidden_refused
 #print axioms A12Kernel.havingBodyAdmission_customCondition_refused
 
 #print axioms A12Kernel.Verdict.conj_commutative

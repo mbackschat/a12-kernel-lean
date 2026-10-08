@@ -38,7 +38,8 @@ def HavingSelectedOperand.wellFormed (operand : HavingSelectedOperand) (model : 
     operand.presenceSlots.all (·.wellFormedForEnvironments model candidateLevels outerLevels) &&
     match operand with
     | .firstFilled slots =>
-        havingTypedEntityListWellFormed model candidateLevels outerLevels HavingSelectedRef.presence slots &&
+        havingTypedEntityListWellFormed model candidateLevels outerLevels HavingSelectedRef.presence slots
+          (fun | .text ref => ref.categoryIdentity? | _ => none) &&
           slots.all fun slot => slot.references.all fun reference =>
             match slot, reference with
             | .extent (.group _) _, .text ref | .extent (.starredGroup _ _) _, .text ref =>

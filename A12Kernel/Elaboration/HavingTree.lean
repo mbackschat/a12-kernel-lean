@@ -19,6 +19,8 @@ private def SurfaceComparisonOp.toCorrelation : SurfaceComparisonOp → Correlat
     each route chooses all of them together, and a route that admits no String or presence leaf
     supplies a refusing resolver rather than a different combinator. -/
 structure HavingLeafResolvers extends HavingNumericResolvers where
+  repetitionNotUnique : SurfaceHavingEntitySource → Option SurfaceHavingEntityOperand →
+    Except CorrelationElabError Bool := fun _ _ => throw .disallowedConstructInFilter
   stringExpression : SurfaceComparisonOp → StringExpr SurfaceHavingSelectedOperand String → StringExpr SurfaceHavingSelectedOperand String →
     Except CorrelationElabError HavingStringComparison
   selectedComparison : SurfaceComparisonOp → SurfaceHavingSelectedOperand → SurfaceHavingSelectedOperand →
@@ -133,7 +135,7 @@ private def elaborateHavingNumeric (resolvers : HavingLeafResolvers)
 
 def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
     SurfaceCorrelatedHaving → Except CorrelationElabError CorrelatedHaving
-  | .customCondition _ => throw .customConditionInFilter
+  | .customCondition _ | .repetitionNotUnique _ _ => throw .disallowedConstructInFilter
   | .compareStringExpression op left right =>
       (fun comparison => .leaf (.stringExpression comparison)) <$> resolvers.stringExpression op left right
   | .compareSelected op left right =>
@@ -198,37 +200,43 @@ def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
       pure (.or (← elaborateHavingCoreWith resolvers left)
         (← elaborateHavingCoreWith resolvers right))
 
-/-- The custom-condition branch retains checked siblings only for the filter's iteration gate;
+/-- The forbidden-construct branch retains checked siblings only for the filter's iteration gate;
 it has no executable body. The construct gate follows body and iteration checks (spec/07 §3). -/
 inductive HavingBodyAdmission where
   | ordinary (body : CorrelatedHaving)
-  | customCondition (siblings : List CorrelatedHaving)
+  | forbidden (ownIteration : Bool) (siblings : List CorrelatedHaving)
 
 namespace HavingBodyAdmission
 
 private def fragments : HavingBodyAdmission → List CorrelatedHaving
   | .ordinary body => [body]
-  | .customCondition siblings => siblings
+  | .forbidden _ siblings => siblings
+
+private def ownIteration : HavingBodyAdmission → Bool
+  | .ordinary _ => false
+  | .forbidden iterates _ => iterates
 
 private def combine (join : CorrelatedHaving → CorrelatedHaving → CorrelatedHaving)
     (left right : HavingBodyAdmission) : HavingBodyAdmission :=
   match left, right with
   | .ordinary left, .ordinary right => .ordinary (join left right)
-  | _, _ => .customCondition (left.fragments ++ right.fragments)
+  | _, _ => .forbidden (left.ownIteration || right.ownIteration) (left.fragments ++ right.fragments)
 
 def toCore (reachesIteration : CorrelatedHaving → Bool) :
     HavingBodyAdmission → Except CorrelationElabError CorrelatedHaving
   | .ordinary body => .ok body
-  | .customCondition siblings =>
-      .error (if siblings.any reachesIteration then .customConditionInFilter else .missingInner)
+  | .forbidden iterates siblings =>
+      .error (if iterates || siblings.any reachesIteration then .disallowedConstructInFilter else .missingInner)
 
 end HavingBodyAdmission
 
-/-- Complete all ordinary body checks before deciding a custom condition's enclosing filter gates.
+/-- Complete all ordinary body checks before deciding a forbidden construct's enclosing filter gates.
 No callback is invoked or executable custom leaf manufactured for a forbidden filter. -/
 def elaborateHavingBodyWith (resolvers : HavingLeafResolvers) :
     SurfaceCorrelatedHaving → Except CorrelationElabError HavingBodyAdmission
-  | .customCondition _ => pure (.customCondition [])
+  | .customCondition _ => pure (.forbidden false [])
+  | .repetitionNotUnique keys scope => do
+      pure (.forbidden (← resolvers.repetitionNotUnique keys scope) [])
   | .and left right => do
       pure (HavingBodyAdmission.combine .and (← elaborateHavingBodyWith resolvers left)
         (← elaborateHavingBodyWith resolvers right))

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.RepetitionNotUniqueAdmission
 import A12Kernel.Elaboration.ConstructedDateComponents
 import A12Kernel.Elaboration.StringPattern
 import A12Kernel.Elaboration.NumericSource
@@ -12,6 +13,7 @@ import A12Kernel.Semantics.Correlation
 namespace A12Kernel
 
 inductive CorrelationElabError where
+  | repetitionNotUnique (error : RepetitionNotUniqueElabError)
   | dateRange (diagnostic : KernelStaticDiagnostic)
   | dateComponents (error : ConstructedDateComponentsElabError)
   | uniquenessKind (path : List String)
@@ -82,7 +84,7 @@ inductive CorrelationElabError where
   | temporalPartPrecision (field : FieldId) (part : TemporalNumericPart)
   | numericOperandFieldNotNumber (path : List String) (actual : SurfaceScalarKind)
   | missingInner
-  | customConditionInFilter
+  | disallowedConstructInFilter
   | missingOuter
   | errorGuardMismatch (errorPath guardPath : List String)
   /-- The repetition walk refuses this level because the reading rule does not bind the marked read. -/
@@ -123,7 +125,8 @@ and [field-reference checkpoint](../../docs/sources/having-filter-probes.md#src-
 The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
-  | .customConditionInFilter => some .disallowedConstructInFilterCondition
+  | .repetitionNotUnique error => error.diagnostic?
+  | .disallowedConstructInFilter => some .disallowedConstructInFilterCondition
   | .comparisonEntry diagnostic => some diagnostic
   | .temporalPartPrecision _ _ => some .invalidDateType
   | .dateRange diagnostic => some diagnostic

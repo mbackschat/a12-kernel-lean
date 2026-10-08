@@ -35,6 +35,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-08-03"></a>
+### SPEC-2026-10-08-03 — indirect entity-list overlap preserves category identity
+
+- `status`: pending
+- `canonical`: [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
+- `delta`: Strict ancestor/descendant overlap requires matching category and semantic-index identities. A stored group beside its projected Enumeration child is not an indirect duplicate; later carrier gates still apply.
+- `basis`: Kernel 30.8.1 `CheckEntityListenUtils.isEntityIndirectlyReferenced`; the existing root/category observation in spec/07 §3 already separates this from path-only overlap. Generalization to non-root ancestors is source-backed, externally unmeasured.
+- `separator`: `RepetitionNotUnique(Rows, Rows/Tag->Label)` and the reversed order reach category refusal, while stored `Rows, Rows/Tag` reaches the nested-duplicate gate. [Reader cases](../A12Kernel/Reference/Dm/HavingRepetitionAdmissionLocks.lean) lock both orders inside Having.
+- `acceptance`: Preserve category identity in the shared overlap relation without weakening same-projection or stored ancestor/descendant duplicate checks. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
 <a id="spec-2026-10-08-02"></a>
 ### SPEC-2026-10-08-02 — temporal differences preserve phase-specific operand failure order
 

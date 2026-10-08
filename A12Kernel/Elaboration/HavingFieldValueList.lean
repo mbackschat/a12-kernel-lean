@@ -21,13 +21,6 @@ private def membershipSlotsUnique [BEq Ref] (origin : Ref → HavingOrigin)
     | .extent (.group source) (ref :: _) => some (.inr (origin ref, source.path))
     | _ => none) slots).isNone
 
-private def membershipSlotsDisjoint (model : FlatModel)
-    (slots : List (HavingFieldListSlot HavingPresenceRef)) : Bool :=
-  !(slots.any fun left => slots.any fun right =>
-    (left.entityPath? model).any fun (leftPath, leftGroup) =>
-      (right.entityPath? model).any fun (rightPath, rightGroup) =>
-        entityListPathsOverlap leftPath rightPath leftGroup rightGroup)
-
 private def tokenReferencesWellFormed (model : FlatModel)
     (slots : List (HavingFieldListSlot HavingStringRef)) : Bool :=
   let references := slots.flatMap (·.references)
@@ -48,20 +41,26 @@ def HavingFieldValueList.wellFormedForEnvironments (source : HavingFieldValueLis
     (operator : ComputationValueListOperator) (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
   source.presenceSlots.all (·.wellFormedForEnvironments model candidateLevels outerLevels) &&
-  membershipSlotsDisjoint model source.presenceSlots &&
   match source with
   | .number subjects members =>
+      havingTypedEntitySlotsDisjoint model id (fun _ => none) source.presenceSlots &&
       membershipMultiplicity operator subjects.length && !members.isEmpty &&
       (match operator with | .scalar _ => (subjects ++ members).all (·.isDirect) | .quantified _ => true) &&
       membershipSlotsUnique (·.origin) (subjects ++ members) &&
       ((subjects ++ members).flatMap (·.references)).all fun ref =>
         (model.lookupUniqueId ref.field.id).toOption.any fun declaration => (FlatField.number ref.field).matchesDecl declaration
   | .token subjects members =>
+      havingTypedEntitySlotsDisjoint model
+        (fun (ref : HavingStringRef) => { origin := ref.origin, field := ref.field.id })
+        HavingStringRef.categoryIdentity? (subjects ++ members) &&
       membershipMultiplicity operator subjects.length && !members.isEmpty &&
       (match operator with | .scalar _ => (subjects ++ members).all (·.isDirect) | .quantified _ => true) &&
       membershipSlotsUnique (·.origin) (subjects ++ members) &&
       tokenReferencesWellFormed model (subjects ++ members)
   | .tokenLiterals subjects values =>
+      havingTypedEntitySlotsDisjoint model
+        (fun (ref : HavingStringRef) => { origin := ref.origin, field := ref.field.id })
+        HavingStringRef.categoryIdentity? subjects &&
       !subjects.isEmpty && !values.isEmpty && membershipSlotsUnique (·.origin) subjects &&
       tokenReferencesWellFormed model subjects &&
       values.all (tokenLiteralAllowed model (subjects.flatMap (·.references))) &&

@@ -110,11 +110,15 @@ def indexIdentity? : ResolvedFieldEntityOperand model → Option (GroupPath × C
   | .keyed source => some (source.selection.group.path, source.selection.key)
   | _ => none
 
-/-- The **indirect** duplicate arm. Two group operands overlap only by strict ancestry, so the same starred group written twice stays two independent authored occurrences while a starred group beside its own starred descendant is rejected. A group overlaps a field-denoting slot inside it only when both carry the same index identity, or neither carries one (`CheckEntityListenUtils.isEntityIndirectlyReferenced`, kernel 30.8.1; `spec/08` §4).
+private def categoryIdentity? : ResolvedFieldEntityOperand model → Option String
+  | .field _ (.projected category) => some category
+  | _ => none
+
+/-- The **indirect** duplicate arm. Two group operands overlap only by strict ancestry, so the same starred group written twice stays two independent authored occurrences while a starred group beside its own starred descendant is rejected. A group overlaps a field-denoting slot inside it only when their index and category identities agree (`CheckEntityListenUtils.isEntityIndirectlyReferenced`, kernel 30.8.1; `spec/08` §4).
 
     Two field-denoting slots never reach this arm: a field path cannot be an ancestor of another, and their repetition belongs to the direct arm above, which skips wildcarded references. -/
 def overlaps (left right : ResolvedFieldEntityOperand model) : Bool :=
-  left.indexIdentity? == right.indexIdentity? &&
+  left.indexIdentity? == right.indexIdentity? && left.categoryIdentity? == right.categoryIdentity? &&
     entityListPathsOverlap left.entityPath right.entityPath left.subtreePath?.isSome right.subtreePath?.isSome
 
 /-- The repeatable levels this operand leaves for its evaluation to bind: a direct field's own

@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.HavingRepetitionAdmission
 import A12Kernel.Elaboration.HavingGroupCount
 import A12Kernel.Elaboration.HavingNumericProduct
 import A12Kernel.Elaboration.HavingCollectionCount
@@ -89,7 +90,7 @@ private def FlatModel.resolveHavingNumberRead (model : FlatModel) (declaringGrou
     reference reads the captured outer row, not the level the filter reopens. -/
 private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) : SurfaceCorrelatedHaving → Bool
-  | .customCondition _ => false
+  | .customCondition _ | .repetitionNotUnique _ _ => false
   | .compareFields _ left right =>
       [left, right].any fun reference => reference.origin == .inner &&
         (model.resolveNumberInGroup declaringGroup group reference.field).isOk
@@ -573,6 +574,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
     (declaringGroup : GroupPath) (candidateLevels : List RepeatableLevel) :
     SurfaceCorrelatedHaving → Option CorrelationElabError
   | .customCondition _ => none
+  | .repetitionNotUnique keys scope => (keys.first :: keys.rest ++ scope.toList).findSome? entity
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
         | .collectionCount count => (count.source.first :: count.source.rest).findSome? entity
@@ -731,6 +733,7 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     model.resolveHavingEntityRead declaringGroup outerLevels { origin := reference.origin, field := reference.field }
   let numeric := model.havingNumericResolvers declaringGroup candidateLevels outerLevels
   let body ← elaborateHavingBodyWith {
+    repetitionNotUnique := elaborateHavingRepetitionAdmission model declaringGroup candidateLevels outerLevels reopenedLevels
     toHavingNumericResolvers := numeric
     boolean := model.resolveHavingBooleanInEnvironment declaringGroup outerLevels
     temporalDifference := fun unit left right => do

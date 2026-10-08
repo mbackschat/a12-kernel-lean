@@ -32,7 +32,7 @@ def HavingCollectionCount.wellFormed (source : HavingCollectionCount) (model : F
     (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
   (match source with
     | .tokenValue _ slots => havingTypedEntityListWellFormed model candidateLevels outerLevels
-        (fun (ref : HavingStringRef) => ({ origin := ref.origin, field := ref.field.id } : HavingPresenceRef)) slots
+        (fun (ref : HavingStringRef) => ({ origin := ref.origin, field := ref.field.id } : HavingPresenceRef)) slots HavingStringRef.categoryIdentity?
     | _ => havingEntityListWellFormed model candidateLevels outerLevels source.presenceSlots) &&
     match source with
     | .filledFields slots capacity => HavingCollectionCount.capacity? model slots == capacity

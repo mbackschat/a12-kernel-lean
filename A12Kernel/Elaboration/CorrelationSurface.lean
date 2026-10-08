@@ -547,6 +547,7 @@ def SurfaceHavingDateRangePredicate.entities : SurfaceHavingDateRangePredicate �
 
 inductive SurfaceCorrelatedHaving where
   | customCondition (name : CheckedCustomConditionName)
+  | repetitionNotUnique (keys : SurfaceHavingEntitySource) (scope : Option SurfaceHavingEntityOperand)
   | dateRange (source : SurfaceHavingDateRangePredicate)
   | compareStringExpression (op : SurfaceComparisonOp) (left right : StringExpr SurfaceHavingSelectedOperand String)
   | compareSelected (op : SurfaceComparisonOp) (left right : SurfaceHavingSelectedOperand)
@@ -622,6 +623,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
     (bound : List RepeatableLevel := model.repeatableScopeForGroupPath declaringGroup) :
     SurfaceCorrelatedHaving → Option (List String × UnboundOperandLevel)
   | .customCondition _ => none
+  | .repetitionNotUnique keys scope => (keys.first :: keys.rest ++ scope.toList).findSome? entity
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
         | .collectionCount count => (count.source.first :: count.source.rest).findSome? entity

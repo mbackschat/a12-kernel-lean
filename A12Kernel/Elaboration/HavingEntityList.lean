@@ -5,8 +5,7 @@ namespace A12Kernel
 private def ordinaryOperand (model : FlatModel) (declaringGroup : GroupPath) :
     SurfaceHavingEntityOperand → SurfaceFieldEntityOperand
   | .entity reference => match model.groupNamedBy? declaringGroup reference.field with
-      | some path => if reference.form == .stored then .group (.path { base := .absolute, groups := path })
-          else .field reference.field reference.form
+      | some path => .group (.path { base := .absolute, groups := path })
       | none => .field reference.field reference.form
   | .group _ reference => .group reference
   | .star _ path _ =>
@@ -34,6 +33,9 @@ def resolveHavingEntityListOperands (model : FlatModel) (declaringGroup : GroupP
     if authored.origin == .outer then
       if !operand.bindingScope.isPrefixOf outerLevels then
         throw (.fieldOutsideEnvironment .outer operand.entityPath outerLevels operand.bindingScope)
+    if let .entity reference := authored then
+      if reference.form != .stored && operand.subtreePath?.isSome then
+        throw (.resolve (.groupInFieldValueRead operand.entityPath none (.invalidEntity reference.field)))
     pure (authored.origin, operand)
 
 /-- Preserve the authored extent while projecting its declared members for a typed consumer. -/
@@ -156,10 +158,28 @@ def wellFormedForEnvironments (model : FlatModel) (candidateLevels outerLevels :
 
 end HavingFieldListSlot
 
+def HavingStringRef.categoryIdentity? (reference : HavingStringRef) : Option String :=
+  match reference.operand with
+  | .string _ => none
+  | .enumeration operand => match operand.projectionRef with
+      | .stored => none
+      | .category name => some name
+
+/-- Preserve the authored projection beside scope while testing indirect overlap (spec/07 §3).
+The presence projection alone intentionally forgets the category a typed list must retain. -/
+def havingTypedEntitySlotsDisjoint (model : FlatModel) (presence : Ref → HavingPresenceRef)
+    (category : Ref → Option String) (slots : List (HavingFieldListSlot Ref)) : Bool :=
+  !(slots.any fun left => slots.any fun right =>
+    (left.references.head?.bind category) == (right.references.head?.bind category) &&
+      ((left.map presence).entityPath? model).any fun (leftPath, leftGroup) =>
+        ((right.map presence).entityPath? model).any fun (rightPath, rightGroup) =>
+          entityListPathsOverlap leftPath rightPath leftGroup rightGroup)
+
 /-- Duplicate identity belongs to the typed operand: a stored read and a category read of the
 same field are distinct authored operands (spec/07 §5). Extent certification stays kind-neutral. -/
 def havingTypedEntityListWellFormed [BEq Ref] (model : FlatModel) (candidateLevels outerLevels : List RepeatableLevel)
-    (presence : Ref → HavingPresenceRef) (slots : List (HavingFieldListSlot Ref)) : Bool :=
+    (presence : Ref → HavingPresenceRef) (slots : List (HavingFieldListSlot Ref))
+    (category : Ref → Option String := fun _ => none) : Bool :=
   let shape := slots.map (·.map presence)
   !slots.isEmpty && (slots.length > 1 || slots.any (! ·.isDirect)) &&
     shape.all (·.wellFormedForEnvironments model candidateLevels outerLevels) &&
@@ -167,10 +187,7 @@ def havingTypedEntityListWellFormed [BEq Ref] (model : FlatModel) (candidateLeve
       | .direct reference => some (Sum.inl reference : Sum Ref (HavingOrigin × GroupPath))
       | .extent (.group group) (reference :: _) => some (.inr ((presence reference).origin, group.path))
       | _ => none) slots).isNone &&
-    !(shape.any fun left => shape.any fun right =>
-      (left.entityPath? model).any fun (leftPath, leftGroup) =>
-        (right.entityPath? model).any fun (rightPath, rightGroup) =>
-          entityListPathsOverlap leftPath rightPath leftGroup rightGroup)
+    havingTypedEntitySlotsDisjoint model presence category slots
 
 def havingEntityListWellFormed (model : FlatModel) (candidateLevels outerLevels : List RepeatableLevel)
     (slots : List (HavingFieldListSlot HavingPresenceRef)) : Bool :=

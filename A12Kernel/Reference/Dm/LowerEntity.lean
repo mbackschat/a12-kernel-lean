@@ -174,6 +174,12 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
       let some checked := checkCustomConditionName (fun _ => false) spelling
         | refuse "CustomCondition" "invalid name"
       pure (.customCondition checked)
+  | .call "RepetitionNotUnique" arguments none scope => do
+      let keys ← lowerHavingEntitySource arguments
+      let scope ← scope.mapM fun path => do
+        let source ← lowerHavingEntitySource [.mk (.entity { path }) none none]
+        pure source.first
+      pure (.repetitionNotUnique keys scope)
   | .parens body => lowerHaving body typing
   | .logic op (first :: rest) => do
       let join := match op with | .and => SurfaceCorrelatedHaving.and | .or => SurfaceCorrelatedHaving.or

@@ -145,11 +145,17 @@ theorem resolvedSingleCorrelatedRule_wellFormed_equalityScalesAgree
   exact correlatedHaving_wellFormed_equalityScalesAgree
     rule.star.having.condition model rule.group wellFormed.2
 
+/-- A staged forbidden construct never produces an executable filter, regardless of its own or sibling reads. -/
+theorem havingBodyAdmission_forbidden_refused (iterates : Bool) (siblings : List CorrelatedHaving)
+    (reachesIteration : CorrelatedHaving → Bool) :
+    ((HavingBodyAdmission.forbidden iterates siblings).toCore reachesIteration).isOk = false := by
+  simp only [HavingBodyAdmission.toCore]
+  split <;> rfl
+
 /-- A custom condition cannot escape static filter admission, even when a checked sibling supplies iteration. -/
 theorem havingBodyAdmission_customCondition_refused (siblings : List CorrelatedHaving)
     (reachesIteration : CorrelatedHaving → Bool) :
-    ((HavingBodyAdmission.customCondition siblings).toCore reachesIteration).isOk = false := by
-  simp only [HavingBodyAdmission.toCore]
-  split <;> rfl
+    ((HavingBodyAdmission.forbidden false siblings).toCore reachesIteration).isOk = false :=
+  havingBodyAdmission_forbidden_refused false siblings reachesIteration
 
 end A12Kernel
