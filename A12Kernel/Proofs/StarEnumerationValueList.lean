@@ -24,7 +24,7 @@ theorem checkedStarEnumerationValueList_literals_admitted
 /-- A filtered Enumeration star delegates selection and classification to the shared kind-neutral checked-star route. -/
 theorem checkedStarEnumerationSource_filtered_delegates
     (checked : CheckedStarEnumerationSource model)
-    (filter : CheckedStarHaving model checked.source checked.declaringGroup)
+    (filter : CheckedStarHaving model checked.source checked.bindingGroup)
     (document : Document) (outer : Env)
     (filterRead : Env → FieldId → CheckedCell)
     (read : Env → FieldId → RawCell) (owned : checked.filter = some filter) :
@@ -66,7 +66,7 @@ theorem checkedStarEnumerationValueList_evaluatePartial_of_resolved
 theorem checkedStarEnumerationValueList_partialHaving_skips
     (checked : CheckedStarEnumerationValueListSource model)
     (filter : CheckedStarHaving model checked.fields.source
-      checked.fields.declaringGroup)
+      checked.fields.bindingGroup)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell)
     (owned : checked.fields.filter = some filter) :
@@ -113,7 +113,7 @@ theorem checkedEnumerationValueListStarValues_evaluatePartial_of_resolved
 theorem checkedEnumerationValueListStarValues_partialHaving_skips
     (checked : CheckedEnumerationValueListStarValuesSource model)
     (filter : CheckedStarHaving model checked.values.source
-      checked.values.declaringGroup)
+      checked.values.bindingGroup)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (context : FlatContext) (read : Env → FieldId → RawCell)
     (owned : checked.values.filter = some filter) :

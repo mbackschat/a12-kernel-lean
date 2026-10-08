@@ -442,4 +442,89 @@ example : capturedKeyBodyLeaves.all (fun leaf =>
     readerResults operation rowBoundModel true ==
       (KernelStaticDiagnostic.semanticIndexKeyStarred.kernelCode, KernelStaticDiagnostic.semanticIndexKeyStarred.kernelCode)) = true := by native_decide
 
+private def productFilterCases : List (String × KernelStaticDiagnostic) := [
+  ("Rows*/N Having FieldFilled(Rows/N), Rows*/N", .wildcardAtLowestLevelRequired),
+  ("Rows*/N, Rows*/N Having FieldFilled(Rows/N)", .wildcardAtLowestLevelRequired),
+  ("Rows*/N Having FieldFilled(Rows/N For Expected), Rows*/N", .semanticIndexNotAllowed),
+  ("Rows*/N, Rows*/N Having FieldFilled(Rows/N For Expected)", .semanticIndexNotAllowed),
+  ("Missing, Rows*/N Having FieldFilled(Rows/N For Expected)", .invalidEntity),
+  ("Rows*/N Having FieldFilled(Rows/N For Expected), Missing", .semanticIndexNotAllowed),
+  ("Rows*/Tag, Rows*/N Having FieldFilled(Rows/N For Expected)", .semanticIndexNotAllowed),
+  ("Rows/N For \"keep\", Rows*/N Having FieldFilled(Rows/N For Expected)", .semanticIndexNotAllowed),
+  ("Rows/N For Expected, Rows*/N Having FieldFilled(Rows/N For Expected)", .semanticIndexNotAllowed),
+  ("Rows/N For Rows/Tag, Rows*/N Having FieldFilled(Rows/N For Expected)", .semanticIndexKeyInvalidIteration),
+  ("Rows*/N For \"\", Rows*/N Having FieldFilled(Rows/N For Expected)", .semanticIndexConstantInvalid),
+  ("Rows*/N For \"keep\", Rows*/N Having FieldFilled(Rows/N For Expected)", .semanticIndexAndWildcard)]
+
+example : bothReaders "SumOfProducts(Rows*/N, Rows*/N)" "admitted" = true ∧
+    productFilterCases.all (fun (arguments, diagnostic) =>
+      bothReaders ("SumOfProducts(" ++ arguments ++ ")") diagnostic.kernelCode) = true := by native_decide
+
+example : let operation := "SumOfProducts(Rows*/N Having FieldFilled(Rows/N) And FieldFilled($Rows/Tag), Rows*/N)"
+    bothReaders operation KernelStaticDiagnostic.noWildcard.kernelCode = true ∧
+    readerResults operation rowBoundModel true =
+      (KernelStaticDiagnostic.wildcardAtLowestLevelRequired.kernelCode,
+       KernelStaticDiagnostic.wildcardAtLowestLevelRequired.kernelCode) := by native_decide
+
+private def selectorModel (kind : FieldKind) : FlatModel :=
+  let enum := if kind == .enumeration then
+    (categoryKeyModel.lookupUniqueId 3).toOption.bind (·.enumeration) else none
+  { model with fields := (model.fields.map fun field =>
+      if field.id == 4 || field.id == 5 then { field with policy := { kind }, enumeration := enum } else field) ++ [
+    { id := 9, name := "Payload2", groupPath := ["Form"], policy := { kind }, enumeration := enum },
+    { id := 8, name := "RowOut", groupPath := ["Form", "Rows"], repeatableScope := [10], policy := { kind }, enumeration := enum }] }
+
+private def selectorResults (kind : FieldKind) (operation : String) (rowBound : Bool := false) : String × String :=
+  let fixture := selectorModel kind
+  let dm : DmModel := { flat := fixture, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let report {α : Type} : Lowering α → String
+    | .ok _ => "admitted" | .error refusal => refusal.detail
+  let expected := if kind == .boolean || kind == .confirm then "True" else "\"keep\""
+  (report (checkRule dm .english {
+    group := ["Form"], name := "Selector", errorCode := "SELECTOR", errorEntityRelPath := if rowBound then "../Rows/RowOut" else "../Error"
+    condition := (if rowBound then "FieldFilled(Rows/RowOut) And " else "FieldFilled(Error) And ") ++ operation ++ " == " ++ expected,
+    severity := "ERROR" }),
+   report (lowerComputation fixture .english {
+    group := ["Form"], name := "Selector", targetRelPath := if rowBound then "../Rows/RowOut" else "../Out", commonPrecondition := none
+    alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }))
+
+private def selectorKinds : List FieldKind := [.string, .boolean, .enumeration]
+
+example : selectorKinds.all (fun kind => (selectorModel kind).validate.isOk &&
+    [false, true].all fun row => selectorResults kind
+      "FirstFilledValue(Rows*/N Having FieldFilled(Rows/Tag), Payload2)" row == ("admitted", "admitted")) = true := by native_decide
+
+example : selectorKinds.all (fun kind => [false, true].all fun row =>
+    let diagnostic := KernelStaticDiagnostic.semanticIndexNotAllowed.kernelCode
+    selectorResults kind "FirstFilledValue(Rows*/N Having FieldFilled(Rows/N For Expected), Payload2)" row ==
+      (diagnostic, diagnostic)) = true := by native_decide
+
+example : selectorKinds.all (fun kind => [
+    "FirstFilledValue(Rows*/N Having FieldFilled(Rows/Tag) And FieldFilled($Rows/Tag), Payload2)",
+    "FirstFilledValue(Payload2, Rows*/N Having FieldFilled(Rows/Tag) And FieldFilled($Rows/Tag))"].all fun operation =>
+    let diagnostic := KernelStaticDiagnostic.noWildcard.kernelCode
+    selectorResults kind operation == (diagnostic, diagnostic) &&
+    selectorResults kind operation true == ("admitted", "admitted")) = true := by native_decide
+
+example : selectorKinds.all (fun kind => [false, true].all fun row =>
+    let missing := KernelStaticDiagnostic.invalidEntity.kernelCode
+    let indexed := KernelStaticDiagnostic.semanticIndexNotAllowed.kernelCode
+    selectorResults kind "FirstFilledValue(Missing, Rows*/N Having FieldFilled(Rows/N For Expected))" row ==
+      (missing, missing) &&
+    selectorResults kind "FirstFilledValue(Rows*/N Having FieldFilled(Rows/N For Expected), Missing)" row ==
+      (indexed, indexed)) = true := by native_decide
+
+example : [false, true].all (fun row =>
+    let category := KernelStaticDiagnostic.categoryUnknown.kernelCode
+    let indexed := KernelStaticDiagnostic.semanticIndexNotAllowed.kernelCode
+    selectorResults .enumeration
+      "FirstFilledValue(Payload2->Missing, Rows*/N Having FieldFilled(Rows/N For Expected))" row ==
+        (category, category) &&
+    selectorResults .enumeration
+      "FirstFilledValue(Payload2->Label, Rows*/N Having FieldFilled(Rows/N For Expected))" row ==
+        (indexed, indexed) &&
+    selectorResults .enumeration
+      "FirstFilledValue(Rows*/N Having FieldFilled(Rows/N For Expected), Payload2->Missing)" row ==
+        (indexed, indexed)) = true := by native_decide
+
 end A12Kernel.Dm.FilterReferenceInventoryLocks

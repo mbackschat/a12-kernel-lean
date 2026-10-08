@@ -226,6 +226,7 @@ def diagnostic? (error : NumericComputationElabError) : Option KernelStaticDiagn
   error.targetDiagnostic? <|> error.iterationDiagnostic? <|> error.groupCountDiagnostic? <|>
     match error with
     | .resolve cause => cause.diagnostic?
+    | .productAggregate cause => cause.diagnostic?
     -- A `CurrentRepetition` naming no group, measured at a row target
     -- ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-row-target-boundary)).
     | .currentRepetitionSource (.unknownGroup _) => some .invalidEntity

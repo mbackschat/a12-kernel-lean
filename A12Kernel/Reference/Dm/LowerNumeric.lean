@@ -111,7 +111,7 @@ def lowerComputationNumericAtom (model : FlatModel) (group : GroupPath) (express
       (.filledFieldCount ·) <$> lowerEntitySource model group arguments bindingGroup?
   | .call "FirstFilledValue" arguments none none =>
       (.firstFilled ·) <$> lowerEntitySource model group arguments bindingGroup?
-  | .call "SumOfProducts" arguments none none => (.sumOfProducts ·) <$> lowerProductAggregate model group arguments
+  | .call "SumOfProducts" arguments none none => (.sumOfProducts ·) <$> lowerProductAggregate model group arguments bindingGroup?
   | .call "NumberOfValueInFields" [.mk expected none] (some listed) none =>
       match expected with
       | .number text => match decodeNumber? text with

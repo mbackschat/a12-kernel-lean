@@ -46,7 +46,7 @@ Inside an unmarked filter read, index and scope restrictions belong to the later
 key applicability still precedes that walk. A reference's category follows its own index
 cascade, so a nested index can refuse before that category (spec/07 §3, spec/08 §4). -/
 private partial def admitEntityRead (model : FlatModel) (group bindingGroup : GroupPath)
-    (reference : Reference) (insideSemanticIndexKey : Bool)
+    (reference : Reference) (inFilter insideSemanticIndexKey : Bool)
     (compilePattern : StringPatternCompiler) : Lowering (Sum FlatFieldDecl GroupPath) := do
   let plain : Path := { reference.path with
     correlated := false
@@ -69,11 +69,12 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
   let starredAt := fun position =>
     let offset := targetPath.length - reference.path.segments.length
     position >= offset && (reference.path.segments[position - offset]?).any (·.star)
+  let mut indexedLevel : Option RepeatableLevel := none
   if let some key := reference.index then
     let checkedKey : Sum String ((Sum FlatFieldDecl GroupPath) × SemanticIndexAdmissionKeyRef) ← match key with
       | .literal spelling => pure (.inl spelling)
       | .reference keyReference => do
-          let keyEntity ← admitEntityRead model group bindingGroup keyReference true compilePattern
+          let keyEntity ← admitEntityRead model group bindingGroup keyReference inFilter true compilePattern
           pure (.inr (keyEntity, {
             resolvesToField := keyEntity.isLeft
             starred := keyReference.path.segments.any (·.star)
@@ -120,6 +121,7 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
     let starredAtIndexLevel := starredAt (selected.path.length - 1)
     if let some diagnostic := semanticIndexAdmissionRefusal { indexPath, starredAtIndexLevel } admissionKey then
       refuse "Having" diagnostic.kernelCode
+    indexedLevel := some selected.level
   let filteredBody ← reference.filter.mapM fun expression => do
     let .inl declaration := entity | refuse "Having" KernelStaticDiagnostic.noGroupsAllowed.kernelCode
     let candidate := model.repeatableScopeForGroupPath declaration.groupPath
@@ -129,14 +131,16 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
     pure (expression, candidate, reopened)
   -- Leaving a nested filter resets to ordinary rule reads, rather than restoring the enclosing
   -- filter mode (Lenient_ConditionParser.resetFilterCondition; spec/07 §3).
-  let inFilter := filteredBody.isNone
-  if reference.path.correlated && !inFilter then
+  let postReadInFilter := inFilter && filteredBody.isNone
+  if reference.path.correlated && !postReadInFilter then
     refuse "Having" KernelStaticDiagnostic.invalidOuterIteration.kernelCode
-  if reference.path.correlated || !inFilter then
+  if reference.path.correlated || !postReadInFilter then
     let mut outerWildcard := false
     for level in model.repeatableScopeForGroupPath containingGroup do
       let some repeated := model.repeatableGroupAtLevel? level | refuse "Having" "unresolved captured repetition"
-      if starredAt (repeated.path.length - 1) then
+      if indexedLevel == some level then
+        if outerWildcard then refuse "Having" IterationRefusal.semanticIndexBelowWildcard.catalogKey
+      else if starredAt (repeated.path.length - 1) then
         outerWildcard := true
       else
         if !group.isPrefixOf bindingGroup then
@@ -148,7 +152,7 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
         if let some diagnostic := unbound.diagnostic? then
           refuse "Having" (if diagnostic == .noWildcard && insideSemanticIndexKey then
             KernelStaticDiagnostic.semanticIndexKeyInvalidIteration else diagnostic).kernelCode
-        if unbound.parallelGate == .unmeasured then refuse "Having" "unsupported captured parallel key"
+        if unbound.parallelGate == .unmeasured then refuse "Having" "unsupported parallel reference"
   match entity with
   | .inl _ => pure ()
   | .inr path =>
@@ -191,7 +195,7 @@ private partial def admitBody (model : FlatModel) (group bindingGroup : GroupPat
       if (operator == "FieldFilled" || operator == "FieldNotFilled") && reference.path.isPlain &&
           reference.category.isNone && reference.filter.isNone then
         if reference.index.isSome then
-          let entity ← admitEntityRead model group bindingGroup reference insideSemanticIndexKey compilePattern
+          let entity ← admitEntityRead model group bindingGroup reference true insideSemanticIndexKey compilePattern
           if entity.isRight then refuse "Having" "indexed group presence"
           -- An unmarked index must fail the enclosing walk, so it has no executable filter leaf
           -- (spec/07 §3); retain the successful own checks without inventing a runtime body.
@@ -205,6 +209,13 @@ private partial def admitBody (model : FlatModel) (group bindingGroup : GroupPat
       pure (some (authored, checked))
 
 end
+
+/-- Finish one ordinary authored reference read before advancing to another operand. The original
+reference remains available to the caller's kind/shape and executable lowering stages (spec/07 §3). -/
+def checkReferenceRead (model : FlatModel) (group bindingGroup : GroupPath) (reference : Reference) :
+    Lowering Unit := do
+  discard <| checkedHaving (model.validate.mapError .resolve)
+  discard <| admitEntityRead model group bindingGroup reference false false locallyExecutableStringPatternMatcher?
 
 /-- Admit a parsed body at an already checked filtered field. This entry preserves the raw
 reference walk after ordered own-leaf checks, then certifies the executable body. General nested-filter state transitions outside

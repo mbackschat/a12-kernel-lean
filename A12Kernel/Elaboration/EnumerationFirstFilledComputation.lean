@@ -310,7 +310,7 @@ private def certifySelectedEnumerationFirstFilledOperand
   | some projections => pure (.selected selected projections owned)
 
 private def certifyEnumerationFirstFilledOperand
-    (declaringGroup : GroupPath) (scope : List RepeatableLevel) :
+    (declaringGroup bindingGroup : GroupPath) (scope : List RepeatableLevel) :
     ResolvedFieldEntityOperand model → SurfaceEnumerationFirstFilledOperand →
       Except EnumerationFirstFilledComputationElabError
         (CheckedEnumerationFirstFilledOperand model scope)
@@ -323,36 +323,38 @@ private def certifyEnumerationFirstFilledOperand
           | .projected category => .category category)
   | .star source, .star _ projectionRef _ =>
       do pure (.star (← certifyStarEnumerationSource declaringGroup source
-        projectionRef none |>.mapError .starSource))
+        projectionRef none bindingGroup |>.mapError .starSource))
   | .starHaving source having, .star _ projectionRef _ =>
       do pure (.star (← certifyStarEnumerationSource declaringGroup source
-        projectionRef (some having) |>.mapError .starSource))
+        projectionRef (some having) bindingGroup |>.mapError .starSource))
   | _, _ => throw .incoherentCore
 
 private def certifyEnumerationFirstFilledOperands
-    (declaringGroup : GroupPath) (scope : List RepeatableLevel) :
+    (declaringGroup bindingGroup : GroupPath) (scope : List RepeatableLevel) :
     List (ResolvedFieldEntityOperand model) →
       List SurfaceEnumerationFirstFilledOperand →
       Except EnumerationFirstFilledComputationElabError
         (List (CheckedEnumerationFirstFilledOperand model scope))
   | [], [] => pure []
   | resolved :: resolvedRest, authored :: authoredRest => do
-      pure ((← certifyEnumerationFirstFilledOperand declaringGroup scope resolved authored) ::
-        (← certifyEnumerationFirstFilledOperands declaringGroup scope resolvedRest authoredRest))
+      pure ((← certifyEnumerationFirstFilledOperand declaringGroup bindingGroup scope resolved authored) ::
+        (← certifyEnumerationFirstFilledOperands declaringGroup bindingGroup scope resolvedRest authoredRest))
   | _, _ => throw .incoherentCore
 
-/-- `targetGroup` is the group of the field the computation writes, which places a refusal. -/
+/-- `targetGroup` places source refusals; `bindingGroup` supplies captured filter rows.
+The addressed carrier keeps its diagnostic-placement boundary separate from actual target scope (spec/07 §3). -/
 def elaborateEnumerationFirstFilledSource
     (model : FlatModel) (declaringGroup : GroupPath)
     (scope : List RepeatableLevel)
-    (authored : SurfaceEnumerationFirstFilledSource) (targetGroup : GroupPath) :
+    (authored : SurfaceEnumerationFirstFilledSource) (targetGroup : GroupPath)
+    (bindingGroup : GroupPath := targetGroup) :
     Except EnumerationFirstFilledComputationElabError
       (CheckedEnumerationFirstFilledSource model scope) := do
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope
       authored.toFieldEntitySource (writtenGroup := targetGroup)
     |>.mapError .shape
-  let first ← certifyEnumerationFirstFilledOperand declaringGroup scope shape.first authored.first
-  let rest ← certifyEnumerationFirstFilledOperands declaringGroup scope shape.rest authored.rest
+  let first ← certifyEnumerationFirstFilledOperand declaringGroup bindingGroup scope shape.first authored.first
+  let rest ← certifyEnumerationFirstFilledOperands declaringGroup bindingGroup scope shape.rest authored.rest
   if hMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true then
     match hDuplicate :
         firstDuplicateDirectEnumerationFirstFilledField? (first :: rest) with
@@ -423,7 +425,7 @@ private def scanEnumerationFirstFilledStar
 /-- Consume a filtered star through the computation iterator's one-kept-candidate lookahead. Filter poison is terminal; target classification remains stop-at-first. -/
 private def scanFilteredEnumerationFirstFilledStar (document : Document)
     (source : CheckedStarEnumerationSource model)
-    (having : CheckedStarHaving model source.source source.declaringGroup)
+    (having : CheckedStarHaving model source.source source.bindingGroup)
     (filterRead : Env → FieldId → CheckedCell)
     (starRead : Env → FieldId → RawCell) (outer : Env)
     (resolved : ResolvedStarTopology) (state : FirstFilledScanState)

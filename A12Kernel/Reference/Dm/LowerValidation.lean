@@ -70,19 +70,29 @@ def lowerNumericComparison (model : FlatModel) (rowGroup : GroupPath) (op : Comp
          right := ← lowerNumericExpr lowerValidationNumericAtom (lowerNumericFieldAtom model rowGroup lowerValidationNumericAtom) right
          suppressExactScaleWarning := suppress }
 
-private def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPath) :
-    Expr → Lowering SurfaceTokenComparisonOperand
+private def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
+    (bindingGroup? : Option GroupPath) (expression : Expr) : Lowering SurfaceTokenComparisonOperand := do
+  if let some bindingGroup := bindingGroup? then
+    match expression with
+    | .entity reference | .value reference => checkReferenceRead model rowGroup bindingGroup reference
+    | _ => pure ()
+  match expression with
   | .string value => pure (.literal value)
   | .call "FirstFilledValue" arguments none none =>
-      (.firstFilled ·) <$> lowerEntitySource model rowGroup arguments
+      (.firstFilled ·) <$> lowerFirstFilledEntitySource model rowGroup arguments bindingGroup?
   | expression => match expression.fieldEntity? with
       | some field => pure (.field field)
       | none => refuse "TokenComparison" expression.construct
 
-private def lowerFirstFilledComparisonOperand (model : FlatModel) (rowGroup : GroupPath) :
-    Expr → Lowering SurfaceFirstFilledComparisonOperand
+private def lowerFirstFilledComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
+    (bindingGroup? : Option GroupPath) (expression : Expr) : Lowering SurfaceFirstFilledComparisonOperand := do
+  if let some bindingGroup := bindingGroup? then
+    match expression with
+    | .entity reference | .value reference => checkReferenceRead model rowGroup bindingGroup reference
+    | _ => pure ()
+  match expression with
   | .call "FirstFilledValue" arguments none none =>
-      (.firstFilled ·) <$> lowerEntitySource model rowGroup arguments
+      (.firstFilled ·) <$> lowerFirstFilledEntitySource model rowGroup arguments bindingGroup?
   | .constant "True" => pure (.boolean true)
   | .constant "False" => pure (.boolean false)
   | expression => match expression.fieldEntity? with
@@ -122,33 +132,43 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
               elaborated "StringExpression" (CheckedValidationCondition.fromStringExpression rowGroup comparison)] else []
         | _, _, _ => []
     | _ => []
+  let selected : Expr → Bool
+    | .call "FirstFilledValue" _ none none => true
+    | _ => false
+  let contextualReadRefusal {α : Type} (first second : Lowering α) :
+      List (Lowering (CheckedValidationCondition model)) :=
+    if filterBinding?.isNone then [] else
+      let ownReadRefusal : Lowering α → Option Refusal
+        | .error refusal => if refusal.construct == "Having" then some refusal else none
+        | .ok _ => none
+      match (ownReadRefusal first).orElse (fun _ => ownReadRefusal second) with
+      | some refusal => [.error refusal]
+      | none => []
   let token := match leaf with
     | .compare op left right =>
         let equality := match op with
           | .eq => some EqualityOp.equal
           | .ne => some EqualityOp.notEqual
           | _ => none
-        match equality, lowerTokenComparisonOperand model rowGroup left,
-            lowerTokenComparisonOperand model rowGroup right with
+        match equality, lowerTokenComparisonOperand model rowGroup filterBinding? left,
+            lowerTokenComparisonOperand model rowGroup filterBinding? right with
         | some op, .ok left, .ok right => [do
             let comparison ← elaborated "TokenComparison" (elaborateTokenComparison model rowGroup op left right bindingGroup)
             elaborated "TokenComparison" (CheckedValidationCondition.fromTokenComparison bindingGroup comparison rowGroup)]
-        | _, _, _ => []
+        | _, first, second =>
+            if selected left || selected right then contextualReadRefusal first second else []
     | _ => []
-  let selected : Expr → Bool
-    | .call "FirstFilledValue" _ none none => true
-    | _ => false
   let firstFilled := match leaf with
     | .compare op left right =>
         if !selected left && !selected right then [] else
-        match op.toSurface?, lowerFirstFilledComparisonOperand model rowGroup left,
-            lowerFirstFilledComparisonOperand model rowGroup right with
+        match op.toSurface?, lowerFirstFilledComparisonOperand model rowGroup filterBinding? left,
+            lowerFirstFilledComparisonOperand model rowGroup filterBinding? right with
         | some op, .ok left, .ok right => [do
             let comparison ← elaborated "FirstFilledComparison"
               (elaborateFirstFilledComparison model rowGroup bindingGroup op.toTemporal left right)
             elaborated "FirstFilledComparison"
               (CheckedValidationCondition.fromFirstFilledComparison bindingGroup comparison rowGroup)]
-        | _, _, _ => []
+        | _, first, second => contextualReadRefusal first second
     | _ => []
   let validity := match leaf with
     | .call id [.mk (.call "Date" arguments none none) none] none none =>

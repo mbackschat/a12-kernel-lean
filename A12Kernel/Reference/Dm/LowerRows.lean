@@ -156,15 +156,16 @@ private def timeComponents (model : FlatModel) (group : GroupPath) :
 the others over one sibling star. -/
 private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (arguments : List Argument) : Lowering (RowStep model) := do
+  let bindingGroup? := if arguments.any Argument.hasHaving then some target.groupPath else none
   if target.policy.kind == .string && target.customType.isNone then
     return ← stepOf "FirstFilledValue" (CheckedRowComputationStep.ofStringFirstFilled?
       (← elaborated "FirstFilledValue" (checkStringFirstFilledComputation model group target.id
-        (← lowerEntitySource model group arguments))))
+        (← lowerFirstFilledEntitySource model group arguments bindingGroup?))))
   if target.policy.kind == .enumeration then
     return ← stepOf "FirstFilledValue" (CheckedRowComputationStep.ofAddressedEnumerationFirstFilled?
       (← elaborated "FirstFilledValue" (checkAddressedEnumerationFirstFilledComputation model group
-        target.id (← lowerEnumerationFirstFilledSource model group arguments))))
-  let source ← lowerFirstFilledSource model group arguments
+        target.id (← lowerEnumerationFirstFilledSource model group arguments bindingGroup?))))
+  let source ← lowerFirstFilledSource model group arguments bindingGroup?
   if target.customType.isSome then
     return ← stepOf "FirstFilledValue" (CheckedRowComputationStep.ofCustomFirstFilled?
       (← elaborated "FirstFilledValue" (checkCustomFirstFilledComputation model group target.id source)))

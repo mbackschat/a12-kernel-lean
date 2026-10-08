@@ -32,8 +32,8 @@ structure CheckedStarEnumerationSource (model : FlatModel) where
   operand : CheckedEnumerationValueListOperand
   fieldOwned : source.declaration.policy.kind = .enumeration
   enumerationOwned : source.declaration.enumeration = some operand.declaration.declaration
-  declaringGroup : GroupPath
-  filter : Option (CheckedStarHaving model source declaringGroup)
+  bindingGroup : GroupPath
+  filter : Option (CheckedStarHaving model source bindingGroup)
 
 /-- A checked nested Enumeration star and its nonempty, projection-admitted literal side. -/
 structure CheckedStarEnumerationValueListSource (model : FlatModel) where
@@ -67,7 +67,8 @@ inductive StarEnumerationValueListElabError where
 /-- Certify an already-resolved general star path as an exact checked stored/category Enumeration projection. -/
 def certifyStarEnumerationSource (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (projectionRef : EnumerationProjectionRef)
-    (having : Option SurfaceCorrelatedHaving := none) :
+    (having : Option SurfaceCorrelatedHaving := none)
+    (bindingGroup : GroupPath := declaringGroup) :
     Except StarEnumerationValueListElabError
       (CheckedStarEnumerationSource model) := do
   match hKind : source.declaration.policy.kind,
@@ -89,7 +90,7 @@ def certifyStarEnumerationSource (declaringGroup : GroupPath)
                 | none => pure none
                 | some authoredFilter =>
                     pure (some (← elaborateStarHavingCore model declaringGroup source
-                      authoredFilter |>.mapError .having))
+                      authoredFilter bindingGroup |>.mapError .having))
               pure {
                 source
                 operand
@@ -97,7 +98,7 @@ def certifyStarEnumerationSource (declaringGroup : GroupPath)
                 enumerationOwned := by
                   rw [elaborateEnumeration_declaration_eq declaration checked hChecked]
                   exact hEnumeration
-                declaringGroup
+                bindingGroup
                 filter }
   | actual, _ =>
       throw (.fieldNotEnumeration source.declaration.path actual.surfaceKind)
@@ -112,7 +113,7 @@ def elaborateStarEnumerationSource (model : FlatModel) (declaringGroup : GroupPa
     |>.mapError fun error => .path (error.placeBelowStar model declaringGroup writtenGroup)
   if let some authoredFilter := having then
     authoredFilter.requireOuterReferencesBound model declaringGroup writtenGroup |>.mapError .having
-  certifyStarEnumerationSource declaringGroup source projectionRef having
+  certifyStarEnumerationSource declaringGroup source projectionRef having writtenGroup
 
 /-- Check projection-specific literal admission after the exact starred Enumeration operand has been resolved. -/
 def elaborateStarEnumerationValueListSource (model : FlatModel)

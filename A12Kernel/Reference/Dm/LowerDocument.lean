@@ -22,9 +22,14 @@ private def fixedStep : Option (CheckedDocumentComputationStep model) →
 /-- `FirstFilledValue` onto the step of the target's kind, a temporal target's chosen by its profile. -/
 private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (arguments : List Argument) : Lowering (CheckedDocumentComputationStep model) := do
-  let source ← lowerFirstFilledSource model group arguments
+  let bindingGroup? := if arguments.any Argument.hasHaving then some target.groupPath else none
   let check {ε α : Type} [Repr ε] (result : Except ε α) : Lowering α :=
     elaborated "FirstFilledValue" result
+  if target.policy.kind == .enumeration then
+    let operation ← check (elaborateEnumerationFirstFilledComputation model group target.id
+      (← lowerEnumerationFirstFilledSource model group arguments bindingGroup?))
+    return .ofEnumerationFirstFilled operation
+  let source ← lowerFirstFilledSource model group arguments bindingGroup?
   match target.temporalFirstFilledFamily? with
   | some .time =>
       let operation ← check (checkTimeFirstFilledComputation model group target.id source)
@@ -60,12 +65,9 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
       if target.customType.isSome then
         return ← fixedStep (CheckedDocumentComputationStep.ofCustomFirstFilled? (← check (checkCustomFirstFilledComputation model group target.id source)))
       let operation ← check (checkStringFirstFilledComputation model group target.id
-        (← lowerEntitySource model group arguments))
+        (← lowerFirstFilledEntitySource model group arguments bindingGroup?))
       fixedStep (CheckedDocumentComputationStep.ofStringFirstFilled? operation)
-  | .enumeration => do
-      let operation ← check (elaborateEnumerationFirstFilledComputation model group target.id
-        (← lowerEnumerationFirstFilledSource model group arguments))
-      pure (.ofEnumerationFirstFilled operation)
+  | .enumeration => refuse "FirstFilledValue" "target kind"
   | .number => refuse "FirstFilledValue" "target kind"
 
 /-- One unguarded operation onto its whole-document step, or a refusal naming its construct. -/

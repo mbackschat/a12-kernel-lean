@@ -39,7 +39,7 @@ def checkAddressedEnumerationFirstFilledComputation
   -- The declaring group, not the target, places a refusal here; no row measures this carrier's
   -- placement ([SG9](../../docs/gaps/paths-and-groups.md)).
   let source ← elaborateEnumerationFirstFilledSource model declaringGroup
-      target.declaration.repeatableScope authored declaringGroup
+      target.declaration.repeatableScope authored declaringGroup target.declaration.groupPath
     |>.mapError .source
   if hReference : source.referencesWith target.field (·.forbidsTarget target.field) = true then
     throw (.targetSelfReference target.field)
