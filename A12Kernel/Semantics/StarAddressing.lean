@@ -338,6 +338,11 @@ def StarPath.resolveInCapacity (path : StarPath) (document : Document) (outer : 
   let bound ← path.boundEnvironment outer
   return physical.inCapacity path.axes (StarAxes.environmentOverLimit path.axes bound)
 
+/-- Resolve the shared topology and retain only environments within every declared repeatability. -/
+def StarPath.inCapacityEnvironments (path : StarPath)
+    (document : Document) (outer : Env) : Except StarAddressingError (List Env) :=
+  (·.environments) <$> path.resolveInCapacity document outer
+
 /-- Resolve one declaration under an operand's bound depth. Fully bound repeated declarations
 contribute only an instantiated in-capacity row; reopened declarations retain their omitted tail. -/
 def StarAxes.resolveOperandExtent (axes : List StarAxis) (document : Document)

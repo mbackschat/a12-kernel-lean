@@ -1,3 +1,5 @@
+import A12Kernel.Elaboration.ValueCountAdmission
+import A12Kernel.Semantics.ValueCountInputs
 import A12Kernel.Elaboration.NumericScale
 import A12Kernel.Elaboration.TokenEntityList
 import A12Kernel.Semantics.NumericAggregate
@@ -21,12 +23,6 @@ inductive BooleanValueCountElabError where
   | groupExpansionEmpty (path : List String)
   | incoherentCore
   deriving Repr, DecidableEq
-
-/-- Whether one field kind is legal for the authored Boolean constant. `True` admits Boolean and Confirm; `False` admits only Boolean. -/
-def booleanValueCountKindAllowed (expected : Bool) : FieldKind → Bool
-  | .boolean => true
-  | .confirm => expected
-  | _ => false
 
 /-- Select one declaration admitted by the Boolean/Confirm constant-specific gate. Returning the
     declaration itself lets a group certify that its retained expansion omitted nothing. -/
@@ -497,22 +493,6 @@ def elaborateFalseValueCountStarredGroupSource (model : FlatModel)
       (CheckedFalseValueCountStarredGroupSource model) :=
   elaborateBooleanValueCountStarredGroupSource
     model declaringGroup false authored
-
-/-- The fixed storage token selected by an authored Boolean constant. -/
-def booleanValueCountToken (expected : Bool) : String :=
-  if expected then "true" else "false"
-
-/-- Boolean/Confirm counting uses checked values, never stored or display tokens. -/
-def booleanValueCountObservation : CellObservation → ValueListCell .token
-  | .empty => .empty
-  | .value (.bool value) => .present (booleanValueCountToken value)
-  | .value (.conf true) => .present (booleanValueCountToken true)
-  | .value _ => .unknown .malformed
-  | .unknown cause | .poison cause => .unknown cause
-
-/-- Project the phase observation; an impossible false Confirm fails closed. -/
-def booleanValueCountCellAt (phase : Phase) (cell : CheckedCell) : ValueListCell .token :=
-  booleanValueCountObservation (observeCell phase cell)
 
 namespace CheckedSelectedBooleanCountEntity
 

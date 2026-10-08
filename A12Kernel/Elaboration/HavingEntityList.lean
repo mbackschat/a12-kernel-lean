@@ -9,7 +9,7 @@ private def ordinaryOperand (model : FlatModel) (declaringGroup : GroupPath) :
           else .field reference.field reference.form
       | none => .field reference.field reference.form
   | .group _ reference => .group reference
-  | .star _ path =>
+  | .star _ path _ =>
       let last := path.groups.getLast?.getD { name := "" }
       let field : SurfaceStarFieldPath := { base := path.base, groups := path.groups.dropLast, field := last.name }
       if !last.starred && (model.resolveFieldDeclarationUnchecked declaringGroup field.toFieldPath).isOk then
@@ -26,6 +26,8 @@ def resolveHavingEntityListOperands (model : FlatModel) (declaringGroup : GroupP
     let operand ← resolveFieldEntityOperandIn model declaringGroup []
       (ordinaryOperand model declaringGroup authored) (some declaringGroup) declaringGroup
       |>.mapError .fieldFill
+    if let .star _ _ (.projected _) := authored then
+      throw (.fieldFill (.categoryNotAllowed operand.entityPath))
     let operand := match operand with
       | .group reference => .group { reference with boundRepeatableScope := model.repeatableScopeForGroupPath reference.path }
       | other => other

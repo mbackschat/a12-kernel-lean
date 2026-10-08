@@ -32,19 +32,6 @@ structure SurfaceTokenValueCountFixedGroupValidationSource where
   group : SurfaceGroupPath
   deriving Repr, DecidableEq
 
-/-- String accepts every decoded literal; Enumeration requires membership in its exact selected stored/category domain. The gate reads one declaration beside the operand resolved from it, which is what lets a direct slot, a starred slot, and one member of a group expansion share it. -/
-def FlatFieldDecl.allowsTokenValueCountLiteral (declaration : FlatFieldDecl)
-    (operand : FlatTextFieldOperand) (expected : String) : Bool :=
-  match operand with
-  | .string _ => true
-  | .enumeration source =>
-      match declaration.enumeration with
-      | some enumeration =>
-          match source.projection with
-          | .stored => enumeration.storedTokens.contains expected
-          | .category mapping => mapping.categoryTokens.contains expected
-      | none => false
-
 namespace CheckedTokenField
 
 def allowsValueCountLiteral (checked : CheckedTokenField model)

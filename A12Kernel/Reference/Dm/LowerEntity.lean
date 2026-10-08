@@ -71,9 +71,9 @@ private def havingEntityListMembers (arguments : List Argument) : Lowering Surfa
     | .mk (.constant "RuleGroup") none none => pure (.group .inner (.ruleGroup false))
     | .mk (.entity { path, index := none, category }) none none => do
         if path.segments.any (·.star) then
-          if category.isSome then refuse "Having" "category on a star"
           pure (.star (if path.correlated then .outer else .inner)
-            { base := path.base, groups := path.starGroups })
+            { base := path.base, groups := path.starGroups }
+            (category.map FieldEntityReadForm.projected |>.getD .stored))
         else
           let some reference := havingEntity? (.entity { path, index := none, category }) |
             refuse "Having" "field-list entity"
@@ -84,6 +84,23 @@ private def havingEntityListMembers (arguments : List Argument) : Lowering Surfa
 
 
 private def lowerHavingNumericAtom : Expr → Lowering SurfaceHavingNumericAtom
+  | .call "NumberOfFilledGroups" arguments none none => .groupCount <$> havingEntityListMembers arguments
+  | .call "SumOfProducts" arguments none none => .product <$> havingEntityListMembers arguments
+  | .call "NumberOfFilledFields" arguments none none =>
+      (.collectionCount ∘ .filledFields) <$> havingEntityListMembers arguments
+  | .call "NumberOfValueInFields" [.mk expected none none] (some listed) none => do
+      let source ← havingEntityListMembers listed
+      let count ← match expected with
+        | .number text => do
+            let some literal := decodeNumber? text | refuse "NumberOfValueInFields" "expected value"
+            pure (.numberValue literal.value source)
+        | .string value =>
+            if isTemporalConstant value then refuse "NumberOfValueInFields" "temporal constant"
+            else pure (.tokenValue value source)
+        | .constant "True" => pure (.booleanValue true source)
+        | .constant "False" => pure (.booleanValue false source)
+        | _ => refuse "NumberOfValueInFields" "expected value"
+      pure (.collectionCount count)
   | .call id arguments none none => do
       if let [.mk source none none] := arguments then
         let directRangeBound := match source with

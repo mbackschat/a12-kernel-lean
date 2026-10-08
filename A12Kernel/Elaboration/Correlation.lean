@@ -1,3 +1,6 @@
+import A12Kernel.Elaboration.HavingGroupCount
+import A12Kernel.Elaboration.HavingNumericProduct
+import A12Kernel.Elaboration.HavingCollectionCount
 import A12Kernel.Elaboration.HavingNumberAggregate
 import A12Kernel.Elaboration.HavingTemporalExpression
 import A12Kernel.Elaboration.HavingDateValidity
@@ -91,7 +94,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
         (model.resolveNumberInGroup declaringGroup group reference.field).isOk
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).any fun
-        | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ | .dateTimeDifference _ _ _ | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ | .fieldValueAsNumber _
+        | .groupCount _ | .product _ | .collectionCount _ | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ | .dateTimeDifference _ _ _ | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ | .fieldValueAsNumber _
             | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ | .temporalExpressionPart _ _ => false
         | .field reference => reference.origin == .inner &&
             (model.resolveNumberInGroup declaringGroup group reference.field).isOk
@@ -115,6 +118,9 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError CorrelatedHaving := do
   discard <| elaborateHavingCoreWith {
+    groupCount := fun _ => throw .stringLeafOutsideStarRoute
+    product := fun _ => throw .stringLeafOutsideStarRoute
+    collectionCount := fun _ => throw .stringLeafOutsideStarRoute
     aggregate := fun _ _ => throw .stringLeafOutsideStarRoute
     baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
     clockPart := fun _ _ => throw .stringLeafOutsideStarRoute
@@ -149,6 +155,9 @@ private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     presence := fun _ _ => throw .stringLeafOutsideStarRoute } authored
   let readsGroup := authored.readsGroupNumber model declaringGroup group
   let condition ← (elaborateHavingCoreWith {
+    groupCount := fun _ => throw .stringLeafOutsideStarRoute
+    product := fun _ => throw .stringLeafOutsideStarRoute
+    collectionCount := fun _ => throw .stringLeafOutsideStarRoute
     aggregate := fun _ _ => throw .stringLeafOutsideStarRoute
     baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
     clockPart := fun _ _ => throw .stringLeafOutsideStarRoute
@@ -472,6 +481,10 @@ def CorrelatedHaving.outerIterationScopes
     CorrelatedHaving → List (Option (List RepeatableLevel))
   | .leaf (.numeric comparison) =>
       (comparison.left.atoms ++ comparison.right.atoms).flatMap fun
+        | .groupCount operands => operands.map fun operand =>
+            if operand.origin == .outer && !operand.bindingScope.isEmpty then some operand.bindingScope else none
+        | .product source => source.presenceSlots.map (·.outerIterationScope? model)
+        | .collectionCount source => source.presenceSlots.map (·.outerIterationScope? model)
         | .aggregate _ slots => (HavingNumberAggregate.presenceSlots slots).map (·.outerIterationScope? model)
         | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map fun reference =>
             outerHavingFieldIterationScope model reference.origin reference.field.id
@@ -539,7 +552,8 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
     SurfaceCorrelatedHaving → Option CorrelationElabError
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
-        | .aggregate _ source => (source.first :: source.rest).findSome? entity
+        | .collectionCount count => (count.source.first :: count.source.rest).findSome? entity
+        | .groupCount source | .product source | .aggregate _ source => (source.first :: source.rest).findSome? entity
         | .dateDifference _ left right | .dayDifference left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>
@@ -618,8 +632,12 @@ def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
         | none => throw .numericExpressionUnsupported
     | .now => throw .numericExpressionUnsupported
   let condition ← elaborateHavingCoreWith {
+    groupCount := elaborateHavingGroupCount model declaringGroup candidateLevels outerLevels
+    product := elaborateHavingNumericProduct model declaringGroup candidateLevels outerLevels
+    collectionCount := elaborateHavingCollectionCount model declaringGroup candidateLevels outerLevels
     aggregate := fun op source =>
-      HavingNumericAtom.aggregate op <$> HavingNumberAggregate.elaborate model declaringGroup candidateLevels outerLevels source
+      if op == .distinctCount then elaborateHavingDistinctCount model declaringGroup candidateLevels outerLevels source
+      else HavingNumericAtom.aggregate op <$> HavingNumberAggregate.elaborate model declaringGroup candidateLevels outerLevels source
     baseYear := match model.baseYear with | some year => .ok year | none => .error .numericExpressionUnsupported
     clockPart := fun source part => do
       if !source.admits part then throw .numericExpressionUnsupported

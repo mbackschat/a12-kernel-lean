@@ -1,3 +1,6 @@
+import A12Kernel.Semantics.HavingGroupCount
+import A12Kernel.Semantics.HavingNumericProduct
+import A12Kernel.Semantics.HavingCollectionCount
 import A12Kernel.Semantics.HavingNumberAggregate
 import A12Kernel.Semantics.HavingTemporalExpression
 
@@ -7,6 +10,9 @@ namespace A12Kernel
 
 /-- Clock and model constants carry no row origin, so arithmetic cannot make them satisfy a filter reference requirement (spec/07 §3). Field and repetition atoms retain their own origins. -/
 inductive HavingNumericAtom where
+  | groupCount (operands : List HavingGroupCountOperand)
+  | product (source : HavingNumericProduct)
+  | collectionCount (source : HavingCollectionCount)
   | aggregate (op : NumericAggregateOp) (slots : List (HavingFieldListSlot HavingNumberRef))
   | dateDifference (unit : DateDifferenceUnit) (left right : ResolvedDateDifferenceOperand HavingTemporalRef)
   | dayDifference (profile : ModelZone.ConcreteProfile) (left right : ResolvedDateDifferenceOperand HavingTemporalRef)
@@ -25,7 +31,10 @@ inductive HavingNumericAtom where
   deriving Repr, DecidableEq
 
 def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
+  | .groupCount operands => operands.map (·.origin)
   | .temporalExpressionPart _ source => source.references.map (·.origin)
+  | .product source => [source.left.origin, source.right.origin]
+  | .collectionCount source => (source.presenceSlots.flatMap (·.references)).map (·.origin)
   | .aggregate _ slots => (slots.flatMap (·.references)).map (·.origin)
   | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (·.origin)
   | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (·.origin)
@@ -37,7 +46,10 @@ def HavingNumericAtom.origins : HavingNumericAtom → List HavingOrigin
 
 /-- Preserve each read's own origin inside a multi-source numeric atom (spec/07 §3). -/
 def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin × FieldId)
+  | .groupCount operands => operands.flatMap fun operand => operand.source.members.map (operand.origin, ·)
   | .temporalExpressionPart _ source => source.references.map (fun ref => (ref.origin, ref.fieldId))
+  | .product source => [(source.left.origin, source.left.field.id), (source.right.origin, source.right.field.id)]
+  | .collectionCount source => (source.presenceSlots.flatMap (·.references)).map (fun ref => (ref.origin, ref.field))
   | .aggregate _ slots => (slots.flatMap (·.references)).map (fun reference => (reference.origin, reference.field.id))
   | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (fun reference => (reference.origin, reference.field.id))
   | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (fun reference => (reference.origin, reference.field.id))
@@ -49,8 +61,9 @@ def HavingNumericAtom.fieldOrigins : HavingNumericAtom → List (HavingOrigin ×
   | .temporalPart origin source _ => [(origin, source.id)]
 
 def HavingNumericAtom.summary : HavingNumericAtom → NumericScaleSummary
+  | .product source => source.summary
   | .temporalExpressionPart _ _ => .field 0
-  | .aggregate .distinctCount _ => .field 0
+  | .groupCount _ | .collectionCount _ | .aggregate .distinctCount _ => .field 0
   | .aggregate _ slots => (slots.flatMap (·.references)).foldl (fun summary reference => summary.union (.field reference.field.info.scale)) (.field 0)
   | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ => .field 0
   | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ => .field 0
@@ -210,6 +223,18 @@ def HavingNumericAtom.readValidation (context : CorrelationContext) (frame : Cor
   | .dayDifference profile left right =>
       (readHavingCalendarDifference .validation (fun env field => .ok (context.read env field)) frame
         (readHavingDayOperand profile context.world ()) (CalendarDayDifferenceOperand.evaluate profile) left right).bind (fun result => result.bind havingArithmetic)
+  | .product source =>
+      match source.evaluate .validation context.asResolving frame with
+      | .ok operand => havingArithmetic operand
+      | .error _ => .error ()
+  | .groupCount operands =>
+      match HavingGroupCount.evaluate .validation context.asResolving frame operands with
+      | .ok (some operand) => havingArithmetic operand
+      | _ => .error ()
+  | .collectionCount source =>
+      match source.evaluate .validation context.asResolving frame with
+      | .ok (some operand) => havingArithmetic operand
+      | _ => .error ()
   | .aggregate op slots =>
       match HavingNumberAggregate.evaluate .validation context.asResolving frame op slots with
       | .ok operand => havingArithmetic operand
@@ -247,6 +272,12 @@ def HavingNumericAtom.readValidationResolving (context : ResolvingCorrelationCon
       pure ((← readHavingCalendarDifference .validation context.read frame (readHavingDateOperand context.world context.unsupportedDateCalendar) (DateDifferenceOperand.evaluate unit) left right).bind havingArithmetic)
   | .dayDifference profile left right => do
       pure ((← readHavingCalendarDifference .validation context.read frame (readHavingDayOperand profile context.world context.unsupportedDateCalendar) (CalendarDayDifferenceOperand.evaluate profile) left right).bind havingArithmetic)
+  | .product source => do
+      pure (havingArithmetic (← source.evaluate .validation context frame))
+  | .groupCount operands => do
+      pure ((← HavingGroupCount.evaluate .validation context frame operands).map havingArithmetic |>.getD (.error ()))
+  | .collectionCount source => do
+      pure ((← source.evaluate .validation context frame).map havingArithmetic |>.getD (.error ()))
   | .aggregate op slots => do
       pure (havingArithmetic (← HavingNumberAggregate.evaluate .validation context frame op slots))
   | .dateTimeDifference unit left right => do
@@ -291,6 +322,12 @@ def HavingNumericAtom.readComputationResolving (context : ResolvingCorrelationCo
   | .dayDifference profile left right => do
       let result ← readHavingCalendarDifference .computation context.read frame (readHavingDayOperand profile context.world context.unsupportedDateCalendar) (CalendarDayDifferenceOperand.evaluate profile) left right
       (result.map NumericOperand.toComputationResult).mapError fun _ => context.unsupportedDateCalendar
+  | .product source => do
+      pure ((← source.evaluate .computation context frame).toComputationResult)
+  | .groupCount operands => do
+      pure ((← HavingGroupCount.evaluate .computation context frame operands).map NumericOperand.toComputationResult |>.getD .domainFailure)
+  | .collectionCount source => do
+      pure ((← source.evaluate .computation context frame).map NumericOperand.toComputationResult |>.getD .domainFailure)
   | .aggregate op slots => do
       pure ((← HavingNumberAggregate.evaluate .computation context frame op slots).toComputationResult)
   | .dateTimeDifference unit left right => do

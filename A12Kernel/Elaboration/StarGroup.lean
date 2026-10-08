@@ -257,11 +257,6 @@ def StarredGroupFillQuantifier.evalCount (operator : StarredGroupFillQuantifier)
   operator.toGroupFillQuantifier.evalTally
     (GroupListPresenceTally.filledOnly count)
 
-/-- Resolve the shared topology and retain only environments within every declared repeatability. -/
-def StarPath.inCapacityEnvironments (path : StarPath)
-    (document : Document) (outer : Env) : Except StarAddressingError (List Env) :=
-  (·.environments) <$> path.resolveInCapacity document outer
-
 namespace CheckedStarredGroupSource
 
 /-- Whether the normalized identifiers for this starred group establish its complete reduced-universal extent in the current rule-iteration row. The group path is deliberately the target, so descendant field identifiers do not project upward into coverage. -/

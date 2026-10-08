@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.HavingCollectionCountLocks
 import A12Kernel.Reference.Dm.HavingTimeConstructionLocks
 import A12Kernel.Reference.Dm.HavingDateValidityLocks
 import A12Kernel.Reference.Dm.HavingDateConstructionLocks

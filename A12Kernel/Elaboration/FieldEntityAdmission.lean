@@ -35,7 +35,7 @@ structure SurfaceHavingDirectFieldSource where
 (spec/07 §3 and §5). An unstarred entity may name a field or a group. -/
 inductive SurfaceHavingEntityOperand where
   | entity (reference : SurfaceHavingDirectFieldOperand)
-  | star (origin : HavingOrigin) (path : SurfaceStarGroupPath)
+  | star (origin : HavingOrigin) (path : SurfaceStarGroupPath) (form : FieldEntityReadForm := .stored)
   | group (origin : HavingOrigin) (reference : SurfaceGroupReference)
   deriving Repr, DecidableEq
 
@@ -46,7 +46,7 @@ structure SurfaceHavingEntitySource where
 
 def SurfaceHavingEntityOperand.origin : SurfaceHavingEntityOperand → HavingOrigin
   | .entity reference => reference.origin
-  | .star origin _ | .group origin _ => origin
+  | .star origin _ _ | .group origin _ => origin
 
 /-- Only the authored unstarred prefix participates in the surrounding filter's binding gates;
 a group's recursively expanded declarations do not create authored iteration reads (spec/07 §3). -/
@@ -61,7 +61,7 @@ def SurfaceHavingEntityOperand.bindingRead? (model : FlatModel) (declaringGroup 
   | .group _ reference => do
       let resolved ← (reference.resolveAgainst declaringGroup).toOption
       pure (resolved.path, model.repeatableScopeForGroupPath resolved.path)
-  | .star _ path => do
+  | .star _ path _ => do
       let last ← path.groups.getLast?
       let field : SurfaceStarFieldPath := {
         base := path.base, groups := path.groups.dropLast, field := last.name }

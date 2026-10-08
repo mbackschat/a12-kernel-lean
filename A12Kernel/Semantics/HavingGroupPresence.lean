@@ -6,6 +6,7 @@ namespace A12Kernel
 def CorrelationContext.withComputationGroups (context : CorrelationContext) (document : Document) :
     CorrelationContext :=
   { context with groups := some {
+      groupExtent? := context.groups.bind (·.groupExtent?)
       fieldExtent := fun path env depth field => match context.groups with
         | some groups => groups.fieldExtent path env depth field
         | none => .error (.groupUnavailable path)
@@ -20,6 +21,7 @@ def CorrelationContext.withComputationGroups (context : CorrelationContext) (doc
 def ResolvingCorrelationContext.withComputationGroups (context : ResolvingCorrelationContext Error)
     (document : Document) : ResolvingCorrelationContext Error :=
   { context with groups := some {
+      groupExtent? := context.groups.bind (·.groupExtent?)
       fieldExtent := fun path env depth field => match context.groups with
         | some groups => groups.fieldExtent path env depth field
         | none => .error (context.groupUnavailable path)

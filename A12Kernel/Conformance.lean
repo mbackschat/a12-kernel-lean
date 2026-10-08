@@ -1,3 +1,6 @@
+import A12Kernel.Conformance.HavingCollectionCount
+import A12Kernel.Conformance.HavingGroupCount
+import A12Kernel.Conformance.HavingNumericProduct
 import A12Kernel.Conformance.HavingTimeConstruction
 import A12Kernel.Conformance.HavingDateValidity
 import A12Kernel.Conformance.HavingUniqueness

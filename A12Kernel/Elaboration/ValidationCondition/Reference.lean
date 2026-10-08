@@ -241,6 +241,9 @@ private def correlatedHavingReferencePointers (source : CheckedStarFieldPath mod
     Except ReferenceProjectionError (List MessagePointer)
   | .leaf (.numeric comparison) => do
       let pointers ← (comparison.left.atoms ++ comparison.right.atoms).mapM fun
+        | .groupCount operands => havingEntityListReferencePointers source environment (operands.map (·.presenceSlot))
+        | .product product => havingEntityListReferencePointers source environment product.presenceSlots
+        | .collectionCount count => havingEntityListReferencePointers source environment count.presenceSlots
         | .aggregate _ slots => havingEntityListReferencePointers source environment (HavingNumberAggregate.presenceSlots slots)
         | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).mapM fun reference => do
             let declaration ← (model.lookupUniqueId reference.field.id).mapError (fun _ => .incoherentHavingField reference.field.id)

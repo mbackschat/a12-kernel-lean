@@ -342,6 +342,8 @@ end CheckedDocument
 def FlatModel.correlationGroupsWithRead (model : FlatModel) (document : Document)
     (read : Env → FieldId → Except CheckedAddressingError CheckedCell) :
     CorrelationGroupReads CheckedAddressingError where
+  groupExtent? := some fun _ environment path =>
+    (path.inCapacityEnvironments document environment).mapError .addressing
   validation environment reference := do
     let base ← (model.groupPresenceInputFromSlice document.instantiatedRows [] reference.path environment .fullyRelevant false).mapError .group
     let addressPrefix ← (environment.pathForScope (model.repeatableScopeForGroupPath reference.path)).mapError .environment
@@ -369,13 +371,19 @@ def CorrelationContext.withModelComputationGroups (context : CorrelationContext)
     (model : FlatModel) (document : Document) : CorrelationContext :=
   let context := context.withComputationGroups document
   { context with groups := context.groups.map fun groups =>
-    { groups with fieldExtent := model.correlationFieldExtent document CorrelationRuntimeFault.groupUnavailable } }
+    { groups with
+      groupExtent? := some fun path environment selection =>
+        (selection.inCapacityEnvironments document environment).mapError (fun _ => .groupUnavailable path)
+      fieldExtent := model.correlationFieldExtent document CorrelationRuntimeFault.groupUnavailable } }
 
 def ResolvingCorrelationContext.withModelComputationGroups (context : ResolvingCorrelationContext Error)
     (model : FlatModel) (document : Document) : ResolvingCorrelationContext Error :=
   let context := context.withComputationGroups document
   { context with groups := context.groups.map fun groups =>
-    { groups with fieldExtent := model.correlationFieldExtent document context.groupUnavailable } }
+    { groups with
+      groupExtent? := some fun path environment selection =>
+        (selection.inCapacityEnvironments document environment).mapError (fun _ => context.groupUnavailable path)
+      fieldExtent := model.correlationFieldExtent document context.groupUnavailable } }
 
 namespace CheckedDocument
 

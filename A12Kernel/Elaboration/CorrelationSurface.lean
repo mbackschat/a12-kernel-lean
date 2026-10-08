@@ -100,7 +100,20 @@ def SurfaceHavingTemporalExpression.fields : SurfaceHavingTemporalExpression →
   | .dateTime date time => date.fields ++ time.fields
   | _ => []
 
+inductive SurfaceHavingCollectionCount where
+  | filledFields (source : SurfaceHavingEntitySource)
+  | numberValue (expected : Rat) (source : SurfaceHavingEntitySource)
+  | tokenValue (expected : String) (source : SurfaceHavingEntitySource)
+  | booleanValue (expected : Bool) (source : SurfaceHavingEntitySource)
+  deriving Repr, DecidableEq
+
+def SurfaceHavingCollectionCount.source : SurfaceHavingCollectionCount → SurfaceHavingEntitySource
+  | .filledFields source | .numberValue _ source | .tokenValue _ source | .booleanValue _ source => source
+
 inductive SurfaceHavingNumericAtom where
+  | groupCount (source : SurfaceHavingEntitySource)
+  | product (source : SurfaceHavingEntitySource)
+  | collectionCount (source : SurfaceHavingCollectionCount)
   | aggregate (op : NumericAggregateOp) (source : SurfaceHavingEntitySource)
   | dateDifference (unit : DateDifferenceUnit) (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
   | dayDifference (left right : SurfaceDateDifferenceOperand SurfaceHavingTemporalRef)
@@ -360,7 +373,8 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
     SurfaceCorrelatedHaving → Option (List String × UnboundOperandLevel)
   | .numeric _ left right | .tolerance _ left right =>
       (left.atoms ++ right.atoms).findSome? fun
-        | .aggregate _ source => (source.first :: source.rest).findSome? entity
+        | .collectionCount count => (count.source.first :: count.source.rest).findSome? entity
+        | .groupCount source | .product source | .aggregate _ source => (source.first :: source.rest).findSome? entity
         | .dateDifference _ left right | .dayDifference left right =>
             (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
         | .dateTimeDifference _ left right =>

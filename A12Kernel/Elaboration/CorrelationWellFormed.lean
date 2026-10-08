@@ -1,3 +1,6 @@
+import A12Kernel.Elaboration.HavingGroupCount
+import A12Kernel.Elaboration.HavingNumericProduct
+import A12Kernel.Elaboration.HavingCollectionCount
 import A12Kernel.Elaboration.HavingNumberAggregate
 import A12Kernel.Elaboration.HavingTemporalExpression
 import A12Kernel.Elaboration.HavingDateValidity
@@ -77,7 +80,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
     (model : FlatModel) (group : RepeatableGroupDecl) : CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
       | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
-      | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ | .clockPart _ _ _ | .fieldValueAsNumber _ _ => false
+      | .groupCount _ | .product _ | .collectionCount _ | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ | .clockPart _ _ _ | .fieldValueAsNumber _ _ => false
       | .field reference => model.admitsSingleGroupNumber group reference.field
       | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ | .temporalExpressionPart _ _ => false
       | .repetition reference => reference.source == .repeatable group.level
@@ -217,6 +220,9 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) :
     CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
+      | .groupCount operands => HavingGroupCount.wellFormed operands model candidateLevels outerLevels
+      | .product source => source.wellFormed model candidateLevels outerLevels
+      | .collectionCount source => source.wellFormed model candidateLevels outerLevels
       | .aggregate _ slots => HavingNumberAggregate.wellFormed model candidateLevels outerLevels slots
       | .dateDifference unit left right => unit.compatible model.hasBaseYear
           (left.componentsWith (·.field.components)) (right.componentsWith (·.field.components)) &&
@@ -346,6 +352,14 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
     (reopenedLevels : List RepeatableLevel) : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
       (comparison.left.atoms ++ comparison.right.atoms).any fun
+        | .groupCount operands => operands.any fun operand =>
+            operand.origin == .inner && operand.bindingScope.any reopenedLevels.contains
+        | .product source => source.presenceSlots.any fun slot =>
+            slot.references.any (·.origin == .inner) &&
+              (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
+        | .collectionCount source => source.presenceSlots.any fun slot =>
+            slot.references.any (·.origin == .inner) &&
+              (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
         | .aggregate _ slots => (HavingNumberAggregate.presenceSlots slots).any fun slot =>
             slot.references.any (·.origin == .inner) &&
               (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
