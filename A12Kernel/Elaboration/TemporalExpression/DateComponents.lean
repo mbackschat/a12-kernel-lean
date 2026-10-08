@@ -86,25 +86,14 @@ def readPartialScalarDateLeaf (context : ScalarComputationContext)
       | some (.value (cell, text)) =>
           some <$> (source.source.readWith .validation (fun _ => cell) (fun _ => text) context.world).mapError scalarDateFault
 
-/-- Relevance is separate from component payload: a later poison still wins after a cause-free
-non-relevant extraction (Date-component ordering probe, 2026-10-06; spec/05 §3). -/
-inductive DateComponentRelevance where
-  | relevant
-  | nonRelevant
-  deriving DecidableEq
-
 def observeScalarDateComponent (value : Except NumericValidationUnavailable NumericArithmeticOutcome) :
     StateT DateComponentRelevance (Except ScalarTemporalEvaluationFault) CheckedConstructedDateComponent := do
-  match value with
-  | .error (.formal cause) => pure (.unavailable cause)
-  | .error .nonRelevant =>
-      set DateComponentRelevance.nonRelevant
-      pure .empty
-  | .error _ => throw .calendarUnavailable
-  | .ok .notEvaluated => pure .empty
-  | .ok (.value value fillability) =>
-      pure (if fillability.canGrow || fillability.canShrink then .empty
-        else .value (temporalShiftAmountToInt32 value))
+  let component ← match value with
+    | .error (.formal cause) => pure (constructorComponentOfNumeric (.error (some cause)))
+    | .error .nonRelevant => pure (constructorComponentOfNumeric (.error none))
+    | .error _ => throw .calendarUnavailable
+    | .ok outcome => pure (constructorComponentOfNumeric (.ok outcome))
+  component.asDateComponent
 
 def finishScalarDateValidity (checked : CheckedConstructedDateComponents model Source)
     (observation : ConstructedDateObservation) (relevance : DateComponentRelevance) :

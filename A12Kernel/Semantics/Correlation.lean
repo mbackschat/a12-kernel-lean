@@ -36,7 +36,7 @@ inductive CorrelatedHavingLeaf where
       so the exclusion is carried by this type instead of by a runtime check. -/
   | compareStringLiteral (op : EqualityOp) (reference : HavingStringRef)
       (expected : String)
-  | dateValidity (operation : ConstructedDateValidityOp) (source : HavingDateComponents)
+  | dateValidity (operation : ConstructedDateValidityOp) (source : HavingConstructedDate)
   | uniqueness (source : HavingUniqueness)
   | fieldMembership (operator : ComputationValueListOperator) (source : HavingFieldValueList)
   | literalMembership (origin : HavingOrigin) (operator : ValueListMembershipOp)

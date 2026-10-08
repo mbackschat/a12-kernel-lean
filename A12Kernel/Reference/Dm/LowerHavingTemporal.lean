@@ -37,7 +37,8 @@ def Expr.havingTemporalConstructor (isTemporalSelection : List Argument → Bool
         ["Time", "Date", "DateTime", "DateFromDateTime", "TimeFromDateTime", "StartOfDateRange", "EndOfDateRange"].contains name
   | _ => false
 
-private def lowerHavingDateComponent : Expr → Lowering SurfaceHavingDateComponent
+mutual
+private partial def lowerHavingDateComponent : Expr → Lowering (SurfaceHavingDateComponent SurfaceHavingTemporalExpression)
   | .string text => pure (.constant text)
   | .entity { path, index := none, category := none } => do
       let some (origin, field) := path.havingField? | refuse "Date" "component path"
@@ -56,10 +57,10 @@ private def lowerHavingDateComponent : Expr → Lowering SurfaceHavingDateCompon
       | .entity { path, index := none, category := none } => do
           let some (origin, field) := path.havingField? | refuse "Date" "extractor path"
           pure (.extractor part { origin, field })
-      | _ => refuse "Date" "direct extractor operand"
+      | source => .expression part <$> lowerHavingTemporalExpression true source
   | _ => refuse "Date" "direct component"
 
-def lowerHavingDateComponents (arguments : List Argument) : Lowering SurfaceHavingDateComponents := do
+partial def lowerHavingDateComponents (arguments : List Argument) : Lowering SurfaceHavingDateComponents := do
   let components ← arguments.mapM fun
     | .mk expression none none => lowerHavingDateComponent expression
     | _ => refuse "Date" "component modifier"
@@ -69,7 +70,7 @@ def lowerHavingDateComponents (arguments : List Argument) : Lowering SurfaceHavi
   | [day, month, century, shortYear] => pure { day, month, year := .centuryAndShortYear century shortYear }
   | _ => refuse "Date" "component arity"
 
-private def lowerHavingTimeComponent : Expr → Lowering SurfaceHavingTimeComponent
+private partial def lowerHavingTimeComponent : Expr → Lowering (SurfaceHavingTimeComponent SurfaceHavingTemporalExpression)
   | .string text => pure (.constant text)
   | .entity { path, index := none, category := none } => do
       let some (origin, field) := path.havingField? | refuse "Time" "component path"
@@ -81,10 +82,10 @@ private def lowerHavingTimeComponent : Expr → Lowering SurfaceHavingTimeCompon
       | .entity { path, index := none, category := none } => do
           let some (origin, field) := path.havingField? | refuse "Time" "extractor path"
           pure (.extractor part { origin, field })
-      | _ => refuse "Time" "direct extractor operand"
+      | source => .expression part <$> lowerHavingTemporalExpression true source
   | _ => refuse "Time" "direct component"
 
-private def lowerHavingTimeComponents (arguments : List Argument) : Lowering SurfaceHavingTimeComponents := do
+private partial def lowerHavingTimeComponents (arguments : List Argument) : Lowering SurfaceHavingTimeComponents := do
   let components ← arguments.mapM fun
     | .mk expression none none => lowerHavingTimeComponent expression
     | _ => refuse "Time" "component modifier"
@@ -151,5 +152,7 @@ partial def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowerin
       | _, _, some value => pure (.dateLiteral value)
       | _, _, _ => refuse "Having" "temporal literal"
   | other => refuse "Having" other.construct
+
+end
 
 end A12Kernel.Dm

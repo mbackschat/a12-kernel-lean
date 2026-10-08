@@ -17,36 +17,37 @@ private def invalid : CheckedCell := { rawPresent := true, parsed := none, findi
 private def emptyCell : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
 private def numeric (id : FieldId) : ResolvedConstructedDateSource := .numberField { id, info := { scale := 0, signed := false } }
 private def source : HavingDateComponents := {
-  day := (.inner, numeric 1), month := (.inner, numeric 2), year := .complete (.outer, numeric 3), profile := .utc }
+  day := (.direct .inner (numeric 1)), month := (.direct .inner (numeric 2)), year := .complete (.direct .outer (numeric 3)), profile := .utc }
+private def validity (components : HavingDateComponents) : HavingConstructedDate := { components, baseYear := none }
 private def context (day : CheckedCell) (year : Int := 2024) : CorrelationContext := {
   read := fun env id => if id == 1 then day else if id == 2 then number 2
     else number (if env == frame.outerEnv then year else 2023) }
 
-example : observed (source.evalValidationRead .valid (context (number 29)).asResolving frame) = .inr (.fired .value) ∧
-    observed (source.evalComputationRead .valid (context (number 29)).asResolving frame) = .inr .holds ∧
-    observed (source.evalValidationRead .invalid (context emptyCell).asResolving frame) = .inr (.fired .omission) ∧
-    observed (source.evalValidationRead .valid (context invalid).asResolving frame) = .inr .unknown ∧
-    observed (source.evalComputationRead .invalid (context invalid).asResolving frame) = .inr (.poison .malformed) ∧
-    observed (source.evalValidationRead .invalid (context (number 29) 2023).asResolving frame) = .inr (.fired .value) := by native_decide
+example : observed ((validity source).evalValidationRead .valid (context (number 29)).asResolving frame) = .inr (.fired .value) ∧
+    observed ((validity source).evalComputationRead .valid (context (number 29)).asResolving frame) = .inr .holds ∧
+    observed ((validity source).evalValidationRead .invalid (context emptyCell).asResolving frame) = .inr (.fired .omission) ∧
+    observed ((validity source).evalValidationRead .valid (context invalid).asResolving frame) = .inr .unknown ∧
+    observed ((validity source).evalComputationRead .invalid (context invalid).asResolving frame) = .inr (.poison .malformed) ∧
+    observed ((validity source).evalValidationRead .invalid (context (number 29) 2023).asResolving frame) = .inr (.fired .value) := by native_decide
 
-private def conversion : HavingDateComponents := { source with month := (.inner, .stringField { id := 2 }) }
+private def conversion : HavingDateComponents := { source with month := (.direct .inner (.stringField { id := 2 })) }
 private def conversionContext : CorrelationContext := {
   read := fun _ id => if id == 1 then invalid else { rawPresent := true, parsed := some (.str "x"), findings := [] } }
-example : observed (conversion.evalValidationRead .valid conversionContext.asResolving frame) = .inl .valueFailure ∧
-    observed (conversion.evalComputationRead .valid conversionContext.asResolving frame) = .inr (.poison .malformed) := by native_decide
+example : observed ((validity conversion).evalValidationRead .valid conversionContext.asResolving frame) = .inl .valueFailure ∧
+    observed ((validity conversion).evalComputationRead .valid conversionContext.asResolving frame) = .inr (.poison .malformed) := by native_decide
 
 private def yearSource : HavingDateComponents := { source with
-  year := .complete (.outer, .dateYearField { id := 3, kind := .time, components := TemporalComponents.ofFormat "yyyy" }) }
+  year := .complete (.direct .outer (.dateYearField { id := 3, kind := .time, components := TemporalComponents.ofFormat "yyyy" })) }
 private def yearContext (stored : Option String) : CorrelationContext := {
   read := fun _ id => if id == 1 then number 29 else if id == 2 then number 2 else {
     rawPresent := true, findings := [], parsed := some (.temporal (.date {
       instant := { epochMillis := 0 }, parts := { year := 2024, month := 1, day := 1 }, basis := .storedGregorian })) }
   storedText := fun env _ => if env == frame.outerEnv then stored else some "2024" }
-example : observed (yearSource.evalComputationRead .valid (yearContext (some "2023")).asResolving frame) = .inr .notTrue ∧
-    observed (yearSource.evalComputationRead .valid (yearContext (some "2024")).asResolving frame) = .inr .holds ∧
-    observed (yearSource.evalComputationRead .valid (yearContext none).asResolving frame) = .inl (.storedTextUnavailable 3) := by native_decide
+example : observed ((validity yearSource).evalComputationRead .valid (yearContext (some "2023")).asResolving frame) = .inr .notTrue ∧
+    observed ((validity yearSource).evalComputationRead .valid (yearContext (some "2024")).asResolving frame) = .inr .holds ∧
+    observed ((validity yearSource).evalComputationRead .valid (yearContext none).asResolving frame) = .inl (.storedTextUnavailable 3) := by native_decide
 
-private def failLeaf : CorrelatedHaving := .leaf (.dateValidity .valid conversion)
+private def failLeaf : CorrelatedHaving := .leaf (.dateValidity .valid (validity conversion))
 private def guardLeaf (filled : Bool) : CorrelatedHaving := .leaf (.presence (if filled then .filled else .notFilled) { origin := .inner, field := 4 })
 private def guardContext : CorrelationContext := { conversionContext with
   read := fun env id => if id == 4 then number 1 else conversionContext.read env id }
@@ -54,23 +55,23 @@ example : observed (CorrelatedHaving.evalTruthInResolving (.and (guardLeaf false
     observed (CorrelatedHaving.evalTruthInResolving (.or (guardLeaf true) failLeaf) guardContext.asResolving frame) = .inr .tru ∧
     observed (CorrelatedHaving.evalTruthInResolving (.and (guardLeaf true) failLeaf) guardContext.asResolving frame) = .inl .valueFailure := by native_decide
 
-example : CorrelatedHaving.fieldIds (.leaf (.dateValidity .valid source)) = [1, 2, 3] ∧
-    CorrelatedHaving.markedFieldIds (.leaf (.dateValidity .valid source)) = [3] := by native_decide
+example : CorrelatedHaving.fieldIds (.leaf (.dateValidity .valid (validity source))) = [1, 2, 3] ∧
+    CorrelatedHaving.markedFieldIds (.leaf (.dateValidity .valid (validity source))) = [3] := by native_decide
 
-private def collapsedOrigin : HavingDateComponents := { source with year := .complete (.inner, numeric 3) }
-example : observed (collapsedOrigin.evalComputationRead .valid (context (number 29)).asResolving frame) = .inr .notTrue ∧
-    observed (source.evalComputationRead .valid (context (number 29)).asResolving frame) = .inr .holds := by native_decide
+private def collapsedOrigin : HavingDateComponents := { source with year := .complete (.direct .inner (numeric 3)) }
+example : observed ((validity collapsedOrigin).evalComputationRead .valid (context (number 29)).asResolving frame) = .inr .notTrue ∧
+    observed ((validity source).evalComputationRead .valid (context (number 29)).asResolving frame) = .inr .holds := by native_decide
 
 private def missingClock : HavingDateComponents := { source with
-  month := (.inner, .pointInTimeExtractor .today .month "UTC" .utc) }
-example : observed (missingClock.evalComputationRead .valid (context invalid).asResolving frame) = .inr (.poison .malformed) ∧
-    observed (missingClock.evalValidationRead .valid (context invalid).asResolving frame) = .inl .worldUnavailable ∧
-    observed (missingClock.evalComputationRead .valid (context (number 29)).asResolving frame) = .inl .worldUnavailable := by native_decide
+  month := (.direct .inner (.pointInTimeExtractor .today .month "UTC" .utc)) }
+example : observed ((validity missingClock).evalComputationRead .valid (context invalid).asResolving frame) = .inr (.poison .malformed) ∧
+    observed ((validity missingClock).evalValidationRead .valid (context invalid).asResolving frame) = .inl .worldUnavailable ∧
+    observed ((validity missingClock).evalComputationRead .valid (context (number 29)).asResolving frame) = .inl .worldUnavailable := by native_decide
 
 private def split (century : Int) : HavingDateComponents := { source with
-  year := .centuryAndShortYear (.inner, .constant century) (.outer, .constant 24) }
-example : observed ((split 0).evalComputationRead .invalid (context (number 1)).asResolving frame) = .inr .holds ∧
-    observed ((split 20).evalComputationRead .invalid (context (number 1)).asResolving frame) = .inr .notTrue := by native_decide
+  year := .centuryAndShortYear (.direct .inner (.constant century)) (.direct .outer (.constant 24)) }
+example : observed ((validity (split 0)).evalComputationRead .invalid (context (number 1)).asResolving frame) = .inr .holds ∧
+    observed ((validity (split 20)).evalComputationRead .invalid (context (number 1)).asResolving frame) = .inr .notTrue := by native_decide
 
 private def dateExpression (components : HavingDateComponents := source) : HavingTemporalExpression := {
   core := .atom (.dateConstruction components), profile := components.profile, baseYear := none }
@@ -124,18 +125,43 @@ private def model : FlatModel := {
     numericTargetConstraints := { maximum := some maximum } }
   repeatableGroups := [{ level := 10, path := ["Rows"], repeatability := some 2 }] }
 private def constants : HavingDateComponents := {
-  day := (.inner, .constant 29), month := (.inner, .constant 2)
-  year := .complete (.inner, .constant 2024), profile := .utc }
+  day := (.direct .inner (.constant 29)), month := (.direct .inner (.constant 2))
+  year := .complete (.direct .inner (.constant 2024)), profile := .utc }
 example : dateExpression.wellFormed model [10] [10] = true ∧
     dateExpression.wellFormed model [10] [] = false ∧
     dateExpression.wellFormed model [] [10] = false ∧
     (dateExpression { source with month := source.day }).wellFormed model [10] [10] = false ∧
-    (dateExpression { source with day := (.inner, .numberField { id := 1, info := { scale := 1, signed := false } }) }).wellFormed model [10] [10] = false ∧
+    (dateExpression { source with day := (.direct .inner (.numberField { id := 1, info := { scale := 1, signed := false } })) }).wellFormed model [10] [10] = false ∧
     (dateExpression { source with profile := .europeBerlin }).wellFormed model [10] [10] = false ∧
     ({ dateExpression with core := .atom (.dateConstruction { source with profile := .europeBerlin }) }).wellFormed model [10] [10] = false ∧
     (dateExpression constants).wellFormed model [] [] = true ∧
-    constants.wellFormedForEnvironments model [] [] = false ∧
-    (dateExpression { constants with day := (.inner, .constant 32) }).wellFormed model [] [] = false ∧
+    (validity constants).wellFormedForEnvironments model [] [] = false ∧
+    (dateExpression { constants with day := (.direct .inner (.constant 32)) }).wellFormed model [] [] = false ∧
     (dateExpression { source with year := .baseYear 2024 }).wellFormed model [10] [10] = false := by native_decide
+
+private def nested : HavingDateComponents := {
+  source with day := .expression .day dateExpression.core }
+private def nestedConversion : HavingDateComponents := {
+  nested with
+  day := .expression .day (dateExpression { constants with day := .direct .inner (numeric 1) }).core
+  month := .direct .inner (.stringField { id := 2 }) }
+
+example : observed ((dateExpression nested).evaluate .validation (context emptyCell).asResolving frame) = .inr (.value .noValue false) ∧
+    observed ((dateExpression nested).evaluate .computation (context (number 30)).asResolving frame) = .inr (.value .noValue true) ∧
+    observed ((validity nested).evalComputationRead .valid (context (number 29)).asResolving frame) = .inr .holds ∧
+    observed ((validity nested).evalComputationRead .invalid (context emptyCell).asResolving frame) = .inr .holds ∧
+    observed ((validity nested).evalValidationRead .valid (context required).asResolving frame) = .inr .unknown ∧
+    observed ((validity nestedConversion).evalValidationRead .valid conversionContext.asResolving frame) = .inl .valueFailure ∧
+    observed ((validity nestedConversion).evalComputationRead .valid conversionContext.asResolving frame) = .inr (.poison .malformed) ∧
+    ((dateExpression nested).references.map fun ref => (ref.origin, ref.fieldId)) =
+      [(.inner, 1), (.inner, 2), (.outer, 3), (.inner, 2), (.outer, 3)] := by native_decide
+
+example : (validity nested).wellFormedForEnvironments model [10] [10] = true ∧
+    (validity nested).wellFormedForEnvironments model [10] [] = false ∧
+    (dateExpression { nested with day := .expression .month dateExpression.core }).wellFormed model [10] [10] = false ∧
+    (dateExpression { nested with year := .centuryAndShortYear (.direct .inner (.constant 20)) (.expression .year dateExpression.core) }).wellFormed model [10] [10] = false ∧
+    (validity { constants with day := .expression .day dateExpression.core }).wellFormedForEnvironments model [10] [10] = false := by native_decide
+
+example : (dateExpression { constants with day := .expression .day (dateExpression { constants with profile := .europeBerlin }).core }).wellFormed model [] [] = false := by native_decide
 
 end A12Kernel.Conformance.HavingDateValidity

@@ -35,6 +35,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-08-01"></a>
+### SPEC-2026-10-08-01 — year extraction retains constructed Time's anchor
+
+- `status`: pending
+- `canonical`: [spec/05 §3](../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity).
+- `delta`: A declared Base Year permits `YearFromDate(Time(...))` and `YearFromDate(TimeFromDateTime(...))`; a present result yields 1970, rather than the configured Base Year. Missing/unreal and formal effects retain the ordinary extractor rules.
+- `basis`: Kernel 30.8.1 at `cb66e51fa7ab90b650698f861bf670754e2e1e66`: `DateUtils.checkOperationConsistentToDateFormat` admits the year under Base Year, `DateUtil.createTime` fixes the hidden date anchor, and `RuntimeController.getJahrAusDatum` projects the retained calendar year through `BedingungsOperatorHelper.getDatumsTeil`. Source links are owned by the canonical clause.
+- `evidence`: Source-backed; external runtime calibration pending. [Recursive temporal reader guards](../A12Kernel/Reference/Dm/HavingRecursiveTemporalLocks.lean) separate both source forms, configured 2024 versus observed 1970, numeric and constructor consumers, both arms and the absent-Base-Year refusal.
+- `acceptance`: Reconcile the specification and recursive temporal evaluator without replacing the runtime anchor with the static Base Year or bypassing the source's missing/formal effects. Introducing revision is the first commit containing this ID; no peer disposition yet.
+
 <a id="spec-2026-10-07-05"></a>
 ### SPEC-2026-10-07-05 — capture does not exempt strict group-list overlap
 

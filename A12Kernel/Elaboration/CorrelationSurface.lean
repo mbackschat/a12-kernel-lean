@@ -42,35 +42,22 @@ structure SurfaceHavingTemporalRef where
   field : SurfaceFieldPath
   deriving Repr, DecidableEq
 
-inductive SurfaceHavingDateComponent where
+inductive SurfaceHavingDateComponent (Temporal : Type := Empty) where
   | field (reference : SurfaceHavingPresenceRef)
   | constant (source : String)
   | extractor (part : DateNumericPart) (reference : SurfaceHavingPresenceRef)
   | baseYearExtractor (source : BaseYearDateSource) (part : DateNumericPart)
   | clockExtractor (point : ConstructedDatePointInTime) (part : DateNumericPart)
+  | expression (part : DateNumericPart) (source : Temporal)
   deriving Repr, DecidableEq
 
-abbrev SurfaceHavingDateComponents := SurfaceConstructedDateComponents SurfaceHavingDateComponent
-
-def SurfaceHavingDateComponents.sources (source : SurfaceHavingDateComponents) : List SurfaceHavingDateComponent :=
-  [source.day, source.month] ++ match source.year with
-    | .complete year => [year]
-    | .baseYear => []
-    | .centuryAndShortYear century shortYear => [century, shortYear]
-
-def SurfaceHavingDateComponents.references (source : SurfaceHavingDateComponents) : List SurfaceHavingPresenceRef :=
-  source.sources.filterMap fun
-    | .field reference | .extractor _ reference => some reference
-    | _ => none
-
-inductive SurfaceHavingTimeComponent where
+inductive SurfaceHavingTimeComponent (Temporal : Type := Empty) where
   | field (reference : SurfaceHavingPresenceRef)
   | constant (value : String)
   | extractor (part : TimeNumericPart) (reference : SurfaceHavingPresenceRef)
   | nowExtractor (part : TimeNumericPart)
+  | expression (part : TimeNumericPart) (source : Temporal)
   deriving Repr, DecidableEq
-
-abbrev SurfaceHavingTimeComponents := TimeComponentPrefix SurfaceHavingTimeComponent
 
 /-- Constructor operands retain an origin at every field, including mixed captured/candidate reads. -/
 inductive SurfaceHavingTemporalExpression where
@@ -78,8 +65,8 @@ inductive SurfaceHavingTemporalExpression where
   | combine (operator : TemporalExtremumOp) (first : SurfaceHavingTemporalExpression) (rest : List SurfaceHavingTemporalExpression)
   | field (reference : SurfaceHavingTemporalRef)
   | rangeBound (reference : SurfaceHavingTemporalRef) (bound : DateRangeBound)
-  | timeConstruction (components : SurfaceHavingTimeComponents)
-  | dateConstruction (components : SurfaceHavingDateComponents)
+  | timeConstruction (components : TimeComponentPrefix (SurfaceHavingTimeComponent SurfaceHavingTemporalExpression))
+  | dateConstruction (components : SurfaceConstructedDateComponents (SurfaceHavingDateComponent SurfaceHavingTemporalExpression))
   | dateLiteral (source : AuthoredDateLiteral)
   | timeLiteral (value : TimeOfDay)
   | dateTimeLiteral (value : LocalDateTime)
@@ -91,6 +78,9 @@ inductive SurfaceHavingTemporalExpression where
   | dateFromDateTime (source : SurfaceHavingTemporalExpression)
   | timeFromDateTime (source : SurfaceHavingTemporalExpression)
 
+abbrev SurfaceHavingDateComponents := SurfaceConstructedDateComponents (SurfaceHavingDateComponent SurfaceHavingTemporalExpression)
+abbrev SurfaceHavingTimeComponents := TimeComponentPrefix (SurfaceHavingTimeComponent SurfaceHavingTemporalExpression)
+
 namespace SurfaceHavingTemporalExpression
 
 private def formatNode (name : String) (arguments : List Std.Format) : Std.Format :=
@@ -98,14 +88,15 @@ private def formatNode (name : String) (arguments : List Std.Format) : Std.Forma
 
 -- The nested-list deriving handler emits an opaque printer; TemporalExpressionOf's total
 -- structural printer preserves the trusted elaboration boundary.
+mutual
 private def format : SurfaceHavingTemporalExpression → Std.Format
   | .selection kind source => formatNode "selection" [repr kind, repr source]
   | .combine operator first rest => formatNode "combine" [repr operator, format first,
       "[" ++ Std.Format.joinSep (rest.map format) ", " ++ "]"]
   | .field reference => formatNode "field" [repr reference]
   | .rangeBound reference bound => formatNode "rangeBound" [repr reference, repr bound]
-  | .timeConstruction components => formatNode "timeConstruction" [repr components]
-  | .dateConstruction components => formatNode "dateConstruction" [repr components]
+  | .timeConstruction components => formatNode "timeConstruction" [formatTime components]
+  | .dateConstruction components => formatNode "dateConstruction" [formatDate components]
   | .dateLiteral source => formatNode "dateLiteral" [repr source]
   | .timeLiteral value => formatNode "timeLiteral" [repr value]
   | .dateTimeLiteral value => formatNode "dateTimeLiteral" [repr value]
@@ -116,6 +107,32 @@ private def format : SurfaceHavingTemporalExpression → Std.Format
   | .dateTime date time => formatNode "dateTime" [format date, format time]
   | .dateFromDateTime source => formatNode "dateFromDateTime" [format source]
   | .timeFromDateTime source => formatNode "timeFromDateTime" [format source]
+
+private def formatDateComponent : SurfaceHavingDateComponent SurfaceHavingTemporalExpression → Std.Format
+  | .field ref => formatNode "field" [repr ref]
+  | .constant value => formatNode "constant" [repr value]
+  | .extractor part ref => formatNode "extractor" [repr part, repr ref]
+  | .baseYearExtractor source part => formatNode "baseYearExtractor" [repr source, repr part]
+  | .clockExtractor source part => formatNode "clockExtractor" [repr source, repr part]
+  | .expression part source => formatNode "expression" [repr part, format source]
+private def formatDate : SurfaceHavingDateComponents → Std.Format
+  | ⟨day, month, year⟩ => formatNode "Date" [formatDateComponent day, formatDateComponent month,
+    match year with
+    | .complete year => formatDateComponent year
+    | .baseYear => "baseYear"
+    | .centuryAndShortYear century shortYear => formatNode "splitYear" [formatDateComponent century, formatDateComponent shortYear]]
+private def formatTimeComponent : SurfaceHavingTimeComponent SurfaceHavingTemporalExpression → Std.Format
+  | .field ref => formatNode "field" [repr ref]
+  | .constant value => formatNode "constant" [repr value]
+  | .extractor part ref => formatNode "extractor" [repr part, repr ref]
+  | .nowExtractor part => formatNode "nowExtractor" [repr part]
+  | .expression part source => formatNode "expression" [repr part, format source]
+private def formatTime : SurfaceHavingTimeComponents → Std.Format
+  | .empty => "Time"
+  | .hour hour => formatNode "Time" [formatTimeComponent hour]
+  | .minute hour minute => formatNode "Time" [formatTimeComponent hour, formatTimeComponent minute]
+  | .second hour minute second => formatNode "Time" [formatTimeComponent hour, formatTimeComponent minute, formatTimeComponent second]
+end
 
 instance : Repr SurfaceHavingTemporalExpression where
   reprPrec source _ := format source
@@ -154,8 +171,12 @@ private def decideEqual (left right : SurfaceHavingTemporalExpression) : Decidab
   case field.field first next => exact decidable_of_iff (first = next) (by simp)
   case rangeBound.rangeBound source bound next other =>
     exact decidable_of_iff (source = next ∧ bound = other) (by simp)
-  case timeConstruction.timeConstruction first next => exact decidable_of_iff (first = next) (by simp)
-  case dateConstruction.dateConstruction first next => exact decidable_of_iff (first = next) (by simp)
+  case timeConstruction.timeConstruction first next =>
+    letI := decideTimeEqual first next
+    exact decidable_of_iff (first = next) (by simp)
+  case dateConstruction.dateConstruction first next =>
+    letI := decideDateEqual first next
+    exact decidable_of_iff (first = next) (by simp)
   case dateLiteral.dateLiteral first next => exact decidable_of_iff (first = next) (by simp)
   case timeLiteral.timeLiteral first next => exact decidable_of_iff (first = next) (by simp)
   case dateTimeLiteral.dateTimeLiteral first next => exact decidable_of_iff (first = next) (by simp)
@@ -170,22 +191,111 @@ private def decideListEqual (left right : List SurfaceHavingTemporalExpression) 
       letI := decideEqual first next
       letI := decideListEqual rest remaining
       decidable_of_iff (first = next ∧ rest = remaining) (by simp)
+private def decideDateComponentEqual (left right : SurfaceHavingDateComponent SurfaceHavingTemporalExpression) : Decidable (left = right) := by
+  cases left <;> cases right
+  all_goals first | (apply isFalse; intro h; cases h; done) | skip
+  case expression.expression part source other next =>
+    letI := decideEqual source next
+    exact decidable_of_iff (part = other ∧ source = next) (by simp)
+  case field.field source next => exact decidable_of_iff (source = next) (by simp)
+  case constant.constant source next => exact decidable_of_iff (source = next) (by simp)
+  case extractor.extractor part source other next =>
+    exact decidable_of_iff (part = other ∧ source = next) (by simp)
+  case baseYearExtractor.baseYearExtractor source part next other =>
+    exact decidable_of_iff (source = next ∧ part = other) (by simp)
+  case clockExtractor.clockExtractor source part next other =>
+    exact decidable_of_iff (source = next ∧ part = other) (by simp)
+
+private def decideTimeComponentEqual (left right : SurfaceHavingTimeComponent SurfaceHavingTemporalExpression) : Decidable (left = right) := by
+  cases left <;> cases right
+  all_goals first | (apply isFalse; intro h; cases h; done) | skip
+  case expression.expression part source other next =>
+    letI := decideEqual source next
+    exact decidable_of_iff (part = other ∧ source = next) (by simp)
+  case field.field source next => exact decidable_of_iff (source = next) (by simp)
+  case constant.constant source next => exact decidable_of_iff (source = next) (by simp)
+  case extractor.extractor part source other next =>
+    exact decidable_of_iff (part = other ∧ source = next) (by simp)
+  case nowExtractor.nowExtractor source next => exact decidable_of_iff (source = next) (by simp)
+
+private def decideDateYearEqual (left right : SurfaceConstructedDateYear (SurfaceHavingDateComponent SurfaceHavingTemporalExpression)) : Decidable (left = right) := by
+  cases left <;> cases right
+  all_goals first | (apply isFalse; intro h; cases h; done) | skip
+  case complete.complete source next =>
+    letI := decideDateComponentEqual source next
+    exact decidable_of_iff (source = next) (by simp)
+  case baseYear.baseYear => exact isTrue rfl
+  case centuryAndShortYear.centuryAndShortYear century year other next =>
+    letI := decideDateComponentEqual century other
+    letI := decideDateComponentEqual year next
+    exact decidable_of_iff (century = other ∧ year = next) (by simp)
+private def decideDateEqual (left right : SurfaceHavingDateComponents) : Decidable (left = right) := by
+  cases left with | mk day month year =>
+    cases right with | mk nextDay nextMonth nextYear =>
+      letI := decideDateComponentEqual day nextDay
+      letI := decideDateComponentEqual month nextMonth
+      letI := decideDateYearEqual year nextYear
+      exact decidable_of_iff (day = nextDay ∧ month = nextMonth ∧ year = nextYear) (by simp)
+private def decideTimeEqual (left right : SurfaceHavingTimeComponents) : Decidable (left = right) := by
+  cases left <;> cases right
+  all_goals first | (apply isFalse; intro h; cases h; done) | skip
+  case empty.empty => exact isTrue rfl
+  case hour.hour source next =>
+    letI := decideTimeComponentEqual source next
+    exact decidable_of_iff (source = next) (by simp)
+  case minute.minute hour minute nextHour nextMinute =>
+    letI := decideTimeComponentEqual hour nextHour
+    letI := decideTimeComponentEqual minute nextMinute
+    exact decidable_of_iff (hour = nextHour ∧ minute = nextMinute) (by simp)
+  case second.second hour minute second nextHour nextMinute nextSecond =>
+    letI := decideTimeComponentEqual hour nextHour
+    letI := decideTimeComponentEqual minute nextMinute
+    letI := decideTimeComponentEqual second nextSecond
+    exact decidable_of_iff (hour = nextHour ∧ minute = nextMinute ∧ second = nextSecond) (by simp)
+
 end
 
 instance : DecidableEq SurfaceHavingTemporalExpression := decideEqual
 
 end SurfaceHavingTemporalExpression
 
+mutual
 def SurfaceHavingTemporalExpression.fields : SurfaceHavingTemporalExpression → List SurfaceHavingTemporalRef
   | .field reference | .rangeBound reference _ => [reference]
-  | .timeConstruction components => components.sources.filterMap fun
-      | .field ref | .extractor _ ref => some { origin := ref.origin, field := ref.field }
-      | _ => none
-  | .dateConstruction components => components.references.map fun ref => { origin := ref.origin, field := ref.field }
+  | .timeConstruction components => timeFields components
+  | .dateConstruction components => dateFields components
   | .grouped source | .dateFromDateTime source | .timeFromDateTime source => source.fields
   | .dateTime date time => date.fields ++ time.fields
   | .combine _ first rest => first.fields ++ rest.flatMap (·.fields)
   | _ => []
+private def dateComponentFields : SurfaceHavingDateComponent SurfaceHavingTemporalExpression → List SurfaceHavingTemporalRef
+  | .field ref | .extractor _ ref => [{ origin := ref.origin, field := ref.field }]
+  | .expression _ source => source.fields
+  | _ => []
+private def dateFields : SurfaceHavingDateComponents → List SurfaceHavingTemporalRef
+  | ⟨day, month, year⟩ => dateComponentFields day ++ dateComponentFields month ++ match year with
+    | .complete year => dateComponentFields year
+    | .baseYear => []
+    | .centuryAndShortYear century shortYear => dateComponentFields century ++ dateComponentFields shortYear
+private def timeComponentFields : SurfaceHavingTimeComponent SurfaceHavingTemporalExpression → List SurfaceHavingTemporalRef
+  | .field ref | .extractor _ ref => [{ origin := ref.origin, field := ref.field }]
+  | .expression _ source => source.fields
+  | _ => []
+private def timeFields : SurfaceHavingTimeComponents → List SurfaceHavingTemporalRef
+  | .empty => []
+  | .hour hour => timeComponentFields hour
+  | .minute hour minute => timeComponentFields hour ++ timeComponentFields minute
+  | .second hour minute second => timeComponentFields hour ++ timeComponentFields minute ++ timeComponentFields second
+end
+
+def SurfaceHavingDateComponents.sources (source : SurfaceHavingDateComponents) : List (SurfaceHavingDateComponent SurfaceHavingTemporalExpression) :=
+  [source.day, source.month] ++ match source.year with
+    | .complete year => [year]
+    | .baseYear => []
+    | .centuryAndShortYear century shortYear => [century, shortYear]
+
+def SurfaceHavingDateComponents.references (source : SurfaceHavingDateComponents) : List SurfaceHavingPresenceRef :=
+  dateFields source |>.map fun ref => { origin := ref.origin, field := ref.field }
 
 def SurfaceHavingTemporalExpression.entitySources : SurfaceHavingTemporalExpression → List SurfaceHavingEntitySource
   | .selection _ source => [source]

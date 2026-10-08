@@ -265,6 +265,21 @@ structure ResolvedConstructedDateComponents (Source : Type) where
   profile : ModelZone.ConcreteProfile
   deriving Repr, DecidableEq
 
+/-- Expose decreasing component subterms without changing authored evaluation order. -/
+def ResolvedConstructedDateComponents.attach [SizeOf Source]
+    (checked : ResolvedConstructedDateComponents Source) :
+    ResolvedConstructedDateComponents { source : Source // sizeOf source < sizeOf checked } :=
+  match checked with
+  | ⟨day, month, .complete year, profile⟩ =>
+      { day := ⟨day, by simp +arith⟩, month := ⟨month, by simp +arith⟩
+        year := .complete ⟨year, by simp +arith⟩, profile }
+  | ⟨day, month, .baseYear year, profile⟩ =>
+      { day := ⟨day, by simp +arith⟩, month := ⟨month, by simp +arith⟩
+        year := .baseYear year, profile }
+  | ⟨day, month, .centuryAndShortYear century shortYear, profile⟩ =>
+      { day := ⟨day, by simp +arith⟩, month := ⟨month, by simp +arith⟩
+        year := .centuryAndShortYear ⟨century, by simp +arith⟩ ⟨shortYear, by simp +arith⟩, profile }
+
 def ResolvedConstructedDateComponents.sources (source : ResolvedConstructedDateComponents Source) : List Source :=
   [source.day, source.month] ++ match source.year with
     | .complete year => [year]

@@ -16,11 +16,12 @@ def HavingTemporalExpressionRef.matchesModel (reference : HavingTemporalExpressi
   | .range field components => (model.dateRangeSourceProfile field).any fun (_, _, format) =>
       format.components == components
 
-private def elaborateHavingTimeComponents (model : FlatModel)
+private def elaborateHavingTimeComponent (model : FlatModel)
     (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl)
-    (source : SurfaceHavingTimeComponents) : Except CorrelationElabError HavingTimeComponents :=
-  source.mapM fun position component => do
+    (position : TimeComponentPosition) (component : SurfaceHavingTimeComponent Temporal) :
+    Except CorrelationElabError (HavingOrigin × ResolvedTimeConstructionSource) := do
     match component with
+    | .expression _ _ => throw .numericExpressionUnsupported
     | .nowExtractor part =>
         if position.extractor != part then throw .numericExpressionUnsupported
         pure (.inner, .nowExtractor part)
@@ -45,36 +46,61 @@ private def elaborateHavingTimeComponents (model : FlatModel)
         if !model.admitsTimeExtractorField position part field declaration.repeatableScope then throw .numericExpressionUnsupported
         pure (reference.origin, .extractor field part)
 
-private def HavingTimeComponents.wellFormed (source : HavingTimeComponents) (model : FlatModel)
-    (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
-  source.allWithPosition fun position (origin, component) =>
-    let scope := origin.availableLevels candidateLevels outerLevels
-    match component with
-    | .number field => model.admitsTimeNumberField position field scope
-    | .string field => model.admitsTimeStringField field scope
-    | .extractor field part => model.admitsTimeExtractorField position part field scope
-    | .constant value => position.decodeConstant? (toString value) == some value
-    | .nowExtractor part => position.extractor == part
+private def havingTimeComponentWellFormed (model : FlatModel)
+    (candidateLevels outerLevels : List RepeatableLevel) (position : TimeComponentPosition)
+    (origin : HavingOrigin) (component : ResolvedTimeConstructionSource) : Bool :=
+  let scope := origin.availableLevels candidateLevels outerLevels
+  match component with
+  | .number field => model.admitsTimeNumberField position field scope
+  | .string field => model.admitsTimeStringField field scope
+  | .extractor field part => model.admitsTimeExtractorField position part field scope
+  | .constant value => position.decodeConstant? (toString value) == some value
+  | .nowExtractor part => position.extractor == part
 
 namespace HavingTemporalExpression
+
+private def projectionAdmitted (model : FlatModel) (part : TemporalNumericPart) (core : HavingTemporalCore) : Bool :=
+  let literal := match core with
+    | .atom (.dateLiteral _ _) | .atom (.timeLiteral _) | .atom (.dateTimeLiteral _) => true
+    | _ => false
+  !literal && coreAdmittedSourceSlot core &&
+    (componentsWith model.baseYear core).any (part.admitsComponents · model.hasBaseYear)
+
+private def dateComponentsWellFormed (source : HavingDateComponents) (model : FlatModel)
+    (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
+  let component (position : ConstructedDateComponentPosition) : HavingDateComponent → Bool
+    | .direct origin source => havingDateComponentWellFormed model position (origin.availableLevels candidateLevels outerLevels) source
+    | .expression part source => position.extractor? == some part && projectionAdmitted model (.date part) source
+  ModelZone.ConcreteProfile.ofId? model.timeZoneId == some source.profile &&
+    component .day source.day && component .month source.month && match source.year with
+      | .complete year => component .year year
+      | .baseYear year => model.baseYear == some year
+      | .centuryAndShortYear century shortYear => component .century century && component .shortYear shortYear
+
+private def timeComponentsWellFormed (source : HavingTimeComponents) (model : FlatModel)
+    (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
+  source.allWithPosition fun position component => match component with
+    | .direct origin source => havingTimeComponentWellFormed model candidateLevels outerLevels position origin source
+    | .expression part source => position.extractor == part && projectionAdmitted model (.time part) source
 
 def wellFormed (source : HavingTemporalExpression) (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) : Bool :=
   source.baseYear == model.baseYear && ModelZone.ConcreteProfile.ofId? model.timeZoneId == some source.profile &&
     source.components?.isSome && source.references.all (·.matchesModel model) &&
     source.presenceSlots.all (·.wellFormedForEnvironments model candidateLevels outerLevels) &&
-    source.core.atoms.all fun
+    (HavingTemporalCore.allAtoms source.core).all fun
       | .selection kind slots => kind.wellFormed model candidateLevels outerLevels slots
       | .field reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
           declaration.fieldValueReadRefusal?.isNone && !(declaration.toTemporalTargetPolicy?.any (·.partialMode != .full))
-      | .timeConstruction components => components.wellFormed model candidateLevels outerLevels
-      | .dateConstruction components => components.wellFormedForEnvironments model candidateLevels outerLevels false
+      | .timeConstruction components => timeComponentsWellFormed components model candidateLevels outerLevels
+      | .dateConstruction components => dateComponentsWellFormed components model candidateLevels outerLevels
       | .dateLiteral value false =>
           let authored : AuthoredDateLiteral := { year := none, month := value.civil.parts.month, day := value.civil.parts.day }
           ((authored.completedDate? model).bind FullDate.ofCivil?) == some value
       | .baseYearBound _ => model.hasBaseYear
       | _ => true
 
+mutual
 private def resolveCore (model : FlatModel)
     (resolveSelection : HavingTemporalSelection → SurfaceHavingEntitySource →
       Except CorrelationElabError (List (HavingFieldListSlot HavingTemporalSelectionRef)))
@@ -92,9 +118,9 @@ private def resolveCore (model : FlatModel)
       let some (_, _, format) := model.dateRangeSourceProfile field | throw .numericExpressionUnsupported
       pure (.atom (.rangeBound reference.origin field format.components bound))
   | .timeConstruction components => do
-      pure (.atom (.timeConstruction (← elaborateHavingTimeComponents model resolve components)))
+      pure (.atom (.timeConstruction (← resolveTimeComponents model resolveSelection resolve components)))
   | .dateConstruction components => do
-      pure (.atom (.dateConstruction (← elaborateHavingDateComponents model resolve components false)))
+      pure (.atom (.dateConstruction (← resolveDateComponents model resolveSelection resolve components)))
   | .dateLiteral authored => do
       let some value := (authored.completedDate? model).bind FullDate.ofCivil? | throw .numericExpressionUnsupported
       pure (.atom (.dateLiteral value authored.year.isSome))
@@ -118,6 +144,64 @@ private def resolveCore (model : FlatModel)
   | .timeFromDateTime source => do
       if !source.admittedSourceSlot then throw .numericExpressionUnsupported
       pure (.apply (.constructor .timeFromDateTime) (← resolveCore model resolveSelection resolve source) [])
+
+private def resolveDateOperand (model : FlatModel)
+    (resolveSelection : HavingTemporalSelection → SurfaceHavingEntitySource → Except CorrelationElabError (List (HavingFieldListSlot HavingTemporalSelectionRef)))
+    (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl)
+    (position : ConstructedDateComponentPosition) : SurfaceHavingDateComponent SurfaceHavingTemporalExpression → Except CorrelationElabError HavingDateComponent
+  | .expression part source => do
+      if position.extractor? != some part || !source.admittedSourceSlot then throw .numericExpressionUnsupported
+      let core ← resolveCore model resolveSelection resolve source
+      if !projectionAdmitted model (.date part) core then throw .numericExpressionUnsupported
+      pure (.expression part core)
+  | component => do
+      let (origin, source) ← elaborateHavingDateComponent model resolve position component
+      pure (.direct origin source)
+
+private def resolveTimeOperand (model : FlatModel)
+    (resolveSelection : HavingTemporalSelection → SurfaceHavingEntitySource → Except CorrelationElabError (List (HavingFieldListSlot HavingTemporalSelectionRef)))
+    (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl)
+    (position : TimeComponentPosition) : SurfaceHavingTimeComponent SurfaceHavingTemporalExpression → Except CorrelationElabError HavingTimeComponent
+  | .expression part source => do
+      if position.extractor != part || !source.admittedSourceSlot then throw .numericExpressionUnsupported
+      let core ← resolveCore model resolveSelection resolve source
+      if !projectionAdmitted model (.time part) core then throw .numericExpressionUnsupported
+      pure (.expression part core)
+  | component => do
+      let (origin, source) ← elaborateHavingTimeComponent model resolve position component
+      pure (.direct origin source)
+
+private def resolveDateComponents (model : FlatModel)
+    (resolveSelection : HavingTemporalSelection → SurfaceHavingEntitySource → Except CorrelationElabError (List (HavingFieldListSlot HavingTemporalSelectionRef)))
+    (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl) : SurfaceHavingDateComponents → Except CorrelationElabError HavingDateComponents
+  | ⟨day, month, year⟩ => do
+      let some profile := ModelZone.ConcreteProfile.ofId? model.timeZoneId |
+        throw (.dateComponents (.unsupportedZone model.timeZoneId))
+      let day ← resolveDateOperand model resolveSelection resolve .day day
+      let month ← resolveDateOperand model resolveSelection resolve .month month
+      let year ← match year with
+        | .complete source => .complete <$> resolveDateOperand model resolveSelection resolve .year source
+        | .baseYear => match model.baseYear with
+            | some year => pure (.baseYear year)
+            | none => throw (.dateComponents .missingBaseYear)
+        | .centuryAndShortYear century shortYear => do
+            pure (.centuryAndShortYear
+              (← resolveDateOperand model resolveSelection resolve .century century)
+              (← resolveDateOperand model resolveSelection resolve .shortYear shortYear))
+      pure { day, month, year, profile }
+private def resolveTimeComponents (model : FlatModel)
+    (resolveSelection : HavingTemporalSelection → SurfaceHavingEntitySource → Except CorrelationElabError (List (HavingFieldListSlot HavingTemporalSelectionRef)))
+    (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl) : SurfaceHavingTimeComponents → Except CorrelationElabError HavingTimeComponents
+  | .empty => pure .empty
+  | .hour hour => .hour <$> resolveTimeOperand model resolveSelection resolve .hour hour
+  | .minute hour minute => do
+      pure (.minute (← resolveTimeOperand model resolveSelection resolve .hour hour)
+        (← resolveTimeOperand model resolveSelection resolve .minute minute))
+  | .second hour minute second => do
+      pure (.second (← resolveTimeOperand model resolveSelection resolve .hour hour)
+        (← resolveTimeOperand model resolveSelection resolve .minute minute)
+        (← resolveTimeOperand model resolveSelection resolve .second second))
+end
 
 def elaborate (model : FlatModel)
     (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl)
@@ -156,5 +240,20 @@ def comparisonAdmitted (operator : TemporalComparisonOp) (left right : HavingTem
           !components.hasTime || components == TemporalComponents.now || components == TemporalComponents.time
 
 end HavingTemporalExpression
+
+def HavingConstructedDate.wellFormedForEnvironments (source : HavingConstructedDate) (model : FlatModel)
+    (candidateLevels outerLevels : List RepeatableLevel) (requireEntity : Bool := true) : Bool :=
+  source.asTemporal.wellFormed model candidateLevels outerLevels &&
+    (!requireEntity || source.components.sources.any fun
+      | .direct _ (.numberField _) | .direct _ (.stringField _) | .direct _ (.dateYearField _) => true
+      | _ => false)
+
+def elaborateHavingDateComponents (model : FlatModel)
+    (resolve : SurfaceHavingPresenceRef → Except CorrelationElabError FlatFieldDecl)
+    (source : SurfaceHavingDateComponents) (requireEntity : Bool := true) : Except CorrelationElabError HavingConstructedDate := do
+  let components ← HavingTemporalExpression.resolveDateComponents model (fun _ _ => throw .numericExpressionUnsupported) resolve source
+  if requireEntity && !source.sources.any (fun | .field _ => true | _ => false) then
+    throw (.dateComponents .onlyConstantsUsed)
+  pure { components, baseYear := model.baseYear }
 
 end A12Kernel

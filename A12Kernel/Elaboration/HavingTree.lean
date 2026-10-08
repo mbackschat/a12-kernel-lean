@@ -56,7 +56,7 @@ structure HavingLeafResolvers where
   literalMembership : SurfaceHavingStringRef → Sum (List Int) (List String) →
     Except CorrelationElabError FlatLiteralMembership
   literalList : SurfaceHavingEntitySource → List String → Except CorrelationElabError HavingFieldValueList
-  dateValidity : SurfaceHavingDateComponents → Except CorrelationElabError HavingDateComponents
+  dateValidity : SurfaceHavingDateComponents → Except CorrelationElabError HavingConstructedDate
   uniqueness : SurfaceHavingEntitySource → Except CorrelationElabError HavingUniqueness
   fieldMembership : ComputationValueListOperator → SurfaceHavingEntitySource → SurfaceHavingEntitySource →
     Except CorrelationElabError HavingFieldValueList

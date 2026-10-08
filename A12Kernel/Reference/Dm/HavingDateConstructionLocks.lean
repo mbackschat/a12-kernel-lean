@@ -128,8 +128,7 @@ example : ["Date(Rows/Day)", "Date(Rows/Day,\"02\",\"20\",\"24\",\"1\")",
     "Date(Rows/Tag,\"02\",\"2024\")", "Date(Rows/Year,\"02\",\"2024\")",
     "Date(Rows/Day,Rows/Day,\"2024\")", "Date(Rows/Day,\"02\",MonthFromDate(Rows/Stamp))",
     "Date(\"32\",Rows/Month,\"2024\")", "Date(Rows/Day,\"13\",\"2024\")",
-    "Date(Rows/Day,\"02\",\"24\")", "Date(Rows/Day,2,\"2024\")",
-    "Date(DayFromDate(Date(Rows/Day,\"02\",\"2024\")),\"02\",\"2024\")"].all
+    "Date(Rows/Day,\"02\",\"24\")", "Date(Rows/Day,2,\"2024\")"].all
       (fun source => !accepted (source ++ " == \"29.02.2024\"")) = true := by native_decide
 
 private def alteredNumber (signed : Bool) (scale : Nat) (maximum : Rat) : FlatModel := { model with

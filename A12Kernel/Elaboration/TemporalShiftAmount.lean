@@ -1,3 +1,4 @@
+import A12Kernel.Semantics.ScalarTemporalValue
 import A12Kernel.Semantics.DateShift
 import A12Kernel.Elaboration.CheckedDocument
 import A12Kernel.Elaboration.NumericValidation.Expression
@@ -20,14 +21,6 @@ inductive ShiftDifferencePosition where
   | first
   | second
   deriving Repr, DecidableEq
-
-/-- Truncate like `BigDecimal.intValue`, then retain the low signed 32 bits rather than saturating or rejecting a large temporal-shift amount. -/
-def temporalShiftAmountToInt32 (value : Rat) : Int :=
-  let truncated := if value < 0 then value.ceil else value.floor
-  let modulus : Int := 4294967296
-  let signBit : Int := 2147483648
-  let lowBits := truncated % modulus
-  if lowBits < signBit then lowBits else lowBits - modulus
 
 /-- Whether one resolved declaration is an ordinary nonrepeatable Number source admitted as a temporal shift amount. -/
 def FlatModel.admitsTemporalShiftAmountSource

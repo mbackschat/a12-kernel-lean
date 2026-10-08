@@ -1,8 +1,4 @@
-import A12Kernel.Semantics.TimeConstructionInputs
-import A12Kernel.Semantics.HavingDateValidity
-import A12Kernel.Semantics.ScalarTemporalValue
-import A12Kernel.Semantics.TemporalExpression
-import A12Kernel.Semantics.HavingTemporalSelection
+import A12Kernel.Semantics.HavingTemporalTypes
 
 namespace A12Kernel
 
@@ -26,12 +22,9 @@ def HavingTemporalExpressionRef.fieldId (reference : HavingTemporalExpressionRef
   | .number field => field.id
   | .string field => field.id
 
-abbrev HavingTimeComponents := TimeComponentPrefix (HavingOrigin × ResolvedTimeConstructionSource)
-
-private def HavingTimeComponents.read (components : HavingTimeComponents) (profile : ModelZone.ConcreteProfile)
+private def readTimeComponent (origin : HavingOrigin) (source : ResolvedTimeConstructionSource) (profile : ModelZone.ConcreteProfile)
     (phase : Phase) (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
-    Except Error TimeConstructionResult :=
-  components.evaluateWith (fun (origin, source) => do
+    Except Error TimeConstructionComponent := do
     let classify (value : Except TimeConstructionInputFault TimeConstructionComponent) :=
       match value with
       | .ok component => pure component
@@ -48,56 +41,51 @@ private def HavingTimeComponents.read (components : HavingTimeComponents) (profi
     | .nowExtractor part =>
         let some world := context.world | throw context.worldUnavailable
         let some label := profile.localDateTime? world.now | throw context.unsupportedDateCalendar
-        pure (.value (part.extract label.time).num)) phase
+        pure (.value (part.extract label.time).num)
 
-inductive HavingTemporalAtom where
-  | selection (kind : HavingTemporalSelection) (slots : List (HavingFieldListSlot HavingTemporalSelectionRef))
-  | field (reference : HavingTemporalRef)
-  | rangeBound (origin : HavingOrigin) (source : FlatDateRangeField) (components : TemporalComponents) (bound : DateRangeBound)
-  | timeConstruction (components : HavingTimeComponents)
-  | dateConstruction (components : HavingDateComponents)
-  | dateLiteral (value : FullDate) (yearPresent : Bool)
-  | timeLiteral (value : TimeOfDay)
-  | dateTimeLiteral (value : LocalDateTime)
-  | today
-  | now
-  | baseYearBound (bound : BaseYearRangeEndpoint)
-  deriving Repr, DecidableEq
 
-inductive HavingTemporalOperation where
-  | constructor (operation : ScalarTemporalConstructorOp)
-  | extremum (operator : TemporalExtremumOp)
-  deriving Repr, DecidableEq
-
-structure HavingTemporalExpression where
-  core : TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation
-  profile : ModelZone.ConcreteProfile
-  baseYear : Option Int
-  grouped : Bool := false
-  deriving Repr, DecidableEq
 
 namespace HavingTemporalExpression
 
+mutual
+private def coreReferenceSlots : HavingTemporalCore → List (HavingFieldListSlot HavingTemporalExpressionRef)
+  | .atom atom => atomReferenceSlots atom
+  | .apply _ first rest => coreReferenceSlots first ++ rest.flatMap coreReferenceSlots
+private def atomReferenceSlots : HavingTemporalAtom → List (HavingFieldListSlot HavingTemporalExpressionRef)
+  | .selection _ slots => slots.map (·.map fun reference => { origin := reference.origin, source := .temporal reference.field })
+  | .field reference => [.direct { origin := reference.origin, source := .temporal reference.field }]
+  | .rangeBound origin field components _ => [.direct { origin, source := .range field components }]
+  | .dateConstruction components => dateReferenceSlots components
+  | .timeConstruction components => timeReferenceSlots components
+  | _ => []
+private def dateComponentReferenceSlots : HavingDateComponent → List (HavingFieldListSlot HavingTemporalExpressionRef)
+  | .expression _ source => coreReferenceSlots source
+  | .direct origin component => (show Option HavingTemporalExpressionRef from match component with
+      | .numberField field => some { origin, source := .number field }
+      | .stringField field => some { origin, source := .string field }
+      | .dateYearField field | .extractor field _ _ => some { origin, source := .temporal field }
+      | _ => none).toList.map HavingFieldListSlot.direct
+private def timeComponentReferenceSlots : HavingTimeComponent → List (HavingFieldListSlot HavingTemporalExpressionRef)
+  | .expression _ source => coreReferenceSlots source
+  | .direct origin component => (show Option HavingTemporalExpressionRef from match component with
+      | .number field => some { origin, source := .number field }
+      | .string field => some { origin, source := .string field }
+      | .extractor field _ => some { origin, source := .temporal field }
+      | _ => none).toList.map HavingFieldListSlot.direct
+private def dateReferenceSlots : HavingDateComponents → List (HavingFieldListSlot HavingTemporalExpressionRef)
+  | ⟨day, month, year, _⟩ => dateComponentReferenceSlots day ++ dateComponentReferenceSlots month ++ match year with
+      | .complete year => dateComponentReferenceSlots year
+      | .baseYear _ => []
+      | .centuryAndShortYear century shortYear => dateComponentReferenceSlots century ++ dateComponentReferenceSlots shortYear
+private def timeReferenceSlots : HavingTimeComponents → List (HavingFieldListSlot HavingTemporalExpressionRef)
+  | .empty => []
+  | .hour hour => timeComponentReferenceSlots hour
+  | .minute hour minute => timeComponentReferenceSlots hour ++ timeComponentReferenceSlots minute
+  | .second hour minute second => timeComponentReferenceSlots hour ++ timeComponentReferenceSlots minute ++ timeComponentReferenceSlots second
+end
+
 def referenceSlots (source : HavingTemporalExpression) : List (HavingFieldListSlot HavingTemporalExpressionRef) :=
-  source.core.atoms.flatMap fun atom =>
-    match atom with
-    | .selection _ slots => slots.map (·.map fun reference => { origin := reference.origin, source := .temporal reference.field })
-    | atom => (show List HavingTemporalExpressionRef from match atom with
-        | .field reference => [{ origin := reference.origin, source := .temporal reference.field }]
-        | .rangeBound origin field components _ => [{ origin, source := .range field components }]
-        | .timeConstruction components => components.sources.filterMap fun (origin, component) =>
-            match component with
-            | .number field => some { origin, source := .number field }
-            | .string field => some { origin, source := .string field }
-            | .extractor field _ => some { origin, source := .temporal field }
-            | _ => none
-        | .dateConstruction components => components.sources.filterMap fun (origin, component) =>
-            match component with
-            | .numberField field => some { origin, source := .number field }
-            | .stringField field => some { origin, source := .string field }
-            | .dateYearField field | .extractor field _ _ => some { origin, source := .temporal field }
-            | _ => none
-        | _ => []).map HavingFieldListSlot.direct
+  coreReferenceSlots source.core
 
 def references (source : HavingTemporalExpression) : List HavingTemporalExpressionRef :=
   source.referenceSlots.flatMap (·.references)
@@ -107,7 +95,7 @@ def presenceSlots (source : HavingTemporalExpression) : List (HavingFieldListSlo
 
 /-- Checked core constructors retain the same source-slot boundary as authored elaboration
 (spec/05 §§3,6); a hand-built tree cannot carry a value-expression selector here. -/
-private def coreAdmittedSourceSlot : TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation → Bool
+def coreAdmittedSourceSlot : TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation → Bool
   | .atom (.selection _ _) | .apply (.extremum _) _ _ => false
   | _ => true
 
@@ -155,33 +143,39 @@ def componentsWith (baseYear : Option Int) :
 def components? (source : HavingTemporalExpression) : Option TemporalComponents :=
   componentsWith source.baseYear source.core
 
-private def readAtom (source : HavingTemporalExpression) (phase : Phase)
+mutual
+private def readAtom (profile : ModelZone.ConcreteProfile) (baseYear : Option Int) (phase : Phase)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
     HavingTemporalAtom → Except Error (SimpleComparisonOperand ScalarTemporalValue)
-  | .selection kind slots => kind.evaluate source.baseYear source.profile phase context frame slots
+  | .selection kind slots => kind.evaluate baseYear profile phase context frame slots
   | .field reference => do
       let cell ← context.read (frame.envAt reference.origin) reference.field.id
-      pure (projectScalarTemporalObservationWith source.baseYear (some source.profile)
+      pure (projectScalarTemporalObservationWith baseYear (some profile)
         reference.field (observeCell phase cell))
   | .rangeBound origin field components bound => do
       let cell ← context.read (frame.envAt origin) field.id
-      (projectScalarRangeBoundObservation source.profile (!components.year && source.baseYear.isNone)
+      (projectScalarRangeBoundObservation profile (!components.year && baseYear.isNone)
         bound (observeCell phase cell)).mapError fun _ => context.unsupportedDateCalendar
   | .timeConstruction components => do
-      pure (← components.read source.profile phase context frame).asScalarTemporalOperand
+      pure (← readTimeComponents profile baseYear phase context frame components).asScalarTemporalOperand
   | .dateConstruction components => do
-      pure (components.finishValue (← components.observe phase context frame)).asScalarTemporalOperand
+      let (observation, relevance) ← observeDateComponents profile baseYear phase context frame components
+      match observation with
+      | .unavailable cause => pure (.unknown cause)
+      | _ =>
+          if relevance == .nonRelevant then pure (.value .nonRelevant true)
+          else pure (components.finishValue observation).asScalarTemporalOperand
   | .timeLiteral value => pure (.value (.time value) true)
   | .dateTimeLiteral value => do
-      let some instant := source.profile.resolveLocal? value | throw context.temporalValueFailure
+      let some instant := profile.resolveLocal? value | throw context.temporalValueFailure
       pure (.value (.instant instant) true)
   | .dateLiteral value yearPresent => do
-      let some date := source.profile.resolveCompletedDateParts? value.civil.parts | throw context.temporalValueFailure
-      pure (.value (if yearPresent || source.baseYear.isSome then .date date
+      let some date := profile.resolveCompletedDateParts? value.civil.parts | throw context.temporalValueFailure
+      pure (.value (if yearPresent || baseYear.isSome then .date date
         else .yearless date { month := date.parts.month, day := date.parts.day }) true)
   | .baseYearBound bound => do
-      let some year := source.baseYear | throw context.unsupportedDateCalendar
-      let some date := source.profile.resolveCompletedDateParts? (baseYearRangeParts year bound) |
+      let some year := baseYear | throw context.unsupportedDateCalendar
+      let some date := profile.resolveCompletedDateParts? (baseYearRangeParts year bound) |
         throw context.unsupportedDateCalendar
       pure (.value (.date date) true)
   | .now => do
@@ -189,25 +183,27 @@ private def readAtom (source : HavingTemporalExpression) (phase : Phase)
       pure (.value (.instant world.now) true)
   | .today => do
       let some world := context.world | throw context.worldUnavailable
-      let some label := source.profile.localDate? world.now | throw context.unsupportedDateCalendar
-      let some date := source.profile.resolveCompletedDateParts? label.civil.parts | throw context.temporalValueFailure
+      let some label := profile.localDate? world.now | throw context.unsupportedDateCalendar
+      let some date := profile.resolveCompletedDateParts? label.civil.parts | throw context.temporalValueFailure
       pure (.value (.date date) true)
+
+termination_by atom => sizeOf atom
 
 /-- The shared temporal tree reaches arguments in order; computation poison aborts before
 later arguments, while validation keeps reading (spec/05 stamp-construction grid). -/
-def evaluate (source : HavingTemporalExpression) (phase : Phase)
-    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
+private def evaluateCore (profile : ModelZone.ConcreteProfile) (baseYear : Option Int) (phase : Phase)
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) (core : HavingTemporalCore) :
     Except Error (SimpleComparisonOperand ScalarTemporalValue) :=
   let reached (operand : SimpleComparisonOperand ScalarTemporalValue) :
       Except (Sum FormalCause Error) (SimpleComparisonOperand ScalarTemporalValue) :=
     match phase, operand with
     | .computation, .unknown cause => .error (.inl cause)
     | _, operand => .ok operand
-  let result := source.core.evalWithResult
-    (fun atom => do reached (← (source.readAtom phase context frame atom).mapError Sum.inr))
-    (fun operation operands => do
+  let result := core.evalWithResultSubterm
+    (fun atom _ => do reached (← (readAtom profile baseYear phase context frame atom).mapError Sum.inr))
+    (fun operation _ operands => do
       let result := match operation with
-        | .constructor operation => operation.apply source.profile operands
+        | .constructor operation => operation.apply profile operands
         | .extremum operator => pure (evalTemporalExtremumAggregate (ScalarTemporalValue.select operator)
             { operands, hasUninstantiatedTail := false, hasHaving := false })
       let value ← result.mapError fun
@@ -219,6 +215,56 @@ def evaluate (source : HavingTemporalExpression) (phase : Phase)
   | .error (.inl cause) => .ok (.unknown cause)
   | .error (.inr error) => .error error
 
+termination_by sizeOf core
+
+private def readDateOperand (profile : ModelZone.ConcreteProfile) (baseYear : Option Int) (phase : Phase)
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) (component : HavingDateComponent) :
+    StateT DateComponentRelevance (Except Error) CheckedConstructedDateComponent := do
+  match component with
+  | .direct origin source => liftM (readHavingDateComponent origin source phase context frame)
+  | .expression part source =>
+      let value ← liftM (evaluateCore profile baseYear phase context frame source)
+      let numeric ← liftM (((TemporalNumericPart.date part).observeScalarCore profile value some none).mapError
+        fun _ => context.unsupportedDateCalendar)
+      (constructorComponentOfNumeric numeric).asDateComponent
+termination_by sizeOf component
+
+private def observeDateComponents (profile : ModelZone.ConcreteProfile) (baseYear : Option Int) (phase : Phase)
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) (components : HavingDateComponents) :
+    Except Error (ConstructedDateObservation × DateComponentRelevance) :=
+  (components.attach.evaluateComponentsWith
+    (fun ⟨source, _⟩ => readDateOperand profile baseYear phase context frame source) phase).run .relevant
+termination_by sizeOf components
+
+private def readTimeComponents (profile : ModelZone.ConcreteProfile) (baseYear : Option Int) (phase : Phase)
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) (components : HavingTimeComponents) :
+    Except Error TimeConstructionResult :=
+  components.evaluateWithSubterm (fun component _ => do
+    match _hComponent : component with
+    | .direct origin source => readTimeComponent origin source profile phase context frame
+    | .expression part source =>
+        let value ← evaluateCore profile baseYear phase context frame source
+        let numeric ← ((TemporalNumericPart.time part).observeScalarCore profile value some none).mapError
+          fun _ => context.unsupportedDateCalendar
+        pure (constructorComponentOfNumeric numeric)) phase
+termination_by sizeOf components
+decreasing_by all_goals simp_all +arith <;> omega
+end
+
+def evaluate (source : HavingTemporalExpression) (phase : Phase)
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
+    Except Error (SimpleComparisonOperand ScalarTemporalValue) :=
+  evaluateCore source.profile source.baseYear phase context frame source.core
+
+def observeConstructedDate (source : HavingConstructedDate) (phase : Phase)
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) : Except Error ConstructedDateObservation := do
+  let (observation, relevance) ← observeDateComponents source.components.profile source.baseYear phase context frame source.components
+  match observation with
+  | .unavailable cause => pure (.unavailable cause)
+  | _ =>
+      if relevance == .nonRelevant then pure (.resolved .unknown)
+      else pure (source.components.applyProfileReality observation)
+
 def readNumeric (source : HavingTemporalExpression) (part : TemporalNumericPart) (phase : Phase)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame)
     (formal : FormalCause → Unavailable) (nonRelevant : Unavailable) :
@@ -227,6 +273,23 @@ def readNumeric (source : HavingTemporalExpression) (part : TemporalNumericPart)
   (part.observeScalarCore source.profile value formal nonRelevant).mapError fun _ => context.unsupportedDateCalendar
 
 end HavingTemporalExpression
+
+def HavingConstructedDate.asTemporal (source : HavingConstructedDate) : HavingTemporalExpression :=
+  { core := .atom (.dateConstruction source.components), profile := source.components.profile, baseYear := source.baseYear }
+
+def HavingConstructedDate.references (source : HavingConstructedDate) : List HavingPresenceRef :=
+  source.asTemporal.presenceSlots.flatMap (·.references)
+
+def HavingConstructedDate.evalValidationRead (source : HavingConstructedDate) (operation : ConstructedDateValidityOp)
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) : Except Error Verdict := do
+  pure ((← HavingTemporalExpression.observeConstructedDate source .validation context frame).validityVerdict operation |>.toOption.getD .unknown)
+
+def HavingConstructedDate.evalComputationRead (source : HavingConstructedDate) (operation : ConstructedDateValidityOp)
+    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) : Except Error ComputationConditionResult := do
+  pure (match (← HavingTemporalExpression.observeConstructedDate source .computation context frame).validityVerdict operation with
+    | .error cause => .poison cause
+    | .ok (.fired _) => .holds
+    | .ok _ => .notTrue)
 
 structure HavingTemporalComparison where
   operator : TemporalComparisonOp

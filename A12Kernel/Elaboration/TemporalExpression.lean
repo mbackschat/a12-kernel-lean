@@ -529,13 +529,10 @@ private def readRecursiveTimeComponents (phase : Phase) (context : ScalarComputa
         | none => readScalarTimeLeaf phase context source
     | .inr source =>
         match ← readRecursiveScalarAtom phase context partialRead? source with
-        | .error (.formal cause) => pure (.unavailable cause)
-        | .error .nonRelevant => pure .nonRelevant
+        | .error (.formal cause) => pure (constructorComponentOfNumeric (.error (some cause)))
+        | .error .nonRelevant => pure (constructorComponentOfNumeric (.error none))
         | .error _ => throw .calendarUnavailable
-        | .ok .notEvaluated => pure .empty
-        | .ok (.value value fillability) =>
-            pure (if fillability.canGrow || fillability.canShrink then .empty
-              else .value (temporalShiftAmountToInt32 value))) phase
+        | .ok value => pure (constructorComponentOfNumeric (.ok value))) phase
 termination_by (sizeOf components, 0)
 decreasing_by
   all_goals first | decreasing_tactic | (apply Prod.Lex.left; simp_all +arith <;> omega)

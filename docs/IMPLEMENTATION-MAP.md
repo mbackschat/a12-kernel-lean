@@ -316,6 +316,9 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-having-time-values"></a>
 - [Positional Time values inside Having](implementation/repetition-and-paths.md#cap-having-time-values)
 
+<a id="cap-having-recursive-components"></a>
+- [Recursive Date/Time components and constructed-Date validity in Having](implementation/repetition-and-paths.md#cap-having-recursive-components)
+
 <a id="cap-having-date-values"></a>
 - [Positional Date values inside Having](implementation/repetition-and-paths.md#cap-having-date-values)
 

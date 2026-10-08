@@ -96,8 +96,7 @@ private def accepted (filter : String) (fixture : FlatModel := model) : Bool :=
 example : accepted "Time(Rows/Tag) == \"08:00:00\"" = true ∧
     ["Time(\"08\",\"30\",\"45\",\"00\")", "Time(8)", "Time(Rows/Tag + 1)",
       "Time([Rows/Tag])", "Time({Rows/Tag})", "Time(Rows/Tag For \"k\")", "Time(Rows*/Tag)",
-      "Time(\"-1\")", "Time(\"1.5\")", "Time(\"24\")", "Time(\"08\",\"60\")", "Time(\"08\",\"30\",\"60\")",
-      "Time(HoursFromTime(Time(Rows/Tag)))"].all
+      "Time(\"-1\")", "Time(\"1.5\")", "Time(\"24\")", "Time(\"08\",\"60\")", "Time(\"08\",\"30\",\"60\")"].all
       (fun source => !accepted (source ++ " == \"08:00:00\"")) = true ∧
     ["Time(MinutesFromTime(Rows/Tag))", "Time(\"08\",HoursFromTime(Rows/Tag))",
       "Time(\"08\",\"30\",MinutesFromTime(Rows/Tag))", "Time(Rows/Tag)"].all

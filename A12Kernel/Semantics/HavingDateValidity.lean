@@ -3,43 +3,16 @@ import A12Kernel.Semantics.ConstructedDateInputs
 
 namespace A12Kernel
 
-/-- Each component owns its candidate/captured origin; the constructor retains authored order
-and its selected calendar profile (spec/05 §3 and spec/07 §3). -/
-abbrev HavingDateComponents := ResolvedConstructedDateComponents (HavingOrigin × ResolvedConstructedDateSource)
+/-- A direct Date component retains its own capture origin and maps host failures at the
+correlated-read boundary (spec/05 §3 and spec/07 §3). -/
+def readHavingDateComponent (origin : HavingOrigin) (source : ResolvedConstructedDateSource)
+    (phase : Phase) (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
+    Except Error CheckedConstructedDateComponent :=
+  source.readWith phase (context.read (frame.envAt origin))
+    (context.storedText (frame.envAt origin)) context.world (fun result => result.mapError fun
+      | .stringNotConvertible _ _ => context.temporalValueFailure
+      | .dateYearStoredMissing field => context.storedTextUnavailable field
+      | .todayWorldRequired | .nowWorldRequired => context.worldUnavailable
+      | _ => context.unsupportedDateCalendar)
 
-namespace HavingDateComponents
-
-def references (source : HavingDateComponents) : List HavingPresenceRef :=
-  source.sources.filterMap fun (origin, component) =>
-    component.fieldId?.map fun field => { origin, field }
-
-def observe (source : HavingDateComponents) (phase : Phase)
-    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
-    Except Error ConstructedDateObservation := do
-  let read (operand : HavingOrigin × ResolvedConstructedDateSource) :=
-    operand.2.readWith phase (context.read (frame.envAt operand.1))
-      (context.storedText (frame.envAt operand.1)) context.world (fun result => result.mapError fun
-        | .stringNotConvertible _ _ => context.temporalValueFailure
-        | .dateYearStoredMissing field => context.storedTextUnavailable field
-        | .todayWorldRequired | .nowWorldRequired => context.worldUnavailable
-        | _ => context.unsupportedDateCalendar)
-  source.evaluateComponentsWith read phase
-
-def evaluate (source : HavingDateComponents) (phase : Phase)
-    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
-    Except Error ConstructedDateObservation :=
-  source.applyProfileReality <$> source.observe phase context frame
-
-def evalValidationRead (source : HavingDateComponents) (operation : ConstructedDateValidityOp)
-    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) : Except Error Verdict := do
-  pure ((← source.evaluate .validation context frame).validityVerdict operation |>.toOption.getD .unknown)
-
-def evalComputationRead (source : HavingDateComponents) (operation : ConstructedDateValidityOp)
-    (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) : Except Error ComputationConditionResult := do
-  pure (match (← source.evaluate .computation context frame).validityVerdict operation with
-    | .error cause => .poison cause
-    | .ok (.fired _) => .holds
-    | .ok _ => .notTrue)
-
-end HavingDateComponents
 end A12Kernel

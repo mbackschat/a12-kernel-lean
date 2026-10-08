@@ -109,6 +109,9 @@ def TemporalNumericPart.projectScalarCore (part : TemporalNumericPart) (profile 
   | .time value =>
       match part with
       | .time part => pure (part.extract value)
+      -- Time construction and TimeFromDateTime retain a 1970 anchor; Base Year only
+      -- enables the year-extractor's static gate here (spec/05 §3).
+      | .date .year => pure 1970
       | .date _ => throw .calendarUnavailable
   | .instant instant => do
       let some label := profile.calendarLabel? instant | throw .calendarUnavailable
@@ -131,6 +134,37 @@ def TemporalNumericPart.observeScalarCore (part : TemporalNumericPart) (profile 
   | .value .noValue given => pure (.ok (.value 0 (if given then .fixed else .both)))
   | .value value given =>
       pure (.ok (.value (← part.projectScalarCore profile value) (if given then .fixed else .both)))
+
+/-- Truncate like `BigDecimal.intValue`, then retain the low signed 32 bits rather than saturating or rejecting a large temporal-shift amount. -/
+def temporalShiftAmountToInt32 (value : Rat) : Int :=
+  let truncated := if value < 0 then value.ceil else value.floor
+  let modulus : Int := 4294967296
+  let signBit : Int := 2147483648
+  let lowBits := truncated % modulus
+  if lowBits < signBit then lowBits else lowBits - modulus
+
+/-- Constructor projections preserve fillability and cause-free non-relevance before the
+Date or Time constructor selects its result domain (spec/05 §§3,6). -/
+def constructorComponentOfNumeric : Except (Option FormalCause) NumericArithmeticOutcome → TimeConstructionComponent
+  | .error (some cause) => .unavailable cause
+  | .error none => .nonRelevant
+  | .ok .notEvaluated => .empty
+  | .ok (.value value fillability) =>
+      if fillability.canGrow || fillability.canShrink then .empty else .value (temporalShiftAmountToInt32 value)
+
+/-- A later poison dominates an earlier cause-free non-relevant Date component
+(Date-component ordering probe, 2026-10-06; spec/05 §3). -/
+inductive DateComponentRelevance where
+  | relevant
+  | nonRelevant
+  deriving DecidableEq
+
+def TimeConstructionComponent.asDateComponent [Monad m] :
+    TimeConstructionComponent → StateT DateComponentRelevance m CheckedConstructedDateComponent
+  | .value amount => pure (.value amount)
+  | .empty => pure .empty
+  | .unavailable cause => pure (.unavailable cause)
+  | .nonRelevant => set DateComponentRelevance.nonRelevant *> pure .empty
 
 inductive ScalarTemporalConstructorOp where
   | dateTime
